@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 import random
 import asyncio
+import aiosqlite
 from utils.db import (
     get_or_create_player, get_player, update_player,
     add_beast_to_player, get_player_beasts, load_beasts,
