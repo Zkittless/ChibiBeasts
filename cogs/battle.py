@@ -769,38 +769,6 @@ class MoveView(discord.ui.View):
             await interaction.response.edit_message(view=self)
         return callback
 
-def calc_damage(attacker: dict, defender: dict, move: str, is_ultimate: bool = False, perks: list = None) -> tuple:
-    base = attacker["attack"]
-    defense_factor = defender["defense"] / (defender["defense"] + 100)
-    damage = base * (1 - defense_factor)
-
-    # Type advantage
-    type_mult = get_type_multiplier(
-        attacker.get("beast_type", ""),
-        defender.get("beast_type", "")
-    )
-    damage *= type_mult
-
-    if is_ultimate:
-        damage *= 1.8
-        if perks:
-            for perk in perks:
-                if perk["perk_id"] == "genesis_spark" and perk["equipped"]:
-                    damage *= 1.05
-
-    # Crit check
-    crit_chance = 0.10
-    if perks:
-        for perk in perks:
-            if perk["perk_id"] == "spellbound_focus" and perk["equipped"]:
-                crit_chance += 0.10
-    is_crit = random.random() < crit_chance
-    if is_crit:
-        damage *= 1.5
-
-    damage = int(damage * random.uniform(0.85, 1.15))
-    return max(1, damage), is_crit, type_mult
-
 def apply_status(beast_state: dict, status: str, perks: list = None) -> bool:
     if perks:
         for perk in perks:
