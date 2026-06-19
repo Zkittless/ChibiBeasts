@@ -5,6 +5,11 @@ import asyncio
 from dotenv import load_dotenv
 from utils.db import init_db
 
+# Ensure working directory is always the folder containing bot.py
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+print(f"📁 Working directory: {os.getcwd()}")
+print(f"📂 Files visible: {os.listdir('.')[:8]}")
+
 load_dotenv()
 
 intents = discord.Intents.default()
