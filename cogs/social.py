@@ -37,7 +37,7 @@ class Trading(commands.Cog):
                 description="✦ You can't trade with yourself!", color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
@@ -112,7 +112,7 @@ class Trading(commands.Cog):
                 # Re-validate everything fresh, inside one connection, right before
                 # committing — prevents double-spend / double-click / stale-state exploits
                 # where gold or beasts moved in the time between the offer and the accept.
-                async with aiosqlite.connect("data/chibibeast.db") as db:
+                async with aiosqlite.connect("db/chibibeast.db") as db:
                     db.row_factory = aiosqlite.Row
 
                     # Re-check the offered beast is still owned by the sender and untraded
@@ -225,7 +225,7 @@ class Perks(commands.Cog):
         perks_data = load_perks()
         all_perks = perks_data["perks"]
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ?", (interaction.user.id,)
@@ -292,7 +292,7 @@ class Perks(commands.Cog):
                     description=f"✦ Perk `{perk_name}` not found!", color=COLORS["error"]
                 ))
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ? AND perk_id = ?",
@@ -319,7 +319,7 @@ class Perks(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute(
                 "UPDATE player_perks SET equipped = 1 WHERE user_id = ? AND perk_id = ?",
                 (interaction.user.id, perk_id)
@@ -356,7 +356,7 @@ class Perks(commands.Cog):
                     description=f"✦ Perk `{perk_name}` not found!", color=COLORS["error"]
                 ))
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute(
                 "UPDATE player_perks SET equipped = 0 WHERE user_id = ? AND perk_id = ?",
                 (interaction.user.id, perk_id)
@@ -383,7 +383,7 @@ class Leaderboard(commands.Cog):
     async def leaderboard(self, interaction: discord.Interaction, category: str = "level"):
         await interaction.response.defer()
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             if category == "level":
                 query = "SELECT username, level, exp FROM players ORDER BY level DESC, exp DESC LIMIT 10"

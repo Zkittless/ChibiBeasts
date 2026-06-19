@@ -2,7 +2,7 @@ import aiosqlite
 import json
 import os
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 
 async def init_db():
     async with aiosqlite.connect(DB_PATH) as db:

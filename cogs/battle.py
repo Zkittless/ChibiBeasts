@@ -19,7 +19,8 @@ from utils.type_chart import get_type_multiplier, type_effectiveness_label
 # ── Module-level equipment cache ─────────────────────────────────────────────
 # Loaded once at import time rather than on every battle start.
 # equipment.json is read-only at runtime — no need to re-read per request.
-# This eliminates concurrent disk I/O contention under production load.
+# bot.py sets the working directory to its own folder at startup, so this
+# relative path resolves correctly on Railway and locally.
 with open("data/equipment.json") as _eq_f:
     _EQ_DATA = json.load(_eq_f)
 _ALL_GEAR: dict = {**_EQ_DATA["equipment"], **_EQ_DATA["runes"]}
@@ -199,7 +200,7 @@ async def run_pve_battle(
     # Apply equipment bonuses to player (reuse existing helper via inline call)
     async def _apply_equip(state):
         # Use module-level _ALL_GEAR cache — no per-battle disk I/O
-        async with aiosqlite.connect("data/chibibeast.db") as _db:
+        async with aiosqlite.connect("db/chibibeast.db") as _db:
             _db.row_factory = aiosqlite.Row
             async with _db.execute(
                 "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id = ?",
@@ -814,7 +815,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
     if not battle:
         return
 
-    async with aiosqlite.connect("data/chibibeast.db") as db:
+    async with aiosqlite.connect("db/chibibeast.db") as db:
         db.row_factory = aiosqlite.Row
 
         async with db.execute(
@@ -886,7 +887,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         # Use module-level _ALL_GEAR cache — no per-battle disk I/O
         all_gear = _ALL_GEAR
 
-        async with aiosqlite.connect("data/chibibeast.db") as _db:
+        async with aiosqlite.connect("db/chibibeast.db") as _db:
             _db.row_factory = aiosqlite.Row
             # Equipped armor
             async with _db.execute(
@@ -950,7 +951,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         if _pr and _pr.get("brew_active") and _pr["brew_active"] > 0:
             state["defense"] = int(state["defense"] * 2.0)
             gear_bonus_log.append("×2 DEF (Krakenshale Brew)")
-            async with aiosqlite.connect("data/chibibeast.db") as _db2:
+            async with aiosqlite.connect("db/chibibeast.db") as _db2:
                 await _db2.execute(
                     "UPDATE players SET brew_active = CASE WHEN brew_active > 0 THEN brew_active - 1 ELSE 0 END WHERE user_id = ?",
                     (user_id,)
@@ -967,7 +968,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
     o_gear_log = await _apply_equipment(o_state, o_beast_row["id"], battle["opponent_id"])
 
     # Fable Feather check
-    async with aiosqlite.connect("data/chibibeast.db") as db:
+    async with aiosqlite.connect("db/chibibeast.db") as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT * FROM player_inventory WHERE user_id = ? AND item_id = 'fable_feather'",
@@ -1306,7 +1307,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         while loser_beast_new_exp >= get_beast_exp_for_level(loser_beast_dict, loser_beast_new_level):
             loser_beast_new_exp -= get_beast_exp_for_level(loser_beast_dict, loser_beast_new_level)
             loser_beast_new_level += 1
-        async with aiosqlite.connect("data/chibibeast.db") as _ldb:
+        async with aiosqlite.connect("db/chibibeast.db") as _ldb:
             await apply_beast_levelup(_ldb, loser_beast_dict, loser_beast_new_level, loser_beast_new_exp)
             await _ldb.commit()
 
@@ -1321,7 +1322,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
             beast_new_exp -= get_beast_exp_for_level(winner_beast_dict, beast_new_level)
             beast_new_level += 1
         beast_leveled = beast_new_level > winner_beast_dict["level"]
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             await apply_beast_levelup(db, winner_beast_dict, beast_new_level, beast_new_exp)
             await db.commit()
 
@@ -1443,7 +1444,7 @@ class Battle(commands.Cog):
         enemy_state = build_pve_beast_state(wild_beast_data, wild_level)
 
         active_beast_data = get_beast_data(active_row["beast_id"]) or {}
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -1490,7 +1491,7 @@ class Battle(commands.Cog):
             while new_exp >= get_beast_exp_for_level(dict(active_row), new_level):
                 new_exp -= get_beast_exp_for_level(dict(active_row), new_level)
                 new_level += 1
-            async with aiosqlite.connect("data/chibibeast.db") as db:
+            async with aiosqlite.connect("db/chibibeast.db") as db:
                 await apply_beast_levelup(db, dict(active_row), new_level, new_exp)
                 await db.commit()
 
@@ -1599,7 +1600,7 @@ class Battle(commands.Cog):
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         spar_key = f"sparr_{npc_name}"
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT 1 FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
@@ -1638,7 +1639,7 @@ class Battle(commands.Cog):
         enemy_state = build_pve_beast_state(companion_data, npc_level)
         active_beast_data = get_beast_data(active_row["beast_id"]) or {}
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -1678,7 +1679,7 @@ class Battle(commands.Cog):
                 # Timeout on a spar: small gold reward, no shard, no relationship upgrade.
                 # The NPC wasn't actually bested — just outlasted.
                 partial_gold = random.randint(30, 80)
-                async with aiosqlite.connect("data/chibibeast.db") as db:
+                async with aiosqlite.connect("db/chibibeast.db") as db:
                     await db.execute(
                         "INSERT OR IGNORE INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?,?,1,1,?)",
                         (interaction.user.id, spar_key, today)
@@ -1708,7 +1709,7 @@ class Battle(commands.Cog):
                 gold=player["gold"] + gold_gain
             )
             # Grant shard + mark daily spar done
-            async with aiosqlite.connect("data/chibibeast.db") as db:
+            async with aiosqlite.connect("db/chibibeast.db") as db:
                 await db.execute(
                     "UPDATE players SET celestial_shards = celestial_shards + 1 WHERE user_id = ?",
                     (interaction.user.id,)
@@ -1743,7 +1744,7 @@ class Battle(commands.Cog):
                 await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
         async def on_loss(embed, p_state, e_state):
-            async with aiosqlite.connect("data/chibibeast.db") as db:
+            async with aiosqlite.connect("db/chibibeast.db") as db:
                 await db.execute(
                     "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?,?,1,1,?)",
                     (interaction.user.id, spar_key, today)

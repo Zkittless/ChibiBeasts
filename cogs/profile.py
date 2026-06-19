@@ -136,7 +136,7 @@ class Profile(commands.Cog):
     @app_commands.describe(beast_id="The ID of the beast from your collection")
     async def beastinfo(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
@@ -211,7 +211,7 @@ class Profile(commands.Cog):
     @app_commands.describe(beast_id="The ID of the beast to set as active")
     async def setactive(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             async with db.execute(
                 "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
                 (beast_id, interaction.user.id)
@@ -236,7 +236,7 @@ class Profile(commands.Cog):
             return await interaction.response.send_message(embed=discord.Embed(
                 description="✦ Nickname must be 20 characters or less!", color=COLORS["error"]
             ), ephemeral=True)
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             async with db.execute(
                 "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
                 (beast_id, interaction.user.id)
@@ -318,7 +318,7 @@ class Inventory(commands.Cog):
         effect = item["effect"]
         result_lines = []
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             if "heal_percent" in effect and active:
                 heal = int(active["max_hp"] * (effect["heal_percent"] / 100))
                 new_hp = min(active["max_hp"], active["hp"] + heal)
@@ -589,7 +589,7 @@ class Shop(commands.Cog):
         # If two concurrent requests both pass the Python-level check and race
         # to the DB, only the first UPDATE will match the WHERE clause and
         # return rowcount > 0. The second sees rowcount = 0 and aborts.
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
 
             # Perk and balance read inside the same connection

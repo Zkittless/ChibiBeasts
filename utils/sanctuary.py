@@ -5,7 +5,7 @@
 
 import aiosqlite
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 
 
 async def get_sanctuary(guild_id: int) -> dict:

@@ -8,7 +8,7 @@ from utils.progress import (
     ACHIEVEMENTS, get_daily_quests, check_achievements, get_bestiary_progress
 )
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 TIER_ORDER = ["bronze", "silver", "gold", "platinum"]
 RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
 

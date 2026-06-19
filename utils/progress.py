@@ -14,7 +14,7 @@ import discord
 import random
 from datetime import datetime, timezone
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 
 
 # ── Achievement Definitions ─────────────────────────────────────────────────

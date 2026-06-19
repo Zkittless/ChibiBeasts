@@ -8,7 +8,7 @@ from utils.db import get_or_create_player, get_player, update_player, add_beast_
 from utils.theme import COLORS, RARITY_EMOJI, TYPE_EMOJI, SPARKLE
 from utils.progress import unlock_simple_achievement, notify_unlocks
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 
 # ── Display constants ──────────────────────────────────────────────────────────
 # Named rather than hardcoded inline so they're easy to adjust and extend

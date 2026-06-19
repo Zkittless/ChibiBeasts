@@ -14,7 +14,7 @@ from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import check_achievements, unlock_simple_achievement, notify_unlocks
 from utils.sanctuary import get_user_sanctuary
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 
 def load_equipment():
     with open("data/equipment.json") as f:

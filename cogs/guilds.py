@@ -102,7 +102,7 @@ class Guilds(commands.Cog):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             async with db.execute(
                 "SELECT id FROM guilds WHERE leader_id = ?", (interaction.user.id,)
             ) as c:
@@ -125,7 +125,7 @@ class Guilds(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             try:
                 await db.execute(
                     "INSERT INTO guilds (name, description, leader_id) VALUES (?, ?, ?)",
@@ -165,7 +165,7 @@ class Guilds(commands.Cog):
     @app_commands.command(name="guild", description="View your guild info 🏰")
     async def guild(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT guild_id FROM guild_members WHERE user_id = ?", (interaction.user.id,)
@@ -179,7 +179,7 @@ class Guilds(commands.Cog):
             ))
 
         guild_id = member_row["guild_id"]
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT * FROM guilds WHERE id = ?", (guild_id,)) as c:
                 guild = dict(await c.fetchone())
@@ -226,7 +226,7 @@ class Guilds(commands.Cog):
     @app_commands.describe(member="Player to invite")
     async def guild_invite(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer()
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT guild_id, rank FROM guild_members WHERE user_id = ?", (interaction.user.id,)
@@ -239,7 +239,7 @@ class Guilds(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT * FROM guilds WHERE id = ?", (inviter["guild_id"],)) as c:
                 guild = dict(await c.fetchone())
@@ -276,7 +276,7 @@ class Guilds(commands.Cog):
                     return await inv_interaction.response.send_message("This isn't for you!", ephemeral=True)
                 self.accepted = True
                 self.stop()
-                async with aiosqlite.connect("data/chibibeast.db") as db:
+                async with aiosqlite.connect("db/chibibeast.db") as db:
                     await db.execute(
                         "INSERT INTO guild_members (guild_id, user_id) VALUES (?, ?)",
                         (inviter["guild_id"], member.id)
@@ -320,7 +320,7 @@ class Guilds(commands.Cog):
     ])
     async def raid(self, interaction: discord.Interaction, raid_type: str = "corrupted"):
         await interaction.response.defer()
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT gm.rank, g.* FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
@@ -369,7 +369,7 @@ class Guilds(commands.Cog):
         ]
         sundering_line = random.choice(SUNDERING_LINES)
 
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute(
                 "UPDATE guilds SET guild_tokens = guild_tokens - ? WHERE id = ?",
                 (token_cost, guild_data["id"])
@@ -415,7 +415,7 @@ class Guilds(commands.Cog):
 
         # Find active raid in this guild
         player_guild = None
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT guild_id FROM guild_members WHERE user_id = ?", (interaction.user.id,)
@@ -479,7 +479,7 @@ class Guilds(commands.Cog):
                 raid["participants"].get(interaction.user.id, 0) + damage
             )
 
-            async with aiosqlite.connect("data/chibibeast.db") as db:
+            async with aiosqlite.connect("db/chibibeast.db") as db:
                 await db.execute(
                     "UPDATE raids SET current_hp = ? WHERE id = ?",
                     (raid["current_hp"], raid_id)
@@ -597,7 +597,7 @@ class Guilds(commands.Cog):
                             if not purified_data:
                                 continue
 
-                            async with aiosqlite.connect("data/chibibeast.db") as db:
+                            async with aiosqlite.connect("db/chibibeast.db") as db:
                                 await db.execute("""
                                     INSERT INTO player_beasts
                                     (user_id, beast_id, hp, max_hp, attack, defense, speed, mana, max_mana,
@@ -648,7 +648,7 @@ class Guilds(commands.Cog):
         await channel.send(embed=embed)
 
         # Update raid status
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute(
                 "UPDATE raids SET status = ?, ended_at = CURRENT_TIMESTAMP WHERE id = ?",
                 ("completed" if defeated else "expired", raid_id)

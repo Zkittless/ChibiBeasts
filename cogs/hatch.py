@@ -127,7 +127,7 @@ async def check_collection_completion(interaction, beast: dict, all_beasts: dict
 
     # Check if player now owns ALL beasts in this collection
     import aiosqlite
-    async with aiosqlite.connect("data/chibibeast.db") as db:
+    async with aiosqlite.connect("db/chibibeast.db") as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT DISTINCT beast_id FROM player_beasts WHERE user_id = ?",
@@ -200,7 +200,7 @@ class HatchView(discord.ui.View):
         if interaction.user.id != self.player_id:
             return await interaction.response.send_message("This isn't your hatch!", ephemeral=True)
         import aiosqlite
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (self.player_id,))
             await db.execute(
                 "UPDATE player_beasts SET is_active = 1 WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1",
@@ -308,7 +308,7 @@ class Hatch(commands.Cog):
         await asyncio.sleep(1.5)
 
         import aiosqlite
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1", (interaction.user.id,)
@@ -341,7 +341,7 @@ class Hatch(commands.Cog):
 
         all_owned = await get_player_beasts(interaction.user.id)
         if len(all_owned) == 1:
-            async with aiosqlite.connect("data/chibibeast.db") as db:
+            async with aiosqlite.connect("db/chibibeast.db") as db:
                 await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (beast_row_id,))
                 await db.commit()
             subtitle += "\n✦ *Set as your active beast automatically!*"
@@ -389,7 +389,7 @@ class Hatch(commands.Cog):
         now = time.time()
         cooldown = EXPLORE_COOLDOWN
 
-        async with aiosqlite.connect("data/chibibeast.db") as _cddb:
+        async with aiosqlite.connect("db/chibibeast.db") as _cddb:
             _cddb.row_factory = aiosqlite.Row
             async with _cddb.execute(
                 "SELECT explore_last_at FROM players WHERE user_id = ?", (interaction.user.id,)
@@ -417,7 +417,7 @@ class Hatch(commands.Cog):
             ))
 
         # Update last explore time in DB
-        async with aiosqlite.connect("data/chibibeast.db") as _upddb:
+        async with aiosqlite.connect("db/chibibeast.db") as _upddb:
             await _upddb.execute(
                 "UPDATE players SET explore_last_at = ? WHERE user_id = ?",
                 (now, interaction.user.id)
@@ -520,7 +520,7 @@ class Hatch(commands.Cog):
 
         # First-time biome discovery check
         BIOME_DISCOVERY_KEY = f"biome_discovered_{biome['name'].replace(' ','_').replace('🌌','').replace('❄️','').replace('🌊','').replace('🔥','').replace('🌲','').strip()}"
-        async with aiosqlite.connect("data/chibibeast.db") as db:
+        async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT 1 FROM achievements WHERE user_id = ? AND achievement_id = ?",
@@ -599,7 +599,7 @@ class Hatch(commands.Cog):
 
         # Spellbound Incense boost (persisted in DB)
         import time as _t
-        async with aiosqlite.connect("data/chibibeast.db") as _idb:
+        async with aiosqlite.connect("db/chibibeast.db") as _idb:
             _idb.row_factory = aiosqlite.Row
             async with _idb.execute(
                 "SELECT incense_active_until FROM players WHERE user_id = ?", (interaction.user.id,)
@@ -648,7 +648,7 @@ class Hatch(commands.Cog):
                         mat_drop = mat_id
                         break
                 if mat_drop:
-                    async with __import__("aiosqlite").connect("data/chibibeast.db") as db:
+                    async with __import__("aiosqlite").connect("db/chibibeast.db") as db:
                         async with db.execute(
                             "SELECT id, quantity FROM player_materials WHERE user_id = ? AND material_id = ?",
                             (interaction.user.id, mat_drop)

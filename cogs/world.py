@@ -18,7 +18,7 @@ from utils.progress import (
 )
 from utils.sanctuary import get_user_sanctuary, apply_craft_discount
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 
 # ── Data loaders ──────────────────────────────────────────────────────────────
 def load_materials():

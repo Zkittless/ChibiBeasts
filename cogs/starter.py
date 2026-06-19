@@ -17,7 +17,7 @@ from utils.db import (
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import unlock_simple_achievement, record_bestiary_sighting
 
-DB_PATH = "data/chibibeast.db"
+DB_PATH = "db/chibibeast.db"
 
 STARTER_IDS  = {"prismite", "twine", "gloop", "barkley"}
 HOUSE_EMOJI  = {"prismite": "🔷", "twine": "🧵", "gloop": "🫧", "barkley": "🌿"}
