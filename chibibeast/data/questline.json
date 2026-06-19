@@ -1,0 +1,355 @@
+{
+  "questline": {
+    "id": "sundering_of_the_loom",
+    "name": "The Sundering of the Loom",
+    "description": "A series of conversations, catches, and quiet revelations that ends with the World-Tree Seed — and a world that knows your name.",
+    "reward_final": "world_tree_seed",
+    "chapters": {
+      "chapter_1": {
+        "id": "chapter_1",
+        "name": "First Stitch",
+        "npc": "maren",
+        "unlock_condition": "player_level_3",
+        "location": "Whispering Woods",
+        "intro": [
+          "You find Maren mid-sentence, talking to her Barkley about something it clearly already knows.",
+          "She doesn't look up immediately.",
+          "When she does: *'Oh good. Another one. Sit down — Barkley, move over — and tell me what you've seen so far.'*",
+          "",
+          "You tell her you're just starting.",
+          "",
+          "*'Good,'* she says. *'Then you haven't learned any bad habits yet. I'm writing a new page of the Bestiary — the server's record of what exists here, officially. For that I need firsthand accounts. Not mine. I've been here too long. I see what I expect to see.'*",
+          "",
+          "*'Go out. Explore three different places. Catch something from each. Come back and tell me what the catching felt like. Not what the beast was — I know what the beasts are. What the catching felt like. That's the part that goes in the record.'*"
+        ],
+        "steps": [
+          {
+            "id": "explore_3_biomes",
+            "description": "Explore 3 different biomes",
+            "type": "explore_count",
+            "target": 3,
+            "track_unique_biomes": true
+          },
+          {
+            "id": "catch_3_beasts",
+            "description": "Catch 3 wild beasts",
+            "type": "catch_count",
+            "target": 3
+          }
+        ],
+        "completion_dialogue": [
+          "*'Back already. Good. Sit down.'*",
+          "",
+          "She listens to everything you say without interrupting. When you finish, she writes something in her book.",
+          "",
+          "*'That thing you felt when it looked at you before you caught it — that pause — that's what the Loom feels like from the outside. Every beast is a question the Loom asked and then answered. You were there for the answer.'*",
+          "",
+          "She closes the book.",
+          "",
+          "*'The Bestiary page is written. Your name is in it — as the trainer present for these catches. That matters more than you know. The Loom keeps its own records, but ours are more legible.'*",
+          "",
+          "She looks at you for a long moment.",
+          "",
+          "*'There's a young man camped near the Celestial Loom. Cael. He's been trying to reach me for a week but his messages arrive in the wrong order — Twine's doing, probably. Find him. He seems worried about something.'*"
+        ],
+        "reward": {
+          "gold": 500,
+          "exp": 200,
+          "celestial_shards": 5,
+          "relationship_unlock": {"maren": "known"},
+          "unlock_next": "chapter_2"
+        }
+      },
+      "chapter_2": {
+        "id": "chapter_2",
+        "name": "Something's Off",
+        "npc": "cael",
+        "unlock_condition": "chapter_1_complete",
+        "location": "Celestial Loom",
+        "intro": [
+          "*'Oh — you're here. Right. I knew you were coming. That's not a skill, Twine just — anyway.'*",
+          "",
+          "He glances at his Twine, who twitches an ear.",
+          "",
+          "*'We need to talk about the fraying. You've noticed the fraying, right?'*",
+          "",
+          "He looks at your face.",
+          "",
+          "*'You haven't noticed the fraying.'*",
+          "",
+          "He sits down on a rock that may or may not exist and runs a hand through his hair.",
+          "",
+          "*'The Sundering events — the Altered Divines — they're accelerating. Three last month. One the month before. Before that, one every three months. The rate is wrong. Something is pulling at the Loom from somewhere I can't see, and when I try to follow the thread it goes into a place that Twine won't enter, which is the first time I've ever seen Twine refuse to go anywhere.'*",
+          "",
+          "*'I need someone at the next Altered Divine event. Someone who can hold the line while I watch what the Loom does when the thread snaps. I've been watching from too far away. I need to be closer. And I can't be closer if I'm also fighting.'*"
+        ],
+        "steps": [
+          {
+            "id": "reach_celestial_loom",
+            "description": "Reach the Celestial Loom biome (level 25 required)",
+            "type": "player_level",
+            "target": 25
+          },
+          {
+            "id": "participate_raid",
+            "description": "Participate in any raid",
+            "type": "raid_participate",
+            "target": 1
+          }
+        ],
+        "completion_dialogue": [
+          "You find Cael after the raid, scribbling in a notebook that's already full.",
+          "",
+          "*'I saw it. I saw what the Loom does when it snaps.'*",
+          "",
+          "He stops writing.",
+          "",
+          "*'It hesitates. Before the thread breaks, there's a moment where the Loom knows it's going to break and keeps pulling anyway. I don't know what that means. I've been thinking about it and I don't know what it means.'*",
+          "",
+          "Twine puts a small paw on his arm.",
+          "",
+          "*'Right. What I do know is that the Altered Divines are being pulled from the same direction each time. Not a biome — a direction. Southwest of the Ember Wastes. There's nothing there. Or there's nothing that used to be there.'*",
+          "",
+          "*'Talk to Sable. She's been in the Ember Wastes longer than anyone. If something changed out there, she'd know. She's — she can be a lot. Just be direct. She respects direct.'*"
+        ],
+        "reward": {
+          "gold": 750,
+          "exp": 350,
+          "materials": {"loom_shard": 1},
+          "celestial_shards": 8,
+          "relationship_unlock": {"cael": "known"},
+          "unlock_next": "chapter_3"
+        }
+      },
+      "chapter_3": {
+        "id": "chapter_3",
+        "name": "Sable's Price",
+        "npc": "sable",
+        "unlock_condition": "chapter_2_complete",
+        "location": "Ember Wastes",
+        "intro": [
+          "The forge is loud and orange and smells like metal and something older than metal.",
+          "",
+          "Sable doesn't look up when you arrive.",
+          "",
+          "*'If Cael sent you, you can start talking. If you wandered in on your own, sit down and wait until I'm done with this.'*",
+          "",
+          "You mention Cael.",
+          "",
+          "*'Figures.'*",
+          "",
+          "She sets down her tools. Her Hellhound opens one eye.",
+          "",
+          "*'Yes, I've noticed something. Southwest of here the ground sounds different when you walk on it. Hollow. Like something underneath it stopped. I've been ignoring it because I don't do Loom business.'*",
+          "",
+          "She picks her tools back up.",
+          "",
+          "*'I'll forge the first component of whatever Cael's building. But I need Phoenix Ash — real Ash, not shop-grade. That means you go into the Wastes and you catch something that lives here. A Phoenix. A Wyvern. A Dragon, if you can manage it. Bring me what they drop. Then we'll talk.'*"
+        ],
+        "steps": [
+          {
+            "id": "catch_ember_beast",
+            "description": "Catch a Phoenix, Wyvern, or Dragon in the Ember Wastes",
+            "type": "catch_specific_beast",
+            "target_beasts": ["phoenix", "wyvern", "dragon"],
+            "target": 1
+          },
+          {
+            "id": "collect_phoenix_ash",
+            "description": "Obtain Phoenix Ash (drops from exploring the Ember Wastes)",
+            "type": "material_collect",
+            "material_id": "phoenix_ash",
+            "target": 2
+          }
+        ],
+        "completion_dialogue": [
+          "Sable takes the Phoenix Ash and examines it for a long moment.",
+          "",
+          "*'Good quality. You found the good stuff.'*",
+          "",
+          "She starts working immediately, without further ceremony.",
+          "",
+          "Twenty minutes later she holds up something small and warm. It pulses faintly, like it's breathing.",
+          "",
+          "*'Ember Relic. One of four. I made it from what the Wastes gave you and what you brought me. That's how Relics work — they're not made from materials, they're made from attention. The materials are just the medium.'*",
+          "",
+          "She holds it out.",
+          "",
+          "*'That hollow spot southwest of here. It appeared about four months ago, same time as your Sundering acceleration. I haven't gone to look at it because I don't want to know. But I think you should.'*",
+          "",
+          "A pause.",
+          "",
+          "*'Orren is in the Whispering Woods. He's old enough to know what it is. Tell him I said hello. Tell him I still disagree with him about the Architects. He'll know what that means.'*"
+        ],
+        "reward": {
+          "gold": 1200,
+          "exp": 500,
+          "items": {"forge_token": 1},
+          "relic": "ember_relic",
+          "celestial_shards": 10,
+          "relationship_unlock": {"sable": "known"},
+          "unlock_next": "chapter_4"
+        }
+      },
+      "chapter_4": {
+        "id": "chapter_4",
+        "name": "What Orren Remembers",
+        "npc": "orren",
+        "unlock_condition": "chapter_3_complete",
+        "location": "Whispering Woods",
+        "intro": [
+          "Orren is sitting very still when you find him, watching something you can't see.",
+          "",
+          "His Dryad's vines are slightly brighter than usual, which you will later learn means she's paying attention.",
+          "",
+          "Eventually: *'The Whispering Woods have been here since the second day of weaving. I've been here since the fourth. I saw the first Sundering happen. It was quiet. That surprised me. I thought something that large would make more noise.'*",
+          "",
+          "He looks at you properly.",
+          "",
+          "*'Sable says hello. And she still disagrees about the Architects.'*",
+          "",
+          "Something that might be amusement crosses his face.",
+          "",
+          "*'She's always disagreed. She's not wrong, exactly. She's just looking at the same thing from underneath, where it all looks like materials and heat.'*",
+          "",
+          "He folds his hands.",
+          "",
+          "*'I know about the hollow spot southwest of the Wastes. I've known about it for four months. Before I tell you what I know, I want to see your Bestiary. Not to judge — to understand what kind of attention you're bringing to this. The relics respond to attention. They always have.'*"
+        ],
+        "steps": [
+          {
+            "id": "bestiary_progress",
+            "description": "Discover 20 beasts in the server Bestiary",
+            "type": "server_bestiary_count",
+            "target": 20
+          },
+          {
+            "id": "talk_to_orren",
+            "description": "Return to Orren with your Bestiary progress",
+            "type": "use_command",
+            "command": "questline"
+          }
+        ],
+        "completion_dialogue": [
+          "Orren looks at your Bestiary for a long time.",
+          "",
+          "*'Twenty-three species. Good. More than I expected.'*",
+          "",
+          "He stands, slowly, and the Dryad's vines shift to make room.",
+          "",
+          "*'Before the biomes had names, the Architects left markers. Not deliberately — they were places where something important was decided. The Whispering Woods has one: a place where Pillar said, 'this part holds.' It's under a root cluster three hours north of here. I've been watching it since the second Sundering.'*",
+          "",
+          "He hands you a small, smooth stone that feels heavier than it should.",
+          "",
+          "*'This is the Whispering Relic. The stone knows where it came from. If you bring it back to the Celestial Loom along with the other three, The Archivist will be able to tell you what the hollow spot is.'*",
+          "",
+          "He pauses.",
+          "",
+          "*'The Archivist already knows. But they're the kind of being that waits to be asked before they answer. You'll understand when you meet them.'*",
+          "",
+          "*'The other two relics are in the Glacial Hollows and the Sunken Abyssal Trenches. The Trenches one is harder to find. You'll need to go deep. The beast you find there will lead you to it, if you let it.'*"
+        ],
+        "reward": {
+          "gold": 1500,
+          "exp": 700,
+          "relic": "whisper_relic",
+          "celestial_shards": 15,
+          "relationship_unlock": {"orren": "known"},
+          "unlock_next": "chapter_5"
+        }
+      },
+      "chapter_5": {
+        "id": "chapter_5",
+        "name": "The Archivist",
+        "npc": "the_archivist",
+        "unlock_condition": "chapter_4_complete",
+        "location": "Celestial Loom",
+        "required_relics": ["ember_relic", "whisper_relic", "glacial_relic", "trench_relic"],
+        "intro": [
+          "The Celestial Loom is different when you arrive this time.",
+          "",
+          "The stars that were drifting at eye level have arranged themselves into something that might be a corridor. At the end of it, something that might be a library.",
+          "",
+          "The Archivist is already in the middle of a sentence when you find them.",
+          "",
+          "*'— and that's why the hollow spot exists. Oh, you're here. You brought all four relics. Good.'*",
+          "",
+          "Their Paradox sphinx walks around you on all sides simultaneously.",
+          "",
+          "*'You're about to ask me what they mean. The answer is: they are proof of your attention. The Loom doesn't give the World-Tree Seed to anyone who wants it. It gives it to anyone who has shown up, consistently, in all four places where the world first decided to hold.'*",
+          "",
+          "*'You have now met Maren, who keeps the record. Cael, who watches the thread. Sable, who shapes what the Loom leaves behind. Orren, who remembers what the Loom forgets.'*",
+          "",
+          "*'They are going to need you. Not now. Later — in the direction the Sundering is accelerating toward. I can tell you what the hollow spot is.'*",
+          "",
+          "Paradox sits down in front of you and looks at you with eyes that contain several possible versions of this moment.",
+          "",
+          "*'The hollow spot southwest of the Ember Wastes is where the Loom made its first decision. The very first stitch. Not the First Stitch that the old texts mention — that was the second decision. The first one was quieter and happened slightly earlier, in a direction that doesn't have a name.'*",
+          "",
+          "*'Something has reached through the hollow spot and pulled on that first stitch. If it unravels, the Loom doesn't end. But it resets.'*",
+          "",
+          "A pause. The library is very quiet.",
+          "",
+          "*'Not today. Not for a long time. But that's what the Sundering acceleration is. That's what Cael has been watching. And that's why the four people you've met exist — they each hold one of the things the world needs to not reset.'*",
+          "",
+          "They hold out the World-Tree Seed.",
+          "",
+          "*'Here. Hatch this. What comes from it will understand the problem better than I've just explained it. And — unrequested — something that might be friendship, from someone for whom time doesn't work properly. I find this conversation remarkable. I've had it forty-seven times in various timelines and you are the first person who didn't ask what the hollow spot was before I told them.'*",
+          "",
+          "Paradox blinks. The library rearranges itself slightly.",
+          "",
+          "*'That was a compliment.'*"
+        ],
+        "steps": [
+          {
+            "id": "collect_glacial_relic",
+            "description": "Find the Glacial Relic in the Glacial Hollows (explore until discovered)",
+            "type": "relic_collect",
+            "relic_id": "glacial_relic",
+            "biome": "Glacial Hollows"
+          },
+          {
+            "id": "collect_trench_relic",
+            "description": "Find the Trench Relic in the Sunken Abyssal Trenches",
+            "type": "relic_collect",
+            "relic_id": "trench_relic",
+            "biome": "Sunken Abyssal Trenches"
+          },
+          {
+            "id": "bring_relics_to_archivist",
+            "description": "Return to the Archivist with all four relics",
+            "type": "use_command",
+            "command": "questline"
+          }
+        ],
+        "completion_dialogue": [
+          "*'The World-Tree Seed is yours. Everything else — the hollow spot, the Sundering, what comes next — is a story that hasn't happened yet.'*",
+          "",
+          "*'Go find Cael. He's worried. He's always worried. In this case he's right to be, but it would help him to hear that someone knows what they're looking at.'*",
+          "",
+          "The corridor of stars behind you begins to close.",
+          "",
+          "*'One more thing. Unrequested.'*",
+          "",
+          "Paradox stands up and puts its nose briefly against your hand.",
+          "",
+          "*'It says you're interesting. That is, as I mentioned, very high praise.'*"
+        ],
+        "reward": {
+          "gold": 5000,
+          "exp": 2000,
+          "items": {"world_tree_seed": 1},
+          "celestial_shards": 50,
+          "achievement": "loom_witness",
+          "relationship_unlock": {
+            "maren": "trusted",
+            "cael": "trusted",
+            "sable": "trusted",
+            "orren": "trusted",
+            "the_archivist": "companion"
+          }
+        }
+      }
+    }
+  }
+}

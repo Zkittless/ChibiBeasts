@@ -1,0 +1,1599 @@
+{
+  "beasts": {
+    "fairy": {
+      "id": "fairy",
+      "name": "Fairy",
+      "title": "The Woodland Sprite",
+      "rarity": "common",
+      "type": "nature",
+      "base_stats": {
+        "hp": 80,
+        "attack": 35,
+        "defense": 30,
+        "speed": 55,
+        "mana": 60
+      },
+      "moves": [
+        "Pixie Dust",
+        "Leaf Dart",
+        "Glitter Blind"
+      ],
+      "ultimate": "Fairy Ring",
+      "description": "A delicate woodland sprite that flutters through enchanted forests leaving trails of glowing dust.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "dryad",
+        "method": "sunforge_core",
+        "level_required": 15,
+        "description": "The Fairy stopped fluttering and put down roots. Literally."
+      },
+      "catch_rate": 0.85,
+      "encounter_situations": [
+        "A Fairy is caught mid-weave, threading light between two branches like it's sewing something only it can see. It stops when it notices you.",
+        "The Fairy is sitting very still on a mushroom cap, apparently listening to the tree above it. The tree is not, as far as you can tell, saying anything.",
+        "You nearly step on it. The Fairy does not move. It looks up at you with an expression that suggests this happens to it a lot."
+      ]
+    },
+    "pixie": {
+      "id": "pixie",
+      "name": "Pixie",
+      "title": "The Mischief Maker",
+      "rarity": "common",
+      "type": "arcane",
+      "base_stats": {
+        "hp": 75,
+        "attack": 40,
+        "defense": 25,
+        "speed": 60,
+        "mana": 65
+      },
+      "moves": [
+        "Hex Bolt",
+        "Trickster Flash",
+        "Mana Sap"
+      ],
+      "ultimate": "Grand Illusion",
+      "description": "A tiny trickster that delights in causing harmless chaos with its innate magical abilities.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.85,
+      "encounter_situations": [
+        "A Pixie has rearranged every stone on the path into a pattern that you can't quite make sense of. It looks pleased with itself.",
+        "The Pixie is hovering directly in front of your face before you even notice it's there. It appears to have been waiting.",
+        "Something small has been moving your supplies when you weren't watching. You catch the Pixie in the middle of putting everything back slightly wrong."
+      ]
+    },
+    "goblin": {
+      "id": "goblin",
+      "name": "Goblin",
+      "title": "The Scrappy Brawler",
+      "rarity": "common",
+      "type": "earth",
+      "base_stats": {
+        "hp": 100,
+        "attack": 45,
+        "defense": 40,
+        "speed": 35,
+        "mana": 40
+      },
+      "moves": [
+        "Club Smash",
+        "Dirt Toss",
+        "Scavenge"
+      ],
+      "ultimate": "Goblin Rampage",
+      "description": "A stout and scrappy fighter who compensates for lack of grace with sheer stubbornness.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "minotaur",
+        "method": "sunforge_core",
+        "level_required": 25,
+        "description": "This Goblin has been lifting things too heavy for a Goblin. Something shifted."
+      },
+      "catch_rate": 0.85,
+      "encounter_situations": [
+        "A Goblin is arguing loudly with a rock. The rock is not responding, which does not seem to be slowing the Goblin down.",
+        "The Goblin sees you and immediately crosses its arms. It does not attack. It simply stares, communicating a great deal of skepticism.",
+        "You hear the Goblin before you see it \u2014 the sound of something small and determined crashing through underbrush that is too large for it."
+      ]
+    },
+    "imp": {
+      "id": "imp",
+      "name": "Imp",
+      "title": "The Shadow Gremlin",
+      "rarity": "common",
+      "type": "shadow",
+      "base_stats": {
+        "hp": 70,
+        "attack": 50,
+        "defense": 20,
+        "speed": 65,
+        "mana": 55
+      },
+      "moves": [
+        "Shadow Scratch",
+        "Smoke Bomb",
+        "Taunt"
+      ],
+      "ultimate": "Nightmare Swarm",
+      "description": "A cunning shadow gremlin that strikes from darkness and vanishes before retaliation.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "cerberus",
+        "method": "sunforge_core",
+        "level_required": 20,
+        "description": "The Imp found a second face. Then a third. The Loom considers this perfectly normal."
+      },
+      "catch_rate": 0.85,
+      "encounter_situations": [
+        "Something small is following you through the darkness. When you stop, it stops. When you look, there's nothing. Then the Imp materializes beside you.",
+        "The Imp was inside your shadow. This is not supposed to be possible. The Imp seems aware that it isn't supposed to be possible and does it anyway.",
+        "A small voice says something from somewhere you can't locate. The Imp is crouching on a surface that has no obvious reason to be climbable."
+      ]
+    },
+    "slime": {
+      "id": "slime",
+      "name": "Slime",
+      "title": "The Gooey Guardian",
+      "rarity": "common",
+      "type": "water",
+      "base_stats": {
+        "hp": 110,
+        "attack": 30,
+        "defense": 55,
+        "speed": 25,
+        "mana": 40
+      },
+      "moves": [
+        "Goo Splash",
+        "Absorb",
+        "Sticky Trap"
+      ],
+      "ultimate": "Tidal Blob",
+      "description": "A remarkably resilient blob that absorbs damage like a sponge and bounces back from almost anything.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "singularity",
+        "method": "cosmic_singularity_soda",
+        "level_required": 50,
+        "description": "Something about this particular Slime has always been different. The Loom knows."
+      },
+      "catch_rate": 0.85,
+      "encounter_situations": [
+        "The Slime has accumulated a faint bioluminescence down here, absorbing the light from thermal vents. It pulses softly when you approach.",
+        "Something is absorbing the pressure down here in a way that makes no sense for something without bones. The Slime seems fine with this.",
+        "The Slime is adhered to the underside of a rock shelf, suspended above you. It detaches when you notice it."
+      ]
+    },
+    "kitsune_1": {
+      "id": "kitsune_1",
+      "name": "Kitsune",
+      "title": "The Young Fox Spirit",
+      "rarity": "uncommon",
+      "type": "arcane",
+      "base_stats": {
+        "hp": 90,
+        "attack": 55,
+        "defense": 40,
+        "speed": 70,
+        "mana": 75
+      },
+      "moves": [
+        "Fox Fire",
+        "Illusion Step",
+        "Spirit Tail"
+      ],
+      "ultimate": "Foxfire Veil",
+      "description": "A young fox spirit with 1-3 tails, still mastering its innate magical abilities.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "kitsune_9",
+        "method": "sunforge_core",
+        "level_required": 30,
+        "description": "Kitsune has mastered its first form. The other eight tails are waiting."
+      },
+      "catch_rate": 0.6,
+      "encounter_situations": [
+        "You catch a glimpse of a single white tail vanishing around a tree. When you follow, the Kitsune is standing there as if it has always been standing there.",
+        "The Kitsune is sitting on a stump, looking at something you can't see. It glances at you sideways. Its one tail flicks once.",
+        "A young Kitsune is practicing something \u2014 a small conjured light, fading in and out. It goes out entirely when it realizes it has an audience."
+      ]
+    },
+    "dryad": {
+      "id": "dryad",
+      "name": "Dryad",
+      "title": "The Forest Keeper",
+      "rarity": "uncommon",
+      "type": "nature",
+      "base_stats": {
+        "hp": 105,
+        "attack": 50,
+        "defense": 60,
+        "speed": 40,
+        "mana": 70
+      },
+      "moves": [
+        "Vine Whip",
+        "Nature's Embrace",
+        "Root Bind"
+      ],
+      "ultimate": "Ancient Grove",
+      "description": "A guardian spirit of the ancient forest, drawing power from the roots of thousand-year-old trees.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.6,
+      "encounter_situations": [
+        "The Dryad is so still it takes you a moment to realize it isn't a tree. Then it blinks, slowly.",
+        "Leaves are moving in a pattern that doesn't match the wind. At the center of the pattern: a Dryad, conducting something only it can hear.",
+        "The Dryad emerges from the bark of a very old tree like it's stepping through a doorway. It looks at you the way trees look at things \u2014 long and patient and not especially impressed."
+      ]
+    },
+    "hellhound": {
+      "id": "hellhound",
+      "name": "Hellhound",
+      "title": "The Infernal Hound",
+      "rarity": "uncommon",
+      "type": "fire",
+      "base_stats": {
+        "hp": 95,
+        "attack": 65,
+        "defense": 45,
+        "speed": 60,
+        "mana": 55
+      },
+      "moves": [
+        "Ember Bite",
+        "Hellfire Dash",
+        "Intimidate"
+      ],
+      "ultimate": "Inferno Howl",
+      "description": "A fearsome hound wreathed in smokeless flame whose howl echoes across dimensions.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "fenrir",
+        "method": "sunforge_core",
+        "level_required": 40,
+        "description": "The Hellhound ran further north than it should have. Something there agreed with it."
+      },
+      "catch_rate": 0.6,
+      "encounter_situations": [
+        "The Hellhound is lying on a flat rock, eyes closed, absorbing heat. It opens one eye when your footsteps change the temperature of the air around it.",
+        "Smoke curls from where the Hellhound has been sitting. It stands when it notices you, and the ground where it was is slightly glassy.",
+        "The Hellhound materializes from a plume of smoke the way a shape materializes from fog \u2014 gradually, then all at once."
+      ]
+    },
+    "harpy": {
+      "id": "harpy",
+      "name": "Harpy",
+      "title": "The Storm Screamer",
+      "rarity": "uncommon",
+      "type": "wind",
+      "base_stats": {
+        "hp": 85,
+        "attack": 60,
+        "defense": 35,
+        "speed": 75,
+        "mana": 65
+      },
+      "moves": [
+        "Talon Strike",
+        "Wind Shriek",
+        "Gale Dive"
+      ],
+      "ultimate": "Tempest Screech",
+      "description": "A fierce winged creature whose piercing cry can shatter stone and summon violent storms.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "thunderbird",
+        "method": "sunforge_core",
+        "level_required": 30,
+        "description": "The Harpy found a storm it couldn't outfly, so it became it instead."
+      },
+      "catch_rate": 0.6,
+      "encounter_situations": [
+        "The Harpy lands on a spire of rock above you and watches. It tilts its head. It does not attack. It seems to be making a decision.",
+        "A screech overhead. The Harpy is circling something \u2014 you, apparently \u2014 in long, considering arcs. It lands when it decides you're interesting enough.",
+        "The Harpy is perched on the highest point of whatever it can find, watching the sky. It glances down at you the way things that fly look at things that can't."
+      ]
+    },
+    "unicorn": {
+      "id": "unicorn",
+      "name": "Unicorn",
+      "title": "The Sacred Steed",
+      "rarity": "rare",
+      "type": "light",
+      "base_stats": {
+        "hp": 110,
+        "attack": 65,
+        "defense": 60,
+        "speed": 75,
+        "mana": 90
+      },
+      "moves": [
+        "Horn Pierce",
+        "Purify",
+        "Sacred Light"
+      ],
+      "ultimate": "Radiant Charge",
+      "description": "A magnificent creature of pure light whose horn holds the power to heal any wound.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "astraea",
+        "method": "genesis_fruit",
+        "level_required": 50,
+        "description": "The Unicorn touched something it shouldn't have been able to touch. The Loom is not surprised."
+      },
+      "catch_rate": 0.35,
+      "encounter_situations": [
+        "The Unicorn is standing in the only shaft of real light in the Celestial Loom, as if it arranged this. It probably did.",
+        "You find the Unicorn at the moment a strand of the Loom passes close enough to touch. The Unicorn doesn't touch it. It's waiting for something.",
+        "The Unicorn turns toward you slowly, horn first. It doesn't seem alarmed. It seems like it's been expecting someone, and you'll do."
+      ]
+    },
+    "pegasus": {
+      "id": "pegasus",
+      "name": "Pegasus",
+      "title": "The Sky Stallion",
+      "rarity": "rare",
+      "type": "wind",
+      "base_stats": {
+        "hp": 105,
+        "attack": 70,
+        "defense": 55,
+        "speed": 90,
+        "mana": 75
+      },
+      "moves": [
+        "Cloud Dash",
+        "Thunder Hooves",
+        "Aerial Slam"
+      ],
+      "ultimate": "Storm Gallop",
+      "description": "A winged stallion born from storm clouds whose speed rivals lightning itself.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "horizon",
+        "method": "genesis_fruit",
+        "level_required": 50,
+        "description": "The Pegasus flew so high it found the edge of the world. Then it found what was beyond it."
+      },
+      "catch_rate": 0.35,
+      "encounter_situations": [
+        "The Pegasus touches down in a rush of displaced hot air, folding its wings with the practiced efficiency of something that has landed in worse places.",
+        "You see the Pegasus before it sees you \u2014 a silhouette against the orange sky, descending in a long spiral that suggests it has chosen this landing spot deliberately.",
+        "The Pegasus is standing completely still in the Wastes, its mane moving in a wind you can't feel. It turns when you approach."
+      ]
+    },
+    "griffin": {
+      "id": "griffin",
+      "name": "Griffin",
+      "title": "The Noble Guardian",
+      "rarity": "rare",
+      "type": "wind",
+      "base_stats": {
+        "hp": 120,
+        "attack": 75,
+        "defense": 65,
+        "speed": 70,
+        "mana": 65
+      },
+      "moves": [
+        "Eagle Dive",
+        "Lion Pounce",
+        "Feather Blade"
+      ],
+      "ultimate": "Royal Tempest",
+      "description": "A majestic beast with the body of a lion and wings of an eagle, guardian of ancient treasures.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.35,
+      "encounter_situations": [
+        "The Griffin is cleaning its beak on a rock. It stops when it notices you and assumes a posture that suggests it was definitely doing something more dignified than that.",
+        "A Griffin lands between you and the path ahead and sits down. It appears to have no particular agenda. It simply wants to be in that spot.",
+        "You find the Griffin at a convergence of heat vents, standing in rising warm air with its wings half-spread. It looks extremely comfortable."
+      ]
+    },
+    "basilisk": {
+      "id": "basilisk",
+      "name": "Basilisk",
+      "title": "The Stone Gaze",
+      "rarity": "rare",
+      "type": "earth",
+      "base_stats": {
+        "hp": 130,
+        "attack": 70,
+        "defense": 75,
+        "speed": 40,
+        "mana": 70
+      },
+      "moves": [
+        "Petrify Gaze",
+        "Venom Fang",
+        "Stone Scale"
+      ],
+      "ultimate": "Full Petrification",
+      "description": "A serpentine terror whose gaze turns living creatures to stone and whose breath withers crops.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.35,
+      "encounter_situations": [
+        "The Basilisk is lying across the path in a shaft of sunlight, eyes half-closed. It opens one eye when you approach. The eye is amber and very old.",
+        "You find the Basilisk when everything ahead of you on the path goes quiet. It is already looking at you.",
+        "The Basilisk has turned three small stones and one unlucky beetle to a mineral state. It is contemplating a fourth when you arrive."
+      ]
+    },
+    "cerberus": {
+      "id": "cerberus",
+      "name": "Cerberus",
+      "title": "The Three-Headed Guardian",
+      "rarity": "rare",
+      "type": "shadow",
+      "base_stats": {
+        "hp": 140,
+        "attack": 80,
+        "defense": 70,
+        "speed": 55,
+        "mana": 60
+      },
+      "moves": [
+        "Triple Bite",
+        "Hellfire Breath",
+        "Soul Howl"
+      ],
+      "ultimate": "Gates of Tartarus",
+      "description": "The three-headed hound of the underworld, each head embodying a different aspect of fear.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.35,
+      "encounter_situations": [
+        "Three heads, one body, one argument. The Cerberus's three heads are disagreeing about something. Two of them notice you. The third is still making its point.",
+        "A Cerberus is sitting very properly in the middle of the path, like it is guarding something. There is nothing to guard. It doesn't move.",
+        "The sound of overlapping growls reaches you before the Cerberus does \u2014 each head maintaining its own distinct vocal register."
+      ]
+    },
+    "wyvern": {
+      "id": "wyvern",
+      "name": "Wyvern",
+      "title": "The Venomous Flier",
+      "rarity": "rare",
+      "type": "fire",
+      "base_stats": {
+        "hp": 115,
+        "attack": 80,
+        "defense": 60,
+        "speed": 75,
+        "mana": 65
+      },
+      "moves": [
+        "Venom Stinger",
+        "Fire Breath",
+        "Wing Slash"
+      ],
+      "ultimate": "Toxic Inferno",
+      "description": "A two-legged dragon cousin whose tail stinger drips with the most potent venom in existence.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "dragon",
+        "method": "sunforge_core",
+        "level_required": 35,
+        "description": "The Wyvern finally grew its front legs. This took longer than expected."
+      },
+      "catch_rate": 0.35,
+      "encounter_situations": [
+        "The Wyvern is between you and the sky, a silhouette dropping fast. It pulls up at the last moment and lands hard, sending a wave of heat outward.",
+        "A Wyvern is resting on a lava shelf, tail trailing in the cooling rock. It lifts its head when you approach, measuring you.",
+        "The Wyvern has clearly just eaten. It is lying on its back in an undignified sprawl. It rights itself quickly when it notices you, attempting to look threatening."
+      ]
+    },
+    "phoenix": {
+      "id": "phoenix",
+      "name": "Phoenix",
+      "title": "The Eternal Flame",
+      "rarity": "epic",
+      "type": "fire",
+      "base_stats": {
+        "hp": 130,
+        "attack": 90,
+        "defense": 65,
+        "speed": 85,
+        "mana": 95
+      },
+      "moves": [
+        "Flame Surge",
+        "Ash Rebirth",
+        "Solar Flare"
+      ],
+      "ultimate": "Eternal Pyre",
+      "description": "An immortal bird of flame that dies and is reborn from its own ashes, carrying the warmth of the sun.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.15,
+      "encounter_situations": [
+        "The Phoenix is in the middle of burning. This is apparently a normal Tuesday for it. The fire dies down as you approach, leaving it looking mildly inconvenienced.",
+        "You find the Phoenix at the center of a ring of ash it has made of itself at some point. It blinks at you from the ash, already regrowing.",
+        "The Phoenix is perched on a thermal column of hot air, barely moving, watching the horizon. It descends slowly when it decides you deserve its attention."
+      ]
+    },
+    "thunderbird": {
+      "id": "thunderbird",
+      "name": "Thunderbird",
+      "title": "The Storm Sovereign",
+      "rarity": "epic",
+      "type": "wind",
+      "base_stats": {
+        "hp": 125,
+        "attack": 95,
+        "defense": 60,
+        "speed": 90,
+        "mana": 90
+      },
+      "moves": [
+        "Lightning Strike",
+        "Thunder Clap",
+        "Storm Surge"
+      ],
+      "ultimate": "Apocalypse Storm",
+      "description": "A colossal bird whose wingbeats create hurricanes and whose eyes flash with living lightning.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.15,
+      "encounter_situations": [
+        "Lightning strikes somewhere behind you. The Thunderbird lands in the aftermath, trailing ozone, looking like it arranged all of this on purpose.",
+        "The Thunderbird is larger than you were expecting. It is also closer than you were expecting. It fixes you with a gaze that crackles.",
+        "A Thunderbird is riding the thermal columns above the Wastes in long, slow spirals. It breaks out of its orbit and comes down when it notices you."
+      ]
+    },
+    "sphinx": {
+      "id": "sphinx",
+      "name": "Sphinx",
+      "title": "The Riddler of Ages",
+      "rarity": "epic",
+      "type": "arcane",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 80,
+        "speed": 65,
+        "mana": 110
+      },
+      "moves": [
+        "Riddle Curse",
+        "Arcane Swipe",
+        "Mind Shatter"
+      ],
+      "ultimate": "Eternal Enigma",
+      "description": "An ancient guardian of forbidden knowledge who destroys those who cannot answer its riddles.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.15,
+      "encounter_situations": [
+        "The Sphinx is waiting. It has been waiting, you suspect, since considerably before you arrived. It watches you approach with the patience of something that has asked this question before.",
+        "A Sphinx blocks the path, not threateningly \u2014 it simply hasn't moved since it sat down and the path was built around it. It looks at you with mild curiosity.",
+        "The Sphinx has arranged a row of stones in front of it. Whether this is a game or a trap or simply something to do, it doesn't say."
+      ]
+    },
+    "yeti": {
+      "id": "yeti",
+      "name": "Yeti",
+      "title": "The Abominable One",
+      "rarity": "epic",
+      "type": "ice",
+      "base_stats": {
+        "hp": 160,
+        "attack": 90,
+        "defense": 85,
+        "speed": 45,
+        "mana": 70
+      },
+      "moves": [
+        "Blizzard Fist",
+        "Frost Roar",
+        "Avalanche"
+      ],
+      "ultimate": "Permafrost Slam",
+      "description": "A towering beast of ice and fury that rules the highest, most inhospitable mountain peaks.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.15,
+      "encounter_situations": [
+        "The Yeti is sitting in the middle of a glacial field, doing nothing in particular, in the particular way that very large things do nothing \u2014 by taking up a significant amount of space.",
+        "You find the Yeti by the depression it has made sitting in the same spot for what appears to have been a very long time. It looks up at you slowly.",
+        "The Yeti emerges from a snowstorm that was not there a moment ago. You get the impression it brought the snowstorm with it."
+      ]
+    },
+    "minotaur": {
+      "id": "minotaur",
+      "name": "Minotaur",
+      "title": "The Labyrinth Lord",
+      "rarity": "epic",
+      "type": "earth",
+      "base_stats": {
+        "hp": 155,
+        "attack": 100,
+        "defense": 80,
+        "speed": 50,
+        "mana": 65
+      },
+      "moves": [
+        "Axe Cleave",
+        "Bull Rush",
+        "Ground Shatter"
+      ],
+      "ultimate": "Maze of Fury",
+      "description": "A terrifying half-man half-bull that haunts ancient labyrinths, feeding on those who dare enter.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.15,
+      "encounter_situations": [
+        "You hear the Minotaur before you see it. When you find it, it has excavated a small clearing out of sheer stubbornness. There was no particular reason to do this.",
+        "The Minotaur is standing very still in a way that suggests it recently decided to stand still and is fully committed to this choice.",
+        "A Minotaur that is significantly larger than it needs to be blocks your way, looking at you with an expression that might be a challenge or might just be how it looks."
+      ]
+    },
+    "kitsune_9": {
+      "id": "kitsune_9",
+      "name": "Kitsune",
+      "title": "The Nine-Tailed Sovereign",
+      "rarity": "epic",
+      "type": "arcane",
+      "base_stats": {
+        "hp": 140,
+        "attack": 95,
+        "defense": 75,
+        "speed": 100,
+        "mana": 120
+      },
+      "moves": [
+        "Nine-Tail Storm",
+        "Grand Illusion",
+        "Soul Fox Fire"
+      ],
+      "ultimate": "Fox God's Wrath",
+      "description": "A fully awakened nine-tailed fox spirit of immense power, capable of reshaping reality with its tails.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.15,
+      "encounter_situations": [
+        "The nine-tailed fox is doing something with light and shadow that shouldn't be possible with only nine tails. When it notices you, all nine stop at once.",
+        "A Kitsune of nine tails is watching you from multiple angles simultaneously. This is not a metaphor. It is physically in several places at once.",
+        "The air smells like foxfire and old magic. The nine-tailed Kitsune is sitting precisely where you were about to step, looking at you with eyes that have seen everything twice."
+      ]
+    },
+    "dragon": {
+      "id": "dragon",
+      "name": "Dragon",
+      "title": "The Apex Predator",
+      "rarity": "legendary",
+      "type": "fire",
+      "base_stats": {
+        "hp": 180,
+        "attack": 120,
+        "defense": 100,
+        "speed": 80,
+        "mana": 110
+      },
+      "moves": [
+        "Dragon Breath",
+        "Tail Sweep",
+        "Scale Barrier"
+      ],
+      "ultimate": "World Ender",
+      "description": "The pinnacle of predatory evolution, a creature of immense power that has ruled skies since the dawn of time.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.05,
+      "encounter_situations": [
+        "The Dragon is there in the same way that mountains are there \u2014 as if it has been there since before the ground beneath it was a choice.",
+        "You smell the Dragon before you see it. When you see it, you understand why \u2014 the Dragon is at rest, which for a Dragon looks like barely organized power.",
+        "The Dragon opens one eye. Then the other. It was sleeping. It is no longer sleeping. It regards you with the patience of something that has a great deal of time."
+      ]
+    },
+    "kraken": {
+      "id": "kraken",
+      "name": "Kraken",
+      "title": "The Deep Terror",
+      "rarity": "legendary",
+      "type": "water",
+      "base_stats": {
+        "hp": 200,
+        "attack": 115,
+        "defense": 110,
+        "speed": 55,
+        "mana": 100
+      },
+      "moves": [
+        "Tentacle Crush",
+        "Ink Cloud",
+        "Tidal Wave"
+      ],
+      "ultimate": "The Great Drowning",
+      "description": "An incomprehensible leviathan of the deepest trenches whose mere surfacing causes catastrophic waves.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.05,
+      "encounter_situations": [
+        "The water is still until it isn't. The Kraken surfaces slowly, like it's considering whether you're worth the effort of surfacing for.",
+        "Tentacles first. A great deal of tentacles. The Kraken assesses you with several eyes simultaneously.",
+        "You notice the Kraken by the absence of sound beneath the ice. Then the ice cracks in a very specific pattern."
+      ]
+    },
+    "hydra": {
+      "id": "hydra",
+      "name": "Hydra",
+      "title": "The Undying Serpent",
+      "rarity": "legendary",
+      "type": "water",
+      "base_stats": {
+        "hp": 220,
+        "attack": 110,
+        "defense": 105,
+        "speed": 50,
+        "mana": 95
+      },
+      "moves": [
+        "Multi-Head Strike",
+        "Regen Scale",
+        "Venom Torrent"
+      ],
+      "ultimate": "Infinite Heads",
+      "description": "A multi-headed serpent that grows two new heads for every one cut off, making it nearly impossible to defeat.",
+      "image_url": "",
+      "evolution": {
+        "evolves_to": "kraken",
+        "method": "sunforge_core",
+        "level_required": 35,
+        "description": "The Hydra grew its tentacles back one too many times, and they became something else."
+      },
+      "catch_rate": 0.05,
+      "encounter_situations": [
+        "The Hydra is arguing with itself. Two of its heads are in disagreement about something, while the third watches you arrive with what might be relief.",
+        "A Hydra emerges from the frozen water and shakes itself, sending ice in all directions. One head notices you immediately. The others take a moment.",
+        "The Hydra is trying something. Three heads, one plan, unclear if they've agreed on what the plan is. You interrupt this process."
+      ]
+    },
+    "fenrir": {
+      "id": "fenrir",
+      "name": "Fenrir",
+      "title": "The World Eater",
+      "rarity": "legendary",
+      "type": "shadow",
+      "base_stats": {
+        "hp": 190,
+        "attack": 125,
+        "defense": 95,
+        "speed": 90,
+        "mana": 100
+      },
+      "moves": [
+        "Void Fang",
+        "Chain Break",
+        "Shadow Howl"
+      ],
+      "ultimate": "Ragnarok Bite",
+      "description": "The apocalyptic wolf of Norse legend, bound by the gods themselves for fear of what it would consume.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.05,
+      "encounter_situations": [
+        "The Fenrir is sitting very still, which is unusual for something that large. It watches you approach. The wind changes direction when it exhales.",
+        "You find the Fenrir by the sound of ice cracking that has no business being in a forest. When you find it, it is simply there, as if it has always been.",
+        "A Fenrir materializes from shadow the way smoke materializes from fire \u2014 you couldn't point to when it started. It looks at you steadily."
+      ]
+    },
+    "charybdis": {
+      "id": "charybdis",
+      "name": "Charybdis",
+      "title": "The Maelstrom",
+      "rarity": "legendary",
+      "type": "water",
+      "base_stats": {
+        "hp": 185,
+        "attack": 110,
+        "defense": 100,
+        "speed": 70,
+        "mana": 115
+      },
+      "moves": [
+        "Whirlpool",
+        "Depth Pull",
+        "Current Crush"
+      ],
+      "ultimate": "The Great Vortex",
+      "description": "A nautical nightmare that creates unstoppable whirlpools capable of swallowing entire fleets.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.05,
+      "encounter_situations": [
+        "The water spirals before the Charybdis appears. When it does appear, the spiral continues, rotating slowly around it.",
+        "Something enormous is moving just below the ice. The Charybdis breaks through from below, regarding you with calm, ancient eyes.",
+        "The Charybdis surfaces in the stillest part of the water, where nothing was moving, which you now understand was the warning."
+      ]
+    },
+    "leviathan": {
+      "id": "leviathan",
+      "name": "Leviathan",
+      "title": "The Sea Sovereign",
+      "rarity": "legendary",
+      "type": "water",
+      "base_stats": {
+        "hp": 210,
+        "attack": 120,
+        "defense": 110,
+        "speed": 60,
+        "mana": 105
+      },
+      "moves": [
+        "Ocean Crush",
+        "Abyssal Roar",
+        "Tidal Crush"
+      ],
+      "ultimate": "Sea of Chaos",
+      "description": "The primordial sea monster of ancient scripture, so vast it can encircle the entire world.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.05,
+      "encounter_situations": [
+        "The Leviathan emerges from water that shouldn't be deep enough to contain it. Physics, apparently, is a suggestion.",
+        "You find the Leviathan at the deepest point of the Hollows, in water so cold it's almost solid. It turns toward you the way tides turn.",
+        "The Leviathan has been still for long enough that ice has begun to form around it. When it moves, the ice breaks in all directions at once."
+      ]
+    },
+    "singularity": {
+      "id": "singularity",
+      "name": "Singularity",
+      "title": "The Galaxy Slime",
+      "rarity": "divine",
+      "collection": "Cosmic Creators",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 250,
+        "attack": 140,
+        "defense": 130,
+        "speed": 100,
+        "mana": 150
+      },
+      "moves": [
+        "Event Horizon",
+        "Galaxy Absorb",
+        "Dark Matter Pulse"
+      ],
+      "ultimate": "Big Bang",
+      "description": "A cosmic slime containing an entire galaxy within its gelatinous form, born from the first moment of creation.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "gravity_well",
+        "passive_name": "Gravity Well",
+        "passive_desc": "At the start of battle, reduces all enemy speed by 15% for 3 turns.",
+        "passive_trigger": "battle_start",
+        "passive_effect": {
+          "enemy_speed_reduce_percent": 15,
+          "turns": 3
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "astraea": {
+      "id": "astraea",
+      "name": "Astraea",
+      "title": "The Star Weaver",
+      "rarity": "divine",
+      "collection": "Cosmic Creators",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 240,
+        "attack": 145,
+        "defense": 120,
+        "speed": 115,
+        "mana": 155
+      },
+      "moves": [
+        "Constellation Bind",
+        "Star Thread",
+        "Cosmic Loom"
+      ],
+      "ultimate": "Weave of Eternity",
+      "description": "The divine weaver who stitches the fabric of reality from threads of pure starlight.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "star_weave",
+        "passive_name": "Star Weave",
+        "passive_desc": "Each turn, restores 8% mana automatically \u2014 Astraea never runs dry.",
+        "passive_trigger": "turn_start",
+        "passive_effect": {
+          "self_mana_restore_percent": 8
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "chronos": {
+      "id": "chronos",
+      "name": "Chronos",
+      "title": "The Epoch Hare",
+      "rarity": "divine",
+      "collection": "Cosmic Creators",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 245,
+        "attack": 135,
+        "defense": 135,
+        "speed": 130,
+        "mana": 160
+      },
+      "moves": [
+        "Time Rewind",
+        "Epoch Shift",
+        "Temporal Lock"
+      ],
+      "ultimate": "End of Time",
+      "description": "The divine hare who governs the flow of time itself, wearing a crown of moons and carrying the universe's clock.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "borrowed_time",
+        "passive_name": "Borrowed Time",
+        "passive_desc": "20% chance each turn to act twice. Time is a suggestion.",
+        "passive_trigger": "turn_start",
+        "passive_effect": {
+          "double_turn_chance": 0.2
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "aetherius": {
+      "id": "aetherius",
+      "name": "Aetherius",
+      "title": "The Void Whale",
+      "rarity": "divine",
+      "collection": "Cosmic Creators",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 280,
+        "attack": 130,
+        "defense": 145,
+        "speed": 85,
+        "mana": 150
+      },
+      "moves": [
+        "Void Song",
+        "Aether Crush",
+        "Dark Tide"
+      ],
+      "ultimate": "Consuming Void",
+      "description": "An incomprehensible void whale that swims through the space between dimensions, consuming dead stars.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "void_hunger",
+        "passive_name": "Void Hunger",
+        "passive_desc": "Heals 12% of all damage dealt back as HP. The void gives back what it takes.",
+        "passive_trigger": "on_hit",
+        "passive_effect": {
+          "lifesteal_percent": 12
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "genesis": {
+      "id": "genesis",
+      "name": "Genesis",
+      "title": "The Origin Phoenix",
+      "rarity": "divine",
+      "collection": "Architects of Reality",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 255,
+        "attack": 150,
+        "defense": 125,
+        "speed": 110,
+        "mana": 155
+      },
+      "moves": [
+        "Origin Flame",
+        "Creation Burst",
+        "First Light"
+      ],
+      "ultimate": "Genesis Explosion",
+      "description": "The first phoenix, born at the exact moment of creation, carrying the flame that sparked all life.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "first_flame",
+        "passive_name": "First Flame",
+        "passive_desc": "On KO: restores 30% HP and clears all status effects. Once per battle.",
+        "passive_trigger": "on_ko",
+        "passive_effect": {
+          "revive_heal_percent": 30,
+          "once_per_battle": true
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "terminus": {
+      "id": "terminus",
+      "name": "Terminus",
+      "title": "The End-Time Owl",
+      "rarity": "divine",
+      "collection": "Architects of Reality",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 245,
+        "attack": 140,
+        "defense": 140,
+        "speed": 105,
+        "mana": 160
+      },
+      "moves": [
+        "Final Verdict",
+        "End Gaze",
+        "Silence"
+      ],
+      "ultimate": "Last Twilight",
+      "description": "The solemn owl who watches over the final moments of all things, its eyes containing every ending.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "final_word",
+        "passive_name": "Final Word",
+        "passive_desc": "Ultimates deal +40% damage (instead of +80%). But they always apply a status effect.",
+        "passive_trigger": "on_ultimate",
+        "passive_effect": {
+          "ultimate_status_guaranteed": true,
+          "ultimate_damage_mod": 1.4
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "paradox": {
+      "id": "paradox",
+      "name": "Paradox",
+      "title": "The Mirror Sphinx",
+      "rarity": "divine",
+      "collection": "Architects of Reality",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 250,
+        "attack": 145,
+        "defense": 130,
+        "speed": 120,
+        "mana": 165
+      },
+      "moves": [
+        "Mirror Reality",
+        "Contradiction",
+        "Impossible Truth"
+      ],
+      "ultimate": "Infinite Loop",
+      "description": "A sphinx that exists simultaneously in all possible realities, asking questions that have no answers.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "mirror_reality",
+        "passive_name": "Mirror Reality",
+        "passive_desc": "15% chance any attack reflects 50% of damage back to the attacker.",
+        "passive_trigger": "on_hit_taken",
+        "passive_effect": {
+          "reflect_chance": 0.15,
+          "reflect_percent": 50
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "horizon": {
+      "id": "horizon",
+      "name": "Horizon",
+      "title": "The Rift Griffin",
+      "rarity": "divine",
+      "collection": "Celestial Loom",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 255,
+        "attack": 140,
+        "defense": 135,
+        "speed": 115,
+        "mana": 150
+      },
+      "moves": [
+        "Rift Tear",
+        "Dimensional Claw",
+        "Edge of Reality"
+      ],
+      "ultimate": "Beyond the Horizon",
+      "description": "A griffin that soars along the edges of reality itself, tearing rifts between dimensions with its talons.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "rift_step",
+        "passive_name": "Rift Step",
+        "passive_desc": "Ignores type disadvantage \u2014 Horizon exists outside the elemental chart.",
+        "passive_trigger": "passive",
+        "passive_effect": {
+          "ignore_type_disadvantage": true
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "karma": {
+      "id": "karma",
+      "name": "Karma",
+      "title": "The Weaver Cat",
+      "rarity": "divine",
+      "collection": "Celestial Loom",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 240,
+        "attack": 135,
+        "defense": 130,
+        "speed": 125,
+        "mana": 160
+      },
+      "moves": [
+        "Fate Thread",
+        "Karmic Return",
+        "Destiny Weave"
+      ],
+      "ultimate": "What Goes Around",
+      "description": "A celestial cat that weaves the threads of fate, ensuring every action receives its due consequence.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "karmic_echo",
+        "passive_name": "Karmic Echo",
+        "passive_desc": "When hit by a status effect, 40% chance the effect bounces to the attacker instead.",
+        "passive_trigger": "on_status_received",
+        "passive_effect": {
+          "status_reflect_chance": 0.4
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "zodiac": {
+      "id": "zodiac",
+      "name": "Zodiac",
+      "title": "The Constellation Stag",
+      "rarity": "divine",
+      "collection": "Celestial Loom",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 260,
+        "attack": 138,
+        "defense": 138,
+        "speed": 108,
+        "mana": 155
+      },
+      "moves": [
+        "Star Map",
+        "Constellation Beam",
+        "Astral Antler"
+      ],
+      "ultimate": "Zodiac Alignment",
+      "description": "A majestic stag whose antlers form the constellations of the night sky, guiding lost souls home.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "constellation_charge",
+        "passive_name": "Constellation Charge",
+        "passive_desc": "Attack and speed increase by 5% each turn, cumulatively. The stars align slowly.",
+        "passive_trigger": "turn_start",
+        "passive_effect": {
+          "attack_stack_percent": 5,
+          "speed_stack_percent": 5
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "abyss": {
+      "id": "abyss",
+      "name": "Abyss",
+      "title": "The Dark Matter Panther",
+      "rarity": "divine",
+      "collection": "Primordial Aspects",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 255,
+        "attack": 150,
+        "defense": 125,
+        "speed": 120,
+        "mana": 150
+      },
+      "moves": [
+        "Dark Matter Cloak",
+        "Void Pounce",
+        "Singularity Roar"
+      ],
+      "ultimate": "Into the Abyss",
+      "description": "A panther composed entirely of dark matter, invisible to all senses except the primal feeling of dread.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "dark_matter",
+        "passive_name": "Dark Matter",
+        "passive_desc": "25% chance each attack inflicts Blind \u2014 enemy moves have 30% miss chance for 2 turns.",
+        "passive_trigger": "on_attack",
+        "passive_effect": {
+          "blind_chance": 0.25,
+          "blind_miss_chance": 0.3,
+          "blind_turns": 2
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "nebula": {
+      "id": "nebula",
+      "name": "Nebula",
+      "title": "The Cloud Serpent",
+      "rarity": "divine",
+      "collection": "Primordial Aspects",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 250,
+        "attack": 140,
+        "defense": 135,
+        "speed": 110,
+        "mana": 160
+      },
+      "moves": [
+        "Nebula Coil",
+        "Star Birth",
+        "Cosmic Breath"
+      ],
+      "ultimate": "Stellar Nursery",
+      "description": "A serpent of interstellar gas and dust from which new stars are born within its coiling body.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "stellar_nursery",
+        "passive_name": "Stellar Nursery",
+        "passive_desc": "Starts battle with a shield absorbing 20% of max HP in damage before HP drops.",
+        "passive_trigger": "battle_start",
+        "passive_effect": {
+          "shield_percent": 20
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "supernova": {
+      "id": "supernova",
+      "name": "Supernova",
+      "title": "The Star-Burst Lion",
+      "rarity": "divine",
+      "collection": "Primordial Aspects",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 245,
+        "attack": 155,
+        "defense": 120,
+        "speed": 115,
+        "mana": 155
+      },
+      "moves": [
+        "Stellar Roar",
+        "Nova Burst",
+        "Gamma Ray"
+      ],
+      "ultimate": "Final Explosion",
+      "description": "A lion born from the death of a star, carrying the explosive energy of a supernova in every strike.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "critical_mass",
+        "passive_name": "Critical Mass",
+        "passive_desc": "Every missed crit charges Critical Mass. At 3 charges: guaranteed crit that deals +200% damage.",
+        "passive_trigger": "on_attack",
+        "passive_effect": {
+          "crit_charge_on_miss": true,
+          "charged_crit_multiplier": 3.0,
+          "charges_needed": 3
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "nirvana": {
+      "id": "nirvana",
+      "name": "Nirvana",
+      "title": "The Lotus Koi",
+      "rarity": "divine",
+      "collection": "Mythological Pillars",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 240,
+        "attack": 130,
+        "defense": 145,
+        "speed": 105,
+        "mana": 170
+      },
+      "moves": [
+        "Lotus Bloom",
+        "Enlightened Strike",
+        "Peaceful Aura"
+      ],
+      "ultimate": "State of Nirvana",
+      "description": "A transcendent koi that has achieved perfect enlightenment, swimming through waters of pure consciousness.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "lotus_veil",
+        "passive_name": "Lotus Veil",
+        "passive_desc": "Immune to all status effects. Some things are simply too at peace to be troubled.",
+        "passive_trigger": "passive",
+        "passive_effect": {
+          "status_immune": true
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "asgard": {
+      "id": "asgard",
+      "name": "Asgard",
+      "title": "The Bifrost Wolf",
+      "rarity": "divine",
+      "collection": "Mythological Pillars",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 265,
+        "attack": 145,
+        "defense": 140,
+        "speed": 105,
+        "mana": 145
+      },
+      "moves": [
+        "Bifrost Dash",
+        "Thunder Fang",
+        "Realm Walk"
+      ],
+      "ultimate": "Yggdrasil's Rage",
+      "description": "A divine wolf that runs across the rainbow bridge between realms, carrying messages of the gods.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "bifrost_surge",
+        "passive_name": "Bifrost Surge",
+        "passive_desc": "When HP drops below 50%, gains +30% attack and +20% speed for the rest of the battle.",
+        "passive_trigger": "on_damage_taken",
+        "passive_effect": {
+          "threshold_percent": 50,
+          "attack_bonus": 30,
+          "speed_bonus": 20,
+          "once": true
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "atlas": {
+      "id": "atlas",
+      "name": "Atlas",
+      "title": "The Shell-Shocked Turtle",
+      "rarity": "divine",
+      "collection": "Mythological Pillars",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 300,
+        "attack": 120,
+        "defense": 170,
+        "speed": 60,
+        "mana": 145
+      },
+      "moves": [
+        "World Shell",
+        "Seismic Stomp",
+        "Continental Crush"
+      ],
+      "ultimate": "Weight of the World",
+      "description": "The ancient cosmic turtle upon whose shell entire worlds rest, slow but utterly indestructible.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.01,
+      "divine_passive": {
+        "passive_id": "weight_of_worlds",
+        "passive_name": "Weight of Worlds",
+        "passive_desc": "Reduces all incoming damage by a flat 25%. Atlas has carried worse.",
+        "passive_trigger": "passive",
+        "passive_effect": {
+          "damage_reduction_flat": 25
+        }
+      },
+      "divine_trait_slot": false
+    },
+    "prismite": {
+      "id": "prismite",
+      "name": "Prismite",
+      "title": "The Architect's First Idea",
+      "rarity": "common",
+      "type": "arcane",
+      "base_stats": {
+        "hp": 85,
+        "attack": 35,
+        "defense": 50,
+        "speed": 45,
+        "mana": 70
+      },
+      "moves": [
+        "Facet Strike",
+        "Halo Glint",
+        "Refract"
+      ],
+      "ultimate": "Perfect Geometry",
+      "description": "A tiny floating kitten built from smooth porcelain-like shapes, with glowing golden diamond eyes and a halo that never quite stops turning. Prism shaped it to find out whether order could be gentle \u2014 so far, it has decided yes.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 1.0,
+      "starter": true,
+      "starter_house": "The Architect",
+      "starter_flavor": "Cool, composed, and quietly precise. Prismite doesn't rush \u2014 it simply doesn't need to.",
+      "encounter_situations": [
+        "Prismite is sitting beside the path, arranging small crystals into a structure only it understands. It looks up at you with those diamond eyes.",
+        "The small porcelain cat is watching a beam of light refract through ice. When it notices you, it stands immediately \u2014 composed, as if it always knew you were coming.",
+        "Prismite appears at the edge of your vision, precise and deliberate. It doesn't approach until it decides the approach is worth making."
+      ]
+    },
+    "twine": {
+      "id": "twine",
+      "name": "Twine",
+      "title": "The Loom's First Memory",
+      "rarity": "common",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 70,
+        "attack": 40,
+        "defense": 30,
+        "speed": 70,
+        "mana": 65
+      },
+      "moves": [
+        "Tick Bite",
+        "Thread Snap",
+        "Rewind Nibble"
+      ],
+      "ultimate": "Borrowed Moment",
+      "description": "A chubby little hamster woven out of glowing crimson thread, with a tiny clock gear ticking softly on its back like a shell. Twine carries the very first thread the Loom ever spun \u2014 which is why, sometimes, it seems to know what happens a few seconds before it does.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 1.0,
+      "starter": true,
+      "starter_house": "The Loom",
+      "starter_flavor": "Quick, curious, and always one step ahead. Twine doesn't predict the future so much as politely insist on it.",
+      "encounter_situations": [
+        "Twine is already running before you see it \u2014 a blur of crimson and clockwork, stopping only when it reaches you as if you were the destination all along.",
+        "The small hamster is sitting very still, clock-gear spinning slowly on its back. It's paying attention to something a few seconds ahead of you.",
+        "Twine materializes beside you in the middle of your step, as if it has always been there and you simply failed to notice. Its gear ticks once."
+      ]
+    },
+    "gloop": {
+      "id": "gloop",
+      "name": "Gloop",
+      "title": "The Aspect's First Question",
+      "rarity": "common",
+      "type": "water",
+      "base_stats": {
+        "hp": 105,
+        "attack": 30,
+        "defense": 40,
+        "speed": 35,
+        "mana": 60
+      },
+      "moves": [
+        "Galaxy Splash",
+        "Glitter Bounce",
+        "Shapeshift Slap"
+      ],
+      "ultimate": "Starlit Tide",
+      "description": "A bouncy, translucent slime blob shifting through pastel pink and blue galaxy colors, filled with swirling star glitter. Aspect made Gloop to test whether change could be safe \u2014 Gloop has spent its whole existence cheerfully proving the answer is yes, over and over, in a slightly different shape each time.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 1.0,
+      "starter": true,
+      "starter_house": "The Aspect",
+      "starter_flavor": "Soft, adaptable, and impossible to truly surprise. Gloop has already been a dozen shapes today and isn't finished.",
+      "encounter_situations": [
+        "A small galaxy-colored slime is attempting to be everything at once in a two-foot radius. It settles into a roughly spherical shape when you approach, looking pleased.",
+        "Gloop is flowing very slowly toward something you can't identify, the swirling starlight in its body tracking some unseen current. It redirects toward you.",
+        "The small slime has changed color three times since you noticed it. When it settles on the color of the sky at a specific time of evening, it stops moving and looks at you."
+      ]
+    },
+    "barkley": {
+      "id": "barkley",
+      "name": "Barkley",
+      "title": "The Pillar's First Promise",
+      "rarity": "common",
+      "type": "nature",
+      "base_stats": {
+        "hp": 115,
+        "attack": 40,
+        "defense": 55,
+        "speed": 20,
+        "mana": 35
+      },
+      "moves": [
+        "Mossy Headbutt",
+        "Bark Armor",
+        "Stubborn Stomp"
+      ],
+      "ultimate": "Unmovable Root",
+      "description": "A stubby little bark-and-moss dragon hatchling who still wears its golden eggshell like a tiny helmet, refusing to take it off. Pillar shaped Barkley to prove that steadiness didn't have to be boring \u2014 Barkley has never once let anyone down, and never plans to start.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 1.0,
+      "starter": true,
+      "starter_house": "The Pillar",
+      "starter_flavor": "Loyal, sturdy, and stubbornly cheerful. Barkley moves slowly because Barkley has never needed to move fast.",
+      "encounter_situations": [
+        "Barkley is sitting on the path wearing its eggshell helmet, looking at you with the complete confidence of something that has decided the world is basically fine.",
+        "The small dragon hatchling was in the middle of a determined charge toward nothing in particular. It redirects toward you without breaking pace.",
+        "Barkley is already sitting beside where you stop, as if it anticipated where you would pause. Its eggshell helmet tilts slightly."
+      ]
+    },
+    "centry": {
+      "id": "centry",
+      "name": "Centry",
+      "title": "The Boundary Guardian",
+      "rarity": "uncommon",
+      "type": "earth",
+      "base_stats": {
+        "hp": 115,
+        "attack": 60,
+        "defense": 55,
+        "speed": 50,
+        "mana": 50
+      },
+      "moves": [
+        "Hoof Stomp",
+        "Arrow Rain",
+        "Charge"
+      ],
+      "ultimate": "Stampede",
+      "description": "A proud guardian that stands watch at the borders between realms, half beast and half something older \u2014 a living checkpoint the Loom placed and forgot to remove.",
+      "image_url": "",
+      "evolution": null,
+      "catch_rate": 0.6,
+      "encounter_situations": [
+        "The Centry is standing at the edge of something \u2014 a biome boundary, a change in the light, some invisible line that matters to it. It watches you cross it.",
+        "A Centry turns when you approach, marking the border between where you were and where you're going with its presence. It seems to find this satisfying.",
+        "You find the Centry mid-patrol of a route you can't quite make sense of. It stops, regards you, then decides you're not a threat to whatever it's protecting."
+      ]
+    }
+  },
+  "rarity_rates": {
+    "common": 0.45,
+    "uncommon": 0.25,
+    "rare": 0.15,
+    "epic": 0.09,
+    "legendary": 0.05,
+    "divine": 0.01
+  },
+  "rarity_colors": {
+    "common": 9803134,
+    "uncommon": 5763719,
+    "rare": 4886754,
+    "epic": 10181046,
+    "legendary": 16766720,
+    "divine": 16728576,
+    "altered_divine": 8388736
+  },
+  "type_emojis": {
+    "fire": "\ud83d\udd25",
+    "water": "\ud83d\udca7",
+    "wind": "\ud83c\udf2a\ufe0f",
+    "earth": "\ud83c\udf0d",
+    "arcane": "\u2728",
+    "shadow": "\ud83c\udf11",
+    "light": "\u2600\ufe0f",
+    "ice": "\u2744\ufe0f",
+    "cosmic": "\ud83c\udf0c"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "perks": {
+    "whimsy_merchant": {
+      "id": "whimsy_merchant", "name": "Whimsy Merchant", "rarity": "common", "slot_cost": 0.5,
+      "description": "Gives a 5% discount on all items in the bot shop and lets you sell junk items back for a bit more gold.",
+      "flavor": "You know the secret handshakes of the marketplace.",
+      "effect": {"shop_discount": 5, "sell_bonus": true}
+    },
+    "pixie_pocket": {
+      "id": "pixie_pocket", "name": "Pixie Pocket", "rarity": "common", "slot_cost": 0.5,
+      "description": "Increases your maximum inventory space for items and potions by 15%.",
+      "flavor": "A tiny, enchanted pouch that expands slightly to hold extra items.",
+      "effect": {"inventory_bonus_percent": 15}
+    },
+    "fable_scholar": {
+      "id": "fable_scholar", "name": "Fable Scholar", "rarity": "uncommon", "slot_cost": 0.5,
+      "description": "Your ChibiBeasts gain 10% more Experience Points from battles and training sessions.",
+      "flavor": "You've spent hours reading ancient, dusty scrolls about beast behavior.",
+      "effect": {"exp_bonus_percent": 10}
+    },
+    "bramble_walker": {
+      "id": "bramble_walker", "name": "Bramble Walker", "rarity": "uncommon", "slot_cost": 0.5,
+      "description": "Reduces the cooldown timer on passive exploration or scavenging commands by 10%.",
+      "flavor": "Woodland spirits guide your steps, making travel easier.",
+      "effect": {"cooldown_reduction_percent": 10}
+    },
+    "tether_of_fate": {
+      "id": "tether_of_fate", "name": "Tether of Fate", "rarity": "rare", "slot_cost": 1,
+      "description": "If your active beast is hit with a status condition, there is a 25% chance it instantly cures itself.",
+      "flavor": "A glowing red string bonds your spirit to your lead beast.",
+      "effect": {"auto_cure_chance": 25}
+    },
+    "stardust_touch": {
+      "id": "stardust_touch", "name": "Stardust Touch", "rarity": "rare", "slot_cost": 1,
+      "description": "Permanently increases the chance of encountering or hatching Rare and Epic beasts by 10%.",
+      "flavor": "A faint, glowing cosmic shimmer permanently rests on your fingertips.",
+      "effect": {"rare_encounter_bonus": 10, "epic_encounter_bonus": 10}
+    },
+    "spellbound_focus": {
+      "id": "spellbound_focus", "name": "Spellbound Focus", "rarity": "epic", "slot_cost": 1,
+      "description": "Increases the Critical Hit chance of all your active beasts by 10%.",
+      "flavor": "You can channel your own energy to perfectly direct your beast's strikes.",
+      "effect": {"crit_chance_bonus": 10}
+    },
+    "chronos_hourglass": {
+      "id": "chronos_hourglass", "name": "Chronos's Hourglass", "rarity": "epic", "slot_cost": 1,
+      "description": "Reduces all passive training and cooldown timers across the bot by 20%.",
+      "flavor": "You carry a pocket watch that subtly warps time around your daily routines.",
+      "effect": {"global_cooldown_reduction": 20}
+    },
+    "aura_of_phoenix": {
+      "id": "aura_of_phoenix", "name": "Aura of the Phoenix", "rarity": "legendary", "slot_cost": 1.5,
+      "description": "Once per battle, when one of your ChibiBeasts is about to be knocked out, it survives with exactly 1 HP instead.",
+      "flavor": "A warm, invisible flame shields your team from ultimate defeat.",
+      "effect": {"survive_ko": true, "uses_per_battle": 1}
+    },
+    "astral_resonance": {
+      "id": "astral_resonance", "name": "Astral Resonance", "rarity": "legendary", "slot_cost": 1.5,
+      "description": "Once per week, you can guarantee that your next summon or egg hatch will belong to a specific element of your choice.",
+      "flavor": "You are perfectly in tune with the frequencies of the universe.",
+      "effect": {"guaranteed_element": true, "cooldown_days": 7}
+    },
+    "glimmering_fortune": {
+      "id": "glimmering_fortune", "name": "Glimmering Fortune", "rarity": "divine", "slot_cost": 2,
+      "description": "Grants a passive 0.05% chance to automatically upgrade any standard egg hatch into a random Divine Collection beast.",
+      "flavor": "The universe itself bends to ensure your success.",
+      "effect": {"divine_upgrade_chance": 0.05}
+    },
+    "genesis_spark": {
+      "id": "genesis_spark", "name": "Genesis Spark", "rarity": "divine", "slot_cost": 2,
+      "description": "Allows you to instantly reset the stat points of any ChibiBeast you own for free, and gives all your beasts a permanent +5% boost to their ultimate moves.",
+      "flavor": "You carry the literal spark of creation within your soul.",
+      "effect": {"free_stat_reset": true, "ultimate_boost_percent": 5}
+    }
+  },
+  "perk_slots_by_level": {
+    "1": 2, "10": 3, "25": 4, "50": 5
+  }
+}

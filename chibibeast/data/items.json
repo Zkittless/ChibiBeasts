@@ -1,0 +1,234 @@
+{
+  "items": {
+    "pixie_dust_potion": {
+      "id": "pixie_dust_potion",
+      "name": "Pixie Dust Potion",
+      "rarity": "common",
+      "type": "heal",
+      "value": 20,
+      "price": 50,
+      "description": "A glowing pink vial that smells like strawberries. Heals a small amount of HP (20%) during or after a battle.",
+      "effect": {
+        "heal_percent": 20
+      }
+    },
+    "brambleberries": {
+      "id": "brambleberries",
+      "name": "Brambleberries",
+      "rarity": "common",
+      "type": "happiness",
+      "value": 10,
+      "price": 30,
+      "description": "Sweet, thorny blue berries found in the server's outer woods. Boosts your beast's happiness slightly.",
+      "effect": {
+        "happiness": 10
+      }
+    },
+    "gnome_grown_carrots": {
+      "id": "gnome_grown_carrots",
+      "name": "Gnome-Grown Carrots",
+      "rarity": "common",
+      "type": "exp",
+      "value": 25,
+      "price": 40,
+      "description": "Crunchy, earthy vegetables. Feeding this to a beast gives a tiny, flat EXP boost.",
+      "effect": {
+        "exp": 25
+      }
+    },
+    "aether_tonic": {
+      "id": "aether_tonic",
+      "name": "Aether Tonic",
+      "rarity": "uncommon",
+      "type": "cure",
+      "value": 0,
+      "price": 150,
+      "description": "A swirling silver liquid that clears the mind. Instantly cures any status condition.",
+      "effect": {
+        "cure_all": true
+      }
+    },
+    "sugarsprout_cupcake": {
+      "id": "sugarsprout_cupcake",
+      "name": "Sugarsprout Cupcake",
+      "rarity": "uncommon",
+      "type": "happiness_boost",
+      "value": 30,
+      "price": 120,
+      "description": "A magical pastry topped with a leaf that never wilts. Increases happiness significantly and gives a temporary 5% speed boost.",
+      "effect": {
+        "happiness": 30,
+        "speed_boost_percent": 5,
+        "boost_duration": 1
+      }
+    },
+    "fable_feather": {
+      "id": "fable_feather",
+      "name": "Fable Feather",
+      "rarity": "uncommon",
+      "type": "battle",
+      "value": 0,
+      "price": 200,
+      "description": "A feather dropped by a migrating Harpy. Guarantees your beast gets the first move in its next match.",
+      "effect": {
+        "first_move": true
+      }
+    },
+    "luna_nectar": {
+      "id": "luna_nectar",
+      "name": "Luna Nectar",
+      "rarity": "rare",
+      "type": "mana",
+      "value": 100,
+      "price": 500,
+      "description": "Liquid moonlight captured in a crystal flask. Restores 100% of a beast's mana/energy.",
+      "effect": {
+        "restore_mana_percent": 100
+      }
+    },
+    "star_candy_shards": {
+      "id": "star_candy_shards",
+      "name": "Star-Candy Shards",
+      "rarity": "rare",
+      "type": "stat_boost",
+      "value": 3,
+      "price": 800,
+      "description": "Crunchy, glowing candy that tastes like popping rocks. Permanently increases one specific base stat by a small amount.",
+      "effect": {
+        "permanent_stat_boost": 3,
+        "stat_boost": 3
+      }
+    },
+    "spellbound_incense": {
+      "id": "spellbound_incense",
+      "name": "Spellbound Incense",
+      "rarity": "rare",
+      "type": "encounter",
+      "value": 0,
+      "price": 600,
+      "description": "Smells of ancient lavender and ozone. Increases the encounter rate of Uncommon and Rare wild beasts for 30 minutes.",
+      "effect": {
+        "encounter_boost": [
+          "uncommon",
+          "rare"
+        ],
+        "duration_minutes": 30
+      }
+    },
+    "phoenix_elixir": {
+      "id": "phoenix_elixir",
+      "name": "Phoenix Elixir",
+      "rarity": "epic",
+      "type": "revive",
+      "value": 50,
+      "price": 2000,
+      "description": "A warm, glowing red potion that bubbles fiercely. Revives a knocked-out ChibiBeast and restores it to 50% HP.",
+      "effect": {
+        "revive": true,
+        "heal_percent": 50
+      }
+    },
+    "nebula_macaron": {
+      "id": "nebula_macaron",
+      "name": "Nebula Macaron",
+      "rarity": "epic",
+      "type": "exp",
+      "value": 500,
+      "price": 2500,
+      "description": "A beautiful pastel pastry infused with real space dust. Grants a massive amount of EXP, instantly leveling up lower-tier beasts.",
+      "effect": {
+        "exp": 500
+      }
+    },
+    "chrono_biscuit": {
+      "id": "chrono_biscuit",
+      "name": "Chrono-Biscuit",
+      "rarity": "epic",
+      "type": "cooldown",
+      "value": 0,
+      "price": 3000,
+      "description": "A clock-shaped cookie that tastes like cinnamon. Instantly completes any passive training or exploration task.",
+      "effect": {
+        "complete_task": true
+      }
+    },
+    "ambrosia_tart": {
+      "id": "ambrosia_tart",
+      "name": "Ambrosia Tart",
+      "rarity": "legendary",
+      "type": "permanent_boost",
+      "value": 0,
+      "price": 10000,
+      "description": "The literal food of the gods, shimmering with a golden aura. Maxes out happiness and permanently grants +5% damage multiplier.",
+      "effect": {
+        "happiness": 100,
+        "permanent_damage_boost": 5,
+        "damage_multiplier_permanent": 5
+      }
+    },
+    "sunforge_core": {
+      "id": "sunforge_core",
+      "name": "Sunforge Core",
+      "rarity": "legendary",
+      "type": "evolution",
+      "value": 0,
+      "price": 15000,
+      "description": "A blazing, miniature star enclosed in an enchanted glass orb. Triggers Radiant or Ascended forms of certain beasts.",
+      "effect": {
+        "evolution_trigger": [
+          "radiant",
+          "ascended"
+        ]
+      }
+    },
+    "krakenshale_brew": {
+      "id": "krakenshale_brew",
+      "name": "Krakenshale Brew",
+      "rarity": "legendary",
+      "type": "battle",
+      "value": 0,
+      "price": 12000,
+      "description": "A deep black potion that ripples like stormy ocean water. Temporarily doubles defense stats for a single battle.",
+      "effect": {
+        "defense_multiplier": 2,
+        "duration_battles": 1
+      }
+    },
+    "tear_of_leviathan": {
+      "id": "tear_of_leviathan",
+      "name": "Tear of the Leviathan",
+      "rarity": "divine",
+      "type": "reset",
+      "value": 0,
+      "price": 50000,
+      "description": "A flawless, glowing blue gemstone that holds the weight of the ocean. Completely resets all of a beast's stat points.",
+      "effect": {
+        "reset_stats": true
+      }
+    },
+    "genesis_fruit": {
+      "id": "genesis_fruit",
+      "name": "Genesis Fruit",
+      "rarity": "divine",
+      "type": "unlock",
+      "value": 0,
+      "price": 75000,
+      "description": "A fruit that shifts through every color of the rainbow. Permanently unlocks a hidden Divine Trait slot for an extra combat ability.",
+      "effect": {
+        "unlock_divine_trait": true
+      }
+    },
+    "cosmic_singularity_soda": {
+      "id": "cosmic_singularity_soda",
+      "name": "Cosmic Singularity Soda",
+      "rarity": "divine",
+      "type": "exp",
+      "value": 0,
+      "price": 60000,
+      "description": "A starry drink in a bottle that seems to have no bottom. Instantly levels up any ChibiBeast by 5 levels.",
+      "effect": {
+        "instant_levels": 5
+      }
+    }
+  }
+}

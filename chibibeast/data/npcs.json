@@ -1,0 +1,109 @@
+{
+  "npcs": {
+    "maren": {
+      "id": "maren",
+      "name": "Maren",
+      "title": "Keeper of the First Bestiary",
+      "location": "Whispering Woods",
+      "emoji": "📖",
+      "beast_companion": "barkley",
+      "appearance": "An elderly woman with ink-stained fingers and a coat covered in small beast-shaped patches, each one sewn by hand. Her Barkley sits on her porch like a boulder that decided to be warm.",
+      "personality": "Precise, unhurried, quietly delighted by everything. She has seen forty years of beasts and thinks every single one of them is interesting.",
+      "first_meeting": "You find her mid-sentence, talking to her Barkley about something it clearly already knows. She doesn't look up immediately. When she does: *'Oh good. Another one. Sit down — Barkley, move over — and tell me what you've seen so far.'*",
+      "on_bestiary": "*'The Loom wants to be witnessed. That's what the Bestiary is — not a collection. A record of the Loom noticing itself. Your job is to show up and pay attention.'*",
+      "on_starters": "*'Prismite, is it? Good. Prism's idea was always my favorite — order that asks permission first. Most order doesn't bother.'*",
+      "on_raids": "*'Raids make people nervous. They shouldn't. You're not fighting the thing — you're holding it still long enough to finish being born. Think of it as midwifery. Very loud midwifery.'*",
+      "quest_giver": "chapter_1",
+      "relationship_levels": {
+        "stranger":  "*'Yes? Can I help you? I'm in the middle of something.'*",
+        "known":     "*'Back again. Good. Barkley was just asking about you. Well — he was looking at the door. Same thing.'*",
+        "trusted":   "*'I've been keeping this Bestiary for forty years and you're the first trainer who's actually asked why. I'll tell you why. Sit down.'*",
+        "companion": "*'When I'm gone, someone should keep the Bestiary. I'm not saying it should be you. I'm saying it would be good if it were.'*"
+      }
+    },
+    "cael": {
+      "id": "cael",
+      "name": "Cael",
+      "title": "Loom-Watcher",
+      "location": "Celestial Loom",
+      "emoji": "⏳",
+      "beast_companion": "twine",
+      "appearance": "Young — maybe nineteen, maybe older, hard to tell when someone always looks like they're about to say something they haven't thought of yet. His Twine sits on his shoulder and occasionally tugs his ear, apparently giving advice.",
+      "personality": "Anxious but not fearful. The kind of person who notices everything and can't stop talking about it. He sees things a few seconds before they happen, which makes him excellent at warnings and terrible at surprises.",
+      "first_meeting": "*'Oh — you're here. Right. I knew you were coming. That's not a skill, Twine just — anyway. We need to talk about the fraying. You've noticed the fraying, right?'* He looks at your face. *'You haven't noticed the fraying.'*",
+      "on_the_loom": "*'The Loom isn't a place. I know it looks like a place from here — the stars, the ground that isn't quite ground — but that's just the Loom made thick enough to stand on. The actual Loom is the part you can't see. The weaving itself.'*",
+      "on_twine": "*'Twine knows things before they happen because it was made from the first thread the Loom ever spun. That thread remembers being first. First means before everything else. Including now.'*",
+      "on_sundering": "*'It's getting worse. The Sundering. Three Altered Divines last month, compared to one the month before. Something is pulling at the Loom from somewhere. I don't know where. I'm trying to find out. That's why I need your help.'*",
+      "quest_giver": "chapter_2",
+      "relationship_levels": {
+        "stranger":  "*'Hi. You're new. Have you noticed anything unusual in the biomes? Anything fraying at the edges?'*",
+        "known":     "*'I sent you a message. Did you — oh, you're here. Good. Twine, stop being smug about it.'*",
+        "trusted":   "*'I'm going to tell you something I haven't told anyone else because Twine says you're going to be involved anyway and I might as well be the one to explain it.'*",
+        "companion": "*'You know that thing where you know something is going to go wrong and you can't stop it, you can only try to land softly? I've known this was coming for months. I'm glad you're here.'*"
+      }
+    },
+    "sable": {
+      "id": "sable",
+      "name": "Sable",
+      "title": "Master Forger, Former Guild Leader",
+      "location": "Ember Wastes",
+      "emoji": "⚒️",
+      "beast_companion": "hellhound",
+      "appearance": "Tall, burn-scarred forearms, hair pulled back with something that might be a Wyvern talon. Her Hellhound sits under her forge bench and occasionally breathes on things that need to be hotter. She doesn't believe in the Architects.",
+      "personality": "Blunt to the point of being almost rude, except she's not rude — she's just efficient. She has opinions and shares them without asking if you want them. Respects competence above everything else.",
+      "first_meeting": "*'If you're here to ask about the Loom, go find Cael. If you're here because you need something made — sit down, show me what you've got, and we'll see if it's worth my time.'*",
+      "on_architects": "*'I don't know if the Architects exist. I know that fire exists, and steel exists, and if you heat one in the other long enough, something useful happens. That's enough for me.'*",
+      "on_forge": "*'The Gnome Forge in your guild is a good start. But there are things it can't make. Things that need actual heat — the kind that comes from the Wastes, not from a campfire in a guild hall.'*",
+      "on_phoenix": "*'Phoenix Ash is the only material that remembers what it was before it was ash. That makes it useful for things that need to hold two states at once. Alive and not. Moving and still. You follow me?'*",
+      "quest_giver": "chapter_3",
+      "relationship_levels": {
+        "stranger":  "*'You need something or you're lost. Which is it.'*",
+        "known":     "*'You again. Alright. What do you need.'*",
+        "trusted":   "*'I'll tell you something. Most trainers who come here want a shortcut. You're the first one who came back because the first thing didn't work and you wanted to try again. That's — fine. I can work with that.'*",
+        "companion": "*'I still don't know if the Architects are real. But I know you're real. And that's rarer than you'd think.'*"
+      }
+    },
+    "orren": {
+      "id": "orren",
+      "name": "Orren",
+      "title": "Naturalist, First-Era Witness",
+      "location": "Whispering Woods",
+      "emoji": "🌿",
+      "beast_companion": "dryad",
+      "appearance": "Old enough that it's hard to tell where he ends and the forest begins. A Dryad has grown partially around his left shoulder — not consuming him, just leaning. He doesn't seem to mind. His coat is more patch than coat.",
+      "personality": "Slow, gentle, and accurate. He remembers things that happened before the first Sundering and talks about them the way most people talk about last Tuesday. Faintly sad in the way that forests are sad — not unhappy, just aware of everything that's passed through.",
+      "first_meeting": "He's sitting very still when you find him, watching something you can't see. Eventually: *'The Whispering Woods have been here since the second day of weaving. I've been here since the fourth. I saw the first Sundering happen. It was quiet. That surprised me. I thought something that large would make more noise.'*",
+      "on_the_woods": "*'The trees remember everything. They're slow about it. Ask a tree what happened three hundred years ago and it will tell you — in about three hundred years. That's not a flaw. That's the Pillar's whole idea.'*",
+      "on_the_sundering": "*'I've seen seven Sunderings. Each one is faster than the last. Either the Loom is getting careless, or something is making it rush. I don't know which is worse.'*",
+      "on_relics": "*'Before the biomes had names, the Architects left markers. Not deliberately — they were just places where something important was decided. The Whispering Woods has one. I know where it is. I've been watching it for a long time. Waiting for someone with a full-enough Bestiary to understand what it means.'*",
+      "quest_giver": "chapter_4",
+      "relationship_levels": {
+        "stranger":  "*'Sit. Stay still for a moment. The forest is watching you. Let it finish.'*",
+        "known":     "*'You came back. I'm not surprised. The trees mentioned you.'*",
+        "trusted":   "*'I'm going to tell you about the relics. I've been waiting a long time to tell someone. You'll understand why when I'm finished.'*",
+        "companion": "*'You remind me of a trainer I met once, very early on. She caught a Fairy on her first day and kept it until it was older than most legends. You have the same quality. I can't name it. Barkley would know the word.'*"
+      }
+    },
+    "the_archivist": {
+      "id": "the_archivist",
+      "name": "The Archivist",
+      "title": "Neither First Nor Last",
+      "location": "Celestial Loom",
+      "emoji": "📚",
+      "beast_companion": "paradox",
+      "appearance": "You cannot fully describe The Archivist because you're only ever seeing part of them at a time — the rest is in another moment. Their Paradox sphinx walks beside them on all sides simultaneously. The library they inhabit has books on shelves that go up past where shelves make sense.",
+      "personality": "Speaks in completed sentences that started before you arrived. Not unkind — genuinely helpful — but operating on a timeline that includes this conversation already having happened. Refers to things you haven't said yet with mild patience.",
+      "first_meeting": "*'You brought all four relics. Good. You're about to ask me what they mean. The answer is: they are proof of your attention. The Loom doesn't give the World-Tree Seed to anyone who wants it. It gives it to anyone who has shown up, consistently, in all four places where the world first decided to hold.'*",
+      "on_themselves": "*'I don't have a name because names are sequential. I exist across too many moments for a name to land properly. The Archivist is what I do, not who I am. Though perhaps that's true of everyone.'*",
+      "on_the_questline": "*'You think the questline was a test. It was not a test. It was an introduction. You have now met the people who will need you later. That part has not happened yet.'*",
+      "on_paradox": "*'Paradox exists in all possible realities simultaneously. It finds most of them boring. This one, it says, is interesting. That is high praise.'*",
+      "quest_giver": "chapter_5",
+      "relationship_levels": {
+        "stranger":  "*'You're not ready yet. Come back when you have the relics. I know you will.'*",
+        "known":     "*'Closer. Two more relics. I can see you finding them — it goes well, mostly.'*",
+        "trusted":   "*'One more. The Ember Wastes relic. Sable has already agreed to help, she just hasn't realized it yet.'*",
+        "companion": "*'You're back. With all four. As I said you would be. Here is the World-Tree Seed. And here, unrequested: something that might be friendship, from someone for whom time doesn't work properly. I find that remarkable.'*"
+      }
+    }
+  }
+}

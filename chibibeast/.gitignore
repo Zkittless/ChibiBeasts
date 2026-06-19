@@ -1,0 +1,22 @@
+# Secrets
+.env
+
+# SQLite database (Railway gives you a persistent volume — don't ship the db file)
+data/chibibeast.db
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# OS / editor cruft
+.DS_Store
+.vscode/
+.idea/
