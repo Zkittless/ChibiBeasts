@@ -14,7 +14,7 @@ from utils.progress import (
     track_quest_event, check_achievements, unlock_simple_achievement,
     record_bestiary_sighting, notify_unlocks, notify_quest_completions
 )
-from cogs.questline import advance_quest_step
+from cogs.questline import advance_quest_step, get_quest_state
 from utils.sanctuary import get_user_sanctuary, apply_explore_encounter_bonus
 
 RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
