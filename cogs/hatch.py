@@ -430,8 +430,6 @@ class Hatch(commands.Cog):
         explore_unlocked = await unlock_simple_achievement(interaction.user.id, "first_explore")
         if explore_unlocked:
             await notify_unlocks(interaction.channel, interaction.user, ["first_explore"])
-        # Questline: track biome visits
-        await advance_quest_step(interaction.user.id, "explore", biome=biome["name"])
 
         # ── Lore-canonical biomes ─────────────────────────────────────────────
         # Each biome has: display name, atmospheric flavor lines, and a rarity
@@ -512,6 +510,9 @@ class Hatch(commands.Cog):
         location = biome["name"]
         lore_line = random.choice(biome["lore"])
         biome_weights = biome["rarity_weights"]
+
+        # Questline: track biome visits (biome now assigned)
+        await advance_quest_step(interaction.user.id, "explore", biome=biome["name"])
 
         loading = discord.Embed(
             title=f"🗺️ Exploring {location}...",
