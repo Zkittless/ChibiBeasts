@@ -273,27 +273,47 @@ class Hatch(commands.Cog):
         embed.set_footer(text="ChibiBeasts 🐾  •  Use /beast to view your collection")
         return embed
 
-    @app_commands.command(name="hatch", description="Hatch an egg to discover a new ChibiBeast! 🥚")
+    @app_commands.command(name="hatch", description="Hatch an instant egg from your inventory 🥚")
     @app_commands.describe(egg_type="Type of egg to hatch")
     @app_commands.choices(egg_type=[
-        app_commands.Choice(name="🥚 Common Egg (200 gold)",                             value="common_egg"),
-        app_commands.Choice(name="🥚✨ Rare Egg (1,500 gold)",                           value="rare_egg"),
-        app_commands.Choice(name="🌌🥚 Celestial Egg (8,000 gold) — 25% Divine chance",  value="celestial_egg"),
-        app_commands.Choice(name="🌊💎 Abyssal Egg (25,000 gold) — 55% Divine chance",   value="abyssal_egg"),
+        app_commands.Choice(name="🥚 Common Egg",                                       value="common_egg"),
+        app_commands.Choice(name="🥚✨ Rare Egg",                                       value="rare_egg"),
+        app_commands.Choice(name="🌌🥚 Celestial Egg — 25% Divine chance",             value="celestial_egg"),
+        app_commands.Choice(name="🌊💎 Abyssal Egg — 55% Divine chance",              value="abyssal_egg"),
     ])
     async def hatch(self, interaction: discord.Interaction, egg_type: str = "common_egg"):
         await interaction.response.defer()
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
+        await get_or_create_player(interaction.user.id, str(interaction.user))
         egg_def = HATCH_EGGS[egg_type]
-        price = egg_def["price"]
 
-        if player["gold"] < price:
+        # Check inventory — gold was already paid at /buy time, no charge here
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
+                (interaction.user.id, egg_type)
+            ) as c:
+                inv_row = await c.fetchone()
+
+        if not inv_row or inv_row["quantity"] < 1:
             return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ You need **{price:,} gold** for a {egg_def['name']}! You have `{player['gold']:,}`.",
+                description=(
+                    f"✦ You don't have a **{egg_def['name']}** in your inventory!\n"
+                    f"Buy one from `/shop` → 🥚 Eggs first."
+                ),
                 color=COLORS["error"]
             ))
 
-        await update_player(interaction.user.id, gold=player["gold"] - price)
+        # Deduct from inventory before hatching
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            if inv_row["quantity"] == 1:
+                await db.execute("DELETE FROM player_inventory WHERE id = ?", (inv_row["id"],))
+            else:
+                await db.execute(
+                    "UPDATE player_inventory SET quantity = quantity - 1 WHERE id = ?",
+                    (inv_row["id"],)
+                )
+            await db.commit()
 
         msg = await interaction.followup.send(embed=discord.Embed(
             title="🥚 Hatching...",
@@ -308,7 +328,6 @@ class Hatch(commands.Cog):
         ))
         await asyncio.sleep(1.5)
 
-        import aiosqlite
         async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
@@ -324,7 +343,6 @@ class Hatch(commands.Cog):
             beast = random.choice(divine_pool)
             subtitle = "🌟 **GLIMMERING FORTUNE ACTIVATED!** 🌟\n*The universe bent. You felt it.*"
         else:
-            # Runtime pool accounts for Stardust Touch and Observatory bonuses
             sanctuary = await get_user_sanctuary(interaction.user.id)
             effective_pool = get_egg_pool(egg_type, perks, sanctuary)
             rarity = roll_rarity(effective_pool)
@@ -332,9 +350,8 @@ class Hatch(commands.Cog):
             subtitle = f"*A new companion emerged from your {egg_def['name']}!*"
 
         if not beast:
-            await update_player(interaction.user.id, gold=player["gold"])
             return await msg.edit(embed=discord.Embed(
-                description="✦ The egg fizzled. Gold refunded. Try again!",
+                description="✦ The egg fizzled. Try again!",
                 color=COLORS["error"]
             ))
 
