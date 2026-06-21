@@ -194,7 +194,7 @@ class Profile(commands.Cog):
 
         name = beast_row["nickname"] or beast_data["name"]
         rarity = beast_row["rarity"]
-        exp_needed = calc_exp_for_level(beast_row["level"])
+        exp_needed = get_beast_exp_for_level(dict(beast_row), beast_row["level"])
 
         embed = discord.Embed(
             title=f"{'⚠️ ALTERED ' if beast_row['is_altered_divine'] else ''}{RARITY_EMOJI.get(rarity,'⚪')} {name}",
