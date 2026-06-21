@@ -129,8 +129,7 @@ SANCTUARY_UPGRADES = {
     "fairy_garden": {
         "name": "🌸 Fairy Garden",
         "tier": 1,
-        "cost_gold": 5000,
-        "cost_tokens": 0,
+        "cost_tokens": 50,
         "description": "Increases passive happiness gain for all members' benched beasts by 5%.",
         "lore": "The Fairies help because they want to. That's more unsettling than if they were paid.",
         "db_column": "fairy_garden",
@@ -138,8 +137,7 @@ SANCTUARY_UPGRADES = {
     "gnome_forge": {
         "name": "⚒️ Gnome Forge",
         "tier": 2,
-        "cost_gold": 15000,
-        "cost_tokens": 100,
+        "cost_tokens": 150,
         "description": "Reduces crafting material costs for all guild members by 10%.",
         "lore": "The Gnomes insisted on designing the logo themselves. Nobody is allowed to comment on the logo.",
         "db_column": "gnome_forge",
@@ -148,8 +146,7 @@ SANCTUARY_UPGRADES = {
     "celestial_observatory": {
         "name": "🔭 Celestial Observatory",
         "tier": 3,
-        "cost_gold": 40000,
-        "cost_tokens": 300,
+        "cost_tokens": 350,
         "description": "Grants all guild members a passive +2% encounter rate for Epic and Legendary beasts.",
         "lore": "From here you can see the Celestial Loom directly, if you're patient and the night is clear. "
                 "Prismite likes to sit up here alone. Nobody asks why.",
@@ -402,7 +399,7 @@ class World(commands.Cog):
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
-                "SELECT gm.rank, gm.guild_id, g.name, g.level, g.gold, g.guild_tokens "
+                "SELECT gm.rank, gm.guild_id, g.name, g.level, g.guild_tokens "
                 "FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
                 (interaction.user.id,)
             ) as c:
@@ -443,8 +440,8 @@ class World(commands.Cog):
                 req_name = SANCTUARY_UPGRADES[req]["name"]
                 status = f"🔒 Requires {req_name}"
             else:
-                status = f"🔨 Cost: {upgrade['cost_gold']:,} gold" + (
-                    f" + {upgrade['cost_tokens']} tokens" if upgrade["cost_tokens"] else "")
+                status = f"🔨 Cost: {upgrade['cost_tokens']} 🎟️ tokens" + (
+                    f" *(requires {SANCTUARY_UPGRADES[req]['name']})*" if req else "")
             embed.add_field(
                 name=f"{upgrade['name']} (Tier {upgrade['tier']}) — {status}",
                 value=f"{upgrade['description']}\n*{upgrade['lore']}*",
@@ -472,7 +469,7 @@ class World(commands.Cog):
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
-                "SELECT gm.rank, gm.guild_id, g.name, g.gold, g.guild_tokens "
+                "SELECT gm.rank, gm.guild_id, g.name, g.guild_tokens "
                 "FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
                 (interaction.user.id,)
             ) as c:
@@ -503,18 +500,12 @@ class World(commands.Cog):
                     color=COLORS["error"]
                 ))
 
-            if guild_row["gold"] < up["cost_gold"]:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ Not enough guild gold! Need **{up['cost_gold']:,}**, have **{guild_row['gold']:,}**.",
-                    color=COLORS["error"]
-                ))
             if up["cost_tokens"] and guild_row["guild_tokens"] < up["cost_tokens"]:
                 return await interaction.followup.send(embed=discord.Embed(
                     description=f"✦ Not enough guild tokens! Need **{up['cost_tokens']}**, have **{guild_row['guild_tokens']}**.",
                     color=COLORS["error"]
                 ))
 
-            await db.execute("UPDATE guilds SET gold = gold - ? WHERE id = ?", (up["cost_gold"], gid))
             if up["cost_tokens"]:
                 await db.execute("UPDATE guilds SET guild_tokens = guild_tokens - ? WHERE id = ?",
                                  (up["cost_tokens"], gid))
