@@ -984,7 +984,8 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
             async with _db.execute(
                 "SELECT brew_active, damage_multiplier FROM players WHERE user_id = ?", (user_id,)
             ) as _c:
-                _pr = await _c.fetchone()
+                _pr_row = await _c.fetchone()
+                _pr = dict(_pr_row) if _pr_row else None
 
         gear_bonus_log = []
         for _ar in _armor_rows:
