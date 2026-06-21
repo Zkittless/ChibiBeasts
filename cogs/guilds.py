@@ -111,6 +111,14 @@ class Guilds(commands.Cog):
                 "SELECT guild_id FROM guild_members WHERE user_id = ?", (interaction.user.id,)
             ) as c:
                 existing_member = await c.fetchone()
+            # Self-heal: if players.guild_id is set but no actual membership row exists,
+            # clear it — this happens after a /dev reset or other data inconsistency.
+            if not existing_leader and not existing_member:
+                await db.execute(
+                    "UPDATE players SET guild_id = NULL WHERE user_id = ?",
+                    (interaction.user.id,)
+                )
+                await db.commit()
 
         if existing_leader or existing_member:
             return await interaction.followup.send(embed=discord.Embed(
@@ -357,6 +365,20 @@ class Guilds(commands.Cog):
                 member_row = await c.fetchone()
 
         if not member_row:
+            # Check if players.guild_id is orphaned (membership row was deleted but player row wasn't cleaned)
+            async with aiosqlite.connect("db/chibibeast.db") as db:
+                db.row_factory = aiosqlite.Row
+                async with db.execute(
+                    "SELECT guild_id FROM players WHERE user_id = ? AND guild_id IS NOT NULL",
+                    (interaction.user.id,)
+                ) as c:
+                    orphan = await c.fetchone()
+                if orphan:
+                    await db.execute(
+                        "UPDATE players SET guild_id = NULL WHERE user_id = ?",
+                        (interaction.user.id,)
+                    )
+                    await db.commit()
             return await interaction.followup.send(embed=discord.Embed(
                 description="✦ You're not in a guild!",
                 color=COLORS["info"]

@@ -363,12 +363,45 @@ class Dev(commands.Cog):
 
                 async with aiosqlite.connect(DB_PATH) as db:
                     uid = member.id
-                    # Remove from guild if in one
+                    # If player was a guild leader, clean up the guild entirely
+                    # (or transfer if other members exist)
+                    async with db.execute(
+                        "SELECT id, member_count FROM guilds WHERE leader_id = ?", (uid,)
+                    ) as c:
+                        led_guild = await c.fetchone()
+                    if led_guild:
+                        guild_id = led_guild[0]
+                        member_count = led_guild[1]
+                        if member_count <= 1:
+                            # Only member — disband
+                            await db.execute("DELETE FROM guilds WHERE id = ?", (guild_id,))
+                            await db.execute("DELETE FROM guild_sanctuary WHERE guild_id = ?", (guild_id,))
+                        else:
+                            # Transfer to most senior remaining member
+                            async with db.execute(
+                                "SELECT user_id FROM guild_members WHERE guild_id = ? AND user_id != ? "
+                                "ORDER BY CASE rank WHEN 'officer' THEN 0 ELSE 1 END LIMIT 1",
+                                (guild_id, uid)
+                            ) as c:
+                                next_member = await c.fetchone()
+                            if next_member:
+                                await db.execute(
+                                    "UPDATE guilds SET leader_id = ?, member_count = member_count - 1 WHERE id = ?",
+                                    (next_member[0], guild_id)
+                                )
+                                await db.execute(
+                                    "UPDATE guild_members SET rank = 'leader' WHERE guild_id = ? AND user_id = ?",
+                                    (guild_id, next_member[0])
+                                )
+                            else:
+                                await db.execute("DELETE FROM guilds WHERE id = ?", (guild_id,))
+                                await db.execute("DELETE FROM guild_sanctuary WHERE guild_id = ?", (guild_id,))
+                    # Decrement member count if they were a regular member
                     async with db.execute(
                         "SELECT guild_id FROM guild_members WHERE user_id = ?", (uid,)
                     ) as c:
                         gm = await c.fetchone()
-                    if gm:
+                    if gm and not led_guild:
                         await db.execute(
                             "UPDATE guilds SET member_count = member_count - 1 WHERE id = ?",
                             (gm[0],)
