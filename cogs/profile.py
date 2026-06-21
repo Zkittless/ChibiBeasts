@@ -239,7 +239,7 @@ class Profile(commands.Cog):
                 inline=False
             )
         if beast_data.get("image_url"):
-            embed.set_thumbnail(url=beast_data["image_url"])
+            embed.set_image(url=beast_data["image_url"])
         embed.set_footer(text=f"Beast ID: #{beast_row['id']} | Caught via: {beast_row['caught_from']}")
         await interaction.followup.send(embed=embed)
 

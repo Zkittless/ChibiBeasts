@@ -174,7 +174,7 @@ class Starter(commands.Cog):
             embed.add_field(name="💬 Personality", value=f"*{flavor}*", inline=False)
 
         if beast.get("image_url"):
-            embed.set_thumbnail(url=beast["image_url"])
+            embed.set_image(url=beast["image_url"])
 
         embed.set_footer(text="ChibiBeasts 🐾  •  Use /profile to see your trainer stats")
         return embed

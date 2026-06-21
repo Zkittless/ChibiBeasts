@@ -268,7 +268,7 @@ class Hatch(commands.Cog):
         embed.add_field(name="📜 Description", value=beast["description"], inline=False)
 
         if beast.get("image_url"):
-            embed.set_thumbnail(url=beast["image_url"])
+            embed.set_image(url=beast["image_url"])
 
         embed.set_footer(text="ChibiBeasts 🐾  •  Use /beast to view your collection")
         return embed
@@ -628,7 +628,10 @@ class Hatch(commands.Cog):
         if caught:
             beast_row_id = await add_beast_to_player(interaction.user.id, {**beast, "caught_from": "discover"})
             gold_bonus = random.randint(5, 30)
+            explore_exp = random.randint(player_level * 12, player_level * 20)
             await update_player(interaction.user.id, gold=player["gold"] + gold_bonus)
+            from cogs.battle import award_player_exp as _award_exp
+            _p_lvl, _, _p_leveled = await _award_exp(interaction.user.id, explore_exp)
 
             # Material drop based on rarity — higher rarity = better materials
             RARITY_MATERIAL_POOLS = {
@@ -755,7 +758,10 @@ class Hatch(commands.Cog):
                 encounter_subtitle += f"{reactive_text}\n\n"
             if ambient_text:
                 encounter_subtitle += f"{ambient_text}\n\n"
-            encounter_subtitle += f"*You caught it!* +{gold_bonus} gold{mat_line}"
+            encounter_subtitle += (
+                f"*You caught it!* +{gold_bonus} gold | +{explore_exp} EXP{mat_line}"
+                + (f"\n⬆️ **Trainer leveled up to {_p_lvl}!**" if _p_leveled else "")
+            )
 
             embed = self.build_beast_embed(
                 beast,
