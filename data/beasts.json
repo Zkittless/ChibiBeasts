@@ -1566,6 +1566,359 @@
         "A Centry turns when you approach, marking the border between where you were and where you're going with its presence. It seems to find this satisfying.",
         "You find the Centry mid-patrol of a route you can't quite make sense of. It stops, regards you, then decides you're not a threat to whatever it's protecting."
       ]
+    },
+    "wisp": {
+      "id": "wisp",
+      "name": "Wisp",
+      "title": "The Forgotten Flicker",
+      "rarity": "common",
+      "type": "light",
+      "base_stats": {
+        "hp": 65,
+        "attack": 40,
+        "defense": 25,
+        "speed": 75,
+        "mana": 60
+      },
+      "moves": [
+        "Glow Pulse",
+        "Fade",
+        "Flicker Strike"
+      ],
+      "ultimate": "Blinding Flash",
+      "description": "A tiny drifting ball of pale light that hums faintly when happy. Faintly warm to the touch. Nobody knows what it used to be.",
+      "image_url": "",
+      "catch_rate": 0.85,
+      "evolution": {
+        "evolves_to": "will_o_wisp",
+        "method": "sunforge_core",
+        "level_required": 18,
+        "description": "The Wisp found something worth lighting the way toward. It got brighter."
+      },
+      "encounter_situations": [
+        "A Wisp bobs gently at eye level, about three feet in front of you. It drifts left. It drifts right. It seems to be trying to show you something.",
+        "The Wisp is sitting completely still on the tip of a branch, humming to itself at a frequency you can almost hear. It notices you noticing it.",
+        "Something small and warm bumps into your ankle. The Wisp looks up at you as if this was your fault."
+      ]
+    },
+    "mudpup": {
+      "id": "mudpup",
+      "name": "Mudpup",
+      "title": "The Happy Disaster",
+      "rarity": "common",
+      "type": "earth",
+      "base_stats": {
+        "hp": 85,
+        "attack": 45,
+        "defense": 40,
+        "speed": 40,
+        "mana": 50
+      },
+      "moves": [
+        "Mud Sling",
+        "Belly Flop",
+        "Burrow"
+      ],
+      "ultimate": "Landslide",
+      "description": "A round, perpetually delighted muddy amphibian that leaves a trail wherever it goes and seems genuinely proud of this.",
+      "image_url": "",
+      "catch_rate": 0.85,
+      "evolution": null,
+      "encounter_situations": [
+        "A Mudpup is sitting in the middle of the path looking extremely pleased about something. There is no obvious reason. You check.",
+        "The Mudpup has gotten itself stuck between two roots and is handling this with remarkable calm. It wiggles at you enthusiastically when you approach.",
+        "Splashing sounds, then a Mudpup rockets out of a puddle, bounces twice, and lands in front of you. It shakes mud everywhere. It does not apologize."
+      ]
+    },
+    "strix": {
+      "id": "strix",
+      "name": "Strix",
+      "title": "The Watcher in the Dark",
+      "rarity": "common",
+      "type": "shadow",
+      "base_stats": {
+        "hp": 60,
+        "attack": 50,
+        "defense": 20,
+        "speed": 70,
+        "mana": 65
+      },
+      "moves": [
+        "Silent Wing",
+        "Eye Curse",
+        "Screech"
+      ],
+      "ultimate": "Night Omens",
+      "description": "A tiny owl with unsettlingly large amber eyes that sees things a few seconds before they happen. Does not share this information.",
+      "image_url": "",
+      "catch_rate": 0.85,
+      "evolution": null,
+      "encounter_situations": [
+        "The Strix is staring at a spot just to your left. Not at you \u2014 next to you. When you look, there is nothing there yet.",
+        "A Strix lands silently on a branch directly above the path. It watches you pass with enormous eyes. You feel like you were expected.",
+        "The Strix has its eyes closed. This is more unsettling than the alternative. It opens them when you get close enough, as if it knew exactly when to."
+      ]
+    },
+    "kelpie": {
+      "id": "kelpie",
+      "name": "Kelpie",
+      "title": "The River's Lure",
+      "rarity": "uncommon",
+      "type": "water",
+      "base_stats": {
+        "hp": 95,
+        "attack": 65,
+        "defense": 45,
+        "speed": 70,
+        "mana": 55
+      },
+      "moves": [
+        "Current Pull",
+        "River Rush",
+        "Drown"
+      ],
+      "ultimate": "Undertow",
+      "description": "A sleek horse-shaped beast woven from rushing water that seems very interested in whether you'd like to go for a ride. You should not.",
+      "image_url": "",
+      "catch_rate": 0.6,
+      "evolution": null,
+      "encounter_situations": [
+        "A Kelpie stands at the river's edge, looking at you over its shoulder with an expression that clearly means come on. The water is deep. The Kelpie looks friendly. These facts are related.",
+        "The Kelpie is already beside you. You didn't hear it approach. It presses its nose toward your hand, patient and gentle. Maren would tell you not to touch it.",
+        "A shape in the shallows resolves into a Kelpie standing very still, watching you. Its mane moves like the surface of water. It seems to be deciding something about you."
+      ]
+    },
+    "manticore": {
+      "id": "manticore",
+      "name": "Manticore",
+      "title": "The Three-Part Threat",
+      "rarity": "uncommon",
+      "type": "earth",
+      "base_stats": {
+        "hp": 100,
+        "attack": 70,
+        "defense": 40,
+        "speed": 65,
+        "mana": 50
+      },
+      "moves": [
+        "Pounce",
+        "Venom Sting",
+        "Wing Slash"
+      ],
+      "ultimate": "Barrage",
+      "description": "Lion body, bat wings, scorpion tail. Each part appears to have a separate opinion on what to do next. The lion usually wins.",
+      "image_url": "",
+      "catch_rate": 0.6,
+      "evolution": null,
+      "encounter_situations": [
+        "The Manticore is sitting in the middle of the path, tail curled around itself, looking like it is waiting for someone specifically. You wonder if that is you.",
+        "A low rumble from the undergrowth. The Manticore steps out wing-first, then body, then finally the tail, which seems reluctant to commit to the confrontation.",
+        "The Manticore lands in front of you with its wings half-folded, head lowered, tail raised. Three things ready to happen. You have a moment to decide which one."
+      ]
+    },
+    "will_o_wisp": {
+      "id": "will_o_wisp",
+      "name": "Will-o-Wisp",
+      "title": "The Misleading Guide",
+      "rarity": "uncommon",
+      "type": "light",
+      "base_stats": {
+        "hp": 90,
+        "attack": 60,
+        "defense": 35,
+        "speed": 85,
+        "mana": 60
+      },
+      "moves": [
+        "Phantom Light",
+        "Confusion Pulse",
+        "Lure"
+      ],
+      "ultimate": "False Horizon",
+      "description": "A larger, brighter cousin of the Wisp. Leads travelers in perfect circles with genuine enthusiasm and absolutely no malice. It believes it's helping.",
+      "image_url": "",
+      "catch_rate": 0.6,
+      "evolution": null,
+      "encounter_situations": [
+        "The Will-o-Wisp drifts ahead of you on the path, then pauses, pulsing softly, as if waiting. It seems to want you to follow. The path behind it does not go where you are going.",
+        "A warm glow bobs between the trees, cheerful and consistent. The Will-o-Wisp orbits you once, then drifts off in the wrong direction. It looks back.",
+        "The Will-o-Wisp is leading something else in circles. It notices you noticing this. It does not appear to understand the problem."
+      ]
+    },
+    "rukh": {
+      "id": "rukh",
+      "name": "Rukh",
+      "title": "The Sky Sovereign",
+      "rarity": "rare",
+      "type": "wind",
+      "base_stats": {
+        "hp": 130,
+        "attack": 80,
+        "defense": 65,
+        "speed": 80,
+        "mana": 60
+      },
+      "moves": [
+        "Gale Talon",
+        "Wind Wall",
+        "Updraft"
+      ],
+      "ultimate": "Shadow of Wings",
+      "description": "A bird large enough to blot out the sun when it passes overhead. Prefers solitude but will assist a trainer it finds worthy. The standards are high.",
+      "image_url": "",
+      "catch_rate": 0.35,
+      "evolution": null,
+      "encounter_situations": [
+        "The sky darkens. You look up. The Rukh is directly overhead, descending slowly, measuring something about you from a height you cannot judge.",
+        "A shadow falls across everything at once. The Rukh lands thirty feet away and folds its wings deliberately, each fold taking several seconds. It then looks at you.",
+        "You heard something massive. You see the Rukh already perched on a rock that should not support it, watching you with one enormous eye. You are being considered."
+      ]
+    },
+    "glacius": {
+      "id": "glacius",
+      "name": "Glacius",
+      "title": "The Patient One",
+      "rarity": "rare",
+      "type": "ice",
+      "base_stats": {
+        "hp": 160,
+        "attack": 75,
+        "defense": 95,
+        "speed": 35,
+        "mana": 55
+      },
+      "moves": [
+        "Frost Bite",
+        "Ice Shell",
+        "Glacial Slam"
+      ],
+      "ultimate": "Permafrost",
+      "description": "A wolf-bear hybrid encased in living ice that has been moving toward something for centuries. It has not arrived yet. It does not seem concerned.",
+      "image_url": "",
+      "catch_rate": 0.35,
+      "evolution": null,
+      "encounter_situations": [
+        "A shape in the snow that you thought was a boulder turns out to be a Glacius, which has been sitting still long enough to collect frost on its frost. It opens one eye.",
+        "The Glacius is moving. Very slowly. In a very specific direction. It does not acknowledge you, but when you step into its path it waits with an expression of geological patience.",
+        "Frozen breath clouds the air before you see the Glacius. It is sitting in the exact center of a clearing, perfectly still, radiating cold. It has been there a long time."
+      ]
+    },
+    "behemoth": {
+      "id": "behemoth",
+      "name": "Behemoth",
+      "title": "The Immovable",
+      "rarity": "epic",
+      "type": "earth",
+      "base_stats": {
+        "hp": 220,
+        "attack": 90,
+        "defense": 130,
+        "speed": 25,
+        "mana": 60
+      },
+      "moves": [
+        "Tremor",
+        "Stone Wall",
+        "Stampede"
+      ],
+      "ultimate": "Continental Shift",
+      "description": "A mountain-sized beast that has simply decided it is not moving today. Or tomorrow. Occasionally sighs in a way that registers on instruments.",
+      "image_url": "",
+      "catch_rate": 0.15,
+      "evolution": null,
+      "encounter_situations": [
+        "The thing you thought was a hill has eyes. The Behemoth looks at you the way mountains look at things \u2014 it doesn't, really, but it knows you're there.",
+        "The Behemoth is standing in the middle of something it has apparently decided to stand in the middle of. It sighs once. The ground vibrates.",
+        "You walked past it twice before you realized. The Behemoth has been watching you the whole time, still as stone, with the deep calm of something that has never needed to hurry."
+      ]
+    },
+    "wendigo": {
+      "id": "wendigo",
+      "name": "Wendigo",
+      "title": "The Hunger That Walks",
+      "rarity": "epic",
+      "type": "ice",
+      "base_stats": {
+        "hp": 170,
+        "attack": 120,
+        "defense": 75,
+        "speed": 95,
+        "mana": 80
+      },
+      "moves": [
+        "Frost Shriek",
+        "Bone Chill",
+        "Hunger Strike"
+      ],
+      "ultimate": "Eternal Winter",
+      "description": "A gaunt towering creature of permanent winter. Not malicious \u2014 simply always starving, and very fast. The cold it carries is its own.",
+      "image_url": "",
+      "catch_rate": 0.15,
+      "evolution": null,
+      "encounter_situations": [
+        "The temperature drops before the Wendigo appears. Then it is simply there, at the edge of your vision, too tall, too still, watching with eyes like frozen breath.",
+        "The Wendigo steps out of the treeline on legs that seem too long. It lowers its head to look at you directly. This is the politest version of this encounter.",
+        "Something has been following you at a distance for several minutes. When it finally steps into the open, the Wendigo looks almost relieved to be seen."
+      ]
+    },
+    "jormungandr": {
+      "id": "jormungandr",
+      "name": "Jormungandr",
+      "title": "The World Serpent",
+      "rarity": "legendary",
+      "type": "water",
+      "base_stats": {
+        "hp": 205,
+        "attack": 115,
+        "defense": 100,
+        "speed": 70,
+        "mana": 110
+      },
+      "moves": [
+        "World Coil",
+        "Venom Tide",
+        "Abyss Pull"
+      ],
+      "ultimate": "Ouroboros",
+      "description": "The sea-serpent vast enough to encircle the world and bite its own tail. It is aware of the irony. It has had time to think about it.",
+      "image_url": "",
+      "catch_rate": 0.05,
+      "evolution": null,
+      "encounter_situations": [
+        "A ring appears in the water around you before you understand what you're looking at. The Jormungandr rises slowly, taking its time, the coils already in place.",
+        "The Jormungandr's head emerges from the deep directly ahead, larger than you expected, moving with the patience of something that has nowhere urgent to be. It regards you.",
+        "A shape under the surface resolves, slowly, into something that is coiled around an area the size of a field. The Jormungandr surfaces one eye first."
+      ]
+    },
+    "simurgh": {
+      "id": "simurgh",
+      "name": "Simurgh",
+      "title": "The Ancient Witness",
+      "rarity": "legendary",
+      "type": "light",
+      "base_stats": {
+        "hp": 185,
+        "attack": 105,
+        "defense": 95,
+        "speed": 95,
+        "mana": 125
+      },
+      "moves": [
+        "Solar Wing",
+        "Wisdom Strike",
+        "Radiance"
+      ],
+      "ultimate": "End of an Age",
+      "description": "A luminous bird old enough to have witnessed three world destructions. Remarkably calm about it. Carries the knowledge of everything that has ever ended.",
+      "image_url": "",
+      "catch_rate": 0.05,
+      "evolution": null,
+      "encounter_situations": [
+        "The Simurgh lands without sound and folds wings of light around itself like a cloak. It looks at you the way something looks at something it has seen before, a long time ago, in a different context.",
+        "A warmth from above. The Simurgh descends through the clouds in a long unhurried spiral, bright enough to look at directly if you are careful. It settles nearby and waits.",
+        "The Simurgh has been sitting on that rock for longer than the rock has been there. It doesn't move when you approach. It was expecting you. It has been expecting you for a while."
+      ]
     }
   },
   "rarity_rates": {

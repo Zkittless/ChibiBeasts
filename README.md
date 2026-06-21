@@ -2,7 +2,7 @@
 
 A Discord creature-collector RPG bot — catch, hatch, battle, evolve, and trade chibi-style beasts across an original world with a creation myth, five named NPCs, a five-chapter story questline, guild raids, wild encounters, and NPC sparring.
 
-**52 slash commands · 48 beasts · ~9,000 lines of Python**
+**52 slash commands · 60 beasts · ~9,000 lines of Python**
 
 ---
 
@@ -19,7 +19,7 @@ A Discord creature-collector RPG bot — catch, hatch, battle, evolve, and trade
 - In-game readable lore via `/lore`, beast encyclopedia via `/codex`, type chart via `/typeinfo`
 
 ### 🐾 Beasts & Collection
-- **48 beasts** across 6 rarities: Common → Uncommon → Rare → Epic → Legendary → Divine
+- **60 beasts** across 6 rarities: Common → Uncommon → Rare → Epic → Legendary → Divine
 - **4 chooseable starters** (Prismite, Twine, Gloop, Barkley) each tied to an Architect from the creation myth
 - **16 Divine beasts** across 5 named collections, each with a **unique passive battle ability** (double turns, lifesteal, shields, status reflection, stacking buffs, immunity, etc.)
 - **11 evolution chains** — Common beasts can evolve up to Epic, Legendary, and even Divine tiers via Sunforge Core or Genesis Fruit
@@ -126,7 +126,7 @@ chibibeast/
 │                             #   /craft, /recipes, /materials, /codex, /typeinfo, /lore
 ├── data/
 │   ├── LORE.md               # Full lore bible (tone guide, world canon)
-│   ├── beasts.json           # 48 beasts with stats, moves, passives, evolutions,
+│   ├── beasts.json           # 60 beasts with stats, moves, passives, evolutions,
 │   │                         #   and encounter_situations (96 lines across 32 beasts)
 │   ├── equipment.json        # 12 armor sets + 6 runes with recipes and battle effects
 │   ├── items.json            # 18 items (all effects implemented)
