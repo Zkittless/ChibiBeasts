@@ -1630,7 +1630,6 @@ class Battle(commands.Cog):
                 ))
 
         # Daily spar limit — one per NPC per day
-        import time as _time
         from datetime import datetime, timezone
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         spar_key = f"sparr_{npc_name}"
@@ -1714,12 +1713,6 @@ class Battle(commands.Cog):
                 # Timeout on a spar: small gold reward, no shard, no relationship upgrade.
                 # The NPC wasn't actually bested — just outlasted.
                 partial_gold = random.randint(30, 80)
-                async with aiosqlite.connect("db/chibibeast.db") as db:
-                    await db.execute(
-                        "INSERT OR IGNORE INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?,?,1,1,?)",
-                        (interaction.user.id, spar_key, today)
-                    )
-                    await db.commit()
                 await update_player(interaction.user.id, gold=player["gold"] + partial_gold)
                 NPC_TIMEOUT_LINES = {
                     "maren":         "*'A draw,'* says Maren. *'Barkley doesn't mind. Come back when you can end it properly.'*",
@@ -1743,15 +1736,11 @@ class Battle(commands.Cog):
                 interaction.user.id,
                 gold=player["gold"] + gold_gain
             )
-            # Grant shard + mark daily spar done
+            # Grant shard
             async with aiosqlite.connect("db/chibibeast.db") as db:
                 await db.execute(
                     "UPDATE players SET celestial_shards = celestial_shards + 1 WHERE user_id = ?",
                     (interaction.user.id,)
-                )
-                await db.execute(
-                    "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?,?,1,1,?)",
-                    (interaction.user.id, spar_key, today)
                 )
                 # Advance NPC relationship if possible
                 from cogs.questline import get_quest_state, save_quest_state, RELATIONSHIP_LEVELS
@@ -1779,12 +1768,6 @@ class Battle(commands.Cog):
                 await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
         async def on_loss(embed, p_state, e_state):
-            async with aiosqlite.connect("db/chibibeast.db") as db:
-                await db.execute(
-                    "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?,?,1,1,?)",
-                    (interaction.user.id, spar_key, today)
-                )
-                await db.commit()
             await update_player(interaction.user.id, gold=player["gold"] + 50)
             embed.add_field(
                 name="💤 Lesson",
@@ -1792,17 +1775,47 @@ class Battle(commands.Cog):
                 inline=False
             )
 
-        await run_pve_battle(
-            interaction,
-            dict(active_row),
-            active_beast_data,
-            player_perks,
-            enemy_state,
-            enemy_personality=personality,
-            battle_title=f"Spar with {npc['name']}",
-            on_win=on_win,
-            on_loss=on_loss,
-        )
+        # Atomically claim today's spar slot. INSERT OR IGNORE reports
+        # rowcount 1 only when the row is newly written; 0 means a spar with
+        # this NPC was already recorded today — which closes the race where
+        # two near-simultaneous /sparr calls both passed the read check above
+        # before either had finished.
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            cur = await db.execute(
+                "INSERT OR IGNORE INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?,?,1,1,?)",
+                (interaction.user.id, spar_key, today)
+            )
+            await db.commit()
+            claimed = cur.rowcount == 1
+
+        if not claimed:
+            return await interaction.followup.send(embed=discord.Embed(
+                description=f"✦ You've already sparred with **{npc['name']}** today.",
+                color=COLORS["info"]
+            ))
+
+        try:
+            await run_pve_battle(
+                interaction,
+                dict(active_row),
+                active_beast_data,
+                player_perks,
+                enemy_state,
+                enemy_personality=personality,
+                battle_title=f"Spar with {npc['name']}",
+                on_win=on_win,
+                on_loss=on_loss,
+            )
+        except Exception:
+            # Release the slot so a failed spar never burns the player's daily
+            # attempt. The global handler in bot.py still reports the error.
+            async with aiosqlite.connect("db/chibibeast.db") as db:
+                await db.execute(
+                    "DELETE FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
+                    (interaction.user.id, spar_key, today)
+                )
+                await db.commit()
+            raise
 
     @app_commands.command(name="battle", description="Challenge another trainer to a beast battle! ⚔️")
     @app_commands.describe(opponent="The trainer you want to challenge")
