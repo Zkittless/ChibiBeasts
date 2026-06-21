@@ -708,19 +708,87 @@ def calc_damage(attacker: dict, defender: dict, move: str, is_ultimate: bool = F
     return max(1, damage), is_crit, type_mult, crit_charge_delta
 
 class BattleView(discord.ui.View):
+    # 90s gives the pinged opponent realistic time to notice the mention,
+    # switch to the channel, and respond. The old 30s window expired before
+    # most players ever clicked, leaving dead buttons with no explanation.
     def __init__(self, battle_id: int, challenger_id: int, opponent_id: int):
-        super().__init__(timeout=30)
+        super().__init__(timeout=90)
         self.battle_id = battle_id
         self.challenger_id = challenger_id
         self.opponent_id = opponent_id
+        self.message: discord.Message | None = None  # set by the /battle command
+
+    def _disable_all(self):
+        for item in self.children:
+            item.disabled = True
+
+    async def on_timeout(self):
+        # Without this, an expired challenge silently leaves clickable-looking
+        # buttons that do nothing. Now it visibly closes the challenge.
+        pending_battles.pop(self.battle_id, None)
+        self._disable_all()
+        if self.message:
+            try:
+                await self.message.edit(
+                    embed=discord.Embed(
+                        description="⌛ This battle challenge expired. Use `/battle` to try again.",
+                        color=COLORS["info"],
+                    ),
+                    view=self,
+                )
+            except discord.HTTPException:
+                pass  # message deleted or otherwise gone — nothing to clean up
+
+    async def on_error(self, interaction: discord.Interaction, error: Exception, item):
+        # View callbacks don't hit bot.py's app-command error handler, so an
+        # exception here would otherwise vanish with no feedback to the players.
+        import logging
+        logging.getLogger("chibibeasts.battle").exception("BattleView error", exc_info=error)
+        msg = "✦ Something went wrong starting that battle — try `/battle` again."
+        try:
+            if interaction.response.is_done():
+                await interaction.followup.send(msg, ephemeral=True)
+            else:
+                await interaction.response.send_message(msg, ephemeral=True)
+        except discord.HTTPException:
+            pass
 
     @discord.ui.button(label="Accept Battle", style=discord.ButtonStyle.success, emoji="⚔️")
     async def accept(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.opponent_id:
             return await interaction.response.send_message("This challenge isn't for you!", ephemeral=True)
+
+        # The challenge may have expired or been cleared (e.g. bot restart wiped
+        # the in-memory record). Fail loudly instead of doing nothing.
+        if self.battle_id not in pending_battles:
+            self.stop()
+            self._disable_all()
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="⌛ This challenge is no longer active. Use `/battle` to start a new one.",
+                    color=COLORS["info"],
+                ),
+                view=self,
+            )
+
+        # Re-validate both trainers still have an active beast — either side
+        # could have released or swapped theirs during the wait.
+        challenger_beast = await get_active_beast(self.challenger_id)
+        opponent_beast = await get_active_beast(self.opponent_id)
+        if not challenger_beast or not opponent_beast:
+            self.stop()
+            pending_battles.pop(self.battle_id, None)
+            self._disable_all()
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="✦ One of the trainers no longer has an active beast. Challenge cancelled.",
+                    color=COLORS["error"],
+                ),
+                view=self,
+            )
+
         self.stop()
-        for item in self.children:
-            item.disabled = True
+        self._disable_all()
         await interaction.response.edit_message(view=self)
         await start_battle(interaction, self.battle_id)
 
@@ -730,8 +798,7 @@ class BattleView(discord.ui.View):
             return await interaction.response.send_message("This challenge isn't for you!", ephemeral=True)
         self.stop()
         pending_battles.pop(self.battle_id, None)
-        for item in self.children:
-            item.disabled = True
+        self._disable_all()
         await interaction.response.edit_message(
             embed=discord.Embed(description="❌ Battle challenge declined.", color=COLORS["error"]),
             view=self
@@ -1785,9 +1852,9 @@ class Battle(commands.Cog):
             ),
             color=COLORS["epic"]
         )
-        embed.set_footer(text="Challenge expires in 30 seconds")
+        embed.set_footer(text="Challenge expires in 90 seconds")
         view = BattleView(battle_id, interaction.user.id, opponent.id)
-        await interaction.followup.send(embed=embed, view=view)
+        view.message = await interaction.followup.send(embed=embed, view=view)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Battle(bot))
