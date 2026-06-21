@@ -157,6 +157,34 @@ def build_pve_beast_state(beast_data: dict, level: int) -> dict:
     }
 
 
+async def award_player_exp(user_id: int, exp_gain: int) -> tuple[int, int, bool]:
+    """
+    Add `exp_gain` to the player's EXP, handle level-ups, and persist.
+    Returns (new_level, new_exp, leveled_up).
+    Used by /challenge, /sparr, and /explore so the logic lives in one place.
+    """
+    from utils.db import get_player, update_player, calc_player_exp_for_level
+    player = await get_player(user_id)
+    if not player:
+        return 1, 0, False
+    new_exp   = player["exp"] + exp_gain
+    new_level = player["level"]
+    while new_exp >= calc_player_exp_for_level(new_level):
+        new_exp -= calc_player_exp_for_level(new_level)
+        new_level += 1
+    leveled_up = new_level > player["level"]
+    await update_player(user_id, exp=new_exp, level=new_level)
+    # Fire level_up quest event so chapter steps that check player level
+    # (e.g. chapter 2's "reach level 25") advance automatically on level-up.
+    if leveled_up:
+        try:
+            from cogs.questline import advance_quest_step
+            await advance_quest_step(user_id, "level_up", level=new_level)
+        except Exception:
+            pass  # questline advance is best-effort — never block a reward
+    return new_level, new_exp, leveled_up
+
+
 async def run_pve_battle(
     interaction: discord.Interaction,
     player_beast_row: dict,
@@ -1355,6 +1383,12 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
             new_level += 1
 
         await update_player(winner_id, wins=new_wins, gold=new_gold, exp=new_exp, level=new_level)
+        if new_level > winner_player["level"]:
+            try:
+                from cogs.questline import advance_quest_step as _aq
+                await _aq(winner_id, "level_up", level=new_level)
+            except Exception:
+                pass
 
         # ── Loser consolation rewards ──────────────────────────────────────
         # ~25% of win rewards so losing always yields something.
@@ -1378,6 +1412,12 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
             exp=loser_new_exp,
             level=loser_new_level
         )
+        if loser_new_level > loser_player["level"]:
+            try:
+                from cogs.questline import advance_quest_step as _aq
+                await _aq(loser_id, "level_up", level=loser_new_level)
+            except Exception:
+                pass
 
         # Loser beast also gains a small participation EXP
         loser_beast_row  = c_beast_row if loser_id == battle["challenger_id"] else o_beast_row
@@ -1563,11 +1603,13 @@ class Battle(commands.Cog):
                 # Full rewards here would make stall tactics profitable.
                 consolation_gold = random.randint(active_row["level"] * 2, active_row["level"] * 4)
                 await update_player(interaction.user.id, gold=player["gold"] + consolation_gold)
+                _lvl, _, _leveled = await award_player_exp(interaction.user.id, random.randint(active_row["level"] * 8, active_row["level"] * 12))
                 embed.add_field(
                     name="⏱️ Time Limit Rewards",
                     value=(
-                        f"+**{consolation_gold:,} gold** 💰\n"
-                        f"*No catch — the {wild_beast_data['name']} wasn't actually defeated.*\n"
+                        f"+**{consolation_gold:,} gold** 💰 | +**10–20 EXP** ✨"
+                        + (f"\n⬆️ **Trainer leveled up to {_lvl}!**" if _leveled else "")
+                        + f"\n*No catch — the {wild_beast_data['name']} wasn't actually defeated.*\n"
                         f"*A win on HP, not a win by defeat. Try for a clean KO next time.*"
                     ),
                     inline=False
@@ -1589,15 +1631,20 @@ class Battle(commands.Cog):
 
             await update_player(interaction.user.id, gold=player["gold"] + gold_gain)
 
+            # Player EXP — scales with biome difficulty
+            player_exp_gain = random.randint(active_row["level"] * 15, active_row["level"] * 25)
+            _p_lvl, _, _p_leveled = await award_player_exp(interaction.user.id, player_exp_gain)
+
             # Catch chance
             CATCH_RATES = {"common": 0.50, "uncommon": 0.35, "rare": 0.20,
                           "epic": 0.10, "legendary": 0.05, "divine": 0.02}
             caught = random.random() < CATCH_RATES.get(rarity, 0.10)
 
             reward_text = (
-                f"+**{gold_gain:,} gold** 💰 | +**{beast_exp} beast EXP**"
-                + (f" | ⬆️ **{active_beast_data.get('name','')} leveled up to Lv.{new_level}!**"
+                f"+**{gold_gain:,} gold** 💰 | +**{beast_exp} beast EXP** | +**{player_exp_gain} EXP** ✨"
+                + (f"\n⬆️ **{active_beast_data.get('name','')} leveled up to Lv.{new_level}!**"
                    if new_level > active_row["level"] else "")
+                + (f"\n⬆️ **Trainer leveled up to {_p_lvl}!**" if _p_leveled else "")
             )
 
             if caught:
@@ -1622,11 +1669,13 @@ class Battle(commands.Cog):
 
         async def on_loss(embed, p_state, e_state):
             consolation_gold = random.randint(10, 25)
+            consolation_exp  = random.randint(active_row["level"] * 5, active_row["level"] * 10)
             await update_player(interaction.user.id, gold=player["gold"] + consolation_gold)
+            await award_player_exp(interaction.user.id, consolation_exp)
             embed.add_field(
                 name="💤 Lesson",
                 value=(
-                    f"+**{consolation_gold} gold** 💰\n"
+                    f"+**{consolation_gold} gold** 💰 | +**{consolation_exp} EXP** ✨\n"
                     f"*{wild_beast_data['name']} returns to the {BIOME_NAMES[biome].split()[-1]}.*\n"
                     f"*Every lesson teaches something.*"
                 ),
@@ -1771,6 +1820,7 @@ class Battle(commands.Cog):
                 # The NPC wasn't actually bested — just outlasted.
                 partial_gold = random.randint(30, 80)
                 await update_player(interaction.user.id, gold=player["gold"] + partial_gold)
+                _lvl, _, _leveled = await award_player_exp(interaction.user.id, random.randint(active_row["level"] * 8, active_row["level"] * 12))
                 NPC_TIMEOUT_LINES = {
                     "maren":         "*'A draw,'* says Maren. *'Barkley doesn't mind. Come back when you can end it properly.'*",
                     "cael":          "*'Twenty turns and neither of us won. Twine predicted this. I thought it was being dramatic.'*",
@@ -1781,8 +1831,9 @@ class Battle(commands.Cog):
                 embed.add_field(
                     name="⏱️ Time Limit",
                     value=(
-                        f"+**{partial_gold} gold** 💰\n"
-                        f"{NPC_TIMEOUT_LINES.get(npc_name, '*The spar ended on time.*')}"
+                        f"+**{partial_gold} gold** 💰 | +**15–30 EXP** ✨"
+                        + (f"\n⬆️ **Trainer leveled up to {_lvl}!**" if _leveled else "")
+                        + f"\n{NPC_TIMEOUT_LINES.get(npc_name, '*The spar ended on time.*')}"
                     ),
                     inline=False
                 )
@@ -1823,6 +1874,10 @@ class Battle(commands.Cog):
                     )
                 await db.commit()
 
+            # Player EXP (outside the DB block — uses update_player which opens its own conn)
+            spar_exp = random.randint(active_row["level"] * 12, active_row["level"] * 20)
+            _p_lvl, _, _p_leveled = await award_player_exp(interaction.user.id, spar_exp)
+
             if rel_advanced:
                 embed.add_field(
                     name="💬 Relationship improved!",
@@ -1831,7 +1886,11 @@ class Battle(commands.Cog):
                 )
             embed.add_field(
                 name="🎁 Rewards",
-                value=f"+**{gold_gain:,} gold** 💰 | +**1 🔮 Celestial Shard**\n\n{NPC_WIN_LINES[npc_name]}",
+                value=(
+                    f"+**{gold_gain:,} gold** 💰 | +**1 🔮 Celestial Shard** | +**{spar_exp} EXP** ✨"
+                    + (f"\n⬆️ **Trainer leveled up to {_p_lvl}!**" if _p_leveled else "")
+                    + f"\n\n{NPC_WIN_LINES[npc_name]}"
+                ),
                 inline=False
             )
             unlocked = await check_achievements(interaction.user.id)
@@ -1839,10 +1898,12 @@ class Battle(commands.Cog):
                 await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
         async def on_loss(embed, p_state, e_state):
+            loss_exp = random.randint(active_row["level"] * 5, active_row["level"] * 8)
             await update_player(interaction.user.id, gold=player["gold"] + 50)
+            await award_player_exp(interaction.user.id, loss_exp)
             embed.add_field(
                 name="💤 Lesson",
-                value=f"+**50 gold** 💰\n\n{NPC_LOSS_LINES[npc_name]}",
+                value=f"+**50 gold** 💰 | +**{loss_exp} EXP** ✨\n\n{NPC_LOSS_LINES[npc_name]}",
                 inline=False
             )
 

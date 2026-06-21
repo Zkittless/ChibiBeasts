@@ -415,7 +415,11 @@ def calc_exp_for_level_wild(level: int) -> int:
     return int(15 * (level ** 1.1))
 
 def calc_player_exp_for_level(level: int) -> int:
-    return int(200 * (level ** 1.8))
+    # Base lowered from 200 → 100 so active players reach Lv10 in ~13 days
+    # instead of ~27. The curve shape (^1.8) is unchanged — progression still
+    # accelerates naturally so mid/late game feels meaningfully harder than
+    # early game, just without the early wall that causes new player churn.
+    return int(100 * (level ** 1.8))
 
 def get_perk_slots(player_level: int) -> int:
     if player_level >= 50: return 5
