@@ -197,6 +197,21 @@ async def run_pve_battle(
             "dp_used": False, "dp_crit_charges": 0, "dp_stacks": 0, "dp_bifrost_triggered": False}),
     }
 
+    # ── Happiness modifier ────────────────────────────────────────────────
+    # Ranges from -10% (≤30 happiness) to +10% (100 happiness), linear
+    # between 30 and 100.  Makes the Fairy Garden sanctuary feel meaningful
+    # and gives players a reason to care about the number beyond cosmetics.
+    _hap = player_beast_row.get("happiness", 100)
+    if _hap >= 100:
+        _hap_mult = 1.10
+    elif _hap <= 30:
+        _hap_mult = 0.90
+    else:
+        _hap_mult = 0.90 + (_hap - 30) / 70 * 0.20
+    player_state["attack"]  = max(1, int(player_state["attack"]  * _hap_mult))
+    player_state["defense"] = max(1, int(player_state["defense"] * _hap_mult))
+    player_state["speed"]   = max(1, int(player_state["speed"]   * _hap_mult))
+
     # Apply equipment bonuses to player (reuse existing helper via inline call)
     async def _apply_equip(state):
         # Use module-level _ALL_GEAR cache — no per-battle disk I/O
@@ -457,6 +472,19 @@ async def run_pve_battle(
         await on_loss(result_embed, player_state, enemy_state)
 
     await interaction.channel.send(embed=result_embed)
+
+    # ── Log battle for /stats tracking ────────────────────────────────────
+    async with aiosqlite.connect("db/chibibeast.db") as _blog:
+        await _blog.execute(
+            """INSERT INTO battles
+               (challenger_id, winner_id, challenger_beast, status, battle_type)
+               VALUES (?, ?, ?, 'completed', ?)""",
+            (interaction.user.id,
+             interaction.user.id if player_won else None,
+             player_beast_row["id"],
+             "sparr" if battle_title.startswith("Spar") else "pve")
+        )
+        await _blog.commit()
 
 
 # ── Divine Passive Processor ──────────────────────────────────────────────────
@@ -902,6 +930,22 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         "beast_type": o_beast_data.get("type", ""),
         **init_divine_state(o_beast_data, dict(o_beast_row))
     }
+
+    # ── Happiness modifier (same formula as PvE, applied to both fighters) ──
+    def _apply_happiness(state: dict, beast_row) -> None:
+        hap = beast_row["happiness"] if beast_row["happiness"] is not None else 100
+        if hap >= 100:
+            mult = 1.10
+        elif hap <= 30:
+            mult = 0.90
+        else:
+            mult = 0.90 + (hap - 30) / 70 * 0.20
+        state["attack"]  = max(1, int(state["attack"]  * mult))
+        state["defense"] = max(1, int(state["defense"] * mult))
+        state["speed"]   = max(1, int(state["speed"]   * mult))
+
+    _apply_happiness(c_state, c_beast_row)
+    _apply_happiness(o_state, o_beast_row)
 
     # ── Apply equipment bonuses ─────────────────────────────────────────────
     def apply_equipment_bonuses(beast_state: dict, beast_row_id: int, user_id: int, equipment: dict, runes: dict, battle_log: list):
@@ -1406,6 +1450,18 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
     result_embed.add_field(name="📜 Battle Log", value="\n".join(battle_log[-5:]) or "No moves logged.", inline=False)
     result_embed.set_footer(text="ChibiBeasts 🐾  •  /battle to fight again!")
     await interaction.channel.send(embed=result_embed)
+
+    # ── Log battle for /stats tracking ────────────────────────────────────
+    async with aiosqlite.connect("db/chibibeast.db") as _blog:
+        await _blog.execute(
+            """INSERT INTO battles
+               (challenger_id, opponent_id, winner_id, challenger_beast, opponent_beast, status, battle_type)
+               VALUES (?, ?, ?, ?, ?, 'completed', 'pvp')""",
+            (battle["challenger_id"], battle["opponent_id"],
+             winner_id,
+             c_beast_row["id"], o_beast_row["id"])
+        )
+        await _blog.commit()
 
     if winner_id:
         await notify_quest_completions(interaction.channel, completed_quests)

@@ -860,8 +860,8 @@ class Utilities(commands.Cog):
             ) as c:
                 total_divines = (await c.fetchone())[0]
 
-            # Total battles fought
-            async with db.execute("SELECT COUNT(*) FROM battles") as c:
+            # Total battles fought (pvp + pve + sparr, all recorded in battles table)
+            async with db.execute("SELECT COUNT(*) FROM battles WHERE status = 'completed'") as c:
                 total_battles = (await c.fetchone())[0]
 
             # Total raids completed

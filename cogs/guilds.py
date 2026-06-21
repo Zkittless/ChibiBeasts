@@ -267,8 +267,39 @@ class Guilds(commands.Cog):
 
         class InviteView(discord.ui.View):
             def __init__(self):
-                super().__init__(timeout=60)
+                super().__init__(timeout=120)
                 self.accepted = False
+                self.message: discord.Message | None = None
+
+            def _disable_all(self):
+                for item in self.children:
+                    item.disabled = True
+
+            async def on_timeout(self):
+                self._disable_all()
+                if self.message:
+                    try:
+                        await self.message.edit(
+                            embed=discord.Embed(
+                                description="⌛ This guild invitation expired.",
+                                color=COLORS["info"],
+                            ),
+                            view=self,
+                        )
+                    except discord.HTTPException:
+                        pass
+
+            async def on_error(self, interaction: discord.Interaction, error: Exception, item):
+                import logging
+                logging.getLogger("chibibeasts.guilds").exception("InviteView error", exc_info=error)
+                msg = "✦ Something went wrong with the invite — please try again."
+                try:
+                    if interaction.response.is_done():
+                        await interaction.followup.send(msg, ephemeral=True)
+                    else:
+                        await interaction.response.send_message(msg, ephemeral=True)
+                except discord.HTTPException:
+                    pass
 
             @discord.ui.button(label="Accept", style=discord.ButtonStyle.success, emoji="✅")
             async def accept(self, inv_interaction: discord.Interaction, button: discord.ui.Button):
@@ -311,7 +342,7 @@ class Guilds(commands.Cog):
                 await inv_interaction.response.edit_message(view=self)
 
         view = InviteView()
-        await interaction.followup.send(content=member.mention, embed=embed, view=view)
+        view.message = await interaction.followup.send(content=member.mention, embed=embed, view=view)
 
     @app_commands.command(name="raid", description="Trigger a raid boss battle! ⚔️")
     @app_commands.choices(raid_type=[
@@ -553,6 +584,21 @@ class Guilds(commands.Cog):
 
         # Rewards
         reward_lines = []
+        guild_id_for_tokens = raid.get("guild_id")
+
+        # ── Guild token award on victory ──────────────────────────────────
+        # Every participant earns tokens scaled by rank so contributing to
+        # a kill is always worth doing. The guild pot gets a flat bonus too
+        # so the guild itself banks tokens toward future raids organically.
+        #   Rank 1: 30 tokens | Rank 2-3: 20 | Rank 4-10: 10 | All others: 5
+        # Ancient raids pay 1.5× (rounded) to reflect their higher cost and
+        # difficulty — solo-qualifying an ancient should feel distinctly rewarding.
+        RANK_TOKENS  = {1: 30, 2: 20, 3: 20}
+        BASE_TOKENS  = 10
+        CONSOLATION  = 5
+        ancient_mult = 1.5 if boss.get("type") == "ancient" else 1.0
+        GUILD_BONUS  = int(50 * ancient_mult)
+
         for i, (user_id, damage) in enumerate(sorted_participants[:10]):
             member = channel.guild.get_member(user_id)
             if not member:
@@ -563,6 +609,15 @@ class Guilds(commands.Cog):
 
             if defeated:
                 await update_player(user_id, gold=(await get_player(user_id))["gold"] + gold)
+
+                # ── Guild token earn: scaled by rank, 1.5× for ancient raids ──
+                player_tokens = int(RANK_TOKENS.get(rank, BASE_TOKENS) * ancient_mult)
+                async with aiosqlite.connect("db/chibibeast.db") as _tdb:
+                    await _tdb.execute(
+                        "UPDATE players SET guild_tokens = guild_tokens + ? WHERE user_id = ?",
+                        (player_tokens, user_id)
+                    )
+                    await _tdb.commit()
 
                 # ── Achievement tracking: raid victory + any stat thresholds crossed ──
                 raid_win_unlocked = await unlock_simple_achievement(user_id, "first_raid_win")
@@ -576,9 +631,9 @@ class Guilds(commands.Cog):
                     loot = random.choice(boss["loot_table"])
                     from utils.db import add_item
                     await add_item(user_id, loot)
-                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{member.display_name}** — `{damage:,}` dmg | +{gold}💰 | 🎁 {loot.replace('_',' ').title()}")
+                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{member.display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️ | 🎁 {loot.replace('_',' ').title()}")
                 else:
-                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{member.display_name}** — `{damage:,}` dmg | +{gold}💰")
+                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{member.display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️")
 
                 # Altered Divine catch chance for top 3
                 altered_id = boss.get("altered_divine")
@@ -643,6 +698,20 @@ class Guilds(commands.Cog):
 
         if reward_lines:
             embed.add_field(name="🏆 Top Damage Dealers", value="\n".join(reward_lines), inline=False)
+
+        # ── Guild treasury bonus on victory ───────────────────────────────
+        if defeated and guild_id_for_tokens:
+            async with aiosqlite.connect("db/chibibeast.db") as _gdb:
+                await _gdb.execute(
+                    "UPDATE guilds SET guild_tokens = guild_tokens + ? WHERE id = ?",
+                    (GUILD_BONUS, guild_id_for_tokens)
+                )
+                await _gdb.commit()
+            embed.add_field(
+                name="🎟️ Guild Treasury",
+                value=f"+**{GUILD_BONUS} Guild Tokens** added to the guild!",
+                inline=False
+            )
 
         embed.set_footer(text="ChibiBeasts 🐾  •  /raid to trigger another raid!")
         await channel.send(embed=embed)

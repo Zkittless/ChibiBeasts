@@ -387,6 +387,20 @@ async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[d
                         "UPDATE players SET celestial_shards = celestial_shards + 2 WHERE user_id = ?",
                         (user_id,)
                     )
+                    # Award guild tokens if the player is in a guild — dailies are
+                    # the primary earn mechanic for guild tokens so raiding stays
+                    # accessible to active members without grinding.
+                    # 5 tokens/day keeps the raid cost (50/150) at a 10–30 day
+                    # cadence for a solo member, faster for coordinated guilds.
+                    async with db.execute(
+                        "SELECT guild_id FROM guild_members WHERE user_id = ?", (user_id,)
+                    ) as gc:
+                        gm = await gc.fetchone()
+                    if gm and gm["guild_id"]:
+                        await db.execute(
+                            "UPDATE guilds SET guild_tokens = guild_tokens + 5 WHERE id = ?",
+                            (gm["guild_id"],)
+                        )
                     await db.execute(
                         "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, 'all_quests_bonus', 1, 1, ?)",
                         (user_id, date_str)
@@ -429,7 +443,7 @@ def build_quest_completion_embed(completed_quests: list[dict]) -> discord.Embed 
     if bonus:
         embed.add_field(
             name="🔮 Daily Champion Bonus!",
-            value="*All 3 daily quests completed!*\n+2 💎 Celestial Shards",
+            value="*All 3 daily quests completed!*\n+2 💎 Celestial Shards | +5 🎟️ Guild Tokens",
             inline=False
         )
     return embed

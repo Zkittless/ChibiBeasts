@@ -240,6 +240,8 @@ async def _run_migrations():
         "ALTER TABLE players ADD COLUMN shard_shop_week TEXT DEFAULT NULL",
         # Equipment rune slot on player_beasts
         "ALTER TABLE player_beasts ADD COLUMN rune_id TEXT DEFAULT NULL",
+        # Battle type tag so /stats counts all battles correctly (pvp/pve/sparr)
+        "ALTER TABLE battles ADD COLUMN battle_type TEXT DEFAULT 'pvp'",
     ]
     async with aiosqlite.connect(DB_PATH) as db:
         for sql in migrations:

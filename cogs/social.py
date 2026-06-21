@@ -99,6 +99,37 @@ class Trading(commands.Cog):
         class TradeView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=120)
+                self.message: discord.Message | None = None
+
+            def _disable_all(self):
+                for item in self.children:
+                    item.disabled = True
+
+            async def on_timeout(self):
+                self._disable_all()
+                if self.message:
+                    try:
+                        await self.message.edit(
+                            embed=discord.Embed(
+                                description="⌛ This trade offer expired. Use `/trade` to send a new one.",
+                                color=COLORS["info"],
+                            ),
+                            view=self,
+                        )
+                    except discord.HTTPException:
+                        pass
+
+            async def on_error(self, interaction: discord.Interaction, error: Exception, item):
+                import logging
+                logging.getLogger("chibibeasts.trade").exception("TradeView error", exc_info=error)
+                msg = "✦ Something went wrong with this trade — please try again."
+                try:
+                    if interaction.response.is_done():
+                        await interaction.followup.send(msg, ephemeral=True)
+                    else:
+                        await interaction.response.send_message(msg, ephemeral=True)
+                except discord.HTTPException:
+                    pass
 
             @discord.ui.button(label="Accept Trade", style=discord.ButtonStyle.success, emoji="🤝")
             async def accept(self, inv_interaction: discord.Interaction, button: discord.ui.Button):
@@ -211,7 +242,7 @@ class Trading(commands.Cog):
         embed = discord.Embed(title="🤝 Trade Offer!", description=desc, color=COLORS["legendary"])
         embed.set_footer(text="Trade expires in 2 minutes")
         view = TradeView()
-        await interaction.followup.send(embed=embed, view=view)
+        view.message = await interaction.followup.send(embed=embed, view=view)
 
 
 class Perks(commands.Cog):
