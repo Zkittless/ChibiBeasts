@@ -610,42 +610,158 @@ class World(commands.Cog):
 
     # ── /recipes ──────────────────────────────────────────────────────────
     @app_commands.command(name="recipes", description="Browse all craftable equipment recipes 📜")
-    @app_commands.describe(rarity="Filter by rarity")
-    @app_commands.choices(rarity=[
-        app_commands.Choice(name="⚪ Common", value="common"),
-        app_commands.Choice(name="🔵 Uncommon", value="uncommon"),
-        app_commands.Choice(name="🟣 Rare", value="rare"),
-        app_commands.Choice(name="🟡 Epic", value="epic"),
-        app_commands.Choice(name="👑 Legendary", value="legendary"),
-        app_commands.Choice(name="🌌 Altered Divine", value="altered_divine"),
+    @app_commands.describe(category="Armor recipes or material sources")
+    @app_commands.choices(category=[
+        app_commands.Choice(name="⚔️ Armor",           value="armor"),
+        app_commands.Choice(name="💎 Runes",            value="runes"),
+        app_commands.Choice(name="🪨 Material Sources", value="sources"),
     ])
-    async def recipes(self, interaction: discord.Interaction, rarity: str = None):
+    async def recipes(self, interaction: discord.Interaction, category: str = "armor"):
         await interaction.response.defer()
-        equipment, _ = load_equipment()
-        materials = load_materials()
+        equipment, runes = load_equipment()
+        materials_data = load_materials()
 
-        items = [v for v in equipment.values() if not rarity or v["rarity"] == rarity]
-        items.sort(key=lambda x: ["common","uncommon","rare","epic","legendary","altered_divine"].index(x["rarity"]))
+        RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "altered_divine"]
 
-        embed = discord.Embed(
-            title="📜 Crafting Recipes",
-            description="*Materials drop from exploring biomes and defeating beasts. Use `/craft <name>` to forge.*",
-            color=COLORS["info"]
-        )
-        for item in items[:10]:
-            recipe = item.get("recipe", {})
-            recipe_str = " + ".join(
-                f"`{qty}x {materials.get(mid, {}).get('name', mid)}`"
-                for mid, qty in recipe.items()
-            ) or "*No recipe*"
-            embed.add_field(
-                name=f"{RARITY_EMOJI.get(item['rarity'],'⚪')} {item['name']}",
-                value=f"{item['description']}\n**Recipe:** {recipe_str}",
-                inline=False
+        # ── Material sources map ───────────────────────────────────────────
+        # Materials drop from /explore catches at 60% chance, rarity-matched
+        # to the beast caught. Altered Divine mats have no current drop source.
+        MAT_SOURCES = {
+            "common":         "🗺️ `/explore` — catch any **Common** beast (60% drop chance)",
+            "uncommon":       "🗺️ `/explore` — catch any **Uncommon** beast (60% drop chance)",
+            "rare":           "🗺️ `/explore` — catch any **Rare** beast (60% drop chance)",
+            "epic":           "🗺️ `/explore` — catch any **Epic** beast (60% drop chance)",
+            "legendary":      "🗺️ `/explore` — catch any **Legendary** beast (60% drop chance)",
+            "altered_divine": "⚠️ *Not currently obtainable through gameplay — coming soon*",
+        }
+
+        if category == "sources":
+            embed = discord.Embed(
+                title="🪨 Material Sources",
+                description=(
+                    "*All materials drop from catching beasts during `/explore`. "
+                    "Higher-rarity biomes yield higher-rarity materials.*\n\n"
+                    "*Use `/materials` to see what you currently have.*"
+                ),
+                color=COLORS["info"]
             )
-        if len(items) > 10:
-            embed.set_footer(text=f"Showing 10 of {len(items)}. Filter by rarity to see more.")
-        await interaction.followup.send(embed=embed)
+            # Group materials by rarity
+            by_rarity = {}
+            for mid, mat in materials_data.items():
+                r = mat.get("rarity", "common")
+                by_rarity.setdefault(r, []).append(mat)
+
+            for rarity in RARITY_ORDER:
+                mats = by_rarity.get(rarity, [])
+                if not mats:
+                    continue
+                rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
+                mat_list = " · ".join(f"{m['emoji']} **{m['name']}**" for m in mats)
+                source = MAT_SOURCES.get(rarity, "")
+                embed.add_field(
+                    name=f"{rarity_emoji} {RARITY_LABEL.get(rarity, rarity.title())}",
+                    value=f"{mat_list}\n{source}",
+                    inline=False
+                )
+            embed.set_footer(text="ChibiBeasts 🐾  •  /craft <name> to forge · /materials to check your stock")
+            return await interaction.followup.send(embed=embed)
+
+        # ── Armor or Runes — paginated ─────────────────────────────────────
+        if category == "runes":
+            items = sorted(runes.values(), key=lambda x: RARITY_ORDER.index(x["rarity"]) if x["rarity"] in RARITY_ORDER else 99)
+            title = "💎 Rune Recipes"
+        else:
+            items = sorted(equipment.values(), key=lambda x: RARITY_ORDER.index(x["rarity"]) if x["rarity"] in RARITY_ORDER else 99)
+            title = "⚔️ Armor Recipes"
+
+        # Fetch the player's current material stock for the checklist
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT material_id, quantity FROM player_materials WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                inv = {r["material_id"]: r["quantity"] for r in await c.fetchall()}
+
+        per_page = 4
+        total_pages = max(1, (len(items) + per_page - 1) // per_page)
+
+        def build_recipe_page(page: int) -> discord.Embed:
+            page_items = items[(page - 1) * per_page : page * per_page]
+            embed = discord.Embed(
+                title=title,
+                description=(
+                    f"*Use `/craft <name>` to forge. Materials drop from `/explore` catches.*\n"
+                    f"*See `/recipes sources` for the full material source guide.*"
+                ),
+                color=COLORS["info"]
+            )
+            for item in page_items:
+                recipe = item.get("recipe", {})
+                rarity_emoji = RARITY_EMOJI.get(item["rarity"], "⚪")
+
+                # Build checklist — ✅ if player has enough, ❌ with deficit if not
+                checklist_lines = []
+                can_craft = True
+                for mid, qty_needed in recipe.items():
+                    mat = materials_data.get(mid, {})
+                    mat_name = mat.get("name", mid)
+                    mat_emoji = mat.get("emoji", "⚪")
+                    have = inv.get(mid, 0)
+                    if have >= qty_needed:
+                        checklist_lines.append(f"✅ {mat_emoji} {qty_needed}x {mat_name} `({have} owned)`")
+                    else:
+                        missing = qty_needed - have
+                        checklist_lines.append(f"❌ {mat_emoji} {qty_needed}x {mat_name} `(need {missing} more)`")
+                        can_craft = False
+
+                craft_status = "🔨 **Ready to craft!**" if can_craft and recipe else ""
+                checklist = "\n".join(checklist_lines) or "*No materials required*"
+
+                embed.add_field(
+                    name=f"{rarity_emoji} {item['name']}" + (" ✅" if can_craft and recipe else ""),
+                    value=(
+                        f"{item['description']}\n"
+                        f"{checklist}"
+                        + (f"\n{craft_status}" if craft_status else "")
+                    ),
+                    inline=False
+                )
+            embed.set_footer(text=f"ChibiBeasts 🐾  •  Page {page}/{total_pages} · /craft <name> to forge")
+            return embed
+
+        if total_pages == 1:
+            return await interaction.followup.send(embed=build_recipe_page(1))
+
+        class RecipeView(discord.ui.View):
+            def __init__(self, current: int):
+                super().__init__(timeout=120)
+                self.page = current
+                self._update_buttons()
+
+            def _update_buttons(self):
+                self.prev_btn.disabled = self.page <= 1
+                self.next_btn.disabled = self.page >= total_pages
+                self.prev_btn.label = f"◀ Page {self.page - 1}" if self.page > 1 else "◀"
+                self.next_btn.label = f"Page {self.page + 1} ▶" if self.page < total_pages else "▶"
+
+            @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary)
+            async def prev_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't yours!", ephemeral=True)
+                self.page -= 1
+                self._update_buttons()
+                await btn_interaction.response.edit_message(embed=build_recipe_page(self.page), view=self)
+
+            @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
+            async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't yours!", ephemeral=True)
+                self.page += 1
+                self._update_buttons()
+                await btn_interaction.response.edit_message(embed=build_recipe_page(self.page), view=self)
+
+        await interaction.followup.send(embed=build_recipe_page(1), view=RecipeView(1))
 
     # ── /materials ────────────────────────────────────────────────────────
     @app_commands.command(name="materials", description="View your crafting materials 🪨")
