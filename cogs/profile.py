@@ -108,29 +108,65 @@ class Profile(commands.Cog):
         per_page = 8
         total_pages = max(1, (len(beasts) + per_page - 1) // per_page)
         page = max(1, min(page, total_pages))
-        page_beasts = beasts[(page-1)*per_page : page*per_page]
 
-        embed = discord.Embed(
-            title=f"🐾 {interaction.user.display_name}'s Collection",
-            description=f"**{len(beasts)}** beasts total | Page {page}/{total_pages}",
-            color=COLORS["divine"]
-        )
-        for b in page_beasts:
-            beast_data = get_beast_data(b["beast_id"])
-            if not beast_data:
-                continue
-            name = b["nickname"] or beast_data["name"]
-            rarity_emoji = RARITY_EMOJI.get(b["rarity"], "⚪")
-            type_emoji = TYPE_EMOJI.get(beast_data["type"], "❓")
-            active_tag = " ⚔️ **ACTIVE**" if b["is_active"] else ""
-            fav_tag = " ⭐" if b["is_favorite"] else ""
-            embed.add_field(
-                name=f"{rarity_emoji} {name} — Lv.{b['level']}{active_tag}{fav_tag}",
-                value=f"{type_emoji} {beast_data['type'].capitalize()} | ❤️ {b['hp']}/{b['max_hp']} | #{b['id']}",
-                inline=True
+        def build_page(p: int) -> discord.Embed:
+            page_beasts = beasts[(p - 1) * per_page : p * per_page]
+            embed = discord.Embed(
+                title=f"🐾 {interaction.user.display_name}'s Collection",
+                description=f"**{len(beasts)}** beasts total | Page {p}/{total_pages}",
+                color=COLORS["divine"]
             )
-        embed.set_footer(text="ChibiBeasts 🐾  •  /beastinfo <id> to view details")
-        await interaction.followup.send(embed=embed)
+            for b in page_beasts:
+                beast_data = get_beast_data(b["beast_id"])
+                if not beast_data:
+                    continue
+                name = b["nickname"] or beast_data["name"]
+                rarity_emoji = RARITY_EMOJI.get(b["rarity"], "⚪")
+                type_emoji = TYPE_EMOJI.get(beast_data["type"], "❓")
+                active_tag = " ⚔️ **ACTIVE**" if b["is_active"] else ""
+                fav_tag = " ⭐" if b["is_favorite"] else ""
+                embed.add_field(
+                    name=f"{rarity_emoji} {name} — Lv.{b['level']}{active_tag}{fav_tag}",
+                    value=f"{type_emoji} {beast_data['type'].capitalize()} | ❤️ {b['hp']}/{b['max_hp']} | #{b['id']}",
+                    inline=True
+                )
+            embed.set_footer(text=f"ChibiBeasts 🐾  •  /beastinfo <id> to view details  •  Page {p}/{total_pages}")
+            return embed
+
+        # No buttons needed for single-page collections
+        if total_pages == 1:
+            return await interaction.followup.send(embed=build_page(1))
+
+        class CollectionView(discord.ui.View):
+            def __init__(self, current: int):
+                super().__init__(timeout=120)
+                self.page = current
+                self._update_buttons()
+
+            def _update_buttons(self):
+                self.prev_btn.disabled = self.page <= 1
+                self.next_btn.disabled = self.page >= total_pages
+                self.prev_btn.label = f"◀ Page {self.page - 1}" if self.page > 1 else "◀"
+                self.next_btn.label = f"Page {self.page + 1} ▶" if self.page < total_pages else "▶"
+
+            @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary)
+            async def prev_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
+                self.page -= 1
+                self._update_buttons()
+                await btn_interaction.response.edit_message(embed=build_page(self.page), view=self)
+
+            @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
+            async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
+                self.page += 1
+                self._update_buttons()
+                await btn_interaction.response.edit_message(embed=build_page(self.page), view=self)
+
+        view = CollectionView(page)
+        await interaction.followup.send(embed=build_page(page), view=view)
 
     @app_commands.command(name="beastinfo", description="View detailed info about a specific beast 🔍")
     @app_commands.describe(beast_id="The ID of the beast from your collection")
@@ -203,7 +239,7 @@ class Profile(commands.Cog):
                 inline=False
             )
         if beast_data.get("image_url"):
-            embed.set_image(url=beast_data["image_url"])
+            embed.set_thumbnail(url=beast_data["image_url"])
         embed.set_footer(text=f"Beast ID: #{beast_row['id']} | Caught via: {beast_row['caught_from']}")
         await interaction.followup.send(embed=embed)
 

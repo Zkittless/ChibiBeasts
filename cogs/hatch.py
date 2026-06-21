@@ -268,7 +268,7 @@ class Hatch(commands.Cog):
         embed.add_field(name="📜 Description", value=beast["description"], inline=False)
 
         if beast.get("image_url"):
-            embed.set_image(url=beast["image_url"])
+            embed.set_thumbnail(url=beast["image_url"])
 
         embed.set_footer(text="ChibiBeasts 🐾  •  Use /beast to view your collection")
         return embed
