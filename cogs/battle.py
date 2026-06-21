@@ -1788,32 +1788,46 @@ class Battle(commands.Cog):
                 return
 
             gold_gain = random.randint(100, 300)
-            await update_player(
-                interaction.user.id,
-                gold=player["gold"] + gold_gain
-            )
-            # Grant shard
+            # All writes for a spar win in one connection — the old code opened
+            # a connection here then called save_quest_state() inside it, which
+            # opens another connection, causing "database is locked" errors.
+            from cogs.questline import get_quest_state, RELATIONSHIP_LEVELS
+            import json as _json
+            qs = await get_quest_state(interaction.user.id)
+            current_rel = qs["npc_relationships"].get(npc_name, "stranger")
+            levels = list(RELATIONSHIP_LEVELS.keys())
+            rel_advanced = False
+            next_rel = current_rel
+            if levels.index(current_rel) < len(levels) - 1:
+                next_rel = levels[levels.index(current_rel) + 1]
+                qs["npc_relationships"][npc_name] = next_rel
+                rel_advanced = True
+
             async with aiosqlite.connect("db/chibibeast.db") as db:
+                # Gold + shard in one statement
                 await db.execute(
-                    "UPDATE players SET celestial_shards = celestial_shards + 1 WHERE user_id = ?",
-                    (interaction.user.id,)
+                    "UPDATE players SET gold = gold + ?, celestial_shards = celestial_shards + 1 WHERE user_id = ?",
+                    (gold_gain, interaction.user.id)
                 )
-                # Advance NPC relationship if possible
-                from cogs.questline import get_quest_state, save_quest_state, RELATIONSHIP_LEVELS
-                qs = await get_quest_state(interaction.user.id)
-                current_rel = qs["npc_relationships"].get(npc_name, "stranger")
-                levels = list(RELATIONSHIP_LEVELS.keys())
-                if levels.index(current_rel) < len(levels) - 1:
-                    next_rel = levels[levels.index(current_rel) + 1]
-                    qs["npc_relationships"][npc_name] = next_rel
-                    await save_quest_state(qs)
-                    embed.add_field(
-                        name=f"💬 Relationship improved!",
-                        value=f"Your bond with **{npc['name']}** is now *{next_rel.capitalize()}*.",
-                        inline=False
+                # Relationship advancement written directly — same connection
+                if rel_advanced:
+                    await db.execute(
+                        """INSERT INTO player_questline
+                               (user_id, npc_relationships, last_updated)
+                           VALUES (?, ?, datetime('now'))
+                           ON CONFLICT(user_id) DO UPDATE SET
+                               npc_relationships = excluded.npc_relationships,
+                               last_updated      = excluded.last_updated""",
+                        (interaction.user.id, _json.dumps(qs["npc_relationships"]))
                     )
                 await db.commit()
 
+            if rel_advanced:
+                embed.add_field(
+                    name="💬 Relationship improved!",
+                    value=f"Your bond with **{npc['name']}** is now *{next_rel.capitalize()}*.",
+                    inline=False
+                )
             embed.add_field(
                 name="🎁 Rewards",
                 value=f"+**{gold_gain:,} gold** 💰 | +**1 🔮 Celestial Shard**\n\n{NPC_WIN_LINES[npc_name]}",
