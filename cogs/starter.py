@@ -173,6 +173,9 @@ class Starter(commands.Cog):
         if flavor:
             embed.add_field(name="💬 Personality", value=f"*{flavor}*", inline=False)
 
+        if beast.get("image_url"):
+            embed.set_image(url=beast["image_url"])
+
         embed.set_footer(text="ChibiBeasts 🐾  •  Use /profile to see your trainer stats")
         return embed
 
@@ -219,7 +222,12 @@ class Starter(commands.Cog):
             ),
             color=COLORS["divine"]
         )
+        intro_embed.set_footer(
+            text="ChibiBeasts 🐾  •  The Loom is still weaving. Your thread starts now."
+        )
 
+        # One embed per starter so each sprite sits cleanly next to its description
+        starter_embeds = []
         for sid in STARTER_IDS:
             if sid not in starters:
                 continue
@@ -228,23 +236,27 @@ class Starter(commands.Cog):
             flavor = b.get("starter_flavor", b["description"])
             house  = b.get("starter_house", "Unknown House")
             s      = b["base_stats"]
-            intro_embed.add_field(
-                name=f"{emoji} **{b['name']}** — *{b['title']}*",
+            color  = COLORS.get(b["rarity"], COLORS["info"])
+
+            se = discord.Embed(
+                title=f"{emoji} {b['name']} — *{b['title']}*",
+                description=f"🏛️ *{house}*\n\n{flavor}",
+                color=color
+            )
+            se.add_field(
+                name="📊 Stats",
                 value=(
-                    f"🏛️ *{house}*\n"
-                    f"{flavor}\n"
                     f"❤️`{s['hp']}` ⚔️`{s['attack']}` 🛡️`{s['defense']}` "
                     f"💨`{s['speed']}` 💠`{s['mana']}`"
                 ),
                 inline=False
             )
-
-        intro_embed.set_footer(
-            text="ChibiBeasts 🐾  •  The Loom is still weaving. Your thread starts now."
-        )
+            if b.get("image_url"):
+                se.set_thumbnail(url=b["image_url"])
+            starter_embeds.append(se)
 
         view = StarterView(self, interaction.user.id, interaction.user.display_name, starters)
-        await interaction.followup.send(embed=intro_embed, view=view)
+        await interaction.followup.send(embeds=[intro_embed] + starter_embeds, view=view)
 
 
 async def setup(bot: commands.Bot):
