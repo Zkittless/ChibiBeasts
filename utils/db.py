@@ -452,6 +452,12 @@ async def apply_beast_levelup(db, beast_row: dict, new_level: int, new_exp: int)
     Apply level-up stat growth and update the beast row in the DB.
     `db` must be an open aiosqlite connection.
 
+    Always writes the new EXP value even when the level hasn't changed —
+    the old guard `if new_level <= beast_row["level"]: return` caused beast
+    EXP to never be saved between level-ups, so the bar reset to zero every
+    battle and the level never advanced until a single action pushed the beast
+    over the threshold from scratch.
+
     Automatically uses the wild EXP curve for non-starter beasts so callers
     don't need to know which curve to use — the beast row's caught_from field
     determines it. Starters use the steeper curve; everything else uses the
@@ -464,35 +470,37 @@ async def apply_beast_levelup(db, beast_row: dict, new_level: int, new_exp: int)
     We compute the correct new_hp in Python first so the query always writes
     the right value regardless of SQLite's evaluation order.
     """
-    if new_level <= beast_row["level"]:
-        return
-    levels_gained = new_level - beast_row["level"]
-    growth = calc_stat_growth(beast_row, levels_gained)
-
-    # Compute new max_hp and clamp current hp against it in Python,
-    # not in SQL, to avoid the evaluation-order race condition.
-    new_max_hp = beast_row["max_hp"] + growth["hp"]
-    new_hp     = min(beast_row["hp"] + growth["hp"], new_max_hp)
-
-    await db.execute("""
-        UPDATE player_beasts SET
-            level    = ?,
-            exp      = ?,
-            max_hp   = ?,
-            hp       = ?,
-            attack   = attack   + ?,
-            defense  = defense  + ?,
-            speed    = speed    + ?,
-            mana     = mana     + ?,
-            max_mana = max_mana + ?
-        WHERE id = ?
-    """, (
-        new_level, new_exp,
-        new_max_hp, new_hp,
-        growth["attack"], growth["defense"], growth["speed"],
-        growth["mana"], growth["mana"],
-        beast_row["id"]
-    ))
+    if new_level > beast_row["level"]:
+        # Level-up path: apply stat growth
+        levels_gained = new_level - beast_row["level"]
+        growth = calc_stat_growth(beast_row, levels_gained)
+        new_max_hp = beast_row["max_hp"] + growth["hp"]
+        new_hp     = min(beast_row["hp"] + growth["hp"], new_max_hp)
+        await db.execute("""
+            UPDATE player_beasts SET
+                level    = ?,
+                exp      = ?,
+                max_hp   = ?,
+                hp       = ?,
+                attack   = attack   + ?,
+                defense  = defense  + ?,
+                speed    = speed    + ?,
+                mana     = mana     + ?,
+                max_mana = max_mana + ?
+            WHERE id = ?
+        """, (
+            new_level, new_exp,
+            new_max_hp, new_hp,
+            growth["attack"], growth["defense"], growth["speed"],
+            growth["mana"], growth["mana"],
+            beast_row["id"]
+        ))
+    else:
+        # No level-up — just persist the accumulated EXP so progress isn't lost
+        await db.execute(
+            "UPDATE player_beasts SET exp = ? WHERE id = ?",
+            (new_exp, beast_row["id"])
+        )
 
 
 def get_beast_exp_for_level(beast_row: dict, level: int) -> int:

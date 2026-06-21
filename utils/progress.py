@@ -348,12 +348,30 @@ async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[d
 
             if is_complete and not (row and row["completed"]):
                 await db.execute(
-                    "UPDATE players SET gold = gold + ?, exp = exp + ? WHERE user_id = ?",
-                    (q["reward_gold"], q["reward_exp"], user_id)
+                    "UPDATE players SET gold = gold + ? WHERE user_id = ?",
+                    (q["reward_gold"], user_id)
                 )
                 just_completed.append(q)
 
         await db.commit()
+
+    # ── Apply EXP with level-up handling for all just-completed quests ────
+    # Done outside the DB block so we can use award_player_exp cleanly.
+    if just_completed:
+        total_exp = sum(q["reward_exp"] for q in just_completed if q.get("reward_exp"))
+        if total_exp > 0:
+            try:
+                from cogs.battle import award_player_exp
+                await award_player_exp(user_id, total_exp)
+            except Exception:
+                # Fallback: raw write if import fails (e.g. circular import at startup)
+                import aiosqlite as _aio
+                async with _aio.connect(DB_PATH) as _db:
+                    await _db.execute(
+                        "UPDATE players SET exp = exp + ? WHERE user_id = ?",
+                        (total_exp, user_id)
+                    )
+                    await _db.commit()
 
     # ── All-quests-complete shard bonus ────────────────────────────────────
     # If the player just completed the final quest of their daily set,

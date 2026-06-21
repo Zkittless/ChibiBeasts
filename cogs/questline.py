@@ -300,13 +300,15 @@ class Questline(commands.Cog):
                 if reward.get("gold"):
                     await db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?",
                                      (reward["gold"], interaction.user.id))
-                if reward.get("exp"):
-                    await db.execute("UPDATE players SET exp = exp + ? WHERE user_id = ?",
-                                     (reward["exp"], interaction.user.id))
                 if reward.get("celestial_shards"):
                     await db.execute("UPDATE players SET celestial_shards = celestial_shards + ? WHERE user_id = ?",
                                      (reward["celestial_shards"], interaction.user.id))
                 await db.commit()
+
+            # EXP goes through award_player_exp so level-ups are handled correctly
+            if reward.get("exp"):
+                from cogs.battle import award_player_exp
+                await award_player_exp(interaction.user.id, reward["exp"])
 
             # Add relic to state
             if reward.get("relic"):
