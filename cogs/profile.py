@@ -510,10 +510,13 @@ class Shop(commands.Cog):
 
     @app_commands.command(name="shop", description="Browse the ChibiBeasts shop 🏪")
     @app_commands.choices(category=[
-        app_commands.Choice(name="🥚 Eggs", value="eggs"),
-        app_commands.Choice(name="⚪ Common Items", value="common"),
-        app_commands.Choice(name="🟢 Uncommon Items", value="uncommon"),
-        app_commands.Choice(name="🔵 Rare Items", value="rare"),
+        app_commands.Choice(name="🥚 Eggs",             value="eggs"),
+        app_commands.Choice(name="⚪ Common Items",      value="common"),
+        app_commands.Choice(name="🟢 Uncommon Items",    value="uncommon"),
+        app_commands.Choice(name="🔵 Rare Items",        value="rare"),
+        app_commands.Choice(name="🟣 Epic Items",        value="epic"),
+        app_commands.Choice(name="🟡 Legendary Items",   value="legendary"),
+        app_commands.Choice(name="🌸 Divine Items",      value="divine"),
     ])
     async def shop(self, interaction: discord.Interaction, category: str = "eggs"):
         await interaction.response.defer()
