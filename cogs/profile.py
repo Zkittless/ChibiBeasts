@@ -522,33 +522,99 @@ class Shop(commands.Cog):
         RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
 
         if category == "eggs":
-            EGG_SHOP = [
+            # ── Instant-hatch eggs (always shown, no pagination needed) ──
+            INSTANT_EGGS = [
                 ("🥚 Common Egg",      200,   "Common → Uncommon. Fast. Low-stakes. Good for beginners."),
                 ("🥚✨ Rare Egg",      1500,  "Uncommon → Legendary. Real odds at something impressive."),
                 ("🌌🥚 Celestial Egg", 8000,  "Epic → **Divine** (25% chance). The real hunt starts here."),
                 ("🌊💎 Abyssal Egg",   25000, "Legendary → **Divine** (55% chance). Mostly Divine. Patience rewarded."),
             ]
-            embed = discord.Embed(
-                title="🏪 Shop — Eggs",
-                description=f"💰 Your gold: `{player['gold']:,}`\n\nInstant-hatch eggs. Buy with `/buy <egg name>`, then `/hatch` to open immediately.",
-                color=COLORS["legendary"]
-            )
-            for egg_name, price, desc in EGG_SHOP:
-                embed.add_field(
-                    name=f"{egg_name} — `{price:,} gold`",
-                    value=desc,
-                    inline=False
+
+            # ── Named incubation eggs pulled from world.py's EGG_TYPES ──────
+            # Import here to avoid circular imports — world.py is a cog, not utils
+            from cogs.world import EGGS as EGG_TYPES
+            EGG_PRICES = {
+                "sprout_pod": 300,    "pebble_shell": 300,    "soot_hatchling": 300,
+                "dewdrop_bulb": 1200, "gale_nest": 1200,      "cavern_core": 1200,
+                "prism_sphere": 4000, "glow_spore": 4000,     "eclipse_pebble": 4000,
+                "volcanic_core": 12000,"nimbus_cloud": 12000, "monolith_relic": 12000,
+                "abyssal_trench_orb": 50000, "dragon_hoard_scale": 50000, "glacial_monolith": 50000,
+            }
+            # Only show purchasable eggs (exclude divine-only drops)
+            named_eggs = [
+                (eid, EGG_TYPES[eid], EGG_PRICES[eid])
+                for eid in EGG_PRICES
+                if eid in EGG_TYPES
+            ]
+            # Sort by price
+            named_eggs.sort(key=lambda x: x[2])
+
+            per_page = 4
+            total_pages = max(1, (len(named_eggs) + per_page - 1) // per_page)
+
+            def build_egg_page(page: int) -> discord.Embed:
+                embed = discord.Embed(
+                    title="🏪 Shop — Eggs",
+                    description=(
+                        f"💰 Your gold: `{player['gold']:,}`\n\n"
+                        f"**Instant eggs** — buy with `/buy <name>` then `/hatch` immediately:\n"
+                        + "\n".join(f"• **{name}** — `{price:,}g` — {desc}" for name, price, desc in INSTANT_EGGS)
+                        + f"\n\n**Incubation eggs** — hatch over time via `/incubate` (page {page}/{total_pages}):"
+                    ),
+                    color=COLORS["legendary"]
                 )
-            embed.add_field(
-                name="🌱 Incubation Eggs",
-                value=(
-                    "Named eggs (Sprout Pod, Prism Sphere, Volcanic Core, etc.) hatch over time via `/incubate`.\n"
-                    "Buy with `/buy <egg name>` then place with `/incubate`."
-                ),
-                inline=False
-            )
-            embed.set_footer(text="ChibiBeasts 🐾  •  /buy <name> to purchase")
-            return await interaction.followup.send(embed=embed)
+                page_eggs = named_eggs[(page - 1) * per_page : page * per_page]
+                for eid, egg, price in page_eggs:
+                    pool = egg.get("pool", {})
+                    pool_str = " · ".join(
+                        f"{RARITY_EMOJI.get(r,'⚪')} {int(v*100)}%"
+                        for r, v in sorted(pool.items(), key=lambda x: RARITY_ORDER.index(x[0]) if x[0] in RARITY_ORDER else 99)
+                    )
+                    hours = egg["incubation_hours"]
+                    time_str = f"{hours}h" if hours < 24 else f"{hours//24}d{' '+str(hours%24)+'h' if hours%24 else ''}"
+                    embed.add_field(
+                        name=f"{egg['emoji']} {egg['name']} — `{price:,} gold`",
+                        value=(
+                            f"*{egg['flavor']}*\n"
+                            f"⏱️ {time_str} incubation · {pool_str}"
+                        ),
+                        inline=False
+                    )
+                embed.set_footer(text="ChibiBeasts 🐾  •  /buy <egg name> to purchase · /incubate after buying")
+                return embed
+
+            if total_pages == 1:
+                return await interaction.followup.send(embed=build_egg_page(1))
+
+            class EggView(discord.ui.View):
+                def __init__(self, current: int):
+                    super().__init__(timeout=120)
+                    self.page = current
+                    self._update_buttons()
+
+                def _update_buttons(self):
+                    self.prev_btn.disabled = self.page <= 1
+                    self.next_btn.disabled = self.page >= total_pages
+                    self.prev_btn.label = f"◀ Page {self.page - 1}" if self.page > 1 else "◀"
+                    self.next_btn.label = f"Page {self.page + 1} ▶" if self.page < total_pages else "▶"
+
+                @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary)
+                async def prev_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                    if btn_interaction.user.id != interaction.user.id:
+                        return await btn_interaction.response.send_message("This isn't your shop!", ephemeral=True)
+                    self.page -= 1
+                    self._update_buttons()
+                    await btn_interaction.response.edit_message(embed=build_egg_page(self.page), view=self)
+
+                @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
+                async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                    if btn_interaction.user.id != interaction.user.id:
+                        return await btn_interaction.response.send_message("This isn't your shop!", ephemeral=True)
+                    self.page += 1
+                    self._update_buttons()
+                    await btn_interaction.response.edit_message(embed=build_egg_page(self.page), view=self)
+
+            return await interaction.followup.send(embed=build_egg_page(1), view=EggView(1))
 
         # ── Items tab — sorted by rarity then price, paginated ──────────────
         all_items = sorted(
