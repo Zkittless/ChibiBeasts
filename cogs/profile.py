@@ -509,37 +509,29 @@ class Shop(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="shop", description="Browse the ChibiBeasts shop 🏪")
+    @app_commands.describe(category="What to browse")
     @app_commands.choices(category=[
-        app_commands.Choice(name="🥚 Eggs",             value="eggs"),
-        app_commands.Choice(name="⚪ Common Items",      value="common"),
-        app_commands.Choice(name="🟢 Uncommon Items",    value="uncommon"),
-        app_commands.Choice(name="🔵 Rare Items",        value="rare"),
-        app_commands.Choice(name="🟣 Epic Items",        value="epic"),
-        app_commands.Choice(name="🟡 Legendary Items",   value="legendary"),
-        app_commands.Choice(name="🌸 Divine Items",      value="divine"),
+        app_commands.Choice(name="🥚 Eggs",   value="eggs"),
+        app_commands.Choice(name="🎒 Items",  value="items"),
     ])
     async def shop(self, interaction: discord.Interaction, category: str = "eggs"):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
         items_data = load_items()
 
-        embed = discord.Embed(
-            title="🏪 ChibiBeasts Shop",
-            description=f"💰 Your gold: `{player['gold']:,}` | 💎 Shards: `{player['celestial_shards']}`",
-            color=COLORS["legendary"]
-        )
+        RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
 
         if category == "eggs":
             EGG_SHOP = [
-                ("🥚 Common Egg",     200,    "Common → Uncommon. Fast. Low-stakes. Good for beginners."),
-                ("🥚✨ Rare Egg",     1500,   "Uncommon → Legendary. Real odds at something impressive."),
-                ("🌌🥚 Celestial Egg",8000,   "Epic → **Divine** (25% chance). The real hunt starts here."),
-                ("🌊💎 Abyssal Egg",  25000,  "Legendary → **Divine** (55% chance). Mostly Divine. Patience rewarded."),
+                ("🥚 Common Egg",      200,   "Common → Uncommon. Fast. Low-stakes. Good for beginners."),
+                ("🥚✨ Rare Egg",      1500,  "Uncommon → Legendary. Real odds at something impressive."),
+                ("🌌🥚 Celestial Egg", 8000,  "Epic → **Divine** (25% chance). The real hunt starts here."),
+                ("🌊💎 Abyssal Egg",   25000, "Legendary → **Divine** (55% chance). Mostly Divine. Patience rewarded."),
             ]
-            embed.add_field(
-                name="🥚 Hatch Eggs with `/hatch`",
-                value="Instant hatching — no waiting. Odds shown below.",
-                inline=False
+            embed = discord.Embed(
+                title="🏪 Shop — Eggs",
+                description=f"💰 Your gold: `{player['gold']:,}`\n\nInstant-hatch eggs. Buy with `/buy <egg name>`, then `/hatch` to open immediately.",
+                color=COLORS["legendary"]
             )
             for egg_name, price, desc in EGG_SHOP:
                 embed.add_field(
@@ -549,21 +541,76 @@ class Shop(commands.Cog):
                 )
             embed.add_field(
                 name="🌱 Incubation Eggs",
-                value="Named eggs (Sprout Pod, Prism Sphere, Volcanic Core, etc.) can be bought and placed in `/incubate` for timed hatching with different pools. Use `/incubate` after buying.",
+                value=(
+                    "Named eggs (Sprout Pod, Prism Sphere, Volcanic Core, etc.) hatch over time via `/incubate`.\n"
+                    "Buy with `/buy <egg name>` then place with `/incubate`."
+                ),
                 inline=False
             )
-            embed.set_footer(text="Use /buy <egg name> to purchase • /hatch to hatch immediately • /incubate for timed eggs")
-        else:
-            shop_items = [i for i in items_data.values() if i["rarity"] == category and i["price"] > 0]
-            for item in shop_items:
+            embed.set_footer(text="ChibiBeasts 🐾  •  /buy <name> to purchase")
+            return await interaction.followup.send(embed=embed)
+
+        # ── Items tab — sorted by rarity then price, paginated ──────────────
+        all_items = sorted(
+            [i for i in items_data.values() if i.get("price", 0) > 0],
+            key=lambda i: (
+                RARITY_ORDER.index(i["rarity"]) if i["rarity"] in RARITY_ORDER else 99,
+                i["price"]
+            )
+        )
+
+        per_page = 6
+        total_pages = max(1, (len(all_items) + per_page - 1) // per_page)
+
+        def build_item_page(page: int) -> discord.Embed:
+            page_items = all_items[(page - 1) * per_page : page * per_page]
+            embed = discord.Embed(
+                title="🏪 Shop — Items",
+                description=f"💰 Your gold: `{player['gold']:,}` | Page {page}/{total_pages}",
+                color=COLORS["legendary"]
+            )
+            for item in page_items:
                 rarity_emoji = RARITY_EMOJI.get(item["rarity"], "⚪")
                 embed.add_field(
                     name=f"{rarity_emoji} {item['name']} — `{item['price']:,} gold`",
-                    value=item["description"][:100],
+                    value=item["description"][:120],
                     inline=False
                 )
-            embed.set_footer(text="Use /buy <item name> to purchase")
-        await interaction.followup.send(embed=embed)
+            embed.set_footer(text="ChibiBeasts 🐾  •  /buy <item name> to purchase")
+            return embed
+
+        if total_pages == 1:
+            return await interaction.followup.send(embed=build_item_page(1))
+
+        class ShopView(discord.ui.View):
+            def __init__(self, current: int):
+                super().__init__(timeout=120)
+                self.page = current
+                self._update_buttons()
+
+            def _update_buttons(self):
+                self.prev_btn.disabled = self.page <= 1
+                self.next_btn.disabled = self.page >= total_pages
+                self.prev_btn.label = f"◀ Page {self.page - 1}" if self.page > 1 else "◀"
+                self.next_btn.label = f"Page {self.page + 1} ▶" if self.page < total_pages else "▶"
+
+            @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary)
+            async def prev_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't your shop!", ephemeral=True)
+                self.page -= 1
+                self._update_buttons()
+                await btn_interaction.response.edit_message(embed=build_item_page(self.page), view=self)
+
+            @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
+            async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't your shop!", ephemeral=True)
+                self.page += 1
+                self._update_buttons()
+                await btn_interaction.response.edit_message(embed=build_item_page(self.page), view=self)
+
+        await interaction.followup.send(embed=build_item_page(1), view=ShopView(1))
 
     @app_commands.command(name="buy", description="Buy an item from the shop 💰")
     @app_commands.describe(item_name="Name of item to buy")
