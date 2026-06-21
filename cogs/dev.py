@@ -268,6 +268,61 @@ class Dev(commands.Cog):
             ephemeral=True
         )
 
+    # ── /dev hatch_egg ────────────────────────────────────────────────────
+    @dev_group.command(name="hatch_egg", description="Instantly hatch a player's oldest incubating egg")
+    @app_commands.describe(member="Target player", egg_id="Specific egg ID to hatch (leave blank for oldest)")
+    @dev_only()
+    async def hatch_egg(self, interaction: discord.Interaction, member: discord.Member, egg_id: int = None):
+        await interaction.response.defer(ephemeral=True)
+        from cogs.world import EGGS, roll_egg_rarity, pick_beast_for_rarity
+        from utils.db import add_beast_to_player
+        from utils.theme import RARITY_LABEL, TYPE_EMOJI
+
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            if egg_id:
+                async with db.execute(
+                    "SELECT * FROM incubating_eggs WHERE id = ? AND user_id = ? AND hatched = 0",
+                    (egg_id, member.id)
+                ) as c:
+                    row = await c.fetchone()
+            else:
+                async with db.execute(
+                    "SELECT * FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY ready_at ASC LIMIT 1",
+                    (member.id,)
+                ) as c:
+                    row = await c.fetchone()
+
+            if not row:
+                return await interaction.followup.send(
+                    f"✦ **{member.display_name}** has no incubating eggs.", ephemeral=True
+                )
+            row = dict(row)
+
+            egg_def = EGGS.get(row["egg_type"], {})
+            rarity  = roll_egg_rarity(row["egg_type"])
+            beast   = pick_beast_for_rarity(rarity, egg_def)
+
+            if not beast:
+                return await interaction.followup.send(
+                    "✦ Couldn't roll a beast for this egg type.", ephemeral=True
+                )
+
+            beast_row_id = await add_beast_to_player(
+                member.id, {**beast, "caught_from": "incubation"}
+            )
+            await db.execute("UPDATE incubating_eggs SET hatched = 1 WHERE id = ?", (row["id"],))
+            await db.commit()
+
+        rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
+        type_emoji   = TYPE_EMOJI.get(beast.get("type", ""), "❓")
+        await interaction.followup.send(
+            f"✅ Hatched **{row['egg_name']}** for **{member.display_name}**:\n"
+            f"{rarity_emoji} **{beast['name']}** — {type_emoji} {beast.get('type','?').capitalize()} "
+            f"({RARITY_LABEL.get(rarity, rarity)}) — Beast ID #{beast_row_id}",
+            ephemeral=True
+        )
+
     # ── /dev set_level ────────────────────────────────────────────────────
     @dev_group.command(name="set_level", description="Set a player's trainer level")
     @app_commands.describe(member="Target player", level="Target level")
