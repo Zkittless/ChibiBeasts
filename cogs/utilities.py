@@ -804,7 +804,7 @@ class Utilities(commands.Cog):
             happiness_added = 0
             if sanctuary.get("fairy_garden"):
                 await db.execute(
-                    "UPDATE player_beasts SET happiness = MIN(100, happiness + 2) WHERE user_id = ? AND is_active = 0 AND happiness < 100",
+                    "UPDATE player_beasts SET happiness = MIN(100, happiness + 5) WHERE user_id = ? AND is_active = 0 AND happiness < 100",
                     (interaction.user.id,)
                 )
                 async with db.execute(
@@ -814,7 +814,7 @@ class Utilities(commands.Cog):
                     count = (await c.fetchone())[0]
                 if count:
                     happiness_added = count
-                    lines.append(f"🌸 **Fairy Garden:** +2 happiness to {count} benched beast{'s' if count != 1 else ''}")
+                    lines.append(f"🌸 **Fairy Garden:** +5 happiness to {count} benched beast{'s' if count != 1 else ''}")
 
             # Mark claim
             await db.execute(
@@ -1135,6 +1135,89 @@ class Utilities(commands.Cog):
 
         await interaction.followup.send(embed=discord.Embed(
             description=f"✦ Title set to **{chosen}**. It will appear in your `/profile`.",
+            color=COLORS["success"]
+        ))
+
+    # ── /play ─────────────────────────────────────────────────────────────
+    @app_commands.command(name="play", description="Spend time with your active beast to boost their happiness 😊")
+    async def play(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        player = await get_or_create_player(interaction.user.id, str(interaction.user))
+
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+
+            # One play session per day
+            today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            async with db.execute(
+                "SELECT 1 FROM daily_quests WHERE user_id = ? AND quest_id = 'play_session' AND date = ?",
+                (interaction.user.id, today)
+            ) as c:
+                already_played = await c.fetchone()
+
+            if already_played:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description=(
+                        "✦ You've already played with your beast today.\n"
+                        "*They're happy — come back tomorrow.*"
+                    ),
+                    color=COLORS["info"]
+                ))
+
+            async with db.execute(
+                "SELECT * FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                (interaction.user.id,)
+            ) as c:
+                active = await c.fetchone()
+
+            if not active:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description="✦ You don't have an active beast! Use `/setactive` first.",
+                    color=COLORS["error"]
+                ))
+
+            active = dict(active)
+            PLAY_GAIN = 15
+            new_happiness = min(100, active["happiness"] + PLAY_GAIN)
+            already_full = active["happiness"] >= 100
+
+            await db.execute(
+                "UPDATE player_beasts SET happiness = ? WHERE id = ?",
+                (new_happiness, active["id"])
+            )
+            await db.execute(
+                "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, 'play_session', 1, 1, ?)",
+                (interaction.user.id, today)
+            )
+            await db.commit()
+
+        from utils.db import get_beast_data as _gbd
+        beast_data = _gbd(active["beast_id"]) or {}
+        name = active.get("nickname") or beast_data.get("name", "your beast")
+
+        PLAY_LINES = [
+            f"*{name} chases something that isn't there, then pretends it wasn't doing that.*",
+            f"*You sit with {name} for a while. It doesn't move much. That seems to be the point.*",
+            f"*{name} does something you can't quite describe. You feel like you both understood something.*",
+            f"*{name} leans against you for exactly three seconds, then walks away like it didn't happen.*",
+            f"*You bring {name} somewhere it hasn't been. It sniffs everything. Twice.*",
+        ]
+        import random as _r
+        play_line = _r.choice(PLAY_LINES)
+
+        if already_full:
+            desc = f"*{name} is already as happy as can be — but they don't mind the company.*\n\n😊 Happiness: `100/100`"
+        else:
+            desc = (
+                f"{play_line}\n\n"
+                f"😊 **+{PLAY_GAIN} happiness** → `{new_happiness}/100`"
+                + ("\n\n*Use `/shop` to buy Brambleberries or Sugarsprout Cupcakes for more happiness boosts!*"
+                   if new_happiness < 50 else "")
+            )
+
+        await interaction.followup.send(embed=discord.Embed(
+            title=f"🐾 Playing with {name}",
+            description=desc,
             color=COLORS["success"]
         ))
 

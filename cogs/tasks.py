@@ -5,13 +5,15 @@ from datetime import datetime, timezone, time
 
 DB_PATH = "db/chibibeast.db"
 
-# Happiness decays by this amount each day per beast.
-# The Fairy Garden counters it (+2 per benched beast on /daily).
-# At full decay a beast goes from 100 → 0 in 20 days of neglect.
-# At 30 happiness the battle penalty kicks in (-10% stats).
-# A player who claims /daily + has Fairy Garden stays net positive or neutral.
-HAPPINESS_DECAY_ACTIVE = 3   # active beast loses 3/day (used in battle, still needs care)
-HAPPINESS_DECAY_BENCHED = 5  # benched beasts lose more — they're being ignored
+# Happiness decay rates (per day).
+# Decay timeline without any care:  100 → 0 in ~33 days (active) or ~20 days (benched)
+# The /play command gives +15 to the active beast once/day — fully offsets active decay.
+# Fairy Garden gives +5 to benched beasts on /daily — fully offsets benched decay.
+# Brambleberries (30g, +10) and Sugarsprout Cupcakes (120g, +30) are the shop remedies.
+# The battle penalty kicks in at ≤30 happiness (-10% stats), so neglected beasts
+# feel meaningfully weaker but not immediately — players have ~2 weeks before it bites.
+HAPPINESS_DECAY_ACTIVE  = 3   # active beast: /play fully covers this
+HAPPINESS_DECAY_BENCHED = 5   # benched: Fairy Garden fully covers this
 
 
 class Tasks(commands.Cog):
