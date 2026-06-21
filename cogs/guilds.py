@@ -344,6 +344,170 @@ class Guilds(commands.Cog):
         view = InviteView()
         view.message = await interaction.followup.send(content=member.mention, embed=embed, view=view)
 
+    @app_commands.command(name="guild_leave", description="Leave your current guild 🚪")
+    async def guild_leave(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT gm.rank, gm.guild_id, g.name, g.leader_id, g.member_count FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                member_row = await c.fetchone()
+
+        if not member_row:
+            return await interaction.followup.send(embed=discord.Embed(
+                description="✦ You're not in a guild!",
+                color=COLORS["info"]
+            ))
+
+        guild_id   = member_row["guild_id"]
+        guild_name = member_row["name"]
+        is_leader  = member_row["rank"] == "leader"
+        member_count = member_row["member_count"]
+
+        # Leaders must transfer or disband — can't just walk out
+        if is_leader:
+            if member_count <= 1:
+                # Last member — disband entirely
+                class DisbandView(discord.ui.View):
+                    def __init__(self):
+                        super().__init__(timeout=60)
+
+                    @discord.ui.button(label="Disband Guild", style=discord.ButtonStyle.danger, emoji="💥")
+                    async def confirm(self, inv: discord.Interaction, btn: discord.ui.Button):
+                        if inv.user.id != interaction.user.id:
+                            return await inv.response.send_message("This isn't for you!", ephemeral=True)
+                        self.stop()
+                        for item in self.children: item.disabled = True
+                        await inv.response.edit_message(view=self)
+                        async with aiosqlite.connect("db/chibibeast.db") as db:
+                            await db.execute("DELETE FROM guild_members WHERE guild_id = ?", (guild_id,))
+                            await db.execute("DELETE FROM guilds WHERE id = ?", (guild_id,))
+                            await db.execute("UPDATE players SET guild_id = NULL, guild_tokens = 0 WHERE user_id = ?", (interaction.user.id,))
+                            await db.commit()
+                        await inv.followup.send(embed=discord.Embed(
+                            description=f"💥 **{guild_name}** has been disbanded.",
+                            color=COLORS["error"]
+                        ))
+
+                    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="↩️")
+                    async def cancel(self, inv: discord.Interaction, btn: discord.ui.Button):
+                        if inv.user.id != interaction.user.id:
+                            return await inv.response.send_message("This isn't for you!", ephemeral=True)
+                        self.stop()
+                        for item in self.children: item.disabled = True
+                        await inv.response.edit_message(view=self)
+
+                return await interaction.followup.send(embed=discord.Embed(
+                    title="💥 Disband Guild?",
+                    description=(
+                        f"You're the only member of **{guild_name}**.\n\n"
+                        f"Leaving will permanently disband the guild. This cannot be undone."
+                    ),
+                    color=COLORS["error"]
+                ), view=DisbandView())
+            else:
+                # Other members exist — must promote an officer or member first
+                async with aiosqlite.connect("db/chibibeast.db") as db:
+                    db.row_factory = aiosqlite.Row
+                    async with db.execute(
+                        "SELECT user_id, rank FROM guild_members WHERE guild_id = ? AND user_id != ? ORDER BY CASE rank WHEN 'officer' THEN 0 ELSE 1 END LIMIT 1",
+                        (guild_id, interaction.user.id)
+                    ) as c:
+                        next_member = await c.fetchone()
+
+                if not next_member:
+                    return await interaction.followup.send(embed=discord.Embed(
+                        description="✦ Something went wrong finding a member to promote.",
+                        color=COLORS["error"]
+                    ))
+
+                new_leader_id = next_member["user_id"]
+                new_leader = interaction.guild.get_member(new_leader_id) if interaction.guild else None
+                new_leader_name = new_leader.display_name if new_leader else f"<@{new_leader_id}>"
+
+                class TransferView(discord.ui.View):
+                    def __init__(self):
+                        super().__init__(timeout=60)
+
+                    @discord.ui.button(label="Transfer & Leave", style=discord.ButtonStyle.danger, emoji="🚪")
+                    async def confirm(self, inv: discord.Interaction, btn: discord.ui.Button):
+                        if inv.user.id != interaction.user.id:
+                            return await inv.response.send_message("This isn't for you!", ephemeral=True)
+                        self.stop()
+                        for item in self.children: item.disabled = True
+                        await inv.response.edit_message(view=self)
+                        async with aiosqlite.connect("db/chibibeast.db") as db:
+                            await db.execute("UPDATE guilds SET leader_id = ? WHERE id = ?", (new_leader_id, guild_id))
+                            await db.execute("UPDATE guild_members SET rank = 'leader' WHERE guild_id = ? AND user_id = ?", (guild_id, new_leader_id))
+                            await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
+                            await db.execute("UPDATE guilds SET member_count = member_count - 1 WHERE id = ?", (guild_id,))
+                            await db.execute("UPDATE players SET guild_id = NULL WHERE user_id = ?", (interaction.user.id,))
+                            await db.commit()
+                        await inv.followup.send(embed=discord.Embed(
+                            description=(
+                                f"✦ You've left **{guild_name}**.\n"
+                                f"👑 **{new_leader_name}** is now Guild Leader."
+                            ),
+                            color=COLORS["info"]
+                        ))
+
+                    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="↩️")
+                    async def cancel(self, inv: discord.Interaction, btn: discord.ui.Button):
+                        if inv.user.id != interaction.user.id:
+                            return await inv.response.send_message("This isn't for you!", ephemeral=True)
+                        self.stop()
+                        for item in self.children: item.disabled = True
+                        await inv.response.edit_message(view=self)
+
+                return await interaction.followup.send(embed=discord.Embed(
+                    title="🚪 Leave Guild?",
+                    description=(
+                        f"You're the leader of **{guild_name}**.\n\n"
+                        f"Leadership will be transferred to **{new_leader_name}** (most senior member).\n\n"
+                        f"*This cannot be undone.*"
+                    ),
+                    color=COLORS["info"]
+                ), view=TransferView())
+
+        # Regular member — straight leave with confirmation
+        class LeaveView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=60)
+
+            @discord.ui.button(label="Leave Guild", style=discord.ButtonStyle.danger, emoji="🚪")
+            async def confirm(self, inv: discord.Interaction, btn: discord.ui.Button):
+                if inv.user.id != interaction.user.id:
+                    return await inv.response.send_message("This isn't for you!", ephemeral=True)
+                self.stop()
+                for item in self.children: item.disabled = True
+                await inv.response.edit_message(view=self)
+                async with aiosqlite.connect("db/chibibeast.db") as db:
+                    await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
+                    await db.execute("UPDATE guilds SET member_count = member_count - 1 WHERE id = ?", (guild_id,))
+                    await db.execute("UPDATE players SET guild_id = NULL WHERE user_id = ?", (interaction.user.id,))
+                    await db.commit()
+                await inv.followup.send(embed=discord.Embed(
+                    description=f"✦ You've left **{guild_name}**.",
+                    color=COLORS["info"]
+                ))
+
+            @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="↩️")
+            async def cancel(self, inv: discord.Interaction, btn: discord.ui.Button):
+                if inv.user.id != interaction.user.id:
+                    return await inv.response.send_message("This isn't for you!", ephemeral=True)
+                self.stop()
+                for item in self.children: item.disabled = True
+                await inv.response.edit_message(view=self)
+
+        await interaction.followup.send(embed=discord.Embed(
+            title="🚪 Leave Guild?",
+            description=f"Are you sure you want to leave **{guild_name}**?",
+            color=COLORS["info"]
+        ), view=LeaveView())
+
     @app_commands.command(name="raid", description="Trigger a raid boss battle! ⚔️")
     @app_commands.choices(raid_type=[
         app_commands.Choice(name="⚔️ Corrupted Raid", value="corrupted"),

@@ -202,6 +202,15 @@ class Trading(commands.Cog):
                             "UPDATE players SET gold = gold + ? WHERE user_id = ?",
                             (gold_offer, member.id)
                         )
+                    # Record completed trade for /history
+                    await db.execute(
+                        """INSERT INTO trades
+                           (sender_id, receiver_id, sender_beast_id, receiver_beast_id, gold_offered, status)
+                           VALUES (?, ?, ?, ?, ?, 'completed')""",
+                        (interaction.user.id, member.id,
+                         your_beast_id, their_beast_id,
+                         gold_offer)
+                    )
                     await db.commit()
 
                 await inv_interaction.followup.send(embed=discord.Embed(

@@ -828,6 +828,7 @@ class Utilities(commands.Cog):
             description="\n".join(lines),
             color=COLORS["success"]
         )
+        embed.set_footer(text="ChibiBeasts 🐾  •  Beasts lose happiness daily — build a Fairy Garden to offset it")
         embed.set_footer(text=f"ChibiBeasts 🐾  •  Come back tomorrow! Level {level} trainer bonus applied.")
         await interaction.followup.send(embed=embed)
 
@@ -1136,6 +1137,150 @@ class Utilities(commands.Cog):
             description=f"✦ Title set to **{chosen}**. It will appear in your `/profile`.",
             color=COLORS["success"]
         ))
+
+    # ── /history ──────────────────────────────────────────────────────────
+    @app_commands.command(name="history", description="View your recent battle, raid, and trade history 📜")
+    @app_commands.describe(category="Which history to view")
+    @app_commands.choices(category=[
+        app_commands.Choice(name="⚔️ Battles", value="battles"),
+        app_commands.Choice(name="💀 Raids",   value="raids"),
+        app_commands.Choice(name="🤝 Trades",  value="trades"),
+    ])
+    async def history(self, interaction: discord.Interaction, category: str = "battles"):
+        await interaction.response.defer()
+
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+
+            if category == "battles":
+                async with db.execute("""
+                    SELECT b.battle_type, b.winner_id, b.challenger_id, b.opponent_id,
+                           b.created_at,
+                           p1.username AS challenger_name,
+                           p2.username AS opponent_name
+                    FROM battles b
+                    LEFT JOIN players p1 ON b.challenger_id = p1.user_id
+                    LEFT JOIN players p2 ON b.opponent_id   = p2.user_id
+                    WHERE b.challenger_id = ? OR b.opponent_id = ?
+                    ORDER BY b.created_at DESC LIMIT 15
+                """, (interaction.user.id, interaction.user.id)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+
+                embed = discord.Embed(
+                    title="⚔️ Battle History",
+                    description=f"*Your last {len(rows)} battles.*" if rows else "*No battles recorded yet.*",
+                    color=COLORS["epic"]
+                )
+                for r in rows:
+                    btype = r["battle_type"] or "pvp"
+                    if btype == "pvp":
+                        opponent_name = r["opponent_name"] or "Unknown"
+                        if r["winner_id"] == interaction.user.id:
+                            result = "✅ Win"
+                        elif r["winner_id"] is None:
+                            result = "🤝 Draw"
+                        else:
+                            result = "💤 Loss"
+                        label = f"vs {opponent_name}"
+                    elif btype == "sparr":
+                        result = "✅ Win" if r["winner_id"] == interaction.user.id else "💤 Loss"
+                        label = "NPC Spar"
+                    else:
+                        result = "✅ Win" if r["winner_id"] == interaction.user.id else "💤 Loss"
+                        label = "Wild Battle"
+                    ts = r["created_at"][:10] if r["created_at"] else "?"
+                    embed.add_field(
+                        name=f"{result} — {label}",
+                        value=f"*{btype.upper()} · {ts}*",
+                        inline=True
+                    )
+
+            elif category == "raids":
+                async with db.execute("""
+                    SELECT r.boss_name, r.boss_type, r.status, r.started_at, r.ended_at,
+                           rp.damage_dealt
+                    FROM raid_participants rp
+                    JOIN raids r ON rp.raid_id = r.id
+                    WHERE rp.user_id = ?
+                    ORDER BY r.started_at DESC LIMIT 15
+                """, (interaction.user.id,)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+
+                async with db.execute("""
+                    SELECT beast_id, altered_name, caught_at
+                    FROM altered_divines
+                    WHERE caught_by = ?
+                    ORDER BY caught_at DESC LIMIT 5
+                """, (interaction.user.id,)) as c:
+                    divines = [dict(r) for r in await c.fetchall()]
+
+                embed = discord.Embed(
+                    title="💀 Raid History",
+                    description=f"*Your last {len(rows)} raids.*" if rows else "*No raids participated in yet.*",
+                    color=COLORS["legendary"]
+                )
+                for r in rows:
+                    status_icon = "🏆" if r["status"] == "completed" else "⏰"
+                    ts = r["started_at"][:10] if r["started_at"] else "?"
+                    embed.add_field(
+                        name=f"{status_icon} {r['boss_name']}",
+                        value=f"`{r['damage_dealt']:,}` dmg · {r['boss_type'].capitalize()} · {ts}",
+                        inline=True
+                    )
+                if divines:
+                    from utils.db import get_beast_data as _gbd
+                    divine_lines = []
+                    for d in divines:
+                        bd = _gbd(d["beast_id"])
+                        name = bd["name"] if bd else d["beast_id"]
+                        ts = d["caught_at"][:10] if d["caught_at"] else "?"
+                        divine_lines.append(f"🌸 **{d['altered_name']}** → {name} · {ts}")
+                    embed.add_field(
+                        name="✨ Altered Divines Caught",
+                        value="\n".join(divine_lines),
+                        inline=False
+                    )
+
+            else:  # trades
+                async with db.execute("""
+                    SELECT t.*, p1.username AS sender_name, p2.username AS receiver_name,
+                           pb1.beast_id AS sent_beast_id, pb2.beast_id AS received_beast_id,
+                           pb1.rarity   AS sent_rarity,    pb2.rarity   AS received_rarity
+                    FROM trades t
+                    LEFT JOIN players   p1  ON t.sender_id          = p1.user_id
+                    LEFT JOIN players   p2  ON t.receiver_id         = p2.user_id
+                    LEFT JOIN player_beasts pb1 ON t.sender_beast_id   = pb1.id
+                    LEFT JOIN player_beasts pb2 ON t.receiver_beast_id = pb2.id
+                    WHERE t.sender_id = ? OR t.receiver_id = ?
+                    ORDER BY t.created_at DESC LIMIT 15
+                """, (interaction.user.id, interaction.user.id)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+
+                embed = discord.Embed(
+                    title="🤝 Trade History",
+                    description=f"*Your last {len(rows)} trades.*" if rows else "*No completed trades yet.*",
+                    color=COLORS["success"]
+                )
+                from utils.db import get_beast_data as _gbd
+                for r in rows:
+                    sent_bd = _gbd(r["sent_beast_id"]) if r.get("sent_beast_id") else None
+                    recv_bd = _gbd(r.get("received_beast_id")) if r.get("received_beast_id") else None
+                    sent_name = sent_bd["name"] if sent_bd else "?"
+                    recv_name = recv_bd["name"] if recv_bd else "anything"
+                    sent_r = RARITY_EMOJI.get(r.get("sent_rarity"), "⚪")
+                    recv_r = RARITY_EMOJI.get(r.get("received_rarity"), "⚪") if recv_bd else ""
+                    direction = "📤 Sent" if r["sender_id"] == interaction.user.id else "📥 Received"
+                    other = r["receiver_name"] if r["sender_id"] == interaction.user.id else r["sender_name"]
+                    gold_note = f" + `{r['gold_offered']:,}` 💰" if r.get("gold_offered") else ""
+                    ts = r["created_at"][:10] if r.get("created_at") else "?"
+                    embed.add_field(
+                        name=f"{direction} with {other or '?'}",
+                        value=f"{sent_r} {sent_name}{gold_note} ↔ {recv_r} {recv_name} · {ts}",
+                        inline=False
+                    )
+
+        embed.set_footer(text="ChibiBeasts 🐾  •  /history battles | raids | trades")
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot: commands.Bot):
