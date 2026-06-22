@@ -798,8 +798,8 @@ class Guilds(commands.Cog):
             return max(1, int(atk * (1 - df)))
 
         party_dps_mid = sum(_est_dps(b["attack"], scaled_boss_def) * 10 for b in raid_beast_stats)
-        scaled_hp  = max(party_dps_mid * 35, boss["max_hp"] // 3)
-        scaled_atk = max(int(avg_party_hp * 0.20), boss["attack"] // 20)
+        scaled_hp  = max(party_dps_mid * 30, boss["max_hp"] // 3)
+        scaled_atk = max(int(avg_party_hp * 0.10), boss["attack"] // 20)
 
         active_raids[raid_id] = {
             "boss": boss, "current_hp": scaled_hp,
@@ -826,7 +826,7 @@ class Guilds(commands.Cog):
         _raid_locks[raid_id] = asyncio.Lock()
 
         ATTACK_COOLDOWN = 0.8
-        BOSS_ATK_INTERVAL = 8  # seconds between boss auto-attacks
+        BOSS_ATK_INTERVAL = 10  # seconds between boss auto-attacks
 
         def boss_effective_defense(raid: dict) -> int:
             """Defense drops as boss HP falls — rewards sustained DPS."""
@@ -851,9 +851,8 @@ class Guilds(commands.Cog):
 
         def calc_boss_damage(boss_atk: int, player_def: int, player_max_hp: int = 0) -> int:
             # Flat % of player max HP — immune to defense outliers like Desync
-            # boss_atk acts as a percentage multiplier: scaled_atk / avg_hp * 100 ≈ 20%
             if player_max_hp > 0:
-                pct = random.uniform(0.12, 0.18)
+                pct = random.uniform(0.08, 0.12)  # corrupted: 10% avg HP per hit
                 return max(1, int(player_max_hp * pct))
             # Fallback to formula if no HP provided
             defense_factor = min(player_def, 300) / (min(player_def, 300) + 100)

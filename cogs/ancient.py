@@ -337,8 +337,8 @@ class Ancient(commands.Cog):
             return max(1, int(atk * (1 - df)))
         party_dps_mid = sum(_est_dps(b["attack"], scaled_boss_def) * 10 for b in party_beast_stats)
 
-        scaled_hp  = party_dps_mid * 35           # ~4.7 min kill at full DPS
-        scaled_atk = int(avg_party_hp * 0.20)     # boss hits ~10% avg HP after def reduction
+        scaled_hp  = party_dps_mid * 50           # ~8.3 min kill at full DPS for ancient
+        scaled_atk = int(avg_party_hp * 0.07)     # ancient hits ~7% avg HP — longer fight, kinder hits
         # Minimum floor from boss base stats so it never feels trivial
         scaled_hp  = max(scaled_hp,  boss["max_hp"] // 3)
         scaled_atk = max(scaled_atk, boss["attack"] // 20)
@@ -371,7 +371,7 @@ class Ancient(commands.Cog):
 
         party_preview = ", ".join(list(view.party.values())[:5]) + ("..." if len(view.party) > 5 else "")
         ATTACK_COOLDOWN = 0.8
-        BOSS_ATK_INTERVAL = 8
+        BOSS_ATK_INTERVAL = 10
 
         def boss_effective_defense(raid: dict) -> int:
             pct = raid["current_hp"] / max(raid["max_hp"], 1)
@@ -390,7 +390,7 @@ class Ancient(commands.Cog):
 
         def calc_boss_damage(boss_atk: int, player_def: int, player_max_hp: int = 0) -> int:
             if player_max_hp > 0:
-                pct = random.uniform(0.12, 0.18)
+                pct = random.uniform(0.05, 0.09)  # ancient: 7% avg HP per hit — longer fight, kinder hits
                 return max(1, int(player_max_hp * pct))
             defense_factor = min(player_def, 300) / (min(player_def, 300) + 100)
             return max(1, int(boss_atk * (1 - defense_factor) * random.uniform(0.80, 1.20)))
