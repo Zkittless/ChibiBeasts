@@ -304,11 +304,7 @@ class Ancient(commands.Cog):
                     current_hp_snap = cur_raid["current_hp"]
                     participants_snap = dict(cur_raid["participants"])
 
-                # Dismiss deferred ephemeral silently
-                try:
-                    await btn_interaction.delete_original_response()
-                except discord.HTTPException:
-                    pass
+                # Deferred ephemeral with no followup simply never shows — no cleanup needed
 
                 # Throttled embed update with live leaderboard
                 if not cur_raid.get("embed_updating", False):

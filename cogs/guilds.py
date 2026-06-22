@@ -710,11 +710,7 @@ class Guilds(commands.Cog):
                     current_hp_snap = raid["current_hp"]
                     participants_snap = dict(raid["participants"])
 
-                # Dismiss the deferred ephemeral silently
-                try:
-                    await btn_interaction.delete_original_response()
-                except discord.HTTPException:
-                    pass
+                # Deferred ephemeral with no followup simply never shows — no cleanup needed
 
                 # Throttled public embed update with live leaderboard
                 if not raid.get("embed_updating", False):
