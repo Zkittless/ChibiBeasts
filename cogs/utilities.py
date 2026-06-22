@@ -31,44 +31,70 @@ SHARD_SHOP = {
     "astral_reroll": {
         "name": "🌌 Astral Reroll",
         "desc": "Guarantees your next `/hatch` produces a specific element type of your choice.",
-        "cost": 15,          # was 25 — core weekly item, should be accessible
+        "cost": 15,
         "weekly_limit": 1,
         "type": "reroll",
     },
     "divine_compass": {
         "name": "🧭 Divine Compass",
         "desc": "Boosts the divine encounter rate in the Celestial Loom to 20% for your next 3 explores.",
-        "cost": 25,          # was 40
+        "cost": 25,
         "weekly_limit": 1,
         "type": "explore_boost",
     },
     "loom_fragment": {
         "name": "🧵 Loom Fragment",
         "desc": "Reduces the incubation time of your oldest egg by 6 hours.",
-        "cost": 10,          # was 15
+        "cost": 10,
         "weekly_limit": 3,
         "type": "incubation_skip",
     },
     "prism_key": {
         "name": "🔑 Prism Key",
         "desc": "Grants access to a special /explore variant in the Celestial Loom with a 30% divine rate.",
-        "cost": 40,          # was 60 — premium item, intentionally more expensive
+        "cost": 40,
         "weekly_limit": 1,
         "type": "key",
     },
     "beast_rename_token": {
         "name": "✏️ Rename Token",
         "desc": "Rename any beast — even with special characters.",
-        "cost": 10,          # was 15 — cosmetic, low barrier
+        "cost": 10,
         "weekly_limit": 0,
         "type": "cosmetic",
     },
     "trainer_title_reset": {
         "name": "🏷️ Title Reset",
         "desc": "Clear your current trainer title and choose from all titles you've earned.",
-        "cost": 5,           # was 10 — cosmetic, should be trivial
+        "cost": 5,
         "weekly_limit": 0,
         "type": "cosmetic",
+    },
+    # ── Ancient Summon Items ─────────────────────────────────────────────
+    # Rare alternative to raiding for corrupted drops — expensive + weekly limit
+    "epoch_shard": {
+        "name": "⏳ Epoch Shard",
+        "desc": "Calls Ancient Chronos to the altar. Time stutters around it. Also drops from Corrupted Fenrir.",
+        "cost": 150,
+        "weekly_limit": 1,
+        "type": "grant_item",
+        "grant_item_id": "epoch_shard",
+    },
+    "firstborn_ember": {
+        "name": "🔥 Firstborn Ember",
+        "desc": "Calls Ancient Genesis to the altar. The flame that started everything, still burning. Also drops from Corrupted Dragon.",
+        "cost": 150,
+        "weekly_limit": 1,
+        "type": "grant_item",
+        "grant_item_id": "firstborn_ember",
+    },
+    "void_prism": {
+        "name": "🌑 Void Prism",
+        "desc": "Calls Ancient Abyss to the altar. Absorbs all light. The silence around it is wrong. Also drops from Corrupted Leviathan.",
+        "cost": 150,
+        "weekly_limit": 1,
+        "type": "grant_item",
+        "grant_item_id": "void_prism",
     },
 }
 
@@ -763,6 +789,26 @@ class Utilities(commands.Cog):
 
             elif item_type in ["cosmetic", "reroll"]:
                 result_desc = f"**{shop_item['name']}** is now yours. Check `/profile` to apply it."
+
+            elif item_type == "grant_item":
+                # Add the physical item to inventory
+                grant_id = shop_item["grant_item_id"]
+                async with db.execute(
+                    "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
+                    (interaction.user.id, grant_id)
+                ) as c:
+                    inv_row = await c.fetchone()
+                if inv_row:
+                    await db.execute(
+                        "UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?",
+                        (inv_row["id"],)
+                    )
+                else:
+                    await db.execute(
+                        "INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)",
+                        (interaction.user.id, grant_id)
+                    )
+                result_desc = f"Added to your inventory. Use `/ancient {shop_item['name'].split()[-1].lower()}` to summon."
 
             await db.commit()
 
