@@ -238,7 +238,7 @@ class Ancient(commands.Cog):
             )
             if boss.get("image_url"):
                 embed.set_thumbnail(url=boss["image_url"])
-            embed.set_footer(text=f"Summoned by {interaction.user.display_name} · {SHARD_COST} 🔮 shards spent")
+            embed.set_footer(text=f"Summoned by {interaction.user.display_name} · item consumed")
             return embed
 
         view = LobbyView()
