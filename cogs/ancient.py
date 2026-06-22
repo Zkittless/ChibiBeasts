@@ -229,10 +229,11 @@ class Ancient(commands.Cog):
                     )
                 await btn_interaction.response.send_message(
                     "💀 **Solo run initiated.**\n"
-                    "*This is near-impossible. The Ancient was not designed to fall to one challenger. "
-                    "Your beast will be overwhelmed — the boss hits for more than your entire HP bar per auto-attack, "
-                    "and the first signature move alone does over 500% of your HP. "
-                    "You have been warned.*",
+                    "*Ancient raids are tuned for full 3-beast parties. Solo, your survival window is roughly "
+                    "one third of the time needed to kill the boss — the math does not work in your favour. "
+                    "The boss will hit your party for ~7% of each beast's HP every 10 seconds, and signature "
+                    "moves at 70%, 40%, and 15% HP hit all three simultaneously for up to 17% HP each. "
+                    "You were warned. It is not impossible — just very close.*",
                     ephemeral=True
                 )
                 self.stop()
@@ -514,7 +515,13 @@ class Ancient(commands.Cog):
             def __init__(self):
                 super().__init__(timeout=1800)
 
-            @discord.ui.button(label="\u2694\ufe0f Attack!", style=discord.ButtonStyle.danger, emoji="\U0001f4a5")
+            def update_ult_style(self, uid: str, raid: dict):
+                mana = raid.get("player_mana", {}).get(uid, 0)
+                for item in self.children:
+                    if isinstance(item, discord.ui.Button) and "Ultimate" in item.label:
+                        item.style = discord.ButtonStyle.primary if mana >= 50 else discord.ButtonStyle.secondary
+
+            @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
                 await btn_interaction.response.defer(ephemeral=True, thinking=False)
@@ -645,6 +652,7 @@ class Ancient(commands.Cog):
                 if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
                     cur_raid["embed_updating"] = True
                     try:
+                        self.update_ult_style(uid, active_ancient_raids.get(raid_id, cur_raid))
                         await cur_raid["raid_message"].edit(embed=build_ancient_embed(active_ancient_raids.get(raid_id, cur_raid)), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
@@ -685,7 +693,8 @@ class Ancient(commands.Cog):
                 _ult_atk = cur_raid["player_atk"].get(uid, _ult_beast["attack"])
                 is_crit = random.random() < 0.20
                 defense = boss_effective_defense(cur_raid)
-                damage  = calc_player_damage(_ult_atk, defense, True, is_crit)
+                _ult_mana = cur_raid["player_mana"].get(uid, 50)
+                damage  = calc_player_damage(_ult_atk, defense, True, is_crit, _ult_mana)
                 raid_lock = _ancient_locks.get(raid_id)
                 if not raid_lock:
                     return await btn_interaction.followup.send("\u2746 The raid just ended!", ephemeral=True)
@@ -715,6 +724,7 @@ class Ancient(commands.Cog):
                 if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
                     cur_raid["embed_updating"] = True
                     try:
+                        self.update_ult_style(uid, active_ancient_raids.get(raid_id, cur_raid))
                         await cur_raid["raid_message"].edit(embed=build_ancient_embed(active_ancient_raids.get(raid_id, cur_raid)), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass

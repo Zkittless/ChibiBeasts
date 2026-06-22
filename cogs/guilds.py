@@ -840,11 +840,13 @@ class Guilds(commands.Cog):
                 return int(base_def * 0.80)
             return base_def
 
-        def calc_player_damage(atk: int, defense: int, is_ultimate: bool, is_crit: bool) -> int:
+        def calc_player_damage(atk: int, defense: int, is_ultimate: bool, is_crit: bool, mana: int = 50) -> int:
             defense_factor = defense / (defense + 100)
             dmg = atk * (1 - defense_factor)
             if is_ultimate:
-                dmg *= 1.8
+                # Mana above 50 scales damage: 1.8× at 50, 2.7× at 100
+                ult_mult = 1.8 + max(0, mana - 50) / 50 * 0.9
+                dmg *= ult_mult
             if is_crit:
                 dmg *= 1.5
             return max(1, int(dmg * random.uniform(0.85, 1.15)))
@@ -992,6 +994,13 @@ class Guilds(commands.Cog):
         class RaidView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=1800)
+
+            def update_ult_style(self, uid: str, raid: dict):
+                """Update ultimate button colour based on player's current mana."""
+                mana = raid.get("player_mana", {}).get(uid, 0)
+                for item in self.children:
+                    if isinstance(item, discord.ui.Button) and "Ultimate" in item.label:
+                        item.style = discord.ButtonStyle.primary if mana >= 50 else discord.ButtonStyle.secondary
 
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
@@ -1145,6 +1154,7 @@ class Guilds(commands.Cog):
                 if not raid.get("embed_updating") and raid.get("raid_message"):
                     raid["embed_updating"] = True
                     try:
+                        self.update_ult_style(uid, active_raids.get(raid_id, raid))
                         await raid["raid_message"].edit(embed=build_raid_embed(active_raids.get(raid_id, raid)), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
@@ -1192,7 +1202,8 @@ class Guilds(commands.Cog):
 
                 is_crit = random.random() < 0.20
                 defense = boss_effective_defense(raid)
-                damage = calc_player_damage(ult_atk, defense, True, is_crit)
+                ult_mana = raid["player_mana"].get(uid, 50)
+                damage = calc_player_damage(ult_atk, defense, True, is_crit, ult_mana)
 
                 raid_lock = _raid_locks.get(raid_id)
                 if not raid_lock:
@@ -1230,6 +1241,7 @@ class Guilds(commands.Cog):
                 if not raid.get("embed_updating") and raid.get("raid_message"):
                     raid["embed_updating"] = True
                     try:
+                        self.update_ult_style(uid, active_raids.get(raid_id, raid))
                         await raid["raid_message"].edit(embed=build_raid_embed(active_raids.get(raid_id, raid)), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
