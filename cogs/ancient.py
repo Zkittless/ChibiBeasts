@@ -208,7 +208,7 @@ class Ancient(commands.Cog):
         _ancient_locks[raid_id] = asyncio.Lock()
 
         party_preview = ", ".join(list(view.party.values())[:5]) + ("..." if len(view.party) > 5 else "")
-        ATTACK_COOLDOWN = 0.5
+        ATTACK_COOLDOWN = 0.8
 
         def build_ancient_embed(current_hp: int, participants: dict = None) -> discord.Embed:
             pct = current_hp / boss["max_hp"]

@@ -616,7 +616,7 @@ class Guilds(commands.Cog):
                 rows = await c.fetchall()
         active_raids[raid_id]["guild_members"] = {r["user_id"] for r in rows}
 
-        ATTACK_COOLDOWN = 0.5  # seconds between attacks per player
+        ATTACK_COOLDOWN = 0.8  # seconds between attacks per player
 
         def build_raid_embed(current_hp: int, participants: dict = None) -> discord.Embed:
             pct = current_hp / boss["max_hp"]
