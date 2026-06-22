@@ -305,13 +305,22 @@ class Ancient(commands.Cog):
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             for uid in view.party:
+                # Use raid party beasts for scaling — fallback to active beast
                 async with db.execute(
-                    "SELECT hp, max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                    "SELECT hp, max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
                     (uid,)
                 ) as c:
-                    row = await c.fetchone()
-                if row:
-                    party_beast_stats.append(dict(row))
+                    raid_beasts = [dict(r) for r in await c.fetchall()]
+                if raid_beasts:
+                    party_beast_stats.extend(raid_beasts)
+                else:
+                    async with db.execute(
+                        "SELECT hp, max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                        (uid,)
+                    ) as c:
+                        row = await c.fetchone()
+                    if row:
+                        party_beast_stats.append(dict(row))
 
         if not party_beast_stats:
             # Fallback: use boss base stats if no beast data found
@@ -571,18 +580,21 @@ class Ancient(commands.Cog):
                     return await btn_interaction.followup.send(f"⏱️ Wait `{ATTACK_COOLDOWN - (now - cur_raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
                 cur_raid["last_attack"][uid] = now
 
-                # Load party on first attack — top 3 beasts, active first
+                # Load raid party on first attack — must have 3 slots assigned via /raidparty
                 if uid not in cur_raid["player_party"]:
                     async with aiosqlite.connect(DB_PATH) as _pdb:
                         _pdb.row_factory = aiosqlite.Row
                         async with _pdb.execute(
-                            """SELECT * FROM player_beasts WHERE user_id = ?
-                               ORDER BY is_active DESC, COALESCE(player_number, id) ASC LIMIT 3""",
+                            "SELECT * FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
                             (uid,)
                         ) as _c:
                             party_rows = [dict(r) for r in await _c.fetchall()]
-                    if not party_rows:
-                        return await btn_interaction.followup.send("✦ No beasts found!", ephemeral=True)
+                    if len(party_rows) < 3:
+                        return await btn_interaction.followup.send(
+                            f"✦ You need a full 3-beast raid party! You have {len(party_rows)}/3 slots filled.\n"
+                            f"Use `/raidparty` to set up your team before attacking.",
+                            ephemeral=True
+                        )
                     cur_raid["player_party"][uid]       = party_rows
                     cur_raid["player_active_slot"][uid] = 0
                     slot = party_rows[0]

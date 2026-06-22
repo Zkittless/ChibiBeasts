@@ -9,7 +9,7 @@ from utils.db import (
     get_or_create_player, get_player, update_player,
     get_active_beast, get_beast_data, load_beasts,
     add_item, remove_item, apply_beast_levelup, calc_exp_for_level,
-    get_beast_by_player_number
+    get_beast_by_player_number, get_raid_party, set_raid_slot, clear_raid_slot
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import check_achievements, unlock_simple_achievement, notify_unlocks
@@ -1499,6 +1499,124 @@ class Utilities(commands.Cog):
 
         embed.set_footer(text="ChibiBeasts 🐾  •  /history battles | raids | trades")
         await interaction.followup.send(embed=embed)
+
+
+    @app_commands.command(name="raidparty", description="Set up your 3-beast raid party ⚔️")
+    async def raidparty(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        uid = interaction.user.id
+        await get_or_create_player(uid, str(interaction.user))
+
+        async def build_embed(party: list) -> discord.Embed:
+            embed = discord.Embed(
+                title="⚔️ Raid Party",
+                description=(
+                    "Your raid party is the team of 3 beasts that fight together in all raids.\n"
+                    "All 3 slots must be filled before you can join or attack in a raid.\n\n"
+                    "*Select a slot below to assign or change a beast.*"
+                ),
+                color=COLORS.get("legendary", 0xFFD700)
+            )
+            slot_labels = ["🥇 Slot 1 — Front", "🥈 Slot 2 — Mid", "🥉 Slot 3 — Bench"]
+            for i, beast in enumerate(party):
+                if beast:
+                    bd = get_beast_data(beast["beast_id"]) or {}
+                    emoji = RARITY_EMOJI.get(beast["rarity"], "⚪")
+                    name  = beast.get("nickname") or bd.get("name", "?")
+                    embed.add_field(
+                        name=slot_labels[i],
+                        value=(
+                            f"{emoji} **{name}** `#{beast['player_number']}` · Lv.{beast['level']}\n"
+                            f"`{beast['hp']}/{beast['max_hp']}HP` · `{beast['attack']}ATK` · `{beast['defense']}DEF`"
+                        ),
+                        inline=False
+                    )
+                else:
+                    embed.add_field(
+                        name=slot_labels[i],
+                        value="*Empty — click to assign*",
+                        inline=False
+                    )
+            filled = sum(1 for b in party if b)
+            status = "✅ Party ready!" if filled == 3 else f"⚠️ {filled}/3 slots filled — raids locked until full"
+            embed.set_footer(text=status)
+            return embed
+
+        class SlotModal(discord.ui.Modal, title="Assign Beast to Slot"):
+            beast_num = discord.ui.TextInput(
+                label="Beast Number (e.g. 5)",
+                placeholder="Enter your beast's #number from /collection",
+                min_length=1, max_length=6
+            )
+            def __init__(self, slot: int, view: "PartyView"):
+                super().__init__()
+                self.slot = slot
+                self.party_view = view
+
+            async def on_submit(self, modal_interaction: discord.Interaction):
+                raw = self.beast_num.value.strip().lstrip("#")
+                if not raw.isdigit():
+                    return await modal_interaction.response.send_message(
+                        "✦ Enter a valid beast number.", ephemeral=True
+                    )
+                from utils.db import get_beast_by_player_number
+                beast_row = await get_beast_by_player_number(uid, int(raw))
+                if not beast_row:
+                    return await modal_interaction.response.send_message(
+                        f"✦ Beast `#{raw}` not found in your collection.", ephemeral=True
+                    )
+                await set_raid_slot(uid, beast_row["id"], self.slot)
+                new_party = await get_raid_party(uid)
+                await modal_interaction.response.edit_message(
+                    embed=await build_embed(new_party),
+                    view=self.party_view
+                )
+                # Refresh view buttons
+                await self.party_view.refresh(new_party)
+
+        class PartyView(discord.ui.View):
+            def __init__(self, party: list):
+                super().__init__(timeout=120)
+                self.party = party
+                self._build_buttons()
+
+            def _build_buttons(self):
+                self.clear_items()
+                slot_emojis = ["🥇", "🥈", "🥉"]
+                for i, beast in enumerate(self.party):
+                    label = f"Set Slot {i+1}" if not beast else f"Change Slot {i+1}"
+                    btn = discord.ui.Button(
+                        label=label, emoji=slot_emojis[i],
+                        style=discord.ButtonStyle.primary if not beast else discord.ButtonStyle.secondary,
+                        row=0
+                    )
+                    async def _assign(inter, slot=i+1, v=self):
+                        await inter.response.send_modal(SlotModal(slot, v))
+                    btn.callback = _assign
+                    self.add_item(btn)
+
+                    if beast:
+                        clear_btn = discord.ui.Button(
+                            label=f"Clear {i+1}", emoji="✖️",
+                            style=discord.ButtonStyle.danger,
+                            row=1
+                        )
+                        async def _clear(inter, slot=i+1, v=self):
+                            await clear_raid_slot(uid, slot)
+                            new_party = await get_raid_party(uid)
+                            v.party = new_party
+                            v._build_buttons()
+                            await inter.response.edit_message(embed=await build_embed(new_party), view=v)
+                        clear_btn.callback = _clear
+                        self.add_item(clear_btn)
+
+            async def refresh(self, new_party: list):
+                self.party = new_party
+                self._build_buttons()
+
+        party = await get_raid_party(uid)
+        view  = PartyView(party)
+        await interaction.followup.send(embed=await build_embed(party), view=view)
 
 
 async def setup(bot: commands.Bot):

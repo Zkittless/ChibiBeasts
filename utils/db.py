@@ -253,6 +253,8 @@ async def _run_migrations():
         "ALTER TABLE incubating_eggs ADD COLUMN tends_required INTEGER DEFAULT 1",
         "ALTER TABLE incubating_eggs ADD COLUMN tends_done INTEGER DEFAULT 0",
         "ALTER TABLE incubating_eggs ADD COLUMN next_tend_at TIMESTAMP DEFAULT NULL",
+        # Raid party slots — 1/2/3, NULL means not in raid party
+        "ALTER TABLE player_beasts ADD COLUMN raid_slot INTEGER DEFAULT NULL",
     ]
     async with aiosqlite.connect(DB_PATH) as db:
         for sql in migrations:
@@ -311,6 +313,52 @@ async def get_active_beast(user_id: int):
         ) as cursor:
             row = await cursor.fetchone()
             return dict(row) if row else None
+
+async def get_raid_party(user_id: int) -> list:
+    """Return the player's 3 raid party beasts ordered by slot. Empty slots are None."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        async with db.execute(
+            "SELECT * FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
+            (user_id,)
+        ) as c:
+            rows = [dict(r) for r in await c.fetchall()]
+    # Build a guaranteed 3-element list with None gaps
+    party = [None, None, None]
+    for r in rows:
+        slot = r.get("raid_slot")
+        if slot in (1, 2, 3):
+            party[slot - 1] = r
+    return party
+
+async def set_raid_slot(user_id: int, beast_row_id: int, slot: int):
+    """Assign a beast to a raid slot (1-3). Clears the slot first, then assigns."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        # Clear any beast already in this slot
+        await db.execute(
+            "UPDATE player_beasts SET raid_slot = NULL WHERE user_id = ? AND raid_slot = ?",
+            (user_id, slot)
+        )
+        # Clear this beast from any existing slot
+        await db.execute(
+            "UPDATE player_beasts SET raid_slot = NULL WHERE id = ? AND user_id = ?",
+            (beast_row_id, user_id)
+        )
+        # Assign
+        await db.execute(
+            "UPDATE player_beasts SET raid_slot = ? WHERE id = ? AND user_id = ?",
+            (slot, beast_row_id, user_id)
+        )
+        await db.commit()
+
+async def clear_raid_slot(user_id: int, slot: int):
+    """Remove a beast from a raid slot."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "UPDATE player_beasts SET raid_slot = NULL WHERE user_id = ? AND raid_slot = ?",
+            (user_id, slot)
+        )
+        await db.commit()
 
 async def add_beast_to_player(user_id: int, beast_data: dict):
     from utils.dispositions import roll_disposition, apply_disposition

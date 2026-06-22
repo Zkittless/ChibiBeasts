@@ -764,16 +764,26 @@ class Guilds(commands.Cog):
                 member_rows = await c.fetchall()
             guild_member_ids = {r["user_id"] for r in member_rows}
 
-            # Fetch active beasts for all guild members to compute scaling
+            # Fetch raid party beasts for all guild members for dynamic scaling
+            # Falls back to active beast if no raid party set
             raid_beast_stats = []
             for uid in guild_member_ids:
                 async with db.execute(
-                    "SELECT max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                    "SELECT max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
                     (uid,)
                 ) as c:
-                    b = await c.fetchone()
-                if b:
-                    raid_beast_stats.append(dict(b))
+                    party_beasts = [dict(r) for r in await c.fetchall()]
+                if party_beasts:
+                    raid_beast_stats.extend(party_beasts)
+                else:
+                    # Fallback: active beast
+                    async with db.execute(
+                        "SELECT max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                        (uid,)
+                    ) as c:
+                        b = await c.fetchone()
+                    if b:
+                        raid_beast_stats.append(dict(b))
 
         if not raid_beast_stats:
             raid_beast_stats = [{"max_hp": 220, "attack": 120, "defense": 100}]
@@ -1057,19 +1067,22 @@ class Guilds(commands.Cog):
                 if not active:
                     return await btn_interaction.followup.send("✦ You need an active beast! Use `/setactive`.", ephemeral=True)
 
-                # Load party on first attack — top 3 beasts by player_number, active first
+                # Load raid party on first attack — must have 3 slots assigned via /raidparty
                 if uid not in raid["player_party"]:
                     async with aiosqlite.connect("db/chibibeast.db") as _pdb:
                         _pdb.row_factory = aiosqlite.Row
                         async with _pdb.execute(
-                            """SELECT * FROM player_beasts WHERE user_id = ?
-                               ORDER BY is_active DESC, COALESCE(player_number, id) ASC LIMIT 3""",
+                            "SELECT * FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
                             (uid,)
                         ) as _c:
                             party_rows = [dict(r) for r in await _c.fetchall()]
-                    if not party_rows:
-                        return await btn_interaction.followup.send("✦ No beasts found!", ephemeral=True)
-                    raid["player_party"][uid] = party_rows
+                    if len(party_rows) < 3:
+                        return await btn_interaction.followup.send(
+                            f"✦ You need a full 3-beast raid party! You have {len(party_rows)}/3 slots filled.\n"
+                            f"Use `/raidparty` to set up your team before joining a raid.",
+                            ephemeral=True
+                        )
+                    raid["player_party"][uid]       = party_rows
                     raid["player_active_slot"][uid] = 0
                     slot = party_rows[0]
                     raid["player_hp"][uid]      = slot["hp"]
