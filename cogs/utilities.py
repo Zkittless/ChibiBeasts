@@ -8,7 +8,8 @@ from datetime import datetime, timezone, timedelta
 from utils.db import (
     get_or_create_player, get_player, update_player,
     get_active_beast, get_beast_data, load_beasts,
-    add_item, remove_item, apply_beast_levelup, calc_exp_for_level
+    add_item, remove_item, apply_beast_levelup, calc_exp_for_level,
+    get_beast_by_player_number
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import check_achievements, unlock_simple_achievement, notify_unlocks
@@ -97,7 +98,7 @@ class Utilities(commands.Cog):
     @app_commands.command(name="equip", description="Equip armor or a rune to a beast ⚔️")
     @app_commands.describe(
         item_name="Equipment or rune to equip (from your inventory)",
-        beast_id="ID of the beast to equip it on (from /collection)"
+        beast_id="Your beast number from /collection"
     )
     @app_commands.autocomplete(item_name=equip_autocomplete)
     async def equip(self, interaction: discord.Interaction, item_name: str, beast_id: int):
@@ -121,17 +122,14 @@ class Utilities(commands.Cog):
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
 
-            # Verify beast ownership
-            async with db.execute(
-                "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
-            ) as c:
-                beast_row = await c.fetchone()
-            if not beast_row:
+            # Resolve beast by player_number
+            beast_row_data = await get_beast_by_player_number(interaction.user.id, beast_id)
+            if not beast_row_data:
                 return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ Beast not found in your collection!", color=COLORS["error"]
+                    description=f"✦ Beast `#{beast_id}` not found in your collection!", color=COLORS["error"]
                 ))
-            beast_row = dict(beast_row)
+            beast_row = beast_row_data
+            actual_id = beast_row["id"]
 
             # Verify ownership of gear (in player_equipment or rune in inventory)
             is_rune = gear.get("slot") == "rune"
@@ -168,7 +166,7 @@ class Utilities(commands.Cog):
                 )
                 await db.execute(
                     "UPDATE player_beasts SET rune_id = ? WHERE id = ?",
-                    (gear_id, beast_id)
+                    (gear_id, actual_id)
                 )
             else:
                 # Armor: check player_equipment table for ownership
@@ -189,7 +187,7 @@ class Utilities(commands.Cog):
                 )
                 await db.execute(
                     "UPDATE player_equipment SET beast_row_id = ? WHERE id = ?",
-                    (beast_id, gear_row["id"])
+                    (actual_id, gear_row["id"])
                 )
 
             await db.commit()
@@ -219,25 +217,21 @@ class Utilities(commands.Cog):
 
     # ── /unequip ──────────────────────────────────────────────────────────
     @app_commands.command(name="unequip", description="Remove equipment from a beast 🛡️")
-    @app_commands.describe(beast_id="ID of the beast to unequip (from /collection)")
+    @app_commands.describe(beast_id="Your beast number from /collection")
     async def unequip(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
         equipment, runes = load_equipment()
         all_gear = {**equipment, **runes}
 
+        beast_row = await get_beast_by_player_number(interaction.user.id, beast_id)
+        if not beast_row:
+            return await interaction.followup.send(embed=discord.Embed(
+                description=f"✦ Beast `#{beast_id}` not found!", color=COLORS["error"]
+            ))
+        actual_id = beast_row["id"]
+
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
-            ) as c:
-                beast_row = await c.fetchone()
-            if not beast_row:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ Beast not found!", color=COLORS["error"]
-                ))
-            beast_row = dict(beast_row)
-
             removed = []
 
             # Unequip rune → return to inventory
@@ -258,20 +252,20 @@ class Utilities(commands.Cog):
                         "INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)",
                         (interaction.user.id, rune_id)
                     )
-                await db.execute("UPDATE player_beasts SET rune_id = NULL WHERE id = ?", (beast_id,))
+                await db.execute("UPDATE player_beasts SET rune_id = NULL WHERE id = ?", (actual_id,))
                 removed.append(f"🔮 {rune.get('name', rune_id)} returned to inventory")
 
             # Unequip armor
             async with db.execute(
                 "SELECT equipment_id FROM player_equipment WHERE beast_row_id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
+                (actual_id, interaction.user.id)
             ) as c:
                 armor_rows = [dict(r) for r in await c.fetchall()]
             for ar in armor_rows:
                 equip_data = all_gear.get(ar["equipment_id"], {})
                 await db.execute(
                     "UPDATE player_equipment SET beast_row_id = NULL WHERE beast_row_id = ? AND equipment_id = ?",
-                    (beast_id, ar["equipment_id"])
+                    (actual_id, ar["equipment_id"])
                 )
                 removed.append(f"⚔️ {equip_data.get('name', ar['equipment_id'])} unequipped")
 
@@ -420,23 +414,16 @@ class Utilities(commands.Cog):
 
     # ── /release ──────────────────────────────────────────────────────────
     @app_commands.command(name="release", description="Release a beast back into the wild 🌿")
-    @app_commands.describe(beast_id="ID of the beast to release (from /collection)")
+    @app_commands.describe(beast_id="Your beast number from /collection")
     async def release(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
 
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
-            ) as c:
-                beast_row = await c.fetchone()
-
+        beast_row = await get_beast_by_player_number(interaction.user.id, beast_id)
         if not beast_row:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Beast not found in your collection!", color=COLORS["error"]
+                description=f"✦ Beast `#{beast_id}` not found in your collection!", color=COLORS["error"]
             ))
-        beast_row = dict(beast_row)
+        actual_id = beast_row["id"]
         beast_data = get_beast_data(beast_row["beast_id"]) or {}
         beast_name = beast_row.get("nickname") or beast_data.get("name", "Unknown")
         rarity = beast_row["rarity"]
@@ -494,7 +481,7 @@ class Utilities(commands.Cog):
             return
 
         async with aiosqlite.connect(DB_PATH) as db:
-            await db.execute("DELETE FROM player_beasts WHERE id = ?", (beast_id,))
+            await db.execute("DELETE FROM player_beasts WHERE id = ?", (actual_id,))
             await db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?",
                              (refund, interaction.user.id))
             await db.commit()
@@ -515,24 +502,16 @@ class Utilities(commands.Cog):
 
     # ── /evolve ───────────────────────────────────────────────────────────
     @app_commands.command(name="evolve", description="Evolve a beast using the right item 🌟")
-    @app_commands.describe(beast_id="ID of the beast to evolve (from /collection)")
+    @app_commands.describe(beast_id="Your beast number from /collection")
     async def evolve(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
         all_beasts = load_beasts()
 
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
-            ) as c:
-                beast_row = await c.fetchone()
-
+        beast_row = await get_beast_by_player_number(interaction.user.id, beast_id)
         if not beast_row:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Beast not found!", color=COLORS["error"]
+                description=f"✦ Beast `#{beast_id}` not found!", color=COLORS["error"]
             ))
-        beast_row = dict(beast_row)
         beast_data = all_beasts.get(beast_row["beast_id"])
         if not beast_data:
             return await interaction.followup.send(embed=discord.Embed(
@@ -625,7 +604,7 @@ class Utilities(commands.Cog):
                 new_stats["speed"] + growth["speed"],
                 new_stats["mana"] + growth["mana"],
                 new_stats["mana"] + growth["mana"],
-                beast_id
+                beast_row["id"]
             ))
             await db.commit()
 

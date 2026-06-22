@@ -242,6 +242,8 @@ async def _run_migrations():
         "ALTER TABLE player_beasts ADD COLUMN rune_id TEXT DEFAULT NULL",
         # Battle type tag so /stats counts all battles correctly (pvp/pve/sparr)
         "ALTER TABLE battles ADD COLUMN battle_type TEXT DEFAULT 'pvp'",
+        # Per-player sequential beast number — replaces global auto-increment ID for display
+        "ALTER TABLE player_beasts ADD COLUMN player_number INTEGER DEFAULT NULL",
     ]
     async with aiosqlite.connect(DB_PATH) as db:
         for sql in migrations:
@@ -285,7 +287,10 @@ async def update_player(user_id: int, **kwargs):
 async def get_player_beasts(user_id: int):
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
-        async with db.execute("SELECT * FROM player_beasts WHERE user_id = ?", (user_id,)) as cursor:
+        async with db.execute(
+            "SELECT * FROM player_beasts WHERE user_id = ? ORDER BY COALESCE(player_number, id)",
+            (user_id,)
+        ) as cursor:
             rows = await cursor.fetchall()
             return [dict(r) for r in rows]
 
@@ -309,11 +314,18 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
     final_stats = apply_disposition(beast_data["base_stats"], disposition)
 
     async with aiosqlite.connect(DB_PATH) as db:
+        # Assign next sequential player_number for this user
+        async with db.execute(
+            "SELECT COALESCE(MAX(player_number), 0) + 1 FROM player_beasts WHERE user_id = ?",
+            (user_id,)
+        ) as c:
+            player_number = (await c.fetchone())[0]
+
         await db.execute("""
             INSERT INTO player_beasts
             (user_id, beast_id, level, hp, max_hp, attack, defense, speed, mana, max_mana,
-             rarity, disposition, caught_from)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             rarity, disposition, caught_from, player_number)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             user_id, beast_data["id"], 1,
             final_stats["hp"], final_stats["hp"],
@@ -322,7 +334,8 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
             final_stats["mana"], final_stats["mana"],
             beast_data["rarity"],
             disposition,
-            beast_data.get("caught_from", "hatch")
+            beast_data.get("caught_from", "hatch"),
+            player_number,
         ))
         await db.commit()
         async with db.execute("SELECT last_insert_rowid()") as cursor:
@@ -511,3 +524,23 @@ def get_beast_exp_for_level(beast_row: dict, level: int) -> int:
     """
     is_starter = beast_row.get("caught_from") == "starter"
     return calc_exp_for_level(level) if is_starter else calc_exp_for_level_wild(level)
+
+async def get_beast_by_player_number(user_id: int, player_number: int) -> dict | None:
+    """Resolve a player_number to a player_beasts row. Falls back to global id for old beasts."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        # Try player_number first
+        async with db.execute(
+            "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",
+            (user_id, player_number)
+        ) as c:
+            row = await c.fetchone()
+        if row:
+            return dict(row)
+        # Fallback: old beasts without player_number — match by global id
+        async with db.execute(
+            "SELECT * FROM player_beasts WHERE user_id = ? AND id = ?",
+            (user_id, player_number)
+        ) as c:
+            row = await c.fetchone()
+        return dict(row) if row else None

@@ -127,7 +127,7 @@ class Profile(commands.Cog):
                 fav_tag = " ⭐" if b["is_favorite"] else ""
                 embed.add_field(
                     name=f"{rarity_emoji} {name} — Lv.{b['level']}{active_tag}{fav_tag}",
-                    value=f"{type_emoji} {beast_data['type'].capitalize()} | ❤️ {b['hp']}/{b['max_hp']} | #{b['id']}",
+                    value=f"{type_emoji} {beast_data['type'].capitalize()} | ❤️ {b['hp']}/{b['max_hp']} | #{b.get('player_number') or b['id']}",
                     inline=True
                 )
             embed.set_footer(text=f"ChibiBeasts 🐾  •  /beastinfo <id> to view details  •  Page {p}/{total_pages}")
@@ -168,131 +168,180 @@ class Profile(commands.Cog):
         view = CollectionView(page)
         await interaction.followup.send(embed=build_page(page), view=view)
 
-    @app_commands.command(name="beastinfo", description="View detailed info about a specific beast 🔍")
-    @app_commands.describe(beast_id="The ID of the beast from your collection")
-    async def beastinfo(self, interaction: discord.Interaction, beast_id: int):
+    @app_commands.command(name="beastinfo", description="View detailed info about one of your beasts 🔍")
+    @app_commands.describe(beast_number="Your beast number from /collection (leave blank for active beast)")
+    async def beastinfo(self, interaction: discord.Interaction, beast_number: int = None):
         await interaction.response.defer()
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
-            ) as cursor:
-                beast_row = await cursor.fetchone()
 
-        if not beast_row:
+        # Load all player beasts ordered by player_number
+        all_beasts = await get_player_beasts(interaction.user.id)
+        if not all_beasts:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Beast not found in your collection!", color=COLORS["error"]
+                description="✦ You don't have any beasts yet!", color=COLORS["error"]
             ))
 
-        beast_row = dict(beast_row)
-        beast_data = get_beast_data(beast_row["beast_id"])
-        if not beast_data:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Beast data not found!", color=COLORS["error"]
-            ))
+        # Resolve which beast to show
+        if beast_number is None:
+            # Default to active beast
+            beast_row = next((b for b in all_beasts if b["is_active"]), all_beasts[0])
+        else:
+            beast_row = next(
+                (b for b in all_beasts if b.get("player_number") == beast_number),
+                None
+            )
+            # Fallback for old beasts without player_number — find by position
+            if not beast_row:
+                beast_row = next(
+                    (b for b in all_beasts if b["id"] == beast_number),
+                    None
+                )
+            if not beast_row:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description=f"✦ Beast `#{beast_number}` not found in your collection!",
+                    color=COLORS["error"]
+                ))
 
-        name = beast_row["nickname"] or beast_data["name"]
-        rarity = beast_row["rarity"]
-        exp_needed = get_beast_exp_for_level(dict(beast_row), beast_row["level"])
-
-        embed = discord.Embed(
-            title=f"{'⚠️ ALTERED ' if beast_row['is_altered_divine'] else ''}{RARITY_EMOJI.get(rarity,'⚪')} {name}",
-            description=f"*{beast_data['title']}*\n{beast_data['description']}",
-            color=COLORS.get(rarity, COLORS["info"])
-        )
-        embed.add_field(
-            name="📊 Stats",
-            value=fmt_stats(beast_row),
-            inline=True
-        )
-        embed.add_field(
-            name="📈 Progress",
-            value=(
-                f"⭐ Level: `{beast_row['level']}`\n"
-                f"✨ EXP: {exp_bar(beast_row['exp'], exp_needed)}\n"
-                f"😊 Happiness: `{beast_row['happiness']}/100`"
-            ),
-            inline=True
-        )
-        embed.add_field(
-            name="⚡ Moves",
-            value="\n".join(f"• {m}" for m in beast_data["moves"]) + f"\n🌟 **Ultimate:** {beast_data['ultimate']}",
-            inline=False
-        )
-        embed.add_field(
-            name="🎭 Disposition",
-            value=disposition_display(beast_row.get("disposition")),
-            inline=False
-        )
-        if beast_data.get("divine_passive"):
-            dp = beast_data["divine_passive"]
-            rarity_passive_labels = {
-                "divine":        "✨ Divine Passive",
-                "altered_divine":"⚠️ Altered Passive",
-                "corrupted":     "🖤 Corrupted Passive",
-                "ancient":       "🏛️ Ancient Passive",
-            }
-            passive_label = rarity_passive_labels.get(rarity, "✨ Special Passive")
+        def build_embed(row: dict) -> discord.Embed:
+            beast_data = get_beast_data(row["beast_id"])
+            if not beast_data:
+                return discord.Embed(description="✦ Beast data not found!", color=COLORS["error"])
+            name = row["nickname"] or beast_data["name"]
+            rarity = row["rarity"]
+            exp_needed = get_beast_exp_for_level(dict(row), row["level"])
+            num = row.get("player_number") or f"#{row['id']}"
+            active_tag = " ⚔️" if row["is_active"] else ""
+            embed = discord.Embed(
+                title=f"{RARITY_EMOJI.get(rarity,'⚪')} {name}{active_tag}",
+                description=f"*{beast_data['title']}*\n{beast_data['description']}",
+                color=COLORS.get(rarity, COLORS["info"])
+            )
+            embed.add_field(name="📊 Stats", value=fmt_stats(row), inline=True)
             embed.add_field(
-                name=f"{passive_label}: **{dp['passive_name']}**",
-                value=f"*{dp['passive_desc']}*",
+                name="📈 Progress",
+                value=(
+                    f"⭐ Level: `{row['level']}`\n"
+                    f"✨ EXP: {exp_bar(row['exp'], exp_needed)}\n"
+                    f"😊 Happiness: `{row['happiness']}/100`"
+                ),
+                inline=True
+            )
+            embed.add_field(
+                name="⚡ Moves",
+                value="\n".join(f"• {m}" for m in beast_data["moves"]) + f"\n🌟 **Ultimate:** {beast_data['ultimate']}",
                 inline=False
             )
-        if beast_data.get("starter"):
-            embed.add_field(
-                name="🏛️ Origin",
-                value=f"*{beast_data.get('starter_house', 'Unknown House')} — {beast_data.get('starter_flavor', '')}*",
-                inline=False
-            )
-        if beast_data.get("image_url"):
-            embed.set_image(url=beast_data["image_url"])
-        embed.set_footer(text=f"Beast ID: #{beast_row['id']} | Caught via: {beast_row['caught_from']}")
-        await interaction.followup.send(embed=embed)
+            embed.add_field(name="🎭 Disposition", value=disposition_display(row.get("disposition")), inline=False)
+            if beast_data.get("divine_passive"):
+                dp = beast_data["divine_passive"]
+                passive_label = {
+                    "divine": "✨ Divine Passive", "altered_divine": "⚠️ Altered Passive",
+                    "corrupted": "🖤 Corrupted Passive", "ancient": "🏛️ Ancient Passive",
+                }.get(rarity, "✨ Special Passive")
+                embed.add_field(name=f"{passive_label}: **{dp['passive_name']}**", value=f"*{dp['passive_desc']}*", inline=False)
+            if beast_data.get("starter"):
+                embed.add_field(
+                    name="🏛️ Origin",
+                    value=f"*{beast_data.get('starter_house', 'Unknown House')} — {beast_data.get('starter_flavor', '')}*",
+                    inline=False
+                )
+            if beast_data.get("image_url"):
+                embed.set_image(url=beast_data["image_url"])
+            embed.set_footer(text=f"Beast #{num} of {len(all_beasts)} | Caught via: {row['caught_from']}")
+            return embed
+
+        # Navigation buttons
+        current_idx = next((i for i, b in enumerate(all_beasts) if b["id"] == beast_row["id"]), 0)
+
+        class BeastInfoView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=120)
+                self.idx = current_idx
+                self._update()
+
+            def _update(self):
+                self.prev_btn.disabled = self.idx <= 0
+                self.next_btn.disabled = self.idx >= len(all_beasts) - 1
+                num = all_beasts[self.idx].get("player_number", self.idx + 1)
+                self.prev_btn.label = f"◀ #{all_beasts[self.idx-1].get('player_number', self.idx)}" if self.idx > 0 else "◀"
+                self.next_btn.label = f"#{all_beasts[self.idx+1].get('player_number', self.idx+2)} ▶" if self.idx < len(all_beasts)-1 else "▶"
+
+            @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary)
+            async def prev_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
+                self.idx -= 1
+                self._update()
+                await btn_interaction.response.edit_message(embed=build_embed(all_beasts[self.idx]), view=self)
+
+            @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
+            async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
+                self.idx += 1
+                self._update()
+                await btn_interaction.response.edit_message(embed=build_embed(all_beasts[self.idx]), view=self)
+
+        view = BeastInfoView()
+        await interaction.followup.send(embed=build_embed(beast_row), view=view)
 
     @app_commands.command(name="setactive", description="Set a beast as your active battle beast ⚔️")
-    @app_commands.describe(beast_id="The ID of the beast to set as active")
-    async def setactive(self, interaction: discord.Interaction, beast_id: int):
+    @app_commands.describe(beast_number="Your beast number from /collection")
+    async def setactive(self, interaction: discord.Interaction, beast_number: int):
         await interaction.response.defer()
         async with aiosqlite.connect("db/chibibeast.db") as db:
             async with db.execute(
-                "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
+                "SELECT id FROM player_beasts WHERE player_number = ? AND user_id = ?",
+                (beast_number, interaction.user.id)
             ) as cursor:
                 exists = await cursor.fetchone()
             if not exists:
+                # Fallback: try matching old global id
+                async with db.execute(
+                    "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
+                    (beast_number, interaction.user.id)
+                ) as cursor:
+                    exists = await cursor.fetchone()
+            if not exists:
                 return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ That beast isn't in your collection!", color=COLORS["error"]
+                    description=f"✦ Beast `#{beast_number}` not found in your collection!", color=COLORS["error"]
                 ))
+            row_id = exists[0]
             await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (interaction.user.id,))
-            await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (beast_id,))
+            await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (row_id,))
             await db.commit()
         await interaction.followup.send(embed=discord.Embed(
-            description=f"✦ Beast `#{beast_id}` is now your active beast! ⚔️",
+            description=f"✦ Beast `#{beast_number}` is now your active beast! ⚔️",
             color=COLORS["success"]
         ))
 
     @app_commands.command(name="nickname", description="Give your beast a nickname 💬")
-    @app_commands.describe(beast_id="Beast ID", name="New nickname (max 20 chars)")
-    async def nickname(self, interaction: discord.Interaction, beast_id: int, name: str):
+    @app_commands.describe(beast_number="Your beast number from /collection", name="New nickname (max 20 chars)")
+    async def nickname(self, interaction: discord.Interaction, beast_number: int, name: str):
         if len(name) > 20:
             return await interaction.response.send_message(embed=discord.Embed(
                 description="✦ Nickname must be 20 characters or less!", color=COLORS["error"]
             ), ephemeral=True)
         async with aiosqlite.connect("db/chibibeast.db") as db:
             async with db.execute(
-                "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
-                (beast_id, interaction.user.id)
+                "SELECT id FROM player_beasts WHERE player_number = ? AND user_id = ?",
+                (beast_number, interaction.user.id)
             ) as c:
                 exists = await c.fetchone()
             if not exists:
+                async with db.execute(
+                    "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
+                    (beast_number, interaction.user.id)
+                ) as c:
+                    exists = await c.fetchone()
+            if not exists:
                 return await interaction.response.send_message(embed=discord.Embed(
-                    description="✦ Beast not found!", color=COLORS["error"]
+                    description=f"✦ Beast `#{beast_number}` not found!", color=COLORS["error"]
                 ), ephemeral=True)
-            await db.execute("UPDATE player_beasts SET nickname = ? WHERE id = ?", (name, beast_id))
+            row_id = exists[0]
+            await db.execute("UPDATE player_beasts SET nickname = ? WHERE id = ?", (name, row_id))
             await db.commit()
         await interaction.response.send_message(embed=discord.Embed(
-            description=f"✦ Beast `#{beast_id}` has been named **{name}**! 💬",
+            description=f"✦ Beast `#{beast_number}` has been named **{name}**! 💬",
             color=COLORS["success"]
         ))
 
