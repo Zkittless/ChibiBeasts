@@ -664,16 +664,18 @@ class Utilities(commands.Cog):
             await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
     # ── /shard_shop ───────────────────────────────────────────────────────
+    async def shard_shop_autocomplete(self, interaction: discord.Interaction, current: str):
+        choices = []
+        for sid, shop_item in SHARD_SHOP.items():
+            limit_str = f" · {shop_item['weekly_limit']}/wk" if shop_item["weekly_limit"] else ""
+            label = f"{shop_item['name']} ({shop_item['cost']} 🔮{limit_str})"
+            if current.lower() in label.lower():
+                choices.append(app_commands.Choice(name=label, value=sid))
+        return choices[:25]
+
     @app_commands.command(name="shard_shop", description="Spend Celestial Shards on exclusive items 🔮")
     @app_commands.describe(item="Item to buy (leave blank to browse)")
-    @app_commands.choices(item=[
-        app_commands.Choice(name="🌌 Astral Reroll (25 shards) — guaranteed element next hatch", value="astral_reroll"),
-        app_commands.Choice(name="🧭 Divine Compass (40 shards) — 3 boosted explores",          value="divine_compass"),
-        app_commands.Choice(name="🧵 Loom Fragment (15 shards) — skip 6hrs of incubation",       value="loom_fragment"),
-        app_commands.Choice(name="🔑 Prism Key (60 shards) — 30% divine explore",                value="prism_key"),
-        app_commands.Choice(name="✏️ Rename Token (15 shards) — rename any beast",               value="beast_rename_token"),
-        app_commands.Choice(name="🏷️ Title Reset (10 shards) — choose from earned titles",       value="trainer_title_reset"),
-    ])
+    @app_commands.autocomplete(item=shard_shop_autocomplete)
     async def shard_shop(self, interaction: discord.Interaction, item: str = None):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))

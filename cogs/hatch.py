@@ -377,10 +377,10 @@ class Hatch(commands.Cog):
     @app_commands.command(name="hatch", description="Hatch an instant egg from your inventory 🥚")
     @app_commands.describe(egg_type="Type of egg to hatch")
     @app_commands.choices(egg_type=[
-        app_commands.Choice(name="🥚 Common Egg",                                       value="common_egg"),
-        app_commands.Choice(name="🥚✨ Rare Egg",                                       value="rare_egg"),
-        app_commands.Choice(name="🌌🥚 Celestial Egg — 25% Divine chance",             value="celestial_egg"),
-        app_commands.Choice(name="🌊💎 Abyssal Egg — 55% Divine chance",              value="abyssal_egg"),
+        app_commands.Choice(name="🥚 Common Egg — common/uncommon",                                          value="common_egg"),
+        app_commands.Choice(name="🥚✨ Rare Egg — uncommon/rare/epic",                                       value="rare_egg"),
+        app_commands.Choice(name=f"🌌🥚 Celestial Egg — {int(_BASE_EGG_POOLS['celestial_egg'].get('divine',0)*100)}% Divine",  value="celestial_egg"),
+        app_commands.Choice(name=f"🌊💎 Abyssal Egg — {int(_BASE_EGG_POOLS['abyssal_egg'].get('divine',0)*100)}% Divine",     value="abyssal_egg"),
     ])
     async def hatch(self, interaction: discord.Interaction, egg_type: str = "common_egg"):
         await get_or_create_player(interaction.user.id, str(interaction.user))
