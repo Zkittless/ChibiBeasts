@@ -1567,12 +1567,13 @@ class Utilities(commands.Cog):
                     )
                 await set_raid_slot(uid, beast_row["id"], self.slot)
                 new_party = await get_raid_party(uid)
+                # Rebuild buttons first, then edit — one atomic update
+                self.party_view.party = new_party
+                self.party_view._build_buttons()
                 await modal_interaction.response.edit_message(
                     embed=await build_embed(new_party),
                     view=self.party_view
                 )
-                # Refresh view buttons
-                await self.party_view.refresh(new_party)
 
         class PartyView(discord.ui.View):
             def __init__(self, party: list):
@@ -1609,10 +1610,6 @@ class Utilities(commands.Cog):
                             await inter.response.edit_message(embed=await build_embed(new_party), view=v)
                         clear_btn.callback = _clear
                         self.add_item(clear_btn)
-
-            async def refresh(self, new_party: list):
-                self.party = new_party
-                self._build_buttons()
 
         party = await get_raid_party(uid)
         view  = PartyView(party)
