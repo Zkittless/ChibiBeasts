@@ -2042,6 +2042,250 @@
       },
       "collection": "Altered Divines",
       "divine_trait_slot": false
+    },
+    "corrupted_leviathan": {
+      "id": "corrupted_leviathan",
+      "name": "Corrupted Leviathan",
+      "title": "The Tainted Deep",
+      "rarity": "corrupted",
+      "type": "water",
+      "base_stats": {
+        "hp": 273,
+        "attack": 156,
+        "defense": 143,
+        "speed": 78,
+        "mana": 136
+      },
+      "moves": [
+        "Void Tide",
+        "Corrupted Surge",
+        "Tainted Coil"
+      ],
+      "ultimate": "Abyssal Corruption",
+      "description": "A once-great sea sovereign twisted by dark energy into something monstrous. The water it swims through stays dark for days.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/corrupted_leviathan.png",
+      "catch_rate": 0.02,
+      "evolution": null,
+      "encounter_situations": [
+        "The sea goes dark in a spreading circle. Corrupted Leviathan rises at the center, trailing void energy, the water around it wrong in a way that is hard to describe.",
+        "Something vast is moving beneath the surface. The darkness pools where it passes. Corrupted Leviathan surfaces slowly, as if deciding whether you are worth the effort.",
+        "Corrupted Leviathan does not attack immediately. It circles once, leaving a trail of tainted water, and then looks at you with eyes that are the color of nothing."
+      ],
+      "divine_passive": {
+        "passive_name": "Void Tide",
+        "passive_id": "void_tide",
+        "passive_desc": "Each turn, the opponent loses 3% of their max HP to corruption. Cannot be reduced below 1 HP this way.",
+        "passive_effect": {
+          "corruption_drain_percent": 0.03
+        },
+        "passive_trigger": "turn_end"
+      },
+      "collection": "Corrupted Forms",
+      "divine_trait_slot": false
+    },
+    "corrupted_fenrir": {
+      "id": "corrupted_fenrir",
+      "name": "Corrupted Fenrir",
+      "title": "The Howling Void",
+      "rarity": "corrupted",
+      "type": "shadow",
+      "base_stats": {
+        "hp": 247,
+        "attack": 162,
+        "defense": 123,
+        "speed": 117,
+        "mana": 130
+      },
+      "moves": [
+        "Void Howl",
+        "Rift Fang",
+        "Dark Chain"
+      ],
+      "ultimate": "Reality Tear",
+      "description": "The World Eater consumed by void energy. Its howl tears small rifts in reality. The gods who chained it are reconsidering their decision.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/corrupted_fenrir.png",
+      "catch_rate": 0.02,
+      "evolution": null,
+      "encounter_situations": [
+        "The air splits along a seam that shouldn't exist. Corrupted Fenrir steps through it, trailing void energy, and the seam closes behind it like it was never there.",
+        "Corrupted Fenrir is already there when you arrive. It has been there for a while. The ground where it stands has a texture that doesn't respond to light correctly.",
+        "The howl reaches you before the beast does. When Corrupted Fenrir arrives, small tears in the air follow it, opening and closing like something breathing."
+      ],
+      "divine_passive": {
+        "passive_name": "Rift Walker",
+        "passive_id": "rift_walker",
+        "passive_desc": "20% chance to dodge any attack by stepping through a void rift.",
+        "passive_effect": {
+          "dodge_chance": 0.2
+        },
+        "passive_trigger": "on_hit"
+      },
+      "collection": "Corrupted Forms",
+      "divine_trait_slot": false
+    },
+    "corrupted_dragon": {
+      "id": "corrupted_dragon",
+      "name": "Corrupted Dragon",
+      "title": "The Broken Apex",
+      "rarity": "corrupted",
+      "type": "fire",
+      "base_stats": {
+        "hp": 234,
+        "attack": 156,
+        "defense": 130,
+        "speed": 104,
+        "mana": 143
+      },
+      "moves": [
+        "Void Flame",
+        "Corrupted Roar",
+        "Dark Talon"
+      ],
+      "ultimate": "Extinction Breath",
+      "description": "The apex predator twisted into a creature of pure destructive energy. The fire it breathes leaves nothing \u2014 not ash, not memory.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/corrupted_dragon.png",
+      "catch_rate": 0.02,
+      "evolution": null,
+      "encounter_situations": [
+        "Corrupted Dragon lands without the sound a creature this size should make. The void energy around it absorbs the impact. It looks at you like you are already gone.",
+        "The flames around Corrupted Dragon are dark. They give off cold instead of heat. When it exhales, the air where the breath passes stops existing briefly.",
+        "It does not roar. Corrupted Dragon simply opens its wings and the darkness follows, pooling beneath it like a shadow cast by something that isn't there."
+      ],
+      "divine_passive": {
+        "passive_name": "Void Flame",
+        "passive_id": "void_flame",
+        "passive_desc": "Fire attacks deal an additional 15% of the target's max HP as void damage, ignoring defense.",
+        "passive_effect": {
+          "void_damage_percent": 0.15
+        },
+        "passive_trigger": "on_attack"
+      },
+      "collection": "Corrupted Forms",
+      "divine_trait_slot": false
+    },
+    "ancient_chronos": {
+      "id": "ancient_chronos",
+      "name": "Ancient Chronos",
+      "title": "The Primordial Epoch",
+      "rarity": "ancient",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 367,
+        "attack": 202,
+        "defense": 202,
+        "speed": 195,
+        "mana": 240
+      },
+      "moves": [
+        "Time Collapse",
+        "Ancient Epoch",
+        "Primordial Lock"
+      ],
+      "ultimate": "Beginning of Time",
+      "description": "The primordial form of Chronos, existing before time itself had a name. It doesn't govern time. It is time.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ancient_chronos.png",
+      "catch_rate": 0.005,
+      "evolution": null,
+      "encounter_situations": [
+        "Ancient Chronos exists in all moments of this encounter simultaneously. When you blink, it is in a different position. It has always been in that position.",
+        "The encounter has already happened. You are experiencing the memory of it. Ancient Chronos watches you from outside the moment, patient in the way only something eternal can be.",
+        "Time stops. Not slows \u2014 stops. Ancient Chronos walks through the frozen moment and looks at you. Then time resumes and it is where it always was."
+      ],
+      "divine_passive": {
+        "passive_name": "Primordial Time",
+        "passive_id": "primordial_time",
+        "passive_desc": "Acts first every turn regardless of speed. 30% chance to act twice. Cannot be slowed.",
+        "passive_effect": {
+          "always_first": true,
+          "double_turn_chance": 0.3,
+          "immune_to_slow": true
+        },
+        "passive_trigger": "turn_start"
+      },
+      "collection": "Ancient Forms",
+      "divine_trait_slot": false
+    },
+    "ancient_genesis": {
+      "id": "ancient_genesis",
+      "name": "Ancient Genesis",
+      "title": "The First Flame",
+      "rarity": "ancient",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 382,
+        "attack": 225,
+        "defense": 187,
+        "speed": 165,
+        "mana": 232
+      },
+      "moves": [
+        "First Creation",
+        "Origin Burst",
+        "Primordial Flame"
+      ],
+      "ultimate": "Big Bang",
+      "description": "The original Origin Phoenix, carrying the flame of the universe's first moment. Everything alive exists because this beast once burned.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ancient_genesis.png",
+      "catch_rate": 0.005,
+      "evolution": null,
+      "encounter_situations": [
+        "Ancient Genesis burns with a light that existed before light had a name. When you look at it directly, you see something that might be the beginning of everything.",
+        "The air around Ancient Genesis smells like the moment before creation. It regards you with the calm of something that has already seen everything that will ever happen.",
+        "Ancient Genesis lands and the world becomes slightly more real where its feet touch the ground. It tilts its head. You feel like you have been evaluated and not found wanting."
+      ],
+      "divine_passive": {
+        "passive_name": "First Fire",
+        "passive_id": "first_fire",
+        "passive_desc": "All attacks deal true damage (ignores defense entirely). Heals 10% of damage dealt.",
+        "passive_effect": {
+          "true_damage": true,
+          "lifesteal_percent": 0.1
+        },
+        "passive_trigger": "on_attack"
+      },
+      "collection": "Ancient Forms",
+      "divine_trait_slot": false
+    },
+    "ancient_abyss": {
+      "id": "ancient_abyss",
+      "name": "Ancient Abyss",
+      "title": "The Void Before Stars",
+      "rarity": "ancient",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 382,
+        "attack": 225,
+        "defense": 187,
+        "speed": 180,
+        "mana": 225
+      },
+      "moves": [
+        "Primordial Void",
+        "Pre-Existence",
+        "Ancient Dark"
+      ],
+      "ultimate": "Heat Death",
+      "description": "The Dark Matter Panther in its oldest form \u2014 the void that existed before the universe had anything to put in it. It remembers what silence really sounds like.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ancient_abyss.png",
+      "catch_rate": 0.005,
+      "evolution": null,
+      "encounter_situations": [
+        "Ancient Abyss is not visible. You know it is here because the absence of light has a shape, and the shape is moving. When it is ready, it allows itself to be seen.",
+        "The encounter takes place in a silence that predates sound. Ancient Abyss exists in it comfortably. You do not.",
+        "Ancient Abyss does not approach. It simply waits, and the space between you gets smaller on its own. When it is close enough, it looks at you with the patience of the void."
+      ],
+      "divine_passive": {
+        "passive_name": "Pre-Existence",
+        "passive_id": "pre_existence",
+        "passive_desc": "Immune to all debuffs. Each turn, reduces all opponent stats by 3% (stacks, no cap).",
+        "passive_effect": {
+          "debuff_immune": true,
+          "stat_drain_percent": 0.03
+        },
+        "passive_trigger": "turn_start"
+      },
+      "collection": "Ancient Forms",
+      "divine_trait_slot": false
     }
   },
   "rarity_rates": {

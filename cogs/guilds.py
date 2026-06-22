@@ -607,17 +607,19 @@ class Guilds(commands.Cog):
         _raid_locks[raid_id] = asyncio.Lock()  # one lock per raid, cleared in end_raid
 
         embed = discord.Embed(
-            title=f"⚠️ RAID ALERT — {boss['name']}!",
+            title=f"{'🏛️' if raid_type == 'ancient' else '⚔️'} RAID ALERT — {boss['name']}!",
             description=(
                 f"*{sundering_line}*\n\n"
-                f"**{interaction.guild.name}**, an **Altered Divine** has emerged: **{boss['name']}**.\n"
+                f"**{interaction.guild.name}**, a **{'Ancient' if raid_type == 'ancient' else 'Corrupted'}** beast has emerged: **{boss['name']}**.\n"
                 f"*{boss['description']}*\n\n"
                 f"💀 **HP:** {hp_bar(boss['max_hp'], boss['max_hp'])}\n\n"
                 f"Use `/raid_attack` to deal damage! The raid lasts 30 minutes.\n"
-                f"🏆 Top damage dealers get bonus loot — and a chance to catch what it was always meant to be."
+                f"🏆 Top 3 damage dealers have a chance to catch the boss itself."
             ),
             color=COLORS["altered_divine"] if raid_type == "ancient" else COLORS["epic"]
         )
+        if boss.get("image_url"):
+            embed.set_image(url=boss["image_url"])
         embed.set_footer(text=f"Raid ID: #{raid_id} | Triggered by {interaction.user.display_name}")
         await interaction.followup.send(embed=embed)
 
@@ -821,66 +823,53 @@ class Guilds(commands.Cog):
                 else:
                     reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{member.display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️")
 
-                # Altered Divine catch chance for top 3
-                altered_id = boss.get("altered_divine")
-                if altered_id and rank <= 3:
-                    catch_chance = 0.001 * (4 - rank)
+                # ── Raid boss catch chance for top 3 ─────────────────────────
+                # Corrupted raids: rank 1=5%, rank 2=3%, rank 3=2%
+                # Ancient raids:   rank 1=10%, rank 2=6%, rank 3=3%
+                # Catches the boss's own corrupted/ancient form — raid-exclusive trophies.
+                # Altered Divines are eggs-only jackpots and are NOT awarded here.
+                if rank <= 3:
+                    is_ancient = raid_type == "ancient"
+                    catch_chances = {1: 0.10 if is_ancient else 0.05,
+                                     2: 0.06 if is_ancient else 0.03,
+                                     3: 0.03 if is_ancient else 0.02}
+                    catch_chance = catch_chances.get(rank, 0)
                     if random.random() < catch_chance:
-                        altered = ALTERED_DIVINES.get(altered_id)
-                        if altered:
-                            # Per LORE.md §III: a successful raid doesn't kill the Altered Divine —
-                            # it finally finishes being born correctly. The trainer catches the
-                            # *purified* divine entity (base_beast), not the unstable phenomenon.
-                            # beast_id → the completed divine's canonical ID
-                            # rarity  → "divine" (it finished; is_altered_divine=1 flags the origin)
-                            purified_id = altered["base_beast"]
-                            purified_data = get_beast_data(purified_id)
-                            if not purified_data:
-                                continue
-
+                        boss_beast_data = get_beast_data(boss["id"])
+                        if boss_beast_data:
                             async with aiosqlite.connect("db/chibibeast.db") as db:
                                 await db.execute("""
                                     INSERT INTO player_beasts
                                     (user_id, beast_id, hp, max_hp, attack, defense, speed, mana, max_mana,
-                                     rarity, is_altered_divine, altered_name, caught_from)
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'divine', 1, ?, 'raid')
+                                     rarity, caught_from)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'raid')
                                 """, (
                                     user_id,
-                                    purified_id,
-                                    int(purified_data["base_stats"]["hp"]     * altered["stat_modifier"]),
-                                    int(purified_data["base_stats"]["hp"]     * altered["stat_modifier"]),
-                                    int(purified_data["base_stats"]["attack"] * altered["stat_modifier"]),
-                                    int(purified_data["base_stats"]["defense"]* altered["stat_modifier"]),
-                                    int(purified_data["base_stats"]["speed"]  * altered["stat_modifier"]),
-                                    int(purified_data["base_stats"]["mana"]   * altered["stat_modifier"]),
-                                    int(purified_data["base_stats"]["mana"]   * altered["stat_modifier"]),
-                                    altered["name"]  # altered_name preserves the raid encounter name for lore
+                                    boss["id"],
+                                    boss_beast_data["base_stats"]["hp"],
+                                    boss_beast_data["base_stats"]["hp"],
+                                    boss_beast_data["base_stats"]["attack"],
+                                    boss_beast_data["base_stats"]["defense"],
+                                    boss_beast_data["base_stats"]["speed"],
+                                    boss_beast_data["base_stats"]["mana"],
+                                    boss_beast_data["base_stats"]["mana"],
+                                    boss_beast_data["rarity"],
                                 ))
-                                # Historical record: log the unstable form for lore continuity
-                                await db.execute(
-                                    "INSERT INTO altered_divines (beast_id, altered_name, caught_by, server_id, raid_id) VALUES (?, ?, ?, ?, ?)",
-                                    (purified_id, altered["name"], user_id, channel.guild.id, raid_id)
-                                )
                                 await db.commit()
-
-                            # Record in server bestiary as the purified divine
                             from utils.progress import record_bestiary_sighting
-                            await record_bestiary_sighting(channel.guild.id, purified_id, user_id)
-
+                            await record_bestiary_sighting(channel.guild.id, boss["id"], user_id)
+                            icon = "🏛️" if is_ancient else "⚔️"
+                            label = "Ancient" if is_ancient else "Corrupted"
                             await channel.send(embed=discord.Embed(
-                                title="🌸 ✨ THE LOOM FINISHED THE WEAVE ✨ 🌸",
+                                title=f"{icon} THE RAID BOSS HAS BEEN CAUGHT!",
                                 description=(
-                                    f"*The loose thread is recaptured. The Altered Divine finishes being born — correctly, this time.*\n\n"
-                                    f"🌌 **{member.display_name}** has caught **{purified_data['name']}** — *{purified_data['title']}*!\n\n"
-                                    f"*{purified_data['description']}*\n\n"
-                                    f"Previously: **{altered['name']}** — now resolved into its true form.\n"
-                                    f"Unique raid moves preserved: **{' | '.join(altered['unique_moves'])}**"
+                                    f"*In the moment of defeat, something shifts.*\n\n"
+                                    f"🌟 **{member.display_name}** has caught **{boss_beast_data['name']}** — *{boss_beast_data['title']}*!\n\n"
+                                    f"*{boss_beast_data['description']}*\n\n"
+                                    f"**{label}** form — obtainable only through raids."
                                 ),
-                                color=COLORS["divine"]
+                                color=COLORS.get(boss_beast_data["rarity"], COLORS["legendary"])
                             ))
-                            altered_unlocked = await unlock_simple_achievement(user_id, "first_altered_divine")
-                            if altered_unlocked:
-                                await notify_unlocks(channel, member, ["first_altered_divine"])
 
         if reward_lines:
             embed.add_field(name="🏆 Top Damage Dealers", value="\n".join(reward_lines), inline=False)
