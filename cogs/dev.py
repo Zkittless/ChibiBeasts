@@ -542,6 +542,19 @@ class Dev(commands.Cog):
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
 
+    @app_commands.command(name="reset_shard_shop", description="[DEV] Reset a player's shard shop weekly cooldown")
+    @app_commands.describe(member="Player to reset")
+    async def reset_shard_shop(self, interaction: discord.Interaction, member: discord.Member):
+        if not await dev_only(interaction):
+            return
+        await interaction.response.defer(ephemeral=True)
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            await db.execute("UPDATE players SET shard_shop_week = NULL WHERE user_id = ?", (member.id,))
+            await db.commit()
+        await interaction.followup.send(
+            f"✅ Shard shop cooldown reset for **{member.display_name}**.", ephemeral=True
+        )
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Dev(bot))
