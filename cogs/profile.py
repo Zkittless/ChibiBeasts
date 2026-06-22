@@ -236,6 +236,7 @@ class Profile(commands.Cog):
                 passive_label = {
                     "divine": "✨ Divine Passive", "altered_divine": "⚠️ Altered Passive",
                     "corrupted": "🖤 Corrupted Passive", "ancient": "🏛️ Ancient Passive",
+                    "dev": "👑 Developer Passive",
                 }.get(rarity, "✨ Special Passive")
                 embed.add_field(name=f"{passive_label}: **{dp['passive_name']}**", value=f"*{dp['passive_desc']}*", inline=False)
             if beast_data.get("starter"):

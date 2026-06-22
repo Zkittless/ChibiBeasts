@@ -2286,6 +2286,47 @@
       },
       "collection": "Ancient Forms",
       "divine_trait_slot": false
+    },
+    "ouroboros": {
+      "id": "ouroboros",
+      "name": "Desync the Infinite",
+      "title": "The Ouroboros",
+      "rarity": "dev",
+      "type": "cosmic",
+      "collection": "Developer Exclusive",
+      "description": "A creature that does not merely inhabit the world, but binds it together. Its scales shimmer with shifting lines of ancient, glowing runes. To look upon it is to witness the birth and death of the cosmos simultaneously. It does not slither \u2014 it displaces itself across reality, its eyes burning with the cold, absolute authority of a creator.",
+      "base_stats": {
+        "hp": 9999,
+        "attack": 2000,
+        "defense": 1500,
+        "speed": 1000,
+        "mana": 999
+      },
+      "catch_rate": 0.0,
+      "moves": [
+        "Runtime Error",
+        "Overflow",
+        "Cascade Failure"
+      ],
+      "ultimate": "Hard Reset",
+      "divine_passive": {
+        "passive_name": "Infinite Loop",
+        "passive_id": "infinite_loop",
+        "passive_desc": "Cannot be one-shot. If an attack would reduce HP to 0, survive at 1 HP once per battle. Attacks have a 20% chance to ignore defense entirely.",
+        "passive_effect": {
+          "survive_one_shot": true,
+          "defense_pierce_chance": 0.2
+        },
+        "passive_trigger": "damage_received"
+      },
+      "divine_trait_slot": false,
+      "evolution": null,
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ouroboros.png",
+      "encounter_situations": [
+        "The sky tears open without warning. Desync the Infinite does not appear \u2014 it simply was always here, and the world is only now noticing.",
+        "Static fills the air. The ground crumbles in a perfect circle and Desync the Infinite rises from the nothing beneath it, jaws already closing around its own tail.",
+        "You blink and reality skips a frame. When it catches up, Desync the Infinite is already watching you with eyes that have seen the end of everything and found it unremarkable."
+      ]
     }
   },
   "rarity_rates": {

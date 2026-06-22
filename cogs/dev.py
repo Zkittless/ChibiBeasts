@@ -168,7 +168,30 @@ class Dev(commands.Cog):
             ephemeral=True
         )
 
-    # ── /dev give_shards ──────────────────────────────────────────────────
+    # ── /dev give_ouroboros ───────────────────────────────────────────────
+    @app_commands.command(name="give_ouroboros", description="[DEV] Grant Desync the Infinite — your personal beast 👑")
+    @app_commands.describe(member="Target player (should be you)")
+    @dev_only()
+    async def give_ouroboros(self, interaction: discord.Interaction, member: discord.Member):
+        await interaction.response.defer(ephemeral=True)
+        all_beasts = load_beasts()
+        beast = all_beasts.get("ouroboros")
+        if not beast:
+            return await interaction.followup.send("✦ Ouroboros not found in beast data!", ephemeral=True)
+        await get_or_create_player(member.id, str(member))
+        await add_beast_to_player(member.id, {**beast, "caught_from": "dev"})
+        await interaction.followup.send(
+            embed=discord.Embed(
+                title="👑 The Loop Is Complete",
+                description=(
+                    f"*The sky tears open without warning.*\n\n"
+                    f"**Desync the Infinite** has been granted to **{member.display_name}**.\n\n"
+                    f"*It simply was always here. The world is only now noticing.*"
+                ),
+                color=0xFF0055
+            ),
+            ephemeral=True
+        )
     @dev_group.command(name="give_shards", description="Give Celestial Shards to a player")
     @app_commands.describe(member="Target player", amount="Amount of shards")
     @dev_only()
