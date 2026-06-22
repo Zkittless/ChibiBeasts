@@ -352,6 +352,7 @@ class Ancient(commands.Cog):
             "player_defense": {},
             "player_atk": {},
             "phase_fired": set(),
+            "phase_log": [],       # accumulated phase events shown on embed
             "boss_attack": scaled_atk,
             "last_event": "",
             "player_party": {},
@@ -415,11 +416,13 @@ class Ancient(commands.Cog):
                     mana  = raid["player_mana"].get(uid, 0)
                     alive = "\U0001f480" if p_hp <= 0 else "\u26a1" if mana >= 50 else "\u2764\ufe0f"
                     lines.append(f"{medals[i]} <@{uid}> \u2014 `{dmg:,}` dmg {alive} `{p_hp}/{p_max}HP`")
-                embed.add_field(name="\u2694\ufe0f Party", value="\n".join(lines), inline=False)
+                embed.add_field(name="⚔️ Party", value="\n".join(lines), inline=False)
+            if raid.get("phase_log"):
+                embed.add_field(name="📋 Phase Log", value="\n".join(raid["phase_log"]), inline=False)
             if boss.get("image_url"):
                 embed.set_image(url=boss["image_url"])
             if raid.get("last_event"):
-                embed.add_field(name="\U0001f4e3 Last Event", value=raid["last_event"], inline=False)
+                embed.add_field(name="📣 Last Event", value=raid["last_event"], inline=False)
             embed.set_footer(text=f"Raid ID: #{raid_id} | Party: {party_preview} | Boss attacks every {BOSS_ATK_INTERVAL}s")
             return embed
 
@@ -493,7 +496,8 @@ class Ancient(commands.Cog):
                         "🟠 Weakened — Boss DEF −40%"  if sig["threshold"] == 0.40 else
                         "🟡 Damaged — Boss DEF −20%"
                     )
-                    cur_raid["last_event"] = f"⚡ **{sig['name']}**! {sig['flavor'][:60]}… | {phase_status}"
+                    cur_raid["last_event"] = f"⚡ **{sig['name']}** — {phase_status}"
+                    cur_raid["phase_log"].append(f"{phase_status} · *{sig['name']}*")
 
         cog = self
 

@@ -806,6 +806,7 @@ class Guilds(commands.Cog):
             "player_defense": {},
             "player_atk": {},
             "phase_fired": set(),
+            "phase_log": [],       # accumulated phase events shown on embed
             "boss_attack": scaled_atk,
             "last_event": "",
             "scaled_boss_def": scaled_boss_def,
@@ -878,6 +879,8 @@ class Guilds(commands.Cog):
                     alive = "💀" if p_hp <= 0 else "⚡" if p_mana >= 50 else "❤️"
                     lines.append(f"{medals[i]} <@{uid}> — `{dmg:,}` dmg {alive} `{p_hp}/{p_max}HP`")
                 embed.add_field(name="⚔️ Party", value="\n".join(lines), inline=False)
+            if raid.get("phase_log"):
+                embed.add_field(name="📋 Phase Log", value="\n".join(raid["phase_log"]), inline=False)
             if raid.get("last_event"):
                 embed.add_field(name="📣 Last Event", value=raid["last_event"], inline=False)
             if boss.get("image_url"):
@@ -972,7 +975,8 @@ class Guilds(commands.Cog):
                         "🟠 Weakened — Boss DEF −40%"  if sig["threshold"] == 0.40 else
                         "🟡 Damaged — Boss DEF −20%"
                     )
-                    raid["last_event"] = f"⚡ **{sig['name']}**! {sig['flavor'][:60]}… | {phase_status}"
+                    raid["last_event"] = f"⚡ **{sig['name']}** — {phase_status}"
+                    raid["phase_log"].append(f"{phase_status} · *{sig['name']}*")
 
         cog = self
 
