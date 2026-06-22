@@ -28,6 +28,7 @@ def load_materials():
 
 # ── Shard Shop inventory ───────────────────────────────────────────────────────
 SHARD_SHOP = {
+    # ── Page 1: Utility items ────────────────────────────────────────────
     "astral_reroll": {
         "name": "🌌 Astral Reroll",
         "desc": "Guarantees your next `/hatch` produces a specific element type of your choice.",
@@ -49,6 +50,7 @@ SHARD_SHOP = {
         "weekly_limit": 3,
         "type": "incubation_skip",
     },
+    # ── Page 2: Cosmetics & access ───────────────────────────────────────
     "prism_key": {
         "name": "🔑 Prism Key",
         "desc": "Grants access to a special /explore variant in the Celestial Loom with a 30% divine rate.",
@@ -70,8 +72,7 @@ SHARD_SHOP = {
         "weekly_limit": 0,
         "type": "cosmetic",
     },
-    # ── Ancient Summon Items ─────────────────────────────────────────────
-    # Rare alternative to raiding for corrupted drops — expensive + weekly limit
+    # ── Page 3: Ancient Summon Items ─────────────────────────────────────
     "epoch_shard": {
         "name": "⏳ Epoch Shard",
         "desc": "Calls Ancient Chronos to the altar. Time stutters around it. Also drops from Corrupted Fenrir.",
