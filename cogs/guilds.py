@@ -533,7 +533,6 @@ class Guilds(commands.Cog):
     @app_commands.command(name="raid", description="Trigger a raid boss battle! ⚔️")
     @app_commands.choices(raid_type=[
         app_commands.Choice(name="⚔️ Corrupted Raid", value="corrupted"),
-        app_commands.Choice(name="👑 Ancient Raid", value="ancient"),
     ])
     async def raid(self, interaction: discord.Interaction, raid_type: str = "corrupted"):
         await interaction.response.defer()
@@ -547,42 +546,39 @@ class Guilds(commands.Cog):
 
         if not guild_data:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need to be in a guild to trigger raids!", color=COLORS["error"]
+                description="✦ You need to be in a guild to trigger Corrupted Raids!", color=COLORS["error"]
             ))
 
         guild_data = dict(guild_data)
 
         if guild_data["rank"] not in ["leader", "officer"]:
-            if raid_type == "ancient" and guild_data["rank"] != "leader":
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ Only Guild Leaders can trigger Ancient Raids!", color=COLORS["error"]
-                ))
+            return await interaction.followup.send(embed=discord.Embed(
+                description="✦ Only Guild Leaders and Officers can trigger Corrupted Raids!", color=COLORS["error"]
+            ))
 
-        min_level = 5 if raid_type == "corrupted" else 10
+        min_level = 5
         if guild_data["level"] < min_level:
             return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Your guild needs to be Level {min_level} to trigger {raid_type.capitalize()} Raids!",
+                description=f"✦ Your guild needs to be Level {min_level} to trigger Corrupted Raids!",
                 color=COLORS["error"]
             ))
 
-        token_cost = 50 if raid_type == "corrupted" else 150
+        token_cost = 50
         if guild_data["guild_tokens"] < token_cost:
             return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Triggering this raid costs `{token_cost}` Guild Tokens. You have `{guild_data['guild_tokens']}`.",
+                description=f"✦ Triggering a Corrupted Raid costs `{token_cost}` Guild Tokens. You have `{guild_data['guild_tokens']}`.",
                 color=COLORS["error"]
             ))
 
-        # Pick random boss
-        boss = random.choice(RAID_BOSSES[raid_type])
+        # Pick random corrupted boss
+        boss = random.choice(RAID_BOSSES["corrupted"])
 
-        # Lore-flavored intro lines — the Sundering framing from the bible
+        # Lore-flavored intro lines
         SUNDERING_LINES = [
             "Something in the Loom snapped. The thread didn't finish weaving — and now it's here.",
             "The Loom tried to make something too large, too quickly. The result is in front of you now.",
-            "An Altered Divine has torn through. It isn't evil — it's unfinished, and it's in pain. "
-            "Fight it down long enough for the Loom to recapture the thread.",
-            "The weave split. What came loose is trying to finish becoming itself the wrong way. "
-            "Your guild needs to hold it steady.",
+            "A Corrupted beast has torn through. It isn't evil — it's unfinished, and it's in pain. Fight it down long enough for the Loom to recapture the thread.",
+            "The weave split. What came loose is trying to finish becoming itself the wrong way. Your guild needs to hold it steady.",
         ]
         sundering_line = random.choice(SUNDERING_LINES)
 
@@ -594,7 +590,7 @@ class Guilds(commands.Cog):
             await db.execute("""
                 INSERT INTO raids (boss_id, boss_name, boss_type, max_hp, current_hp, guild_id, channel_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (boss["id"], boss["name"], raid_type, boss["max_hp"], boss["max_hp"], guild_data["id"], interaction.channel_id))
+            """, (boss["id"], boss["name"], "corrupted", boss["max_hp"], boss["max_hp"], guild_data["id"], interaction.channel_id))
             await db.commit()
             async with db.execute("SELECT last_insert_rowid()") as c:
                 raid_id = (await c.fetchone())[0]
@@ -604,19 +600,19 @@ class Guilds(commands.Cog):
             "max_hp": boss["max_hp"], "participants": {},
             "guild_id": guild_data["id"], "channel": interaction.channel
         }
-        _raid_locks[raid_id] = asyncio.Lock()  # one lock per raid, cleared in end_raid
+        _raid_locks[raid_id] = asyncio.Lock()
 
         embed = discord.Embed(
-            title=f"{'🏛️' if raid_type == 'ancient' else '⚔️'} RAID ALERT — {boss['name']}!",
+            title=f"⚔️ CORRUPTED RAID — {boss['name']}!",
             description=(
                 f"*{sundering_line}*\n\n"
-                f"**{interaction.guild.name}**, a **{'Ancient' if raid_type == 'ancient' else 'Corrupted'}** beast has emerged: **{boss['name']}**.\n"
+                f"**{interaction.guild.name}**, a **Corrupted** beast has emerged: **{boss['name']}**.\n"
                 f"*{boss['description']}*\n\n"
                 f"💀 **HP:** {hp_bar(boss['max_hp'], boss['max_hp'])}\n\n"
                 f"Use `/raid_attack` to deal damage! The raid lasts 30 minutes.\n"
                 f"🏆 Top 3 damage dealers have a chance to catch the boss itself."
             ),
-            color=COLORS["altered_divine"] if raid_type == "ancient" else COLORS["epic"]
+            color=COLORS["epic"]
         )
         if boss.get("image_url"):
             embed.set_image(url=boss["image_url"])
@@ -825,14 +821,10 @@ class Guilds(commands.Cog):
 
                 # ── Raid boss catch chance for top 3 ─────────────────────────
                 # Corrupted raids: rank 1=5%, rank 2=3%, rank 3=2%
-                # Ancient raids:   rank 1=10%, rank 2=6%, rank 3=3%
-                # Catches the boss's own corrupted/ancient form — raid-exclusive trophies.
-                # Altered Divines are eggs-only jackpots and are NOT awarded here.
+                # Corrupted raid catch chance for top 3: rank 1=5%, rank 2=3%, rank 3=2%
+                # Ancient raids are handled separately in cogs/ancient.py
                 if rank <= 3:
-                    is_ancient = raid_type == "ancient"
-                    catch_chances = {1: 0.10 if is_ancient else 0.05,
-                                     2: 0.06 if is_ancient else 0.03,
-                                     3: 0.03 if is_ancient else 0.02}
+                    catch_chances = {1: 0.05, 2: 0.03, 3: 0.02}
                     catch_chance = catch_chances.get(rank, 0)
                     if random.random() < catch_chance:
                         boss_beast_data = get_beast_data(boss["id"])
@@ -858,15 +850,13 @@ class Guilds(commands.Cog):
                                 await db.commit()
                             from utils.progress import record_bestiary_sighting
                             await record_bestiary_sighting(channel.guild.id, boss["id"], user_id)
-                            icon = "🏛️" if is_ancient else "⚔️"
-                            label = "Ancient" if is_ancient else "Corrupted"
                             await channel.send(embed=discord.Embed(
-                                title=f"{icon} THE RAID BOSS HAS BEEN CAUGHT!",
+                                title="⚔️ THE RAID BOSS HAS BEEN CAUGHT!",
                                 description=(
                                     f"*In the moment of defeat, something shifts.*\n\n"
                                     f"🌟 **{member.display_name}** has caught **{boss_beast_data['name']}** — *{boss_beast_data['title']}*!\n\n"
                                     f"*{boss_beast_data['description']}*\n\n"
-                                    f"**{label}** form — obtainable only through raids."
+                                    f"**Corrupted** form — obtainable only through guild raids."
                                 ),
                                 color=COLORS.get(boss_beast_data["rarity"], COLORS["legendary"])
                             ))
