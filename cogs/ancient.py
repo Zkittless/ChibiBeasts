@@ -367,6 +367,7 @@ class Ancient(commands.Cog):
             "last_event": "",
             "player_party": {},
             "player_active_slot": {},
+            "player_party_hp": {},    # (uid, slot) -> current HP per party beast
         }
         _ancient_locks[raid_id] = asyncio.Lock()
 
@@ -458,6 +459,8 @@ class Ancient(commands.Cog):
                     cur_raid["player_hp"][target_uid] = max(0, cur_raid["player_hp"].get(target_uid, 0) - dmg)
                     p_hp  = cur_raid["player_hp"][target_uid]
                     p_max = cur_raid["player_max_hp"].get(target_uid, 1)
+                    _aslot = cur_raid.get("player_active_slot", {}).get(target_uid, 0)
+                    cur_raid["player_party_hp"][(target_uid, _aslot)] = p_hp
                 died = p_hp <= 0
                 # Store boss attack in last_event — no new messages
                 if raid_id in active_ancient_raids:
@@ -503,6 +506,8 @@ class Ancient(commands.Cog):
                     for uid in alive:
                         dmg = int(calc_boss_damage(cur_raid["boss_attack"], cur_raid["player_defense"].get(uid, 50), cur_raid["player_max_hp"].get(uid, 0)) * sig["mult"])
                         cur_raid["player_hp"][uid] = max(0, cur_raid["player_hp"].get(uid, 0) - dmg)
+                    _pslot = cur_raid.get("player_active_slot", {}).get(uid, 0)
+                    cur_raid["player_party_hp"][(uid, _pslot)] = cur_raid["player_hp"][uid]
                     phase_status = (
                         "🔴 CRITICAL — Boss DEF −60%" if sig["threshold"] == 0.15 else
                         "🟠 Weakened — Boss DEF −40%"  if sig["threshold"] == 0.40 else
@@ -548,15 +553,17 @@ class Ancient(commands.Cog):
                         r = active_ancient_raids[raid_id]
                         new_beast = r["player_party"][uid][slot_idx]
                         r["player_active_slot"][uid]  = slot_idx
-                        r["player_hp"][uid]           = new_beast["hp"]
+                        tracked_hp = r["player_party_hp"].get((uid, slot_idx), new_beast["hp"])
+                        r["player_hp"][uid]           = tracked_hp
                         r["player_max_hp"][uid]       = new_beast["max_hp"]
                         r["player_defense"][uid]      = new_beast["defense"]
                         r["player_atk"][uid]          = new_beast["attack"]
                         r["player_mana"][uid]         = 0
                         bd = get_beast_data(new_beast["beast_id"]) or {}
                         name = new_beast.get("nickname") or bd.get("name", "Beast")
+                        hp_str = f"`{tracked_hp}/{new_beast['max_hp']}HP`"
                         await swap_interaction.response.send_message(
-                            f"✅ **{name}** enters the fight! `{new_beast['hp']}/{new_beast['max_hp']}HP`",
+                            f"✅ **{name}** enters the fight! {hp_str}",
                             ephemeral=True
                         )
 
@@ -566,8 +573,9 @@ class Ancient(commands.Cog):
                             for slot_idx, beast_row in bench:
                                 bd = get_beast_data(beast_row["beast_id"]) or {}
                                 label = beast_row.get("nickname") or bd.get("name", f"Beast {slot_idx+1}")
+                                _tracked = cur_raid.get("player_party_hp", {}).get((uid, slot_idx), beast_row["hp"])
                                 btn = discord.ui.Button(
-                                    label=f"{label} ({beast_row['hp']}HP)",
+                                    label=f"{label} ({_tracked}HP)",
                                     style=discord.ButtonStyle.primary,
                                     emoji="🔄"
                                 )
@@ -606,6 +614,8 @@ class Ancient(commands.Cog):
                         )
                     cur_raid["player_party"][uid]       = party_rows
                     cur_raid["player_active_slot"][uid] = 0
+                    for _si, _br in enumerate(party_rows):
+                        cur_raid["player_party_hp"][( uid, _si)] = _br["hp"]
                     slot = party_rows[0]
                     cur_raid["player_hp"][uid]      = slot["hp"]
                     cur_raid["player_max_hp"][uid]  = slot["max_hp"]
