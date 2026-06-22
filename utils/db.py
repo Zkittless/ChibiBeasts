@@ -249,6 +249,10 @@ async def _run_migrations():
         "ALTER TABLE battles ADD COLUMN battle_type TEXT DEFAULT 'pvp'",
         # Per-player sequential beast number — replaces global auto-increment ID for display
         "ALTER TABLE player_beasts ADD COLUMN player_number INTEGER DEFAULT NULL",
+        # Tend system for incubating eggs
+        "ALTER TABLE incubating_eggs ADD COLUMN tends_required INTEGER DEFAULT 1",
+        "ALTER TABLE incubating_eggs ADD COLUMN tends_done INTEGER DEFAULT 0",
+        "ALTER TABLE incubating_eggs ADD COLUMN next_tend_at TIMESTAMP DEFAULT NULL",
     ]
     async with aiosqlite.connect(DB_PATH) as db:
         for sql in migrations:

@@ -507,19 +507,23 @@ class Inventory(commands.Cog):
                 await apply_beast_levelup(db, active, target_level, 0)
                 result_lines.append(f"⬆️ Leveled up **{effect['instant_levels']} levels** → Lv.{target_level}! Stats increased!")
 
-            # Chrono-Biscuit: instantly ready the oldest incubating egg
+            # Chrono-Biscuit: instantly ready the oldest incubating egg for its next tend
             if item_id == "chrono_biscuit":
                 async with db.execute(
-                    "SELECT id, egg_name FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
+                    "SELECT id, egg_name, tends_done, tends_required FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
                     (interaction.user.id,)
                 ) as c:
                     egg_row = await c.fetchone()
                 if egg_row:
                     await db.execute(
-                        "UPDATE incubating_eggs SET ready_at = datetime('now', '-1 minute') WHERE id = ?",
+                        "UPDATE incubating_eggs SET ready_at = datetime('now', '-1 minute'), next_tend_at = datetime('now', '-1 minute') WHERE id = ?",
                         (egg_row[0],)
                     )
-                    result_lines.append(f"⏰ **{egg_row[1]}** is now ready to hatch! Use `/hatchegg`.")
+                    tends_left = (egg_row[3] or 1) - (egg_row[2] or 0)
+                    if tends_left <= 1:
+                        result_lines.append(f"⏰ **{egg_row[1]}** is ready for its final tend! Use `/tend`.")
+                    else:
+                        result_lines.append(f"⏰ **{egg_row[1]}** is ready to tend now! Use `/tend` — {tends_left} tend{'s' if tends_left != 1 else ''} remaining.")
                 else:
                     result_lines.append("⏰ No eggs currently incubating.")
 

@@ -272,12 +272,31 @@ class World(commands.Cog):
                 count = (await c.fetchone())[0]
             if count >= 3:
                 return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ You already have 3 eggs incubating! Hatch one first with `/hatchegg`.",
+                    description="✦ You already have 3 eggs incubating! Tend and hatch one first.",
                     color=COLORS["error"]
                 ))
 
             hours = egg["incubation_hours"]
             ready_at = datetime.now(timezone.utc) + timedelta(hours=hours)
+
+            # Calculate tend schedule
+            # Tends required based on incubation time:
+            #   1h  → 2 tends (every 0.5h)
+            #   4h  → 3 tends (every 2h)
+            #   8-10h → 4 tends
+            #   18-24h → 4 tends
+            #   48h → 5 tends (every 12h)
+            if hours <= 1:
+                tends_required = 2
+            elif hours <= 4:
+                tends_required = 3
+            elif hours <= 24:
+                tends_required = 4
+            else:
+                tends_required = 5
+
+            interval_hours = hours / tends_required
+            next_tend_at = datetime.now(timezone.utc) + timedelta(hours=interval_hours)
 
             # Deduct from inventory
             if inv_row["quantity"] == 1:
@@ -288,19 +307,27 @@ class World(commands.Cog):
                     (inv_row["id"],)
                 )
             await db.execute(
-                "INSERT INTO incubating_eggs (user_id, egg_type, egg_name, rarity, ready_at) VALUES (?,?,?,?,?)",
+                """INSERT INTO incubating_eggs
+                   (user_id, egg_type, egg_name, rarity, ready_at,
+                    tends_required, tends_done, next_tend_at)
+                   VALUES (?,?,?,?,?,?,0,?)""",
                 (interaction.user.id, egg_id, egg["name"], egg["rarity"],
-                 ready_at.strftime("%Y-%m-%d %H:%M:%S"))
+                 ready_at.strftime("%Y-%m-%d %H:%M:%S"),
+                 tends_required,
+                 next_tend_at.strftime("%Y-%m-%d %H:%M:%S"))
             )
             await db.commit()
 
+        interval_display = f"{interval_hours:.0f}h" if interval_hours >= 1 else f"{int(interval_hours*60)}min"
         embed = discord.Embed(
             title=f"{egg['emoji']} Egg Incubating: {egg['name']}",
             description=(
                 f"*{egg['flavor']}*\n\n"
                 f"*{egg['lore']}*\n\n"
-                f"⏳ Ready in **{hours} hour{'s' if hours != 1 else ''}**\n"
-                f"Use `/hatchegg` once it's ready!"
+                f"⏳ Incubation time: **{hours} hour{'s' if hours != 1 else ''}**\n"
+                f"🤲 Tends required: **{tends_required}** — every **{interval_display}**\n\n"
+                f"First tend available in **{interval_display}** — use `/tend` to check in.\n"
+                f"The final tend hatches the egg!"
             ),
             color=COLORS.get(egg["rarity"], COLORS["info"])
         )
@@ -308,7 +335,7 @@ class World(commands.Cog):
         await interaction.followup.send(embed=embed)
 
     # ── /eggs ──────────────────────────────────────────────────────────────
-    @app_commands.command(name="eggs", description="View your incubating eggs 🥚")
+    @app_commands.command(name="eggs", description="View your incubating eggs and tend status 🥚")
     async def eggs(self, interaction: discord.Interaction):
         await interaction.response.defer()
         async with aiosqlite.connect(DB_PATH) as db:
@@ -328,30 +355,51 @@ class World(commands.Cog):
         now = datetime.now(timezone.utc)
         embed = discord.Embed(
             title="🥚 Your Incubating Eggs",
-            description="*The Loom weaves slowly. Good things take time.*",
+            description="*Eggs only progress when tended. Miss a tend and the egg waits.*",
             color=COLORS["info"]
         )
         for row in rows:
             egg = EGGS.get(row["egg_type"], {})
-            ready_at = datetime.strptime(row["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-            if now >= ready_at:
-                status = "✅ **Ready to hatch!** Use `/hatchegg`"
+            tends_done = row.get("tends_done") or 0
+            tends_required = row.get("tends_required") or 1
+            next_tend_at = row.get("next_tend_at")
+            tends_left = tends_required - tends_done
+
+            # Build tend progress bar
+            filled = "🟢" * tends_done + "⬜" * tends_left
+            progress = f"{filled} `{tends_done}/{tends_required}`"
+
+            if next_tend_at:
+                next_dt = datetime.strptime(next_tend_at, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+                if now >= next_dt:
+                    if tends_done >= tends_required - 1:
+                        tend_status = "✅ **Final tend ready — use `/tend` to hatch!**"
+                    else:
+                        # Overdue — egg is paused
+                        overdue = now - next_dt
+                        o_hrs, o_rem = divmod(int(overdue.total_seconds()), 3600)
+                        o_mins = o_rem // 60
+                        overdue_str = f"{o_hrs}h {o_mins}m" if o_hrs else f"{o_mins}m"
+                        tend_status = f"⚠️ **Paused** — tend overdue by `{overdue_str}` · use `/tend`!"
+                else:
+                    remaining = next_dt - now
+                    hrs, rem = divmod(int(remaining.total_seconds()), 3600)
+                    mins = rem // 60
+                    tend_status = f"⏳ Next tend in `{hrs}h {mins}m`"
             else:
-                remaining = ready_at - now
-                hours, rem = divmod(int(remaining.total_seconds()), 3600)
-                minutes = rem // 60
-                status = f"⏳ `{hours}h {minutes}m` remaining"
+                tend_status = "✅ **Ready — use `/tend`!**"
+
             embed.add_field(
                 name=f"{egg.get('emoji','🥚')} {row['egg_name']} (ID: #{row['id']})",
-                value=f"{status}\n*{RARITY_LABEL.get(row['rarity'], row['rarity'])}*",
+                value=f"{progress}\n{tend_status}\n*{RARITY_LABEL.get(row['rarity'], row['rarity'])}*",
                 inline=False
             )
         await interaction.followup.send(embed=embed)
 
-    # ── /hatchegg ──────────────────────────────────────────────────────────
-    @app_commands.command(name="hatchegg", description="Hatch a ready incubated egg! 🐣")
-    @app_commands.describe(egg_id="The incubation ID from /eggs (leave blank to hatch oldest ready egg)")
-    async def hatchegg(self, interaction: discord.Interaction, egg_id: int = None):
+    # ── /tend ───────────────────────────────────────────────────────────────
+    @app_commands.command(name="tend", description="Tend to an incubating egg — final tend hatches it! 🤲")
+    @app_commands.describe(egg_id="The incubation ID from /eggs (leave blank for oldest ready egg)")
+    async def tend(self, interaction: discord.Interaction, egg_id: int = None):
         await interaction.response.defer()
         await get_or_create_player(interaction.user.id, str(interaction.user))
         now = datetime.now(timezone.utc)
@@ -365,73 +413,146 @@ class World(commands.Cog):
                 ) as c:
                     row = await c.fetchone()
             else:
+                # Find oldest egg with a ready tend
                 async with db.execute(
-                    "SELECT * FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY ready_at ASC LIMIT 1",
-                    (interaction.user.id,)
+                    """SELECT * FROM incubating_eggs
+                       WHERE user_id = ? AND hatched = 0
+                         AND (next_tend_at IS NULL OR next_tend_at <= ?)
+                       ORDER BY ready_at ASC LIMIT 1""",
+                    (interaction.user.id, now.strftime("%Y-%m-%d %H:%M:%S"))
                 ) as c:
                     row = await c.fetchone()
 
             if not row:
+                # Check if any eggs exist but none are ready to tend
+                async with db.execute(
+                    "SELECT next_tend_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY next_tend_at ASC LIMIT 1",
+                    (interaction.user.id,)
+                ) as c:
+                    next_row = await c.fetchone()
+                if next_row and next_row["next_tend_at"]:
+                    next_dt = datetime.strptime(next_row["next_tend_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+                    remaining = next_dt - now
+                    hrs, rem = divmod(int(remaining.total_seconds()), 3600)
+                    mins = rem // 60
+                    return await interaction.followup.send(embed=discord.Embed(
+                        description=f"✦ No eggs ready to tend yet.\n⏳ Next tend available in `{hrs}h {mins}m`.\nCheck `/eggs` for your full schedule.",
+                        color=COLORS["info"]
+                    ))
                 return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ No ready eggs found! Check `/eggs` to see what's incubating.",
+                    description="✦ No eggs incubating! Use `/incubate` to start one.",
                     color=COLORS["error"]
                 ))
 
             row = dict(row)
-            ready_at = datetime.strptime(row["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-            if now < ready_at:
-                remaining = ready_at - now
-                hours, rem = divmod(int(remaining.total_seconds()), 3600)
-                minutes = rem // 60
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=(
-                        f"✦ **{row['egg_name']}** isn't ready yet!\n"
-                        f"⏳ `{hours}h {minutes}m` remaining.\n"
-                        f"*Use a Chrono-Biscuit to skip the wait!*"
-                    ),
-                    color=COLORS["error"]
-                ))
 
+            # Verify tend window if specific egg_id was given
+            if egg_id and row.get("next_tend_at"):
+                next_dt = datetime.strptime(row["next_tend_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+                if now < next_dt:
+                    remaining = next_dt - now
+                    hrs, rem = divmod(int(remaining.total_seconds()), 3600)
+                    mins = rem // 60
+                    return await interaction.followup.send(embed=discord.Embed(
+                        description=f"✦ **{row['egg_name']}** isn't ready to tend yet.\n⏳ Next tend in `{hrs}h {mins}m`.",
+                        color=COLORS["error"]
+                    ))
+
+            tends_done = (row.get("tends_done") or 0) + 1
+            tends_required = row.get("tends_required") or 1
             egg_def = EGGS.get(row["egg_type"], {})
-            rarity = roll_egg_rarity(row["egg_type"])
-            beast = pick_beast_for_rarity(rarity, egg_def)
+            hours = egg_def.get("incubation_hours", 1)
 
-            if not beast:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ The egg hatched but something went wrong. Try again!",
-                    color=COLORS["error"]
-                ))
+            # Last tend — hatch the egg
+            if tends_done >= tends_required:
+                rarity = roll_egg_rarity(row["egg_type"])
+                beast = pick_beast_for_rarity(rarity, egg_def)
 
-            beast_row_id = await add_beast_to_player(
-                interaction.user.id, {**beast, "caught_from": "incubation"}
-            )
-            await db.execute("UPDATE incubating_eggs SET hatched = 1 WHERE id = ?", (row["id"],))
-            await db.commit()
+                if not beast:
+                    return await interaction.followup.send(embed=discord.Embed(
+                        description="✦ Something went wrong hatching the egg. Try again!",
+                        color=COLORS["error"]
+                    ))
 
-        rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
-        type_emoji = TYPE_EMOJI.get(beast.get("type", ""), "❓")
-        color = COLORS.get(rarity, COLORS["info"])
+                beast_row_id = await add_beast_to_player(
+                    interaction.user.id, {**beast, "caught_from": "incubation"}
+                )
+                await db.execute("UPDATE incubating_eggs SET hatched = 1, tends_done = ? WHERE id = ?",
+                                 (tends_done, row["id"]))
+                await db.commit()
 
-        embed = discord.Embed(
-            title=f"🐣 {row['egg_name']} Hatched!",
-            description=(
-                f"*The Loom finishes one more stitch.*\n\n"
-                f"{rarity_emoji} **{beast['name']}** emerged — *{beast['title']}*\n\n"
-                f"{type_emoji} Type: **{beast.get('type','?').capitalize()}** | "
-                f"Rarity: **{RARITY_LABEL.get(rarity, rarity)}**\n\n"
-                f"*{beast['description']}*"
-            ),
-            color=color
-        )
-        embed.set_footer(text=f"ChibiBeasts 🐾  •  Beast ID #{beast_row_id} added to your collection!")
-        await interaction.followup.send(embed=embed)
+                rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
+                type_emoji = TYPE_EMOJI.get(beast.get("type", ""), "❓")
+                color = COLORS.get(rarity, COLORS["info"])
 
-        completed_quests = await track_quest_event(interaction.user.id, "hatch")
-        unlocked = await check_achievements(interaction.user.id)
-        if interaction.guild:
-            await record_bestiary_sighting(interaction.guild.id, beast["id"], interaction.user.id)
-        await notify_quest_completions(interaction.channel, completed_quests)
-        await notify_unlocks(interaction.channel, interaction.user, unlocked)
+                # Milestone catch count
+                from cogs.hatch import increment_catch_count, _catch_milestone_line
+                count, is_milestone = await increment_catch_count(beast["id"], rarity)
+                milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
+
+                embed = discord.Embed(
+                    title=f"🐣 {row['egg_name']} Hatched!",
+                    description=(
+                        f"*The Loom finishes one more stitch.*\n\n"
+                        f"{rarity_emoji} **{beast['name']}** emerged — *{beast['title']}*\n\n"
+                        f"{type_emoji} Type: **{beast.get('type','?').capitalize()}** | "
+                        f"Rarity: **{RARITY_LABEL.get(rarity, rarity)}**\n\n"
+                        f"*{beast['description']}*"
+                    ),
+                    color=color
+                )
+                if beast.get("divine_passive"):
+                    dp = beast["divine_passive"]
+                    passive_labels = {"divine": "✨ Divine Passive", "altered_divine": "⚠️ Altered Passive",
+                                      "corrupted": "🖤 Corrupted Passive", "ancient": "🏛️ Ancient Passive"}
+                    plabel = passive_labels.get(rarity, "✨ Special Passive")
+                    embed.add_field(name=f"{plabel}: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
+                if milestone_line:
+                    embed.add_field(name="📜 The Loom Stirs", value=milestone_line, inline=False)
+                embed.set_footer(text=f"ChibiBeasts 🐾  •  Beast added to your collection!")
+                await interaction.followup.send(embed=embed)
+
+                completed_quests = await track_quest_event(interaction.user.id, "hatch")
+                unlocked = await check_achievements(interaction.user.id)
+                if interaction.guild:
+                    await record_bestiary_sighting(interaction.guild.id, beast["id"], interaction.user.id)
+                await notify_quest_completions(interaction.channel, completed_quests)
+                await notify_unlocks(interaction.channel, interaction.user, unlocked)
+
+            else:
+                # Intermediate tend — advance schedule
+                interval_hours = hours / (row.get("tends_required") or 1)
+                next_tend_at = now + timedelta(hours=interval_hours)
+                await db.execute(
+                    "UPDATE incubating_eggs SET tends_done = ?, next_tend_at = ? WHERE id = ?",
+                    (tends_done, next_tend_at.strftime("%Y-%m-%d %H:%M:%S"), row["id"])
+                )
+                await db.commit()
+
+                tends_left = tends_required - tends_done
+                interval_display = f"{interval_hours:.0f}h" if interval_hours >= 1 else f"{int(interval_hours*60)}min"
+
+                # Lore-flavored tend messages
+                TEND_LINES = egg_def.get("tend_lines", [
+                    f"*The egg shifts slightly under your hands. Something inside has noticed you.*",
+                    f"*It's warmer than before. The shell hums faintly.*",
+                    f"*Whatever is inside stirs. It knows you're here.*",
+                    f"*The egg is getting restless. It won't be long now.*",
+                ])
+                tend_line = TEND_LINES[min(tends_done - 1, len(TEND_LINES) - 1)]
+
+                filled = "🟢" * tends_done + "⬜" * tends_left
+                embed = discord.Embed(
+                    title=f"🤲 Tended: {row['egg_name']}",
+                    description=(
+                        f"{tend_line}\n\n"
+                        f"{filled} `{tends_done}/{tends_required}` tends done\n\n"
+                        f"{'✅ **Final tend** available in' if tends_left == 1 else '⏳ Next tend in'} **{interval_display}**"
+                    ),
+                    color=COLORS.get(row["rarity"], COLORS["info"])
+                )
+                embed.set_footer(text="ChibiBeasts 🐾  •  Come back and tend again soon.")
+                await interaction.followup.send(embed=embed)
 
     # ── /sanctuary ────────────────────────────────────────────────────────
     @app_commands.command(name="sanctuary", description="View and upgrade your guild's Sanctuary 🏰")
