@@ -221,6 +221,22 @@ class Ancient(commands.Cog):
                 if len(self.party) >= MAX_PARTY:
                     self.stop()
 
+            @discord.ui.button(label="Solo Run", style=discord.ButtonStyle.danger, emoji="💀")
+            async def solo_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message(
+                        "✦ Only the summoner can start a solo run.", ephemeral=True
+                    )
+                await btn_interaction.response.send_message(
+                    "💀 **Solo run initiated.**\n"
+                    "*This is near-impossible. The Ancient was not designed to fall to one challenger. "
+                    "Your beast will be overwhelmed — the boss hits for more than your entire HP bar per auto-attack, "
+                    "and the first signature move alone does over 500% of your HP. "
+                    "You have been warned.*",
+                    ephemeral=True
+                )
+                self.stop()
+
             async def on_timeout(self):
                 pass  # handled below after send
 
