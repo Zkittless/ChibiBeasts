@@ -319,8 +319,22 @@ class Inventory(commands.Cog):
         embed.set_footer(text="ChibiBeasts 🐾  •  /use <item> to use an item")
         await interaction.followup.send(embed=embed)
 
+    async def use_autocomplete(self, interaction: discord.Interaction, current: str):
+        inv = await get_inventory(interaction.user.id)
+        items_data = load_items()
+        choices = []
+        for row in inv:
+            item = items_data.get(row["item_id"])
+            if not item:
+                continue
+            if current.lower() in item["name"].lower():
+                qty = f" (x{row['quantity']})" if row["quantity"] > 1 else ""
+                choices.append(app_commands.Choice(name=f"{item['name']}{qty}", value=row["item_id"]))
+        return choices[:25]
+
     @app_commands.command(name="use", description="Use an item from your inventory 💊")
-    @app_commands.describe(item_name="Name of the item to use")
+    @app_commands.describe(item_name="Item to use")
+    @app_commands.autocomplete(item_name=use_autocomplete)
     async def use(self, interaction: discord.Interaction, item_name: str):
         await interaction.response.defer()
         items_data = load_items()

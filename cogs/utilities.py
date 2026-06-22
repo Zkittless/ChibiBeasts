@@ -77,11 +77,29 @@ class Utilities(commands.Cog):
         self.bot = bot
 
     # ── /equip ────────────────────────────────────────────────────────────
+    async def equip_autocomplete(self, interaction: discord.Interaction, current: str):
+        """Show equipment and runes from the player's inventory."""
+        equipment, runes = load_equipment()
+        all_gear = {**equipment, **runes}
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                inv = {r["item_id"]: r["quantity"] for r in await c.fetchall()}
+        choices = []
+        for gid, gear in all_gear.items():
+            if gid in inv and inv[gid] > 0 and current.lower() in gear["name"].lower():
+                choices.append(app_commands.Choice(name=gear["name"], value=gid))
+        return choices[:25]
+
     @app_commands.command(name="equip", description="Equip armor or a rune to a beast ⚔️")
     @app_commands.describe(
-        item_name="Name of the equipment or rune to equip",
+        item_name="Equipment or rune to equip (from your inventory)",
         beast_id="ID of the beast to equip it on (from /collection)"
     )
+    @app_commands.autocomplete(item_name=equip_autocomplete)
     async def equip(self, interaction: discord.Interaction, item_name: str, beast_id: int):
         await interaction.response.defer()
         equipment, runes = load_equipment()
@@ -273,11 +291,41 @@ class Utilities(commands.Cog):
         ))
 
     # ── /sell ─────────────────────────────────────────────────────────────
+    async def sell_autocomplete(self, interaction: discord.Interaction, current: str):
+        """Show items and materials in inventory that can be sold."""
+        items_data = load_items()
+        with open("data/materials.json") as f:
+            import json as _j
+            mats_data = _j.load(f)["materials"]
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                inv_items = {r["item_id"]: r["quantity"] for r in await c.fetchall()}
+            async with db.execute(
+                "SELECT material_id, quantity FROM player_materials WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                inv_mats = {r["material_id"]: r["quantity"] for r in await c.fetchall()}
+        choices = []
+        for iid, qty in inv_items.items():
+            item = items_data.get(iid)
+            if item and current.lower() in item["name"].lower():
+                choices.append(app_commands.Choice(name=f"{item['name']} (x{qty})", value=iid))
+        for mid, qty in inv_mats.items():
+            mat = mats_data.get(mid)
+            if mat and current.lower() in mat["name"].lower():
+                choices.append(app_commands.Choice(name=f"{mat['name']} (x{qty})", value=mid))
+        return choices[:25]
+
     @app_commands.command(name="sell", description="Sell items or materials for gold 💰")
     @app_commands.describe(
-        item_name="Item or material name to sell",
+        item_name="Item or material to sell",
         quantity="How many to sell (default 1)"
     )
+    @app_commands.autocomplete(item_name=sell_autocomplete)
     async def sell(self, interaction: discord.Interaction, item_name: str, quantity: int = 1):
         await interaction.response.defer()
         if quantity < 1:

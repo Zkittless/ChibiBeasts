@@ -188,8 +188,26 @@ class World(commands.Cog):
         self.bot = bot
 
     # ── /incubate ──────────────────────────────────────────────────────────
+    async def incubate_autocomplete(self, interaction: discord.Interaction, current: str):
+        """Show only incubation eggs the player actually has in inventory."""
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                inv = {r["item_id"]: r["quantity"] for r in await c.fetchall()}
+        choices = []
+        for eid, egg in EGGS.items():
+            if eid in inv and inv[eid] > 0:
+                if current.lower() in egg["name"].lower():
+                    qty = f" (x{inv[eid]})" if inv[eid] > 1 else ""
+                    choices.append(app_commands.Choice(name=f"{egg['emoji']} {egg['name']}{qty}", value=eid))
+        return choices[:25]
+
     @app_commands.command(name="incubate", description="Place an egg to incubate 🥚")
-    @app_commands.describe(egg_name="The egg to start incubating (from your inventory)")
+    @app_commands.describe(egg_name="Egg to incubate (from your inventory)")
+    @app_commands.autocomplete(egg_name=incubate_autocomplete)
     async def incubate(self, interaction: discord.Interaction, egg_name: str):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
@@ -528,8 +546,29 @@ class World(commands.Cog):
         ))
 
     # ── /craft ────────────────────────────────────────────────────────────
+    async def craft_autocomplete(self, interaction: discord.Interaction, current: str):
+        """Show all craftable items — mark ready ones with ✅."""
+        equipment, runes = load_equipment()
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT material_id, quantity FROM player_materials WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                mats = {r["material_id"]: r["quantity"] for r in await c.fetchall()}
+        choices = []
+        for item_id, item in {**equipment, **runes}.items():
+            if current.lower() not in item["name"].lower():
+                continue
+            recipe = item.get("recipe", {})
+            can_craft = all(mats.get(mid, 0) >= qty for mid, qty in recipe.items())
+            prefix = "✅ " if can_craft else ""
+            choices.append(app_commands.Choice(name=f"{prefix}{item['name']}", value=item_id))
+        return choices[:25]
+
     @app_commands.command(name="craft", description="Craft equipment or runes from materials ⚒️")
-    @app_commands.describe(item_name="The equipment or rune to craft")
+    @app_commands.describe(item_name="Item to craft")
+    @app_commands.autocomplete(item_name=craft_autocomplete)
     async def craft(self, interaction: discord.Interaction, item_name: str):
         await interaction.response.defer()
         equipment, runes = load_equipment()

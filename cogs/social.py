@@ -307,8 +307,26 @@ class Perks(commands.Cog):
         embed.set_footer(text="Use /perk_equip <name> or /perk_unequip <name> to manage")
         await interaction.followup.send(embed=embed)
 
+    async def perk_equip_autocomplete(self, interaction: discord.Interaction, current: str):
+        """Show perks the player owns but hasn't equipped yet."""
+        perks_data = load_perks()
+        all_perks = perks_data["perks"]
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT perk_id, equipped FROM player_perks WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                owned = {r["perk_id"]: r["equipped"] for r in await c.fetchall()}
+        choices = []
+        for pid, perk in all_perks.items():
+            if pid in owned and not owned[pid] and current.lower() in perk.get("name","").lower():
+                choices.append(app_commands.Choice(name=perk["name"], value=pid))
+        return choices[:25]
+
     @app_commands.command(name="perk_equip", description="Equip a perk 🎯")
-    @app_commands.describe(perk_name="Name of the perk to equip")
+    @app_commands.describe(perk_name="Perk to equip (from your collection)")
+    @app_commands.autocomplete(perk_name=perk_equip_autocomplete)
     async def perk_equip(self, interaction: discord.Interaction, perk_name: str):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
@@ -375,8 +393,27 @@ class Perks(commands.Cog):
         if perk_unlocked:
             await notify_unlocks(interaction.channel, interaction.user, ["first_perk"])
 
+    async def perk_unequip_autocomplete(self, interaction: discord.Interaction, current: str):
+        """Show only currently equipped perks."""
+        perks_data = load_perks()
+        all_perks = perks_data["perks"]
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1",
+                (interaction.user.id,)
+            ) as c:
+                equipped = {r["perk_id"] for r in await c.fetchall()}
+        choices = []
+        for pid in equipped:
+            perk = all_perks.get(pid)
+            if perk and current.lower() in perk.get("name","").lower():
+                choices.append(app_commands.Choice(name=perk["name"], value=pid))
+        return choices[:25]
+
     @app_commands.command(name="perk_unequip", description="Unequip a perk 🎯")
-    @app_commands.describe(perk_name="Name of the perk to unequip")
+    @app_commands.describe(perk_name="Perk to unequip")
+    @app_commands.autocomplete(perk_name=perk_unequip_autocomplete)
     async def perk_unequip(self, interaction: discord.Interaction, perk_name: str):
         await interaction.response.defer()
         perks_data = load_perks()
