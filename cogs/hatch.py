@@ -7,7 +7,7 @@ import aiosqlite
 from utils.db import (
     get_or_create_player, get_player, update_player,
     add_beast_to_player, get_player_beasts, load_beasts,
-    calc_player_exp_for_level
+    calc_player_exp_for_level, increment_catch_count
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import (
@@ -18,6 +18,78 @@ from cogs.questline import advance_quest_step, get_quest_state
 from utils.sanctuary import get_user_sanctuary, apply_explore_encounter_bonus
 
 RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
+
+
+def _catch_milestone_line(beast_name: str, rarity: str, count: int, is_milestone: bool) -> str | None:
+    """Return a lore-flavored milestone message, or None if not a milestone."""
+    if not is_milestone:
+        return None
+
+    if count == 1:
+        # World first — always special, scales with rarity
+        if rarity in ("ancient", "corrupted", "altered_divine"):
+            return (
+                f"*The Loom pauses. Every thread in the weave goes still.*\n"
+                f"*This is the **first {beast_name}** ever caught.*\n"
+                f"*Something older than record-keeping just noticed.*"
+            )
+        elif rarity == "divine":
+            return (
+                f"*The Loom acknowledges this. Quietly, but completely.*\n"
+                f"*You are the first to hold a **{beast_name}**.*\n"
+                f"*Orren would want to know. He already does.*"
+            )
+        elif rarity == "legendary":
+            return (
+                f"*The Bestiary has no entry for this yet.*\n"
+                f"*You have the first **{beast_name}** ever hatched.*"
+            )
+        else:
+            return f"*The first **{beast_name}** ever hatched. The Loom notes it.*"
+
+    ordinal = f"{count:,}{'th' if 11 <= count % 100 <= 13 else {1:'st',2:'nd',3:'rd'}.get(count%10,'th')}"
+
+    if rarity in ("ancient", "corrupted", "altered_divine"):
+        messages = {
+            2:  f"*Only the second **{beast_name}** in existence. The first trainer was not forgotten.*",
+            3:  f"*Three **{beast_name}** now walk in the world. The Loom is watching all three of them.*",
+            5:  f"*Five. The Architects are paying attention now.*",
+            10: f"*Ten **{beast_name}** caught across all of history. The pattern is becoming clear to something.*",
+        }
+        return messages.get(count)
+
+    elif rarity == "divine":
+        messages = {
+            3:  f"*Three **{beast_name}** in the world. They are aware of each other.*",
+            5:  f"*The fifth **{beast_name}** hatched. Somewhere, the Loom exhales.*",
+            10: f"*Ten **{beast_name}**. The Cosmic Creators notice when their kin multiply.*",
+        }
+        return messages.get(count)
+
+    elif rarity == "legendary":
+        messages = {
+            5:  f"*Five **{beast_name}** now. The myths are becoming more crowded.*",
+            10: f"*Ten **{beast_name}** walk the world. They do not travel together. They don't need to.*",
+            25: f"*The {ordinal} **{beast_name}**. A legend repeated enough times becomes history.*",
+        }
+        return messages.get(count)
+
+    elif rarity in ("rare", "epic"):
+        messages = {
+            10:  f"*The {ordinal} **{beast_name}**. The Loom has woven this shape before.*",
+            50:  f"*{count} **{beast_name}** hatched. The pattern is well-established now.*",
+            100: f"*One hundred **{beast_name}**. The species is no longer rare in the way it once was.*",
+        }
+        return messages.get(count)
+
+    else:  # common / uncommon
+        messages = {
+            10:   f"*The {ordinal} **{beast_name}**. Still just as endearing as the first.*",
+            100:  f"*{count} **{beast_name}** hatched. A familiar face by now.*",
+            500:  f"*Five hundred **{beast_name}**. The Loom has woven this one many times. It doesn't mind.*",
+            1000: f"*One thousand **{beast_name}**. Somewhere, the first one is still out there.*",
+        }
+        return messages.get(count)
 
 # ── Base egg definitions ─────────────────────────────────────────────────────
 # Pools are *base* values. Call get_egg_pool(egg_type, perks, sanctuary)
@@ -404,6 +476,7 @@ class Hatch(commands.Cog):
             if quantity == 1:
                 # Single hatch — full dramatic reveal
                 beast, rarity, beast_row_id = hatched[0]
+                count, is_milestone = await increment_catch_count(beast["id"], rarity)
                 subtitle = f"*A new companion emerged from your {egg_def['name']}!*"
                 msg = await modal_interaction.followup.send(embed=discord.Embed(
                     title="🥚 Hatching...", description=f"*{egg_def['flavor']}*", color=COLORS["info"]
@@ -420,19 +493,29 @@ class Hatch(commands.Cog):
                                       "corrupted": "🖤 Corrupted Passive", "ancient": "🏛️ Ancient Passive"}
                     plabel = passive_labels.get(beast.get("rarity", ""), "✨ Special Passive")
                     embed.add_field(name=f"{plabel}: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
+                milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
+                if milestone_line:
+                    embed.add_field(name="📜 The Loom Stirs", value=milestone_line, inline=False)
                 view = HatchView(beast, modal_interaction.user.id)
                 await msg.edit(embed=embed, view=view)
             else:
-                # Multi-hatch — summary embed
+                # Multi-hatch — summary embed, increment counts silently
                 lines = []
+                milestone_lines = []
                 for beast, rarity, beast_row_id in hatched:
                     r_emoji = RARITY_EMOJI.get(rarity, "⚪")
                     lines.append(f"{r_emoji} **{beast['name']}** — {RARITY_LABEL.get(rarity, rarity)}")
+                    count, is_milestone = await increment_catch_count(beast["id"], rarity)
+                    ml = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
+                    if ml:
+                        milestone_lines.append(ml)
                 embed = discord.Embed(
                     title=f"🥚 Hatched {quantity}x {egg_def['name']}!",
                     description="\n".join(lines),
                     color=COLORS["legendary"]
                 )
+                if milestone_lines:
+                    embed.add_field(name="📜 The Loom Stirs", value="\n".join(milestone_lines), inline=False)
                 embed.set_footer(text="ChibiBeasts 🐾  •  Check /collection to see your new beasts!")
                 await modal_interaction.followup.send(embed=embed)
 
@@ -844,6 +927,10 @@ class Hatch(commands.Cog):
                 title=f"🌟 Wild **{beast['name']}**!",
                 subtitle=encounter_subtitle
             )
+            count, is_milestone = await increment_catch_count(beast["id"], rarity)
+            milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
+            if milestone_line:
+                embed.add_field(name="📜 The Loom Stirs", value=milestone_line, inline=False)
             view = HatchView(beast, interaction.user.id)
             await msg.edit(embed=embed, view=view)
 

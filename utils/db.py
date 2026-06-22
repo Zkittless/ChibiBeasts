@@ -157,6 +157,11 @@ async def init_db():
             PRIMARY KEY (guild_id, beast_id)
         );
 
+        CREATE TABLE IF NOT EXISTS global_catch_counts (
+            beast_id TEXT PRIMARY KEY,
+            catch_count INTEGER DEFAULT 0
+        );
+
         CREATE TABLE IF NOT EXISTS altered_divines (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             beast_id TEXT,
@@ -544,3 +549,38 @@ async def get_beast_by_player_number(user_id: int, player_number: int) -> dict |
         ) as c:
             row = await c.fetchone()
         return dict(row) if row else None
+
+# ── Global catch counter ──────────────────────────────────────────────────────
+
+MILESTONE_THRESHOLDS = {
+    "common":        [1, 10, 100, 500, 1000],
+    "uncommon":      [1, 10, 100, 500, 1000],
+    "rare":          [1, 10, 50, 100],
+    "epic":          [1, 10, 50, 100],
+    "legendary":     [1, 5, 10, 25],
+    "divine":        [1, 3, 5, 10],
+    "altered_divine":[1, 3, 5, 10],
+    "corrupted":     [1, 2, 3, 5],
+    "ancient":       [1, 2, 3, 5],
+}
+
+async def increment_catch_count(beast_id: str, rarity: str) -> tuple[int, bool]:
+    """
+    Increment the global catch count for a beast.
+    Returns (new_count, is_milestone).
+    """
+    thresholds = MILESTONE_THRESHOLDS.get(rarity, [1, 10, 100])
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "INSERT INTO global_catch_counts (beast_id, catch_count) VALUES (?, 1) "
+            "ON CONFLICT(beast_id) DO UPDATE SET catch_count = catch_count + 1",
+            (beast_id,)
+        )
+        await db.commit()
+        async with db.execute(
+            "SELECT catch_count FROM global_catch_counts WHERE beast_id = ?", (beast_id,)
+        ) as c:
+            row = await c.fetchone()
+    count = row[0] if row else 1
+    is_milestone = count in thresholds
+    return count, is_milestone
