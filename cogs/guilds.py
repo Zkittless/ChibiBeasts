@@ -918,6 +918,26 @@ class Guilds(commands.Cog):
                     + (f" — **knocked out!** 💀" if died else f" | `{p_hp}/{p_max}HP`")
                 )
 
+                # Check full party wipe — end raid if every participant is down with no bench left
+                if raid["participants"] and raid_id in active_raids:
+                    def _has_bench(uid):
+                        party = raid.get("player_party", {}).get(uid, [])
+                        slot  = raid.get("player_active_slot", {}).get(uid, 0)
+                        return any(raid["player_hp"].get(uid, 1) > 0 or i != slot
+                                   for i, _ in enumerate(party) if i != slot)
+                    all_down = all(
+                        raid["player_hp"].get(uid, 1) <= 0
+                        for uid in raid["participants"]
+                    )
+                    any_bench = any(
+                        len(raid.get("player_party", {}).get(uid, [])) > 1 and
+                        raid["player_active_slot"].get(uid, 0) < len(raid["player_party"][uid]) - 1
+                        for uid in raid["participants"]
+                    )
+                    if all_down and not any_bench:
+                        await cog.end_raid(raid_id, channel)
+                        break
+
                 # Update embed
                 if not raid.get("embed_updating") and raid.get("raid_message"):
                     raid["embed_updating"] = True
@@ -939,27 +959,20 @@ class Guilds(commands.Cog):
             for sig in signatures:
                 if pct <= sig["threshold"] and sig["threshold"] not in raid["phase_fired"]:
                     raid["phase_fired"].add(sig["threshold"])
-                    # Apply AoE damage to all alive players
+                    # Apply AoE damage to all alive players silently
                     alive = [uid for uid, hp in raid["player_hp"].items() if hp > 0]
                     for uid in alive:
                         raw = calc_boss_damage(raid["boss_attack"], raid["player_defense"].get(uid, 50), raid["player_max_hp"].get(uid, 0))
                         dmg = int(raw * sig["mult"])
                         raid["player_hp"][uid] = max(0, raid["player_hp"].get(uid, 0) - dmg)
 
-                    # Show flavor + defense debuff status — no damage pings
-                    def_reduction = _PHASE_DEF_REDUCTION.get(sig["threshold"], 0)
+                    # Store as last_event on the embed — no new channel message
                     phase_status = (
-                        "🔴 **CRITICAL** — Boss defense reduced by **60%**" if sig["threshold"] == 0.15 else
-                        "🟠 **Weakened** — Boss defense reduced by **40%**" if sig["threshold"] == 0.40 else
-                        "🟡 **Damaged** — Boss defense reduced by **20%**"
+                        "🔴 CRITICAL — Boss DEF −60%" if sig["threshold"] == 0.15 else
+                        "🟠 Weakened — Boss DEF −40%"  if sig["threshold"] == 0.40 else
+                        "🟡 Damaged — Boss DEF −20%"
                     )
-                    embed = discord.Embed(
-                        title=f"⚡ {boss['name']}: **{sig['name']}**!",
-                        description=f"{sig['flavor']}",
-                        color=COLORS.get("corrupted", COLORS["error"])
-                    )
-                    embed.add_field(name="⚔️ Phase Shift", value=phase_status, inline=False)
-                    await channel.send(embed=embed)
+                    raid["last_event"] = f"⚡ **{sig['name']}**! {sig['flavor'][:60]}… | {phase_status}"
 
         cog = self
 
@@ -1236,7 +1249,7 @@ class Guilds(commands.Cog):
         raid = active_raids.pop(raid_id)
         _raid_locks.pop(raid_id, None)  # clean up lock — raid is over
         boss = raid["boss"]
-        defeated = not timed_out and raid["current_hp"] <= 0
+        defeated = raid["current_hp"] <= 0
 
         sorted_participants = sorted(raid["participants"].items(), key=lambda x: x[1], reverse=True)
 

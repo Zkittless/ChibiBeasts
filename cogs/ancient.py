@@ -450,6 +450,21 @@ class Ancient(commands.Cog):
                         f"\U0001f4a5 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
                         + (" \u2014 **knocked out!** \U0001f480" if died else f" | `{p_hp}/{p_max}HP`")
                     )
+
+                # Check full party wipe
+                if cur_raid["participants"] and raid_id in active_ancient_raids:
+                    all_down = all(
+                        cur_raid["player_hp"].get(uid, 1) <= 0
+                        for uid in cur_raid["participants"]
+                    )
+                    any_bench = any(
+                        len(cur_raid.get("player_party", {}).get(uid, [])) > 1 and
+                        cur_raid["player_active_slot"].get(uid, 0) < len(cur_raid["player_party"][uid]) - 1
+                        for uid in cur_raid["participants"]
+                    )
+                    if all_down and not any_bench:
+                        await cog.end_ancient_raid(raid_id, interaction.channel)
+                        break
                 if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
                     cur_raid["embed_updating"] = True
                     try:
@@ -474,17 +489,11 @@ class Ancient(commands.Cog):
                         dmg = int(calc_boss_damage(cur_raid["boss_attack"], cur_raid["player_defense"].get(uid, 50), cur_raid["player_max_hp"].get(uid, 0)) * sig["mult"])
                         cur_raid["player_hp"][uid] = max(0, cur_raid["player_hp"].get(uid, 0) - dmg)
                     phase_status = (
-                        "\U0001f534 **CRITICAL** \u2014 Boss defense reduced by **60%**" if sig["threshold"] == 0.15 else
-                        "\U0001f7e0 **Weakened** \u2014 Boss defense reduced by **40%**" if sig["threshold"] == 0.40 else
-                        "\U0001f7e1 **Damaged** \u2014 Boss defense reduced by **20%**"
+                        "🔴 CRITICAL — Boss DEF −60%" if sig["threshold"] == 0.15 else
+                        "🟠 Weakened — Boss DEF −40%"  if sig["threshold"] == 0.40 else
+                        "🟡 Damaged — Boss DEF −20%"
                     )
-                    embed = discord.Embed(
-                        title=f"\u26a1 {boss['name']}: **{sig['name']}**!",
-                        description=f"{sig['flavor']}",
-                        color=COLORS.get("ancient", COLORS["legendary"])
-                    )
-                    embed.add_field(name="\u2694\ufe0f Phase Shift", value=phase_status, inline=False)
-                    await channel.send(embed=embed)
+                    cur_raid["last_event"] = f"⚡ **{sig['name']}**! {sig['flavor'][:60]}… | {phase_status}"
 
         cog = self
 
@@ -736,7 +745,7 @@ class Ancient(commands.Cog):
         raid = active_ancient_raids.pop(raid_id)
         _ancient_locks.pop(raid_id, None)
         boss = raid["boss"]
-        defeated = not timed_out and raid["current_hp"] <= 0
+        defeated = raid["current_hp"] <= 0
 
         sorted_participants = sorted(raid["participants"].items(), key=lambda x: x[1], reverse=True)
 
