@@ -708,6 +708,7 @@ class Guilds(commands.Cog):
             "phase_fired": set(),   # thresholds already triggered
             "scaled": False,        # has HP/ATK been scaled for party size yet
             "boss_attack": boss["attack"],  # may be scaled up
+            "last_event": "",       # last notable event shown in embed
         }
         _raid_locks[raid_id] = asyncio.Lock()
 
@@ -779,6 +780,8 @@ class Guilds(commands.Cog):
                     alive = "💀" if p_hp <= 0 else "⚡" if p_mana >= 50 else "❤️"
                     lines.append(f"{medals[i]} <@{uid}> — `{dmg:,}` dmg {alive} `{p_hp}/{p_max}HP`")
                 embed.add_field(name="⚔️ Party", value="\n".join(lines), inline=False)
+            if raid.get("last_event"):
+                embed.add_field(name="📣 Last Event", value=raid["last_event"], inline=False)
             if boss.get("image_url"):
                 embed.set_image(url=boss["image_url"])
             embed.set_footer(text=f"Raid ID: #{raid_id} | Triggered by {interaction.user.display_name} | Boss attacks every {BOSS_ATK_INTERVAL}s")
@@ -810,16 +813,12 @@ class Guilds(commands.Cog):
                     p_hp = raid["player_hp"][target_uid]
                     p_max = raid["player_max_hp"].get(target_uid, 1)
 
-                # Post boss attack as a public event
+                # Store boss attack as last_event — shown in embed, no new message
                 died = p_hp <= 0
-                msg = (
-                    f"💥 **{boss['name']}** attacks <@{target_uid}>! `{dmg:,}` damage"
-                    + (f" | `{p_hp}/{p_max}HP` remaining" if not died else f" — **knocked out!** 💀")
+                raid["last_event"] = (
+                    f"💥 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
+                    + (f" — **knocked out!** 💀" if died else f" | `{p_hp}/{p_max}HP`")
                 )
-                try:
-                    await interaction.channel.send(msg, silent=True)
-                except Exception:
-                    pass
 
                 # Update embed
                 if not raid.get("embed_updating") and raid.get("raid_message"):
@@ -957,12 +956,10 @@ class Guilds(commands.Cog):
                 # Phase transition check
                 await check_phase_transitions(active_raids.get(raid_id, raid), btn_interaction.channel)
 
-                crit_tag = "⭐ CRIT! " if is_crit else ""
-                await btn_interaction.followup.send(
-                    f"{crit_tag}Hit for `{damage:,}` dmg | Mana: `{new_mana}/100`"
-                    + (" ⚡ *Ultimate ready!*" if new_mana >= 50 else ""),
-                    ephemeral=True
-                )
+                # Store last player action as last_event in embed — no ephemeral needed
+                if raid_id in active_raids:
+                    crit_tag = "⭐ CRIT! " if is_crit else ""
+                    active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" ⚡" if new_mana >= 50 else "")
 
                 if not raid.get("embed_updating") and raid.get("raid_message"):
                     raid["embed_updating"] = True
@@ -980,7 +977,7 @@ class Guilds(commands.Cog):
                 if raid_ended:
                     await cog.end_raid(raid_id, btn_interaction.channel)
 
-            @discord.ui.button(label="⚡ Ultimate", style=discord.ButtonStyle.secondary, emoji="💫", row=1)
+            @discord.ui.button(label="⚡ Ultimate", style=discord.ButtonStyle.secondary, emoji="💫")
             async def ultimate_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
                 await btn_interaction.response.defer(ephemeral=True, thinking=False)
@@ -1038,14 +1035,12 @@ class Guilds(commands.Cog):
                     raid_ended = raid["current_hp"] <= 0
 
                 # Public ultimate announcement
-                crit_tag = "⭐ CRIT! " if is_crit else ""
-                await btn_interaction.channel.send(
-                    f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` damage!",
-                    silent=True
-                )
-
                 await check_phase_transitions(active_raids.get(raid_id, raid), btn_interaction.channel)
-                await btn_interaction.followup.send(f"⚡ **{ult_name}** dealt `{damage:,}` dmg! Mana reset.", ephemeral=True)
+
+                # Ultimate stored as last_event — visible on embed, no new messages
+                if raid_id in active_raids:
+                    crit_tag = "⭐ CRIT! " if is_crit else ""
+                    active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg — Mana reset."
 
                 if not raid.get("embed_updating") and raid.get("raid_message"):
                     raid["embed_updating"] = True

@@ -304,6 +304,7 @@ class Ancient(commands.Cog):
             "player_defense": {},
             "phase_fired": set(),
             "boss_attack": scaled_atk,
+            "last_event": "",
         }
         _ancient_locks[raid_id] = asyncio.Lock()
 
@@ -364,6 +365,8 @@ class Ancient(commands.Cog):
                 embed.add_field(name="\u2694\ufe0f Party", value="\n".join(lines), inline=False)
             if boss.get("image_url"):
                 embed.set_image(url=boss["image_url"])
+            if raid.get("last_event"):
+                embed.add_field(name="\U0001f4e3 Last Event", value=raid["last_event"], inline=False)
             embed.set_footer(text=f"Raid ID: #{raid_id} | Party: {party_preview} | Boss attacks every {BOSS_ATK_INTERVAL}s")
             return embed
 
@@ -388,14 +391,12 @@ class Ancient(commands.Cog):
                     p_hp  = cur_raid["player_hp"][target_uid]
                     p_max = cur_raid["player_max_hp"].get(target_uid, 1)
                 died = p_hp <= 0
-                try:
-                    await interaction.channel.send(
-                        f"\U0001f4a5 **{boss['name']}** attacks <@{target_uid}>! `{dmg:,}` damage"
-                        + (f" | `{p_hp}/{p_max}HP`" if not died else " \u2014 **knocked out!** \U0001f480"),
-                        silent=True
+                # Store boss attack in last_event — no new messages
+                if raid_id in active_ancient_raids:
+                    active_ancient_raids[raid_id]["last_event"] = (
+                        f"\U0001f4a5 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
+                        + (" \u2014 **knocked out!** \U0001f480" if died else f" | `{p_hp}/{p_max}HP`")
                     )
-                except Exception:
-                    pass
                 if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
                     cur_raid["embed_updating"] = True
                     try:
@@ -485,12 +486,10 @@ class Ancient(commands.Cog):
                     raid_ended = cur_raid["current_hp"] <= 0
                     new_mana   = cur_raid["player_mana"].get(uid, 0)
                 await check_phase_transitions(active_ancient_raids.get(raid_id, cur_raid), btn_interaction.channel)
-                crit_tag = "\u2b50 CRIT! " if is_crit else ""
-                await btn_interaction.followup.send(
-                    f"{crit_tag}Hit for `{damage:,}` dmg | Mana: `{new_mana}/100`"
-                    + (" \u26a1 *Ultimate ready!*" if new_mana >= 50 else ""),
-                    ephemeral=True
-                )
+                # Store last player action as last_event — no ephemeral
+                if raid_id in active_ancient_raids:
+                    crit_tag = "\u2b50 CRIT! " if is_crit else ""
+                    active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" \u26a1" if new_mana >= 50 else "")
                 if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
                     cur_raid["embed_updating"] = True
                     try:
@@ -505,7 +504,7 @@ class Ancient(commands.Cog):
                 if raid_ended:
                     await cog.end_ancient_raid(raid_id, btn_interaction.channel)
 
-            @discord.ui.button(label="\u26a1 Ultimate", style=discord.ButtonStyle.secondary, emoji="\U0001f4ab", row=1)
+            @discord.ui.button(label="\u26a1 Ultimate", style=discord.ButtonStyle.secondary, emoji="\U0001f4ab")
             async def ultimate_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
                 await btn_interaction.response.defer(ephemeral=True, thinking=False)
@@ -552,13 +551,11 @@ class Ancient(commands.Cog):
                             await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
                         await db.commit()
                     raid_ended = cur_raid["current_hp"] <= 0
-                crit_tag = "\u2b50 CRIT! " if is_crit else ""
-                await btn_interaction.channel.send(
-                    f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` damage!",
-                    silent=True
-                )
                 await check_phase_transitions(active_ancient_raids.get(raid_id, cur_raid), btn_interaction.channel)
-                await btn_interaction.followup.send(f"\u26a1 **{ult_name}** dealt `{damage:,}` dmg! Mana reset.", ephemeral=True)
+                # Ultimate stored as last_event — no new messages
+                if raid_id in active_ancient_raids:
+                    crit_tag = "\u2b50 CRIT! " if is_crit else ""
+                    active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg \u2014 Mana reset."
                 if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
                     cur_raid["embed_updating"] = True
                     try:
