@@ -202,6 +202,7 @@ class Ancient(commands.Cog):
             "channel": interaction.channel,
             "raid_message": None,
             "attack_counts": {},
+            "embed_updating": False,
         }
         _ancient_locks[raid_id] = asyncio.Lock()
 
@@ -238,16 +239,15 @@ class Ancient(commands.Cog):
                     return await btn_interaction.followup.send("✦ The raid has ended!", ephemeral=True)
 
                 cur_raid = active_ancient_raids[raid_id]
-                if btn_interaction.user.id not in cur_raid["party"]:
+                uid = btn_interaction.user.id
+                if uid not in cur_raid["party"]:
                     return await btn_interaction.followup.send(
                         "✦ You're not in this party! Join the next lobby with `/ancient`.", ephemeral=True
                     )
 
-                active = await get_active_beast(btn_interaction.user.id)
+                active = await get_active_beast(uid)
                 if not active:
-                    return await btn_interaction.followup.send(
-                        "✦ You need an active beast! Use `/setactive`.", ephemeral=True
-                    )
+                    return await btn_interaction.followup.send("✦ You need an active beast! Use `/setactive`.", ephemeral=True)
 
                 beast_data_btn = get_beast_data(active["beast_id"])
                 damage = random.randint(int(active["attack"] * 0.8), int(active["attack"] * 1.5))
@@ -264,53 +264,58 @@ class Ancient(commands.Cog):
                         return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
                     cur_raid = active_ancient_raids[raid_id]
                     cur_raid["current_hp"] = max(0, cur_raid["current_hp"] - damage)
-                    cur_raid["participants"][btn_interaction.user.id] = (
-                        cur_raid["participants"].get(btn_interaction.user.id, 0) + damage
-                    )
-                    cur_raid["attack_counts"][btn_interaction.user.id] = (
-                        cur_raid["attack_counts"].get(btn_interaction.user.id, 0) + 1
-                    )
+                    cur_raid["participants"][uid] = cur_raid["participants"].get(uid, 0) + damage
+                    cur_raid["attack_counts"][uid] = cur_raid["attack_counts"].get(uid, 0) + 1
                     async with aiosqlite.connect(DB_PATH) as db:
                         await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (cur_raid["current_hp"], raid_id))
                         async with db.execute(
                             "SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?",
-                            (raid_id, btn_interaction.user.id)
+                            (raid_id, uid)
                         ) as c:
                             existing = await c.fetchone()
                         if existing:
                             await db.execute(
                                 "UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?",
-                                (damage, raid_id, btn_interaction.user.id)
+                                (damage, raid_id, uid)
                             )
                         else:
                             await db.execute(
                                 "INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)",
-                                (raid_id, btn_interaction.user.id, damage)
+                                (raid_id, uid, damage)
                             )
                         await db.commit()
                     raid_ended = cur_raid["current_hp"] <= 0
                     current_hp_snap = cur_raid["current_hp"]
                     beast_name = beast_data_btn["name"] if beast_data_btn else "Beast"
-                    total_dealt = cur_raid["participants"].get(btn_interaction.user.id, 0)
-                    attacks = cur_raid["attack_counts"].get(btn_interaction.user.id, 1)
+                    total_dealt = cur_raid["participants"].get(uid, 0)
+                    attacks = cur_raid["attack_counts"].get(uid, 1)
 
                 crit_tag = "⭐ **CRIT!** " if is_crit else ""
-                await btn_interaction.edit_original_response(content=(
-                    f"**Your Raid Status**\n"
-                    f"{crit_tag}Last hit: `{damage:,}` dmg\n"
-                    f"Total dealt: `{total_dealt:,}` dmg · Attacks: `{attacks}`\n"
-                    f"Boss HP: `{current_hp_snap:,} / {boss['max_hp']:,}`"
-                ))
+                try:
+                    await btn_interaction.edit_original_response(content=(
+                        f"**Your Raid Status**\n"
+                        f"{crit_tag}Last hit: `{damage:,}` dmg\n"
+                        f"Total dealt: `{total_dealt:,}` dmg · Attacks: `{attacks}`\n"
+                        f"Boss HP: `{current_hp_snap:,} / {boss['max_hp']:,}`"
+                    ))
+                except discord.HTTPException:
+                    pass
 
-                raid_msg = active_ancient_raids.get(raid_id, {}).get("raid_message")
-                if raid_msg:
-                    try:
-                        await raid_msg.edit(embed=build_ancient_embed(current_hp_snap), view=self if not raid_ended else None)
-                    except discord.HTTPException:
-                        pass
+                # Throttled embed update
+                if not cur_raid.get("embed_updating", False):
+                    cur_raid["embed_updating"] = True
+                    raid_msg = cur_raid.get("raid_message")
+                    if raid_msg:
+                        try:
+                            await raid_msg.edit(embed=build_ancient_embed(current_hp_snap), view=self if not raid_ended else None)
+                        except discord.HTTPException:
+                            pass
+                        finally:
+                            if raid_id in active_ancient_raids:
+                                active_ancient_raids[raid_id]["embed_updating"] = False
 
-                await track_quest_event(btn_interaction.user.id, "raid_damage", amount=damage)
-                await advance_quest_step(btn_interaction.user.id, "raid_participate")
+                await track_quest_event(uid, "raid_damage", amount=damage)
+                await advance_quest_step(uid, "raid_participate")
 
                 if raid_ended:
                     await self.end_ancient_raid(raid_id, btn_interaction.channel)
