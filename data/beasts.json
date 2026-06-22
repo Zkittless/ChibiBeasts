@@ -2296,11 +2296,11 @@
       "collection": "Developer Exclusive",
       "description": "A creature that does not merely inhabit the world, but binds it together. Its scales shimmer with shifting lines of ancient, glowing runes. To look upon it is to witness the birth and death of the cosmos simultaneously. It does not slither \u2014 it displaces itself across reality, its eyes burning with the cold, absolute authority of a creator.",
       "base_stats": {
-        "hp": 9999,
-        "attack": 2000,
-        "defense": 1500,
-        "speed": 1000,
-        "mana": 999
+        "hp": 99999,
+        "attack": 9999,
+        "defense": 9999,
+        "speed": 9999,
+        "mana": 9999
       },
       "catch_rate": 0.0,
       "moves": [
