@@ -641,7 +641,7 @@ class Shop(commands.Cog):
                         short = name.replace("🥚","").replace("✨","").replace("🌌","").replace("🌊💎","").strip()
                         next_step = "Use `/hatch` and select this egg to open it!"
                         btn1 = discord.ui.Button(
-                            label=f"Buy {short}",
+                            label=short,
                             style=discord.ButtonStyle.primary,
                             emoji="🥚",
                             row=row_idx
@@ -729,7 +729,7 @@ class Shop(commands.Cog):
                         next_step = "Use `/incubate` to start the timer!"
                         short_name = egg["name"][:20]
                         btn1 = discord.ui.Button(
-                            label=f"Buy {short_name}",
+                            label=short_name,
                             style=discord.ButtonStyle.success,
                             emoji=egg.get("emoji", "🥚"),
                             row=row_idx
@@ -824,7 +824,7 @@ class Shop(commands.Cog):
                     # Truncate name to keep button width consistent
                     short_name = item["name"][:20]
                     btn1 = discord.ui.Button(
-                        label=f"Buy {short_name}",
+                        label=short_name,
                         style=discord.ButtonStyle.success,
                         emoji=r,
                         row=row_idx
