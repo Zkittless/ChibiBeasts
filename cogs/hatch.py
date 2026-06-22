@@ -786,7 +786,7 @@ class Hatch(commands.Cog):
 
         if caught:
             beast_row_id = await add_beast_to_player(interaction.user.id, {**beast, "caught_from": "discover"})
-            gold_bonus = random.randint(5, 30)
+            gold_bonus = random.randint(player_level * 3, player_level * 8)
             explore_exp = random.randint(player_level * 12, player_level * 20)
             await update_player(interaction.user.id, gold=player["gold"] + gold_bonus)
             from cogs.battle import award_player_exp as _award_exp

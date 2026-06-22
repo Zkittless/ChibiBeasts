@@ -374,7 +374,9 @@ async def run_pve_battle(
         if is_ultimate:
             attacker_state["mana"] = max(0, attacker_state["mana"] - 50)
         else:
-            attacker_state["mana"] = min(attacker_state["max_mana"], attacker_state["mana"] + 10)
+            # Mana gain scales with speed — faster beasts charge ultimates quicker
+            mana_gain = min(15, 8 + attacker_state.get("speed", 50) // 40)
+            attacker_state["mana"] = min(attacker_state["max_mana"], attacker_state["mana"] + mana_gain)
 
         if damage == 0 and attacker_state.get("status") == "blind":
             battle_log.append(f"👁️ **{attacker_state['name']}** missed! (Blinded)")
@@ -426,8 +428,11 @@ async def run_pve_battle(
         type_tag = f" {effectiveness}" if effectiveness else ""
         battle_log.append(f"{crit_tag}**{attacker_state['name']}** used **{move_name}** → `{damage}` dmg!{type_tag}")
 
-        # Status application
-        if random.random() < 0.12 and not defender_state["status"]:
+        # Status application — faster attacker lands status more reliably
+        _atk_spd = attacker_state.get("speed", 50)
+        _def_spd = defender_state.get("speed", 50)
+        _status_chance = (_atk_spd / max(_atk_spd + _def_spd, 1)) * 0.25
+        if random.random() < _status_chance and not defender_state["status"]:
             if not defender_state.get("divine_passive", {}).get("passive_effect", {}).get("status_immune"):
                 new_status = random.choice(["poison","burn","freeze","sleep","paralyze"])
                 if defender_state.get("divine_passive", {}).get("passive_id") == "karmic_echo" and random.random() < 0.40:
@@ -1207,7 +1212,9 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         if is_ultimate:
             attacker_state["mana"] = max(0, attacker_state["mana"] - 50)
         else:
-            attacker_state["mana"] = min(attacker_state["max_mana"], attacker_state["mana"] + 10)
+            # Mana gain scales with speed — faster beasts charge ultimates quicker
+            mana_gain = min(15, 8 + attacker_state.get("speed", 50) // 40)
+            attacker_state["mana"] = min(attacker_state["max_mana"], attacker_state["mana"] + mana_gain)
 
         # Handle missed attack (Blind)
         if damage == 0 and attacker_state.get("status") == "blind":
@@ -1558,8 +1565,21 @@ class Battle(commands.Cog):
             ))
 
         all_beasts = json.load(open("data/beasts.json"))["beasts"]
-        pool_weights = BIOME_POOLS[biome]
-        rarity = random.choices(list(pool_weights), weights=list(pool_weights.values()))[0]
+        pool_weights = dict(BIOME_POOLS[biome])
+        # Bias rarity pool toward player's active beast rarity — prevents trivial dead zones
+        _RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine"]
+        _player_rarity = active_row.get("rarity", "common")
+        _player_tier = _RARITY_ORDER.index(_player_rarity) if _player_rarity in _RARITY_ORDER else 0
+        _biased_weights = {}
+        for _r, _w in pool_weights.items():
+            _r_tier = _RARITY_ORDER.index(_r) if _r in _RARITY_ORDER else 0
+            _tier_diff = abs(_player_tier - _r_tier)
+            # Closer to player rarity = 3x weight, 1 tier away = 1.5x, 2+ tiers = unchanged
+            _bias = 3.0 if _tier_diff == 0 else (1.5 if _tier_diff == 1 else 1.0)
+            _biased_weights[_r] = _w * _bias
+        _total = sum(_biased_weights.values())
+        _biased_weights = {k: v / _total for k, v in _biased_weights.items()}
+        rarity = random.choices(list(_biased_weights), weights=list(_biased_weights.values()))[0]
 
         # Pick a wild beast of that rarity from the biome
         candidates = [
@@ -1617,7 +1637,10 @@ class Battle(commands.Cog):
                 return
 
             gold_gain = random.randint(active_row["level"] * 8, active_row["level"] * 15)
-            beast_exp  = random.randint(30, 65)
+            # Beast EXP scales with enemy level and rarity — harder fights reward more
+            _RARITY_EXP_MULT = {"common":1,"uncommon":1.5,"rare":2.5,"epic":4,"legendary":6,"divine":10}
+            _exp_mult = _RARITY_EXP_MULT.get(rarity, 1)
+            beast_exp  = int(random.randint(20, 40) * _exp_mult + wild_level * 1.5)
 
             # Beast EXP
             new_exp   = active_row["exp"] + beast_exp
