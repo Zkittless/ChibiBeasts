@@ -380,25 +380,8 @@ class Ancient(commands.Cog):
                 if catch_chance and random.random() < catch_chance:
                     boss_beast_data = get_beast_data(boss["id"])
                     if boss_beast_data:
-                        async with aiosqlite.connect(DB_PATH) as db:
-                            await db.execute("""
-                                INSERT INTO player_beasts
-                                (user_id, beast_id, hp, max_hp, attack, defense, speed, mana, max_mana,
-                                 rarity, caught_from)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ancient_raid')
-                            """, (
-                                user_id,
-                                boss["id"],
-                                boss_beast_data["base_stats"]["hp"],
-                                boss_beast_data["base_stats"]["hp"],
-                                boss_beast_data["base_stats"]["attack"],
-                                boss_beast_data["base_stats"]["defense"],
-                                boss_beast_data["base_stats"]["speed"],
-                                boss_beast_data["base_stats"]["mana"],
-                                boss_beast_data["base_stats"]["mana"],
-                                boss_beast_data["rarity"],
-                            ))
-                            await db.commit()
+                        from utils.db import add_beast_to_player
+                        await add_beast_to_player(user_id, {**boss_beast_data, "caught_from": "ancient_raid"})
 
                         member = channel.guild.get_member(user_id)
                         name = member.display_name if member else f"<@{user_id}>"

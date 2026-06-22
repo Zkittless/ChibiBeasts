@@ -829,25 +829,8 @@ class Guilds(commands.Cog):
                     if random.random() < catch_chance:
                         boss_beast_data = get_beast_data(boss["id"])
                         if boss_beast_data:
-                            async with aiosqlite.connect("db/chibibeast.db") as db:
-                                await db.execute("""
-                                    INSERT INTO player_beasts
-                                    (user_id, beast_id, hp, max_hp, attack, defense, speed, mana, max_mana,
-                                     rarity, caught_from)
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'raid')
-                                """, (
-                                    user_id,
-                                    boss["id"],
-                                    boss_beast_data["base_stats"]["hp"],
-                                    boss_beast_data["base_stats"]["hp"],
-                                    boss_beast_data["base_stats"]["attack"],
-                                    boss_beast_data["base_stats"]["defense"],
-                                    boss_beast_data["base_stats"]["speed"],
-                                    boss_beast_data["base_stats"]["mana"],
-                                    boss_beast_data["base_stats"]["mana"],
-                                    boss_beast_data["rarity"],
-                                ))
-                                await db.commit()
+                            from utils.db import add_beast_to_player
+                            await add_beast_to_player(user_id, {**boss_beast_data, "caught_from": "raid"})
                             from utils.progress import record_bestiary_sighting
                             await record_bestiary_sighting(channel.guild.id, boss["id"], user_id)
                             await channel.send(embed=discord.Embed(
