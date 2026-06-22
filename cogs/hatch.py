@@ -42,7 +42,7 @@ _BASE_EGG_POOLS = {
     # Celestial: high-tier — legendary access but divine is rare (5%)
     "celestial_egg": {"epic": 0.50, "legendary": 0.45, "divine": 0.05},
     # Abyssal: endgame — decent divine (25%) but incubation still beats it if patient
-    "abyssal_egg":   {"legendary": 0.70, "divine": 0.25, "altered_chance": 0.05},
+    "abyssal_egg":   {"legendary": 0.70, "divine": 0.25, "altered_chance": 0.01},
 }
 
 HATCH_EGGS = {
