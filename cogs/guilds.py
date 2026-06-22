@@ -926,6 +926,9 @@ class Guilds(commands.Cog):
                         if raid_id in active_raids:
                             active_raids[raid_id]["embed_updating"] = False
 
+        # Map threshold -> defense reduction % for phase display
+        _PHASE_DEF_REDUCTION = {0.70: 20, 0.40: 40, 0.15: 60}
+
         async def check_phase_transitions(raid: dict, channel):
             """Fire boss signature moves at phase thresholds."""
             pct = raid["current_hp"] / raid["max_hp"]
@@ -933,24 +936,26 @@ class Guilds(commands.Cog):
             for sig in signatures:
                 if pct <= sig["threshold"] and sig["threshold"] not in raid["phase_fired"]:
                     raid["phase_fired"].add(sig["threshold"])
-                    # Hit all alive players
-                    hit_lines = []
+                    # Apply AoE damage to all alive players
                     alive = [uid for uid, hp in raid["player_hp"].items() if hp > 0]
                     for uid in alive:
-                        p_def = raid["player_defense"].get(uid, 50)
-                        raw = calc_boss_damage(raid["boss_attack"], p_def, raid["player_max_hp"].get(uid, 0))
+                        raw = calc_boss_damage(raid["boss_attack"], raid["player_defense"].get(uid, 50), raid["player_max_hp"].get(uid, 0))
                         dmg = int(raw * sig["mult"])
                         raid["player_hp"][uid] = max(0, raid["player_hp"].get(uid, 0) - dmg)
-                        p_hp = raid["player_hp"][uid]
-                        p_max = raid["player_max_hp"].get(uid, 1)
-                        died = p_hp <= 0
-                        hit_lines.append(f"<@{uid}> `{dmg:,}` dmg" + (" 💀" if died else f" `{p_hp}/{p_max}HP`"))
 
+                    # Show flavor + defense debuff status — no damage pings
+                    def_reduction = _PHASE_DEF_REDUCTION.get(sig["threshold"], 0)
+                    phase_status = (
+                        "🔴 **CRITICAL** — Boss defense reduced by **60%**" if sig["threshold"] == 0.15 else
+                        "🟠 **Weakened** — Boss defense reduced by **40%**" if sig["threshold"] == 0.40 else
+                        "🟡 **Damaged** — Boss defense reduced by **20%**"
+                    )
                     embed = discord.Embed(
                         title=f"⚡ {boss['name']}: **{sig['name']}**!",
-                        description=f"{sig['flavor']}\n\n" + "\n".join(hit_lines),
+                        description=f"{sig['flavor']}",
                         color=COLORS.get("corrupted", COLORS["error"])
                     )
+                    embed.add_field(name="⚔️ Phase Shift", value=phase_status, inline=False)
                     await channel.send(embed=embed)
 
         cog = self

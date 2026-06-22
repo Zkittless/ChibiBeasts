@@ -457,6 +457,8 @@ class Ancient(commands.Cog):
                         if raid_id in active_ancient_raids:
                             active_ancient_raids[raid_id]["embed_updating"] = False
 
+        _PHASE_DEF_REDUCTION = {0.70: 20, 0.40: 40, 0.15: 60}
+
         async def check_phase_transitions(cur_raid: dict, channel):
             pct = cur_raid["current_hp"] / max(cur_raid["max_hp"], 1)
             from cogs.guilds import BOSS_SIGNATURES
@@ -465,20 +467,21 @@ class Ancient(commands.Cog):
                 if pct <= sig["threshold"] and sig["threshold"] not in cur_raid["phase_fired"]:
                     cur_raid["phase_fired"].add(sig["threshold"])
                     alive = [uid for uid, hp in cur_raid["player_hp"].items() if hp > 0]
-                    hit_lines = []
                     for uid in alive:
-                        p_def = cur_raid["player_defense"].get(uid, 50)
-                        dmg = int(calc_boss_damage(cur_raid["boss_attack"], p_def, cur_raid["player_max_hp"].get(uid, 0)) * sig["mult"])
+                        dmg = int(calc_boss_damage(cur_raid["boss_attack"], cur_raid["player_defense"].get(uid, 50), cur_raid["player_max_hp"].get(uid, 0)) * sig["mult"])
                         cur_raid["player_hp"][uid] = max(0, cur_raid["player_hp"].get(uid, 0) - dmg)
-                        p_hp  = cur_raid["player_hp"][uid]
-                        p_max = cur_raid["player_max_hp"].get(uid, 1)
-                        died  = p_hp <= 0
-                        hit_lines.append(f"<@{uid}> `{dmg:,}` dmg" + (" \U0001f480" if died else f" `{p_hp}/{p_max}HP`"))
-                    await channel.send(embed=discord.Embed(
+                    phase_status = (
+                        "\U0001f534 **CRITICAL** \u2014 Boss defense reduced by **60%**" if sig["threshold"] == 0.15 else
+                        "\U0001f7e0 **Weakened** \u2014 Boss defense reduced by **40%**" if sig["threshold"] == 0.40 else
+                        "\U0001f7e1 **Damaged** \u2014 Boss defense reduced by **20%**"
+                    )
+                    embed = discord.Embed(
                         title=f"\u26a1 {boss['name']}: **{sig['name']}**!",
-                        description=f"{sig['flavor']}\n\n" + "\n".join(hit_lines),
+                        description=f"{sig['flavor']}",
                         color=COLORS.get("ancient", COLORS["legendary"])
-                    ))
+                    )
+                    embed.add_field(name="\u2694\ufe0f Phase Shift", value=phase_status, inline=False)
+                    await channel.send(embed=embed)
 
         cog = self
 
