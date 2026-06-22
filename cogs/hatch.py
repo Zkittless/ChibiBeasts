@@ -22,14 +22,27 @@ RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
 # ── Base egg definitions ─────────────────────────────────────────────────────
 # Pools are *base* values. Call get_egg_pool(egg_type, perks, sanctuary)
 # at runtime to get the effective pool with all active modifiers applied.
-# This keeps the static data honest and prevents exploration bonuses from
-# silently conflicting with hardcoded fractions.
+#
+# Design philosophy:
+#   Instant eggs  = convenient, immediate, slightly worse odds
+#   Incubation    = patient, time-gated, meaningfully better odds per tier
+#   Top incubation = exclusive beasts unavailable anywhere else
+#
+# Divine rarity targets (avg eggs needed for a divine):
+#   Celestial (8k, instant):  5% →  avg 20 eggs  (~88 days at Lv10)  — jackpot feel
+#   Abyssal (25k, instant):  25% →  avg 4 eggs   (~55 days at Lv10)  — endgame grind
+#   Epic incubation (12k):   25% →  beats Celestial if patient
+#   Top incubation (50k, 48h): 40% + exclusive beasts — worth the wait AND gold
 
 _BASE_EGG_POOLS = {
-    "common_egg":    {"common": 0.70, "uncommon": 0.25, "rare": 0.05},
-    "rare_egg":      {"uncommon": 0.30, "rare": 0.45, "epic": 0.20, "legendary": 0.05},
-    "celestial_egg": {"epic": 0.30, "legendary": 0.35, "divine": 0.25, "altered_chance": 0.10},
-    "abyssal_egg":   {"legendary": 0.40, "divine": 0.55, "altered_chance": 0.05},
+    # Common: fast and cheap — no rare access, just common/uncommon
+    "common_egg":    {"common": 0.75, "uncommon": 0.25},
+    # Rare: mid-tier — no legendary access, good rare/epic spread
+    "rare_egg":      {"uncommon": 0.35, "rare": 0.50, "epic": 0.15},
+    # Celestial: high-tier — legendary access but divine is rare (5%)
+    "celestial_egg": {"epic": 0.50, "legendary": 0.45, "divine": 0.05},
+    # Abyssal: endgame — decent divine (25%) but incubation still beats it if patient
+    "abyssal_egg":   {"legendary": 0.70, "divine": 0.25, "altered_chance": 0.05},
 }
 
 HATCH_EGGS = {
