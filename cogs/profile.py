@@ -682,7 +682,7 @@ class Shop(commands.Cog):
                 [(eid, EGG_TYPES[eid], EGG_PRICES[eid]) for eid in EGG_PRICES if eid in EGG_TYPES],
                 key=lambda x: x[2]
             )
-            per_page = 5
+            per_page = 4  # 4 eggs × 2 buttons = rows 0-3, row 4 free for pagination
             total_pages = max(1, (len(named_eggs) + per_page - 1) // per_page)
 
             def build_incub_embed(page: int) -> discord.Embed:
