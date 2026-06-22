@@ -229,6 +229,45 @@
       "effect": {
         "instant_levels": 5
       }
+    },
+    "epoch_shard": {
+      "id": "epoch_shard",
+      "name": "Epoch Shard",
+      "rarity": "ancient",
+      "type": "summon",
+      "price": 0,
+      "value": 0,
+      "description": "A sliver of time that predates the clock. It ticks backwards. Looking at it too long makes recent memories feel distant.",
+      "lore": "The Loom shed this when it first tried to weave time and got it slightly wrong. Chronos kept the original. This is what fell.",
+      "effect": {
+        "summon": "ancient_chronos"
+      }
+    },
+    "firstborn_ember": {
+      "id": "firstborn_ember",
+      "name": "Firstborn Ember",
+      "rarity": "ancient",
+      "type": "summon",
+      "price": 0,
+      "value": 0,
+      "description": "A flame that has been burning since before fire had a name. It does not consume what it touches. It simply reminds it that it exists.",
+      "lore": "Genesis shed this on the day everything began. It has been looking for an altar ever since.",
+      "effect": {
+        "summon": "ancient_genesis"
+      }
+    },
+    "void_prism": {
+      "id": "void_prism",
+      "name": "Void Prism",
+      "rarity": "ancient",
+      "type": "summon",
+      "price": 0,
+      "value": 0,
+      "description": "A crystal that absorbs all light that enters it. Nothing comes out. The silence around it is a different kind of silence than normal silence.",
+      "lore": "The Abyss leaves these behind sometimes. It does not explain why. It does not explain anything.",
+      "effect": {
+        "summon": "ancient_abyss"
+      }
     }
   }
 }

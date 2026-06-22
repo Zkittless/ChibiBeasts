@@ -50,17 +50,60 @@ _ancient_locks: dict[int, asyncio.Lock] = {}
 
 LOBBY_WAIT    = 60    # seconds to wait for players before auto-starting
 MAX_PARTY     = 10    # max players
-SHARD_COST    = 25    # Celestial Shards to trigger
 MIN_LEVEL     = 10    # minimum trainer level
+
+
+SUMMON_ITEMS = {
+    "epoch_shard":     "ancient_chronos",
+    "firstborn_ember": "ancient_genesis",
+    "void_prism":      "ancient_abyss",
+}
+
+# Per-boss summoning flavor — shown as a dramatic animation before the lobby opens
+SUMMON_ANIMATIONS = {
+    "ancient_chronos": [
+        "*The Epoch Shard splinters. Time around the altar stutters — a moment repeats once, then again, then stops.*",
+        "*The air smells like something very old that hasn't been disturbed in a long time.*",
+        "*Ancient Chronos was already here. It has always been here. It is choosing, now, to be seen.*",
+    ],
+    "ancient_genesis": [
+        "*The Firstborn Ember touches the altar and ignites it with a light that predates color.*",
+        "*The flame does not burn the stone. It reminds it of when it was something else.*",
+        "*A silhouette of impossible size resolves from the light. Ancient Genesis has heard the call.*",
+    ],
+    "ancient_abyss": [
+        "*The Void Prism is placed on the altar. The light in the room does not go out — it simply stops arriving.*",
+        "*The silence changes. It becomes the kind of silence that existed before sound was invented.*",
+        "*Something vast and patient has noticed. Ancient Abyss steps out of the space between things.*",
+    ],
+}
 
 
 class Ancient(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    async def summon_item_autocomplete(self, interaction: discord.Interaction, current: str):
+        """Show only summon items the player actually owns."""
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT item_id, quantity FROM player_inventory WHERE user_id = ? AND item_id IN ('epoch_shard','firstborn_ember','void_prism')",
+                (interaction.user.id,)
+            ) as c:
+                rows = {r["item_id"]: r["quantity"] for r in await c.fetchall()}
+        names = {"epoch_shard": "⏳ Epoch Shard", "firstborn_ember": "🔥 Firstborn Ember", "void_prism": "🌑 Void Prism"}
+        choices = []
+        for iid, display in names.items():
+            if iid in rows and current.lower() in display.lower():
+                choices.append(app_commands.Choice(name=f"{display} (x{rows[iid]})", value=iid))
+        return choices
+
     # ── /ancient ─────────────────────────────────────────────────────────
-    @app_commands.command(name="ancient", description="Summon an Ancient boss — open to all players! 🏛️")
-    async def ancient(self, interaction: discord.Interaction):
+    @app_commands.command(name="ancient", description="Use a summon item to call an Ancient boss 🏛️")
+    @app_commands.describe(summon_item="The item to use — Epoch Shard, Firstborn Ember, or Void Prism")
+    @app_commands.autocomplete(summon_item=summon_item_autocomplete)
+    async def ancient(self, interaction: discord.Interaction, summon_item: str):
         await interaction.response.defer()
 
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
@@ -72,10 +115,25 @@ class Ancient(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        # Shard cost
-        if player["celestial_shards"] < SHARD_COST:
+        # Validate item
+        if summon_item not in SUMMON_ITEMS:
             return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Summoning an Ancient costs **{SHARD_COST} Celestial Shards**. You have `{player['celestial_shards']}`.",
+                description="✦ That item can't summon an Ancient. You need an **Epoch Shard**, **Firstborn Ember**, or **Void Prism**.",
+                color=COLORS["error"]
+            ))
+
+        # Check inventory
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
+                (interaction.user.id, summon_item)
+            ) as c:
+                inv_row = await c.fetchone()
+        if not inv_row or inv_row["quantity"] < 1:
+            item_names = {"epoch_shard": "Epoch Shard", "firstborn_ember": "Firstborn Ember", "void_prism": "Void Prism"}
+            return await interaction.followup.send(embed=discord.Embed(
+                description=f"✦ You don't have a **{item_names[summon_item]}**. Defeat Corrupted raid bosses to obtain one.",
                 color=COLORS["error"]
             ))
 
@@ -89,14 +147,43 @@ class Ancient(commands.Cog):
         for raid in active_ancient_raids.values():
             if raid["channel_id"] == interaction.channel_id:
                 return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ An Ancient raid is already active here! Use `/ancient_attack`.",
+                    description="✦ An Ancient raid is already active here!",
                     color=COLORS["error"]
                 ))
 
-        # Deduct shards
-        await update_player(interaction.user.id, celestial_shards=player["celestial_shards"] - SHARD_COST)
+        # Consume item
+        async with aiosqlite.connect(DB_PATH) as db:
+            if inv_row["quantity"] == 1:
+                await db.execute("DELETE FROM player_inventory WHERE id = ?", (inv_row["id"],))
+            else:
+                await db.execute("UPDATE player_inventory SET quantity = quantity - 1 WHERE id = ?", (inv_row["id"],))
+            await db.commit()
 
-        boss = random.choice(ANCIENT_BOSSES)
+        # Find the specific boss this item summons
+        boss_id = SUMMON_ITEMS[summon_item]
+        boss = next(b for b in ANCIENT_BOSSES if b["id"] == boss_id)
+
+        # Dramatic summoning animation
+        animation_lines = SUMMON_ANIMATIONS[boss_id]
+        summon_embed = discord.Embed(
+            title=f"🏛️ The Altar Stirs...",
+            description=animation_lines[0],
+            color=COLORS.get("ancient", COLORS["legendary"])
+        )
+        summon_msg = await interaction.followup.send(embed=summon_embed)
+        await asyncio.sleep(2.0)
+        await summon_msg.edit(embed=discord.Embed(
+            title=f"🏛️ The Altar Stirs...",
+            description="\n\n".join(animation_lines[:2]),
+            color=COLORS.get("ancient", COLORS["legendary"])
+        ))
+        await asyncio.sleep(2.0)
+        await summon_msg.edit(embed=discord.Embed(
+            title=f"🏛️ {boss['name']} Answers.",
+            description="\n\n".join(animation_lines),
+            color=COLORS.get("ancient", COLORS["legendary"])
+        ))
+        await asyncio.sleep(1.5)
 
         # Build lobby embed + Join button
         class LobbyView(discord.ui.View):
