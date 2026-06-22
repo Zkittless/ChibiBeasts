@@ -299,6 +299,15 @@ class Inventory(commands.Cog):
         inv = await get_inventory(interaction.user.id)
         items_data = load_items()
 
+        # Build egg lookup from both instant and incubation egg definitions
+        from cogs.hatch import HATCH_EGGS
+        from cogs.world import EGGS as INCUB_EGGS
+        egg_lookup = {}
+        for eid, egg in HATCH_EGGS.items():
+            egg_lookup[eid] = {"name": egg["name"], "description": egg["flavor"], "rarity": "rare", "emoji": "🥚"}
+        for eid, egg in INCUB_EGGS.items():
+            egg_lookup[eid] = {"name": egg["name"], "description": egg["flavor"], "rarity": egg["rarity"], "emoji": egg.get("emoji", "🥚")}
+
         if not inv:
             return await interaction.followup.send(embed=discord.Embed(
                 description="✦ Your inventory is empty! Visit the `/shop` to buy items.",
@@ -307,16 +316,17 @@ class Inventory(commands.Cog):
 
         embed = discord.Embed(title="🎒 Your Inventory", color=COLORS["info"])
         for entry in inv:
-            item = items_data.get(entry["item_id"])
+            item = items_data.get(entry["item_id"]) or egg_lookup.get(entry["item_id"])
             if not item:
                 continue
-            rarity_emoji = RARITY_EMOJI.get(item["rarity"], "⚪")
+            rarity_emoji = RARITY_EMOJI.get(item.get("rarity", "common"), "⚪")
+            name_emoji = item.get("emoji", "")
             embed.add_field(
-                name=f"{rarity_emoji} {item['name']} x{entry['quantity']}",
-                value=item["description"][:80] + "...",
+                name=f"{rarity_emoji} {name_emoji} {item['name']} x{entry['quantity']}",
+                value=item["description"][:80] + ("..." if len(item["description"]) > 80 else ""),
                 inline=False
             )
-        embed.set_footer(text="ChibiBeasts 🐾  •  /use <item> to use an item")
+        embed.set_footer(text="ChibiBeasts 🐾  •  /use <item> to use · /hatch for instant eggs · /incubate for timed eggs")
         await interaction.followup.send(embed=embed)
 
     async def use_autocomplete(self, interaction: discord.Interaction, current: str):
@@ -693,9 +703,14 @@ class Shop(commands.Cog):
                     )
                     h = egg["incubation_hours"]
                     time_str = f"{h}h" if h < 24 else f"{h//24}d{' '+str(h%24)+'h' if h%24 else ''}"
+                    # Show exclusive pool hint if present
+                    exclusive = ""
+                    if "legendary_pool" in egg:
+                        beast_names = [b.replace("_"," ").title() for b in egg["legendary_pool"]]
+                        exclusive = f"\n✨ *Exclusive:* {', '.join(beast_names[:3])}{'...' if len(beast_names) > 3 else ''}"
                     embed.add_field(
                         name=f"{egg['emoji']} {egg['name']} — `{price:,}g` · ⏱️ {time_str}",
-                        value=f"{pool_str}\n*{egg['flavor']}*",
+                        value=f"{pool_str}{exclusive}\n*{egg['flavor']}*",
                         inline=False
                     )
                 embed.set_footer(text=f"ChibiBeasts 🐾  •  Page {page}/{total_pages} · Click to buy")

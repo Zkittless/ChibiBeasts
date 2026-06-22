@@ -84,17 +84,25 @@ EGGS = {
                       "pool": {"epic": 0.50, "legendary": 0.40, "divine": 0.10},
                       "flavor": "An ancient stone tablet egg carved with glowing golden hieroglyphics.",
                       "lore": "Atlas is vaguely familiar with these. It won't say how."},
-    # Legendary eggs
+    # Legendary eggs — exclusive beast pools + 40% divine
+    # Abyssal instant (25k, no wait): legendary 40% / divine 55% — open pool
+    # These (50k, 48h): legendary 60% / divine 40% — but EXCLUSIVE beasts you can't get elsewhere
     "abyssal_trench_orb":  {"name": "Abyssal Trench Orb", "rarity": "legendary", "emoji": "🌊", "incubation_hours": 48,
-                            "pool": {"legendary": 0.70, "divine": 0.30},
+                            "pool": {"legendary": 0.60, "divine": 0.40},
+                            "legendary_pool": ["kraken", "leviathan", "charybdis", "jormungandr"],
+                            "divine_pool": ["aetherius", "nirvana", "abyss", "nebula"],
                             "flavor": "Covered in ancient barnacles and dark glowing runes, pressure-sealed by the deep sea.",
                             "lore": "The Sunken Abyssal Trenches give these up rarely. They do not give them up gently."},
-    "dragon_hoard_scale":  {"name": "Dragon-Hoard Scale","rarity": "legendary","emoji": "🐉", "incubation_hours": 48,
-                            "pool": {"legendary": 0.75, "divine": 0.25},
+    "dragon_hoard_scale":  {"name": "Dragon-Hoard Scale", "rarity": "legendary", "emoji": "🐉", "incubation_hours": 48,
+                            "pool": {"legendary": 0.60, "divine": 0.40},
+                            "legendary_pool": ["dragon", "fenrir", "hydra"],
+                            "divine_pool": ["supernova", "genesis", "asgard", "atlas"],
                             "flavor": "A massive diamond-hard egg made entirely of overlapping crimson and gold dragon scales.",
                             "lore": "These are technically stolen. The Dragon is aware. The Dragon is patient."},
-    "glacial_monolith":    {"name": "Glacial Monolith",  "rarity": "legendary","emoji": "🧊", "incubation_hours": 48,
-                            "pool": {"legendary": 0.70, "divine": 0.30},
+    "glacial_monolith":    {"name": "Glacial Monolith",   "rarity": "legendary", "emoji": "🧊", "incubation_hours": 48,
+                            "pool": {"legendary": 0.60, "divine": 0.40},
+                            "legendary_pool": ["simurgh", "fenrir", "dragon", "jormungandr"],
+                            "divine_pool": ["chronos", "terminus", "zodiac", "paradox", "horizon"],
                             "flavor": "Solid unmelting black ice with a massive dark silhouette frozen inside.",
                             "lore": "The silhouette is always moving when you're not watching it directly."},
     # Divine eggs (collection-specific)
@@ -172,12 +180,13 @@ def roll_egg_rarity(egg_id: str) -> str:
 
 def pick_beast_for_rarity(rarity: str, egg: dict) -> dict | None:
     all_beasts = load_beasts()
-    # Divine eggs have curated pools
-    if "divine_pool" in egg and rarity == "divine":
-        pool_ids = egg["divine_pool"]
+    STARTER_IDS = {"prismite", "twine", "gloop", "barkley"}
+    # Curated pools — eggs can specify exact beast IDs for any rarity
+    pool_key = f"{rarity}_pool"
+    if pool_key in egg:
+        pool_ids = egg[pool_key]
         pool = [all_beasts[bid] for bid in pool_ids if bid in all_beasts]
     else:
-        STARTER_IDS = {"prismite", "twine", "gloop", "barkley"}
         pool = [b for b in all_beasts.values()
                 if b["rarity"] == rarity and b["id"] not in STARTER_IDS]
     return random.choice(pool) if pool else None
