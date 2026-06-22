@@ -718,11 +718,23 @@ class Ancient(commands.Cog):
             )
 
         else:
+            from cogs.guilds import BOSS_DEFEAT_SCENES
+            scene = BOSS_DEFEAT_SCENES.get(boss["id"])
+            if scene:
+                defeat_embed = discord.Embed(
+                    title=scene["title"],
+                    description="\n\n".join(scene["lines"]),
+                    color=COLORS.get(scene["color"], COLORS.get("ancient", COLORS["legendary"]))
+                )
+                if boss.get("image_url"):
+                    defeat_embed.set_image(url=boss["image_url"])
+                await channel.send(embed=defeat_embed)
+
             embed = discord.Embed(
-                title=f"⏰ {boss['name']} Escaped...",
+                title=f"💀 {boss['name']} — The Party Falls",
                 description=(
-                    f"*The Ancient retreats into the void before being defeated.*\n\n"
-                    f"*Regroup and try again — it will return.*"
+                    f"*The Ancient was not defeated.*\n\n"
+                    f"*Regroup. Grow stronger. Return.*"
                 ),
                 color=COLORS["error"]
             )

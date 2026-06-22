@@ -157,6 +157,69 @@ BOSS_KILL_SCENES = {
     },
 }
 
+BOSS_DEFEAT_SCENES = {
+    "corrupted_leviathan": {
+        "title": "🌊 The Deep Does Not Yield",
+        "lines": [
+            "The water closes over everything.",
+            "The Corrupted Leviathan does not pursue. It does not need to. It simply remains, enormous and patient, while the tide carries what's left of your effort back to shore.",
+            "The ocean it poisoned does not clear. It was never going to clear for you.",
+            "*It noticed you. That is not nothing. It noticed you, and it decided you were not enough. There is a difference between those two things, and today you felt it.*",
+        ],
+        "color": "corrupted",
+    },
+    "corrupted_fenrir": {
+        "title": "🐺 The Void Howls On",
+        "lines": [
+            "The last rift tears open and does not close.",
+            "Corrupted Fenrir does not celebrate. It simply turns away, which is worse. The rifts it left in the air stay open behind you — souvenirs you didn't ask for.",
+            "The void energy hums. It has somewhere else to be. You were a delay, not a destination.",
+            "*The gods who chained it once are not watching. They don't need to be. Neither did it.*",
+        ],
+        "color": "corrupted",
+    },
+    "corrupted_dragon": {
+        "title": "🔥 The Apex Remains",
+        "lines": [
+            "The null-flame does not gutter. It was never close to guttering.",
+            "The Corrupted Dragon looks at what remains of your effort the way an ocean looks at a stone someone threw into it. Then it looks away.",
+            "The air still tastes wrong. It will for a while.",
+            "*It was the apex before the corruption. The corruption only made it less interested in things that can be defeated. You confirmed you are one of those things.*",
+        ],
+        "color": "corrupted",
+    },
+    "ancient_chronos": {
+        "title": "⏳ Time Did Not Wait",
+        "lines": [
+            "Ancient Chronos does not stop. It was never going to stop for you.",
+            "Time continues moving in the directions it was always going to move. Some of those directions are not forward. You have already experienced several of them.",
+            "The moment where you might have won has passed. It passed some time ago, technically speaking. Chronos knew which moment it was.",
+            "*It has watched things try and fail since before trying and failing were concepts. It is patient in a way that has nothing to do with kindness. You were not enough — this time. Time will tell if there is a next time. Time always tells.*",
+        ],
+        "color": "ancient",
+    },
+    "ancient_genesis": {
+        "title": "🔥 The First Flame Was Not Yours to Take",
+        "lines": [
+            "The light does not dim. It never considered dimming.",
+            "Ancient Genesis does not move toward you or away from you. It simply continues being the origin of everything, which is a thing it has been doing since before there was a word for it.",
+            "Everything alive in the vicinity flickers — but not from exhaustion. From recognition. Something very old is still here, and it is not you.",
+            "*You were not worth sharing it with. Not yet. The flame does not say this to be cruel. It simply knows what has earned it and what hasn't. Come back when you know too.*",
+        ],
+        "color": "ancient",
+    },
+    "ancient_abyss": {
+        "title": "🌑 The Darkness Stays",
+        "lines": [
+            "The light does not come back.",
+            "Ancient Abyss does not press its advantage. It does not have advantages. It has presence, and it is still present, and that is enough.",
+            "The silence does not change. It remains the kind of silence that existed before sound was invented. You are standing in it. You are a very small sound in a very large silence.",
+            "*The void before stars was here before you arrived. It will be here after you leave. It noticed you were here. It is noticing you leave. That is all it will say about you.*",
+        ],
+        "color": "ancient",
+    },
+}
+
 ALTERED_DIVINES = {
     "void_chronos": {
         "name": "Void Chronos", "base_beast": "chronos",
@@ -1122,9 +1185,20 @@ class Guilds(commands.Cog):
                 color=COLORS["legendary"]
             )
         else:
+            scene = BOSS_DEFEAT_SCENES.get(boss["id"])
+            if scene:
+                defeat_embed = discord.Embed(
+                    title=scene["title"],
+                    description="\n\n".join(scene["lines"]),
+                    color=COLORS.get(scene["color"], COLORS["error"])
+                )
+                if boss.get("image_url"):
+                    defeat_embed.set_image(url=boss["image_url"])
+                await channel.send(embed=defeat_embed)
+
             embed = discord.Embed(
-                title=f"⏰ Raid Expired — {boss['name']} Escaped!",
-                description="*The raid boss escaped before being defeated.*",
+                title=f"💀 {boss['name']} — The Guild Falls",
+                description="*The boss was not defeated. Regroup, grow stronger, and return.*",
                 color=COLORS["error"]
             )
 
