@@ -60,6 +60,72 @@ RAID_BOSSES = {
     ]
 }
 
+# ── Boss kill scenes — shown as a cinematic embed when a raid boss falls ──────
+BOSS_KILL_SCENES = {
+    "corrupted_leviathan": {
+        "title": "🌊 The Tainted Deep Goes Still",
+        "lines": [
+            "The water darkens one final time.",
+            "Then the darkness lifts. Not slowly — all at once, as if the sea finally remembers what it was before.",
+            "The Corrupted Leviathan descends. The ocean it poisoned for miles in every direction clears within seconds.",
+            "*It was still the Leviathan, somewhere underneath all that corruption. The sea knew it. The sea let it go.*",
+        ],
+        "color": "corrupted",
+    },
+    "corrupted_fenrir": {
+        "title": "🐺 The Howling Void Falls Silent",
+        "lines": [
+            "The last howl tears one more rift — smaller than the others, already closing.",
+            "Corrupted Fenrir collapses. The rifts it left in the air seal shut, one by one, like wounds healing backward.",
+            "The void energy unravels from its body in threads, pulled apart by something that doesn't want it here.",
+            "*The gods who chained it once are not watching. They don't need to be. This time, you did it.*",
+        ],
+        "color": "corrupted",
+    },
+    "corrupted_dragon": {
+        "title": "🔥 The Broken Apex Burns Out",
+        "lines": [
+            "The null-flame gutters. For a moment, the Corrupted Dragon is just a dragon — the apex of everything, briefly visible through the ruin.",
+            "Then it falls, and the fire that leaves nothing behind leaves nothing of itself either.",
+            "The air tastes clean. You hadn't noticed how wrong it smelled until it stopped.",
+            "*Whatever it was before the corruption, it was something worth becoming. You saw that at the end.*",
+        ],
+        "color": "corrupted",
+    },
+    "ancient_chronos": {
+        "title": "⏳ Time Catches Its Breath",
+        "lines": [
+            "Ancient Chronos does not fall. It simply stops.",
+            "One moment it is there — vast, ageless, older than the word 'old' — and then the moment passes.",
+            "Time resumes normally. You hadn't noticed it had been moving strangely until it didn't.",
+            "*Chronos does not die. It steps back. It will be here before everything else again, when everything else ends.*",
+            "*It is choosing, now, to let you have this.*",
+        ],
+        "color": "ancient",
+    },
+    "ancient_genesis": {
+        "title": "🔥 The First Flame Dims",
+        "lines": [
+            "The light that predates color fades to something the eye can actually hold.",
+            "Ancient Genesis folds inward — not extinguished, but contained. The flame that started everything becomes small enough to cup in two hands.",
+            "Everything alive in the vicinity flickers, briefly, as if reminded of something it was before it knew what it was.",
+            "*You did not kill the First Flame. That is not possible. You simply proved you were worth sharing it with.*",
+        ],
+        "color": "ancient",
+    },
+    "ancient_abyss": {
+        "title": "🌑 The Darkness Recedes",
+        "lines": [
+            "The light comes back. Not all at once — in edges, then corners, then the middle of things.",
+            "Ancient Abyss does not retreat. It simply becomes less present, pulling back into whatever it was before it chose to fill the room.",
+            "The silence changes again. It becomes ordinary silence — the kind that just means no one is talking.",
+            "*The void before stars is still out there. It will be out there after the stars are gone. It simply has no reason to be here anymore.*",
+            "*You gave it a reason to leave. That is not nothing.*",
+        ],
+        "color": "ancient",
+    },
+}
+
 ALTERED_DIVINES = {
     "void_chronos": {
         "name": "Void Chronos", "base_beast": "chronos",
@@ -758,9 +824,24 @@ class Guilds(commands.Cog):
         sorted_participants = sorted(raid["participants"].items(), key=lambda x: x[1], reverse=True)
 
         if defeated:
+            scene = BOSS_KILL_SCENES.get(boss["id"])
+            if scene:
+                kill_embed = discord.Embed(
+                    title=scene["title"],
+                    description="\n\n".join(scene["lines"]),
+                    color=COLORS.get(scene["color"], COLORS["legendary"])
+                )
+                if boss.get("image_url"):
+                    kill_embed.set_image(url=boss["image_url"])
+                await channel.send(embed=kill_embed)
+
             embed = discord.Embed(
-                title=f"🏆 **{boss['name']}** Defeated!",
-                description=f"*The raid boss has been slain! Distributing rewards...*",
+                title=f"🏆 {boss['name']} Defeated!",
+                description=(
+                    f"*The guild has prevailed. Rewards are being distributed.*\n\n"
+                    f"⚠️ **Top 3 damage dealers have a chance to catch {boss['name']}.**\n"
+                    f"Rank 1: **5%** · Rank 2: **3%** · Rank 3: **2%**"
+                ),
                 color=COLORS["legendary"]
             )
         else:

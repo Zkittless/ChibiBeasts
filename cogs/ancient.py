@@ -443,14 +443,73 @@ class Ancient(commands.Cog):
 
         sorted_participants = sorted(raid["participants"].items(), key=lambda x: x[1], reverse=True)
 
-        embed = discord.Embed(
-            title=f"🏛️ {'Ancient Defeated!' if defeated else 'Ancient Escaped...'}",
-            description=(
-                f"**{boss['name']}** has been {'defeated' if defeated else 'driven off'}.\n\n"
-                f"*{'The primordial force is subdued — for now.' if defeated else 'The Ancient retreats into the void. Regroup and try again.'}*"
-            ),
-            color=COLORS["success"] if defeated else COLORS["error"]
-        )
+        # ── Per-boss kill scenes ─────────────────────────────────────────
+        BOSS_KILL_SCENES = {
+            "ancient_chronos": {
+                "title": "⏳ Time Catches Its Breath",
+                "lines": [
+                    "Ancient Chronos does not fall. It simply stops.",
+                    "One moment it is there — vast, ageless, older than the word 'old' — and then the moment passes.",
+                    "Time resumes normally. You hadn't noticed it had been moving strangely until it didn't.",
+                    "*Chronos does not die. It steps back. It will be here before everything else again, when everything else ends.*",
+                    "*It is choosing, now, to let you have this.*",
+                ],
+                "color": "ancient",
+            },
+            "ancient_genesis": {
+                "title": "🔥 The First Flame Dims",
+                "lines": [
+                    "The light that predates color fades to something the eye can actually hold.",
+                    "Ancient Genesis folds inward — not extinguished, but contained. The flame that started everything becomes small enough to cup in two hands.",
+                    "Everything alive in the vicinity flickers, briefly, as if reminded of something it was before it knew what it was.",
+                    "*You did not kill the First Flame. That is not possible. You simply proved you were worth sharing it with.*",
+                ],
+                "color": "ancient",
+            },
+            "ancient_abyss": {
+                "title": "🌑 The Darkness Recedes",
+                "lines": [
+                    "The light comes back. Not all at once — in edges, then corners, then the middle of things.",
+                    "Ancient Abyss does not retreat. It simply becomes less present, pulling back into whatever it was before it chose to fill the room.",
+                    "The silence changes again. It becomes ordinary silence — the kind that just means no one is talking.",
+                    "*The void before stars is still out there. It will be out there after the stars are gone. It simply has no reason to be here anymore.*",
+                    "*You gave it a reason to leave. That is not nothing.*",
+                ],
+                "color": "ancient",
+            },
+        }
+
+        if defeated:
+            scene = BOSS_KILL_SCENES.get(boss["id"])
+            if scene:
+                kill_embed = discord.Embed(
+                    title=scene["title"],
+                    description="\n\n".join(scene["lines"]),
+                    color=COLORS.get(scene["color"], COLORS["legendary"])
+                )
+                if boss.get("image_url"):
+                    kill_embed.set_image(url=boss["image_url"])
+                await channel.send(embed=kill_embed)
+
+            embed = discord.Embed(
+                title=f"🏛️ {boss['name']} Defeated!",
+                description=(
+                    f"*The primordial force is subdued — for now.*\n\n"
+                    f"⚠️ **Top 3 damage dealers have a chance to catch {boss['name']}.**\n"
+                    f"Rank 1: **10%** · Rank 2: **6%** · Rank 3: **3%**"
+                ),
+                color=COLORS.get("ancient", COLORS["legendary"])
+            )
+
+        else:
+            embed = discord.Embed(
+                title=f"⏰ {boss['name']} Escaped...",
+                description=(
+                    f"*The Ancient retreats into the void before being defeated.*\n\n"
+                    f"*Regroup and try again — it will return.*"
+                ),
+                color=COLORS["error"]
+            )
 
         reward_lines = []
         CATCH_CHANCES = {1: 0.10, 2: 0.06, 3: 0.03}
