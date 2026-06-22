@@ -200,131 +200,132 @@ class Ancient(commands.Cog):
             "party": set(view.party.keys()),
             "channel_id": interaction.channel_id,
             "channel": interaction.channel,
+            "raid_message": None,
         }
         _ancient_locks[raid_id] = asyncio.Lock()
 
-        embed = discord.Embed(
-            title=f"🏛️ ANCIENT RAID BEGINS — {boss['name']}!",
-            description=(
-                f"*The primordial beast manifests. All {len(view.party)} summoners, engage.*\n\n"
-                f"*{boss['description']}*\n\n"
-                f"💀 **HP:** {hp_bar(boss['max_hp'], boss['max_hp'])}\n\n"
-                f"Use `/ancient_attack` to deal damage! The raid lasts 30 minutes.\n"
-                f"🏆 Top 3 dealers have a chance to **catch** the boss."
-            ),
-            color=COLORS.get("ancient", COLORS["legendary"])
-        )
-        if boss.get("image_url"):
-            embed.set_image(url=boss["image_url"])
-        embed.set_footer(text=f"Raid ID: #{raid_id} | Party: {', '.join(list(view.party.values())[:5])}{'...' if len(view.party) > 5 else ''}")
-        await interaction.channel.send(embed=embed)
+        party_preview = ", ".join(list(view.party.values())[:5]) + ("..." if len(view.party) > 5 else "")
+
+        def build_ancient_embed(current_hp: int) -> discord.Embed:
+            pct = current_hp / boss["max_hp"]
+            status = "🔴 CRITICAL" if pct < 0.15 else "🟠 Weakened" if pct < 0.40 else "🟡 Damaged" if pct < 0.70 else "🟢 Active"
+            embed = discord.Embed(
+                title=f"🏛️ ANCIENT RAID — {boss['name']}!",
+                description=(
+                    f"*The primordial beast manifests. All {len(view.party)} summoners, engage.*\n\n"
+                    f"*{boss['description']}*\n\n"
+                    f"💀 **HP:** {hp_bar(current_hp, boss['max_hp'])} {status}\n"
+                    f"`{current_hp:,} / {boss['max_hp']:,}`\n\n"
+                    f"🏆 Top 3 damage dealers can catch the boss itself!"
+                ),
+                color=COLORS.get("ancient", COLORS["legendary"])
+            )
+            if boss.get("image_url"):
+                embed.set_image(url=boss["image_url"])
+            embed.set_footer(text=f"Raid ID: #{raid_id} | Party: {party_preview}")
+            return embed
+
+        class AncientRaidView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=1800)
+
+            @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
+            async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if raid_id not in active_ancient_raids:
+                    return await btn_interaction.response.send_message("✦ The raid has ended!", ephemeral=True)
+
+                cur_raid = active_ancient_raids[raid_id]
+                if btn_interaction.user.id not in cur_raid["party"]:
+                    return await btn_interaction.response.send_message(
+                        "✦ You're not in this party! Join the next lobby with `/ancient`.", ephemeral=True
+                    )
+
+                active = await get_active_beast(btn_interaction.user.id)
+                if not active:
+                    return await btn_interaction.response.send_message(
+                        "✦ You need an active beast to attack! Use `/setactive`.", ephemeral=True
+                    )
+
+                beast_data_btn = get_beast_data(active["beast_id"])
+                damage = random.randint(int(active["attack"] * 0.8), int(active["attack"] * 1.5))
+                is_crit = random.random() < 0.15
+                if is_crit:
+                    damage = int(damage * 1.5)
+
+                raid_lock = _ancient_locks.get(raid_id)
+                if not raid_lock:
+                    return await btn_interaction.response.send_message("✦ The raid just ended!", ephemeral=True)
+
+                async with raid_lock:
+                    if raid_id not in active_ancient_raids:
+                        return await btn_interaction.response.send_message("✦ The raid just ended!", ephemeral=True)
+                    cur_raid = active_ancient_raids[raid_id]
+                    cur_raid["current_hp"] = max(0, cur_raid["current_hp"] - damage)
+                    cur_raid["participants"][btn_interaction.user.id] = (
+                        cur_raid["participants"].get(btn_interaction.user.id, 0) + damage
+                    )
+                    async with aiosqlite.connect(DB_PATH) as db:
+                        await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (cur_raid["current_hp"], raid_id))
+                        async with db.execute(
+                            "SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?",
+                            (raid_id, btn_interaction.user.id)
+                        ) as c:
+                            existing = await c.fetchone()
+                        if existing:
+                            await db.execute(
+                                "UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?",
+                                (damage, raid_id, btn_interaction.user.id)
+                            )
+                        else:
+                            await db.execute(
+                                "INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)",
+                                (raid_id, btn_interaction.user.id, damage)
+                            )
+                        await db.commit()
+                    raid_ended = cur_raid["current_hp"] <= 0
+                    current_hp_snap = cur_raid["current_hp"]
+                    beast_name = beast_data_btn["name"] if beast_data_btn else "Beast"
+                    total_dealt = cur_raid["participants"].get(btn_interaction.user.id, 0)
+
+                crit_tag = "⭐ **CRITICAL HIT!** " if is_crit else ""
+                await btn_interaction.response.send_message(
+                    f"{crit_tag}**{beast_name}** dealt `{damage:,}` damage!\n"
+                    f"Your total: `{total_dealt:,}` | Boss HP: `{current_hp_snap:,}`",
+                    ephemeral=True
+                )
+
+                raid_msg = active_ancient_raids.get(raid_id, {}).get("raid_message")
+                if raid_msg:
+                    try:
+                        await raid_msg.edit(embed=build_ancient_embed(current_hp_snap), view=self if not raid_ended else None)
+                    except discord.HTTPException:
+                        pass
+
+                await track_quest_event(btn_interaction.user.id, "raid_damage", amount=damage)
+                await advance_quest_step(btn_interaction.user.id, "raid_participate")
+
+                if raid_ended:
+                    await self.end_ancient_raid(raid_id, btn_interaction.channel)
+
+            async def on_timeout(self):
+                if raid_id in active_ancient_raids:
+                    await self.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
+
+        raid_view = AncientRaidView()
+        raid_msg = await interaction.channel.send(embed=build_ancient_embed(boss["max_hp"]), view=raid_view)
+        active_ancient_raids[raid_id]["raid_message"] = raid_msg
 
         # Auto-end after 30 minutes
         await asyncio.sleep(1800)
         if raid_id in active_ancient_raids:
             await self.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
 
-    # ── /ancient_attack ───────────────────────────────────────────────────
-    @app_commands.command(name="ancient_attack", description="Attack an active Ancient boss! 🏛️")
+    # ── /ancient_attack (kept as slash fallback) ──────────────────────────
+    @app_commands.command(name="ancient_attack", description="Attack an active Ancient boss! 🏛️ (use the button instead)")
     async def ancient_attack(self, interaction: discord.Interaction):
-        await interaction.response.defer()
-
-        # Find active ancient raid in this channel
-        raid_id = None
-        for rid, raid in active_ancient_raids.items():
-            if raid["channel_id"] == interaction.channel_id:
-                raid_id = rid
-                break
-
-        if not raid_id:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ No active Ancient raid here! Use `/ancient` to summon one.",
-                color=COLORS["error"]
-            ))
-
-        raid = active_ancient_raids[raid_id]
-
-        # Party check — only party members can attack
-        if interaction.user.id not in raid["party"]:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You're not in this party! Join the next lobby with `/ancient`.",
-                color=COLORS["error"]
-            ))
-
-        active = await get_active_beast(interaction.user.id)
-        if not active:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need an active beast to attack!", color=COLORS["error"]
-            ))
-
-        beast_data = get_beast_data(active["beast_id"])
-        damage = random.randint(int(active["attack"] * 0.8), int(active["attack"] * 1.5))
-        is_crit = random.random() < 0.15
-        if is_crit:
-            damage = int(damage * 1.5)
-
-        raid_ended = False
-        raid_lock = _ancient_locks.get(raid_id)
-        if raid_lock is None:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ The raid just ended!", color=COLORS["info"]
-            ))
-
-        async with raid_lock:
-            if raid_id not in active_ancient_raids:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ The raid just ended!", color=COLORS["info"]
-                ))
-
-            raid["current_hp"] = max(0, raid["current_hp"] - damage)
-            raid["participants"][interaction.user.id] = (
-                raid["participants"].get(interaction.user.id, 0) + damage
-            )
-
-            async with aiosqlite.connect(DB_PATH) as db:
-                await db.execute(
-                    "UPDATE raids SET current_hp = ? WHERE id = ?",
-                    (raid["current_hp"], raid_id)
-                )
-                async with db.execute(
-                    "SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?",
-                    (raid_id, interaction.user.id)
-                ) as c:
-                    existing = await c.fetchone()
-                if existing:
-                    await db.execute(
-                        "UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?",
-                        (damage, raid_id, interaction.user.id)
-                    )
-                else:
-                    await db.execute(
-                        "INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)",
-                        (raid_id, interaction.user.id, damage)
-                    )
-                await db.commit()
-
-            raid_ended = raid["current_hp"] <= 0
-            current_hp_snapshot = raid["current_hp"]
-            max_hp_snapshot = raid["max_hp"]
-            boss_name_snapshot = raid["boss"]["name"]
-            beast_name_snapshot = beast_data["name"] if beast_data else "Beast"
-
-        embed = discord.Embed(
-            title=f"🏛️ {beast_name_snapshot} attacks {boss_name_snapshot}!",
-            description=(
-                f"{'⭐ CRITICAL HIT! ' if is_crit else ''}Dealt **`{damage:,}`** damage!\n\n"
-                f"💀 **{boss_name_snapshot} HP:**\n"
-                f"{hp_bar(current_hp_snapshot, max_hp_snapshot)}"
-            ),
-            color=COLORS.get("ancient", COLORS["legendary"])
+        await interaction.response.send_message(
+            "✦ Click the **⚔️ Attack!** button on the raid announcement to attack!", ephemeral=True
         )
-        await interaction.followup.send(embed=embed)
-
-        await track_quest_event(interaction.user.id, "raid_damage", amount=damage)
-        await advance_quest_step(interaction.user.id, "raid_participate")
-
-        if raid_ended:
-            await self.end_ancient_raid(raid_id, interaction.channel)
 
     # ── end_ancient_raid ──────────────────────────────────────────────────
     async def end_ancient_raid(self, raid_id: int, channel, timed_out: bool = False):
