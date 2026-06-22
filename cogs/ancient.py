@@ -350,9 +350,12 @@ class Ancient(commands.Cog):
             "player_max_hp": {},
             "player_mana": {},
             "player_defense": {},
+            "player_atk": {},
             "phase_fired": set(),
             "boss_attack": scaled_atk,
             "last_event": "",
+            "player_party": {},
+            "player_active_slot": {},
         }
         _ancient_locks[raid_id] = asyncio.Lock()
 
@@ -498,24 +501,94 @@ class Ancient(commands.Cog):
                 cur_raid = active_ancient_raids[raid_id]
                 uid = btn_interaction.user.id
                 if uid not in cur_raid["party"]:
-                    return await btn_interaction.followup.send("\u2746 You're not in this party!", ephemeral=True)
+                    return await btn_interaction.followup.send("✦ You're not in this party!", ephemeral=True)
+
+                # Knocked out — show swap UI if bench slots remain
                 if uid in cur_raid["player_hp"] and cur_raid["player_hp"][uid] <= 0:
-                    return await btn_interaction.followup.send("\u2746 Your beast is knocked out!", ephemeral=True)
+                    party = cur_raid.get("player_party", {}).get(uid, [])
+                    current_slot = cur_raid.get("player_active_slot", {}).get(uid, 0)
+                    bench = [(i, b) for i, b in enumerate(party) if i != current_slot]
+                    if not bench:
+                        return await btn_interaction.followup.send("✦ All your beasts are down. You can still watch.", ephemeral=True)
+
+                    async def do_swap(slot_idx: int, swap_interaction: discord.Interaction):
+                        if raid_id not in active_ancient_raids:
+                            return await swap_interaction.response.send_message("✦ Raid ended!", ephemeral=True)
+                        r = active_ancient_raids[raid_id]
+                        new_beast = r["player_party"][uid][slot_idx]
+                        r["player_active_slot"][uid]  = slot_idx
+                        r["player_hp"][uid]           = new_beast["hp"]
+                        r["player_max_hp"][uid]       = new_beast["max_hp"]
+                        r["player_defense"][uid]      = new_beast["defense"]
+                        r["player_atk"][uid]          = new_beast["attack"]
+                        r["player_mana"][uid]         = 0
+                        bd = get_beast_data(new_beast["beast_id"]) or {}
+                        name = new_beast.get("nickname") or bd.get("name", "Beast")
+                        await swap_interaction.response.send_message(
+                            f"✅ **{name}** enters the fight! `{new_beast['hp']}/{new_beast['max_hp']}HP`",
+                            ephemeral=True
+                        )
+
+                    class SwapView(discord.ui.View):
+                        def __init__(self):
+                            super().__init__(timeout=30)
+                            for slot_idx, beast_row in bench:
+                                bd = get_beast_data(beast_row["beast_id"]) or {}
+                                label = beast_row.get("nickname") or bd.get("name", f"Beast {slot_idx+1}")
+                                btn = discord.ui.Button(
+                                    label=f"{label} ({beast_row['hp']}HP)",
+                                    style=discord.ButtonStyle.primary,
+                                    emoji="🔄"
+                                )
+                                async def _cb(inter, si=slot_idx):
+                                    self.stop()
+                                    for item in self.children: item.disabled = True
+                                    await do_swap(si, inter)
+                                btn.callback = _cb
+                                self.add_item(btn)
+
+                    return await btn_interaction.followup.send(
+                        "💀 **Your beast is down!** Send in your next one:",
+                        view=SwapView(),
+                        ephemeral=True
+                    )
+
                 now = time.monotonic()
                 if now - cur_raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
-                    return await btn_interaction.followup.send(f"\u23f1\ufe0f Wait `{ATTACK_COOLDOWN - (now - cur_raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
+                    return await btn_interaction.followup.send(f"⏱️ Wait `{ATTACK_COOLDOWN - (now - cur_raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
                 cur_raid["last_attack"][uid] = now
-                active = await get_active_beast(uid)
-                if not active:
-                    return await btn_interaction.followup.send("\u2746 Need an active beast!", ephemeral=True)
-                if uid not in cur_raid["player_hp"]:
-                    cur_raid["player_hp"][uid]     = active["hp"]
-                    cur_raid["player_max_hp"][uid]  = active["max_hp"]
-                    cur_raid["player_defense"][uid] = active["defense"]
+
+                # Load party on first attack — top 3 beasts, active first
+                if uid not in cur_raid["player_party"]:
+                    async with aiosqlite.connect(DB_PATH) as _pdb:
+                        _pdb.row_factory = aiosqlite.Row
+                        async with _pdb.execute(
+                            """SELECT * FROM player_beasts WHERE user_id = ?
+                               ORDER BY is_active DESC, COALESCE(player_number, id) ASC LIMIT 3""",
+                            (uid,)
+                        ) as _c:
+                            party_rows = [dict(r) for r in await _c.fetchall()]
+                    if not party_rows:
+                        return await btn_interaction.followup.send("✦ No beasts found!", ephemeral=True)
+                    cur_raid["player_party"][uid]       = party_rows
+                    cur_raid["player_active_slot"][uid] = 0
+                    slot = party_rows[0]
+                    cur_raid["player_hp"][uid]      = slot["hp"]
+                    cur_raid["player_max_hp"][uid]  = slot["max_hp"]
+                    cur_raid["player_defense"][uid] = slot["defense"]
+                    cur_raid["player_atk"][uid]     = slot["attack"]
                     cur_raid["player_mana"][uid]    = 0
+
+                # Use party slot stats — not live DB
+                _slot = cur_raid["player_active_slot"].get(uid, 0)
+                _party = cur_raid["player_party"].get(uid, [])
+                _beast_row = _party[_slot] if _slot < len(_party) else _party[0]
+                _player_atk = cur_raid["player_atk"].get(uid, _beast_row["attack"])
+                _player_spd = _beast_row.get("speed", 50)
+
                 is_crit = random.random() < 0.15
                 defense = boss_effective_defense(cur_raid)
-                damage  = calc_player_damage(active["attack"], defense, False, is_crit)
+                damage  = calc_player_damage(_player_atk, defense, False, is_crit)
                 raid_lock = _ancient_locks.get(raid_id)
                 if not raid_lock:
                     return await btn_interaction.followup.send("\u2746 The raid just ended!", ephemeral=True)
@@ -526,7 +599,8 @@ class Ancient(commands.Cog):
                     cur_raid["current_hp"] = max(0, cur_raid["current_hp"] - damage)
                     cur_raid["participants"][uid] = cur_raid["participants"].get(uid, 0) + damage
                     cur_raid["attack_counts"][uid] = cur_raid["attack_counts"].get(uid, 0) + 1
-                    cur_raid["player_mana"][uid] = min(100, cur_raid["player_mana"].get(uid, 0) + 10)
+                    _mana_gain = min(15, 8 + _player_spd // 40)
+                    cur_raid["player_mana"][uid] = min(100, cur_raid["player_mana"].get(uid, 0) + _mana_gain)
                     async with aiosqlite.connect(DB_PATH) as db:
                         await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (cur_raid["current_hp"], raid_id))
                         async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
@@ -566,23 +640,27 @@ class Ancient(commands.Cog):
                 cur_raid = active_ancient_raids[raid_id]
                 uid = btn_interaction.user.id
                 if uid not in cur_raid["party"]:
-                    return await btn_interaction.followup.send("\u2746 You're not in this party!", ephemeral=True)
+                    return await btn_interaction.followup.send("✦ You're not in this party!", ephemeral=True)
                 if uid in cur_raid["player_hp"] and cur_raid["player_hp"][uid] <= 0:
-                    return await btn_interaction.followup.send("\u2746 Your beast is knocked out!", ephemeral=True)
+                    return await btn_interaction.followup.send("✦ Your beast is knocked out!", ephemeral=True)
                 if cur_raid["player_mana"].get(uid, 0) < 50:
-                    return await btn_interaction.followup.send(f"\u2746 Not enough mana! `{cur_raid['player_mana'].get(uid,0)}/50` needed.", ephemeral=True)
+                    return await btn_interaction.followup.send(f"✦ Not enough mana! `{cur_raid['player_mana'].get(uid,0)}/50` needed.", ephemeral=True)
                 now = time.monotonic()
                 if now - cur_raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
-                    return await btn_interaction.followup.send(f"\u23f1\ufe0f Wait `{ATTACK_COOLDOWN - (now - cur_raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
+                    return await btn_interaction.followup.send(f"⏱️ Wait `{ATTACK_COOLDOWN - (now - cur_raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
                 cur_raid["last_attack"][uid] = now
-                active = await get_active_beast(uid)
-                if not active:
-                    return await btn_interaction.followup.send("\u2746 No active beast!", ephemeral=True)
-                beast_data_btn = get_beast_data(active["beast_id"])
-                ult_name = beast_data_btn["ultimate"] if beast_data_btn else "Ultimate"
+                # Use party slot stats
+                _ult_slot = cur_raid.get("player_active_slot", {}).get(uid, 0)
+                _ult_party = cur_raid.get("player_party", {}).get(uid, [])
+                if not _ult_party:
+                    return await btn_interaction.followup.send("✦ No party loaded! Attack first.", ephemeral=True)
+                _ult_beast = _ult_party[_ult_slot] if _ult_slot < len(_ult_party) else _ult_party[0]
+                _ult_bd = get_beast_data(_ult_beast["beast_id"]) or {}
+                ult_name = _ult_bd.get("ultimate", "Ultimate")
+                _ult_atk = cur_raid["player_atk"].get(uid, _ult_beast["attack"])
                 is_crit = random.random() < 0.20
                 defense = boss_effective_defense(cur_raid)
-                damage  = calc_player_damage(active["attack"], defense, True, is_crit)
+                damage  = calc_player_damage(_ult_atk, defense, True, is_crit)
                 raid_lock = _ancient_locks.get(raid_id)
                 if not raid_lock:
                     return await btn_interaction.followup.send("\u2746 The raid just ended!", ephemeral=True)

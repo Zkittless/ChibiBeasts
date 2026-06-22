@@ -804,10 +804,13 @@ class Guilds(commands.Cog):
             "player_max_hp": {},
             "player_mana": {},
             "player_defense": {},
+            "player_atk": {},
             "phase_fired": set(),
             "boss_attack": scaled_atk,
             "last_event": "",
             "scaled_boss_def": scaled_boss_def,
+            "player_party": {},       # uid -> [beast_row, beast_row, beast_row]
+            "player_active_slot": {}, # uid -> int (0,1,2)
         }
         _raid_locks[raid_id] = asyncio.Lock()
 
@@ -977,9 +980,55 @@ class Guilds(commands.Cog):
                 if uid not in raid["guild_members"]:
                     return await btn_interaction.followup.send("✦ You need to be in this guild to attack!", ephemeral=True)
 
-                # Knocked out check
+                # Knocked out — show swap UI if bench slots remain
                 if uid in raid["player_hp"] and raid["player_hp"][uid] <= 0:
-                    return await btn_interaction.followup.send("✦ Your beast is knocked out! You can still watch.", ephemeral=True)
+                    party = raid.get("player_party", {}).get(uid, [])
+                    current_slot = raid.get("player_active_slot", {}).get(uid, 0)
+                    bench = [(i, b) for i, b in enumerate(party) if i != current_slot]
+                    if not bench:
+                        return await btn_interaction.followup.send("✦ All your beasts are down. You can still watch.", ephemeral=True)
+
+                    async def do_swap(slot_idx: int, swap_interaction: discord.Interaction):
+                        if raid_id not in active_raids:
+                            return await swap_interaction.response.send_message("✦ Raid ended!", ephemeral=True)
+                        r = active_raids[raid_id]
+                        new_beast = r["player_party"][uid][slot_idx]
+                        r["player_active_slot"][uid]  = slot_idx
+                        r["player_hp"][uid]           = new_beast["hp"]
+                        r["player_max_hp"][uid]       = new_beast["max_hp"]
+                        r["player_defense"][uid]      = new_beast["defense"]
+                        r["player_atk"][uid]          = new_beast["attack"]
+                        r["player_mana"][uid]         = 0
+                        bd = get_beast_data(new_beast["beast_id"]) or {}
+                        name = new_beast.get("nickname") or bd.get("name", "Beast")
+                        await swap_interaction.response.send_message(
+                            f"✅ **{name}** enters the fight! `{new_beast['hp']}/{new_beast['max_hp']}HP`",
+                            ephemeral=True
+                        )
+
+                    class SwapView(discord.ui.View):
+                        def __init__(self):
+                            super().__init__(timeout=30)
+                            for slot_idx, beast_row in bench:
+                                bd = get_beast_data(beast_row["beast_id"]) or {}
+                                label = beast_row.get("nickname") or bd.get("name", f"Beast {slot_idx+1}")
+                                btn = discord.ui.Button(
+                                    label=f"{label} ({beast_row['hp']}HP)",
+                                    style=discord.ButtonStyle.primary,
+                                    emoji="🔄"
+                                )
+                                async def _cb(inter, si=slot_idx):
+                                    self.stop()
+                                    for item in self.children: item.disabled = True
+                                    await do_swap(si, inter)
+                                btn.callback = _cb
+                                self.add_item(btn)
+
+                    return await btn_interaction.followup.send(
+                        "💀 **Your beast is down!** Send in your next one:",
+                        view=SwapView(),
+                        ephemeral=True
+                    )
 
                 # Per-player cooldown
                 now = time.monotonic()
@@ -991,23 +1040,41 @@ class Guilds(commands.Cog):
                 if not active:
                     return await btn_interaction.followup.send("✦ You need an active beast! Use `/setactive`.", ephemeral=True)
 
-                beast_data_btn = get_beast_data(active["beast_id"])
+                # Load party on first attack — top 3 beasts by player_number, active first
+                if uid not in raid["player_party"]:
+                    async with aiosqlite.connect("db/chibibeast.db") as _pdb:
+                        _pdb.row_factory = aiosqlite.Row
+                        async with _pdb.execute(
+                            """SELECT * FROM player_beasts WHERE user_id = ?
+                               ORDER BY is_active DESC, COALESCE(player_number, id) ASC LIMIT 3""",
+                            (uid,)
+                        ) as _c:
+                            party_rows = [dict(r) for r in await _c.fetchall()]
+                    if not party_rows:
+                        return await btn_interaction.followup.send("✦ No beasts found!", ephemeral=True)
+                    raid["player_party"][uid] = party_rows
+                    raid["player_active_slot"][uid] = 0
+                    slot = party_rows[0]
+                    raid["player_hp"][uid]      = slot["hp"]
+                    raid["player_max_hp"][uid]  = slot["max_hp"]
+                    raid["player_defense"][uid] = slot["defense"]
+                    raid["player_atk"][uid]     = slot["attack"]
+                    raid["player_mana"][uid]    = 0
 
-                # Register player HP/mana/defense on first attack
-                if uid not in raid["player_hp"]:
-                    raid["player_hp"][uid] = active["hp"]
-                    raid["player_max_hp"][uid] = active["max_hp"]
-                    raid["player_defense"][uid] = active["defense"]
-                    raid["player_mana"][uid] = 0
-
-                is_ultimate = False
-                mana = raid["player_mana"].get(uid, 0)
-                # Ultimate flag handled by button choice — default to normal attack here
-                # (separate button added below)
+                # Use party slot stats — not live DB (prevents setactive exploit)
+                active_slot = raid["player_active_slot"].get(uid, 0)
+                party = raid["player_party"].get(uid, [])
+                if not party:
+                    return await btn_interaction.followup.send("✦ No party loaded!", ephemeral=True)
+                active_beast_row = party[active_slot] if active_slot < len(party) else party[0]
+                active_beast_data = get_beast_data(active_beast_row["beast_id"]) or {}
 
                 is_crit = random.random() < 0.15
                 defense = boss_effective_defense(raid)
-                damage = calc_player_damage(active["attack"], defense, is_ultimate, is_crit)
+                player_atk = raid["player_atk"].get(uid, active_beast_row["attack"])
+                player_spd = active_beast_row.get("speed", 50)
+                is_ultimate = False
+                damage = calc_player_damage(player_atk, defense, is_ultimate, is_crit)
 
                 raid_lock = _raid_locks.get(raid_id)
                 if not raid_lock:
@@ -1020,8 +1087,9 @@ class Guilds(commands.Cog):
                     raid["current_hp"] = max(0, raid["current_hp"] - damage)
                     raid["participants"][uid] = raid["participants"].get(uid, 0) + damage
                     raid["attack_counts"][uid] = raid["attack_counts"].get(uid, 0) + 1
-                    # Mana gain
-                    raid["player_mana"][uid] = min(100, raid["player_mana"].get(uid, 0) + 10)
+                    # Mana gain scales with speed
+                    mana_gain = min(15, 8 + player_spd // 40)
+                    raid["player_mana"][uid] = min(100, raid["player_mana"].get(uid, 0) + mana_gain)
 
                     async with aiosqlite.connect("db/chibibeast.db") as db:
                         await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (raid["current_hp"], raid_id))
@@ -1083,15 +1151,19 @@ class Guilds(commands.Cog):
                     return await btn_interaction.followup.send(f"⏱️ Wait `{ATTACK_COOLDOWN - (now - raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
                 raid["last_attack"][uid] = now
 
-                active = await get_active_beast(uid)
-                if not active:
-                    return await btn_interaction.followup.send("✦ No active beast!", ephemeral=True)
-                beast_data_btn = get_beast_data(active["beast_id"])
-                ult_name = beast_data_btn["ultimate"] if beast_data_btn else "Ultimate"
+                # Use party slot — not live DB
+                ult_slot = raid.get("player_active_slot", {}).get(uid, 0)
+                ult_party = raid.get("player_party", {}).get(uid, [])
+                if not ult_party:
+                    return await btn_interaction.followup.send("✦ No party loaded! Attack first.", ephemeral=True)
+                ult_beast_row = ult_party[ult_slot] if ult_slot < len(ult_party) else ult_party[0]
+                ult_beast_data = get_beast_data(ult_beast_row["beast_id"]) or {}
+                ult_name = ult_beast_data.get("ultimate", "Ultimate")
+                ult_atk  = raid["player_atk"].get(uid, ult_beast_row["attack"])
 
-                is_crit = random.random() < 0.20  # slightly higher crit on ults
+                is_crit = random.random() < 0.20
                 defense = boss_effective_defense(raid)
-                damage = calc_player_damage(active["attack"], defense, True, is_crit)
+                damage = calc_player_damage(ult_atk, defense, True, is_crit)
 
                 raid_lock = _raid_locks.get(raid_id)
                 if not raid_lock:
