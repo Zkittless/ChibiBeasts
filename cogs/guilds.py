@@ -599,7 +599,8 @@ class Guilds(commands.Cog):
             "boss": boss, "current_hp": boss["max_hp"],
             "max_hp": boss["max_hp"], "participants": {},
             "guild_id": guild_data["id"], "channel": interaction.channel,
-            "raid_message": None,  # set after send
+            "raid_message": None,
+            "attack_counts": {},  # user_id -> number of attacks
         }
         _raid_locks[raid_id] = asyncio.Lock()
 
@@ -625,10 +626,13 @@ class Guilds(commands.Cog):
 
         class RaidView(discord.ui.View):
             def __init__(self):
-                super().__init__(timeout=1800)  # 30 min matches raid timer
+                super().__init__(timeout=1800)
 
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                # Always defer ephemeral first — lets us edit_original_response once per click
+                await btn_interaction.response.defer(ephemeral=True, thinking=False)
+
                 # Guild check
                 async with aiosqlite.connect("db/chibibeast.db") as db:
                     db.row_factory = aiosqlite.Row
@@ -638,25 +642,16 @@ class Guilds(commands.Cog):
                     ) as c:
                         member_row = await c.fetchone()
                 if not member_row:
-                    return await btn_interaction.response.send_message(
-                        "✦ You need to be in a guild to attack!", ephemeral=True
-                    )
+                    return await btn_interaction.followup.send("✦ You need to be in a guild to attack!", ephemeral=True)
                 if member_row["guild_id"] != guild_data["id"]:
-                    return await btn_interaction.response.send_message(
-                        "✦ This isn't your guild's raid!", ephemeral=True
-                    )
+                    return await btn_interaction.followup.send("✦ This isn't your guild's raid!", ephemeral=True)
 
-                # Find this raid
                 if raid_id not in active_raids:
-                    return await btn_interaction.response.send_message(
-                        "✦ The raid has ended!", ephemeral=True
-                    )
+                    return await btn_interaction.followup.send("✦ The raid has ended!", ephemeral=True)
 
                 active = await get_active_beast(btn_interaction.user.id)
                 if not active:
-                    return await btn_interaction.response.send_message(
-                        "✦ You need an active beast to attack! Use `/setactive`.", ephemeral=True
-                    )
+                    return await btn_interaction.followup.send("✦ You need an active beast! Use `/setactive`.", ephemeral=True)
 
                 beast_data_btn = get_beast_data(active["beast_id"])
                 damage = random.randint(int(active["attack"] * 0.8), int(active["attack"] * 1.5))
@@ -666,15 +661,18 @@ class Guilds(commands.Cog):
 
                 raid_lock = _raid_locks.get(raid_id)
                 if not raid_lock:
-                    return await btn_interaction.response.send_message("✦ The raid just ended!", ephemeral=True)
+                    return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
 
                 async with raid_lock:
                     if raid_id not in active_raids:
-                        return await btn_interaction.response.send_message("✦ The raid just ended!", ephemeral=True)
+                        return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
                     raid = active_raids[raid_id]
                     raid["current_hp"] = max(0, raid["current_hp"] - damage)
                     raid["participants"][btn_interaction.user.id] = (
                         raid["participants"].get(btn_interaction.user.id, 0) + damage
+                    )
+                    raid["attack_counts"][btn_interaction.user.id] = (
+                        raid["attack_counts"].get(btn_interaction.user.id, 0) + 1
                     )
                     async with aiosqlite.connect("db/chibibeast.db") as db:
                         await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (raid["current_hp"], raid_id))
@@ -698,28 +696,25 @@ class Guilds(commands.Cog):
                     current_hp_snap = raid["current_hp"]
                     beast_name = beast_data_btn["name"] if beast_data_btn else "Beast"
                     total_dealt = raid["participants"].get(btn_interaction.user.id, 0)
+                    attacks = raid["attack_counts"].get(btn_interaction.user.id, 1)
 
-                # Send ephemeral personal result
-                crit_tag = "⭐ **CRITICAL HIT!** " if is_crit else ""
-                await btn_interaction.response.send_message(
-                    f"{crit_tag}**{beast_name}** dealt `{damage:,}` damage!\n"
-                    f"Your total: `{total_dealt:,}` | Boss HP: `{current_hp_snap:,}`",
-                    ephemeral=True
-                )
+                # Edit the deferred ephemeral — one message per player, updated in place
+                crit_tag = "⭐ **CRIT!** " if is_crit else ""
+                await btn_interaction.edit_original_response(content=(
+                    f"**Your Raid Status**\n"
+                    f"{crit_tag}Last hit: `{damage:,}` dmg\n"
+                    f"Total dealt: `{total_dealt:,}` dmg · Attacks: `{attacks}`\n"
+                    f"Boss HP: `{current_hp_snap:,} / {boss['max_hp']:,}`"
+                ))
 
-                # Edit the public raid embed with new HP
+                # Edit the public embed HP
                 raid_msg = active_raids.get(raid_id, {}).get("raid_message")
                 if raid_msg:
                     try:
-                        new_view = RaidView() if not raid_ended else discord.ui.View()
-                        if raid_ended:
-                            for item in new_view.children:
-                                item.disabled = True
-                        await raid_msg.edit(embed=build_raid_embed(current_hp_snap), view=new_view if not raid_ended else None)
+                        await raid_msg.edit(embed=build_raid_embed(current_hp_snap), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
 
-                # Quest tracking
                 await track_quest_event(btn_interaction.user.id, "raid_damage", amount=damage)
                 await advance_quest_step(btn_interaction.user.id, "raid_participate")
 

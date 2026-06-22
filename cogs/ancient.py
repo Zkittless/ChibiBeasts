@@ -201,6 +201,7 @@ class Ancient(commands.Cog):
             "channel_id": interaction.channel_id,
             "channel": interaction.channel,
             "raid_message": None,
+            "attack_counts": {},
         }
         _ancient_locks[raid_id] = asyncio.Lock()
 
@@ -231,19 +232,21 @@ class Ancient(commands.Cog):
 
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                await btn_interaction.response.defer(ephemeral=True, thinking=False)
+
                 if raid_id not in active_ancient_raids:
-                    return await btn_interaction.response.send_message("✦ The raid has ended!", ephemeral=True)
+                    return await btn_interaction.followup.send("✦ The raid has ended!", ephemeral=True)
 
                 cur_raid = active_ancient_raids[raid_id]
                 if btn_interaction.user.id not in cur_raid["party"]:
-                    return await btn_interaction.response.send_message(
+                    return await btn_interaction.followup.send(
                         "✦ You're not in this party! Join the next lobby with `/ancient`.", ephemeral=True
                     )
 
                 active = await get_active_beast(btn_interaction.user.id)
                 if not active:
-                    return await btn_interaction.response.send_message(
-                        "✦ You need an active beast to attack! Use `/setactive`.", ephemeral=True
+                    return await btn_interaction.followup.send(
+                        "✦ You need an active beast! Use `/setactive`.", ephemeral=True
                     )
 
                 beast_data_btn = get_beast_data(active["beast_id"])
@@ -254,15 +257,18 @@ class Ancient(commands.Cog):
 
                 raid_lock = _ancient_locks.get(raid_id)
                 if not raid_lock:
-                    return await btn_interaction.response.send_message("✦ The raid just ended!", ephemeral=True)
+                    return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
 
                 async with raid_lock:
                     if raid_id not in active_ancient_raids:
-                        return await btn_interaction.response.send_message("✦ The raid just ended!", ephemeral=True)
+                        return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
                     cur_raid = active_ancient_raids[raid_id]
                     cur_raid["current_hp"] = max(0, cur_raid["current_hp"] - damage)
                     cur_raid["participants"][btn_interaction.user.id] = (
                         cur_raid["participants"].get(btn_interaction.user.id, 0) + damage
+                    )
+                    cur_raid["attack_counts"][btn_interaction.user.id] = (
+                        cur_raid["attack_counts"].get(btn_interaction.user.id, 0) + 1
                     )
                     async with aiosqlite.connect(DB_PATH) as db:
                         await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (cur_raid["current_hp"], raid_id))
@@ -286,13 +292,15 @@ class Ancient(commands.Cog):
                     current_hp_snap = cur_raid["current_hp"]
                     beast_name = beast_data_btn["name"] if beast_data_btn else "Beast"
                     total_dealt = cur_raid["participants"].get(btn_interaction.user.id, 0)
+                    attacks = cur_raid["attack_counts"].get(btn_interaction.user.id, 1)
 
-                crit_tag = "⭐ **CRITICAL HIT!** " if is_crit else ""
-                await btn_interaction.response.send_message(
-                    f"{crit_tag}**{beast_name}** dealt `{damage:,}` damage!\n"
-                    f"Your total: `{total_dealt:,}` | Boss HP: `{current_hp_snap:,}`",
-                    ephemeral=True
-                )
+                crit_tag = "⭐ **CRIT!** " if is_crit else ""
+                await btn_interaction.edit_original_response(content=(
+                    f"**Your Raid Status**\n"
+                    f"{crit_tag}Last hit: `{damage:,}` dmg\n"
+                    f"Total dealt: `{total_dealt:,}` dmg · Attacks: `{attacks}`\n"
+                    f"Boss HP: `{current_hp_snap:,} / {boss['max_hp']:,}`"
+                ))
 
                 raid_msg = active_ancient_raids.get(raid_id, {}).get("raid_message")
                 if raid_msg:
