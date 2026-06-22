@@ -295,12 +295,44 @@ class Ancient(commands.Cog):
             async with db.execute("SELECT last_insert_rowid()") as c:
                 raid_id = (await c.fetchone())[0]
 
-        # Party size scaling — exact since we have lobby headcount
+        # Dynamic scaling — fetch actual party beast stats at raid start
+        # Formula derived from balance math:
+        #   boss_hp  = party_dps_mid * 35  (~4.7 min fight at full DPS)
+        #   boss_atk = avg_party_hp * 0.20  (hits for ~10% avg HP after defense)
+        #   boss_def = avg_party_def * 0.80  (slightly easier to hit than players)
         party_size = max(1, len(view.party))
-        hp_scale  = 1 + (party_size - 1) * 0.4
-        atk_scale = 1 + (party_size - 1) * 0.15
-        scaled_hp  = int(boss["max_hp"]  * hp_scale)
-        scaled_atk = int(boss["attack"]  * atk_scale)
+        party_beast_stats = []
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            for uid in view.party:
+                async with db.execute(
+                    "SELECT hp, max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                    (uid,)
+                ) as c:
+                    row = await c.fetchone()
+                if row:
+                    party_beast_stats.append(dict(row))
+
+        if not party_beast_stats:
+            # Fallback: use boss base stats if no beast data found
+            party_beast_stats = [{"hp": 255, "max_hp": 255, "attack": 145, "defense": 125}]
+
+        avg_party_hp  = sum(b["max_hp"]  for b in party_beast_stats) / len(party_beast_stats)
+        avg_party_def = sum(b["defense"] for b in party_beast_stats) / len(party_beast_stats)
+        total_party_atk = sum(b["attack"] for b in party_beast_stats)
+
+        scaled_boss_def = int(avg_party_def * 0.80)
+        # Estimate party DPS at mid-fight boss defense
+        def _est_dps(atk, bdef):
+            df = bdef / (bdef + 100)
+            return max(1, int(atk * (1 - df)))
+        party_dps_mid = sum(_est_dps(b["attack"], scaled_boss_def) * 10 for b in party_beast_stats)
+
+        scaled_hp  = party_dps_mid * 35           # ~4.7 min kill at full DPS
+        scaled_atk = int(avg_party_hp * 0.20)     # boss hits ~10% avg HP after def reduction
+        # Minimum floor from boss base stats so it never feels trivial
+        scaled_hp  = max(scaled_hp,  boss["max_hp"] // 3)
+        scaled_atk = max(scaled_atk, boss["attack"] // 20)
 
         active_ancient_raids[raid_id] = {
             "boss": boss,
@@ -330,7 +362,7 @@ class Ancient(commands.Cog):
 
         def boss_effective_defense(raid: dict) -> int:
             pct = raid["current_hp"] / max(raid["max_hp"], 1)
-            base_def = boss.get("defense", 260)
+            base_def = scaled_boss_def
             if pct < 0.15:   return int(base_def * 0.40)
             elif pct < 0.40: return int(base_def * 0.60)
             elif pct < 0.70: return int(base_def * 0.80)
@@ -353,7 +385,7 @@ class Ancient(commands.Cog):
             max_hp = raid["max_hp"]
             pct = current_hp / max(max_hp, 1)
             status = "\U0001f534 CRITICAL" if pct < 0.15 else "\U0001f7e0 Weakened" if pct < 0.40 else "\U0001f7e1 Damaged" if pct < 0.70 else "\U0001f7e2 Active"
-            base_def = boss.get("defense", 260)
+            base_def = scaled_boss_def
             eff_def = boss_effective_defense(raid)
             def_pct = int((1 - eff_def / max(base_def, 1)) * 100)
             def_note = f" *(\u2212{def_pct}% DEF)*" if def_pct > 0 else ""
@@ -596,8 +628,8 @@ class Ancient(commands.Cog):
 
         if party_size > 1:
             await interaction.channel.send(
-                f"\u2696\ufe0f *{boss['name']} grows stronger for {party_size} challengers.* "
-                f"HP: `{scaled_hp:,}` \u00b7 ATK scaled `{int(atk_scale*100)}%`",
+                f"⚖️ *{boss['name']} calibrates to the party.* "
+                f"HP: `{scaled_hp:,}` · Boss ATK: `{scaled_atk}` · Boss DEF: `{scaled_boss_def}`",
                 silent=True
             )
 

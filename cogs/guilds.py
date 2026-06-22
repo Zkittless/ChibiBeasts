@@ -692,49 +692,76 @@ class Guilds(commands.Cog):
             async with db.execute("SELECT last_insert_rowid()") as c:
                 raid_id = (await c.fetchone())[0]
 
-        active_raids[raid_id] = {
-            "boss": boss, "current_hp": boss["max_hp"],
-            "max_hp": boss["max_hp"], "participants": {},
-            "guild_id": guild_data["id"], "channel": interaction.channel,
-            "raid_message": None,
-            "attack_counts": {},
-            "embed_updating": False,
-            "guild_members": set(),
-            "last_attack": {},
-            "player_hp": {},        # uid -> current beast HP
-            "player_max_hp": {},    # uid -> max beast HP
-            "player_mana": {},      # uid -> mana (0-100)
-            "player_defense": {},   # uid -> defense stat
-            "phase_fired": set(),   # thresholds already triggered
-            "scaled": False,        # has HP/ATK been scaled for party size yet
-            "boss_attack": boss["attack"],  # may be scaled up
-            "last_event": "",       # last notable event shown in embed
-        }
-        _raid_locks[raid_id] = asyncio.Lock()
-
-        # Pre-cache guild members
+        # Pre-cache guild members and fetch their active beast stats for dynamic scaling
         async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT user_id FROM guild_members WHERE guild_id = ?", (guild_data["id"],)
             ) as c:
-                rows = await c.fetchall()
-        active_raids[raid_id]["guild_members"] = {r["user_id"] for r in rows}
+                member_rows = await c.fetchall()
+            guild_member_ids = {r["user_id"] for r in member_rows}
+
+            # Fetch active beasts for all guild members to compute scaling
+            raid_beast_stats = []
+            for uid in guild_member_ids:
+                async with db.execute(
+                    "SELECT max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                    (uid,)
+                ) as c:
+                    b = await c.fetchone()
+                if b:
+                    raid_beast_stats.append(dict(b))
+
+        if not raid_beast_stats:
+            raid_beast_stats = [{"max_hp": 220, "attack": 120, "defense": 100}]
+
+        avg_party_hp  = sum(b["max_hp"]  for b in raid_beast_stats) / len(raid_beast_stats)
+        avg_party_def = sum(b["defense"] for b in raid_beast_stats) / len(raid_beast_stats)
+
+        scaled_boss_def = int(avg_party_def * 0.80)
+
+        def _est_dps(atk, bdef):
+            df = bdef / (bdef + 100)
+            return max(1, int(atk * (1 - df)))
+
+        party_dps_mid = sum(_est_dps(b["attack"], scaled_boss_def) * 10 for b in raid_beast_stats)
+        scaled_hp  = max(party_dps_mid * 35, boss["max_hp"] // 3)
+        scaled_atk = max(int(avg_party_hp * 0.20), boss["attack"] // 20)
+
+        active_raids[raid_id] = {
+            "boss": boss, "current_hp": scaled_hp,
+            "max_hp": scaled_hp, "participants": {},
+            "guild_id": guild_data["id"], "channel": interaction.channel,
+            "raid_message": None,
+            "attack_counts": {},
+            "embed_updating": False,
+            "guild_members": guild_member_ids,
+            "last_attack": {},
+            "player_hp": {},
+            "player_max_hp": {},
+            "player_mana": {},
+            "player_defense": {},
+            "phase_fired": set(),
+            "boss_attack": scaled_atk,
+            "last_event": "",
+            "scaled_boss_def": scaled_boss_def,
+        }
+        _raid_locks[raid_id] = asyncio.Lock()
 
         ATTACK_COOLDOWN = 0.8
         BOSS_ATK_INTERVAL = 8  # seconds between boss auto-attacks
 
         def boss_effective_defense(raid: dict) -> int:
             """Defense drops as boss HP falls — rewards sustained DPS."""
-            pct = raid["current_hp"] / raid["max_hp"]
-            base_def = boss.get("defense", 120)
+            pct = raid["current_hp"] / max(raid["max_hp"], 1)
+            base_def = raid.get("scaled_boss_def", scaled_boss_def)
             if pct < 0.15:
-                return int(base_def * 0.40)   # CRITICAL: 60% def reduction
+                return int(base_def * 0.40)
             elif pct < 0.40:
-                return int(base_def * 0.60)   # Weakened: 40% reduction
+                return int(base_def * 0.60)
             elif pct < 0.70:
-                return int(base_def * 0.80)   # Damaged: 20% reduction
-            return base_def                    # Active: full defense
+                return int(base_def * 0.80)
+            return base_def
 
         def calc_player_damage(atk: int, defense: int, is_ultimate: bool, is_crit: bool) -> int:
             defense_factor = defense / (defense + 100)
@@ -755,7 +782,7 @@ class Guilds(commands.Cog):
             max_hp = raid["max_hp"]
             pct = current_hp / max_hp
             status = "🔴 CRITICAL" if pct < 0.15 else "🟠 Weakened" if pct < 0.40 else "🟡 Damaged" if pct < 0.70 else "🟢 Active"
-            def_pct = int((1 - boss_effective_defense(raid) / max(boss.get("defense", 120), 1)) * 100)
+            def_pct = int((1 - boss_effective_defense(raid) / max(raid.get("scaled_boss_def", scaled_boss_def), 1)) * 100)
             def_note = f" *(−{def_pct}% DEF)*" if def_pct > 0 else ""
 
             embed = discord.Embed(
@@ -899,22 +926,6 @@ class Guilds(commands.Cog):
                     raid["player_max_hp"][uid] = active["max_hp"]
                     raid["player_defense"][uid] = active["defense"]
                     raid["player_mana"][uid] = 0
-
-                    # Scale boss on 2nd unique participant joining
-                    if not raid["scaled"] and len(raid["player_hp"]) >= 2:
-                        raid["scaled"] = True
-                        party_size = len(raid["guild_members"])  # estimate from guild
-                        party_size = max(len(raid["player_hp"]), min(party_size, 10))
-                        hp_scale = 1 + (party_size - 1) * 0.4
-                        atk_scale = 1 + (party_size - 1) * 0.15
-                        raid["max_hp"] = int(boss["max_hp"] * hp_scale)
-                        raid["current_hp"] = min(raid["current_hp"], raid["max_hp"])
-                        raid["boss_attack"] = int(boss["attack"] * atk_scale)
-                        await btn_interaction.channel.send(
-                            f"⚖️ *The {boss['name']} senses the party — it grows stronger!* "
-                            f"HP scaled to `{raid['max_hp']:,}` · ATK scaled for `{party_size}` players.",
-                            silent=True
-                        )
 
                 is_ultimate = False
                 mana = raid["player_mana"].get(uid, 0)
