@@ -692,7 +692,7 @@ class Utilities(commands.Cog):
         SUMMON_IDS = {"epoch_shard", "firstborn_ember", "void_prism"}
         regular_items = [(sid, item) for sid, item in SHARD_SHOP.items() if sid not in SUMMON_IDS]
         summon_items  = [(sid, item) for sid, item in SHARD_SHOP.items() if sid in SUMMON_IDS]
-        per_page = 4
+        per_page = 3
         regular_pages = max(1, (len(regular_items) + per_page - 1) // per_page)
         total_pages = regular_pages + 1  # last page is the summon relic page
 
