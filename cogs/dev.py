@@ -19,7 +19,8 @@ import json
 from utils.db import (
     get_or_create_player, get_player, update_player,
     get_beast_data, load_beasts, load_items, add_item,
-    calc_player_exp_for_level, add_beast_to_player
+    calc_player_exp_for_level, add_beast_to_player,
+    apply_beast_levelup, get_beast_by_player_number
 )
 from utils.theme import COLORS, RARITY_EMOJI
 
@@ -575,6 +576,54 @@ class Dev(commands.Cog):
             await db.commit()
         await interaction.followup.send(
             f"✅ Shard shop cooldown reset for **{member.display_name}**.", ephemeral=True
+        )
+
+    @app_commands.command(name="set_beast_level", description="[DEV] Set a beast's level directly")
+    @app_commands.describe(member="Player who owns the beast", beast_number="Beast #number from /collection", level="Target level (1-50)")
+    @dev_only()
+    async def set_beast_level(self, interaction: discord.Interaction, member: discord.Member, beast_number: int, level: int):
+        await interaction.response.defer(ephemeral=True)
+
+        if not 1 <= level <= 50:
+            return await interaction.followup.send("✦ Level must be between 1 and 50.", ephemeral=True)
+
+        beast_row = await get_beast_by_player_number(member.id, beast_number)
+        if not beast_row:
+            return await interaction.followup.send(
+                f"✦ Beast `#{beast_number}` not found for **{member.display_name}**.", ephemeral=True
+            )
+
+        beast_data = get_beast_data(beast_row["beast_id"]) or {}
+        old_level = beast_row["level"]
+
+        from utils.db import calc_stat_growth, DB_PATH
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            if level > old_level:
+                # Level up — apply growth
+                await apply_beast_levelup(db, dict(beast_row), level, 0)
+            else:
+                # Level down — reset to base stats then apply growth from 1
+                base = beast_data.get("base_stats", {})
+                growth = calc_stat_growth({"rarity": beast_row["rarity"], "caught_from": beast_row.get("caught_from", "wild")}, max(0, level - 1))
+                new_hp  = base.get("hp", 80)  + growth.get("hp", 0)
+                new_atk = base.get("attack", 30) + growth.get("attack", 0)
+                new_def = base.get("defense", 25) + growth.get("defense", 0)
+                new_spd = base.get("speed", 30)  + growth.get("speed", 0)
+                new_mana= base.get("mana", 10)   + growth.get("mana", 0)
+                await db.execute("""
+                    UPDATE player_beasts SET
+                        level=?, exp=0, hp=?, max_hp=?,
+                        attack=?, defense=?, speed=?, mana=?, max_mana=?
+                    WHERE id=?
+                """, (level, new_hp, new_hp, new_atk, new_def, new_spd, new_mana, new_mana, beast_row["id"]))
+            await db.commit()
+
+        name = beast_row.get("nickname") or beast_data.get("name", beast_row["beast_id"])
+        emoji = RARITY_EMOJI.get(beast_row["rarity"], "⚪")
+        await interaction.followup.send(
+            f"✅ {emoji} **{name}** `#{beast_number}` ({member.display_name}) → Lv.{old_level} → **Lv.{level}**",
+            ephemeral=True
         )
 
 
