@@ -321,6 +321,8 @@ class Ancient(commands.Cog):
             embed.set_footer(text=f"Raid ID: #{raid_id} | Party: {party_preview}")
             return embed
 
+        cog = self  # capture cog reference — inside the view, 'self' is the view, not the cog
+
         class AncientRaidView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=1800)
@@ -410,11 +412,11 @@ class Ancient(commands.Cog):
                 await advance_quest_step(uid, "raid_participate")
 
                 if raid_ended:
-                    await self.end_ancient_raid(raid_id, btn_interaction.channel)
+                    await cog.end_ancient_raid(raid_id, btn_interaction.channel)
 
             async def on_timeout(self):
                 if raid_id in active_ancient_raids:
-                    await self.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
+                    await cog.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
 
         raid_view = AncientRaidView()
         raid_msg = await interaction.channel.send(embed=build_ancient_embed(boss["max_hp"], {}), view=raid_view)
@@ -423,7 +425,7 @@ class Ancient(commands.Cog):
         # Auto-end after 30 minutes
         await asyncio.sleep(1800)
         if raid_id in active_ancient_raids:
-            await self.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
+            await cog.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
 
     # ── /ancient_attack (kept as slash fallback) ──────────────────────────
     @app_commands.command(name="ancient_attack", description="Attack an active Ancient boss! 🏛️ (use the button instead)")

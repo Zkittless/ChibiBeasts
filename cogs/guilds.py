@@ -709,6 +709,8 @@ class Guilds(commands.Cog):
             embed.set_footer(text=f"Raid ID: #{raid_id} | Triggered by {interaction.user.display_name} | 30 min timer")
             return embed
 
+        cog = self  # capture cog — inside view callbacks 'self' is the view, not the cog
+
         class RaidView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=1800)
@@ -798,11 +800,11 @@ class Guilds(commands.Cog):
                 await advance_quest_step(uid, "raid_participate")
 
                 if raid_ended:
-                    await self.end_raid(raid_id, btn_interaction.channel)
+                    await cog.end_raid(raid_id, btn_interaction.channel)
 
             async def on_timeout(self):
                 if raid_id in active_raids:
-                    await self.end_raid(raid_id, interaction.channel, timed_out=True)
+                    await cog.end_raid(raid_id, interaction.channel, timed_out=True)
 
         view = RaidView()
         raid_msg = await interaction.followup.send(embed=build_raid_embed(boss["max_hp"], {}), view=view)
@@ -811,7 +813,7 @@ class Guilds(commands.Cog):
         # Auto-end raid after 30 minutes
         await asyncio.sleep(1800)
         if raid_id in active_raids:
-            await self.end_raid(raid_id, interaction.channel, timed_out=True)
+            await cog.end_raid(raid_id, interaction.channel, timed_out=True)
 
     async def end_raid(self, raid_id: int, channel, timed_out: bool = False):
         if raid_id not in active_raids:
