@@ -641,7 +641,7 @@ class Shop(commands.Cog):
                         short = name.replace("🥚","").replace("✨","").replace("🌌","").replace("🌊💎","").strip()
                         next_step = "Use `/hatch` and select this egg to open it!"
                         btn1 = discord.ui.Button(
-                            label=f"Buy {short} ({price:,}g)",
+                            label=f"Buy {short}",
                             style=discord.ButtonStyle.primary,
                             emoji="🥚",
                             row=row_idx
@@ -727,8 +727,9 @@ class Shop(commands.Cog):
                     page_eggs = named_eggs[(self.page-1)*per_page : self.page*per_page]
                     for row_idx, (eid, egg, price) in enumerate(page_eggs):
                         next_step = "Use `/incubate` to start the timer!"
+                        short_name = egg["name"][:20]
                         btn1 = discord.ui.Button(
-                            label=f"Buy {egg['name']} ({price:,}g)",
+                            label=f"Buy {short_name}",
                             style=discord.ButtonStyle.success,
                             emoji=egg.get("emoji", "🥚"),
                             row=row_idx
@@ -820,8 +821,10 @@ class Shop(commands.Cog):
                 for row_idx, item in enumerate(page_items):
                     r = RARITY_EMOJI.get(item["rarity"], "⚪")
                     next_step = "Check `/inventory` to use it!"
+                    # Truncate name to keep button width consistent
+                    short_name = item["name"][:20]
                     btn1 = discord.ui.Button(
-                        label=f"Buy {item['name']} ({item['price']:,}g)",
+                        label=f"Buy {short_name}",
                         style=discord.ButtonStyle.success,
                         emoji=r,
                         row=row_idx
