@@ -69,12 +69,12 @@ SUMMON_ANIMATIONS = {
     "ancient_genesis": [
         "*The Firstborn Ember touches the altar and ignites it with a light that predates color.*",
         "*The flame does not burn the stone. It reminds it of when it was something else.*",
-        "*A silhouette of impossible size resolves from the light. Ancient Genesis has heard the call.*",
+        "*The light does not fade when it arrives. Ancient Genesis does not appear — it simply becomes true.*",
     ],
     "ancient_abyss": [
         "*The Void Prism is placed on the altar. The light in the room does not go out — it simply stops arriving.*",
         "*The silence changes. It becomes the kind of silence that existed before sound was invented.*",
-        "*Something vast and patient has noticed. Ancient Abyss steps out of the space between things.*",
+        "*Something vast and patient has noticed. The darkness does not approach — it simply becomes the room.*",
     ],
 }
 
