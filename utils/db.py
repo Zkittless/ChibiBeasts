@@ -464,6 +464,9 @@ def calc_stat_growth(beast_row: dict, levels_gained: int) -> dict:
         "legendary":     {"hp": 10,"attack": 4, "defense": 3, "speed": 3, "mana": 5},
         "divine":        {"hp": 12,"attack": 5, "defense": 4, "speed": 4, "mana": 6},
         "altered_divine":{"hp": 15,"attack": 6, "defense": 5, "speed": 5, "mana": 7},
+        "corrupted":     {"hp": 18,"attack": 7, "defense": 6, "speed": 6, "mana": 8},
+        "ancient":       {"hp": 20,"attack": 8, "defense": 7, "speed": 7, "mana": 9},
+        "dev":           {"hp": 50,"attack": 20,"defense": 20,"speed": 20,"mana": 20},
     }
     rarity = beast_row.get("rarity", "common")
     growth = RARITY_GROWTH.get(rarity, RARITY_GROWTH["common"])

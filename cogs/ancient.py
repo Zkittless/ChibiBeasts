@@ -321,7 +321,7 @@ class Ancient(commands.Cog):
         avg_party_def = sum(b["defense"] for b in party_beast_stats) / len(party_beast_stats)
         total_party_atk = sum(b["attack"] for b in party_beast_stats)
 
-        scaled_boss_def = int(avg_party_def * 0.80)
+        scaled_boss_def = min(300, int(avg_party_def * 0.80))  # cap prevents near-immunity
         # Estimate party DPS at mid-fight boss defense
         def _est_dps(atk, bdef):
             df = bdef / (bdef + 100)
@@ -375,10 +375,12 @@ class Ancient(commands.Cog):
             if is_crit:     dmg *= 1.5
             return max(1, int(dmg * random.uniform(0.85, 1.15)))
 
-        def calc_boss_damage(boss_atk: int, player_def: int) -> int:
-            defense_factor = player_def / (player_def + 100)
-            dmg = boss_atk * (1 - defense_factor)
-            return max(1, int(dmg * random.uniform(0.80, 1.20)))
+        def calc_boss_damage(boss_atk: int, player_def: int, player_max_hp: int = 0) -> int:
+            if player_max_hp > 0:
+                pct = random.uniform(0.12, 0.18)
+                return max(1, int(player_max_hp * pct))
+            defense_factor = min(player_def, 300) / (min(player_def, 300) + 100)
+            return max(1, int(boss_atk * (1 - defense_factor) * random.uniform(0.80, 1.20)))
 
         def build_ancient_embed(raid: dict) -> discord.Embed:
             current_hp = raid["current_hp"]
@@ -431,7 +433,7 @@ class Ancient(commands.Cog):
                     continue
                 target_uid = random.choice(alive)
                 p_def = cur_raid["player_defense"].get(target_uid, 50)
-                dmg = calc_boss_damage(cur_raid["boss_attack"], p_def)
+                dmg = calc_boss_damage(cur_raid["boss_attack"], p_def, cur_raid["player_max_hp"].get(target_uid, 0))
                 async with _ancient_locks[raid_id]:
                     if raid_id not in active_ancient_raids:
                         break
@@ -466,7 +468,7 @@ class Ancient(commands.Cog):
                     hit_lines = []
                     for uid in alive:
                         p_def = cur_raid["player_defense"].get(uid, 50)
-                        dmg = int(calc_boss_damage(cur_raid["boss_attack"], p_def) * sig["mult"])
+                        dmg = int(calc_boss_damage(cur_raid["boss_attack"], p_def, cur_raid["player_max_hp"].get(uid, 0)) * sig["mult"])
                         cur_raid["player_hp"][uid] = max(0, cur_raid["player_hp"].get(uid, 0) - dmg)
                         p_hp  = cur_raid["player_hp"][uid]
                         p_max = cur_raid["player_max_hp"].get(uid, 1)

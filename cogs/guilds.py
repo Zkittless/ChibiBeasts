@@ -718,7 +718,7 @@ class Guilds(commands.Cog):
         avg_party_hp  = sum(b["max_hp"]  for b in raid_beast_stats) / len(raid_beast_stats)
         avg_party_def = sum(b["defense"] for b in raid_beast_stats) / len(raid_beast_stats)
 
-        scaled_boss_def = int(avg_party_def * 0.80)
+        scaled_boss_def = min(300, int(avg_party_def * 0.80))  # cap prevents near-immunity at extreme defense
 
         def _est_dps(atk, bdef):
             df = bdef / (bdef + 100)
@@ -772,10 +772,15 @@ class Guilds(commands.Cog):
                 dmg *= 1.5
             return max(1, int(dmg * random.uniform(0.85, 1.15)))
 
-        def calc_boss_damage(boss_atk: int, player_def: int) -> int:
-            defense_factor = player_def / (player_def + 100)
-            dmg = boss_atk * (1 - defense_factor)
-            return max(1, int(dmg * random.uniform(0.80, 1.20)))
+        def calc_boss_damage(boss_atk: int, player_def: int, player_max_hp: int = 0) -> int:
+            # Flat % of player max HP — immune to defense outliers like Desync
+            # boss_atk acts as a percentage multiplier: scaled_atk / avg_hp * 100 ≈ 20%
+            if player_max_hp > 0:
+                pct = random.uniform(0.12, 0.18)
+                return max(1, int(player_max_hp * pct))
+            # Fallback to formula if no HP provided
+            defense_factor = min(player_def, 300) / (min(player_def, 300) + 100)
+            return max(1, int(boss_atk * (1 - defense_factor) * random.uniform(0.80, 1.20)))
 
         def build_raid_embed(raid: dict) -> discord.Embed:
             current_hp = raid["current_hp"]
@@ -831,7 +836,7 @@ class Guilds(commands.Cog):
 
                 target_uid = random.choice(alive)
                 p_def = raid["player_defense"].get(target_uid, 50)
-                dmg = calc_boss_damage(raid["boss_attack"], p_def)
+                dmg = calc_boss_damage(raid["boss_attack"], p_def, raid["player_max_hp"].get(target_uid, 0))
 
                 async with _raid_locks[raid_id]:
                     if raid_id not in active_raids:
@@ -870,7 +875,7 @@ class Guilds(commands.Cog):
                     alive = [uid for uid, hp in raid["player_hp"].items() if hp > 0]
                     for uid in alive:
                         p_def = raid["player_defense"].get(uid, 50)
-                        raw = calc_boss_damage(raid["boss_attack"], p_def)
+                        raw = calc_boss_damage(raid["boss_attack"], p_def, raid["player_max_hp"].get(uid, 0))
                         dmg = int(raw * sig["mult"])
                         raid["player_hp"][uid] = max(0, raid["player_hp"].get(uid, 0) - dmg)
                         p_hp = raid["player_hp"][uid]
