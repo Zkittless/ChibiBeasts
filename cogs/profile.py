@@ -535,21 +535,22 @@ class Shop(commands.Cog):
         items_data = load_items()
         RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
 
-        # ── Atomic purchase helper shared by all Buy buttons ──────────────
-        async def _do_purchase(bi: discord.Interaction, item_id: str, price: int, display_name: str, next_step: str):
+        # ── Atomic purchase helper — quantity already resolved before calling ─
+        async def _do_purchase(bi: discord.Interaction, item_id: str, price: int, display_name: str, next_step: str, quantity: int = 1):
             await bi.response.defer(ephemeral=True)
+            total_price = price * quantity
             async with aiosqlite.connect("db/chibibeast.db") as db:
                 db.row_factory = aiosqlite.Row
                 async with db.execute("SELECT gold FROM players WHERE user_id = ?", (bi.user.id,)) as c:
                     pr = await c.fetchone()
-                if not pr or pr["gold"] < price:
+                if not pr or pr["gold"] < total_price:
                     return await bi.followup.send(
-                        f"✦ You need `{price:,}g` but only have `{pr['gold'] if pr else 0:,}g`.",
+                        f"✦ You need `{total_price:,}g` but only have `{pr['gold'] if pr else 0:,}g`.",
                         ephemeral=True
                     )
                 cur = await db.execute(
                     "UPDATE players SET gold = gold - ? WHERE user_id = ? AND gold >= ?",
-                    (price, bi.user.id, price)
+                    (total_price, bi.user.id, total_price)
                 )
                 if cur.rowcount == 0:
                     await db.rollback()
@@ -562,23 +563,39 @@ class Shop(commands.Cog):
                 ) as c:
                     inv = await c.fetchone()
                 if inv:
-                    await db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (inv["id"],))
+                    await db.execute("UPDATE player_inventory SET quantity = quantity + ? WHERE id = ?", (quantity, inv["id"]))
                 else:
                     await db.execute(
-                        "INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?,?,1)",
-                        (bi.user.id, item_id)
+                        "INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?,?,?)",
+                        (bi.user.id, item_id, quantity)
                     )
                 await db.commit()
-                new_gold = pr["gold"] - price
+                new_gold = pr["gold"] - total_price
+            qty_str = f"`{quantity}x` " if quantity > 1 else ""
             await bi.followup.send(
-                f"✅ **{display_name}** purchased!\n`{price:,}g` spent · Balance: `{new_gold:,}g`\n{next_step}",
+                f"✅ Purchased {qty_str}**{display_name}**!\n`{total_price:,}g` spent · Balance: `{new_gold:,}g`\n{next_step}",
                 ephemeral=True
             )
-            # Keep Big Spender daily quest working after /buy removal
             from utils.progress import track_quest_event, notify_quest_completions
-            completed = await track_quest_event(bi.user.id, "spend_gold", amount=price)
+            completed = await track_quest_event(bi.user.id, "spend_gold", amount=total_price)
             if completed and bi.channel:
                 await notify_quest_completions(bi.channel, completed)
+
+        # ── Quantity modal helper — wraps _do_purchase with a qty prompt ───
+        async def _buy_with_qty(bi: discord.Interaction, item_id: str, price: int, display_name: str, next_step: str, max_qty: int = 99):
+            from utils.modals import QuantityModal
+            async def on_submit(modal_bi: discord.Interaction, qty: int):
+                await _do_purchase(modal_bi, item_id, price, display_name, next_step, qty)
+            modal = QuantityModal(
+                title=f"Buy {display_name}",
+                item_name=display_name,
+                max_quantity=max_qty,
+                callback=on_submit
+            )
+            # Override label to show per-unit price
+            modal.quantity_input.label = f"Quantity ({price:,}g each)"
+            modal.quantity_input.placeholder = f"Enter amount (e.g. 5)"
+            await bi.response.send_modal(modal)
 
         # ══════════════════════════════════════════════════════════════════
         # INSTANT EGGS TAB
@@ -611,17 +628,32 @@ class Shop(commands.Cog):
                 def __init__(self):
                     super().__init__(timeout=120)
                     for name, price, egg_id, _, _ in INSTANT_EGGS:
-                        btn = discord.ui.Button(
-                            label=f"Buy {name.replace('🥚','').replace('✨','').replace('🌌','').replace('🌊💎','').strip()} ({price:,}g)",
+                        short = name.replace("🥚","").replace("✨","").replace("🌌","").replace("🌊💎","").strip()
+                        next_step = "Use `/hatch` and select this egg to open it!"
+                        # Buy 1 — instant, no modal
+                        btn1 = discord.ui.Button(
+                            label=f"Buy {short} ({price:,}g)",
                             style=discord.ButtonStyle.primary,
                             emoji="🥚"
                         )
-                        async def cb(bi: discord.Interaction, _id=egg_id, _p=price, _n=name):
+                        async def cb1(bi: discord.Interaction, _id=egg_id, _p=price, _n=name, _ns=next_step):
                             if bi.user.id != interaction.user.id:
                                 return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                            await _do_purchase(bi, _id, _p, _n, "Use `/hatch` and select this egg to open it!")
-                        btn.callback = cb
-                        self.add_item(btn)
+                            await _do_purchase(bi, _id, _p, _n, _ns, quantity=1)
+                        btn1.callback = cb1
+                        self.add_item(btn1)
+                        # Buy 5 — instant, no modal
+                        btn5 = discord.ui.Button(
+                            label=f"Buy 5 ({price*5:,}g)",
+                            style=discord.ButtonStyle.secondary,
+                            emoji="5️⃣"
+                        )
+                        async def cb5(bi: discord.Interaction, _id=egg_id, _p=price, _n=name, _ns=next_step):
+                            if bi.user.id != interaction.user.id:
+                                return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                            await _do_purchase(bi, _id, _p, _n, _ns, quantity=5)
+                        btn5.callback = cb5
+                        self.add_item(btn5)
 
             return await interaction.followup.send(embed=embed, view=InstantEggView())
 
@@ -679,17 +711,29 @@ class Shop(commands.Cog):
                 def _build(self):
                     self.clear_items()
                     for eid, egg, price in named_eggs[(self.page-1)*per_page : self.page*per_page]:
-                        btn = discord.ui.Button(
+                        next_step = "Use `/incubate` to start the timer!"
+                        btn1 = discord.ui.Button(
                             label=f"Buy {egg['name']} ({price:,}g)",
                             style=discord.ButtonStyle.success,
                             emoji=egg.get("emoji", "🥚")
                         )
-                        async def cb(bi: discord.Interaction, _id=eid, _p=price, _n=egg["name"]):
+                        async def cb1(bi: discord.Interaction, _id=eid, _p=price, _n=egg["name"], _ns=next_step):
                             if bi.user.id != interaction.user.id:
                                 return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                            await _do_purchase(bi, _id, _p, _n, "Use `/incubate` to start the timer!")
-                        btn.callback = cb
-                        self.add_item(btn)
+                            await _do_purchase(bi, _id, _p, _n, _ns, quantity=1)
+                        btn1.callback = cb1
+                        self.add_item(btn1)
+                        btn5 = discord.ui.Button(
+                            label=f"Buy 5 ({price*5:,}g)",
+                            style=discord.ButtonStyle.secondary,
+                            emoji="5️⃣"
+                        )
+                        async def cb5(bi: discord.Interaction, _id=eid, _p=price, _n=egg["name"], _ns=next_step):
+                            if bi.user.id != interaction.user.id:
+                                return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                            await _do_purchase(bi, _id, _p, _n, _ns, quantity=5)
+                        btn5.callback = cb5
+                        self.add_item(btn5)
                     if total_pages > 1:
                         prev_btn = discord.ui.Button(
                             label=f"◀ Page {self.page-1}" if self.page > 1 else "◀",
@@ -758,17 +802,29 @@ class Shop(commands.Cog):
                 self.clear_items()
                 for item in all_items[(self.page-1)*per_page : self.page*per_page]:
                     r = RARITY_EMOJI.get(item["rarity"], "⚪")
-                    btn = discord.ui.Button(
+                    next_step = "Check `/inventory` to use it!"
+                    btn1 = discord.ui.Button(
                         label=f"Buy {item['name']} ({item['price']:,}g)",
                         style=discord.ButtonStyle.success,
                         emoji=r
                     )
-                    async def cb(bi: discord.Interaction, _id=item["id"], _p=item["price"], _d=item["name"]):
+                    async def cb1(bi: discord.Interaction, _id=item["id"], _p=item["price"], _d=item["name"], _ns=next_step):
                         if bi.user.id != interaction.user.id:
                             return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                        await _do_purchase(bi, _id, _p, _d, "Check `/inventory` to use it!")
-                    btn.callback = cb
-                    self.add_item(btn)
+                        await _do_purchase(bi, _id, _p, _d, _ns, quantity=1)
+                    btn1.callback = cb1
+                    self.add_item(btn1)
+                    btn5 = discord.ui.Button(
+                        label=f"Buy 5 ({item['price']*5:,}g)",
+                        style=discord.ButtonStyle.secondary,
+                        emoji="5️⃣"
+                    )
+                    async def cb5(bi: discord.Interaction, _id=item["id"], _p=item["price"], _d=item["name"], _ns=next_step):
+                        if bi.user.id != interaction.user.id:
+                            return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                        await _do_purchase(bi, _id, _p, _d, _ns, quantity=5)
+                    btn5.callback = cb5
+                    self.add_item(btn5)
 
                 if total_pages > 1:
                     prev_btn = discord.ui.Button(

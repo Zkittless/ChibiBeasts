@@ -321,25 +321,16 @@ class Utilities(commands.Cog):
         return choices[:25]
 
     @app_commands.command(name="sell", description="Sell items or materials for gold 💰")
-    @app_commands.describe(
-        item_name="Item or material to sell",
-        quantity="How many to sell (default 1)"
-    )
+    @app_commands.describe(item_name="Item or material to sell")
     @app_commands.autocomplete(item_name=sell_autocomplete)
-    async def sell(self, interaction: discord.Interaction, item_name: str, quantity: int = 1):
-        await interaction.response.defer()
-        if quantity < 1:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Quantity must be at least 1.", color=COLORS["error"]
-            ))
+    async def sell(self, interaction: discord.Interaction, item_name: str):
+        from utils.modals import QuantityModal
 
         with open("data/items.json") as f:
             items_data = json.load(f)["items"]
         materials = load_materials()
-
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
-        # Try to match item first, then material
         item_id = item_name.lower().replace(" ", "_").replace("-", "_")
         item = items_data.get(item_id)
         is_material = False
@@ -350,7 +341,6 @@ class Utilities(commands.Cog):
                 item = mat
                 is_material = True
             else:
-                # Fuzzy match both
                 for iid, iv in items_data.items():
                     if item_name.lower() in iv["name"].lower():
                         item, item_id = iv, iid
@@ -362,67 +352,70 @@ class Utilities(commands.Cog):
                             break
 
         if not item:
-            return await interaction.followup.send(embed=discord.Embed(
+            return await interaction.response.send_message(embed=discord.Embed(
                 description=f"✦ `{item_name}` not found.", color=COLORS["error"]
-            ))
+            ), ephemeral=True)
 
-        # Check Whimsy Merchant for sell bonus
+        table = "player_materials" if is_material else "player_inventory"
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT 1 FROM player_perks WHERE user_id = ? AND perk_id = 'whimsy_merchant' AND equipped = 1",
-                (interaction.user.id,)
-            ) as c:
-                has_merchant = await c.fetchone()
-
-            table = "player_materials" if is_material else "player_inventory"
             async with db.execute(
                 f"SELECT id, quantity FROM {table} WHERE user_id = ? AND item_id = ?",
                 (interaction.user.id, item_id)
             ) as c:
                 inv_row = await c.fetchone()
 
-        if not inv_row or inv_row["quantity"] < quantity:
-            have = inv_row["quantity"] if inv_row else 0
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ You only have `{have}` of that item.", color=COLORS["error"]
-            ))
+        if not inv_row or inv_row["quantity"] < 1:
+            return await interaction.response.send_message(embed=discord.Embed(
+                description=f"✦ You don't have any **{item['name']}** to sell.",
+                color=COLORS["error"]
+            ), ephemeral=True)
 
-        # Sell price — materials use rarity-based pricing
         MATERIAL_PRICES = {
             "common": 20, "uncommon": 60, "rare": 150, "epic": 400,
             "legendary": 1000, "altered_divine": 3000
         }
-        if is_material:
-            base_price = MATERIAL_PRICES.get(item.get("rarity", "common"), 20)
-        else:
-            base_price = max(5, int(item.get("price", 0) * 0.35))
 
-        if has_merchant:
-            base_price = int(base_price * 1.20)  # Whimsy Merchant: +20% sell price
+        async def do_sell(modal_interaction: discord.Interaction, quantity: int):
+            await modal_interaction.response.defer(ephemeral=True)
+            async with aiosqlite.connect(DB_PATH) as db:
+                db.row_factory = aiosqlite.Row
+                async with db.execute(
+                    "SELECT 1 FROM player_perks WHERE user_id = ? AND perk_id = 'whimsy_merchant' AND equipped = 1",
+                    (modal_interaction.user.id,)
+                ) as c:
+                    has_merchant = await c.fetchone()
+                async with db.execute(
+                    f"SELECT id, quantity FROM {table} WHERE user_id = ? AND item_id = ?",
+                    (modal_interaction.user.id, item_id)
+                ) as c:
+                    fresh = await c.fetchone()
+                if not fresh or fresh["quantity"] < quantity:
+                    return await modal_interaction.followup.send(
+                        f"✦ You only have `{fresh['quantity'] if fresh else 0}` now.", ephemeral=True
+                    )
+                base_price = MATERIAL_PRICES.get(item.get("rarity","common"), 20) if is_material else max(5, int(item.get("price",0)*0.35))
+                if has_merchant:
+                    base_price = int(base_price * 1.20)
+                total = base_price * quantity
+                if fresh["quantity"] == quantity:
+                    await db.execute(f"DELETE FROM {table} WHERE id = ?", (fresh["id"],))
+                else:
+                    await db.execute(f"UPDATE {table} SET quantity = quantity - ? WHERE id = ?", (quantity, fresh["id"]))
+                await db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?", (total, modal_interaction.user.id))
+                await db.commit()
+            merchant_tag = " *(Whimsy Merchant bonus!)*" if has_merchant else ""
+            await modal_interaction.followup.send(embed=discord.Embed(
+                title="💰 Sold!",
+                description=f"Sold `{quantity}x` **{item['name']}** for **{total:,} gold**{merchant_tag}\nBalance: `{player['gold'] + total:,} gold`",
+                color=COLORS["success"]
+            ), ephemeral=True)
 
-        total = base_price * quantity
-
-        async with aiosqlite.connect(DB_PATH) as db:
-            if inv_row["quantity"] == quantity:
-                await db.execute(f"DELETE FROM {table} WHERE id = ?", (inv_row["id"],))
-            else:
-                await db.execute(
-                    f"UPDATE {table} SET quantity = quantity - ? WHERE id = ?",
-                    (quantity, inv_row["id"])
-                )
-            await db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?",
-                             (total, interaction.user.id))
-            await db.commit()
-
-        merchant_tag = " *(Whimsy Merchant bonus applied!)*" if has_merchant else ""
-        await interaction.followup.send(embed=discord.Embed(
-            title="💰 Sold!",
-            description=(
-                f"Sold `{quantity}x` **{item['name']}** for **{total:,} gold**{merchant_tag}\n"
-                f"Remaining balance: `{player['gold'] + total:,} gold`"
-            ),
-            color=COLORS["success"]
+        await interaction.response.send_modal(QuantityModal(
+            title=f"Sell {item['name']}",
+            item_name=item["name"],
+            max_quantity=inv_row["quantity"],
+            callback=do_sell
         ))
 
     # ── /release ──────────────────────────────────────────────────────────

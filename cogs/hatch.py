@@ -282,11 +282,10 @@ class Hatch(commands.Cog):
         app_commands.Choice(name="🌊💎 Abyssal Egg — 55% Divine chance",              value="abyssal_egg"),
     ])
     async def hatch(self, interaction: discord.Interaction, egg_type: str = "common_egg"):
-        await interaction.response.defer()
         await get_or_create_player(interaction.user.id, str(interaction.user))
         egg_def = HATCH_EGGS[egg_type]
 
-        # Check inventory — gold was already paid at /buy time, no charge here
+        # Check inventory
         async with aiosqlite.connect("db/chibibeast.db") as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
@@ -296,105 +295,128 @@ class Hatch(commands.Cog):
                 inv_row = await c.fetchone()
 
         if not inv_row or inv_row["quantity"] < 1:
-            return await interaction.followup.send(embed=discord.Embed(
+            return await interaction.response.send_message(embed=discord.Embed(
                 description=(
                     f"✦ You don't have a **{egg_def['name']}** in your inventory!\n"
-                    f"Buy one from `/shop` → 🥚 Eggs first."
+                    f"Buy one from `/shop` → ⚡ Instant Eggs first."
                 ),
                 color=COLORS["error"]
-            ))
+            ), ephemeral=True)
 
-        # Deduct from inventory before hatching
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            if inv_row["quantity"] == 1:
-                await db.execute("DELETE FROM player_inventory WHERE id = ?", (inv_row["id"],))
-            else:
-                await db.execute(
-                    "UPDATE player_inventory SET quantity = quantity - 1 WHERE id = ?",
-                    (inv_row["id"],)
-                )
-            await db.commit()
+        from utils.modals import QuantityModal
 
-        msg = await interaction.followup.send(embed=discord.Embed(
-            title="🥚 Hatching...",
-            description=f"*{egg_def['flavor']}*",
-            color=COLORS["info"]
-        ))
-        await asyncio.sleep(1.5)
-        await msg.edit(embed=discord.Embed(
-            title="🥚 Hatching...",
-            description="*Cracks are forming...*\n✨✨✨",
-            color=COLORS["info"]
-        ))
-        await asyncio.sleep(1.5)
+        async def do_hatch(modal_interaction: discord.Interaction, quantity: int):
+            await modal_interaction.response.defer()
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1", (interaction.user.id,)
-            ) as cursor:
-                perks = [dict(r) for r in await cursor.fetchall()]
-
-        beasts_data = load_beasts()
-
-        if check_glimmering_fortune(perks):
-            rarity = "divine"
-            divine_pool = [b for b in beasts_data.values() if b["rarity"] == "divine" and b["id"] not in STARTER_IDS]
-            beast = random.choice(divine_pool)
-            subtitle = "🌟 **GLIMMERING FORTUNE ACTIVATED!** 🌟\n*The universe bent. You felt it.*"
-        else:
-            sanctuary = await get_user_sanctuary(interaction.user.id)
-            effective_pool = get_egg_pool(egg_type, perks, sanctuary)
-            rarity = roll_rarity(effective_pool)
-            beast  = get_beast_by_rarity(rarity, beasts_data)
-            subtitle = f"*A new companion emerged from your {egg_def['name']}!*"
-
-        if not beast:
-            return await msg.edit(embed=discord.Embed(
-                description="✦ The egg fizzled. Try again!",
-                color=COLORS["error"]
-            ))
-
-        beast_row_id = await add_beast_to_player(interaction.user.id, {**beast, "caught_from": "hatch"})
-
-        all_owned = await get_player_beasts(interaction.user.id)
-        if len(all_owned) == 1:
+            # Deduct all at once atomically
             async with aiosqlite.connect("db/chibibeast.db") as db:
-                await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (beast_row_id,))
+                db.row_factory = aiosqlite.Row
+                async with db.execute(
+                    "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
+                    (modal_interaction.user.id, egg_type)
+                ) as c:
+                    fresh = await c.fetchone()
+                if not fresh or fresh["quantity"] < quantity:
+                    return await modal_interaction.followup.send(embed=discord.Embed(
+                        description=f"✦ You only have `{fresh['quantity'] if fresh else 0}` eggs now.",
+                        color=COLORS["error"]
+                    ))
+                if fresh["quantity"] == quantity:
+                    await db.execute("DELETE FROM player_inventory WHERE id = ?", (fresh["id"],))
+                else:
+                    await db.execute(
+                        "UPDATE player_inventory SET quantity = quantity - ? WHERE id = ?",
+                        (quantity, fresh["id"])
+                    )
                 await db.commit()
-            subtitle += "\n✦ *Set as your active beast automatically!*"
 
-        embed = self.build_beast_embed(beast, title=f"🥚 **{beast['name']}** Hatched!", subtitle=subtitle)
-        if beast.get("divine_passive"):
-            dp = beast["divine_passive"]
-            embed.add_field(
-                name=f"✨ Divine Passive: {dp['passive_name']}",
-                value=dp["passive_desc"],
-                inline=False
-            )
-        view = HatchView(beast, interaction.user.id)
-        await msg.edit(embed=embed, view=view)
+            async with aiosqlite.connect("db/chibibeast.db") as db:
+                db.row_factory = aiosqlite.Row
+                async with db.execute(
+                    "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
+                    (modal_interaction.user.id,)
+                ) as cursor:
+                    perks = [dict(r) for r in await cursor.fetchall()]
 
-        completed_quests = await track_quest_event(interaction.user.id, "hatch")
-        await unlock_simple_achievement(interaction.user.id, "first_steps")
-        more_unlocked = await check_achievements(interaction.user.id)
-        if interaction.guild:
-            await record_bestiary_sighting(interaction.guild.id, beast["id"], interaction.user.id)
-            await check_collection_completion(interaction, beast, beasts_data)
-        if rarity == "divine" and "first_divine" in more_unlocked:
-            collection = beast.get("collection", "the Divine Collections")
-            await interaction.channel.send(embed=discord.Embed(
-                title="🌸 Something Notices You",
-                description=(
-                    f"*When you hatch {beast['name']}, the Loom pauses.*\n\n"
-                    f"*{beast['name']} belongs to {collection}.*\n\n"
-                    f"*They don\'t usually let themselves be hatched. This one did.*\n\n"
-                    f"*Maren would want to know. Orren already does.*"
-                ),
-                color=COLORS["divine"]
-            ))
-        await notify_quest_completions(interaction.channel, completed_quests)
-        await notify_unlocks(interaction.channel, interaction.user, more_unlocked)
+            beasts_data = load_beasts()
+            sanctuary = await get_user_sanctuary(modal_interaction.user.id)
+            hatched = []
+
+            for i in range(quantity):
+                if check_glimmering_fortune(perks):
+                    rarity = "divine"
+                    divine_pool = [b for b in beasts_data.values() if b["rarity"] == "divine" and b["id"] not in STARTER_IDS]
+                    beast = random.choice(divine_pool)
+                else:
+                    effective_pool = get_egg_pool(egg_type, perks, sanctuary)
+                    rarity = roll_rarity(effective_pool)
+                    beast = get_beast_by_rarity(rarity, beasts_data)
+                if beast:
+                    beast_row_id = await add_beast_to_player(modal_interaction.user.id, {**beast, "caught_from": "hatch"})
+                    hatched.append((beast, rarity, beast_row_id))
+
+            if not hatched:
+                return await modal_interaction.followup.send(embed=discord.Embed(
+                    description="✦ The eggs fizzled. Try again!", color=COLORS["error"]
+                ))
+
+            # Auto-set active if first ever beast
+            all_owned = await get_player_beasts(modal_interaction.user.id)
+            if len(all_owned) == len(hatched):
+                async with aiosqlite.connect("db/chibibeast.db") as db:
+                    await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (hatched[0][2],))
+                    await db.commit()
+
+            if quantity == 1:
+                # Single hatch — full dramatic reveal
+                beast, rarity, beast_row_id = hatched[0]
+                subtitle = f"*A new companion emerged from your {egg_def['name']}!*"
+                msg = await modal_interaction.followup.send(embed=discord.Embed(
+                    title="🥚 Hatching...", description=f"*{egg_def['flavor']}*", color=COLORS["info"]
+                ))
+                await asyncio.sleep(1.5)
+                await msg.edit(embed=discord.Embed(
+                    title="🥚 Hatching...", description="*Cracks are forming...*\n✨✨✨", color=COLORS["info"]
+                ))
+                await asyncio.sleep(1.5)
+                embed = self.build_beast_embed(beast, title=f"🥚 **{beast['name']}** Hatched!", subtitle=subtitle)
+                if beast.get("divine_passive"):
+                    dp = beast["divine_passive"]
+                    embed.add_field(name=f"✨ Divine Passive: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
+                view = HatchView(beast, modal_interaction.user.id)
+                await msg.edit(embed=embed, view=view)
+            else:
+                # Multi-hatch — summary embed
+                lines = []
+                for beast, rarity, beast_row_id in hatched:
+                    r_emoji = RARITY_EMOJI.get(rarity, "⚪")
+                    lines.append(f"{r_emoji} **{beast['name']}** — {RARITY_LABEL.get(rarity, rarity)}")
+                embed = discord.Embed(
+                    title=f"🥚 Hatched {quantity}x {egg_def['name']}!",
+                    description="\n".join(lines),
+                    color=COLORS["legendary"]
+                )
+                embed.set_footer(text="ChibiBeasts 🐾  •  Check /collection to see your new beasts!")
+                await modal_interaction.followup.send(embed=embed)
+
+            completed_quests = await track_quest_event(modal_interaction.user.id, "hatch")
+            await unlock_simple_achievement(modal_interaction.user.id, "first_steps")
+            more_unlocked = await check_achievements(modal_interaction.user.id)
+            if modal_interaction.guild:
+                for beast, rarity, _ in hatched:
+                    await record_bestiary_sighting(modal_interaction.guild.id, beast["id"], modal_interaction.user.id)
+                    await check_collection_completion(modal_interaction, beast, beasts_data)
+            await notify_quest_completions(modal_interaction.channel, completed_quests)
+            await notify_unlocks(modal_interaction.channel, modal_interaction.user, more_unlocked)
+
+        from utils.modals import QuantityModal
+        await interaction.response.send_modal(QuantityModal(
+            title=f"Hatch {egg_def['name']}",
+            item_name=egg_def["name"],
+            max_quantity=inv_row["quantity"],
+            callback=do_hatch
+        ))
+
 
 
     @app_commands.command(name="explore", description="Explore the world and discover wild ChibiBeasts! 🗺️")
