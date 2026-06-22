@@ -611,11 +611,12 @@ class Shop(commands.Cog):
         # INSTANT EGGS TAB
         # ══════════════════════════════════════════════════════════════════
         if category == "instant":
+            from cogs.hatch import HATCH_EGGS, _BASE_EGG_POOLS
             INSTANT_EGGS = [
-                ("🥚 Common Egg",      200,   "common_egg",    "Common → Uncommon. Fast. Low-stakes.",             "⚪🟢"),
-                ("🥚✨ Rare Egg",      1500,  "rare_egg",      "Uncommon → Legendary. Real odds at something impressive.", "🟢🔵🟣🟡"),
-                ("🌌🥚 Celestial Egg", 8000,  "celestial_egg", "Epic → Divine (25% chance). The real hunt starts here.",  "🟣🟡🌸"),
-                ("🌊💎 Abyssal Egg",   25000, "abyssal_egg",   "Legendary → Divine (55% chance). Mostly Divine.",         "🟡🌸"),
+                ("🥚 Common Egg",      200,   "common_egg"),
+                ("🥚✨ Rare Egg",      1500,  "rare_egg"),
+                ("🌌🥚 Celestial Egg", 8000,  "celestial_egg"),
+                ("🌊💎 Abyssal Egg",   25000, "abyssal_egg"),
             ]
             embed = discord.Embed(
                 title="🏪 Shop — ⚡ Instant Eggs",
@@ -626,10 +627,18 @@ class Shop(commands.Cog):
                 ),
                 color=COLORS["legendary"]
             )
-            for name, price, egg_id, desc, pool_icons in INSTANT_EGGS:
+            for name, price, egg_id in INSTANT_EGGS:
+                pool = {k: v for k, v in _BASE_EGG_POOLS.get(egg_id, {}).items() if k != "altered_chance"}
+                pool_str = " · ".join(
+                    f"{RARITY_EMOJI.get(r,'⚪')} {int(v*100)}%"
+                    for r, v in sorted(pool.items(), key=lambda x: RARITY_ORDER.index(x[0]) if x[0] in RARITY_ORDER else 99)
+                )
+                altered = _BASE_EGG_POOLS.get(egg_id, {}).get("altered_chance", 0)
+                if altered:
+                    pool_str += f" · ⚠️ Altered {int(altered*100)}%"
                 embed.add_field(
                     name=f"{name} — `{price:,}g`",
-                    value=f"{pool_icons}\n{desc}",
+                    value=pool_str,
                     inline=False
                 )
             embed.set_footer(text="ChibiBeasts 🐾  •  Click a button to buy instantly")
@@ -637,7 +646,7 @@ class Shop(commands.Cog):
             class InstantEggView(discord.ui.View):
                 def __init__(self):
                     super().__init__(timeout=120)
-                    for row_idx, (name, price, egg_id, _, _) in enumerate(INSTANT_EGGS):
+                    for row_idx, (name, price, egg_id) in enumerate(INSTANT_EGGS):
                         short = name.replace("🥚","").replace("✨","").replace("🌌","").replace("🌊💎","").strip()
                         next_step = "Use `/hatch` and select this egg to open it!"
                         btn1 = discord.ui.Button(
