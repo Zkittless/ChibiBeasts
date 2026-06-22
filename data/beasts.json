@@ -1919,6 +1919,129 @@
         "A warmth from above. The Simurgh descends through the clouds in a long unhurried spiral, bright enough to look at directly if you are careful. It settles nearby and waits.",
         "The Simurgh has been sitting on that rock for longer than the rock has been there. It doesn't move when you approach. It was expecting you. It has been expecting you for a while."
       ]
+    },
+    "void_chronos": {
+      "id": "void_chronos",
+      "name": "Void Chronos",
+      "title": "The Shattered Epoch",
+      "rarity": "altered_divine",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 306,
+        "attack": 168,
+        "defense": 168,
+        "speed": 162,
+        "mana": 200
+      },
+      "moves": [
+        "Time Fracture",
+        "Void Epoch",
+        "Temporal Lock"
+      ],
+      "ultimate": "Temporal Collapse",
+      "description": "A shattered version of Chronos existing outside of time, its clock ticking backwards. The crown of moons is broken. The universe's clock runs wrong.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/void_chronos.png",
+      "catch_rate": 0.001,
+      "evolution": null,
+      "encounter_situations": [
+        "The air skips. A frame of time repeats once, then twice, then stops. Void Chronos stands where it wasn't, watching you from a moment that hasn't happened yet.",
+        "You hear something behind you. When you turn, Void Chronos is already where you were looking before you turned. It tilts its head. The crown ticks backward.",
+        "Void Chronos appears mid-step, as though it teleported from a moment slightly ahead of this one. It looks at you with eyes that have already seen how this ends."
+      ],
+      "divine_passive": {
+        "passive_name": "Fractured Time",
+        "passive_id": "fractured_time",
+        "passive_desc": "25% chance to act twice per turn. On death, revives once at 25% HP.",
+        "passive_effect": {
+          "double_turn_chance": 0.25,
+          "revive_once": true,
+          "revive_hp_percent": 0.25
+        },
+        "passive_trigger": "turn_start"
+      },
+      "collection": "Altered Divines",
+      "divine_trait_slot": false
+    },
+    "fractured_genesis": {
+      "id": "fractured_genesis",
+      "name": "Fractured Genesis",
+      "title": "The Broken Origin",
+      "rarity": "altered_divine",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 318,
+        "attack": 187,
+        "defense": 156,
+        "speed": 137,
+        "mana": 193
+      },
+      "moves": [
+        "Null Creation",
+        "Reality Shard",
+        "First Light"
+      ],
+      "ultimate": "Genesis Implosion",
+      "description": "The Origin Phoenix broken across infinite realities, burning with impossible colors. Each feather exists in a different timeline. None of them agree.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/fractured_genesis.png",
+      "catch_rate": 0.001,
+      "evolution": null,
+      "encounter_situations": [
+        "Fractured Genesis burns in seventeen colors simultaneously, none of which have names. It tilts toward you and the air around it feels like the moment before something is created.",
+        "You find it standing perfectly still, trailing smoke that moves in directions that don't make sense. When it notices you, something in the world resets very slightly.",
+        "The ground beneath Fractured Genesis is scorched with a pattern that looks like a map of something \u2014 or the memory of one. It watches you approach with the calm of something that has already burned the world and survived it."
+      ],
+      "divine_passive": {
+        "passive_name": "Null Origin",
+        "passive_id": "null_origin",
+        "passive_desc": "All attacks ignore 30% of the target's defense. Creation unmakes what it touches.",
+        "passive_effect": {
+          "defense_pierce_percent": 0.3
+        },
+        "passive_trigger": "on_attack"
+      },
+      "collection": "Altered Divines",
+      "divine_trait_slot": false
+    },
+    "abyssal_nebula": {
+      "id": "abyssal_nebula",
+      "name": "Abyssal Nebula",
+      "title": "The Consuming Dark",
+      "rarity": "altered_divine",
+      "type": "cosmic",
+      "base_stats": {
+        "hp": 318,
+        "attack": 187,
+        "defense": 156,
+        "speed": 150,
+        "mana": 187
+      },
+      "moves": [
+        "Event Horizon",
+        "Star Death",
+        "Void Pounce"
+      ],
+      "ultimate": "Cosmic Annihilation",
+      "description": "The Dark Matter Panther merged with the void between stars, consuming light itself. It doesn't move through space. Space moves around it.",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/abyssal_nebula.png",
+      "catch_rate": 0.001,
+      "evolution": null,
+      "encounter_situations": [
+        "There is a patch of darkness that is darker than it should be. It has the approximate shape of a panther. When you look directly at it, the stars nearby dim slightly.",
+        "Abyssal Nebula does not approach. The space between you and it simply becomes smaller. When it is close enough, it looks at you with eyes that are not there.",
+        "You hear nothing. See nothing. Then Abyssal Nebula is beside you, radiating cold and the faint hiss of something being consumed. It seems curious. This is not reassuring."
+      ],
+      "divine_passive": {
+        "passive_name": "Event Horizon",
+        "passive_id": "event_horizon",
+        "passive_desc": "Each attack reduces the target's speed by 5% (stacks up to 50%). Nothing escapes.",
+        "passive_effect": {
+          "speed_drain_per_hit": 0.05,
+          "speed_drain_max": 0.5
+        },
+        "passive_trigger": "on_attack"
+      },
+      "collection": "Altered Divines",
+      "divine_trait_slot": false
     }
   },
   "rarity_rates": {

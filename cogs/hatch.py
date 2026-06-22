@@ -118,7 +118,23 @@ def roll_rarity(rates: dict) -> str:
             return rarity
     return list(rates.keys())[-1]
 
+
 STARTER_IDS = {"prismite", "twine", "gloop", "barkley"}
+ALTERED_DIVINE_IDS = ["void_chronos", "fractured_genesis", "abyssal_nebula"]
+
+
+def roll_with_altered(egg_type: str) -> tuple[str, bool]:
+    """
+    Roll rarity for an egg, checking altered_chance first.
+    Returns (rarity, is_altered) where is_altered=True means pick from ALTERED_DIVINE_IDS.
+    """
+    altered_chance = _BASE_EGG_POOLS.get(egg_type, {}).get("altered_chance", 0)
+    if altered_chance and random.random() < altered_chance:
+        return "altered_divine", True
+    # Strip non-rarity keys and roll normally
+    pool = {k: v for k, v in _BASE_EGG_POOLS.get(egg_type, {"common": 1.0}).items()
+            if k != "altered_chance"}
+    return roll_rarity(pool), False
 
 # ── Collection completion helper ─────────────────────────────────────────────
 COLLECTION_REWARDS = {
@@ -361,9 +377,14 @@ class Hatch(commands.Cog):
                     divine_pool = [b for b in beasts_data.values() if b["rarity"] == "divine" and b["id"] not in STARTER_IDS]
                     beast = random.choice(divine_pool)
                 else:
-                    effective_pool = get_egg_pool(egg_type, perks, sanctuary)
-                    rarity = roll_rarity(effective_pool)
-                    beast = get_beast_by_rarity(rarity, beasts_data)
+                    rarity, is_altered = roll_with_altered(egg_type)
+                    if is_altered:
+                        altered_pool = [b for b in beasts_data.values() if b["rarity"] == "altered_divine"]
+                        beast = random.choice(altered_pool) if altered_pool else get_beast_by_rarity("divine", beasts_data)
+                    else:
+                        effective_pool = get_egg_pool(egg_type, perks, sanctuary)
+                        rarity = roll_rarity(effective_pool)
+                        beast = get_beast_by_rarity(rarity, beasts_data)
                 if beast:
                     beast_row_id = await add_beast_to_player(modal_interaction.user.id, {**beast, "caught_from": "hatch"})
                     hatched.append((beast, rarity, beast_row_id))

@@ -543,7 +543,7 @@ class Shop(commands.Cog):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
         items_data = load_items()
-        RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
+        RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine", "altered_divine"]
 
         # ── Atomic purchase helper — quantity already resolved before calling ─
         async def _do_purchase(bi: discord.Interaction, item_id: str, price: int, display_name: str, next_step: str, quantity: int = 1):
@@ -708,11 +708,19 @@ class Shop(commands.Cog):
                     pool = egg.get("pool", {})
                     pool_str = " · ".join(
                         f"{RARITY_EMOJI.get(r,'⚪')} {int(v*100)}%"
-                        for r, v in sorted(pool.items(), key=lambda x: RARITY_ORDER.index(x[0]) if x[0] in RARITY_ORDER else 99)
+                        for r, v in sorted(
+                            {k: v for k, v in pool.items() if k != "altered_chance"}.items(),
+                            key=lambda x: RARITY_ORDER.index(x[0]) if x[0] in RARITY_ORDER else 99
+                        )
                     )
+                    altered = pool.get("altered_chance", 0)
+                    if altered:
+                        altered_names = [b.replace("_"," ").title() for b in egg.get("altered_pool", [])]
+                        pool_str += f" · ⚠️ Altered {altered*100:.1f}%"
+                        if altered_names:
+                            pool_str += f" ({', '.join(altered_names)})"
                     h = egg["incubation_hours"]
                     time_str = f"{h}h" if h < 24 else f"{h//24}d{' '+str(h%24)+'h' if h%24 else ''}"
-                    # Show exclusive pool hint if present
                     exclusive = ""
                     if "legendary_pool" in egg:
                         beast_names = [b.replace("_"," ").title() for b in egg["legendary_pool"]]
