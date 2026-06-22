@@ -63,7 +63,7 @@ SUMMON_ITEMS = {
 SUMMON_ANIMATIONS = {
     "ancient_chronos": [
         "*The Epoch Shard splinters. Time around the altar stutters — a moment repeats once, then again, then stops.*",
-        "*The air smells like something very old that hasn't been disturbed in a long time.*",
+        "*Somewhere behind you, a sound occurs that hasn't happened yet. You turn. Nothing is there. It hasn't happened yet.*",
         "*Ancient Chronos was already here. It has always been here. It is choosing, now, to be seen.*",
     ],
     "ancient_genesis": [
