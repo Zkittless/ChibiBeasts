@@ -416,7 +416,10 @@ class Hatch(commands.Cog):
                 embed = self.build_beast_embed(beast, title=f"🥚 **{beast['name']}** Hatched!", subtitle=subtitle)
                 if beast.get("divine_passive"):
                     dp = beast["divine_passive"]
-                    embed.add_field(name=f"✨ Divine Passive: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
+                    passive_labels = {"divine": "✨ Divine Passive", "altered_divine": "⚠️ Altered Passive",
+                                      "corrupted": "🖤 Corrupted Passive", "ancient": "🏛️ Ancient Passive"}
+                    plabel = passive_labels.get(beast.get("rarity", ""), "✨ Special Passive")
+                    embed.add_field(name=f"{plabel}: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
                 view = HatchView(beast, modal_interaction.user.id)
                 await msg.edit(embed=embed, view=view)
             else:

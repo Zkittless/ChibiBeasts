@@ -9,6 +9,8 @@ COLORS = {
     "legendary":     0xFFD700,
     "divine":        0xFF6EC7,
     "altered_divine":0x800080,
+    "corrupted":     0x2C0A3F,   # Deep void purple — wrongness made visible
+    "ancient":       0xF0C040,   # Aged gold — older than gold itself
     "error":         0xFF6B6B,
     "success":       0x57F287,
     "info":          0x4A90E2,
@@ -24,6 +26,8 @@ RARITY_EMOJI = {
     "legendary":     "🟡",
     "divine":        "🌸",
     "altered_divine":"⚠️",
+    "corrupted":     "🖤",
+    "ancient":       "🏛️",
 }
 
 # Rarity Labels
@@ -34,7 +38,9 @@ RARITY_LABEL = {
     "epic":          "Epic",
     "legendary":     "Legendary",
     "divine":        "Divine ✨",
-    "altered_divine":"⚠️ ALTERED DIVINE",
+    "altered_divine":"⚠️ Altered Divine",
+    "corrupted":     "🖤 Corrupted",
+    "ancient":       "🏛️ Ancient",
 }
 
 # Type Emojis
