@@ -20,7 +20,7 @@
       ],
       "ultimate": "Fairy Ring",
       "description": "A delicate woodland sprite that flutters through enchanted forests leaving trails of glowing dust.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/fairy.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/fairy.png",
       "evolution": {
         "evolves_to": "dryad",
         "method": "sunforge_core",
@@ -54,7 +54,7 @@
       ],
       "ultimate": "Grand Illusion",
       "description": "A tiny trickster that delights in causing harmless chaos with its innate magical abilities.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/pixie.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/pixie.png",
       "evolution": null,
       "catch_rate": 0.85,
       "encounter_situations": [
@@ -83,7 +83,7 @@
       ],
       "ultimate": "Goblin Rampage",
       "description": "A stout and scrappy fighter who compensates for lack of grace with sheer stubbornness.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/goblin.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/goblin.png",
       "evolution": {
         "evolves_to": "minotaur",
         "method": "sunforge_core",
@@ -117,7 +117,7 @@
       ],
       "ultimate": "Nightmare Swarm",
       "description": "A cunning shadow gremlin that strikes from darkness and vanishes before retaliation.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/imp.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/imp.png",
       "evolution": {
         "evolves_to": "cerberus",
         "method": "sunforge_core",
@@ -151,7 +151,7 @@
       ],
       "ultimate": "Tidal Blob",
       "description": "A remarkably resilient blob that absorbs damage like a sponge and bounces back from almost anything.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/slime.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/slime.png",
       "evolution": {
         "evolves_to": "singularity",
         "method": "cosmic_singularity_soda",
@@ -185,7 +185,7 @@
       ],
       "ultimate": "Foxfire Veil",
       "description": "A young fox spirit with 1-3 tails, still mastering its innate magical abilities.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/kitsune_1.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/kitsune_1.png",
       "evolution": {
         "evolves_to": "kitsune_9",
         "method": "sunforge_core",
@@ -219,7 +219,7 @@
       ],
       "ultimate": "Ancient Grove",
       "description": "A guardian spirit of the ancient forest, drawing power from the roots of thousand-year-old trees.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/dryad.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/dryad.png",
       "evolution": null,
       "catch_rate": 0.6,
       "encounter_situations": [
@@ -248,7 +248,7 @@
       ],
       "ultimate": "Inferno Howl",
       "description": "A fearsome hound wreathed in smokeless flame whose howl echoes across dimensions.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/hellhound.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/hellhound.png",
       "evolution": {
         "evolves_to": "fenrir",
         "method": "sunforge_core",
@@ -282,7 +282,7 @@
       ],
       "ultimate": "Tempest Screech",
       "description": "A fierce winged creature whose piercing cry can shatter stone and summon violent storms.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/harpy.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/harpy.png",
       "evolution": {
         "evolves_to": "thunderbird",
         "method": "sunforge_core",
@@ -316,7 +316,7 @@
       ],
       "ultimate": "Radiant Charge",
       "description": "A magnificent creature of pure light whose horn holds the power to heal any wound.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/unicorn.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/unicorn.png",
       "evolution": {
         "evolves_to": "astraea",
         "method": "genesis_fruit",
@@ -350,7 +350,7 @@
       ],
       "ultimate": "Storm Gallop",
       "description": "A winged stallion born from storm clouds whose speed rivals lightning itself.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/pegasus.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/pegasus.png",
       "evolution": {
         "evolves_to": "horizon",
         "method": "genesis_fruit",
@@ -384,7 +384,7 @@
       ],
       "ultimate": "Royal Tempest",
       "description": "A majestic beast with the body of a lion and wings of an eagle, guardian of ancient treasures.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/griffin.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/griffin.png",
       "evolution": null,
       "catch_rate": 0.35,
       "encounter_situations": [
@@ -413,7 +413,7 @@
       ],
       "ultimate": "Full Petrification",
       "description": "A serpentine terror whose gaze turns living creatures to stone and whose breath withers crops.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/basilisk.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/basilisk.png",
       "evolution": null,
       "catch_rate": 0.35,
       "encounter_situations": [
@@ -442,7 +442,7 @@
       ],
       "ultimate": "Gates of Tartarus",
       "description": "The three-headed hound of the underworld, each head embodying a different aspect of fear.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/cerberus.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/cerberus.png",
       "evolution": null,
       "catch_rate": 0.35,
       "encounter_situations": [
@@ -471,7 +471,7 @@
       ],
       "ultimate": "Toxic Inferno",
       "description": "A two-legged dragon cousin whose tail stinger drips with the most potent venom in existence.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/wyvern.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/wyvern.png",
       "evolution": {
         "evolves_to": "dragon",
         "method": "sunforge_core",
@@ -505,7 +505,7 @@
       ],
       "ultimate": "Eternal Pyre",
       "description": "An immortal bird of flame that dies and is reborn from its own ashes, carrying the warmth of the sun.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/phoenix.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/phoenix.png",
       "evolution": null,
       "catch_rate": 0.15,
       "encounter_situations": [
@@ -534,7 +534,7 @@
       ],
       "ultimate": "Apocalypse Storm",
       "description": "A colossal bird whose wingbeats create hurricanes and whose eyes flash with living lightning.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/thunderbird.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/thunderbird.png",
       "evolution": null,
       "catch_rate": 0.15,
       "encounter_situations": [
@@ -563,7 +563,7 @@
       ],
       "ultimate": "Eternal Enigma",
       "description": "An ancient guardian of forbidden knowledge who destroys those who cannot answer its riddles.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/sphinx.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/sphinx.png",
       "evolution": null,
       "catch_rate": 0.15,
       "encounter_situations": [
@@ -592,7 +592,7 @@
       ],
       "ultimate": "Permafrost Slam",
       "description": "A towering beast of ice and fury that rules the highest, most inhospitable mountain peaks.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/yeti.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/yeti.png",
       "evolution": null,
       "catch_rate": 0.15,
       "encounter_situations": [
@@ -621,7 +621,7 @@
       ],
       "ultimate": "Maze of Fury",
       "description": "A terrifying half-man half-bull that haunts ancient labyrinths, feeding on those who dare enter.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/minotaur.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/minotaur.png",
       "evolution": null,
       "catch_rate": 0.15,
       "encounter_situations": [
@@ -650,7 +650,7 @@
       ],
       "ultimate": "Fox God's Wrath",
       "description": "A fully awakened nine-tailed fox spirit of immense power, capable of reshaping reality with its tails.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/kitsune_9.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/kitsune_9.png",
       "evolution": null,
       "catch_rate": 0.15,
       "encounter_situations": [
@@ -679,7 +679,7 @@
       ],
       "ultimate": "World Ender",
       "description": "The pinnacle of predatory evolution, a creature of immense power that has ruled skies since the dawn of time.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/dragon.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/dragon.png",
       "evolution": null,
       "catch_rate": 0.05,
       "encounter_situations": [
@@ -708,7 +708,7 @@
       ],
       "ultimate": "The Great Drowning",
       "description": "An incomprehensible leviathan of the deepest trenches whose mere surfacing causes catastrophic waves.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/kraken.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/kraken.png",
       "evolution": null,
       "catch_rate": 0.05,
       "encounter_situations": [
@@ -737,7 +737,7 @@
       ],
       "ultimate": "Infinite Heads",
       "description": "A multi-headed serpent that grows two new heads for every one cut off, making it nearly impossible to defeat.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/hydra.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/hydra.png",
       "evolution": {
         "evolves_to": "kraken",
         "method": "sunforge_core",
@@ -771,7 +771,7 @@
       ],
       "ultimate": "Ragnarok Bite",
       "description": "The apocalyptic wolf of Norse legend, bound by the gods themselves for fear of what it would consume.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/fenrir.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/fenrir.png",
       "evolution": null,
       "catch_rate": 0.05,
       "encounter_situations": [
@@ -800,7 +800,7 @@
       ],
       "ultimate": "The Great Vortex",
       "description": "A nautical nightmare that creates unstoppable whirlpools capable of swallowing entire fleets.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/charybdis.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/charybdis.png",
       "evolution": null,
       "catch_rate": 0.05,
       "encounter_situations": [
@@ -829,7 +829,7 @@
       ],
       "ultimate": "Sea of Chaos",
       "description": "The primordial sea monster of ancient scripture, so vast it can encircle the entire world.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/leviathan.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/leviathan.png",
       "evolution": null,
       "catch_rate": 0.05,
       "encounter_situations": [
@@ -859,7 +859,7 @@
       ],
       "ultimate": "Big Bang",
       "description": "A cosmic slime containing an entire galaxy within its gelatinous form, born from the first moment of creation.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/singularity.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/singularity.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -895,7 +895,7 @@
       ],
       "ultimate": "Weave of Eternity",
       "description": "The divine weaver who stitches the fabric of reality from threads of pure starlight.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/astraea.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/astraea.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -930,7 +930,7 @@
       ],
       "ultimate": "End of Time",
       "description": "The divine hare who governs the flow of time itself, wearing a crown of moons and carrying the universe's clock.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/chronos.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/chronos.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -965,7 +965,7 @@
       ],
       "ultimate": "Consuming Void",
       "description": "An incomprehensible void whale that swims through the space between dimensions, consuming dead stars.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/aetherius.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/aetherius.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1000,7 +1000,7 @@
       ],
       "ultimate": "Genesis Explosion",
       "description": "The first phoenix, born at the exact moment of creation, carrying the flame that sparked all life.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/genesis.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/genesis.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1036,7 +1036,7 @@
       ],
       "ultimate": "Last Twilight",
       "description": "The solemn owl who watches over the final moments of all things, its eyes containing every ending.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/terminus.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/terminus.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1072,7 +1072,7 @@
       ],
       "ultimate": "Infinite Loop",
       "description": "A sphinx that exists simultaneously in all possible realities, asking questions that have no answers.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/paradox.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/paradox.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1108,7 +1108,7 @@
       ],
       "ultimate": "Beyond the Horizon",
       "description": "A griffin that soars along the edges of reality itself, tearing rifts between dimensions with its talons.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/horizon.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/horizon.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1143,7 +1143,7 @@
       ],
       "ultimate": "What Goes Around",
       "description": "A celestial cat that weaves the threads of fate, ensuring every action receives its due consequence.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/karma.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/karma.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1178,7 +1178,7 @@
       ],
       "ultimate": "Zodiac Alignment",
       "description": "A majestic stag whose antlers form the constellations of the night sky, guiding lost souls home.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/zodiac.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/zodiac.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1214,7 +1214,7 @@
       ],
       "ultimate": "Into the Abyss",
       "description": "A panther composed entirely of dark matter, invisible to all senses except the primal feeling of dread.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/abyss.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/abyss.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1251,7 +1251,7 @@
       ],
       "ultimate": "Stellar Nursery",
       "description": "A serpent of interstellar gas and dust from which new stars are born within its coiling body.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/nebula.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/nebula.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1286,7 +1286,7 @@
       ],
       "ultimate": "Final Explosion",
       "description": "A lion born from the death of a star, carrying the explosive energy of a supernova in every strike.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/supernova.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/supernova.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1323,7 +1323,7 @@
       ],
       "ultimate": "State of Nirvana",
       "description": "A transcendent koi that has achieved perfect enlightenment, swimming through waters of pure consciousness.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/nirvana.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/nirvana.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1358,7 +1358,7 @@
       ],
       "ultimate": "Yggdrasil's Rage",
       "description": "A divine wolf that runs across the rainbow bridge between realms, carrying messages of the gods.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/asgard.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/asgard.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1396,7 +1396,7 @@
       ],
       "ultimate": "Weight of the World",
       "description": "The ancient cosmic turtle upon whose shell entire worlds rest, slow but utterly indestructible.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/atlas.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/atlas.png",
       "evolution": null,
       "catch_rate": 0.01,
       "divine_passive": {
@@ -1430,7 +1430,7 @@
       ],
       "ultimate": "Perfect Geometry",
       "description": "A tiny floating kitten built from smooth porcelain-like shapes, with glowing golden diamond eyes and a halo that never quite stops turning. Prism shaped it to find out whether order could be gentle \u2014 so far, it has decided yes.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/prismite.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/prismite.png",
       "evolution": null,
       "catch_rate": 1.0,
       "starter": true,
@@ -1462,7 +1462,7 @@
       ],
       "ultimate": "Borrowed Moment",
       "description": "A chubby little hamster woven out of glowing crimson thread, with a tiny clock gear ticking softly on its back like a shell. Twine carries the very first thread the Loom ever spun \u2014 which is why, sometimes, it seems to know what happens a few seconds before it does.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/twine.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/twine.png",
       "evolution": null,
       "catch_rate": 1.0,
       "starter": true,
@@ -1494,7 +1494,7 @@
       ],
       "ultimate": "Starlit Tide",
       "description": "A bouncy, translucent slime blob shifting through pastel pink and blue galaxy colors, filled with swirling star glitter. Aspect made Gloop to test whether change could be safe \u2014 Gloop has spent its whole existence cheerfully proving the answer is yes, over and over, in a slightly different shape each time.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/gloop.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/gloop.png",
       "evolution": null,
       "catch_rate": 1.0,
       "starter": true,
@@ -1526,7 +1526,7 @@
       ],
       "ultimate": "Unmovable Root",
       "description": "A stubby little bark-and-moss dragon hatchling who still wears its golden eggshell like a tiny helmet, refusing to take it off. Pillar shaped Barkley to prove that steadiness didn't have to be boring \u2014 Barkley has never once let anyone down, and never plans to start.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/barkley.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/barkley.png",
       "evolution": null,
       "catch_rate": 1.0,
       "starter": true,
@@ -1558,7 +1558,7 @@
       ],
       "ultimate": "Stampede",
       "description": "A proud guardian that stands watch at the borders between realms, half beast and half something older \u2014 a living checkpoint the Loom placed and forgot to remove.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/centry.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/centry.png",
       "evolution": null,
       "catch_rate": 0.6,
       "encounter_situations": [
@@ -1587,7 +1587,7 @@
       ],
       "ultimate": "Blinding Flash",
       "description": "A tiny drifting ball of pale light that hums faintly when happy. Faintly warm to the touch. Nobody knows what it used to be.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/wisp.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/wisp.png",
       "catch_rate": 0.85,
       "evolution": {
         "evolves_to": "will_o_wisp",
@@ -1621,7 +1621,7 @@
       ],
       "ultimate": "Landslide",
       "description": "A round, perpetually delighted muddy amphibian that leaves a trail wherever it goes and seems genuinely proud of this.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/mudpup.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/mudpup.png",
       "catch_rate": 0.85,
       "evolution": null,
       "encounter_situations": [
@@ -1650,7 +1650,7 @@
       ],
       "ultimate": "Night Omens",
       "description": "A tiny owl with unsettlingly large amber eyes that sees things a few seconds before they happen. Does not share this information.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/strix.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/strix.png",
       "catch_rate": 0.85,
       "evolution": null,
       "encounter_situations": [
@@ -1679,7 +1679,7 @@
       ],
       "ultimate": "Undertow",
       "description": "A sleek horse-shaped beast woven from rushing water that seems very interested in whether you'd like to go for a ride. You should not.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/kelpie.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/kelpie.png",
       "catch_rate": 0.6,
       "evolution": null,
       "encounter_situations": [
@@ -1708,7 +1708,7 @@
       ],
       "ultimate": "Barrage",
       "description": "Lion body, bat wings, scorpion tail. Each part appears to have a separate opinion on what to do next. The lion usually wins.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/manticore.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/manticore.png",
       "catch_rate": 0.6,
       "evolution": null,
       "encounter_situations": [
@@ -1737,7 +1737,7 @@
       ],
       "ultimate": "False Horizon",
       "description": "A larger, brighter cousin of the Wisp. Leads travelers in perfect circles with genuine enthusiasm and absolutely no malice. It believes it's helping.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/will_o_wisp.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/will_o_wisp.png",
       "catch_rate": 0.6,
       "evolution": null,
       "encounter_situations": [
@@ -1766,7 +1766,7 @@
       ],
       "ultimate": "Shadow of Wings",
       "description": "A bird large enough to blot out the sun when it passes overhead. Prefers solitude but will assist a trainer it finds worthy. The standards are high.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/rukh.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/rukh.png",
       "catch_rate": 0.35,
       "evolution": null,
       "encounter_situations": [
@@ -1795,7 +1795,7 @@
       ],
       "ultimate": "Permafrost",
       "description": "A wolf-bear hybrid encased in living ice that has been moving toward something for centuries. It has not arrived yet. It does not seem concerned.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/glacius.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/glacius.png",
       "catch_rate": 0.35,
       "evolution": null,
       "encounter_situations": [
@@ -1824,7 +1824,7 @@
       ],
       "ultimate": "Continental Shift",
       "description": "A mountain-sized beast that has simply decided it is not moving today. Or tomorrow. Occasionally sighs in a way that registers on instruments.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/behemoth.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/behemoth.png",
       "catch_rate": 0.15,
       "evolution": null,
       "encounter_situations": [
@@ -1853,7 +1853,7 @@
       ],
       "ultimate": "Eternal Winter",
       "description": "A gaunt towering creature of permanent winter. Not malicious \u2014 simply always starving, and very fast. The cold it carries is its own.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/wendigo.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/wendigo.png",
       "catch_rate": 0.15,
       "evolution": null,
       "encounter_situations": [
@@ -1882,7 +1882,7 @@
       ],
       "ultimate": "Ouroboros",
       "description": "The sea-serpent vast enough to encircle the world and bite its own tail. It is aware of the irony. It has had time to think about it.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/jormungandr.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/jormungandr.png",
       "catch_rate": 0.05,
       "evolution": null,
       "encounter_situations": [
@@ -1911,7 +1911,7 @@
       ],
       "ultimate": "End of an Age",
       "description": "A luminous bird old enough to have witnessed three world destructions. Remarkably calm about it. Carries the knowledge of everything that has ever ended.",
-      "image_url": "https://github.com/Zkittless/ChibiBeasts/blob/main/data/sprites/simurgh.png?raw=true",
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/simurgh.png",
       "catch_rate": 0.05,
       "evolution": null,
       "encounter_situations": [
