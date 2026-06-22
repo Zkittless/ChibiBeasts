@@ -560,6 +560,11 @@ class Shop(commands.Cog):
                 f"✅ **{display_name}** purchased!\n`{price:,}g` spent · Balance: `{new_gold:,}g`\n{next_step}",
                 ephemeral=True
             )
+            # Keep Big Spender daily quest working after /buy removal
+            from utils.progress import track_quest_event, notify_quest_completions
+            completed = await track_quest_event(bi.user.id, "spend_gold", amount=price)
+            if completed and bi.channel:
+                await notify_quest_completions(bi.channel, completed)
 
         # ══════════════════════════════════════════════════════════════════
         # INSTANT EGGS TAB
@@ -782,149 +787,6 @@ class Shop(commands.Cog):
                     self.add_item(next_btn)
 
         await interaction.followup.send(embed=build_item_embed(1), view=ItemShopView(1))
-
-    @app_commands.command(name="buy", description="Buy an item from the shop 💰")
-    @app_commands.describe(item_name="Name of item to buy")
-    async def buy(self, interaction: discord.Interaction, item_name: str):
-        await interaction.response.defer()
-        items_data = load_items()
-
-        EGG_SHOP_MAP = {
-            "common egg":          ("common_egg",          200),
-            "rare egg":            ("rare_egg",            1500),
-            "celestial egg":       ("celestial_egg",       8000),
-            "abyssal egg":         ("abyssal_egg",         25000),
-            "sprout pod":          ("sprout_pod",          300),
-            "pebble shell":        ("pebble_shell",        300),
-            "soot hatchling":      ("soot_hatchling",      300),
-            "dewdrop bulb":        ("dewdrop_bulb",        1200),
-            "gale nest":           ("gale_nest",           1200),
-            "cavern core":         ("cavern_core",         1200),
-            "prism sphere":        ("prism_sphere",        4000),
-            "glow-spore cluster":  ("glow_spore",          4000),
-            "eclipse pebble":      ("eclipse_pebble",      4000),
-            "volcanic core":       ("volcanic_core",       12000),
-            "nimbus cloud":        ("nimbus_cloud",        12000),
-            "monolith relic":      ("monolith_relic",      12000),
-            "abyssal trench orb":  ("abyssal_trench_orb",  50000),
-            "dragon-hoard scale":  ("dragon_hoard_scale",  50000),
-            "glacial monolith":    ("glacial_monolith",    50000),
-        }
-        INSTANT_HATCH_EGGS = {"common_egg", "rare_egg", "celestial_egg", "abyssal_egg"}
-
-        normalized = item_name.lower().strip()
-        egg_match = None
-        for key, (egg_id, egg_price) in EGG_SHOP_MAP.items():
-            if normalized in key or key in normalized:
-                egg_match = (egg_id, egg_price, key.title())
-                break
-
-        # Resolve item and base price before opening any connection
-        if egg_match:
-            item_id, base_price, display_name = egg_match
-            item_name_display = display_name
-            is_egg = True
-        else:
-            item_id = item_name.lower().replace(" ", "_").replace("-", "_")
-            item = items_data.get(item_id)
-            if not item:
-                matches = [i for i in items_data.values() if item_name.lower() in i["name"].lower()]
-                if matches:
-                    item = matches[0]
-                    item_id = item["id"]
-                else:
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description=f"✦ Item `{item_name}` not found in the shop!",
-                        color=COLORS["error"]
-                    ))
-            base_price = item["price"]
-            item_name_display = item["name"]
-            is_egg = False
-
-        # ── Single atomic transaction: check perk + verify + deduct + grant ──
-        # Using WHERE gold >= price as the race-condition guard.
-        # If two concurrent requests both pass the Python-level check and race
-        # to the DB, only the first UPDATE will match the WHERE clause and
-        # return rowcount > 0. The second sees rowcount = 0 and aborts.
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-
-            # Perk and balance read inside the same connection
-            async with db.execute(
-                "SELECT gold FROM players WHERE user_id = ?",
-                (interaction.user.id,)
-            ) as c:
-                player_row = await c.fetchone()
-            if not player_row:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ Player data not found. Use `/start` first.",
-                    color=COLORS["error"]
-                ))
-
-            async with db.execute(
-                "SELECT 1 FROM player_perks WHERE user_id = ? AND perk_id = 'whimsy_merchant' AND equipped = 1",
-                (interaction.user.id,)
-            ) as c:
-                has_merchant = await c.fetchone()
-
-            price = int(base_price * 0.95) if has_merchant else base_price
-            current_gold = player_row["gold"]
-
-            if current_gold < price:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ You need `{price:,} gold` but only have `{current_gold:,}`!",
-                    color=COLORS["error"]
-                ))
-
-            # Atomic deduct: WHERE gold >= price means the second of two
-            # concurrent requests will see rowcount=0 and fail safely
-            cursor = await db.execute(
-                "UPDATE players SET gold = gold - ? WHERE user_id = ? AND gold >= ?",
-                (price, interaction.user.id, price)
-            )
-            if cursor.rowcount == 0:
-                await db.rollback()
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ Purchase failed — your gold changed between clicks. Please try again.",
-                    color=COLORS["error"]
-                ))
-
-            # Grant item within the same connection
-            async with db.execute(
-                "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                (interaction.user.id, item_id)
-            ) as c:
-                inv_row = await c.fetchone()
-            if inv_row:
-                await db.execute(
-                    "UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?",
-                    (inv_row["id"],)
-                )
-            else:
-                await db.execute(
-                    "INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)",
-                    (interaction.user.id, item_id)
-                )
-
-            await db.commit()
-            new_gold = current_gold - price
-
-        merchant_tag = " *(Whimsy Merchant discount applied)*" if has_merchant else ""
-        if is_egg and item_id in INSTANT_HATCH_EGGS:
-            next_step = f"Use `/hatch` and select **{item_name_display}** to open it!"
-        elif is_egg:
-            next_step = f"Use `/incubate {item_name_display}` to start the incubation timer!"
-        else:
-            next_step = f"Check `/inventory` to use it."
-
-        await interaction.followup.send(embed=discord.Embed(
-            title=f"✦ Purchased {item_name_display}!{merchant_tag}",
-            description=f"Spent `{price:,} gold` | Balance: `{new_gold:,} gold`\n{next_step}",
-            color=COLORS["success"]
-        ))
-
-        spend_quests_completed = await track_quest_event(interaction.user.id, "spend_gold", amount=price)
-        await notify_quest_completions(interaction.channel, spend_quests_completed)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Profile(bot))

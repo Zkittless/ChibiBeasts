@@ -985,7 +985,8 @@ class Utilities(commands.Cog):
                 "commands": [
                     ("/explore", "Explore a biome — find wild beasts and materials (1hr cooldown)"),
                     ("/hatch", "Instantly hatch an egg (Common/Rare/Celestial/Abyssal)"),
-                    ("/buy <egg name>", "Buy eggs from the shop"),
+                    ("/shop eggs",        "Browse and buy instant-hatch eggs"),
+                    ("/shop incubation",  "Browse and buy incubation eggs"),
                     ("/incubate <egg name>", "Place a named egg in incubation (timed)"),
                     ("/eggs", "Check your incubating eggs and timers"),
                     ("/hatchegg", "Hatch a ready incubated egg"),
@@ -1033,7 +1034,7 @@ class Utilities(commands.Cog):
                 "desc": "Gold, shards, shop, and trading.",
                 "commands": [
                     ("/shop", "Browse the item and egg shop"),
-                    ("/buy <item>", "Purchase from the shop"),
+                    ("/shop items",    "Browse and buy items"),
                     ("/use <item>", "Use an item from your inventory"),
                     ("/inventory", "View your item inventory"),
                     ("/sell <item>", "Sell items or materials for gold"),
