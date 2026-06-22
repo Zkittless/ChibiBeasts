@@ -870,8 +870,7 @@ class Guilds(commands.Cog):
 
         for i, (user_id, damage) in enumerate(sorted_participants[:10]):
             member = channel.guild.get_member(user_id)
-            if not member:
-                continue
+            display_name = member.display_name if member else f"<@{user_id}>"
             rank = i + 1
             gold = 500 if rank == 1 else 300 if rank == 2 else 200 if rank == 3 else 100
             exp = 200 if rank == 1 else 150 if rank <= 3 else 80
@@ -893,21 +892,19 @@ class Guilds(commands.Cog):
                 stat_unlocked = await check_achievements(user_id)
                 all_raid_unlocks = (["first_raid_win"] if raid_win_unlocked else []) + stat_unlocked
                 if all_raid_unlocks:
-                    await notify_unlocks(channel, member, all_raid_unlocks)
+                    if member:
+                        await notify_unlocks(channel, member, all_raid_unlocks)
 
                 # Loot drop
                 if random.random() < (0.8 - (i * 0.1)):
                     loot = random.choice(boss["loot_table"])
                     from utils.db import add_item
                     await add_item(user_id, loot)
-                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{member.display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️ | 🎁 {loot.replace('_',' ').title()}")
+                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️ | 🎁 {loot.replace('_',' ').title()}")
                 else:
-                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{member.display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️")
+                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️")
 
                 # ── Raid boss catch chance for top 3 ─────────────────────────
-                # Corrupted raids: rank 1=5%, rank 2=3%, rank 3=2%
-                # Corrupted raid catch chance for top 3: rank 1=5%, rank 2=3%, rank 3=2%
-                # Ancient raids are handled separately in cogs/ancient.py
                 if rank <= 3:
                     catch_chances = {1: 0.05, 2: 0.03, 3: 0.02}
                     catch_chance = catch_chances.get(rank, 0)
@@ -922,7 +919,7 @@ class Guilds(commands.Cog):
                                 title="⚔️ THE RAID BOSS HAS BEEN CAUGHT!",
                                 description=(
                                     f"*In the moment of defeat, something shifts.*\n\n"
-                                    f"🌟 **{member.display_name}** has caught **{boss_beast_data['name']}** — *{boss_beast_data['title']}*!\n\n"
+                                    f"🌟 **{display_name}** has caught **{boss_beast_data['name']}** — *{boss_beast_data['title']}*!\n\n"
                                     f"*{boss_beast_data['description']}*\n\n"
                                     f"**Corrupted** form — obtainable only through guild raids."
                                 ),
