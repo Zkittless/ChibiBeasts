@@ -511,10 +511,11 @@ class Shop(commands.Cog):
     @app_commands.command(name="shop", description="Browse the ChibiBeasts shop 🏪")
     @app_commands.describe(category="What to browse")
     @app_commands.choices(category=[
-        app_commands.Choice(name="🥚 Eggs",   value="eggs"),
-        app_commands.Choice(name="🎒 Items",  value="items"),
+        app_commands.Choice(name="⚡ Instant Eggs",     value="instant"),
+        app_commands.Choice(name="⏱️ Incubation Eggs",  value="incubation"),
+        app_commands.Choice(name="🎒 Items",             value="items"),
     ])
-    async def shop(self, interaction: discord.Interaction, category: str = "eggs"):
+    async def shop(self, interaction: discord.Interaction, category: str = "instant"):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
         items_data = load_items()
@@ -561,16 +562,54 @@ class Shop(commands.Cog):
             )
 
         # ══════════════════════════════════════════════════════════════════
-        # EGGS TAB
+        # INSTANT EGGS TAB
         # ══════════════════════════════════════════════════════════════════
-        if category == "eggs":
+        if category == "instant":
             INSTANT_EGGS = [
-                ("🥚 Common Egg",      200,   "common_egg",    "Common → Uncommon."),
-                ("🥚✨ Rare Egg",      1500,  "rare_egg",      "Uncommon → Legendary."),
-                ("🌌🥚 Celestial Egg", 8000,  "celestial_egg", "25% Divine chance."),
-                ("🌊💎 Abyssal Egg",   25000, "abyssal_egg",   "55% Divine chance."),
+                ("🥚 Common Egg",      200,   "common_egg",    "Common → Uncommon. Fast. Low-stakes.",             "⚪🟢"),
+                ("🥚✨ Rare Egg",      1500,  "rare_egg",      "Uncommon → Legendary. Real odds at something impressive.", "🟢🔵🟣🟡"),
+                ("🌌🥚 Celestial Egg", 8000,  "celestial_egg", "Epic → Divine (25% chance). The real hunt starts here.",  "🟣🟡🌸"),
+                ("🌊💎 Abyssal Egg",   25000, "abyssal_egg",   "Legendary → Divine (55% chance). Mostly Divine.",         "🟡🌸"),
             ]
+            embed = discord.Embed(
+                title="🏪 Shop — ⚡ Instant Eggs",
+                description=(
+                    f"💰 Your gold: `{player['gold']:,}`\n\n"
+                    f"Buy below — then use `/hatch` and select the egg to open it immediately.\n"
+                    f"No waiting. No timers. Just click and hatch.\n\u200b"
+                ),
+                color=COLORS["legendary"]
+            )
+            for name, price, egg_id, desc, pool_icons in INSTANT_EGGS:
+                embed.add_field(
+                    name=f"{name} — `{price:,}g`",
+                    value=f"{pool_icons}\n{desc}",
+                    inline=False
+                )
+            embed.set_footer(text="ChibiBeasts 🐾  •  Click a button to buy instantly")
 
+            class InstantEggView(discord.ui.View):
+                def __init__(self):
+                    super().__init__(timeout=120)
+                    for name, price, egg_id, _, _ in INSTANT_EGGS:
+                        btn = discord.ui.Button(
+                            label=f"Buy {name.replace('🥚','').replace('✨','').replace('🌌','').replace('🌊💎','').strip()} ({price:,}g)",
+                            style=discord.ButtonStyle.primary,
+                            emoji="🥚"
+                        )
+                        async def cb(bi: discord.Interaction, _id=egg_id, _p=price, _n=name):
+                            if bi.user.id != interaction.user.id:
+                                return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                            await _do_purchase(bi, _id, _p, _n, "Use `/hatch` and select this egg to open it!")
+                        btn.callback = cb
+                        self.add_item(btn)
+
+            return await interaction.followup.send(embed=embed, view=InstantEggView())
+
+        # ══════════════════════════════════════════════════════════════════
+        # INCUBATION EGGS TAB
+        # ══════════════════════════════════════════════════════════════════
+        if category == "incubation":
             from cogs.world import EGGS as EGG_TYPES
             EGG_PRICES = {
                 "sprout_pod": 300,        "pebble_shell": 300,       "soot_hatchling": 300,
@@ -583,18 +622,16 @@ class Shop(commands.Cog):
                 [(eid, EGG_TYPES[eid], EGG_PRICES[eid]) for eid in EGG_PRICES if eid in EGG_TYPES],
                 key=lambda x: x[2]
             )
-
-            per_page = 4
+            per_page = 5
             total_pages = max(1, (len(named_eggs) + per_page - 1) // per_page)
 
-            def build_egg_embed(page: int) -> discord.Embed:
+            def build_incub_embed(page: int) -> discord.Embed:
                 embed = discord.Embed(
-                    title="🏪 Shop — Eggs",
+                    title="🏪 Shop — ⏱️ Incubation Eggs",
                     description=(
                         f"💰 Your gold: `{player['gold']:,}`\n\n"
-                        f"**⚡ Instant eggs** — buy & `/hatch` immediately:\n"
-                        + "\n".join(f"• **{n}** `{p:,}g` — {d}" for n, p, _, d in INSTANT_EGGS)
-                        + f"\n\n**⏱️ Incubation eggs** — buy & `/incubate` (Page {page}/{total_pages}):"
+                        f"Buy below — then use `/incubate` to start the timer.\n"
+                        f"Use `/hatchegg` once ready. Up to 3 incubating at once.\n\u200b"
                     ),
                     color=COLORS["legendary"]
                 )
@@ -611,10 +648,10 @@ class Shop(commands.Cog):
                         value=f"{pool_str}\n*{egg['flavor']}*",
                         inline=False
                     )
-                embed.set_footer(text="ChibiBeasts 🐾  •  Click a button to buy instantly")
+                embed.set_footer(text=f"ChibiBeasts 🐾  •  Page {page}/{total_pages} · Click to buy")
                 return embed
 
-            class EggShopView(discord.ui.View):
+            class IncubationEggView(discord.ui.View):
                 def __init__(self, page: int):
                     super().__init__(timeout=120)
                     self.page = page
@@ -622,73 +659,45 @@ class Shop(commands.Cog):
 
                 def _build(self):
                     self.clear_items()
-
-                    # Instant egg buttons — one per egg, always shown
-                    for name, price, egg_id, _ in INSTANT_EGGS:
-                        short = name.replace("🥚","").replace("✨","").replace("🌌","").replace("🌊💎","").strip()
-                        self._add_buy_btn(
-                            label=f"{short} ({price:,}g)",
-                            style=discord.ButtonStyle.primary,
-                            emoji="🥚",
-                            item_id=egg_id,
-                            price=price,
-                            display=name,
-                            next_step="Use `/hatch` and select this egg to open it!"
-                        )
-
-                    # Current-page incubation egg buttons
                     for eid, egg, price in named_eggs[(self.page-1)*per_page : self.page*per_page]:
-                        self._add_buy_btn(
-                            label=f"{egg['name']} ({price:,}g)",
+                        btn = discord.ui.Button(
+                            label=f"Buy {egg['name']} ({price:,}g)",
                             style=discord.ButtonStyle.success,
-                            emoji=egg.get("emoji", "🥚"),
-                            item_id=eid,
-                            price=price,
-                            display=egg["name"],
-                            next_step="Use `/incubate` to start the timer!"
+                            emoji=egg.get("emoji", "🥚")
                         )
-
-                    # Pagination
+                        async def cb(bi: discord.Interaction, _id=eid, _p=price, _n=egg["name"]):
+                            if bi.user.id != interaction.user.id:
+                                return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                            await _do_purchase(bi, _id, _p, _n, "Use `/incubate` to start the timer!")
+                        btn.callback = cb
+                        self.add_item(btn)
                     if total_pages > 1:
                         prev_btn = discord.ui.Button(
                             label=f"◀ Page {self.page-1}" if self.page > 1 else "◀",
                             style=discord.ButtonStyle.secondary,
-                            disabled=self.page <= 1,
-                            row=4
+                            disabled=self.page <= 1, row=4
                         )
                         next_btn = discord.ui.Button(
                             label=f"Page {self.page+1} ▶" if self.page < total_pages else "▶",
                             style=discord.ButtonStyle.secondary,
-                            disabled=self.page >= total_pages,
-                            row=4
+                            disabled=self.page >= total_pages, row=4
                         )
-                        async def prev_cb(bi: discord.Interaction, _self=self):
+                        async def prev_cb(bi: discord.Interaction, _s=self):
                             if bi.user.id != interaction.user.id:
                                 return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                            _self.page -= 1
-                            _self._build()
-                            await bi.response.edit_message(embed=build_egg_embed(_self.page), view=_self)
-                        async def next_cb(bi: discord.Interaction, _self=self):
+                            _s.page -= 1; _s._build()
+                            await bi.response.edit_message(embed=build_incub_embed(_s.page), view=_s)
+                        async def next_cb(bi: discord.Interaction, _s=self):
                             if bi.user.id != interaction.user.id:
                                 return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                            _self.page += 1
-                            _self._build()
-                            await bi.response.edit_message(embed=build_egg_embed(_self.page), view=_self)
+                            _s.page += 1; _s._build()
+                            await bi.response.edit_message(embed=build_incub_embed(_s.page), view=_s)
                         prev_btn.callback = prev_cb
                         next_btn.callback = next_cb
                         self.add_item(prev_btn)
                         self.add_item(next_btn)
 
-                def _add_buy_btn(self, label, style, emoji, item_id, price, display, next_step):
-                    btn = discord.ui.Button(label=label, style=style, emoji=emoji)
-                    async def cb(bi: discord.Interaction, _id=item_id, _p=price, _d=display, _ns=next_step):
-                        if bi.user.id != interaction.user.id:
-                            return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                        await _do_purchase(bi, _id, _p, _d, _ns)
-                    btn.callback = cb
-                    self.add_item(btn)
-
-            return await interaction.followup.send(embed=build_egg_embed(1), view=EggShopView(1))
+            return await interaction.followup.send(embed=build_incub_embed(1), view=IncubationEggView(1))
 
         # ══════════════════════════════════════════════════════════════════
         # ITEMS TAB
