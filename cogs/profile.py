@@ -469,7 +469,7 @@ class Inventory(commands.Cog):
                 await db.execute("UPDATE players SET brew_active = brew_active + 2 WHERE user_id = ?", (interaction.user.id,))
                 result_lines.append("🛡️ **Defense doubled** for your next battle! (Krakenshale Brew)")
 
-            # Tear of the Leviathan — stat reset to base at current level
+            # Tear of Leviathan — stat reset to base at current level
             if "reset_stats" in effect and active:
                 from utils.db import load_beasts as _lb, calc_stat_growth as _csg
                 all_b = _lb()
