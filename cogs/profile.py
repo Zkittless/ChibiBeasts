@@ -252,6 +252,35 @@ class Profile(commands.Cog):
         # Navigation buttons
         current_idx = next((i for i, b in enumerate(all_beasts) if b["id"] == beast_row["id"]), 0)
 
+        class GoToModal(discord.ui.Modal, title="Go to Beast #"):
+            number = discord.ui.TextInput(
+                label=f"Beast number (1 – {len(all_beasts)})",
+                placeholder=f"e.g. 5",
+                min_length=1, max_length=5, required=True
+            )
+            def __init__(self, view):
+                super().__init__()
+                self._view = view
+
+            async def on_submit(self, modal_interaction: discord.Interaction):
+                raw = self.number.value.strip()
+                try:
+                    target_num = int(raw)
+                except ValueError:
+                    return await modal_interaction.response.send_message("✦ Enter a whole number.", ephemeral=True)
+                # Find beast by player_number
+                idx = next((i for i, b in enumerate(all_beasts) if b.get("player_number") == target_num), None)
+                # Fallback: find by position
+                if idx is None:
+                    idx = next((i for i, b in enumerate(all_beasts) if b["id"] == target_num), None)
+                if idx is None or idx < 0 or idx >= len(all_beasts):
+                    return await modal_interaction.response.send_message(
+                        f"✦ Beast `#{target_num}` not found in your collection.", ephemeral=True
+                    )
+                self._view.idx = idx
+                self._view._update()
+                await modal_interaction.response.edit_message(embed=build_embed(all_beasts[idx]), view=self._view)
+
         class BeastInfoView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=120)
@@ -261,7 +290,6 @@ class Profile(commands.Cog):
             def _update(self):
                 self.prev_btn.disabled = self.idx <= 0
                 self.next_btn.disabled = self.idx >= len(all_beasts) - 1
-                num = all_beasts[self.idx].get("player_number", self.idx + 1)
                 self.prev_btn.label = f"◀ #{all_beasts[self.idx-1].get('player_number', self.idx)}" if self.idx > 0 else "◀"
                 self.next_btn.label = f"#{all_beasts[self.idx+1].get('player_number', self.idx+2)} ▶" if self.idx < len(all_beasts)-1 else "▶"
 
@@ -272,6 +300,12 @@ class Profile(commands.Cog):
                 self.idx -= 1
                 self._update()
                 await btn_interaction.response.edit_message(embed=build_embed(all_beasts[self.idx]), view=self)
+
+            @discord.ui.button(label="Go to #", style=discord.ButtonStyle.secondary, emoji="🔍")
+            async def goto_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                if btn_interaction.user.id != interaction.user.id:
+                    return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
+                await btn_interaction.response.send_modal(GoToModal(self))
 
             @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
             async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
