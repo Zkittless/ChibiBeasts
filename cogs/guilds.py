@@ -791,7 +791,7 @@ class Guilds(commands.Cog):
         avg_party_hp  = sum(b["max_hp"]  for b in raid_beast_stats) / len(raid_beast_stats)
         avg_party_def = sum(b["defense"] for b in raid_beast_stats) / len(raid_beast_stats)
 
-        scaled_boss_def = min(300, int(avg_party_def * 0.80))  # cap prevents near-immunity at extreme defense
+        scaled_boss_def = min(200, int(avg_party_def * 0.60))  # lower DEF so mid-tier beasts deal meaningful damage
 
         def _est_dps(atk, bdef):
             df = bdef / (bdef + 100)

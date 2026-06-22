@@ -331,7 +331,7 @@ class Ancient(commands.Cog):
         avg_party_def = sum(b["defense"] for b in party_beast_stats) / len(party_beast_stats)
         total_party_atk = sum(b["attack"] for b in party_beast_stats)
 
-        scaled_boss_def = min(300, int(avg_party_def * 0.80))  # cap prevents near-immunity
+        scaled_boss_def = min(200, int(avg_party_def * 0.60))  # lower DEF so mid-tier beasts deal meaningful damage
         # Estimate party DPS at mid-fight boss defense
         def _est_dps(atk, bdef):
             df = bdef / (bdef + 100)
@@ -382,10 +382,12 @@ class Ancient(commands.Cog):
             elif pct < 0.70: return int(base_def * 0.80)
             return base_def
 
-        def calc_player_damage(atk: int, defense: int, is_ultimate: bool, is_crit: bool) -> int:
+        def calc_player_damage(atk: int, defense: int, is_ultimate: bool, is_crit: bool, mana: int = 50) -> int:
             defense_factor = defense / (defense + 100)
             dmg = atk * (1 - defense_factor)
-            if is_ultimate: dmg *= 1.8
+            if is_ultimate:
+                ult_mult = 1.8 + max(0, mana - 50) / 50 * 0.9
+                dmg *= ult_mult
             if is_crit:     dmg *= 1.5
             return max(1, int(dmg * random.uniform(0.85, 1.15)))
 
