@@ -203,12 +203,14 @@ class Ancient(commands.Cog):
             "raid_message": None,
             "attack_counts": {},
             "embed_updating": False,
+            "last_attack": {},
         }
         _ancient_locks[raid_id] = asyncio.Lock()
 
         party_preview = ", ".join(list(view.party.values())[:5]) + ("..." if len(view.party) > 5 else "")
+        ATTACK_COOLDOWN = 1.5
 
-        def build_ancient_embed(current_hp: int) -> discord.Embed:
+        def build_ancient_embed(current_hp: int, participants: dict = None) -> discord.Embed:
             pct = current_hp / boss["max_hp"]
             status = "🔴 CRITICAL" if pct < 0.15 else "🟠 Weakened" if pct < 0.40 else "🟡 Damaged" if pct < 0.70 else "🟢 Active"
             embed = discord.Embed(
@@ -222,6 +224,11 @@ class Ancient(commands.Cog):
                 ),
                 color=COLORS.get("ancient", COLORS["legendary"])
             )
+            if participants:
+                top = sorted(participants.items(), key=lambda x: x[1], reverse=True)[:5]
+                medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+                lines = [f"{medals[i]} <@{uid}> — `{dmg:,}` dmg" for i, (uid, dmg) in enumerate(top)]
+                embed.add_field(name="⚔️ Damage Dealt", value="\n".join(lines), inline=False)
             if boss.get("image_url"):
                 embed.set_image(url=boss["image_url"])
             embed.set_footer(text=f"Raid ID: #{raid_id} | Party: {party_preview}")
@@ -233,6 +240,7 @@ class Ancient(commands.Cog):
 
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
+                import time
                 await btn_interaction.response.defer(ephemeral=True, thinking=False)
 
                 if raid_id not in active_ancient_raids:
@@ -244,6 +252,14 @@ class Ancient(commands.Cog):
                     return await btn_interaction.followup.send(
                         "✦ You're not in this party! Join the next lobby with `/ancient`.", ephemeral=True
                     )
+
+                # Per-player cooldown
+                now = time.monotonic()
+                last = cur_raid["last_attack"].get(uid, 0)
+                if now - last < ATTACK_COOLDOWN:
+                    remaining = ATTACK_COOLDOWN - (now - last)
+                    return await btn_interaction.followup.send(f"⏱️ Wait `{remaining:.1f}s`.", ephemeral=True)
+                cur_raid["last_attack"][uid] = now
 
                 active = await get_active_beast(uid)
                 if not active:
@@ -286,28 +302,21 @@ class Ancient(commands.Cog):
                         await db.commit()
                     raid_ended = cur_raid["current_hp"] <= 0
                     current_hp_snap = cur_raid["current_hp"]
-                    beast_name = beast_data_btn["name"] if beast_data_btn else "Beast"
-                    total_dealt = cur_raid["participants"].get(uid, 0)
-                    attacks = cur_raid["attack_counts"].get(uid, 1)
+                    participants_snap = dict(cur_raid["participants"])
 
-                crit_tag = "⭐ **CRIT!** " if is_crit else ""
+                # Dismiss deferred ephemeral silently
                 try:
-                    await btn_interaction.edit_original_response(content=(
-                        f"**Your Raid Status**\n"
-                        f"{crit_tag}Last hit: `{damage:,}` dmg\n"
-                        f"Total dealt: `{total_dealt:,}` dmg · Attacks: `{attacks}`\n"
-                        f"Boss HP: `{current_hp_snap:,} / {boss['max_hp']:,}`"
-                    ))
+                    await btn_interaction.delete_original_response()
                 except discord.HTTPException:
                     pass
 
-                # Throttled embed update
+                # Throttled embed update with live leaderboard
                 if not cur_raid.get("embed_updating", False):
                     cur_raid["embed_updating"] = True
                     raid_msg = cur_raid.get("raid_message")
                     if raid_msg:
                         try:
-                            await raid_msg.edit(embed=build_ancient_embed(current_hp_snap), view=self if not raid_ended else None)
+                            await raid_msg.edit(embed=build_ancient_embed(current_hp_snap, participants_snap), view=self if not raid_ended else None)
                         except discord.HTTPException:
                             pass
                         finally:
@@ -325,7 +334,7 @@ class Ancient(commands.Cog):
                     await self.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
 
         raid_view = AncientRaidView()
-        raid_msg = await interaction.channel.send(embed=build_ancient_embed(boss["max_hp"]), view=raid_view)
+        raid_msg = await interaction.channel.send(embed=build_ancient_embed(boss["max_hp"], {}), view=raid_view)
         active_ancient_raids[raid_id]["raid_message"] = raid_msg
 
         # Auto-end after 30 minutes

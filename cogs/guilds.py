@@ -601,8 +601,9 @@ class Guilds(commands.Cog):
             "guild_id": guild_data["id"], "channel": interaction.channel,
             "raid_message": None,
             "attack_counts": {},
-            "embed_updating": False,   # throttle: skip edit if one already in flight
-            "guild_members": set(),    # cache guild member IDs to avoid DB hit per click
+            "embed_updating": False,
+            "guild_members": set(),
+            "last_attack": {},   # user_id -> monotonic timestamp, for cooldown
         }
         _raid_locks[raid_id] = asyncio.Lock()
 
@@ -615,7 +616,9 @@ class Guilds(commands.Cog):
                 rows = await c.fetchall()
         active_raids[raid_id]["guild_members"] = {r["user_id"] for r in rows}
 
-        def build_raid_embed(current_hp: int) -> discord.Embed:
+        ATTACK_COOLDOWN = 1.5  # seconds between attacks per player
+
+        def build_raid_embed(current_hp: int, participants: dict = None) -> discord.Embed:
             pct = current_hp / boss["max_hp"]
             status = "🔴 CRITICAL" if pct < 0.15 else "🟠 Weakened" if pct < 0.40 else "🟡 Damaged" if pct < 0.70 else "🟢 Active"
             embed = discord.Embed(
@@ -630,6 +633,11 @@ class Guilds(commands.Cog):
                 ),
                 color=COLORS["epic"]
             )
+            if participants:
+                top = sorted(participants.items(), key=lambda x: x[1], reverse=True)[:5]
+                medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+                lines = [f"{medals[i]} <@{uid}> — `{dmg:,}` dmg" for i, (uid, dmg) in enumerate(top)]
+                embed.add_field(name="⚔️ Damage Dealt", value="\n".join(lines), inline=False)
             if boss.get("image_url"):
                 embed.set_image(url=boss["image_url"])
             embed.set_footer(text=f"Raid ID: #{raid_id} | Triggered by {interaction.user.display_name} | 30 min timer")
@@ -641,16 +649,23 @@ class Guilds(commands.Cog):
 
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
-                # Defer immediately — must happen within 3 seconds or Discord shows "interaction failed"
+                import time
                 await btn_interaction.response.defer(ephemeral=True, thinking=False)
 
-                # Fast in-memory checks before any DB work
                 if raid_id not in active_raids:
                     return await btn_interaction.followup.send("✦ The raid has ended!", ephemeral=True)
                 raid = active_raids[raid_id]
                 uid = btn_interaction.user.id
                 if uid not in raid["guild_members"]:
                     return await btn_interaction.followup.send("✦ You need to be in this guild to attack!", ephemeral=True)
+
+                # Per-player cooldown
+                now = time.monotonic()
+                last = raid["last_attack"].get(uid, 0)
+                if now - last < ATTACK_COOLDOWN:
+                    remaining = ATTACK_COOLDOWN - (now - last)
+                    return await btn_interaction.followup.send(f"⏱️ Wait `{remaining:.1f}s`.", ephemeral=True)
+                raid["last_attack"][uid] = now
 
                 active = await get_active_beast(uid)
                 if not active:
@@ -693,30 +708,22 @@ class Guilds(commands.Cog):
                         await db.commit()
                     raid_ended = raid["current_hp"] <= 0
                     current_hp_snap = raid["current_hp"]
-                    beast_name = beast_data_btn["name"] if beast_data_btn else "Beast"
-                    total_dealt = raid["participants"].get(uid, 0)
-                    attacks = raid["attack_counts"].get(uid, 1)
+                    participants_snap = dict(raid["participants"])
 
-                # Update personal status — edit deferred response in place
-                crit_tag = "⭐ **CRIT!** " if is_crit else ""
+                # Dismiss the deferred ephemeral silently
                 try:
-                    await btn_interaction.edit_original_response(content=(
-                        f"**Your Raid Status**\n"
-                        f"{crit_tag}Last hit: `{damage:,}` dmg\n"
-                        f"Total dealt: `{total_dealt:,}` dmg · Attacks: `{attacks}`\n"
-                        f"Boss HP: `{current_hp_snap:,} / {boss['max_hp']:,}`"
-                    ))
+                    await btn_interaction.delete_original_response()
                 except discord.HTTPException:
-                    pass  # token expired or already used — silently skip
+                    pass
 
-                # Throttled public embed update — skip if already updating
+                # Throttled public embed update with live leaderboard
                 if not raid.get("embed_updating", False):
                     raid["embed_updating"] = True
                     raid_msg = raid.get("raid_message")
                     if raid_msg:
                         try:
                             await raid_msg.edit(
-                                embed=build_raid_embed(current_hp_snap),
+                                embed=build_raid_embed(current_hp_snap, participants_snap),
                                 view=self if not raid_ended else None
                             )
                         except discord.HTTPException:
@@ -736,7 +743,7 @@ class Guilds(commands.Cog):
                     await self.end_raid(raid_id, interaction.channel, timed_out=True)
 
         view = RaidView()
-        raid_msg = await interaction.followup.send(embed=build_raid_embed(boss["max_hp"]), view=view)
+        raid_msg = await interaction.followup.send(embed=build_raid_embed(boss["max_hp"], {}), view=view)
         active_raids[raid_id]["raid_message"] = raid_msg
 
         # Auto-end raid after 30 minutes
