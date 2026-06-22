@@ -688,9 +688,17 @@ class Utilities(commands.Cog):
         if week_data.get("week") != week_str:
             week_data = {"week": week_str}
 
-        items_list = list(SHARD_SHOP.items())
+        SUMMON_IDS = {"epoch_shard", "firstborn_ember", "void_prism"}
+        regular_items = [(sid, item) for sid, item in SHARD_SHOP.items() if sid not in SUMMON_IDS]
+        summon_items  = [(sid, item) for sid, item in SHARD_SHOP.items() if sid in SUMMON_IDS]
         per_page = 4
-        total_pages = max(1, (len(items_list) + per_page - 1) // per_page)
+        regular_pages = max(1, (len(regular_items) + per_page - 1) // per_page)
+        total_pages = regular_pages + 1  # last page is the summon relic page
+
+        def get_page_items(page):
+            if page > regular_pages:
+                return summon_items, True
+            return regular_items[(page - 1) * per_page : page * per_page], False
 
         async def do_purchase(bi: discord.Interaction, sid: str):
             await bi.response.defer(ephemeral=True)
@@ -793,15 +801,25 @@ class Utilities(commands.Cog):
             ), ephemeral=True)
 
         def build_embed(page: int) -> discord.Embed:
-            embed = discord.Embed(
-                title="🔮 Celestial Shard Shop",
-                description=(
-                    f"*The Loom accepts shards as a kind of acknowledgment — proof that you've been paying attention.*\n\n"
-                    f"**Your balance:** `{shards} 🔮`\n\u200b"
-                ),
-                color=COLORS["divine"]
-            )
-            page_items = items_list[(page - 1) * per_page : page * per_page]
+            page_items, is_summon = get_page_items(page)
+            if is_summon:
+                embed = discord.Embed(
+                    title="🏛️ Ancient Summon Relics",
+                    description=(
+                        f"*These items cannot be bought lightly. Each one calls something that has been waiting a very long time.*\n\n"
+                        f"**Your balance:** `{shards} 🔮`\n\u200b"
+                    ),
+                    color=COLORS.get("ancient", COLORS["legendary"])
+                )
+            else:
+                embed = discord.Embed(
+                    title="🔮 Celestial Shard Shop",
+                    description=(
+                        f"*The Loom accepts shards as a kind of acknowledgment — proof that you've been paying attention.*\n\n"
+                        f"**Your balance:** `{shards} 🔮`\n\u200b"
+                    ),
+                    color=COLORS["divine"]
+                )
             for sid, shop_item in page_items:
                 limit_str = f" · {shop_item['weekly_limit']}/week" if shop_item["weekly_limit"] else ""
                 bought = week_data.get(sid, 0)
@@ -812,7 +830,8 @@ class Utilities(commands.Cog):
                     value=shop_item["desc"],
                     inline=False
                 )
-            embed.set_footer(text=f"ChibiBeasts 🐾  •  Page {page}/{total_pages}")
+            footer_label = "Ancient Relics" if is_summon else f"Page {page}/{total_pages}"
+            embed.set_footer(text=f"ChibiBeasts 🐾  •  {footer_label}")
             return embed
 
         class ShardShopView(discord.ui.View):
@@ -823,7 +842,7 @@ class Utilities(commands.Cog):
 
             def _build(self):
                 self.clear_items()
-                page_items = items_list[(self.page - 1) * per_page : self.page * per_page]
+                page_items, _ = get_page_items(self.page)
                 for row_idx, (sid, shop_item) in enumerate(page_items):
                     bought = week_data.get(sid, 0)
                     exhausted = shop_item["weekly_limit"] > 0 and bought >= shop_item["weekly_limit"]
@@ -843,31 +862,31 @@ class Utilities(commands.Cog):
                     self.add_item(btn)
 
                 # Pagination on row 4
-                if total_pages > 1:
-                    prev = discord.ui.Button(
-                        label=f"◀ {self.page - 1}" if self.page > 1 else "◀",
-                        style=discord.ButtonStyle.secondary,
-                        disabled=self.page <= 1, row=4
-                    )
-                    nxt = discord.ui.Button(
-                        label=f"{self.page + 1} ▶" if self.page < total_pages else "▶",
-                        style=discord.ButtonStyle.secondary,
-                        disabled=self.page >= total_pages, row=4
-                    )
-                    async def prev_cb(bi: discord.Interaction, _s=self):
-                        if bi.user.id != interaction.user.id:
-                            return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                        _s.page -= 1; _s._build()
-                        await bi.response.edit_message(embed=build_embed(_s.page), view=_s)
-                    async def nxt_cb(bi: discord.Interaction, _s=self):
-                        if bi.user.id != interaction.user.id:
-                            return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                        _s.page += 1; _s._build()
-                        await bi.response.edit_message(embed=build_embed(_s.page), view=_s)
-                    prev.callback = prev_cb
-                    nxt.callback = nxt_cb
-                    self.add_item(prev)
-                    self.add_item(nxt)
+                prev = discord.ui.Button(
+                    label=f"◀ {self.page - 1}" if self.page > 1 else "◀",
+                    style=discord.ButtonStyle.secondary,
+                    disabled=self.page <= 1, row=4
+                )
+                on_last_regular = self.page == regular_pages
+                nxt = discord.ui.Button(
+                    label="🏛️ Ancient Relics ▶" if on_last_regular else (f"{self.page + 1} ▶" if self.page < total_pages else "▶"),
+                    style=discord.ButtonStyle.danger if on_last_regular else discord.ButtonStyle.secondary,
+                    disabled=self.page >= total_pages, row=4
+                )
+                async def prev_cb(bi: discord.Interaction, _s=self):
+                    if bi.user.id != interaction.user.id:
+                        return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                    _s.page -= 1; _s._build()
+                    await bi.response.edit_message(embed=build_embed(_s.page), view=_s)
+                async def nxt_cb(bi: discord.Interaction, _s=self):
+                    if bi.user.id != interaction.user.id:
+                        return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                    _s.page += 1; _s._build()
+                    await bi.response.edit_message(embed=build_embed(_s.page), view=_s)
+                prev.callback = prev_cb
+                nxt.callback = nxt_cb
+                self.add_item(prev)
+                self.add_item(nxt)
 
         await interaction.followup.send(embed=build_embed(1), view=ShardShopView(1))
 
