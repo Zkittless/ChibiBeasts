@@ -406,8 +406,16 @@ class Ancient(commands.Cog):
                 return
             r = active_ancient_raids[raid_id]
             lock = r.get("embed_lock")
-            if lock is None or lock.locked():
+            if lock is None:
                 return
+            if lock.locked():
+                await asyncio.sleep(0.4)
+                if raid_id not in active_ancient_raids:
+                    return
+                r = active_ancient_raids[raid_id]
+                lock = r.get("embed_lock")
+                if lock is None or lock.locked():
+                    return
             async with lock:
                 if raid_id not in active_ancient_raids:
                     return

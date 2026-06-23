@@ -836,13 +836,21 @@ class Guilds(commands.Cog):
         BOSS_ATK_INTERVAL = 10  # seconds between boss auto-attacks
 
         async def _update_embed(view_ref=None, ended=False):
-            """Always reads fresh state — no captured snapshots."""
+            """Always reads fresh state. If a edit is in flight, waits and retries once."""
             if raid_id not in active_raids:
                 return
             r = active_raids[raid_id]
             lock = r.get("embed_lock")
-            if lock is None or lock.locked():
-                return  # skip if already updating — don't queue
+            if lock is None:
+                return
+            if lock.locked():
+                await asyncio.sleep(0.4)   # brief wait then retry with fresh state
+                if raid_id not in active_raids:
+                    return
+                r = active_raids[raid_id]
+                lock = r.get("embed_lock")
+                if lock is None or lock.locked():
+                    return  # still busy — drop, next hit will catch it
             async with lock:
                 if raid_id not in active_raids:
                     return
@@ -857,6 +865,7 @@ class Guilds(commands.Cog):
                     await msg.edit(embed=build_raid_embed(r), view=v)
                 except discord.HTTPException:
                     pass
+
 
         raid_view_ref = [None]  # set after view is created
 
