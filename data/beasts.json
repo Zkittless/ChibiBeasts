@@ -2347,7 +2347,7 @@
         }
       },
       "evolves_from": "slime",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_slime.png"
     },
     "ascended_unicorn": {
       "id": "ascended_unicorn",
@@ -2381,7 +2381,7 @@
         }
       },
       "evolves_from": "unicorn",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_unicorn.png"
     },
     "ascended_pegasus": {
       "id": "ascended_pegasus",
@@ -2415,7 +2415,7 @@
         }
       },
       "evolves_from": "pegasus",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_pegasus.png"
     },
     "ascended_phoenix": {
       "id": "ascended_phoenix",
@@ -2451,7 +2451,7 @@
         }
       },
       "evolves_from": "phoenix",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_phoenix.png"
     },
     "radiant_goblin": {
       "id": "radiant_goblin",
@@ -2475,7 +2475,7 @@
       ],
       "ultimate": "Forge Rampage",
       "evolves_from": "goblin",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_goblin.png"
     },
     "radiant_imp": {
       "id": "radiant_imp",
@@ -2499,7 +2499,7 @@
       ],
       "ultimate": "Shadow Swarm",
       "evolves_from": "imp",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_imp.png"
     },
     "radiant_hydra": {
       "id": "radiant_hydra",
@@ -2532,7 +2532,7 @@
         }
       },
       "evolves_from": "hydra",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_hydra.png"
     },
     "radiant_kitsune": {
       "id": "radiant_kitsune",
@@ -2566,7 +2566,7 @@
         }
       },
       "evolves_from": "kitsune_1",
-      "image_url": null
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_kitsune.png"
     }
   },
   "rarity_rates": {
