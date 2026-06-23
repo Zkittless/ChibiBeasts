@@ -815,6 +815,7 @@ class Guilds(commands.Cog):
             "embed_lock": None,  # set after init
             "guild_members": guild_member_ids,
             "last_attack": {},
+            "last_ultimate": {},
             "player_hp": {},
             "player_max_hp": {},
             "player_mana": {},
@@ -850,8 +851,8 @@ class Guilds(commands.Cog):
             except Exception:
                 pass
 
-        async def _update_embed(view_ref=None, ended=False):
-            """Always reads fresh state — skip if already editing."""
+        async def _update_embed(ended=False):
+            """Refresh embed — skip if already editing."""
             if raid_id not in active_raids:
                 return
             r = active_raids[raid_id]
@@ -865,13 +866,21 @@ class Guilds(commands.Cog):
                 msg = r.get("raid_message")
                 if not msg:
                     return
+                v = raid_view_ref[0]
+                if ended:
+                    v = None
                 try:
-                    v = None if ended else (view_ref or raid_view_ref[0])
                     if v:
                         v.update_ult_style("_multi", r)
                     await msg.edit(embed=build_raid_embed(r), view=v)
                 except discord.HTTPException:
                     pass
+
+        async def _embed_loop():
+            """Background loop: refresh embed at most once per second."""
+            while raid_id in active_raids:
+                await asyncio.sleep(1.0)
+                # embed_loop handles refresh
 
         raid_view_ref = [None]  # set after view is created
 
@@ -1008,7 +1017,7 @@ class Guilds(commands.Cog):
                         break
 
                 # Update embed
-                asyncio.create_task(_update_embed())
+                # embed_loop handles refresh
 
         # Map threshold -> defense reduction % for phase display
         _PHASE_DEF_REDUCTION = {0.70: 20, 0.40: 40, 0.15: 60}
@@ -1204,7 +1213,7 @@ class Guilds(commands.Cog):
                     crit_tag = "⭐ CRIT! " if is_crit else ""
                     active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg"
 
-                asyncio.create_task(_update_embed(self, raid_ended))
+                # embed_loop handles refresh
 
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
@@ -1232,9 +1241,9 @@ class Guilds(commands.Cog):
                     return await btn_interaction.followup.send("✦ Your beast is knocked out!", ephemeral=True)
 
                 now = time.monotonic()
-                if now - raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
+                if now - raid["last_ultimate"].get(uid, 0) < ATTACK_COOLDOWN:
                     return
-                raid["last_attack"][uid] = now
+                raid["last_ultimate"][uid] = now
 
                 # Load party if not yet done — preserve existing mana
                 if uid not in raid["player_party"]:
@@ -1305,7 +1314,7 @@ class Guilds(commands.Cog):
                     crit_tag = "⭐ CRIT! " if is_crit else ""
                     active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
 
-                asyncio.create_task(_update_embed(self, raid_ended))
+                # embed_loop handles refresh
 
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
@@ -1321,8 +1330,9 @@ class Guilds(commands.Cog):
         raid_msg = await interaction.followup.send(embed=build_raid_embed(active_raids[raid_id]), view=view)
         active_raids[raid_id]["raid_message"] = raid_msg
 
-        # Start boss attack loop as background task
+        # Start background loops
         asyncio.create_task(boss_attack_loop())
+        asyncio.create_task(_embed_loop())
 
         # Auto-end after 30 minutes
         await asyncio.sleep(1800)

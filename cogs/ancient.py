@@ -381,6 +381,7 @@ class Ancient(commands.Cog):
             "attack_counts": {},
             "embed_lock": None,
             "last_attack": {},
+            "last_ultimate": {},
             "player_hp": {},
             "player_max_hp": {},
             "player_mana": {},
@@ -429,7 +430,7 @@ class Ancient(commands.Cog):
             except Exception:
                 pass
 
-        async def _update_embed(view_ref=None, ended=False):
+        async def _update_embed(ended=False):
             if raid_id not in active_ancient_raids:
                 return
             r = active_ancient_raids[raid_id]
@@ -443,13 +444,18 @@ class Ancient(commands.Cog):
                 msg = r.get("raid_message")
                 if not msg:
                     return
+                v = anc_view_ref[0] if not ended else None
                 try:
-                    v = None if ended else (view_ref or anc_view_ref[0])
                     if v:
                         v.update_ult_style("_multi", r)
                     await msg.edit(embed=build_ancient_embed(r), view=v)
                 except discord.HTTPException:
                     pass
+
+        async def _embed_loop():
+            while raid_id in active_ancient_raids:
+                await asyncio.sleep(1.0)
+                # embed_loop handles refresh
 
         anc_view_ref = [None]
 
@@ -566,7 +572,7 @@ class Ancient(commands.Cog):
                     if all_down and not any_bench:
                         await cog.end_ancient_raid(raid_id, interaction.channel)
                         break
-                asyncio.create_task(_update_embed())
+                # embed_loop handles refresh
 
         _PHASE_DEF_REDUCTION = {0.70: 20, 0.40: 40, 0.15: 60}
 
@@ -730,7 +736,7 @@ class Ancient(commands.Cog):
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg"
-                asyncio.create_task(_update_embed(self, raid_ended))
+                # embed_loop handles refresh
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
                 if raid_ended:
@@ -787,7 +793,7 @@ class Ancient(commands.Cog):
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
-                asyncio.create_task(_update_embed(self, raid_ended))
+                # embed_loop handles refresh
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
                 if raid_ended:
@@ -810,6 +816,7 @@ class Ancient(commands.Cog):
             )
 
         asyncio.create_task(boss_attack_loop())
+        asyncio.create_task(_embed_loop())
 
         await asyncio.sleep(1800)
         if raid_id in active_ancient_raids:
