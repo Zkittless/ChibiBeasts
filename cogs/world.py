@@ -1128,16 +1128,10 @@ class World(commands.Cog):
 
     # ── /lore ─────────────────────────────────────────────────────────────
     @app_commands.command(name="lore", description="Read the story of ChibiBeasts 📜")
-    @app_commands.describe(chapter="Which part of the lore to read")
-    @app_commands.choices(chapter=[
-        app_commands.Choice(name="The Creation Myth", value="creation"),
-        app_commands.Choice(name="The Five Collections", value="collections"),
-        app_commands.Choice(name="The Sundering (Why Raids Exist)", value="sundering"),
-        app_commands.Choice(name="Why You're Here", value="purpose"),
-        app_commands.Choice(name="The Four Starters", value="starters"),
-    ])
-    async def lore(self, interaction: discord.Interaction, chapter: str = "creation"):
+    async def lore(self, interaction: discord.Interaction):
         await interaction.response.defer()
+        chapter = "creation"
+        uid = interaction.user.id
 
         LORE_CHAPTERS = {
             "creation": {
@@ -1233,14 +1227,46 @@ class World(commands.Cog):
             },
         }
 
-        chapter_data = LORE_CHAPTERS.get(chapter, LORE_CHAPTERS["creation"])
-        embed = discord.Embed(
-            title=chapter_data["title"],
-            description=chapter_data["text"],
-            color=chapter_data["color"]
-        )
-        embed.set_footer(text="ChibiBeasts 🐾  •  /lore to read other chapters")
-        await interaction.followup.send(embed=embed)
+        LORE_OPTIONS = [
+            ("creation",    "📜", "The Creation Myth"),
+            ("collections", "🌌", "The Five Collections"),
+            ("sundering",   "⚔️", "The Sundering"),
+            ("purpose",     "🧵", "Why You're Here"),
+            ("starters",    "🔷", "The Four Starters"),
+        ]
+
+        def build_lore_embed(ch: str) -> discord.Embed:
+            data = LORE_CHAPTERS.get(ch, LORE_CHAPTERS["creation"])
+            emb  = discord.Embed(title=data["title"], description=data["text"], color=data["color"])
+            emb.set_footer(text="ChibiBeasts 🐾")
+            return emb
+
+        class LoreView(discord.ui.View):
+            def __init__(self_v, ch="creation"):
+                super().__init__(timeout=180)
+                self_v.chapter = ch
+                self_v._rebuild()
+
+            def _rebuild(self_v):
+                self_v.clear_items()
+                select = discord.ui.Select(
+                    placeholder="📜 Read a chapter…",
+                    options=[
+                        discord.SelectOption(label=f"{emoji} {name}", value=key, default=key==self_v.chapter)
+                        for key, emoji, name in LORE_OPTIONS
+                    ],
+                    row=0
+                )
+                async def _on_select(inter):
+                    if inter.user.id != uid:
+                        return await inter.response.send_message("✦ This isn't your lore view!", ephemeral=True)
+                    self_v.chapter = inter.data["values"][0]
+                    self_v._rebuild()
+                    await inter.response.edit_message(embed=build_lore_embed(self_v.chapter), view=self_v)
+                select.callback = _on_select
+                self_v.add_item(select)
+
+        await interaction.followup.send(embed=build_lore_embed("creation"), view=LoreView("creation"))
 
 
 async def setup(bot: commands.Bot):

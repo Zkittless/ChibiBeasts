@@ -110,16 +110,8 @@ class Progression(commands.Cog):
 
     # ── /bestiary ────────────────────────────────────────────────────────
     @app_commands.command(name="bestiary", description="View the server's beast discovery log 📖")
-    @app_commands.describe(rarity="Filter by rarity")
-    @app_commands.choices(rarity=[
-        app_commands.Choice(name="⚪ Common", value="common"),
-        app_commands.Choice(name="🟢 Uncommon", value="uncommon"),
-        app_commands.Choice(name="🔵 Rare", value="rare"),
-        app_commands.Choice(name="🟣 Epic", value="epic"),
-        app_commands.Choice(name="🟡 Legendary", value="legendary"),
-        app_commands.Choice(name="🌸 Divine", value="divine"),
-    ])
-    async def bestiary(self, interaction: discord.Interaction, rarity: str = None):
+    async def bestiary(self, interaction: discord.Interaction):
+        rarity = None
         await interaction.response.defer()
         all_beasts    = load_beasts()
         guild_id      = interaction.guild.id if interaction.guild else 0
@@ -215,49 +207,47 @@ class Progression(commands.Cog):
         current_page = 1
 
         class BestiaryView(discord.ui.View):
-            def __init__(self):
+            def __init__(self_v):
                 super().__init__(timeout=180)
-                self.tab  = current_tab
-                self.page = current_page
-                self._rebuild()
+                self_v.tab  = current_tab
+                self_v.page = current_page
+                self_v._rebuild()
 
-            def _rebuild(self):
-                self.clear_items()
+            def _rebuild(self_v):
+                self_v.clear_items()
                 visible = [t for t in TAB_RARITIES if has_tab(t)]
-                for idx_t, t in enumerate(visible):
-                    btn = discord.ui.Button(
-                        label=TAB_LABELS[t],
-                        style=discord.ButtonStyle.primary if t == self.tab else discord.ButtonStyle.secondary,
-                        row=0 if idx_t < 5 else 1,
-                        disabled=(t == self.tab)
-                    )
-                    async def _tab_cb(inter, tab=t):
-                        if inter.user.id != uid:
-                            return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
-                        self.tab  = tab
-                        self.page = 1
-                        self._rebuild()
-                        emb, _ = build_embed(self.tab, self.page)
-                        await inter.response.edit_message(embed=emb, view=self)
-                    btn.callback = _tab_cb
-                    self.add_item(btn)
-
-                _, total = build_embed(self.tab, self.page)
-                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, row=2, disabled=self.page<=1)
+                # Row 0 — rarity select
+                select = discord.ui.Select(
+                    placeholder="📖 Filter by rarity…",
+                    options=[
+                        discord.SelectOption(label=TAB_LABELS[t], value=t, default=t==self_v.tab)
+                        for t in visible
+                    ],
+                    row=0
+                )
+                async def _on_select(inter):
+                    if inter.user.id != uid:
+                        return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
+                    self_v.tab  = inter.data["values"][0]
+                    self_v.page = 1
+                    self_v._rebuild()
+                    emb, _ = build_embed(self_v.tab, self_v.page)
+                    await inter.response.edit_message(embed=emb, view=self_v)
+                select.callback = _on_select
+                self_v.add_item(select)
+                # Row 1 — pagination
+                _, total = build_embed(self_v.tab, self_v.page)
+                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, row=1, disabled=self_v.page<=1)
                 async def _prev(inter):
                     if inter.user.id != uid:
                         return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
-                    self.page -= 1
-                    self._rebuild()
-                    emb, _ = build_embed(self.tab, self.page)
-                    await inter.response.edit_message(embed=emb, view=self)
+                    self_v.page -= 1; self_v._rebuild()
+                    emb, _ = build_embed(self_v.tab, self_v.page)
+                    await inter.response.edit_message(embed=emb, view=self_v)
                 prev.callback = _prev
-                self.add_item(prev)
-
-                page_lbl = discord.ui.Button(label=f"{self.page}/{total}", style=discord.ButtonStyle.secondary, row=2, disabled=True)
-                self.add_item(page_lbl)
-
-                nxt = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, row=2, disabled=self.page>=total)
+                self_v.add_item(prev)
+                self_v.add_item(discord.ui.Button(label=f"{self_v.page}/{total}", style=discord.ButtonStyle.secondary, row=1, disabled=True))
+                nxt = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, row=1, disabled=self_v.page>=total)
                 async def _next(inter):
                     if inter.user.id != uid:
                         return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
