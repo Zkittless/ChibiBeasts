@@ -21,12 +21,7 @@
       "ultimate": "Fairy Ring",
       "description": "A delicate woodland sprite that flutters through enchanted forests leaving trails of glowing dust.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/fairy.png",
-      "evolution": {
-        "evolves_to": "dryad",
-        "method": "sunforge_core",
-        "level_required": 15,
-        "description": "The Fairy stopped fluttering and put down roots. Literally."
-      },
+      "evolution": null,
       "catch_rate": 0.85,
       "encounter_situations": [
         "A Fairy is caught mid-weave, threading light between two branches like it's sewing something only it can see. It stops when it notices you.",
@@ -190,10 +185,11 @@
       "description": "A young fox spirit with 1-3 tails, still mastering its innate magical abilities.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/kitsune_1.png",
       "evolution": {
-        "evolves_to": "kitsune_9",
+        "evolves_to": "radiant_kitsune",
+        "form": "radiant",
         "method": "sunforge_core",
         "level_required": 30,
-        "description": "Kitsune has mastered its first form. The other eight tails are waiting."
+        "description": "The tails stopped growing one at a time. All nine arrived together, and something about that was different from earning them."
       },
       "catch_rate": 0.6,
       "encounter_situations": [
@@ -252,12 +248,7 @@
       "ultimate": "Inferno Howl",
       "description": "A fearsome hound wreathed in smokeless flame whose howl echoes across dimensions.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/hellhound.png",
-      "evolution": {
-        "evolves_to": "fenrir",
-        "method": "sunforge_core",
-        "level_required": 40,
-        "description": "The Hellhound ran further north than it should have. Something there agreed with it."
-      },
+      "evolution": null,
       "catch_rate": 0.6,
       "encounter_situations": [
         "The Hellhound is lying on a flat rock, eyes closed, absorbing heat. It opens one eye when your footsteps change the temperature of the air around it.",
@@ -286,12 +277,7 @@
       "ultimate": "Tempest Screech",
       "description": "A fierce winged creature whose piercing cry can shatter stone and summon violent storms.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/harpy.png",
-      "evolution": {
-        "evolves_to": "thunderbird",
-        "method": "sunforge_core",
-        "level_required": 30,
-        "description": "The Harpy found a storm it couldn't outfly, so it became it instead."
-      },
+      "evolution": null,
       "catch_rate": 0.6,
       "encounter_situations": [
         "The Harpy lands on a spire of rock above you and watches. It tilts its head. It does not attack. It seems to be making a decision.",
@@ -477,12 +463,7 @@
       "ultimate": "Toxic Inferno",
       "description": "A two-legged dragon cousin whose tail stinger drips with the most potent venom in existence.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/wyvern.png",
-      "evolution": {
-        "evolves_to": "dragon",
-        "method": "sunforge_core",
-        "level_required": 35,
-        "description": "The Wyvern finally grew its front legs. This took longer than expected."
-      },
+      "evolution": null,
       "catch_rate": 0.35,
       "encounter_situations": [
         "The Wyvern is between you and the sky, a silhouette dropping fast. It pulls up at the last moment and lands hard, sending a wave of heat outward.",
@@ -1601,12 +1582,7 @@
       "description": "A tiny drifting ball of pale light that hums faintly when happy. Faintly warm to the touch. Nobody knows what it used to be.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/wisp.png",
       "catch_rate": 0.85,
-      "evolution": {
-        "evolves_to": "will_o_wisp",
-        "method": "sunforge_core",
-        "level_required": 18,
-        "description": "The Wisp found something worth lighting the way toward. It got brighter."
-      },
+      "evolution": null,
       "encounter_situations": [
         "A Wisp bobs gently at eye level, about three feet in front of you. It drifts left. It drifts right. It seems to be trying to show you something.",
         "The Wisp is sitting completely still on the tip of a branch, humming to itself at a frequency you can almost hear. It notices you noticing it.",
@@ -2556,6 +2532,40 @@
         }
       },
       "evolves_from": "hydra",
+      "image_url": null
+    },
+    "radiant_kitsune": {
+      "id": "radiant_kitsune",
+      "name": "Radiant Kitsune",
+      "title": "The Nine-Tailed Sovereign, Illuminated",
+      "rarity": "divine",
+      "type": "arcane",
+      "description": "It grew nine tails over centuries. The Sunforge gave it something the centuries couldn't \u2014 the moment every tail understood what it was for, simultaneously.",
+      "lore": "The other Kitsune with nine tails earned them one at a time. This one earned all of them at once. The difference is visible.",
+      "base_stats": {
+        "hp": 255,
+        "attack": 150,
+        "defense": 130,
+        "speed": 175,
+        "mana": 145
+      },
+      "moves": [
+        "Nine-Tail Strike",
+        "Radiant Illusion",
+        "Fox Fire Ascendant"
+      ],
+      "ultimate": "Sovereign Veil",
+      "divine_passive": {
+        "passive_id": "fox_sovereign",
+        "passive_name": "Fox Sovereign",
+        "passive_desc": "Each of the nine tails acts independently. Every third turn, all nine strike at once \u2014 dealing 9\u00d7 a single tail's damage as an automatic bonus hit. The tails do not wait for permission.",
+        "passive_trigger": "turn_start",
+        "passive_effect": {
+          "nine_tail_strike_interval": 3,
+          "nine_tail_multiplier": 9
+        }
+      },
+      "evolves_from": "kitsune_1",
       "image_url": null
     }
   },

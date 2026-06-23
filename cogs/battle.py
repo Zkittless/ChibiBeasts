@@ -307,7 +307,7 @@ async def run_pve_battle(
             continue
 
         # Turn-start passives
-        double_turn = apply_turn_start_passives(attacker_state, battle_log)
+        double_turn = apply_turn_start_passives(attacker_state, battle_log, defender_state)
 
         # HP regen — equipment rune regen
         if attacker_state.get("_hp_regen_percent") and attacker_state["hp"] > 0:
@@ -569,7 +569,7 @@ def apply_battle_start_passives(attacker_state: dict, defender_state: dict, batt
                 battle_log.append(f"🌌 **{state['name']}'s Stellar Nursery** — shield absorbs {state['dp_shield']} damage!")
 
 
-def apply_turn_start_passives(active_state: dict, battle_log: list) -> bool:
+def apply_turn_start_passives(active_state: dict, battle_log: list, opponent_state: dict = None) -> bool:
     """Apply turn-start passives. Returns True if the beast should act twice (Chronos)."""
     passive = active_state.get("divine_passive", {})
     if not passive:
@@ -608,6 +608,21 @@ def apply_turn_start_passives(active_state: dict, battle_log: list) -> bool:
         active_state["dp_stacks"] += 1
         if active_state["dp_stacks"] <= 4:
             battle_log.append(f"🌪️ **{active_state['name']}'s Boundary Break** — SPD+{spd_gain}! (×{active_state['dp_stacks']})")
+
+    # Fox Sovereign (Radiant Kitsune) — every 3rd turn all nine tails strike
+    if pid == "fox_sovereign" and opponent_state is not None:
+        active_state.setdefault("dp_stacks", 0)
+        active_state["dp_stacks"] += 1
+        interval = effect.get("nine_tail_strike_interval", 3)
+        if active_state["dp_stacks"] % interval == 0:
+            mult = effect.get("nine_tail_multiplier", 9)
+            base_tail  = max(1, int(active_state["attack"] / 9))
+            def_factor = opponent_state.get("defense", 0) / (opponent_state.get("defense", 0) + 100)
+            tail_dmg   = max(1, int(base_tail * (1 - def_factor) * mult))
+            opponent_state["hp"] = max(0, opponent_state["hp"] - tail_dmg)
+            battle_log.append(
+                f"🦊 **{active_state['name']}'s Fox Sovereign** — all nine tails strike! `{tail_dmg}` bonus damage!"
+            )
 
     return double_turn
 
@@ -1214,7 +1229,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
             continue
 
         # Turn-start divine passives (Star Weave, Borrowed Time, Constellation Charge)
-        double_turn = apply_turn_start_passives(attacker_state, battle_log)
+        double_turn = apply_turn_start_passives(attacker_state, battle_log, defender_state)
 
         # Armor HP regen per round (Unicorn Vestments)
         if attacker_state.get("_hp_regen_percent") and attacker_state["hp"] > 0:

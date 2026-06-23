@@ -18,6 +18,17 @@ from utils.sanctuary import get_user_sanctuary
 
 # ── Evolution Cinematics ────────────────────────────────────────────────────
 EVOLUTION_SCENES = {
+    "radiant_kitsune": {
+        "title": "🦊 All Nine, At Once",
+        "lines": [
+            "Other Kitsune earn their tails one at a time. Centuries of mastery, patience, growth — each tail a chapter.",
+            "The Sunforge does not have centuries. It has one moment, and it uses it completely.",
+            "All nine tails arrived simultaneously. The Kitsune stood still for a long time afterward, processing something the language of foxes does not have a word for.",
+            "The Kitsune_9 you can encounter in the wild earned theirs the old way. This one earned all of them in a single breath.",
+            "*The difference is visible. The other foxes know. They don't discuss it.*",
+        ],
+        "color": "divine",
+    },
     "radiant_goblin": {
         "title": "🔥 The Forge Speaks",
         "lines": [
