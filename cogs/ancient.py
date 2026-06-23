@@ -219,6 +219,12 @@ class Ancient(commands.Cog):
 
                 # Auto-start if full
                 if len(self.party) >= MAX_PARTY:
+                    for item in view.children:
+                        item.disabled = True
+                    try:
+                        await btn_interaction.message.edit(view=view)
+                    except Exception:
+                        pass
                     self.stop()
 
             @discord.ui.button(label="Solo Run", style=discord.ButtonStyle.danger, emoji="💀")
@@ -236,10 +242,21 @@ class Ancient(commands.Cog):
                     "You were warned. It is not impossible — just very close.*",
                     ephemeral=True
                 )
+                for item in view.children:
+                    item.disabled = True
+                try:
+                    await btn_interaction.message.edit(view=view)
+                except Exception:
+                    pass
                 self.stop()
 
             async def on_timeout(self):
-                pass  # handled below after send
+                for item in self.children:
+                    item.disabled = True
+                try:
+                    await msg.edit(view=self)
+                except Exception:
+                    pass
 
         def build_lobby_embed(party: dict) -> discord.Embed:
             names = "\n".join(f"• {name}" for name in list(party.values())[:10])
@@ -661,16 +678,20 @@ class Ancient(commands.Cog):
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" \u26a1" if new_mana >= 50 else "")
-                if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
-                    cur_raid["embed_updating"] = True
+                async def _do_anc_atk_embed():
+                    if raid_id not in active_ancient_raids: return
+                    r = active_ancient_raids[raid_id]
+                    if r.get("embed_updating"): return
+                    r["embed_updating"] = True
                     try:
-                        self.update_ult_style(uid, active_ancient_raids.get(raid_id, cur_raid))
-                        await cur_raid["raid_message"].edit(embed=build_ancient_embed(active_ancient_raids.get(raid_id, cur_raid)), view=self if not raid_ended else None)
+                        self.update_ult_style(uid, r)
+                        await r["raid_message"].edit(embed=build_ancient_embed(r), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
                     finally:
                         if raid_id in active_ancient_raids:
                             active_ancient_raids[raid_id]["embed_updating"] = False
+                asyncio.create_task(_do_anc_atk_embed())
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
                 if raid_ended:
@@ -691,8 +712,9 @@ class Ancient(commands.Cog):
                 if cur_raid["player_mana"].get(uid, 0) < 50:
                     return await btn_interaction.followup.send(f"✦ Not enough mana! `{cur_raid['player_mana'].get(uid,0)}/50` needed.", ephemeral=True)
                 now = time.monotonic()
-                if now - cur_raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
-                    return await btn_interaction.followup.send(f"⏱️ Wait `{ATTACK_COOLDOWN - (now - cur_raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
+                _wait = ATTACK_COOLDOWN - (now - cur_raid["last_attack"].get(uid, 0))
+                if _wait > 0.05:
+                    return await btn_interaction.followup.send(f"⏱️ `{_wait:.1f}s`", ephemeral=True)
                 cur_raid["last_attack"][uid] = now
                 # Use party slot stats
                 _ult_slot = cur_raid.get("player_active_slot", {}).get(uid, 0)
@@ -733,16 +755,20 @@ class Ancient(commands.Cog):
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg \u2014 Mana reset."
-                if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
-                    cur_raid["embed_updating"] = True
+                async def _do_anc_ult_embed():
+                    if raid_id not in active_ancient_raids: return
+                    r = active_ancient_raids[raid_id]
+                    if r.get("embed_updating"): return
+                    r["embed_updating"] = True
                     try:
-                        self.update_ult_style(uid, active_ancient_raids.get(raid_id, cur_raid))
-                        await cur_raid["raid_message"].edit(embed=build_ancient_embed(active_ancient_raids.get(raid_id, cur_raid)), view=self if not raid_ended else None)
+                        self.update_ult_style(uid, r)
+                        await r["raid_message"].edit(embed=build_ancient_embed(r), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
                     finally:
                         if raid_id in active_ancient_raids:
                             active_ancient_raids[raid_id]["embed_updating"] = False
+                asyncio.create_task(_do_anc_ult_embed())
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
                 if raid_ended:

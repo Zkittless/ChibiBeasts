@@ -826,7 +826,7 @@ class Guilds(commands.Cog):
         }
         _raid_locks[raid_id] = asyncio.Lock()
 
-        ATTACK_COOLDOWN = 0.8
+        ATTACK_COOLDOWN = 0.5
         BOSS_ATK_INTERVAL = 10  # seconds between boss auto-attacks
 
         def boss_effective_defense(raid: dict) -> int:
@@ -1164,16 +1164,20 @@ class Guilds(commands.Cog):
                     crit_tag = "⭐ CRIT! " if is_crit else ""
                     active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" ⚡" if new_mana >= 50 else "")
 
-                if not raid.get("embed_updating") and raid.get("raid_message"):
-                    raid["embed_updating"] = True
+                async def _do_embed_update():
+                    if raid_id not in active_raids: return
+                    r = active_raids[raid_id]
+                    if r.get("embed_updating"): return
+                    r["embed_updating"] = True
                     try:
-                        self.update_ult_style(uid, active_raids.get(raid_id, raid))
-                        await raid["raid_message"].edit(embed=build_raid_embed(active_raids.get(raid_id, raid)), view=self if not raid_ended else None)
+                        self.update_ult_style(uid, r)
+                        await r["raid_message"].edit(embed=build_raid_embed(r), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
                     finally:
                         if raid_id in active_raids:
                             active_raids[raid_id]["embed_updating"] = False
+                asyncio.create_task(_do_embed_update())
 
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
@@ -1199,8 +1203,9 @@ class Guilds(commands.Cog):
                     return await btn_interaction.followup.send(f"✦ Not enough mana! `{raid['player_mana'].get(uid,0)}/50` needed.", ephemeral=True)
 
                 now = time.monotonic()
-                if now - raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
-                    return await btn_interaction.followup.send(f"⏱️ Wait `{ATTACK_COOLDOWN - (now - raid['last_attack'].get(uid,0)):.1f}s`.", ephemeral=True)
+                _wait = ATTACK_COOLDOWN - (now - raid["last_attack"].get(uid, 0))
+                if _wait > 0.05:
+                    return await btn_interaction.followup.send(f"⏱️ `{_wait:.1f}s`", ephemeral=True)
                 raid["last_attack"][uid] = now
 
                 # Use party slot — not live DB
@@ -1251,16 +1256,20 @@ class Guilds(commands.Cog):
                     crit_tag = "⭐ CRIT! " if is_crit else ""
                     active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg — Mana reset."
 
-                if not raid.get("embed_updating") and raid.get("raid_message"):
-                    raid["embed_updating"] = True
+                async def _do_ult_embed_update():
+                    if raid_id not in active_raids: return
+                    r = active_raids[raid_id]
+                    if r.get("embed_updating"): return
+                    r["embed_updating"] = True
                     try:
-                        self.update_ult_style(uid, active_raids.get(raid_id, raid))
-                        await raid["raid_message"].edit(embed=build_raid_embed(active_raids.get(raid_id, raid)), view=self if not raid_ended else None)
+                        self.update_ult_style(uid, r)
+                        await r["raid_message"].edit(embed=build_raid_embed(r), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
                     finally:
                         if raid_id in active_raids:
                             active_raids[raid_id]["embed_updating"] = False
+                asyncio.create_task(_do_ult_embed_update())
 
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
