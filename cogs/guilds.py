@@ -880,7 +880,7 @@ class Guilds(commands.Cog):
             """Background loop: refresh embed at most once per second."""
             while raid_id in active_raids:
                 await asyncio.sleep(1.0)
-                # embed_loop handles refresh
+                await _update_embed()
 
         raid_view_ref = [None]  # set after view is created
 

@@ -455,7 +455,7 @@ class Ancient(commands.Cog):
         async def _embed_loop():
             while raid_id in active_ancient_raids:
                 await asyncio.sleep(1.0)
-                # embed_loop handles refresh
+                await _update_embed()
 
         anc_view_ref = [None]
 
