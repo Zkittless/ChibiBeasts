@@ -176,13 +176,13 @@ class Profile(commands.Cog):
 
             def _rebuild(self):
                 self.clear_items()
-                # Row 0 — rarity tabs (only show tabs that have beasts)
+                # Row 0 + 1 — rarity tabs split across two rows (max 5 per row)
                 visible_tabs = [t for t in TAB_RARITIES if has_tab(t)]
-                for t in visible_tabs:
+                for idx_t, t in enumerate(visible_tabs):
                     btn = discord.ui.Button(
                         label=TAB_LABELS[t],
                         style=discord.ButtonStyle.primary if t == self.tab else discord.ButtonStyle.secondary,
-                        row=0,
+                        row=0 if idx_t < 5 else 1,
                         disabled=(t == self.tab)
                     )
                     async def _tab_cb(inter, tab=t):
@@ -196,9 +196,9 @@ class Profile(commands.Cog):
                     btn.callback = _tab_cb
                     self.add_item(btn)
 
-                # Row 1 — prev / page indicator / next
+                # Row 2 — prev / page indicator / next
                 _, total = build_embed(self.tab, self.page)
-                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, row=1, disabled=self.page<=1)
+                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, row=2, disabled=self.page<=1)
                 async def _prev(inter):
                     if inter.user.id != uid:
                         return await inter.response.send_message("✦ This isn't your collection!", ephemeral=True)
@@ -209,10 +209,10 @@ class Profile(commands.Cog):
                 prev.callback = _prev
                 self.add_item(prev)
 
-                page_lbl = discord.ui.Button(label=f"{self.page}/{total}", style=discord.ButtonStyle.secondary, row=1, disabled=True)
+                page_lbl = discord.ui.Button(label=f"{self.page}/{total}", style=discord.ButtonStyle.secondary, row=2, disabled=True)
                 self.add_item(page_lbl)
 
-                nxt = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, row=1, disabled=self.page>=total)
+                nxt = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, row=2, disabled=self.page>=total)
                 async def _next(inter):
                     if inter.user.id != uid:
                         return await inter.response.send_message("✦ This isn't your collection!", ephemeral=True)
