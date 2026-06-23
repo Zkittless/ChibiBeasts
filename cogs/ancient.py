@@ -691,7 +691,7 @@ class Ancient(commands.Cog):
                     if raid_id not in active_ancient_raids: return
                     r = active_ancient_raids[raid_id]
                     now_t = _t.monotonic()
-                    if now_t - r.get("last_embed_update", 0) < 1.2: return
+                    if now_t - r.get("last_embed_update", 0) < 0.4: return
                     r["last_embed_update"] = now_t
                     try:
                         self.update_ult_style(uid, r)
@@ -767,7 +767,7 @@ class Ancient(commands.Cog):
                     if raid_id not in active_ancient_raids: return
                     r = active_ancient_raids[raid_id]
                     now_t = _t.monotonic()
-                    if now_t - r.get("last_embed_update", 0) < 1.2: return
+                    if now_t - r.get("last_embed_update", 0) < 0.4: return
                     r["last_embed_update"] = now_t
                     try:
                         self.update_ult_style(uid, r)
