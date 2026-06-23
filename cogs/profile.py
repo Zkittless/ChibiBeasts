@@ -943,11 +943,6 @@ class Shop(commands.Cog):
                     value=pool_str,
                     inline=False
                 )
-            embed.add_field(
-                name="🔥 Phoenix Elixir — `2,000g`",
-                value="Revives any knocked-out beast in your raid party, restoring 50% HP. Drops from raids too.",
-                inline=False
-            )
             embed.set_footer(text="ChibiBeasts 🐾  •  Click a button to buy instantly")
 
             class InstantEggView(discord.ui.View):
@@ -979,20 +974,6 @@ class Shop(commands.Cog):
                             await _do_purchase(bi, _id, _p, _n, _ns, quantity=5)
                         btn5.callback = cb5
                         self.add_item(btn5)
-
-                    # Phoenix Elixir button on its own row
-                    elixir_btn = discord.ui.Button(
-                        label="Phoenix Elixir",
-                        style=discord.ButtonStyle.danger,
-                        emoji="🔥",
-                        row=4
-                    )
-                    async def _buy_elixir(bi: discord.Interaction):
-                        if bi.user.id != interaction.user.id:
-                            return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                        await _do_purchase(bi, "phoenix_elixir", 2000, "Phoenix Elixir", "Use `/use Phoenix Elixir` to revive a knocked-out beast!", quantity=1)
-                    elixir_btn.callback = _buy_elixir
-                    self.add_item(elixir_btn)
 
             return await interaction.followup.send(embed=embed, view=InstantEggView())
 
@@ -1118,72 +1099,101 @@ class Shop(commands.Cog):
             return await interaction.followup.send(embed=build_incub_embed(1), view=IncubationEggView(1))
 
         # ══════════════════════════════════════════════════════════════════
-        # POTIONS TAB
+        # POTIONS TAB — Revive & Heal
         # ══════════════════════════════════════════════════════════════════
         if category == "potions":
-            POTION_TYPES = {"heal","revive","cure","mana","happiness","happiness_boost","exp","stat_boost","cooldown"}
-            POTION_ITEMS = sorted(
-                [i for i in items_data.values() if i.get("price",0) > 0 and i.get("type") in POTION_TYPES],
-                key=lambda i: (RARITY_ORDER.index(i["rarity"]) if i["rarity"] in RARITY_ORDER else 99, i["price"])
-            )
-            per_page = 4
-            total_pages = max(1, (len(POTION_ITEMS) + per_page - 1) // per_page)
+            REVIVE_HEAL_TYPES = {"heal", "revive", "cure", "mana"}
+            CONSUMABLE_TYPES  = {"happiness", "happiness_boost", "exp", "stat_boost", "cooldown", "battle", "encounter", "permanent_boost"}
 
-            def build_pot_embed(page: int) -> discord.Embed:
-                embed = discord.Embed(
-                    title="🏪 Shop — 🔮 Potions & Consumables",
-                    description=f"💰 Your gold: `{player['gold']:,}` · Page {page}/{total_pages}",
-                    color=COLORS["rare"]
+            def _sorted_items(types):
+                return sorted(
+                    [i for i in items_data.values() if i.get("price", 0) > 0 and i.get("type") in types],
+                    key=lambda i: (RARITY_ORDER.index(i["rarity"]) if i["rarity"] in RARITY_ORDER else 99, i["price"])
                 )
-                for item in POTION_ITEMS[(page-1)*per_page : page*per_page]:
+
+            REVIVE_ITEMS = _sorted_items(REVIVE_HEAL_TYPES)
+            CONSUMABLE_ITEMS = _sorted_items(CONSUMABLE_TYPES)
+
+            # Two sub-tabs within potions
+            POT_CATEGORIES = {
+                "heal":  ("🔮 Revive & Heal",  REVIVE_ITEMS,     COLORS["epic"]),
+                "buff":  ("⚗️ Consumables",     CONSUMABLE_ITEMS, COLORS["rare"]),
+            }
+            current_pot = "heal"
+            per_page = 4
+
+            def build_pot_embed(sub: str, page: int) -> discord.Embed:
+                label, items, color = POT_CATEGORIES[sub]
+                total = max(1, (len(items) + per_page - 1) // per_page)
+                page  = max(1, min(page, total))
+                embed = discord.Embed(
+                    title=f"🏪 Shop — {label}",
+                    description=f"💰 Your gold: `{player['gold']:,}` · Page {page}/{total}",
+                    color=color
+                )
+                for item in items[(page-1)*per_page : page*per_page]:
                     r = RARITY_EMOJI.get(item["rarity"], "⚪")
                     embed.add_field(
                         name=f"{r} {item['name']} — `{item['price']:,}g`",
                         value=item["description"][:120],
                         inline=False
                     )
-                embed.set_footer(text="Buy items then use /use <item> to apply them")
-                return embed
+                embed.set_footer(text="Use /use <item name> to apply · /shop items for evolution items")
+                return embed, max(1, (len(items) + per_page - 1) // per_page)
 
             class PotionShopView(discord.ui.View):
-                def __init__(self, page: int):
+                def __init__(self, sub: str, page: int):
                     super().__init__(timeout=120)
+                    self.sub  = sub
                     self.page = page
                     self._build()
 
                 def _build(self):
                     self.clear_items()
-                    page_items = POTION_ITEMS[(self.page-1)*per_page : self.page*per_page]
+                    _, items, _ = POT_CATEGORIES[self.sub]
+                    _, total = build_pot_embed(self.sub, self.page)
+
+                    # Sub-tab buttons row 0
+                    for sub_key, (label, _, _c) in POT_CATEGORIES.items():
+                        btn = discord.ui.Button(
+                            label=label,
+                            style=discord.ButtonStyle.primary if sub_key == self.sub else discord.ButtonStyle.secondary,
+                            disabled=(sub_key == self.sub),
+                            row=0
+                        )
+                        async def _sub_cb(bi, sk=sub_key):
+                            if bi.user.id != interaction.user.id:
+                                return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                            self.sub  = sk
+                            self.page = 1
+                            self._build()
+                            emb, _ = build_pot_embed(self.sub, self.page)
+                            await bi.response.edit_message(embed=emb, view=self)
+                        btn.callback = _sub_cb
+                        self.add_item(btn)
+
+                    # Item buy buttons rows 1-4
+                    page_items = items[(self.page-1)*per_page : self.page*per_page]
                     for row_idx, item in enumerate(page_items):
-                        r = RARITY_EMOJI.get(item["rarity"], "⚪")
-                        next_step = "Use `/use " + item["name"] + "` to apply it!"
-                        btn = discord.ui.Button(label=item["name"][:20], style=discord.ButtonStyle.success, emoji=r, row=row_idx)
-                        async def _cb(bi: discord.Interaction, _id=item["id"], _p=item["price"], _n=item["name"], _ns=next_step):
+                        r    = RARITY_EMOJI.get(item["rarity"], "⚪")
+                        ns   = f"Use `/use {item['name']}` to apply it!"
+                        btn1 = discord.ui.Button(label=item["name"][:22], style=discord.ButtonStyle.success, emoji=r, row=row_idx+1)
+                        async def _cb(bi, _id=item["id"], _p=item["price"], _n=item["name"], _ns=ns):
                             if bi.user.id != interaction.user.id:
                                 return await bi.response.send_message("This isn't your shop!", ephemeral=True)
                             await _do_purchase(bi, _id, _p, _n, _ns, quantity=1)
-                        btn.callback = _cb
-                        self.add_item(btn)
-                        btn5 = discord.ui.Button(label="+5", style=discord.ButtonStyle.secondary, row=row_idx)
-                        async def _cb5(bi: discord.Interaction, _id=item["id"], _p=item["price"], _n=item["name"], _ns=next_step):
+                        btn1.callback = _cb
+                        self.add_item(btn1)
+                        btn5 = discord.ui.Button(label="+5", style=discord.ButtonStyle.secondary, row=row_idx+1)
+                        async def _cb5(bi, _id=item["id"], _p=item["price"], _n=item["name"], _ns=ns):
                             if bi.user.id != interaction.user.id:
                                 return await bi.response.send_message("This isn't your shop!", ephemeral=True)
                             await _do_purchase(bi, _id, _p, _n, _ns, quantity=5)
                         btn5.callback = _cb5
                         self.add_item(btn5)
-                    if total_pages > 1:
-                        prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=self.page<=1, row=4)
-                        nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self.page>=total_pages, row=4)
-                        async def _prev(bi, _s=self):
-                            _s.page -= 1; _s._build()
-                            await bi.response.edit_message(embed=build_pot_embed(_s.page), view=_s)
-                        async def _nxt(bi, _s=self):
-                            _s.page += 1; _s._build()
-                            await bi.response.edit_message(embed=build_pot_embed(_s.page), view=_s)
-                        prev.callback = _prev; nxt.callback = _nxt
-                        self.add_item(prev); self.add_item(nxt)
 
-            return await interaction.followup.send(embed=build_pot_embed(1), view=PotionShopView(1))
+            emb, _ = build_pot_embed(current_pot, 1)
+            return await interaction.followup.send(embed=emb, view=PotionShopView(current_pot, 1))
 
         # ══════════════════════════════════════════════════════════════════
         # ITEMS TAB

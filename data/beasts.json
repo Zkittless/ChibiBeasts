@@ -85,10 +85,11 @@
       "description": "A stout and scrappy fighter who compensates for lack of grace with sheer stubbornness.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/goblin.png",
       "evolution": {
-        "evolves_to": "minotaur",
+        "evolves_to": "radiant_goblin",
+        "form": "radiant",
         "method": "sunforge_core",
         "level_required": 25,
-        "description": "This Goblin has been lifting things too heavy for a Goblin. Something shifted."
+        "description": "The Sunforge didn't change what it was. It clarified it."
       },
       "catch_rate": 0.85,
       "encounter_situations": [
@@ -119,10 +120,11 @@
       "description": "A cunning shadow gremlin that strikes from darkness and vanishes before retaliation.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/imp.png",
       "evolution": {
-        "evolves_to": "cerberus",
+        "evolves_to": "radiant_imp",
+        "form": "radiant",
         "method": "sunforge_core",
         "level_required": 20,
-        "description": "The Imp found a second face. Then a third. The Loom considers this perfectly normal."
+        "description": "It passed through the Sunforge and came out darker than it went in."
       },
       "catch_rate": 0.85,
       "encounter_situations": [
@@ -153,10 +155,11 @@
       "description": "A remarkably resilient blob that absorbs damage like a sponge and bounces back from almost anything.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/slime.png",
       "evolution": {
-        "evolves_to": "singularity",
-        "method": "cosmic_singularity_soda",
+        "evolves_to": "ascended_slime",
+        "form": "ascended",
+        "method": "genesis_fruit",
         "level_required": 50,
-        "description": "Something about this particular Slime has always been different. The Loom knows."
+        "description": "The Loom made the Slime as a test. It passed. No one expected that."
       },
       "catch_rate": 0.85,
       "encounter_situations": [
@@ -318,7 +321,8 @@
       "description": "A magnificent creature of pure light whose horn holds the power to heal any wound.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/unicorn.png",
       "evolution": {
-        "evolves_to": "astraea",
+        "evolves_to": "ascended_unicorn",
+        "form": "ascended",
         "method": "genesis_fruit",
         "level_required": 50,
         "description": "The Unicorn touched something it shouldn't have been able to touch. The Loom is not surprised."
@@ -352,7 +356,8 @@
       "description": "A winged stallion born from storm clouds whose speed rivals lightning itself.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/pegasus.png",
       "evolution": {
-        "evolves_to": "horizon",
+        "evolves_to": "ascended_pegasus",
+        "form": "ascended",
         "method": "genesis_fruit",
         "level_required": 50,
         "description": "The Pegasus flew so high it found the edge of the world. Then it found what was beyond it."
@@ -506,7 +511,13 @@
       "ultimate": "Eternal Pyre",
       "description": "An immortal bird of flame that dies and is reborn from its own ashes, carrying the warmth of the sun.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/phoenix.png",
-      "evolution": null,
+      "evolution": {
+        "evolves_to": "ascended_phoenix",
+        "form": "ascended",
+        "method": "genesis_fruit",
+        "level_required": 40,
+        "description": "Every Phoenix dies. This one decided that dying had become a habit worth breaking."
+      },
       "catch_rate": 0.15,
       "encounter_situations": [
         "The Phoenix is in the middle of burning. This is apparently a normal Tuesday for it. The fire dies down as you approach, leaving it looking mildly inconvenienced.",
@@ -739,10 +750,11 @@
       "description": "A multi-headed serpent that grows two new heads for every one cut off, making it nearly impossible to defeat.",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/hydra.png",
       "evolution": {
-        "evolves_to": "kraken",
+        "evolves_to": "radiant_hydra",
+        "form": "radiant",
         "method": "sunforge_core",
         "level_required": 35,
-        "description": "The Hydra grew its tentacles back one too many times, and they became something else."
+        "description": "The heads stopped being heads. The Sunforge gave up and gave it a promotion."
       },
       "catch_rate": 0.05,
       "encounter_situations": [
@@ -2327,6 +2339,224 @@
         "Static fills the air. The ground crumbles in a perfect circle and Desync the Infinite rises from the nothing beneath it, jaws already closing around its own tail.",
         "You blink and reality skips a frame. When it catches up, Desync the Infinite is already watching you with eyes that have seen the end of everything and found it unremarkable."
       ]
+    },
+    "ascended_slime": {
+      "id": "ascended_slime",
+      "name": "Ascended Slime",
+      "title": "The Primordial Remnant",
+      "rarity": "divine",
+      "type": "water",
+      "description": "The Loom made the Slime as a test to see if resilience alone could become something divine. It passed. No one expected that.",
+      "lore": "When the Genesis Fruit touched it, nothing changed visibly. Then everything else looked slightly smaller.",
+      "base_stats": {
+        "hp": 260,
+        "attack": 145,
+        "defense": 170,
+        "speed": 60,
+        "mana": 100
+      },
+      "moves": [
+        "Void Absorption",
+        "Primordial Surge",
+        "Null Compress"
+      ],
+      "ultimate": "Singularity Collapse",
+      "divine_passive": {
+        "passive_id": "void_absorption",
+        "passive_name": "Void Absorption",
+        "passive_desc": "Converts 20% of all damage received into permanent attack stacks (resets each battle). The Slime keeps everything it touches.",
+        "passive_trigger": "on_hit_taken",
+        "passive_effect": {
+          "absorb_to_attack_percent": 20
+        }
+      },
+      "evolves_from": "slime",
+      "image_url": null
+    },
+    "ascended_unicorn": {
+      "id": "ascended_unicorn",
+      "name": "Ascended Unicorn",
+      "title": "The Living Grace",
+      "rarity": "divine",
+      "type": "light",
+      "description": "There is a light that exists before light has a source. The Ascended Unicorn became that. The wound it leaves when it touches you closes itself.",
+      "lore": "The Unicorn touched something it shouldn't have been able to touch. The Loom is not surprised.",
+      "base_stats": {
+        "hp": 250,
+        "attack": 140,
+        "defense": 140,
+        "speed": 110,
+        "mana": 130
+      },
+      "moves": [
+        "Sacred Mending",
+        "Luminal Strike",
+        "Absolution"
+      ],
+      "ultimate": "Graceful Annihilation",
+      "divine_passive": {
+        "passive_id": "sacred_mending",
+        "passive_name": "Sacred Mending",
+        "passive_desc": "Heals 10% of damage dealt on every attack. Every third attack restores 30% of the Ascended Unicorn's max HP instead of dealing damage. The grace is not wasted on the enemy.",
+        "passive_trigger": "on_attack",
+        "passive_effect": {
+          "lifesteal_percent": 10,
+          "third_hit_heal_percent": 30
+        }
+      },
+      "evolves_from": "unicorn",
+      "image_url": null
+    },
+    "ascended_pegasus": {
+      "id": "ascended_pegasus",
+      "name": "Ascended Pegasus",
+      "title": "The Edge-Walker",
+      "rarity": "divine",
+      "type": "wind",
+      "description": "It found the boundary between the world and what the world sits inside. It comes back faster each time it visits.",
+      "lore": "The Pegasus flew so high it found the edge of the world. Then it found what was beyond it.",
+      "base_stats": {
+        "hp": 235,
+        "attack": 150,
+        "defense": 115,
+        "speed": 160,
+        "mana": 110
+      },
+      "moves": [
+        "Boundary Breach",
+        "Rift Gallop",
+        "Pressure Wave"
+      ],
+      "ultimate": "Dimensional Sprint",
+      "divine_passive": {
+        "passive_id": "boundary_break",
+        "passive_name": "Boundary Break",
+        "passive_desc": "Speed increases by 8% each turn permanently. Above 200% base speed, attacks ignore type resistance entirely. The storm doesn't care what resists wind.",
+        "passive_trigger": "turn_start",
+        "passive_effect": {
+          "speed_stack_percent": 8,
+          "resistance_ignore_speed_threshold": 200
+        }
+      },
+      "evolves_from": "pegasus",
+      "image_url": null
+    },
+    "ascended_phoenix": {
+      "id": "ascended_phoenix",
+      "name": "Ascended Phoenix",
+      "title": "The Unextinguishable",
+      "rarity": "divine",
+      "type": "fire",
+      "description": "Every Phoenix dies. This one stopped. Not because it can't \u2014 it simply decided that dying had become a habit worth breaking.",
+      "lore": "When the Genesis Fruit burned in its talons, no ash fell. Something had changed about the relationship between fire and ending.",
+      "base_stats": {
+        "hp": 265,
+        "attack": 165,
+        "defense": 120,
+        "speed": 120,
+        "mana": 140
+      },
+      "moves": [
+        "Pyre Eternal",
+        "Ash Unending",
+        "Solar Immolation"
+      ],
+      "ultimate": "The Last Sunrise",
+      "divine_passive": {
+        "passive_id": "deathless_flame",
+        "passive_name": "Deathless Flame",
+        "passive_desc": "On reaching 0 HP, revives at 40% HP with full mana and +50% attack. Once per battle. Fire attacks can never be resisted \u2014 they deal neutral damage minimum.",
+        "passive_trigger": "on_ko",
+        "passive_effect": {
+          "revive_hp_percent": 40,
+          "revive_mana_full": true,
+          "revive_attack_boost": 50,
+          "fire_resistance_ignore": true
+        }
+      },
+      "evolves_from": "phoenix",
+      "image_url": null
+    },
+    "radiant_goblin": {
+      "id": "radiant_goblin",
+      "name": "Radiant Goblin",
+      "title": "The Forge-Blooded Brawler",
+      "rarity": "epic",
+      "type": "earth",
+      "description": "The Sunforge didn't make it smarter. It made everything it hits feel significantly worse.",
+      "lore": "The Goblin walked into the Sunforge on a dare. It walked out quieter. Everything around it started treating it with a respect it had not previously earned.",
+      "base_stats": {
+        "hp": 190,
+        "attack": 130,
+        "defense": 110,
+        "speed": 75,
+        "mana": 80
+      },
+      "moves": [
+        "Forge Slam",
+        "Molten Dirt",
+        "Scorch Scavenge"
+      ],
+      "ultimate": "Forge Rampage",
+      "evolves_from": "goblin",
+      "image_url": null
+    },
+    "radiant_imp": {
+      "id": "radiant_imp",
+      "name": "Radiant Imp",
+      "title": "The Void-Touched Gremlin",
+      "rarity": "rare",
+      "type": "shadow",
+      "description": "It passed through the Sunforge and came out darker than it went in. The Loom filed a report.",
+      "lore": "The heat didn't burn it. The light didn't illuminate it. The Sunforge looked at the Imp and decided darkness could be refined too.",
+      "base_stats": {
+        "hp": 130,
+        "attack": 100,
+        "defense": 55,
+        "speed": 120,
+        "mana": 90
+      },
+      "moves": [
+        "Void Scratch",
+        "Smoke Cloak",
+        "Haunting Taunt"
+      ],
+      "ultimate": "Shadow Swarm",
+      "evolves_from": "imp",
+      "image_url": null
+    },
+    "radiant_hydra": {
+      "id": "radiant_hydra",
+      "name": "Radiant Hydra",
+      "title": "The Undying Eternal",
+      "rarity": "divine",
+      "type": "water",
+      "description": "The heads stopped being heads. They became something the language of cataloguing doesn't cover well.",
+      "lore": "When the Sunforge touched the Hydra, two heads grew back for each one it removed. The Sunforge gave up and gave it a promotion instead.",
+      "base_stats": {
+        "hp": 310,
+        "attack": 145,
+        "defense": 150,
+        "speed": 70,
+        "mana": 100
+      },
+      "moves": [
+        "Eternal Strike",
+        "Void Scale Regen",
+        "Venom of Ages"
+      ],
+      "ultimate": "Heads Without End",
+      "divine_passive": {
+        "passive_id": "endless_regen",
+        "passive_name": "Endless Regen",
+        "passive_desc": "Restores 6% of max HP at the end of every turn. You cannot outlast something that grows back faster than it falls.",
+        "passive_trigger": "turn_end",
+        "passive_effect": {
+          "regen_percent": 6
+        }
+      },
+      "evolves_from": "hydra",
+      "image_url": null
     }
   },
   "rarity_rates": {

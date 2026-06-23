@@ -309,11 +309,19 @@ async def run_pve_battle(
         # Turn-start passives
         double_turn = apply_turn_start_passives(attacker_state, battle_log)
 
-        # HP regen
+        # HP regen — equipment rune regen
         if attacker_state.get("_hp_regen_percent") and attacker_state["hp"] > 0:
             regen = max(1, int(attacker_state["max_hp"] * attacker_state["_hp_regen_percent"] / 100))
             attacker_state["hp"] = min(attacker_state["max_hp"], attacker_state["hp"] + regen)
             battle_log.append(f"🩹 **{attacker_state['name']}** regenerated {regen} HP!")
+
+        # Endless Regen (Radiant Hydra) — divine passive regen each turn
+        _dp = attacker_state.get("divine_passive", {})
+        if _dp.get("passive_id") == "endless_regen" and attacker_state["hp"] > 0:
+            _regen_pct = _dp.get("passive_effect", {}).get("regen_percent", 6)
+            _regen = max(1, int(attacker_state["max_hp"] * _regen_pct / 100))
+            attacker_state["hp"] = min(attacker_state["max_hp"], attacker_state["hp"] + _regen)
+            battle_log.append(f"🐍 **{attacker_state['name']}'s Endless Regen** — +{_regen} HP!")
 
         # DoT
         for status, key, emoji in [("poison","max_hp","☠️"),("burn","max_hp","🔥"),("blight","max_hp","💜")]:
@@ -592,6 +600,15 @@ def apply_turn_start_passives(active_state: dict, battle_log: list) -> bool:
             if stacks <= 4:  # Only log first few to avoid spam
                 battle_log.append(f"✨ **{active_state['name']}'s Constellation Charge** (×{stacks}) — ATK+{atk_gain} SPD+{spd_gain}!")
 
+    # Boundary Break (Ascended Pegasus) — speed stacks each turn
+    if pid == "boundary_break":
+        spd_gain = int(active_state["speed"] * effect.get("speed_stack_percent", 8) / 100)
+        active_state["speed"] += spd_gain
+        active_state.setdefault("dp_stacks", 0)
+        active_state["dp_stacks"] += 1
+        if active_state["dp_stacks"] <= 4:
+            battle_log.append(f"🌪️ **{active_state['name']}'s Boundary Break** — SPD+{spd_gain}! (×{active_state['dp_stacks']})")
+
     return double_turn
 
 
@@ -615,6 +632,23 @@ def apply_on_hit_passives(attacker_state: dict, defender_state: dict, damage: in
             defender_state["status"] = "blind"
             defender_state["status_turns"] = effect.get("blind_turns", 2)
             battle_log.append(f"👁️ **{attacker_state['name']}'s Dark Matter** — {defender_state['name']} is Blinded!")
+
+        elif pid == "sacred_mending":
+            attacker_state.setdefault("dp_stacks", 0)
+            attacker_state["dp_stacks"] += 1
+            if attacker_state["dp_stacks"] % 3 == 0:
+                # Every 3rd attack: heal self instead of damage
+                self_heal = int(attacker_state["max_hp"] * effect.get("third_hit_heal_percent", 30) / 100)
+                attacker_state["hp"] = min(attacker_state["max_hp"], attacker_state["hp"] + self_heal)
+                battle_log.append(f"✨ **{attacker_state['name']}'s Sacred Mending** — restored {self_heal} HP on 3rd strike!")
+            else:
+                heal = int(damage * effect.get("lifesteal_percent", 10) / 100)
+                attacker_state["hp"] = min(attacker_state["max_hp"], attacker_state["hp"] + heal)
+                if heal > 0:
+                    battle_log.append(f"✨ **{attacker_state['name']}'s Sacred Mending** — healed {heal} HP!")
+
+        elif pid == "boundary_break":
+            pass  # handled in turn_start via apply_turn_start_passives
 
         elif pid == "critical_mass":
             # Tracked in calc_damage via dp_crit_charges
@@ -679,6 +713,24 @@ def apply_on_hit_taken_passives(attacker_state: dict, defender_state: dict, dama
     if trigger == "on_status_received":
         pass  # handled at status application time
 
+    # Forge Fury (Radiant Goblin) — each hit taken stacks attack
+    if trigger == "on_hit_taken" and pid == "forge_fury" and damage > 0:
+        stack = int(defender_state["attack"] * effect.get("attack_stack_percent", 4) / 100)
+        defender_state["attack"] += stack
+        defender_state.setdefault("dp_stacks", 0)
+        defender_state["dp_stacks"] += 1
+        if defender_state["dp_stacks"] <= 5:
+            battle_log.append(f"🔥 **{defender_state['name']}'s Forge Fury** — ATK+{stack}! (×{defender_state['dp_stacks']})")
+
+    # Void Absorption (Ascended Slime) — converts damage to attack stacks
+    if trigger == "on_hit_taken" and pid == "void_absorption" and damage > 0:
+        absorbed_atk = int(damage * effect.get("absorb_to_attack_percent", 20) / 100)
+        defender_state["attack"] = defender_state.get("attack", 0) + absorbed_atk
+        defender_state.setdefault("dp_stacks", 0)
+        defender_state["dp_stacks"] += absorbed_atk
+        if absorbed_atk > 0:
+            battle_log.append(f"🌊 **{defender_state['name']}'s Void Absorption** — ATK+{absorbed_atk} absorbed!")
+
     return damage
 
 
@@ -697,6 +749,22 @@ def apply_ko_passives(ko_state: dict, opponent_state: dict, battle_log: list) ->
         ko_state["dp_used"] = True
         battle_log.append(f"🔥 **{ko_state['name']}'s First Flame** — rose from the ashes with {heal} HP!")
         return True
+
+    if pid == "deathless_flame" and not ko_state.get("dp_used"):
+        heal_pct = effect.get("revive_hp_percent", 40)
+        heal = int(ko_state["max_hp"] * heal_pct / 100)
+        atk_boost = int(ko_state["attack"] * effect.get("revive_attack_boost", 50) / 100)
+        ko_state["hp"] = heal
+        ko_state["mana"] = ko_state.get("max_mana", 100)
+        ko_state["attack"] += atk_boost
+        ko_state["status"] = None
+        ko_state["dp_used"] = True
+        battle_log.append(
+            f"🔥 **{ko_state['name']}'s Deathless Flame** — *it refused.* "
+            f"Revived at {heal} HP, full mana, ATK+{atk_boost}!"
+        )
+        return True
+
     return False
 
 
@@ -714,6 +782,11 @@ def calc_damage(attacker: dict, defender: dict, move: str, is_ultimate: bool = F
     # Type advantage — Horizon's Rift Step passive: ignore type disadvantage
     passive_id = attacker.get("divine_passive", {}).get("passive_id", "")
     raw_mult = get_type_multiplier(attacker.get("beast_type", ""), defender.get("beast_type", ""))
+    # Boundary Break (Ascended Pegasus): above 200% base speed, ignore type resistance
+    if passive_id == "boundary_break":
+        base_speed = attacker.get("base_speed", attacker.get("speed", 1))
+        if attacker.get("speed", 0) >= base_speed * 2:
+            raw_mult = max(1.0, raw_mult)  # no resistance, floor at neutral
     type_mult = max(1.0, raw_mult) if passive_id == "rift_step" else raw_mult
     damage *= type_mult
 

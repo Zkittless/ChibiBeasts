@@ -173,7 +173,7 @@
       "type": "evolution",
       "value": 0,
       "price": 15000,
-      "description": "A blazing, miniature star enclosed in an enchanted glass orb. Triggers Radiant or Ascended forms of certain beasts.",
+      "description": "A blazing, miniature star enclosed in an enchanted glass orb. Triggers the Radiant form of certain beasts \u2014 the same creature, clarified by fire into something harder to ignore.",
       "effect": {
         "evolution_trigger": [
           "radiant",
@@ -213,7 +213,7 @@
       "type": "unlock",
       "value": 0,
       "price": 75000,
-      "description": "A fruit that shifts through every color of the rainbow. Permanently unlocks a hidden Divine Trait slot for an extra combat ability.",
+      "description": "A fruit that shifts through every color of the rainbow. Triggers the Ascended form of certain beasts \u2014 a divine transformation that cannot be undone. The beast that steps through does not come back the same. Nothing that touches the Genesis Fruit does.",
       "effect": {
         "unlock_divine_trait": true
       }
