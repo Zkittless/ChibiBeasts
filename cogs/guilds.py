@@ -4,7 +4,7 @@ from discord.ext import commands
 import aiosqlite
 import random
 import asyncio
-from utils.db import get_or_create_player, get_player, update_player, get_beast_data, get_active_beast
+from utils.db import get_or_create_player, get_player, update_player, get_beast_data, get_active_beast, knockout_beast, revive_beast, is_knocked_out, ko_time_remaining
 from utils.theme import COLORS, RARITY_EMOJI, hp_bar, SPARKLE
 from utils.progress import (
     track_quest_event, check_achievements, unlock_simple_achievement, notify_unlocks, notify_quest_completions
@@ -1000,6 +1000,14 @@ class Guilds(commands.Cog):
                     + (f" — **knocked out!** 💀" if died else f" | `{p_hp}/{p_max}HP`")
                 )
 
+                # Stamp KO timer on the dead beast's DB row
+                if died:
+                    party = raid.get("player_party", {}).get(target_uid, [])
+                    slot  = raid.get("player_active_slot", {}).get(target_uid, 0)
+                    if slot < len(party):
+                        beast_row = party[slot]
+                        asyncio.create_task(knockout_beast(beast_row["id"], beast_row.get("rarity", "common")))
+
                 # Check full party wipe — end raid if every participant is down with no bench left
                 if raid["participants"] and raid_id in active_raids:
                     def _has_bench(uid):
@@ -1041,6 +1049,11 @@ class Guilds(commands.Cog):
                         raid["player_hp"][uid] = max(0, raid["player_hp"].get(uid, 0) - dmg)
                         _pslot = raid.get("player_active_slot", {}).get(uid, 0)
                         raid["player_party_hp"][(uid, _pslot)] = raid["player_hp"][uid]
+                        # Stamp KO if this hit killed the beast
+                        if raid["player_hp"][uid] <= 0:
+                            party = raid.get("player_party", {}).get(uid, [])
+                            if _pslot < len(party):
+                                asyncio.create_task(knockout_beast(party[_pslot]["id"], party[_pslot].get("rarity", "common")))
 
                     # Store as last_event on the embed — no new channel message
                     phase_status = (
@@ -1167,6 +1180,16 @@ class Guilds(commands.Cog):
                         return await btn_interaction.followup.send(
                             f"✦ You need a full 3-beast raid party! You have {len(party_rows)}/3 slots filled.\n"
                             f"Use `/raidparty` to set up your team before joining a raid.",
+                            ephemeral=True
+                        )
+                    # Block KO'd beasts
+                    ko_beasts = [r for r in party_rows if is_knocked_out(r)]
+                    if ko_beasts:
+                        names = ", ".join(r.get("nickname") or get_beast_data(r["beast_id"], {}).get("name", "?") for r in ko_beasts)
+                        timers = ", ".join(f"`{ko_time_remaining(r)}`" for r in ko_beasts)
+                        return await btn_interaction.followup.send(
+                            f"✦ **{names}** {'are' if len(ko_beasts)>1 else 'is'} still recovering! ({timers})\n"
+                            f"Use a **Phoenix Elixir** to revive instantly, or wait for recovery.",
                             ephemeral=True
                         )
                     raid["player_party"][uid]       = party_rows

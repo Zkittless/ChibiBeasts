@@ -520,7 +520,7 @@ class Inventory(commands.Cog):
             ))
 
         active = await get_active_beast(interaction.user.id)
-        if not active and item["type"] not in ["cooldown", "unlock", "reset"]:
+        if not active and item["type"] not in ["cooldown", "unlock", "reset", "revive"]:
             return await interaction.followup.send(embed=discord.Embed(
                 description="✦ You need an active beast to use this item!", color=COLORS["error"]
             ))
@@ -535,10 +535,23 @@ class Inventory(commands.Cog):
                 await db.execute("UPDATE player_beasts SET hp = ? WHERE id = ?", (new_hp, active["id"]))
                 result_lines.append(f"❤️ Healed **{heal} HP** ({active['hp']} → {new_hp})")
 
-            if "revive" in effect and active and active["hp"] <= 0:
-                heal = int(active["max_hp"] * (effect.get("heal_percent", 50) / 100))
-                await db.execute("UPDATE player_beasts SET hp = ? WHERE id = ?", (heal, active["id"]))
-                result_lines.append(f"🔥 Revived with **{heal} HP**!")
+            if "revive" in effect:
+                # Find a KO'd beast in the raid party first, then fall back to active
+                from utils.db import get_raid_party, revive_beast, is_knocked_out
+                raid_party = await get_raid_party(interaction.user.id)
+                ko_beast = next((b for b in raid_party if b and is_knocked_out(b)), None)
+                if ko_beast:
+                    await revive_beast(ko_beast["id"])
+                    bd = get_beast_data(ko_beast["beast_id"]) or {}
+                    bname = ko_beast.get("nickname") or bd.get("name", "Beast")
+                    heal = int(ko_beast["max_hp"] * (effect.get("heal_percent", 50) / 100))
+                    result_lines.append(f"🔥 **{bname}** revived with `{heal} HP`! Ready to fight.")
+                elif active and active["hp"] <= 0:
+                    heal = int(active["max_hp"] * (effect.get("heal_percent", 50) / 100))
+                    await db.execute("UPDATE player_beasts SET hp = ?, knocked_out_until = NULL WHERE id = ?", (heal, active["id"]))
+                    result_lines.append(f"🔥 Revived with **{heal} HP**!")
+                else:
+                    result_lines.append("✦ No knocked-out beast to revive! Your party is already healthy.")
 
             if "restore_mana_percent" in effect and active:
                 restore = int(active["max_mana"] * (effect["restore_mana_percent"] / 100))
@@ -795,6 +808,11 @@ class Shop(commands.Cog):
                     value=pool_str,
                     inline=False
                 )
+            embed.add_field(
+                name="🔥 Phoenix Elixir — `2,000g`",
+                value="Revives any knocked-out beast in your raid party, restoring 50% HP. Drops from raids too.",
+                inline=False
+            )
             embed.set_footer(text="ChibiBeasts 🐾  •  Click a button to buy instantly")
 
             class InstantEggView(discord.ui.View):
@@ -826,6 +844,20 @@ class Shop(commands.Cog):
                             await _do_purchase(bi, _id, _p, _n, _ns, quantity=5)
                         btn5.callback = cb5
                         self.add_item(btn5)
+
+                    # Phoenix Elixir button on its own row
+                    elixir_btn = discord.ui.Button(
+                        label="Phoenix Elixir",
+                        style=discord.ButtonStyle.danger,
+                        emoji="🔥",
+                        row=4
+                    )
+                    async def _buy_elixir(bi: discord.Interaction):
+                        if bi.user.id != interaction.user.id:
+                            return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                        await _do_purchase(bi, "phoenix_elixir", 2000, "Phoenix Elixir", "Use `/use Phoenix Elixir` to revive a knocked-out beast!", quantity=1)
+                    elixir_btn.callback = _buy_elixir
+                    self.add_item(elixir_btn)
 
             return await interaction.followup.send(embed=embed, view=InstantEggView())
 

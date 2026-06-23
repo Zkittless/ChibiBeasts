@@ -255,6 +255,8 @@ async def _run_migrations():
         "ALTER TABLE incubating_eggs ADD COLUMN next_tend_at TIMESTAMP DEFAULT NULL",
         # Raid party slots — 1/2/3, NULL means not in raid party
         "ALTER TABLE player_beasts ADD COLUMN raid_slot INTEGER DEFAULT NULL",
+        # KO recovery timer — NULL means healthy
+        "ALTER TABLE player_beasts ADD COLUMN knocked_out_until TIMESTAMP DEFAULT NULL",
     ]
     async with aiosqlite.connect(DB_PATH) as db:
         for sql in migrations:
@@ -359,6 +361,84 @@ async def clear_raid_slot(user_id: int, slot: int):
             (user_id, slot)
         )
         await db.commit()
+
+# KO recovery time by rarity (seconds)
+KO_RECOVERY_SECONDS = {
+    "common":        5  * 60,
+    "uncommon":      5  * 60,
+    "rare":         15  * 60,
+    "epic":         30  * 60,
+    "legendary":    60  * 60,
+    "divine":      120  * 60,
+    "altered_divine": 240 * 60,
+    "corrupted":   480  * 60,
+    "ancient":     480  * 60,
+    "dev":           0,          # Desync never stays down
+}
+
+async def knockout_beast(beast_row_id: int, rarity: str):
+    """Stamp a beast as knocked out. Recovery time based on rarity."""
+    from datetime import datetime, timezone, timedelta
+    seconds = KO_RECOVERY_SECONDS.get(rarity, 30 * 60)
+    if seconds == 0:
+        return  # dev beasts skip KO timer
+    recovers_at = datetime.now(timezone.utc) + timedelta(seconds=seconds)
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "UPDATE player_beasts SET knocked_out_until = ? WHERE id = ?",
+            (recovers_at.isoformat(), beast_row_id)
+        )
+        await db.commit()
+
+async def revive_beast(beast_row_id: int):
+    """Clear KO timer and restore HP to full."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        async with db.execute("SELECT max_hp FROM player_beasts WHERE id = ?", (beast_row_id,)) as c:
+            row = await c.fetchone()
+        if row:
+            await db.execute(
+                "UPDATE player_beasts SET knocked_out_until = NULL, hp = ? WHERE id = ?",
+                (row["max_hp"], beast_row_id)
+            )
+            await db.commit()
+
+def is_knocked_out(beast_row: dict) -> bool:
+    """Check if a beast is currently in KO recovery."""
+    from datetime import datetime, timezone
+    ko_until = beast_row.get("knocked_out_until")
+    if not ko_until:
+        return False
+    try:
+        recover = datetime.fromisoformat(ko_until)
+        if recover.tzinfo is None:
+            recover = recover.replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc) < recover
+    except Exception:
+        return False
+
+def ko_time_remaining(beast_row: dict) -> str:
+    """Human-readable time until a KO'd beast recovers."""
+    from datetime import datetime, timezone
+    ko_until = beast_row.get("knocked_out_until")
+    if not ko_until:
+        return ""
+    try:
+        recover = datetime.fromisoformat(ko_until)
+        if recover.tzinfo is None:
+            recover = recover.replace(tzinfo=timezone.utc)
+        remaining = (recover - datetime.now(timezone.utc)).total_seconds()
+        if remaining <= 0:
+            return ""
+        h, rem = divmod(int(remaining), 3600)
+        m, s   = divmod(rem, 60)
+        if h:
+            return f"{h}h {m}m"
+        if m:
+            return f"{m}m {s}s"
+        return f"{s}s"
+    except Exception:
+        return ""
 
 async def add_beast_to_player(user_id: int, beast_data: dict):
     from utils.dispositions import roll_disposition, apply_disposition

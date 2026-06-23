@@ -9,7 +9,8 @@ from utils.db import (
     get_or_create_player, get_player, update_player,
     get_active_beast, get_beast_data, load_beasts,
     add_item, remove_item, apply_beast_levelup, calc_exp_for_level,
-    get_beast_by_player_number, get_raid_party, set_raid_slot, clear_raid_slot
+    get_beast_by_player_number, get_raid_party, set_raid_slot, clear_raid_slot,
+    knockout_beast, revive_beast, is_knocked_out, ko_time_remaining
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import check_achievements, unlock_simple_achievement, notify_unlocks
@@ -1518,16 +1519,24 @@ class Utilities(commands.Cog):
                 color=COLORS.get("legendary", 0xFFD700)
             )
             slot_labels = ["🥇 Slot 1 — Front", "🥈 Slot 2 — Mid", "🥉 Slot 3 — Bench"]
+            ready = 0
             for i, beast in enumerate(party):
                 if beast:
-                    bd = get_beast_data(beast["beast_id"]) or {}
+                    bd    = get_beast_data(beast["beast_id"]) or {}
                     emoji = RARITY_EMOJI.get(beast["rarity"], "⚪")
                     name  = beast.get("nickname") or bd.get("name", "?")
+                    ko    = is_knocked_out(beast)
+                    timer = ko_time_remaining(beast)
+                    if ko:
+                        status_line = f"💀 **Knocked out** — recovers in `{timer}`\n*Use a Phoenix Elixir to revive instantly*"
+                    else:
+                        status_line = f"`{beast['hp']}/{beast['max_hp']}HP` · `{beast['attack']}ATK` · `{beast['defense']}DEF`"
+                        ready += 1
                     embed.add_field(
                         name=slot_labels[i],
                         value=(
                             f"{emoji} **{name}** `#{beast['player_number']}` · Lv.{beast['level']}\n"
-                            f"`{beast['hp']}/{beast['max_hp']}HP` · `{beast['attack']}ATK` · `{beast['defense']}DEF`"
+                            f"{status_line}"
                         ),
                         inline=False
                     )
@@ -1538,7 +1547,13 @@ class Utilities(commands.Cog):
                         inline=False
                     )
             filled = sum(1 for b in party if b)
-            status = "✅ Party ready!" if filled == 3 else f"⚠️ {filled}/3 slots filled — raids locked until full"
+            if filled < 3:
+                status = f"⚠️ {filled}/3 slots filled — raids locked until full"
+            elif ready < 3:
+                ko_count = filled - ready
+                status = f"💀 {ko_count} beast{'s' if ko_count>1 else ''} recovering — raids locked until revived"
+            else:
+                status = "✅ Party ready!"
             embed.set_footer(text=status)
             return embed
 

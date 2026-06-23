@@ -19,7 +19,7 @@ from discord.ext import commands
 import aiosqlite
 import random
 import asyncio
-from utils.db import get_or_create_player, get_player, update_player, get_beast_data, get_active_beast
+from utils.db import get_or_create_player, get_player, update_player, get_beast_data, get_active_beast, knockout_beast, is_knocked_out, ko_time_remaining
 from utils.theme import COLORS, RARITY_EMOJI, hp_bar
 from utils.progress import track_quest_event, unlock_simple_achievement, notify_unlocks, check_achievements
 from cogs.questline import advance_quest_step
@@ -561,6 +561,14 @@ class Ancient(commands.Cog):
                         + (" \u2014 **knocked out!** \U0001f480" if died else f" | `{p_hp}/{p_max}HP`")
                     )
 
+                # Stamp KO timer on dead beast
+                if died:
+                    party = cur_raid.get("player_party", {}).get(target_uid, [])
+                    slot  = cur_raid.get("player_active_slot", {}).get(target_uid, 0)
+                    if slot < len(party):
+                        beast_row = party[slot]
+                        asyncio.create_task(knockout_beast(beast_row["id"], beast_row.get("rarity", "common")))
+
                 # Check full party wipe
                 if cur_raid["participants"] and raid_id in active_ancient_raids:
                     all_down = all(
@@ -590,8 +598,12 @@ class Ancient(commands.Cog):
                     for uid in alive:
                         dmg = int(calc_boss_damage(cur_raid["boss_attack"], cur_raid["player_defense"].get(uid, 50), cur_raid["player_max_hp"].get(uid, 0)) * sig["mult"])
                         cur_raid["player_hp"][uid] = max(0, cur_raid["player_hp"].get(uid, 0) - dmg)
-                    _pslot = cur_raid.get("player_active_slot", {}).get(uid, 0)
-                    cur_raid["player_party_hp"][(uid, _pslot)] = cur_raid["player_hp"][uid]
+                        _pslot = cur_raid.get("player_active_slot", {}).get(uid, 0)
+                        cur_raid["player_party_hp"][(uid, _pslot)] = cur_raid["player_hp"][uid]
+                        if cur_raid["player_hp"][uid] <= 0:
+                            party = cur_raid.get("player_party", {}).get(uid, [])
+                            if _pslot < len(party):
+                                asyncio.create_task(knockout_beast(party[_pslot]["id"], party[_pslot].get("rarity", "common")))
                     phase_status = (
                         "🔴 CRITICAL — Boss DEF −60%" if sig["threshold"] == 0.15 else
                         "🟠 Weakened — Boss DEF −40%"  if sig["threshold"] == 0.40 else
