@@ -560,7 +560,7 @@ class Ancient(commands.Cog):
                 if uid in cur_raid["player_hp"] and cur_raid["player_hp"][uid] <= 0:
                     party = cur_raid.get("player_party", {}).get(uid, [])
                     current_slot = cur_raid.get("player_active_slot", {}).get(uid, 0)
-                    bench = [(i, b) for i, b in enumerate(party) if i != current_slot]
+                    bench = [(i, b) for i, b in enumerate(party) if i != current_slot and cur_raid.get("player_party_hp", {}).get((uid, i), 1) > 0]
                     if not bench:
                         return await btn_interaction.followup.send("✦ All your beasts are down. You can still watch.", ephemeral=True)
 
