@@ -712,12 +712,11 @@ class Ancient(commands.Cog):
                             await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
                         await db.commit()
                     raid_ended = cur_raid["current_hp"] <= 0
-                    new_mana   = cur_raid["player_mana"].get(uid, 0)
                 await check_phase_transitions(active_ancient_raids.get(raid_id, cur_raid), btn_interaction.channel)
                 # Store last player action as last_event — no ephemeral
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
-                    active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" \u26a1" if new_mana >= 50 else "")
+                    active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg"
                 asyncio.create_task(_update_embed(self, raid_ended))
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
@@ -750,6 +749,8 @@ class Ancient(commands.Cog):
                 _ult_bd = get_beast_data(_ult_beast["beast_id"]) or {}
                 ult_name = _ult_bd.get("ultimate", "Ultimate")
                 _ult_atk = cur_raid["player_atk"].get(uid, _ult_beast["attack"])
+                if cur_raid["player_mana"].get(uid, 0) < 50:
+                    return await btn_interaction.followup.send(f"❆ Not enough mana! `{cur_raid['player_mana'].get(uid,0)}/100`", ephemeral=True)
                 is_crit = random.random() < 0.20
                 defense = boss_effective_defense(cur_raid)
                 _ult_mana = cur_raid["player_mana"].get(uid, 50)
@@ -779,7 +780,7 @@ class Ancient(commands.Cog):
                 # Ultimate stored as last_event — no new messages
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
-                    active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg \u2014 Mana reset."
+                    active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
                 asyncio.create_task(_update_embed(self, raid_ended))
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")

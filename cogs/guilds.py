@@ -1232,15 +1232,13 @@ class Guilds(commands.Cog):
                     return await btn_interaction.followup.send("✦ You need to be in this guild!", ephemeral=True)
                 if uid in raid["player_hp"] and raid["player_hp"][uid] <= 0:
                     return await btn_interaction.followup.send("✦ Your beast is knocked out!", ephemeral=True)
-                if raid["player_mana"].get(uid, 0) < 50:
-                    return await btn_interaction.followup.send(f"✦ Not enough mana! `{raid['player_mana'].get(uid,0)}/50` needed.", ephemeral=True)
 
                 now = time.monotonic()
                 if now - raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
                     return
                 raid["last_attack"][uid] = now
 
-                # Load party if not yet done (ultimate pressed before attack)
+                # Load party if not yet done — preserve existing mana
                 if uid not in raid["player_party"]:
                     async with aiosqlite.connect("db/chibibeast.db") as _pdb:
                         _pdb.row_factory = aiosqlite.Row
@@ -1262,7 +1260,12 @@ class Guilds(commands.Cog):
                     raid["player_max_hp"][uid]  = slot["max_hp"]
                     raid["player_defense"][uid] = slot["defense"]
                     raid["player_atk"][uid]     = slot["attack"]
-                    raid["player_mana"][uid]    = 0
+                    if uid not in raid["player_mana"]:
+                        raid["player_mana"][uid] = 0  # only init if not already set
+
+                # Mana check after party load
+                if raid["player_mana"].get(uid, 0) < 50:
+                    return await btn_interaction.followup.send(f"✦ Not enough mana! `{raid['player_mana'].get(uid,0)}/100`", ephemeral=True)
 
                 # Use party slot — not live DB
                 ult_slot = raid.get("player_active_slot", {}).get(uid, 0)
@@ -1310,7 +1313,7 @@ class Guilds(commands.Cog):
                 # Ultimate stored as last_event — visible on embed, no new messages
                 if raid_id in active_raids:
                     crit_tag = "⭐ CRIT! " if is_crit else ""
-                    active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg — Mana reset."
+                    active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
 
                 asyncio.create_task(_update_embed(self, raid_ended))
 
