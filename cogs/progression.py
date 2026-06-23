@@ -121,72 +121,156 @@ class Progression(commands.Cog):
     ])
     async def bestiary(self, interaction: discord.Interaction, rarity: str = None):
         await interaction.response.defer()
-        all_beasts = load_beasts()
-        guild_id = interaction.guild.id if interaction.guild else 0
-        discovered = await get_bestiary_progress(guild_id)
+        all_beasts    = load_beasts()
+        guild_id      = interaction.guild.id if interaction.guild else 0
+        discovered    = await get_bestiary_progress(guild_id)
 
-        beasts_to_show = list(all_beasts.values())
-        if rarity:
-            beasts_to_show = [b for b in beasts_to_show if b["rarity"] == rarity]
+        # Load global catch counts
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute("SELECT beast_id, catch_count FROM global_catch_counts") as c:
+                catch_counts = {r["beast_id"]: r["catch_count"] for r in await c.fetchall()}
 
-        beasts_to_show.sort(key=lambda b: (RARITY_ORDER.index(b["rarity"]), b["name"]))
+        TAB_RARITIES = ["all","common","uncommon","rare","epic","legendary","divine","special"]
+        TAB_LABELS   = {
+            "all":      "📋 All",
+            "common":   "⚪ Common",
+            "uncommon": "🟢 Uncommon",
+            "rare":     "🔵 Rare",
+            "epic":     "🟣 Epic",
+            "legendary":"🟠 Legendary",
+            "divine":   "✨ Divine",
+            "special":  "✦ Special",
+        }
+        SPECIAL = {"altered_divine","corrupted","ancient","dev"}
+        RARITY_COLORS = {
+            "all":"info","common":"common","uncommon":"uncommon","rare":"rare",
+            "epic":"epic","legendary":"legendary","divine":"divine","special":"legendary",
+        }
 
-        total = len(beasts_to_show)
-        found = sum(1 for b in beasts_to_show if b["id"] in discovered)
+        uid = interaction.user.id
+        per_page = 12
 
-        embed = discord.Embed(
-            title=f"📖 {interaction.guild.name}'s Bestiary" if interaction.guild else "📖 Bestiary",
-            description=(
-                f"**Discovered:** `{found}/{total}`"
-                + (f" *(filtered to {RARITY_LABEL.get(rarity, rarity)})*" if rarity else "")
-            ),
-            color=COLORS.get(rarity, COLORS["info"]) if rarity else COLORS["info"]
-        )
+        def filter_beasts(tab: str) -> list:
+            if tab == "all":
+                pool = list(all_beasts.values())
+            elif tab == "special":
+                pool = [b for b in all_beasts.values() if b["rarity"] in SPECIAL]
+            else:
+                pool = [b for b in all_beasts.values() if b["rarity"] == tab]
+            return sorted(pool, key=lambda b: (RARITY_ORDER.index(b["rarity"]) if b["rarity"] in RARITY_ORDER else 99, b["name"]))
 
-        # Group by rarity for readability
-        grouped = {}
-        for b in beasts_to_show:
-            grouped.setdefault(b["rarity"], []).append(b)
+        def has_tab(tab: str) -> bool:
+            return len(filter_beasts(tab)) > 0
 
-        for r in RARITY_ORDER:
-            if r not in grouped:
-                continue
-            lines = []
-            for b in grouped[r]:
-                type_emoji = TYPE_EMOJI.get(b["type"], "❓")
+        def catch_bar(count: int) -> str:
+            """Visual catch counter — compact dots."""
+            if count == 0:   return ""
+            if count < 5:    return f"{'◆' * count}{'◇' * (5-count)}"
+            if count < 25:   return f"✦ `{count}`"
+            if count < 100:  return f"✦✦ `{count}`"
+            return               f"✦✦✦ `{count}`"
+
+        def build_embed(tab: str, page: int):
+            beasts = filter_beasts(tab)
+            total_beasts  = len(beasts)
+            total_found   = sum(1 for b in beasts if b["id"] in discovered)
+            total_pages   = max(1, (total_beasts + per_page - 1) // per_page)
+            page          = max(1, min(page, total_pages))
+            page_beasts   = beasts[(page-1)*per_page : page*per_page]
+
+            color_key = RARITY_COLORS.get(tab, "info")
+            embed = discord.Embed(
+                title=f"📖 {interaction.guild.name}'s Bestiary" if interaction.guild else "📖 Bestiary",
+                description=(
+                    f"**{TAB_LABELS.get(tab, tab)}** — `{total_found}/{total_beasts}` discovered · Page {page}/{total_pages}"
+                ),
+                color=COLORS.get(color_key, COLORS["info"])
+            )
+
+            for b in page_beasts:
+                r_emoji   = RARITY_EMOJI.get(b["rarity"], "⚪")
+                t_emoji   = TYPE_EMOJI.get(b["type"], "❓")
+                count     = catch_counts.get(b["id"], 0)
+                bar       = catch_bar(count)
+
                 if b["id"] in discovered:
-                    sighting = discovered[b["id"]]
-                    finder = interaction.guild.get_member(sighting["first_caught_by"]) if interaction.guild else None
+                    sighting    = discovered[b["id"]]
+                    finder      = interaction.guild.get_member(sighting["first_caught_by"]) if interaction.guild else None
                     finder_name = finder.display_name if finder else "Unknown Trainer"
-                    lines.append(f"{type_emoji} **{b['name']}** — *first caught by {finder_name}*")
+                    name_line   = f"{r_emoji} **{b['name']}** {t_emoji}"
+                    val_line    = f"First: *{finder_name}*"
+                    if bar:
+                        val_line += f" · {bar}"
                 else:
-                    lines.append(f"❔ **???** — *undiscovered*")
-            # Discord embed field value limit is 1024 chars; chunk if needed
-            chunk = []
-            chunk_len = 0
-            field_idx = 0
-            for line in lines:
-                if chunk_len + len(line) + 1 > 1000:
-                    field_idx += 1
-                    embed.add_field(
-                        name=f"{RARITY_EMOJI.get(r,'⚪')} {RARITY_LABEL.get(r, r.capitalize())}" + (f" (cont.)" if field_idx > 1 else ""),
-                        value="\n".join(chunk),
-                        inline=False
-                    )
-                    chunk = []
-                    chunk_len = 0
-                chunk.append(line)
-                chunk_len += len(line) + 1
-            if chunk:
-                field_idx += 1
-                embed.add_field(
-                    name=f"{RARITY_EMOJI.get(r,'⚪')} {RARITY_LABEL.get(r, r.capitalize())}" + (f" (cont.)" if field_idx > 1 else ""),
-                    value="\n".join(chunk),
-                    inline=False
-                )
+                    name_line = f"❔ **???** {t_emoji}"
+                    val_line  = "*undiscovered*"
 
-        embed.set_footer(text="ChibiBeasts 🐾  •  Catch beasts to fill in the bestiary for everyone!")
-        await interaction.followup.send(embed=embed)
+                embed.add_field(name=name_line, value=val_line, inline=True)
+
+            embed.set_footer(text="◆ = 1 catch · ✦ = 5+ · ✦✦ = 25+ · ✦✦✦ = 100+ globally")
+            return embed, total_pages
+
+        current_tab  = "all"
+        current_page = 1
+
+        class BestiaryView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=180)
+                self.tab  = current_tab
+                self.page = current_page
+                self._rebuild()
+
+            def _rebuild(self):
+                self.clear_items()
+                visible = [t for t in TAB_RARITIES if has_tab(t)]
+                for idx_t, t in enumerate(visible):
+                    btn = discord.ui.Button(
+                        label=TAB_LABELS[t],
+                        style=discord.ButtonStyle.primary if t == self.tab else discord.ButtonStyle.secondary,
+                        row=0 if idx_t < 5 else 1,
+                        disabled=(t == self.tab)
+                    )
+                    async def _tab_cb(inter, tab=t):
+                        if inter.user.id != uid:
+                            return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
+                        self.tab  = tab
+                        self.page = 1
+                        self._rebuild()
+                        emb, _ = build_embed(self.tab, self.page)
+                        await inter.response.edit_message(embed=emb, view=self)
+                    btn.callback = _tab_cb
+                    self.add_item(btn)
+
+                _, total = build_embed(self.tab, self.page)
+                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, row=2, disabled=self.page<=1)
+                async def _prev(inter):
+                    if inter.user.id != uid:
+                        return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
+                    self.page -= 1
+                    self._rebuild()
+                    emb, _ = build_embed(self.tab, self.page)
+                    await inter.response.edit_message(embed=emb, view=self)
+                prev.callback = _prev
+                self.add_item(prev)
+
+                page_lbl = discord.ui.Button(label=f"{self.page}/{total}", style=discord.ButtonStyle.secondary, row=2, disabled=True)
+                self.add_item(page_lbl)
+
+                nxt = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, row=2, disabled=self.page>=total)
+                async def _next(inter):
+                    if inter.user.id != uid:
+                        return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
+                    self.page += 1
+                    self._rebuild()
+                    emb, _ = build_embed(self.tab, self.page)
+                    await inter.response.edit_message(embed=emb, view=self)
+                nxt.callback = _next
+                self.add_item(nxt)
+
+        emb, _ = build_embed(current_tab, current_page)
+        view = BestiaryView()
+        await interaction.followup.send(embed=emb, view=view)
 
 
 async def setup(bot: commands.Bot):
