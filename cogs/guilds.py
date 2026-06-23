@@ -1033,16 +1033,6 @@ class Guilds(commands.Cog):
                     if isinstance(item, discord.ui.Button) and "Ultimate" in item.label:
                         item.style = discord.ButtonStyle.primary if mana >= 50 else discord.ButtonStyle.secondary
 
-            def _set_attack_buttons(self, disabled: bool):
-                for item in self.children:
-                    if isinstance(item, discord.ui.Button) and item.label in ("⚔️ Attack!", "⚡ Ultimate"):
-                        item.disabled = disabled
-
-            async def _re_enable_after(self, delay: float):
-                await asyncio.sleep(delay)
-                self._set_attack_buttons(False)
-                asyncio.create_task(_update_embed())
-
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
@@ -1110,10 +1100,10 @@ class Guilds(commands.Cog):
                         ephemeral=True
                     )
 
-                # Disable buttons immediately — re-enabled after cooldown
-                self._set_attack_buttons(True)
-                asyncio.create_task(self._re_enable_after(ATTACK_COOLDOWN))
-                raid["last_attack"][uid] = time.monotonic()
+                now = time.monotonic()
+                if now - raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
+                    return  # silently swallow — defer already sent, no followup
+                raid["last_attack"][uid] = now
 
                 active = await get_active_beast(uid)
                 if not active:
@@ -1223,9 +1213,10 @@ class Guilds(commands.Cog):
                 if raid["player_mana"].get(uid, 0) < 50:
                     return await btn_interaction.followup.send(f"✦ Not enough mana! `{raid['player_mana'].get(uid,0)}/50` needed.", ephemeral=True)
 
-                self._set_attack_buttons(True)
-                asyncio.create_task(self._re_enable_after(ATTACK_COOLDOWN))
-                raid["last_attack"][uid] = time.monotonic()
+                now = time.monotonic()
+                if now - raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
+                    return
+                raid["last_attack"][uid] = now
 
                 # Use party slot — not live DB
                 ult_slot = raid.get("player_active_slot", {}).get(uid, 0)

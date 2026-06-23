@@ -572,16 +572,6 @@ class Ancient(commands.Cog):
                     if isinstance(item, discord.ui.Button) and "Ultimate" in item.label:
                         item.style = discord.ButtonStyle.primary if mana >= 50 else discord.ButtonStyle.secondary
 
-            def _set_attack_buttons(self, disabled: bool):
-                for item in self.children:
-                    if isinstance(item, discord.ui.Button) and item.label in ("⚔️ Attack!", "⚡ Ultimate"):
-                        item.disabled = disabled
-
-            async def _re_enable_after(self, delay: float):
-                await asyncio.sleep(delay)
-                self._set_attack_buttons(False)
-                asyncio.create_task(_update_embed())
-
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
@@ -646,9 +636,10 @@ class Ancient(commands.Cog):
                         ephemeral=True
                     )
 
-                self._set_attack_buttons(True)
-                asyncio.create_task(self._re_enable_after(ATTACK_COOLDOWN))
-                cur_raid["last_attack"][uid] = time.monotonic()
+                now = time.monotonic()
+                if now - cur_raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
+                    return
+                cur_raid["last_attack"][uid] = now
 
                 # Load raid party on first attack — must have 3 slots assigned via /raidparty
                 if uid not in cur_raid["player_party"]:
