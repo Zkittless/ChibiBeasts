@@ -928,8 +928,13 @@ class Guilds(commands.Cog):
                     p_hp = raid["player_hp"].get(uid, 0)
                     p_max = raid["player_max_hp"].get(uid, 1)
                     p_mana = raid["player_mana"].get(uid, 0)
-                    alive = "💀" if p_hp <= 0 else "⚡" if p_mana >= 50 else "❤️"
-                    lines.append(f"{medals[i]} <@{uid}> — `{dmg:,}` dmg {alive} `{p_hp}/{p_max}HP`")
+                    if p_hp <= 0:
+                        status = "💀"
+                    elif p_mana >= 50:
+                        status = f"⚡`{p_mana}/100`"
+                    else:
+                        status = f"🔵`{p_mana}/100`"
+                    lines.append(f"{medals[i]} <@{uid}> — `{dmg:,}` dmg {status} `{p_hp}/{p_max}HP`")
                 embed.add_field(name="⚔️ Party", value="\n".join(lines), inline=False)
             if raid.get("phase_log"):
                 embed.add_field(name="📋 Phase Log", value="\n".join(raid["phase_log"]), inline=False)
@@ -1199,7 +1204,7 @@ class Guilds(commands.Cog):
                 # Store last player action as last_event in embed — no ephemeral needed
                 if raid_id in active_raids:
                     crit_tag = "⭐ CRIT! " if is_crit else ""
-                    active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" ⚡" if new_mana >= 50 else "")
+                    active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg"
 
                 asyncio.create_task(_update_embed(self, raid_ended))
 
@@ -1235,11 +1240,35 @@ class Guilds(commands.Cog):
                     return
                 raid["last_attack"][uid] = now
 
+                # Load party if not yet done (ultimate pressed before attack)
+                if uid not in raid["player_party"]:
+                    async with aiosqlite.connect("db/chibibeast.db") as _pdb:
+                        _pdb.row_factory = aiosqlite.Row
+                        async with _pdb.execute(
+                            "SELECT * FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
+                            (uid,)
+                        ) as _c:
+                            party_rows = [dict(r) for r in await _c.fetchall()]
+                    if len(party_rows) < 3:
+                        return await btn_interaction.followup.send(
+                            f"✦ You need a full 3-beast raid party! Use `/raidparty` first.", ephemeral=True
+                        )
+                    raid["player_party"][uid]       = party_rows
+                    raid["player_active_slot"][uid] = 0
+                    for _si, _br in enumerate(party_rows):
+                        raid["player_party_hp"][(uid, _si)] = _br["hp"]
+                    slot = party_rows[0]
+                    raid["player_hp"][uid]      = slot["hp"]
+                    raid["player_max_hp"][uid]  = slot["max_hp"]
+                    raid["player_defense"][uid] = slot["defense"]
+                    raid["player_atk"][uid]     = slot["attack"]
+                    raid["player_mana"][uid]    = 0
+
                 # Use party slot — not live DB
                 ult_slot = raid.get("player_active_slot", {}).get(uid, 0)
                 ult_party = raid.get("player_party", {}).get(uid, [])
                 if not ult_party:
-                    return await btn_interaction.followup.send("✦ No party loaded! Attack first.", ephemeral=True)
+                    return await btn_interaction.followup.send("✦ No party found!", ephemeral=True)
                 ult_beast_row = ult_party[ult_slot] if ult_slot < len(ult_party) else ult_party[0]
                 ult_beast_data = get_beast_data(ult_beast_row["beast_id"]) or {}
                 ult_name = ult_beast_data.get("ultimate", "Ultimate")

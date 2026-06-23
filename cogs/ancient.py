@@ -485,8 +485,13 @@ class Ancient(commands.Cog):
                     p_hp  = raid["player_hp"].get(uid, 0)
                     p_max = raid["player_max_hp"].get(uid, 1)
                     mana  = raid["player_mana"].get(uid, 0)
-                    alive = "\U0001f480" if p_hp <= 0 else "\u26a1" if mana >= 50 else "\u2764\ufe0f"
-                    lines.append(f"{medals[i]} <@{uid}> \u2014 `{dmg:,}` dmg {alive} `{p_hp}/{p_max}HP`")
+                    if p_hp <= 0:
+                        status = "\U0001f480"
+                    elif mana >= 50:
+                        status = f"\u26a1`{mana}/100`"
+                    else:
+                        status = f"\U0001f535`{mana}/100`"
+                    lines.append(f"{medals[i]} <@{uid}> \u2014 `{dmg:,}` dmg {status} `{p_hp}/{p_max}HP`")
                 embed.add_field(name="⚔️ Party", value="\n".join(lines), inline=False)
             if raid.get("phase_log"):
                 embed.add_field(name="📋 Phase Log", value="\n".join(raid["phase_log"]), inline=False)
