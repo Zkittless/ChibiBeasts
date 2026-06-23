@@ -692,6 +692,8 @@ class Ancient(commands.Cog):
 
                 now = time.monotonic()
                 if now - cur_raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
+                    try: await btn_interaction.followup.send("\u200b", ephemeral=True, delete_after=0)
+                    except Exception: pass
                     return
                 cur_raid["last_attack"][uid] = now
 
@@ -708,6 +710,14 @@ class Ancient(commands.Cog):
                         return await btn_interaction.followup.send(
                             f"✦ You need a full 3-beast raid party! You have {len(party_rows)}/3 slots filled.\n"
                             f"Use `/raidparty` to set up your team before attacking.",
+                            ephemeral=True
+                        )
+                    ko_check = [r for r in party_rows if is_knocked_out(r)]
+                    if ko_check:
+                        names = ", ".join(r.get("nickname") or (get_beast_data(r["beast_id"]) or {}).get("name","?") for r in ko_check)
+                        timers = " / ".join(f"`{ko_time_remaining(r)}`" for r in ko_check)
+                        return await btn_interaction.followup.send(
+                            f"✦ **{names}** still recovering! ({timers})\nUse a **Phoenix Elixir** or wait.",
                             ephemeral=True
                         )
                     cur_raid["player_party"][uid]       = party_rows
@@ -776,6 +786,8 @@ class Ancient(commands.Cog):
                     return await btn_interaction.followup.send("❆ Your beast is knocked out!", ephemeral=True)
                 now = time.monotonic()
                 if now - cur_raid.get("last_ultimate", {}).get(uid, 0) < ATTACK_COOLDOWN:
+                    try: await btn_interaction.followup.send("\u200b", ephemeral=True, delete_after=0)
+                    except Exception: pass
                     return
                 cur_raid.setdefault("last_ultimate", {})[uid] = now
                 # Use party slot stats
@@ -852,7 +864,16 @@ class Ancient(commands.Cog):
     async def end_ancient_raid(self, raid_id: int, channel, timed_out: bool = False):
         if raid_id not in active_ancient_raids:
             return
-        raid = active_ancient_raids.pop(raid_id)
+        raid = active_ancient_raids[raid_id]
+        # Force final embed showing true HP before popping
+        msg = raid.get("raid_message")
+        if msg:
+            try:
+                raid["current_hp"] = max(0, raid["current_hp"])
+                await msg.edit(embed=build_ancient_embed(raid), view=None)
+            except Exception:
+                pass
+        active_ancient_raids.pop(raid_id)
         _ancient_locks.pop(raid_id, None)
         boss = raid["boss"]
         defeated = raid["current_hp"] <= 0
