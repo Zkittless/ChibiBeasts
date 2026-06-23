@@ -362,7 +362,8 @@ class Ancient(commands.Cog):
         # Scale by n_players^0.75 so larger parties face a proportionally bigger boss
         # but it never becomes punishing — solo=1x, duo=1.68x, 3p=2.28x, 5p=3.34x
         _party_scale = _n_players ** 0.75
-        scaled_hp  = int(_avg_player_dps * 40 * _party_scale)
+        # cycles=15 calibrated to realistic ~1.5s/attack cadence (not theoretical 0.5s max)
+        scaled_hp  = int(_avg_player_dps * 15 * _party_scale)
         scaled_atk = int(avg_party_hp * 0.07)     # ancient hits ~7% avg HP — longer fight, kinder hits
         # Minimum floor from boss base stats so it never feels trivial
         scaled_hp  = max(scaled_hp,  boss["max_hp"] // 3)

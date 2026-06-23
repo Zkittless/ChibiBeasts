@@ -802,7 +802,8 @@ class Guilds(commands.Cog):
         _n_players_est = max(1, len(guild_member_ids))
         _party_scale_g = _n_players_est ** 0.75
         _avg_player_dps_g = party_dps_mid / max(1, len(raid_beast_stats) // 3)
-        scaled_hp  = max(int(_avg_player_dps_g * 30 * _party_scale_g), boss["max_hp"] // 3)
+        # cycles=10 calibrated to realistic ~1.5s/attack cadence
+        scaled_hp  = max(int(_avg_player_dps_g * 10 * _party_scale_g), boss["max_hp"] // 3)
         scaled_atk = max(int(avg_party_hp * 0.10), boss["attack"] // 20)
 
         active_raids[raid_id] = {
