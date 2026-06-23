@@ -449,35 +449,104 @@ class Inventory(commands.Cog):
         inv = await get_inventory(interaction.user.id)
         items_data = load_items()
 
-        # Build egg lookup from both instant and incubation egg definitions
         from cogs.hatch import HATCH_EGGS
         from cogs.world import EGGS as INCUB_EGGS
         egg_lookup = {}
         for eid, egg in HATCH_EGGS.items():
-            egg_lookup[eid] = {"name": egg["name"], "description": egg["flavor"], "rarity": "rare", "emoji": "🥚"}
+            egg_lookup[eid] = {"name": egg["name"], "description": egg["flavor"], "rarity": "rare", "emoji": "🥚", "type": "egg"}
         for eid, egg in INCUB_EGGS.items():
-            egg_lookup[eid] = {"name": egg["name"], "description": egg["flavor"], "rarity": egg["rarity"], "emoji": egg.get("emoji", "🥚")}
+            egg_lookup[eid] = {"name": egg["name"], "description": egg["flavor"], "rarity": egg["rarity"], "emoji": egg.get("emoji","🥚"), "type": "egg"}
 
         if not inv:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Your inventory is empty! Visit the `/shop` to buy items.",
+                description="✦ Your inventory is empty! Visit `/shop` to buy items.",
                 color=COLORS["info"]
             ))
 
-        embed = discord.Embed(title="🎒 Your Inventory", color=COLORS["info"])
+        # Separate into categories
+        TYPE_GROUPS = {
+            "🔮 Potions & Consumables": ["heal","revive","cure","mana","happiness","happiness_boost","exp","stat_boost","battle","encounter","cooldown"],
+            "🥚 Eggs": ["egg"],
+            "📦 Other": [],
+        }
+
+        def categorize(item_id: str, item: dict) -> str:
+            t = item.get("type","")
+            for group, types in TYPE_GROUPS.items():
+                if t in types:
+                    return group
+            return "📦 Other"
+
+        uid = interaction.user.id
+        per_page = 10
+
+        categorized = {}
         for entry in inv:
             item = items_data.get(entry["item_id"]) or egg_lookup.get(entry["item_id"])
             if not item:
                 continue
-            rarity_emoji = RARITY_EMOJI.get(item.get("rarity", "common"), "⚪")
-            name_emoji = item.get("emoji", "")
-            embed.add_field(
-                name=f"{rarity_emoji} {name_emoji} {item['name']} x{entry['quantity']}",
-                value=item["description"][:80] + ("..." if len(item["description"]) > 80 else ""),
-                inline=False
+            cat = categorize(entry["item_id"], item)
+            categorized.setdefault(cat, []).append((entry, item))
+
+        all_entries = []
+        for cat in ["🔮 Potions & Consumables", "🥚 Eggs", "📦 Other"]:
+            for entry, item in categorized.get(cat, []):
+                all_entries.append((cat, entry, item))
+
+        total_pages = max(1, (len(all_entries) + per_page - 1) // per_page)
+
+        def build_inv_embed(page: int) -> discord.Embed:
+            embed = discord.Embed(
+                title="🎒 Inventory",
+                description=f"`{len(all_entries)}` items · Page {page}/{total_pages}",
+                color=COLORS["info"]
             )
-        embed.set_footer(text="ChibiBeasts 🐾  •  /use <item> to use · /hatch for instant eggs · /incubate for timed eggs")
-        await interaction.followup.send(embed=embed)
+            page_entries = all_entries[(page-1)*per_page : page*per_page]
+            last_cat = None
+            for cat, entry, item in page_entries:
+                r_emoji = RARITY_EMOJI.get(item.get("rarity","common"), "⚪")
+                name = item["name"]
+                qty = entry["quantity"]
+                desc = item["description"]
+                if len(desc) > 60:
+                    desc = desc[:57] + "..."
+                if cat != last_cat:
+                    embed.add_field(name=f"\u200b", value=f"**{cat}**", inline=False)
+                    last_cat = cat
+                embed.add_field(
+                    name=f"{r_emoji} {name} ×{qty}",
+                    value=desc,
+                    inline=True
+                )
+            embed.set_footer(text="/use <item> to use · /shop to buy more")
+            return embed
+
+        if total_pages == 1:
+            return await interaction.followup.send(embed=build_inv_embed(1))
+
+        class InvView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=120)
+                self.page = 1
+                self._rebuild()
+
+            def _rebuild(self):
+                self.clear_items()
+                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=self.page<=1, row=0)
+                lbl  = discord.ui.Button(label=f"{self.page}/{total_pages}", style=discord.ButtonStyle.secondary, disabled=True, row=0)
+                nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self.page>=total_pages, row=0)
+                async def _prev(inter):
+                    if inter.user.id != uid: return await inter.response.send_message("✦ Not your inventory!", ephemeral=True)
+                    self.page -= 1; self._rebuild()
+                    await inter.response.edit_message(embed=build_inv_embed(self.page), view=self)
+                async def _next(inter):
+                    if inter.user.id != uid: return await inter.response.send_message("✦ Not your inventory!", ephemeral=True)
+                    self.page += 1; self._rebuild()
+                    await inter.response.edit_message(embed=build_inv_embed(self.page), view=self)
+                prev.callback = _prev; nxt.callback = _next
+                self.add_item(prev); self.add_item(lbl); self.add_item(nxt)
+
+        await interaction.followup.send(embed=build_inv_embed(1), view=InvView())
 
     async def use_autocomplete(self, interaction: discord.Interaction, current: str):
         inv = await get_inventory(interaction.user.id)
@@ -536,19 +605,24 @@ class Inventory(commands.Cog):
                 result_lines.append(f"❤️ Healed **{heal} HP** ({active['hp']} → {new_hp})")
 
             if "revive" in effect:
-                # Find a KO'd beast in the raid party first, then fall back to active
-                from utils.db import get_raid_party, revive_beast, is_knocked_out
+                from utils.db import get_raid_party, is_knocked_out
                 raid_party = await get_raid_party(interaction.user.id)
                 ko_beast = next((b for b in raid_party if b and is_knocked_out(b)), None)
                 if ko_beast:
-                    await revive_beast(ko_beast["id"])
+                    heal = int(ko_beast["max_hp"] * (effect.get("heal_percent", 50) / 100))
+                    await db.execute(
+                        "UPDATE player_beasts SET knocked_out_until = NULL, hp = ? WHERE id = ?",
+                        (heal, ko_beast["id"])
+                    )
                     bd = get_beast_data(ko_beast["beast_id"]) or {}
                     bname = ko_beast.get("nickname") or bd.get("name", "Beast")
-                    heal = int(ko_beast["max_hp"] * (effect.get("heal_percent", 50) / 100))
-                    result_lines.append(f"🔥 **{bname}** revived with `{heal} HP`! Ready to fight.")
+                    result_lines.append(f"🔥 **{bname}** revived with `{heal}/{ko_beast['max_hp']}HP`! Ready to fight.")
                 elif active and active["hp"] <= 0:
                     heal = int(active["max_hp"] * (effect.get("heal_percent", 50) / 100))
-                    await db.execute("UPDATE player_beasts SET hp = ?, knocked_out_until = NULL WHERE id = ?", (heal, active["id"]))
+                    await db.execute(
+                        "UPDATE player_beasts SET hp = ?, knocked_out_until = NULL WHERE id = ?",
+                        (heal, active["id"])
+                    )
                     result_lines.append(f"🔥 Revived with **{heal} HP**!")
                 else:
                     result_lines.append("✦ No knocked-out beast to revive! Your party is already healthy.")
@@ -704,6 +778,7 @@ class Shop(commands.Cog):
     @app_commands.choices(category=[
         app_commands.Choice(name="⚡ Instant Eggs",     value="instant"),
         app_commands.Choice(name="⏱️ Incubation Eggs",  value="incubation"),
+        app_commands.Choice(name="🔮 Potions",           value="potions"),
         app_commands.Choice(name="🎒 Items",             value="items"),
     ])
     async def shop(self, interaction: discord.Interaction, category: str = "instant"):
@@ -981,6 +1056,74 @@ class Shop(commands.Cog):
                         self.add_item(next_btn)
 
             return await interaction.followup.send(embed=build_incub_embed(1), view=IncubationEggView(1))
+
+        # ══════════════════════════════════════════════════════════════════
+        # POTIONS TAB
+        # ══════════════════════════════════════════════════════════════════
+        if category == "potions":
+            POTION_TYPES = {"heal","revive","cure","mana","happiness","happiness_boost","exp","stat_boost","cooldown"}
+            POTION_ITEMS = sorted(
+                [i for i in items_data.values() if i.get("price",0) > 0 and i.get("type") in POTION_TYPES],
+                key=lambda i: (RARITY_ORDER.index(i["rarity"]) if i["rarity"] in RARITY_ORDER else 99, i["price"])
+            )
+            per_page = 4
+            total_pages = max(1, (len(POTION_ITEMS) + per_page - 1) // per_page)
+
+            def build_pot_embed(page: int) -> discord.Embed:
+                embed = discord.Embed(
+                    title="🏪 Shop — 🔮 Potions & Consumables",
+                    description=f"💰 Your gold: `{player['gold']:,}` · Page {page}/{total_pages}",
+                    color=COLORS["rare"]
+                )
+                for item in POTION_ITEMS[(page-1)*per_page : page*per_page]:
+                    r = RARITY_EMOJI.get(item["rarity"], "⚪")
+                    embed.add_field(
+                        name=f"{r} {item['name']} — `{item['price']:,}g`",
+                        value=item["description"][:120],
+                        inline=False
+                    )
+                embed.set_footer(text="Buy items then use /use <item> to apply them")
+                return embed
+
+            class PotionShopView(discord.ui.View):
+                def __init__(self, page: int):
+                    super().__init__(timeout=120)
+                    self.page = page
+                    self._build()
+
+                def _build(self):
+                    self.clear_items()
+                    page_items = POTION_ITEMS[(self.page-1)*per_page : self.page*per_page]
+                    for row_idx, item in enumerate(page_items):
+                        r = RARITY_EMOJI.get(item["rarity"], "⚪")
+                        next_step = "Use `/use " + item["name"] + "` to apply it!"
+                        btn = discord.ui.Button(label=item["name"][:20], style=discord.ButtonStyle.success, emoji=r, row=row_idx)
+                        async def _cb(bi: discord.Interaction, _id=item["id"], _p=item["price"], _n=item["name"], _ns=next_step):
+                            if bi.user.id != interaction.user.id:
+                                return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                            await _do_purchase(bi, _id, _p, _n, _ns, quantity=1)
+                        btn.callback = _cb
+                        self.add_item(btn)
+                        btn5 = discord.ui.Button(label="+5", style=discord.ButtonStyle.secondary, row=row_idx)
+                        async def _cb5(bi: discord.Interaction, _id=item["id"], _p=item["price"], _n=item["name"], _ns=next_step):
+                            if bi.user.id != interaction.user.id:
+                                return await bi.response.send_message("This isn't your shop!", ephemeral=True)
+                            await _do_purchase(bi, _id, _p, _n, _ns, quantity=5)
+                        btn5.callback = _cb5
+                        self.add_item(btn5)
+                    if total_pages > 1:
+                        prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=self.page<=1, row=4)
+                        nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self.page>=total_pages, row=4)
+                        async def _prev(bi, _s=self):
+                            _s.page -= 1; _s._build()
+                            await bi.response.edit_message(embed=build_pot_embed(_s.page), view=_s)
+                        async def _nxt(bi, _s=self):
+                            _s.page += 1; _s._build()
+                            await bi.response.edit_message(embed=build_pot_embed(_s.page), view=_s)
+                        prev.callback = _prev; nxt.callback = _nxt
+                        self.add_item(prev); self.add_item(nxt)
+
+            return await interaction.followup.send(embed=build_pot_embed(1), view=PotionShopView(1))
 
         # ══════════════════════════════════════════════════════════════════
         # ITEMS TAB

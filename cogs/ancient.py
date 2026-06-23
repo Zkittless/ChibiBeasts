@@ -1033,12 +1033,18 @@ class Ancient(commands.Cog):
                 inline=False
             )
 
-        # Update DB status
+        # Update DB status + restore surviving beasts to full HP
         async with aiosqlite.connect(DB_PATH) as db:
             await db.execute(
                 "UPDATE raids SET status = ?, ended_at = CURRENT_TIMESTAMP WHERE id = ?",
                 ("completed" if defeated else "failed", raid_id)
             )
+            for uid, party in raid.get("player_party", {}).items():
+                for beast_row in party:
+                    await db.execute(
+                        "UPDATE player_beasts SET hp = max_hp WHERE id = ? AND (knocked_out_until IS NULL OR knocked_out_until = '')",
+                        (beast_row["id"],)
+                    )
             await db.commit()
 
         await channel.send(embed=embed)

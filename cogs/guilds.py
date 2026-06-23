@@ -1539,12 +1539,19 @@ class Guilds(commands.Cog):
         embed.set_footer(text="ChibiBeasts 🐾  •  /raid to trigger another raid!")
         await channel.send(embed=embed)
 
-        # Update raid status
+        # Restore surviving (non-KO'd) party beasts to full HP after the raid
         async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute(
                 "UPDATE raids SET status = ?, ended_at = CURRENT_TIMESTAMP WHERE id = ?",
                 ("completed" if defeated else "expired", raid_id)
             )
+            for uid, party in raid.get("player_party", {}).items():
+                for beast_row in party:
+                    if not beast_row.get("knocked_out_until"):
+                        await db.execute(
+                            "UPDATE player_beasts SET hp = max_hp WHERE id = ? AND (knocked_out_until IS NULL OR knocked_out_until = '')",
+                            (beast_row["id"],)
+                        )
             await db.commit()
 
 async def setup(bot: commands.Bot):
