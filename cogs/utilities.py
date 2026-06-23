@@ -16,6 +16,90 @@ from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import check_achievements, unlock_simple_achievement, notify_unlocks
 from utils.sanctuary import get_user_sanctuary
 
+# ── Evolution Cinematics ────────────────────────────────────────────────────
+EVOLUTION_SCENES = {
+    "radiant_goblin": {
+        "title": "🔥 The Forge Speaks",
+        "lines": [
+            "The Sunforge did not change the Goblin.",
+            "It held the Goblin until the Goblin understood what it already was.",
+            "The stubbornness that got it hit too many times is the same stubbornness that made it walk out.",
+            "*The Forge Fury was always there. The Sunforge just gave it something to answer to.*",
+        ],
+        "color": "epic",
+    },
+    "radiant_imp": {
+        "title": "🌑 Darker Than It Went In",
+        "lines": [
+            "The Sunforge takes most things and makes them shine.",
+            "The Imp went in and came out wrong — not broken, just occupying a different relationship with light than it had before.",
+            "The shadows around it lean in now. They recognize something.",
+            "*The Loom filed a report. The report has been filed under: does not need to be understood, only respected.*",
+        ],
+        "color": "rare",
+    },
+    "radiant_hydra": {
+        "title": "🐍 The Heads Forget What Heads Are For",
+        "lines": [
+            "The Sunforge touched the Hydra and two heads grew back for each one it took.",
+            "Eventually it gave up and gave the Hydra something it hadn't asked for.",
+            "The heads that grew back were not heads. The Hydra did not seem to notice. The Hydra has never cared particularly what it was made of, only that there was more of it.",
+            "*Endless Regen was not a gift. It was the Sunforge admitting defeat. The Hydra accepts both with equal indifference.*",
+        ],
+        "color": "divine",
+    },
+    "ascended_slime": {
+        "title": "🌊 The Test Passes",
+        "lines": [
+            "The Loom made the Slime as an experiment.",
+            "The question was: can resilience, taken far enough, become something divine?",
+            "The Genesis Fruit touched it. Nothing visible changed.",
+            "Then everything around it looked slightly smaller.",
+            "*The answer was yes. The Loom has not decided yet whether to be proud or unsettled. The Slime does not care either way. The Slime absorbs that feeling too.*",
+        ],
+        "color": "divine",
+    },
+    "ascended_unicorn": {
+        "title": "✨ The Grace Becomes the Thing Itself",
+        "lines": [
+            "There is a light that exists before light has a name.",
+            "The Unicorn always moved toward it. The Genesis Fruit was the last step.",
+            "It did not ascend so much as arrive — at something it had been walking toward since the first time it touched a wound and the wound closed.",
+            "The horn no longer heals. It does something older than healing.",
+            "*It does not distinguish between giving and taking anymore. Sacred Mending does not ask whether you deserve it. That is the point.*",
+        ],
+        "color": "divine",
+    },
+    "ascended_pegasus": {
+        "title": "🌪️ Past the Edge, and Then Further",
+        "lines": [
+            "The Pegasus found the boundary between the world and what the world is resting inside.",
+            "Most things stop there. The Pegasus visited twice before breakfast.",
+            "The Genesis Fruit was not a door. It was confirmation that the Pegasus had already stopped asking permission.",
+            "It came back faster than it left. It always does, now.",
+            "*Boundary Break is not a passive. It is a habit the Pegasus developed when it realised the edge of the world was just a suggestion.*",
+        ],
+        "color": "divine",
+    },
+    "ascended_phoenix": {
+        "title": "🔥 The Last Sunrise. And Then Another.",
+        "lines": [
+            "Every Phoenix dies.",
+            "The Genesis Fruit burned in its talons and no ash fell. Something had changed about the relationship between fire and ending.",
+            "It stood in the light of its own pyre and looked at the flames and decided, quietly, that dying had become a habit.",
+            "Habits can be broken.",
+            "*Deathless Flame does not make it invincible. It makes it unwilling. There is a difference, and the difference matters enormously to whoever is standing across from it.*",
+        ],
+        "color": "divine",
+    },
+}
+
+# ── Evolution Item → Form Label ─────────────────────────────────────────────
+EVOLUTION_FORM_LABELS = {
+    "radiant":  ("🌟 Radiant Form",   "The Sunforge has spoken."),
+    "ascended": ("✨ Ascended Form",   "The Genesis Fruit has chosen."),
+}
+
 DB_PATH = "db/chibibeast.db"
 
 def load_equipment():
@@ -638,25 +722,61 @@ class Utilities(commands.Cog):
 
         rarity_emoji = RARITY_EMOJI.get(target_data["rarity"], "⚪")
         color = COLORS.get(target_data["rarity"], COLORS["legendary"])
+        form  = evolution.get("form", "")
+
+        # ── Cinematic scene (if one exists for this target) ────────────────
+        scene = EVOLUTION_SCENES.get(target_id)
+        if scene:
+            scene_embed = discord.Embed(
+                title=scene["title"],
+                description="\n\n".join(scene["lines"]),
+                color=COLORS.get(scene["color"], color)
+            )
+            if target_data.get("image_url"):
+                scene_embed.set_image(url=target_data["image_url"])
+            await interaction.followup.send(embed=scene_embed)
+
+        # ── Result embed ───────────────────────────────────────────────────
+        form_title, form_tagline = EVOLUTION_FORM_LABELS.get(form, ("🌟 Evolution!", ""))
 
         embed = discord.Embed(
-            title=f"🌟 Evolution!",
+            title=form_title,
             description=(
-                f"**{beast_data['name']}** evolved into **{target_data['name']}**!\n\n"
-                f"{rarity_emoji} *{target_data['title']}*\n\n"
-                f"*{target_data['description']}*\n\n"
-                f"*{evolution['description']}*"
+                f"{rarity_emoji} **{beast_data['name']}** → **{target_data['name']}**\n"
+                f"*{target_data['title']}*\n\n"
+                f"{target_data['description']}\n\n"
+                + (f"*{form_tagline}*" if form_tagline else "")
             ),
             color=color
         )
+
+        # Stat summary
+        from utils.db import calc_stat_growth
+        levels_done = max(0, beast_row["level"] - 1)
+        growth = calc_stat_growth({"rarity": target_data["rarity"]}, levels_done)
+        new_stats = target_data["base_stats"]
+        embed.add_field(
+            name="📊 New Stats",
+            value=(
+                f"❤️ `{new_stats['hp'] + growth['hp']}HP` · "
+                f"⚔️ `{new_stats['attack'] + growth['attack']}ATK` · "
+                f"🛡️ `{new_stats['defense'] + growth['defense']}DEF` · "
+                f"💨 `{new_stats['speed'] + growth['speed']}SPD`"
+            ),
+            inline=False
+        )
+
         if target_data.get("divine_passive"):
             dp = target_data["divine_passive"]
             embed.add_field(
-                name=f"✨ New Divine Passive: {dp['passive_name']}",
+                name=f"✨ New Divine Passive: **{dp['passive_name']}**",
                 value=dp["passive_desc"],
                 inline=False
             )
-        embed.set_footer(text="ChibiBeasts 🐾  •  Check /beastinfo to see updated stats")
+
+        embed.set_footer(text="Use /beastinfo to inspect · /collection to see your full roster")
+        if target_data.get("image_url"):
+            embed.set_thumbnail(url=target_data["image_url"])
         await interaction.followup.send(embed=embed)
 
         # Check achievements after evolution
