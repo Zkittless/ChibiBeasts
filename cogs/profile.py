@@ -95,78 +95,137 @@ class Profile(commands.Cog):
     ])
     async def collection(self, interaction: discord.Interaction, page: int = 1, rarity: str = "all"):
         await interaction.response.defer()
-        beasts = await get_player_beasts(interaction.user.id)
-        if rarity != "all":
-            beasts = [b for b in beasts if b["rarity"] == rarity]
+        uid = interaction.user.id
+        all_beasts = await get_player_beasts(uid)
 
-        if not beasts:
+        if not all_beasts:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ No beasts found! Use `/hatch` or `/explore` to find some.",
+                description="✦ No beasts yet! Use `/hatch` or `/explore` to find some.",
                 color=COLORS["info"]
             ))
 
-        per_page = 8
-        total_pages = max(1, (len(beasts) + per_page - 1) // per_page)
-        page = max(1, min(page, total_pages))
+        RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine","altered_divine","corrupted","ancient","dev"]
+        SPECIAL = {"altered_divine","corrupted","ancient","dev"}
+        TAB_RARITIES = ["common","uncommon","rare","epic","legendary","divine","special","all"]
+        TAB_LABELS   = {
+            "all":      "📋 All",
+            "common":   "⚪ Common",
+            "uncommon": "🟢 Uncommon",
+            "rare":     "🔵 Rare",
+            "epic":     "🟣 Epic",
+            "legendary":"🟠 Legendary",
+            "divine":   "✨ Divine",
+            "special":  "✦ Special",
+        }
+        RARITY_COLORS = {
+            "common":"common","uncommon":"uncommon","rare":"rare",
+            "epic":"epic","legendary":"legendary","divine":"divine",
+            "special":"legendary","all":"divine",
+        }
 
-        def build_page(p: int) -> discord.Embed:
-            page_beasts = beasts[(p - 1) * per_page : p * per_page]
+        def filter_beasts(tab: str):
+            if tab == "all":
+                return sorted(all_beasts, key=lambda b: (RARITY_ORDER.index(b["rarity"]) if b["rarity"] in RARITY_ORDER else 99, b.get("player_number") or b["id"]))
+            if tab == "special":
+                bs = [b for b in all_beasts if b["rarity"] in SPECIAL]
+            else:
+                bs = [b for b in all_beasts if b["rarity"] == tab]
+            return sorted(bs, key=lambda b: (b.get("player_number") or b["id"]))
+
+        def has_tab(tab: str) -> bool:
+            return len(filter_beasts(tab)) > 0
+
+        per_page = 10
+
+        def build_embed(tab: str, p: int) -> discord.Embed:
+            beasts = filter_beasts(tab)
+            total_pages = max(1, (len(beasts) + per_page - 1) // per_page)
+            p = max(1, min(p, total_pages))
+            page_beasts = beasts[(p-1)*per_page : p*per_page]
+
+            tab_label = TAB_LABELS.get(tab, tab)
+            color_key = RARITY_COLORS.get(tab, "divine")
             embed = discord.Embed(
-                title=f"🐾 {interaction.user.display_name}'s Collection",
-                description=f"**{len(beasts)}** beasts total | Page {p}/{total_pages}",
-                color=COLORS["divine"]
+                title=f"🐾 {interaction.user.display_name}'s Collection — {tab_label}",
+                description=f"`{len(beasts)}` beast{'s' if len(beasts)!=1 else ''} · Page {p}/{total_pages}",
+                color=COLORS.get(color_key, COLORS["divine"])
             )
             for b in page_beasts:
-                beast_data = get_beast_data(b["beast_id"])
-                if not beast_data:
+                bd = get_beast_data(b["beast_id"])
+                if not bd:
                     continue
-                name = b["nickname"] or beast_data["name"]
-                rarity_emoji = RARITY_EMOJI.get(b["rarity"], "⚪")
-                type_emoji = TYPE_EMOJI.get(beast_data["type"], "❓")
-                active_tag = " ⚔️ **ACTIVE**" if b["is_active"] else ""
-                fav_tag = " ⭐" if b["is_favorite"] else ""
-                embed.add_field(
-                    name=f"{rarity_emoji} {name} — Lv.{b['level']}{active_tag}{fav_tag}",
-                    value=f"{type_emoji} {beast_data['type'].capitalize()} | ❤️ {b['hp']}/{b['max_hp']} | #{b.get('player_number') or b['id']}",
-                    inline=True
-                )
-            embed.set_footer(text=f"ChibiBeasts 🐾  •  /beastinfo <id> to view details  •  Page {p}/{total_pages}")
-            return embed
+                name    = b.get("nickname") or bd["name"]
+                r_emoji = RARITY_EMOJI.get(b["rarity"], "⚪")
+                t_emoji = TYPE_EMOJI.get(bd["type"], "❓")
+                num     = b.get("player_number") or b["id"]
+                tags    = (" ⚔️" if b["is_active"] else "") + (" ⭐" if b.get("is_favorite") else "")
+                val = f"{t_emoji} {bd['type'].capitalize()} · Lv.{b['level']} · `{b['hp']}/{b['max_hp']}HP`{tags}"
+                embed.add_field(name=f"{r_emoji} #{num} {name}", value=val, inline=True)
+            embed.set_footer(text="Use /beastinfo <#> for details · /setactive <#> to switch")
+            return embed, max(1, (len(filter_beasts(tab)) + per_page - 1) // per_page)
 
-        # No buttons needed for single-page collections
-        if total_pages == 1:
-            return await interaction.followup.send(embed=build_page(1))
+        current_tab  = rarity if rarity in TAB_RARITIES else "all"
+        current_page = page
 
         class CollectionView(discord.ui.View):
-            def __init__(self, current: int):
-                super().__init__(timeout=120)
-                self.page = current
-                self._update_buttons()
+            def __init__(self):
+                super().__init__(timeout=180)
+                self.tab  = current_tab
+                self.page = current_page
+                self._rebuild()
 
-            def _update_buttons(self):
-                self.prev_btn.disabled = self.page <= 1
-                self.next_btn.disabled = self.page >= total_pages
-                self.prev_btn.label = f"◀ Page {self.page - 1}" if self.page > 1 else "◀"
-                self.next_btn.label = f"Page {self.page + 1} ▶" if self.page < total_pages else "▶"
+            def _rebuild(self):
+                self.clear_items()
+                # Row 0 — rarity tabs (only show tabs that have beasts)
+                visible_tabs = [t for t in TAB_RARITIES if has_tab(t)]
+                for t in visible_tabs:
+                    btn = discord.ui.Button(
+                        label=TAB_LABELS[t],
+                        style=discord.ButtonStyle.primary if t == self.tab else discord.ButtonStyle.secondary,
+                        row=0,
+                        disabled=(t == self.tab)
+                    )
+                    async def _tab_cb(inter, tab=t):
+                        if inter.user.id != uid:
+                            return await inter.response.send_message("✦ This isn't your collection!", ephemeral=True)
+                        self.tab  = tab
+                        self.page = 1
+                        self._rebuild()
+                        emb, _ = build_embed(self.tab, self.page)
+                        await inter.response.edit_message(embed=emb, view=self)
+                    btn.callback = _tab_cb
+                    self.add_item(btn)
 
-            @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary)
-            async def prev_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
-                if btn_interaction.user.id != interaction.user.id:
-                    return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
-                self.page -= 1
-                self._update_buttons()
-                await btn_interaction.response.edit_message(embed=build_page(self.page), view=self)
+                # Row 1 — prev / page indicator / next
+                _, total = build_embed(self.tab, self.page)
+                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, row=1, disabled=self.page<=1)
+                async def _prev(inter):
+                    if inter.user.id != uid:
+                        return await inter.response.send_message("✦ This isn't your collection!", ephemeral=True)
+                    self.page -= 1
+                    self._rebuild()
+                    emb, _ = build_embed(self.tab, self.page)
+                    await inter.response.edit_message(embed=emb, view=self)
+                prev.callback = _prev
+                self.add_item(prev)
 
-            @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
-            async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
-                if btn_interaction.user.id != interaction.user.id:
-                    return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
-                self.page += 1
-                self._update_buttons()
-                await btn_interaction.response.edit_message(embed=build_page(self.page), view=self)
+                page_lbl = discord.ui.Button(label=f"{self.page}/{total}", style=discord.ButtonStyle.secondary, row=1, disabled=True)
+                self.add_item(page_lbl)
 
-        view = CollectionView(page)
-        await interaction.followup.send(embed=build_page(page), view=view)
+                nxt = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, row=1, disabled=self.page>=total)
+                async def _next(inter):
+                    if inter.user.id != uid:
+                        return await inter.response.send_message("✦ This isn't your collection!", ephemeral=True)
+                    self.page += 1
+                    self._rebuild()
+                    emb, _ = build_embed(self.tab, self.page)
+                    await inter.response.edit_message(embed=emb, view=self)
+                nxt.callback = _next
+                self.add_item(nxt)
+
+        emb, _ = build_embed(current_tab, current_page)
+        view = CollectionView()
+        await interaction.followup.send(embed=emb, view=view)
 
     @app_commands.command(name="beastinfo", description="View detailed info about one of your beasts 🔍")
     @app_commands.describe(beast_number="Your beast number from /collection (leave blank for active beast)")
