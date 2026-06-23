@@ -7,7 +7,8 @@ from utils.db import (
     get_player_beasts, get_active_beast, get_inventory,
     add_item, remove_item, load_beasts, load_items, load_perks,
     get_beast_data, calc_exp_for_level, calc_player_exp_for_level,
-    get_perk_slots, apply_beast_levelup, get_beast_exp_for_level
+    get_perk_slots, apply_beast_levelup, get_beast_exp_for_level,
+    is_knocked_out, ko_time_remaining, get_raid_party
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, hp_bar, exp_bar, fmt_stats, SPARKLE
 from utils.progress import track_quest_event, notify_quest_completions
@@ -77,7 +78,28 @@ class Profile(commands.Cog):
                     ),
                     inline=False
                 )
+        import time as _t
+        explore_last = player.get("explore_last_at", 0) or 0
+        explore_ready_in = max(0, 3600 - (_t.time() - explore_last))
+        if explore_ready_in > 0:
+            em, es = divmod(int(explore_ready_in), 60)
+            explore_status = f"⏳ Ready in `{em}m {es}s`"
+        else:
+            explore_status = "✅ Ready!"
+
+        # Raid party quick status
+        raid_party = await get_raid_party(target.id)
+        ko_in_party = [b for b in raid_party if b and is_knocked_out(b)]
+        party_status = ""
+        if ko_in_party:
+            party_status = f"\n💀 `{len(ko_in_party)}` beast{'s' if len(ko_in_party)>1 else ''} recovering in raid party"
+
         embed.set_thumbnail(url=target.display_avatar.url)
+        embed.add_field(
+            name="🗺️ Explore",
+            value=explore_status + party_status,
+            inline=False
+        )
         embed.set_footer(text="ChibiBeasts 🐾  •  /collection to see all beasts")
         await interaction.followup.send(embed=embed)
 
@@ -290,6 +312,14 @@ class Profile(commands.Cog):
                 inline=False
             )
             embed.add_field(name="🎭 Disposition", value=disposition_display(row.get("disposition")), inline=False)
+            # KO recovery status
+            if is_knocked_out(row):
+                timer = ko_time_remaining(row)
+                embed.add_field(
+                    name="💀 Knocked Out",
+                    value=f"Recovering — ready in `{timer}`\n*Use a **Phoenix Elixir** to revive instantly.*",
+                    inline=False
+                )
             if beast_data.get("divine_passive"):
                 dp = beast_data["divine_passive"]
                 passive_label = {
@@ -605,10 +635,14 @@ class Inventory(commands.Cog):
                 result_lines.append(f"❤️ Healed **{heal} HP** ({active['hp']} → {new_hp})")
 
             if "revive" in effect:
-                from utils.db import get_raid_party, is_knocked_out
                 raid_party = await get_raid_party(interaction.user.id)
-                ko_beast = next((b for b in raid_party if b and is_knocked_out(b)), None)
-                if ko_beast:
+                ko_beasts = [b for b in raid_party if b and is_knocked_out(b)]
+                if not ko_beasts and active and active["hp"] <= 0:
+                    ko_beasts = [active]
+                if not ko_beasts:
+                    result_lines.append("✦ No knocked-out beast to revive! Your party is already healthy.")
+                elif len(ko_beasts) == 1:
+                    ko_beast = ko_beasts[0]
                     heal = int(ko_beast["max_hp"] * (effect.get("heal_percent", 50) / 100))
                     await db.execute(
                         "UPDATE player_beasts SET knocked_out_until = NULL, hp = ? WHERE id = ?",
@@ -617,15 +651,41 @@ class Inventory(commands.Cog):
                     bd = get_beast_data(ko_beast["beast_id"]) or {}
                     bname = ko_beast.get("nickname") or bd.get("name", "Beast")
                     result_lines.append(f"🔥 **{bname}** revived with `{heal}/{ko_beast['max_hp']}HP`! Ready to fight.")
-                elif active and active["hp"] <= 0:
-                    heal = int(active["max_hp"] * (effect.get("heal_percent", 50) / 100))
-                    await db.execute(
-                        "UPDATE player_beasts SET hp = ?, knocked_out_until = NULL WHERE id = ?",
-                        (heal, active["id"])
-                    )
-                    result_lines.append(f"🔥 Revived with **{heal} HP**!")
                 else:
-                    result_lines.append("✦ No knocked-out beast to revive! Your party is already healthy.")
+                    # Multiple KO'd — let player choose via buttons
+                    await db.commit()  # commit current db state before sending view
+                    heal_pct = effect.get("heal_percent", 50)
+                    class ReviveView(discord.ui.View):
+                        def __init__(self):
+                            super().__init__(timeout=30)
+                            for b in ko_beasts:
+                                bdd = get_beast_data(b["beast_id"]) or {}
+                                bname = b.get("nickname") or bdd.get("name","Beast")
+                                timer = ko_time_remaining(b)
+                                btn = discord.ui.Button(
+                                    label=f"{bname} ({timer})",
+                                    style=discord.ButtonStyle.danger,
+                                    emoji="🔥"
+                                )
+                                async def _cb(inter, beast=b, name=bname):
+                                    heal = int(beast["max_hp"] * (heal_pct / 100))
+                                    async with aiosqlite.connect("db/chibibeast.db") as _db:
+                                        await _db.execute(
+                                            "UPDATE player_beasts SET knocked_out_until = NULL, hp = ? WHERE id = ?",
+                                            (heal, beast["id"])
+                                        )
+                                        await _db.commit()
+                                    await inter.response.edit_message(
+                                        content=f"🔥 **{name}** revived with `{heal}/{beast['max_hp']}HP`! Ready to fight.",
+                                        view=None
+                                    )
+                                btn.callback = _cb
+                                self.add_item(btn)
+                    await interaction.followup.send(
+                        f"🔥 You have `{len(ko_beasts)}` knocked-out beasts. Which one to revive?",
+                        view=ReviveView(), ephemeral=True
+                    )
+                    return
 
             if "restore_mana_percent" in effect and active:
                 restore = int(active["max_mana"] * (effect["restore_mana_percent"] / 100))

@@ -1451,6 +1451,11 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         beast_leveled = beast_new_level > winner_beast_dict["level"]
         async with aiosqlite.connect("db/chibibeast.db") as db:
             await apply_beast_levelup(db, winner_beast_dict, beast_new_level, beast_new_exp)
+            # Restore both active beasts to full HP after battle
+            await db.execute(
+                "UPDATE player_beasts SET hp = max_hp WHERE id IN (?, ?)",
+                (winner_beast_dict["id"], loser_beast_dict["id"])
+            )
             await db.commit()
 
         # ── Progress tracking: quests + achievements for the winner ────

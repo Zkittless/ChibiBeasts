@@ -954,6 +954,23 @@ class Guilds(commands.Cog):
                         status = f"🔵`{p_mana}/100`"
                     lines.append(f"{medals[i]} <@{uid}> — `{dmg:,}` dmg {status} `{p_hp}/{p_max}HP`")
                 embed.add_field(name="⚔️ Party", value="\n".join(lines), inline=False)
+            # Show party slot names for each participant
+            party_lines = []
+            for uid in list(raid.get("player_party", {}).keys())[:5]:
+                party = raid["player_party"][uid]
+                slot_names = []
+                for si, b in enumerate(party):
+                    bd = get_beast_data(b["beast_id"]) or {}
+                    bname = b.get("nickname") or bd.get("name", "?")
+                    hp = raid["player_party_hp"].get((uid, si), b["hp"])
+                    max_hp = b["max_hp"]
+                    if hp <= 0:
+                        slot_names.append(f"~~{bname}~~💀")
+                    else:
+                        slot_names.append(bname if si != raid.get("player_active_slot",{}).get(uid,0) else f"**{bname}**")
+                party_lines.append(f"<@{uid}>: {' · '.join(slot_names)}")
+            if party_lines:
+                embed.add_field(name="🐾 Parties", value="\n".join(party_lines), inline=False)
             if raid.get("phase_log"):
                 embed.add_field(name="📋 Phase Log", value="\n".join(raid["phase_log"]), inline=False)
             if raid.get("last_event"):

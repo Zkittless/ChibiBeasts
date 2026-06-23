@@ -1502,6 +1502,44 @@ class Utilities(commands.Cog):
         await interaction.followup.send(embed=embed)
 
 
+    @app_commands.command(name="party", description="Quick view of your raid party status 🐾")
+    async def party(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        from utils.db import get_raid_party, is_knocked_out, ko_time_remaining, get_beast_data as _gbd
+        from utils.theme import RARITY_EMOJI as _RE
+        uid = interaction.user.id
+        party = await get_raid_party(uid)
+        if not any(party):
+            return await interaction.followup.send(
+                "✦ No raid party set up. Use `/raidparty` to assign your 3 beasts.", ephemeral=True
+            )
+        embed = discord.Embed(title="⚔️ Raid Party", color=COLORS.get("legendary", 0xFFD700))
+        slot_labels = ["🥇 Slot 1", "🥈 Slot 2", "🥉 Slot 3"]
+        ready = 0
+        for i, beast in enumerate(party):
+            if beast:
+                bd = _gbd(beast["beast_id"]) or {}
+                emoji = _RE.get(beast["rarity"], "⚪")
+                name = beast.get("nickname") or bd.get("name", "?")
+                ko = is_knocked_out(beast)
+                if ko:
+                    val = f"💀 **Knocked out** — `{ko_time_remaining(beast)}` remaining"
+                else:
+                    val = f"❤️ `{beast['hp']}/{beast['max_hp']}HP` · Lv.{beast['level']} · `{beast['attack']}ATK`"
+                    ready += 1
+                embed.add_field(name=f"{slot_labels[i]}: {emoji} {name}", value=val, inline=False)
+            else:
+                embed.add_field(name=slot_labels[i], value="*Empty*", inline=False)
+        filled = sum(1 for b in party if b)
+        if filled < 3:
+            status = f"⚠️ {filled}/3 filled"
+        elif ready < 3:
+            status = f"💀 {filled-ready} recovering — raids locked"
+        else:
+            status = "✅ Party ready!"
+        embed.set_footer(text=status + " · /raidparty to edit")
+        await interaction.followup.send(embed=embed, ephemeral=True)
+
     @app_commands.command(name="raidparty", description="Set up your 3-beast raid party ⚔️")
     async def raidparty(self, interaction: discord.Interaction):
         await interaction.response.defer()
