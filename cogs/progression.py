@@ -251,12 +251,12 @@ class Progression(commands.Cog):
                 async def _next(inter):
                     if inter.user.id != uid:
                         return await inter.response.send_message("✦ This isn't your bestiary view!", ephemeral=True)
-                    self.page += 1
-                    self._rebuild()
-                    emb, _ = build_embed(self.tab, self.page)
-                    await inter.response.edit_message(embed=emb, view=self)
+                    self_v.page += 1
+                    self_v._rebuild()
+                    emb, _ = build_embed(self_v.tab, self_v.page)
+                    await inter.response.edit_message(embed=emb, view=self_v)
                 nxt.callback = _next
-                self.add_item(nxt)
+                self_v.add_item(nxt)
 
         emb, _ = build_embed(current_tab, current_page)
         view = BestiaryView()
