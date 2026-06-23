@@ -1045,10 +1045,14 @@ class Guilds(commands.Cog):
             @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
             async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
-                await btn_interaction.response.defer(ephemeral=True, thinking=False)
+                try:
+                    if not btn_interaction.response.is_done():
+                        await btn_interaction.response.defer(ephemeral=True, thinking=False)
+                except Exception:
+                    return  # interaction already failed at Discord level — bail cleanly
 
                 if raid_id not in active_raids:
-                    return await btn_interaction.followup.send("✦ The raid has ended!", ephemeral=True)
+                    return
                 raid = active_raids[raid_id]
                 uid = btn_interaction.user.id
 
@@ -1208,10 +1212,14 @@ class Guilds(commands.Cog):
             @discord.ui.button(label="⚡ Ultimate", style=discord.ButtonStyle.secondary, emoji="💫")
             async def ultimate_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
-                await btn_interaction.response.defer(ephemeral=True, thinking=False)
+                try:
+                    if not btn_interaction.response.is_done():
+                        await btn_interaction.response.defer(ephemeral=True, thinking=False)
+                except Exception:
+                    return
 
                 if raid_id not in active_raids:
-                    return await btn_interaction.followup.send("✦ The raid has ended!", ephemeral=True)
+                    return
                 raid = active_raids[raid_id]
                 uid = btn_interaction.user.id
 
