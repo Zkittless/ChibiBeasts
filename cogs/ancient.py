@@ -401,21 +401,41 @@ class Ancient(commands.Cog):
         ATTACK_COOLDOWN = 0.8
         BOSS_ATK_INTERVAL = 10
 
+        async def _write_raid_db(raid_id: int, uid: int, current_hp: int, damage: int):
+            try:
+                async with aiosqlite.connect(DB_PATH) as db:
+                    await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (current_hp, raid_id))
+                    async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
+                        existing = await c.fetchone()
+                    if existing:
+                        await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
+                    else:
+                        await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
+                    await db.commit()
+            except Exception:
+                pass
+
+        async def _write_raid_db(raid_id: int, uid: int, current_hp: int, damage: int):
+            try:
+                async with aiosqlite.connect(DB_PATH) as db:
+                    await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (current_hp, raid_id))
+                    async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
+                        existing = await c.fetchone()
+                    if existing:
+                        await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
+                    else:
+                        await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
+                    await db.commit()
+            except Exception:
+                pass
+
         async def _update_embed(view_ref=None, ended=False):
             if raid_id not in active_ancient_raids:
                 return
             r = active_ancient_raids[raid_id]
             lock = r.get("embed_lock")
-            if lock is None:
+            if lock is None or lock.locked():
                 return
-            if lock.locked():
-                await asyncio.sleep(0.4)
-                if raid_id not in active_ancient_raids:
-                    return
-                r = active_ancient_raids[raid_id]
-                lock = r.get("embed_lock")
-                if lock is None or lock.locked():
-                    return
             async with lock:
                 if raid_id not in active_ancient_raids:
                     return
@@ -702,16 +722,9 @@ class Ancient(commands.Cog):
                     cur_raid["attack_counts"][uid] = cur_raid["attack_counts"].get(uid, 0) + 1
                     _mana_gain = min(15, 8 + _player_spd // 40)
                     cur_raid["player_mana"][uid] = min(100, cur_raid["player_mana"].get(uid, 0) + _mana_gain)
-                    async with aiosqlite.connect(DB_PATH) as db:
-                        await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (cur_raid["current_hp"], raid_id))
-                        async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
-                            existing = await c.fetchone()
-                        if existing:
-                            await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
-                        else:
-                            await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
-                        await db.commit()
-                    raid_ended = cur_raid["current_hp"] <= 0
+                raid_ended = cur_raid["current_hp"] <= 0
+                _snap_hp = cur_raid["current_hp"]
+                asyncio.create_task(_write_raid_db(raid_id, uid, _snap_hp, damage))
                 await check_phase_transitions(active_ancient_raids.get(raid_id, cur_raid), btn_interaction.channel)
                 # Store last player action as last_event — no ephemeral
                 if raid_id in active_ancient_raids:
@@ -766,16 +779,9 @@ class Ancient(commands.Cog):
                     cur_raid["participants"][uid] = cur_raid["participants"].get(uid, 0) + damage
                     cur_raid["attack_counts"][uid] = cur_raid["attack_counts"].get(uid, 0) + 1
                     cur_raid["player_mana"][uid] = 0
-                    async with aiosqlite.connect(DB_PATH) as db:
-                        await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (cur_raid["current_hp"], raid_id))
-                        async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
-                            existing = await c.fetchone()
-                        if existing:
-                            await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
-                        else:
-                            await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
-                        await db.commit()
-                    raid_ended = cur_raid["current_hp"] <= 0
+                raid_ended = cur_raid["current_hp"] <= 0
+                _snap_hp = cur_raid["current_hp"]
+                asyncio.create_task(_write_raid_db(raid_id, uid, _snap_hp, damage))
                 await check_phase_transitions(active_ancient_raids.get(raid_id, cur_raid), btn_interaction.channel)
                 # Ultimate stored as last_event — no new messages
                 if raid_id in active_ancient_raids:

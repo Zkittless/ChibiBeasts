@@ -835,22 +835,29 @@ class Guilds(commands.Cog):
         ATTACK_COOLDOWN = 0.5
         BOSS_ATK_INTERVAL = 10  # seconds between boss auto-attacks
 
+        async def _write_raid_db(raid_id: int, uid: int, current_hp: int, damage: int):
+            """Fire-and-forget DB write — never inside the state lock."""
+            try:
+                async with aiosqlite.connect("db/chibibeast.db") as db:
+                    await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (current_hp, raid_id))
+                    async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
+                        existing = await c.fetchone()
+                    if existing:
+                        await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
+                    else:
+                        await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
+                    await db.commit()
+            except Exception:
+                pass
+
         async def _update_embed(view_ref=None, ended=False):
-            """Always reads fresh state. If a edit is in flight, waits and retries once."""
+            """Always reads fresh state — skip if already editing."""
             if raid_id not in active_raids:
                 return
             r = active_raids[raid_id]
             lock = r.get("embed_lock")
-            if lock is None:
+            if lock is None or lock.locked():
                 return
-            if lock.locked():
-                await asyncio.sleep(0.4)   # brief wait then retry with fresh state
-                if raid_id not in active_raids:
-                    return
-                r = active_raids[raid_id]
-                lock = r.get("embed_lock")
-                if lock is None or lock.locked():
-                    return  # still busy — drop, next hit will catch it
             async with lock:
                 if raid_id not in active_raids:
                     return
@@ -865,7 +872,6 @@ class Guilds(commands.Cog):
                     await msg.edit(embed=build_raid_embed(r), view=v)
                 except discord.HTTPException:
                     pass
-
 
         raid_view_ref = [None]  # set after view is created
 
@@ -1173,6 +1179,7 @@ class Guilds(commands.Cog):
                 if not raid_lock:
                     return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
 
+                # In-memory update under lock — no DB I/O inside
                 async with raid_lock:
                     if raid_id not in active_raids:
                         return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
@@ -1180,23 +1187,14 @@ class Guilds(commands.Cog):
                     raid["current_hp"] = max(0, raid["current_hp"] - damage)
                     raid["participants"][uid] = raid["participants"].get(uid, 0) + damage
                     raid["attack_counts"][uid] = raid["attack_counts"].get(uid, 0) + 1
-                    # Mana gain scales with speed
                     mana_gain = min(15, 8 + player_spd // 40)
                     raid["player_mana"][uid] = min(100, raid["player_mana"].get(uid, 0) + mana_gain)
-
-                    async with aiosqlite.connect("db/chibibeast.db") as db:
-                        await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (raid["current_hp"], raid_id))
-                        async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
-                            existing = await c.fetchone()
-                        if existing:
-                            await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
-                        else:
-                            await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
-                        await db.commit()
-
                     raid_ended = raid["current_hp"] <= 0
-                    current_hp_snap = raid["current_hp"]
-                    new_mana = raid["player_mana"].get(uid, 0)
+                    snap_hp    = raid["current_hp"]
+                    snap_dmg   = raid["participants"][uid]
+
+                # DB write outside lock — doesn't block other players
+                asyncio.create_task(_write_raid_db(raid_id, uid, snap_hp, damage))
 
                 # Phase transition check
                 await check_phase_transitions(active_raids.get(raid_id, raid), btn_interaction.channel)
@@ -1293,19 +1291,11 @@ class Guilds(commands.Cog):
                     raid["current_hp"] = max(0, raid["current_hp"] - damage)
                     raid["participants"][uid] = raid["participants"].get(uid, 0) + damage
                     raid["attack_counts"][uid] = raid["attack_counts"].get(uid, 0) + 1
-                    raid["player_mana"][uid] = 0  # drain mana
-
-                    async with aiosqlite.connect("db/chibibeast.db") as db:
-                        await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (raid["current_hp"], raid_id))
-                        async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
-                            existing = await c.fetchone()
-                        if existing:
-                            await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
-                        else:
-                            await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
-                        await db.commit()
-
+                    raid["player_mana"][uid] = 0
                     raid_ended = raid["current_hp"] <= 0
+                    snap_hp  = raid["current_hp"]
+
+                asyncio.create_task(_write_raid_db(raid_id, uid, snap_hp, damage))
 
                 # Public ultimate announcement
                 await check_phase_transitions(active_raids.get(raid_id, raid), btn_interaction.channel)
