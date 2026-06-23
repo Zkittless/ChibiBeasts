@@ -353,9 +353,13 @@ class Ancient(commands.Cog):
         def _est_dps(atk, bdef):
             df = bdef / (bdef + 100)
             return max(1, int(atk * (1 - df)))
+        # DPS per-beast, grouped by player
+        # Scale boss HP on avg player DPS so weak players don't inflate beyond what strong ones can clear
         party_dps_mid = sum(_est_dps(b["attack"], scaled_boss_def) * 10 for b in party_beast_stats)
+        _n_players = max(1, len(view.party))
+        _avg_player_dps = party_dps_mid / _n_players
 
-        scaled_hp  = party_dps_mid * 50           # ~8.3 min kill at full DPS for ancient
+        scaled_hp  = int(_avg_player_dps * 40)    # avg player DPS * 40 cycles — weak players don't inflate boss HP
         scaled_atk = int(avg_party_hp * 0.07)     # ancient hits ~7% avg HP — longer fight, kinder hits
         # Minimum floor from boss base stats so it never feels trivial
         scaled_hp  = max(scaled_hp,  boss["max_hp"] // 3)
@@ -372,6 +376,7 @@ class Ancient(commands.Cog):
             "raid_message": None,
             "attack_counts": {},
             "embed_updating": False,
+            "last_embed_update": 0.0,
             "last_attack": {},
             "player_hp": {},
             "player_max_hp": {},
@@ -679,18 +684,17 @@ class Ancient(commands.Cog):
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" \u26a1" if new_mana >= 50 else "")
                 async def _do_anc_atk_embed():
+                    import time as _t
                     if raid_id not in active_ancient_raids: return
                     r = active_ancient_raids[raid_id]
-                    if r.get("embed_updating"): return
-                    r["embed_updating"] = True
+                    now_t = _t.monotonic()
+                    if now_t - r.get("last_embed_update", 0) < 1.2: return
+                    r["last_embed_update"] = now_t
                     try:
                         self.update_ult_style(uid, r)
                         await r["raid_message"].edit(embed=build_ancient_embed(r), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
-                    finally:
-                        if raid_id in active_ancient_raids:
-                            active_ancient_raids[raid_id]["embed_updating"] = False
                 asyncio.create_task(_do_anc_atk_embed())
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
@@ -756,18 +760,17 @@ class Ancient(commands.Cog):
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg \u2014 Mana reset."
                 async def _do_anc_ult_embed():
+                    import time as _t
                     if raid_id not in active_ancient_raids: return
                     r = active_ancient_raids[raid_id]
-                    if r.get("embed_updating"): return
-                    r["embed_updating"] = True
+                    now_t = _t.monotonic()
+                    if now_t - r.get("last_embed_update", 0) < 1.2: return
+                    r["last_embed_update"] = now_t
                     try:
                         self.update_ult_style(uid, r)
                         await r["raid_message"].edit(embed=build_ancient_embed(r), view=self if not raid_ended else None)
                     except discord.HTTPException:
                         pass
-                    finally:
-                        if raid_id in active_ancient_raids:
-                            active_ancient_raids[raid_id]["embed_updating"] = False
                 asyncio.create_task(_do_anc_ult_embed())
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
