@@ -1068,14 +1068,18 @@ class Guilds(commands.Cog):
                 try:
                     if not btn_interaction.response.is_done():
                         await btn_interaction.response.defer(ephemeral=True, thinking=False)
-                except Exception:
+                except Exception as e:
+                    print(f"[RAID] defer failed: {e}")
                     return  # interaction already failed at Discord level — bail cleanly
+
+                uid = btn_interaction.user.id
+                print(f"[RAID] attack_btn: uid={uid} raid_id={raid_id} in_active={raid_id in active_raids}")
 
                 if raid_id not in active_raids:
                     return
                 raid = active_raids[raid_id]
-                uid = btn_interaction.user.id
 
+                print(f"[RAID] guild check: uid in guild_members={uid in raid['guild_members']}")
                 if uid not in raid["guild_members"]:
                     return await btn_interaction.followup.send("✦ You need to be in this guild to attack!", ephemeral=True)
 
@@ -1134,16 +1138,20 @@ class Guilds(commands.Cog):
                     )
 
                 now = time.monotonic()
-                if now - raid["last_attack"].get(uid, 0) < ATTACK_COOLDOWN:
+                cooldown_remaining = now - raid["last_attack"].get(uid, 0)
+                print(f"[RAID] cooldown check: elapsed={cooldown_remaining:.2f} COOLDOWN={ATTACK_COOLDOWN}")
+                if cooldown_remaining < ATTACK_COOLDOWN:
                     return  # silently swallow — defer already sent, no followup
                 raid["last_attack"][uid] = now
 
                 active = await get_active_beast(uid)
+                print(f"[RAID] active beast: {active}")
                 if not active:
                     return await btn_interaction.followup.send("✦ You need an active beast! Use `/setactive`.", ephemeral=True)
 
                 # Load raid party on first attack — must have 3 slots assigned via /raidparty
                 if uid not in raid["player_party"]:
+                    print(f"[RAID] loading party for uid={uid}")
                     async with aiosqlite.connect("db/chibibeast.db") as _pdb:
                         _pdb.row_factory = aiosqlite.Row
                         async with _pdb.execute(
@@ -1183,8 +1191,10 @@ class Guilds(commands.Cog):
                 player_spd = active_beast_row.get("speed", 50)
                 is_ultimate = False
                 damage = calc_player_damage(player_atk, defense, is_ultimate, is_crit)
+                print(f"[RAID] damage calc: atk={player_atk} def={defense} dmg={damage} crit={is_crit}")
 
                 raid_lock = _raid_locks.get(raid_id)
+                print(f"[RAID] raid_lock={raid_lock}")
                 if not raid_lock:
                     return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
 
