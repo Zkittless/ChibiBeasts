@@ -811,8 +811,7 @@ class Guilds(commands.Cog):
             "guild_id": guild_data["id"], "channel": interaction.channel,
             "raid_message": None,
             "attack_counts": {},
-            "embed_updating": False,
-            "last_embed_update": 0.0,
+            "embed_lock": None,  # set after init
             "guild_members": guild_member_ids,
             "last_attack": {},
             "player_hp": {},
@@ -830,9 +829,35 @@ class Guilds(commands.Cog):
             "player_party_hp": {},    # (uid, slot) -> current HP for each party beast
         }
         _raid_locks[raid_id] = asyncio.Lock()
+        active_raids[raid_id]["embed_lock"] = asyncio.Lock()
 
         ATTACK_COOLDOWN = 0.5
         BOSS_ATK_INTERVAL = 10  # seconds between boss auto-attacks
+
+        async def _update_embed(view_ref=None, ended=False):
+            """Always reads fresh state — no captured snapshots."""
+            if raid_id not in active_raids:
+                return
+            r = active_raids[raid_id]
+            lock = r.get("embed_lock")
+            if lock is None or lock.locked():
+                return  # skip if already updating — don't queue
+            async with lock:
+                if raid_id not in active_raids:
+                    return
+                r = active_raids[raid_id]
+                msg = r.get("raid_message")
+                if not msg:
+                    return
+                try:
+                    v = None if ended else (view_ref or raid_view_ref[0])
+                    if v:
+                        v.update_ult_style("_multi", r)
+                    await msg.edit(embed=build_raid_embed(r), view=v)
+                except discord.HTTPException:
+                    pass
+
+        raid_view_ref = [None]  # set after view is created
 
         def boss_effective_defense(raid: dict) -> int:
             """Defense drops as boss HP falls — rewards sustained DPS."""
@@ -962,15 +987,7 @@ class Guilds(commands.Cog):
                         break
 
                 # Update embed
-                if not raid.get("embed_updating") and raid.get("raid_message"):
-                    raid["embed_updating"] = True
-                    try:
-                        await raid["raid_message"].edit(embed=build_raid_embed(raid))
-                    except Exception:
-                        pass
-                    finally:
-                        if raid_id in active_raids:
-                            active_raids[raid_id]["embed_updating"] = False
+                asyncio.create_task(_update_embed())
 
         # Map threshold -> defense reduction % for phase display
         _PHASE_DEF_REDUCTION = {0.70: 20, 0.40: 40, 0.15: 60}
@@ -1007,8 +1024,10 @@ class Guilds(commands.Cog):
                 super().__init__(timeout=1800)
 
             def update_ult_style(self, uid: str, raid: dict):
-                """Update ultimate button colour based on player's current mana."""
-                mana = raid.get("player_mana", {}).get(uid, 0)
+                """Update ultimate button colour — blue if any active player has 50+ mana."""
+                mana = raid.get("player_mana", {}).get(uid, 0) if uid != "_multi" else max(
+                    (v for v in raid.get("player_mana", {}).values()), default=0
+                )
                 for item in self.children:
                     if isinstance(item, discord.ui.Button) and "Ultimate" in item.label:
                         item.style = discord.ButtonStyle.primary if mana >= 50 else discord.ButtonStyle.secondary
@@ -1169,19 +1188,7 @@ class Guilds(commands.Cog):
                     crit_tag = "⭐ CRIT! " if is_crit else ""
                     active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" ⚡" if new_mana >= 50 else "")
 
-                async def _do_embed_update():
-                    import time as _t
-                    if raid_id not in active_raids: return
-                    r = active_raids[raid_id]
-                    now_t = _t.monotonic()
-                    if now_t - r.get("last_embed_update", 0) < 0.4: return
-                    r["last_embed_update"] = now_t
-                    try:
-                        self.update_ult_style(uid, r)
-                        await r["raid_message"].edit(embed=build_raid_embed(r), view=self if not raid_ended else None)
-                    except discord.HTTPException:
-                        pass
-                asyncio.create_task(_do_embed_update())
+                asyncio.create_task(_update_embed(self, raid_ended))
 
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
@@ -1260,19 +1267,7 @@ class Guilds(commands.Cog):
                     crit_tag = "⭐ CRIT! " if is_crit else ""
                     active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg — Mana reset."
 
-                async def _do_ult_embed_update():
-                    import time as _t
-                    if raid_id not in active_raids: return
-                    r = active_raids[raid_id]
-                    now_t = _t.monotonic()
-                    if now_t - r.get("last_embed_update", 0) < 0.4: return
-                    r["last_embed_update"] = now_t
-                    try:
-                        self.update_ult_style(uid, r)
-                        await r["raid_message"].edit(embed=build_raid_embed(r), view=self if not raid_ended else None)
-                    except discord.HTTPException:
-                        pass
-                asyncio.create_task(_do_ult_embed_update())
+                asyncio.create_task(_update_embed(self, raid_ended))
 
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")

@@ -378,8 +378,7 @@ class Ancient(commands.Cog):
             "channel": interaction.channel,
             "raid_message": None,
             "attack_counts": {},
-            "embed_updating": False,
-            "last_embed_update": 0.0,
+            "embed_lock": None,
             "last_attack": {},
             "player_hp": {},
             "player_max_hp": {},
@@ -395,10 +394,35 @@ class Ancient(commands.Cog):
             "player_party_hp": {},    # (uid, slot) -> current HP per party beast
         }
         _ancient_locks[raid_id] = asyncio.Lock()
+        active_ancient_raids[raid_id]["embed_lock"] = asyncio.Lock()
 
         party_preview = ", ".join(list(view.party.values())[:5]) + ("..." if len(view.party) > 5 else "")
         ATTACK_COOLDOWN = 0.8
         BOSS_ATK_INTERVAL = 10
+
+        async def _update_embed(view_ref=None, ended=False):
+            if raid_id not in active_ancient_raids:
+                return
+            r = active_ancient_raids[raid_id]
+            lock = r.get("embed_lock")
+            if lock is None or lock.locked():
+                return
+            async with lock:
+                if raid_id not in active_ancient_raids:
+                    return
+                r = active_ancient_raids[raid_id]
+                msg = r.get("raid_message")
+                if not msg:
+                    return
+                try:
+                    v = None if ended else (view_ref or anc_view_ref[0])
+                    if v:
+                        v.update_ult_style("_multi", r)
+                    await msg.edit(embed=build_ancient_embed(r), view=v)
+                except discord.HTTPException:
+                    pass
+
+        anc_view_ref = [None]
 
         def boss_effective_defense(raid: dict) -> int:
             pct = raid["current_hp"] / max(raid["max_hp"], 1)
@@ -508,15 +532,7 @@ class Ancient(commands.Cog):
                     if all_down and not any_bench:
                         await cog.end_ancient_raid(raid_id, interaction.channel)
                         break
-                if not cur_raid.get("embed_updating") and cur_raid.get("raid_message"):
-                    cur_raid["embed_updating"] = True
-                    try:
-                        await cur_raid["raid_message"].edit(embed=build_ancient_embed(cur_raid))
-                    except Exception:
-                        pass
-                    finally:
-                        if raid_id in active_ancient_raids:
-                            active_ancient_raids[raid_id]["embed_updating"] = False
+                asyncio.create_task(_update_embed())
 
         _PHASE_DEF_REDUCTION = {0.70: 20, 0.40: 40, 0.15: 60}
 
@@ -548,7 +564,9 @@ class Ancient(commands.Cog):
                 super().__init__(timeout=1800)
 
             def update_ult_style(self, uid: str, raid: dict):
-                mana = raid.get("player_mana", {}).get(uid, 0)
+                mana = raid.get("player_mana", {}).get(uid, 0) if uid != "_multi" else max(
+                    (v for v in raid.get("player_mana", {}).values()), default=0
+                )
                 for item in self.children:
                     if isinstance(item, discord.ui.Button) and "Ultimate" in item.label:
                         item.style = discord.ButtonStyle.primary if mana >= 50 else discord.ButtonStyle.secondary
@@ -686,19 +704,7 @@ class Ancient(commands.Cog):
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg | Mana `{new_mana}/100`" + (" \u26a1" if new_mana >= 50 else "")
-                async def _do_anc_atk_embed():
-                    import time as _t
-                    if raid_id not in active_ancient_raids: return
-                    r = active_ancient_raids[raid_id]
-                    now_t = _t.monotonic()
-                    if now_t - r.get("last_embed_update", 0) < 0.4: return
-                    r["last_embed_update"] = now_t
-                    try:
-                        self.update_ult_style(uid, r)
-                        await r["raid_message"].edit(embed=build_ancient_embed(r), view=self if not raid_ended else None)
-                    except discord.HTTPException:
-                        pass
-                asyncio.create_task(_do_anc_atk_embed())
+                asyncio.create_task(_update_embed(self, raid_ended))
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
                 if raid_ended:
@@ -762,19 +768,7 @@ class Ancient(commands.Cog):
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
                     active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg \u2014 Mana reset."
-                async def _do_anc_ult_embed():
-                    import time as _t
-                    if raid_id not in active_ancient_raids: return
-                    r = active_ancient_raids[raid_id]
-                    now_t = _t.monotonic()
-                    if now_t - r.get("last_embed_update", 0) < 0.4: return
-                    r["last_embed_update"] = now_t
-                    try:
-                        self.update_ult_style(uid, r)
-                        await r["raid_message"].edit(embed=build_ancient_embed(r), view=self if not raid_ended else None)
-                    except discord.HTTPException:
-                        pass
-                asyncio.create_task(_do_anc_ult_embed())
+                asyncio.create_task(_update_embed(self, raid_ended))
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
                 if raid_ended:
@@ -785,6 +779,7 @@ class Ancient(commands.Cog):
                     await cog.end_ancient_raid(raid_id, interaction.channel, timed_out=True)
 
         raid_view = AncientRaidView()
+        anc_view_ref[0] = raid_view
         raid_msg = await interaction.channel.send(embed=build_ancient_embed(active_ancient_raids[raid_id]), view=raid_view)
         active_ancient_raids[raid_id]["raid_message"] = raid_msg
 
