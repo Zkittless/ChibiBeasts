@@ -454,8 +454,10 @@ class Ancient(commands.Cog):
 
         async def _embed_loop():
             while raid_id in active_ancient_raids:
-                await asyncio.sleep(1.0)
-                await _update_embed()
+                await asyncio.sleep(0.3)
+                if raid_id in active_ancient_raids and active_ancient_raids[raid_id].get("embed_dirty"):
+                    active_ancient_raids[raid_id]["embed_dirty"] = False
+                    await _update_embed()
 
         anc_view_ref = [None]
 
@@ -553,6 +555,7 @@ class Ancient(commands.Cog):
                 died = p_hp <= 0
                 # Store boss attack in last_event — no new messages
                 if raid_id in active_ancient_raids:
+                    active_ancient_raids[raid_id]["embed_dirty"] = True
                     active_ancient_raids[raid_id]["last_event"] = (
                         f"\U0001f4a5 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
                         + (" \u2014 **knocked out!** \U0001f480" if died else f" | `{p_hp}/{p_max}HP`")
@@ -735,6 +738,7 @@ class Ancient(commands.Cog):
                 # Store last player action as last_event — no ephemeral
                 if raid_id in active_ancient_raids:
                     crit_tag = "\u2b50 CRIT! " if is_crit else ""
+                    active_ancient_raids[raid_id]["embed_dirty"] = True
                     active_ancient_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg"
                 # embed_loop handles refresh
                 await track_quest_event(uid, "raid_damage", amount=damage)
@@ -745,25 +749,28 @@ class Ancient(commands.Cog):
             @discord.ui.button(label="\u26a1 Ultimate", style=discord.ButtonStyle.secondary, emoji="\U0001f4ab")
             async def ultimate_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 import time
-                await btn_interaction.response.defer(ephemeral=True, thinking=False)
+                try:
+                    if not btn_interaction.response.is_done():
+                        await btn_interaction.response.defer(ephemeral=True, thinking=False)
+                except Exception:
+                    return
                 if raid_id not in active_ancient_raids:
-                    return await btn_interaction.followup.send("\u2746 The raid has ended!", ephemeral=True)
+                    return
                 cur_raid = active_ancient_raids[raid_id]
                 uid = btn_interaction.user.id
                 if uid not in cur_raid["party"]:
-                    return await btn_interaction.followup.send("✦ You're not in this party!", ephemeral=True)
+                    return await btn_interaction.followup.send("❆ You're not in this party!", ephemeral=True)
                 if uid in cur_raid["player_hp"] and cur_raid["player_hp"][uid] <= 0:
-                    return await btn_interaction.followup.send("✦ Your beast is knocked out!", ephemeral=True)
-                if cur_raid["player_mana"].get(uid, 0) < 50:
-                    return await btn_interaction.followup.send(f"✦ Not enough mana! `{cur_raid['player_mana'].get(uid,0)}/50` needed.", ephemeral=True)
-                self._set_attack_buttons(True)
-                asyncio.create_task(self._re_enable_after(ATTACK_COOLDOWN))
-                cur_raid["last_attack"][uid] = time.monotonic()
+                    return await btn_interaction.followup.send("❆ Your beast is knocked out!", ephemeral=True)
+                now = time.monotonic()
+                if now - cur_raid.get("last_ultimate", {}).get(uid, 0) < ATTACK_COOLDOWN:
+                    return
+                cur_raid.setdefault("last_ultimate", {})[uid] = now
                 # Use party slot stats
                 _ult_slot = cur_raid.get("player_active_slot", {}).get(uid, 0)
                 _ult_party = cur_raid.get("player_party", {}).get(uid, [])
                 if not _ult_party:
-                    return await btn_interaction.followup.send("✦ No party loaded! Attack first.", ephemeral=True)
+                    return await btn_interaction.followup.send("❆ No party loaded! Attack first.", ephemeral=True)
                 _ult_beast = _ult_party[_ult_slot] if _ult_slot < len(_ult_party) else _ult_party[0]
                 _ult_bd = get_beast_data(_ult_beast["beast_id"]) or {}
                 ult_name = _ult_bd.get("ultimate", "Ultimate")
@@ -776,24 +783,24 @@ class Ancient(commands.Cog):
                 damage  = calc_player_damage(_ult_atk, defense, True, is_crit, _ult_mana)
                 raid_lock = _ancient_locks.get(raid_id)
                 if not raid_lock:
-                    return await btn_interaction.followup.send("\u2746 The raid just ended!", ephemeral=True)
+                    return await btn_interaction.followup.send("❆ The raid just ended!", ephemeral=True)
                 async with raid_lock:
                     if raid_id not in active_ancient_raids:
-                        return await btn_interaction.followup.send("\u2746 The raid just ended!", ephemeral=True)
+                        return await btn_interaction.followup.send("❆ The raid just ended!", ephemeral=True)
                     cur_raid = active_ancient_raids[raid_id]
                     cur_raid["current_hp"] = max(0, cur_raid["current_hp"] - damage)
                     cur_raid["participants"][uid] = cur_raid["participants"].get(uid, 0) + damage
                     cur_raid["attack_counts"][uid] = cur_raid["attack_counts"].get(uid, 0) + 1
                     cur_raid["player_mana"][uid] = 0
-                raid_ended = cur_raid["current_hp"] <= 0
-                _snap_hp = cur_raid["current_hp"]
+                    cur_raid["embed_dirty"] = True
+                    raid_ended = cur_raid["current_hp"] <= 0
+                    _snap_hp = cur_raid["current_hp"]
                 asyncio.create_task(_write_raid_db(raid_id, uid, _snap_hp, damage))
                 await check_phase_transitions(active_ancient_raids.get(raid_id, cur_raid), btn_interaction.channel)
-                # Ultimate stored as last_event — no new messages
                 if raid_id in active_ancient_raids:
-                    crit_tag = "\u2b50 CRIT! " if is_crit else ""
-                    active_ancient_raids[raid_id]["last_event"] = f"\u26a1 <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
-                # embed_loop handles refresh
+                    crit_tag = "⭐ CRIT! " if is_crit else ""
+                    active_ancient_raids[raid_id]["embed_dirty"] = True
+                    active_ancient_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
                 await track_quest_event(uid, "raid_damage", amount=damage)
                 await advance_quest_step(uid, "raid_participate")
                 if raid_ended:

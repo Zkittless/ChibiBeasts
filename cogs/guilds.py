@@ -812,7 +812,8 @@ class Guilds(commands.Cog):
             "guild_id": guild_data["id"], "channel": interaction.channel,
             "raid_message": None,
             "attack_counts": {},
-            "embed_lock": None,  # set after init
+            "embed_lock": None,
+            "embed_dirty": False,
             "guild_members": guild_member_ids,
             "last_attack": {},
             "last_ultimate": {},
@@ -877,10 +878,12 @@ class Guilds(commands.Cog):
                     pass
 
         async def _embed_loop():
-            """Background loop: refresh embed at most once per second."""
+            """Background loop: refresh embed — fast when dirty, slow otherwise."""
             while raid_id in active_raids:
-                await asyncio.sleep(1.0)
-                await _update_embed()
+                await asyncio.sleep(0.3)
+                if raid_id in active_raids and active_raids[raid_id].get("embed_dirty"):
+                    active_raids[raid_id]["embed_dirty"] = False
+                    await _update_embed()
 
         raid_view_ref = [None]  # set after view is created
 
@@ -991,6 +994,7 @@ class Guilds(commands.Cog):
 
                 # Store boss attack as last_event — shown in embed, no new message
                 died = p_hp <= 0
+                raid["embed_dirty"] = True
                 raid["last_event"] = (
                     f"💥 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
                     + (f" — **knocked out!** 💀" if died else f" | `{p_hp}/{p_max}HP`")
@@ -1208,6 +1212,7 @@ class Guilds(commands.Cog):
                     raid["attack_counts"][uid] = raid["attack_counts"].get(uid, 0) + 1
                     mana_gain = min(15, 8 + player_spd // 40)
                     raid["player_mana"][uid] = min(100, raid["player_mana"].get(uid, 0) + mana_gain)
+                    raid["embed_dirty"] = True
                     raid_ended = raid["current_hp"] <= 0
                     snap_hp    = raid["current_hp"]
                     snap_dmg   = raid["participants"][uid]
@@ -1221,6 +1226,7 @@ class Guilds(commands.Cog):
                 # Store last player action as last_event in embed — no ephemeral needed
                 if raid_id in active_raids:
                     crit_tag = "⭐ CRIT! " if is_crit else ""
+                    active_raids[raid_id]["embed_dirty"] = True
                     active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg"
 
                 # embed_loop handles refresh
@@ -1251,9 +1257,9 @@ class Guilds(commands.Cog):
                     return await btn_interaction.followup.send("✦ Your beast is knocked out!", ephemeral=True)
 
                 now = time.monotonic()
-                if now - raid["last_ultimate"].get(uid, 0) < ATTACK_COOLDOWN:
+                if now - raid.get("last_ultimate", {}).get(uid, 0) < ATTACK_COOLDOWN:
                     return
-                raid["last_ultimate"][uid] = now
+                raid.setdefault("last_ultimate", {})[uid] = now
 
                 # Load party if not yet done — preserve existing mana
                 if uid not in raid["player_party"]:
@@ -1311,6 +1317,7 @@ class Guilds(commands.Cog):
                     raid["participants"][uid] = raid["participants"].get(uid, 0) + damage
                     raid["attack_counts"][uid] = raid["attack_counts"].get(uid, 0) + 1
                     raid["player_mana"][uid] = 0
+                    raid["embed_dirty"] = True
                     raid_ended = raid["current_hp"] <= 0
                     snap_hp  = raid["current_hp"]
 
@@ -1322,6 +1329,7 @@ class Guilds(commands.Cog):
                 # Ultimate stored as last_event — visible on embed, no new messages
                 if raid_id in active_raids:
                     crit_tag = "⭐ CRIT! " if is_crit else ""
+                    active_raids[raid_id]["embed_dirty"] = True
                     active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
 
                 # embed_loop handles refresh
