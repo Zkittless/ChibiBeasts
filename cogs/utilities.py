@@ -798,230 +798,44 @@ class Utilities(commands.Cog):
 
 
     # ── /shard_shop ───────────────────────────────────────────────────────
-    @app_commands.command(name="shard_shop", description="Spend Celestial Shards on exclusive items 🔮")
-    async def shard_shop(self, interaction: discord.Interaction):
-        await interaction.response.defer()
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
-        shards = player.get("celestial_shards", 0)
+async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str:
+    """Execute the side-effect of a shard shop purchase. Returns result description string."""
+    import time as _time
+    item_type = shop_item["type"]
+    result_desc = ""
+    if item_type == "explore_boost":
+        boost_until = _time.time() + (3 * 3600)
+        await db.execute("UPDATE players SET incense_active_until = ? WHERE user_id = ?", (boost_until, user_id))
+        result_desc = "Your next 3 `/explore` runs have boosted Divine odds in the Celestial Loom!"
+    elif item_type == "incubation_skip":
+        from datetime import datetime, timezone, timedelta
+        async with db.execute(
+            "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
+            (user_id,)
+        ) as c:
+            egg = await c.fetchone()
+        if egg:
+            new_ready = datetime.strptime(egg["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc) - timedelta(hours=6)
+            await db.execute("UPDATE incubating_eggs SET ready_at = ? WHERE id = ?", (new_ready.strftime("%Y-%m-%d %H:%M:%S"), egg["id"]))
+            result_desc = f"**{egg['egg_name']}** incubation reduced by 6 hours!"
+        else:
+            result_desc = "No eggs currently incubating — the fragment is yours to use later."
+    elif item_type == "key":
+        await db.execute("UPDATE players SET brew_active = brew_active + 1 WHERE user_id = ?", (user_id,))
+        result_desc = "Prism Key added. Your next `/explore` in the Celestial Loom will have a 30% Divine rate."
+    elif item_type in ["cosmetic", "reroll"]:
+        result_desc = f"**{shop_item['name']}** is now yours."
+    elif item_type == "grant_item":
+        grant_id = shop_item["grant_item_id"]
+        async with db.execute("SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?", (user_id, grant_id)) as c:
+            inv_row = await c.fetchone()
+        if inv_row:
+            await db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (inv_row["id"],))
+        else:
+            await db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (user_id, grant_id))
+        result_desc = "Added to your inventory. Use `/ancient` to summon."
+    return result_desc
 
-        # Load weekly purchase data once
-        week_str = datetime.now(timezone.utc).strftime("%Y-W%W")
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT shard_shop_week FROM players WHERE user_id = ?", (interaction.user.id,)
-            ) as c:
-                row = await c.fetchone()
-        week_data = {}
-        if row and row["shard_shop_week"]:
-            try:
-                week_data = json.loads(row["shard_shop_week"])
-            except Exception:
-                week_data = {}
-        if week_data.get("week") != week_str:
-            week_data = {"week": week_str}
-
-        SUMMON_IDS = {"epoch_shard", "firstborn_ember", "void_prism"}
-        regular_items = [(sid, item) for sid, item in SHARD_SHOP.items() if sid not in SUMMON_IDS]
-        summon_items  = [(sid, item) for sid, item in SHARD_SHOP.items() if sid in SUMMON_IDS]
-        per_page = 3
-        regular_pages = max(1, (len(regular_items) + per_page - 1) // per_page)
-        total_pages = regular_pages + 1  # last page is the summon relic page
-
-        def get_page_items(page):
-            if page > regular_pages:
-                return summon_items, True
-            return regular_items[(page - 1) * per_page : page * per_page], False
-
-        async def do_purchase(bi: discord.Interaction, sid: str):
-            await bi.response.defer(ephemeral=True)
-            shop_item = SHARD_SHOP.get(sid)
-            if not shop_item:
-                return await bi.followup.send("✦ Unknown item.", ephemeral=True)
-
-            # Re-fetch shards fresh
-            fresh_player = await get_player(bi.user.id)
-            fresh_shards = fresh_player.get("celestial_shards", 0) if fresh_player else 0
-            if fresh_shards < shop_item["cost"]:
-                return await bi.followup.send(
-                    f"✦ Need `{shop_item['cost']} 🔮` shards, you have `{fresh_shards}`.", ephemeral=True
-                )
-
-            # Weekly limit check
-            nonlocal week_data
-            if shop_item["weekly_limit"] > 0:
-                bought = week_data.get(sid, 0)
-                if bought >= shop_item["weekly_limit"]:
-                    return await bi.followup.send(
-                        f"✦ You've already bought **{shop_item['name']}** this week.", ephemeral=True
-                    )
-                week_data[sid] = bought + 1
-
-            async with aiosqlite.connect(DB_PATH) as db:
-                await db.execute(
-                    "UPDATE players SET celestial_shards = celestial_shards - ? WHERE user_id = ?",
-                    (shop_item["cost"], bi.user.id)
-                )
-                if shop_item["weekly_limit"] > 0:
-                    await db.execute(
-                        "UPDATE players SET shard_shop_week = ? WHERE user_id = ?",
-                        (json.dumps(week_data), bi.user.id)
-                    )
-
-                item_type = shop_item["type"]
-                result_desc = ""
-
-                if item_type == "explore_boost":
-                    import time as _time
-                    boost_until = _time.time() + (3 * 3600)
-                    await db.execute(
-                        "UPDATE players SET incense_active_until = ? WHERE user_id = ?",
-                        (boost_until, bi.user.id)
-                    )
-                    result_desc = "Your next 3 `/explore` runs have boosted Divine odds in the Celestial Loom!"
-
-                elif item_type == "incubation_skip":
-                    async with db.execute(
-                        "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
-                        (bi.user.id,)
-                    ) as c:
-                        egg = await c.fetchone()
-                    if egg:
-                        new_ready = datetime.strptime(egg["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc) - timedelta(hours=6)
-                        await db.execute(
-                            "UPDATE incubating_eggs SET ready_at = ? WHERE id = ?",
-                            (new_ready.strftime("%Y-%m-%d %H:%M:%S"), egg["id"])
-                        )
-                        result_desc = f"**{egg['egg_name']}** incubation reduced by 6 hours!"
-                    else:
-                        result_desc = "No eggs currently incubating — the fragment is yours to use later."
-
-                elif item_type == "key":
-                    await db.execute(
-                        "UPDATE players SET brew_active = brew_active + 1 WHERE user_id = ?",
-                        (bi.user.id,)
-                    )
-                    result_desc = "Prism Key added. Your next `/explore` in the Celestial Loom will have a 30% Divine rate."
-
-                elif item_type in ["cosmetic", "reroll"]:
-                    result_desc = f"**{shop_item['name']}** is now yours."
-
-                elif item_type == "grant_item":
-                    grant_id = shop_item["grant_item_id"]
-                    async with db.execute(
-                        "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                        (bi.user.id, grant_id)
-                    ) as c:
-                        inv_row = await c.fetchone()
-                    if inv_row:
-                        await db.execute(
-                            "UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?",
-                            (inv_row["id"],)
-                        )
-                    else:
-                        await db.execute(
-                            "INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)",
-                            (bi.user.id, grant_id)
-                        )
-                    result_desc = "Added to your inventory. Use `/ancient` to summon."
-
-                await db.commit()
-
-            await bi.followup.send(embed=discord.Embed(
-                title=f"🔮 Purchased: {shop_item['name']}",
-                description=f"*{shop_item['desc']}*\n\n{result_desc}\n\nRemaining shards: `{fresh_shards - shop_item['cost']} 🔮`",
-                color=COLORS["divine"]
-            ), ephemeral=True)
-
-        def build_embed(page: int) -> discord.Embed:
-            page_items, is_summon = get_page_items(page)
-            if is_summon:
-                embed = discord.Embed(
-                    title="🏛️ Ancient Summon Relics",
-                    description=(
-                        f"*These items cannot be bought lightly. Each one calls something that has been waiting a very long time.*\n\n"
-                        f"**Your balance:** `{shards} 🔮`\n\u200b"
-                    ),
-                    color=COLORS.get("ancient", COLORS["legendary"])
-                )
-            else:
-                embed = discord.Embed(
-                    title="🔮 Celestial Shard Shop",
-                    description=(
-                        f"*The Loom accepts shards as a kind of acknowledgment — proof that you've been paying attention.*\n\n"
-                        f"**Your balance:** `{shards} 🔮`\n\u200b"
-                    ),
-                    color=COLORS["divine"]
-                )
-            for sid, shop_item in page_items:
-                limit_str = f" · {shop_item['weekly_limit']}/week" if shop_item["weekly_limit"] else ""
-                bought = week_data.get(sid, 0)
-                exhausted = shop_item["weekly_limit"] > 0 and bought >= shop_item["weekly_limit"]
-                status = " ✅ *purchased this week*" if exhausted else ""
-                embed.add_field(
-                    name=f"{shop_item['name']} — `{shop_item['cost']} 🔮`{limit_str}{status}",
-                    value=shop_item["desc"],
-                    inline=False
-                )
-            footer_label = "Ancient Relics" if is_summon else f"Page {page}/{total_pages}"
-            embed.set_footer(text=f"ChibiBeasts 🐾  •  {footer_label}")
-            return embed
-
-        class ShardShopView(discord.ui.View):
-            def __init__(self, page: int):
-                super().__init__(timeout=120)
-                self.page = page
-                self._build()
-
-            def _build(self):
-                self.clear_items()
-                page_items, _ = get_page_items(self.page)
-                for row_idx, (sid, shop_item) in enumerate(page_items):
-                    bought = week_data.get(sid, 0)
-                    exhausted = shop_item["weekly_limit"] > 0 and bought >= shop_item["weekly_limit"]
-                    can_afford = shards >= shop_item["cost"]
-                    btn = discord.ui.Button(
-                        label=shop_item["name"].split(" ", 1)[-1],  # drop emoji, keep name
-                        style=discord.ButtonStyle.secondary if (exhausted or not can_afford) else discord.ButtonStyle.primary,
-                        emoji=shop_item["name"].split()[0],
-                        disabled=exhausted or not can_afford,
-                        row=row_idx
-                    )
-                    async def cb(bi: discord.Interaction, _sid=sid):
-                        if bi.user.id != interaction.user.id:
-                            return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                        await do_purchase(bi, _sid)
-                    btn.callback = cb
-                    self.add_item(btn)
-
-                # Pagination on row 4
-                prev = discord.ui.Button(
-                    label=f"◀ {self.page - 1}" if self.page > 1 else "◀",
-                    style=discord.ButtonStyle.secondary,
-                    disabled=self.page <= 1, row=4
-                )
-                on_last_regular = self.page == regular_pages
-                nxt = discord.ui.Button(
-                    label="🏛️ Ancient Relics ▶" if on_last_regular else (f"{self.page + 1} ▶" if self.page < total_pages else "▶"),
-                    style=discord.ButtonStyle.danger if on_last_regular else discord.ButtonStyle.secondary,
-                    disabled=self.page >= total_pages, row=4
-                )
-                async def prev_cb(bi: discord.Interaction, _s=self):
-                    if bi.user.id != interaction.user.id:
-                        return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                    _s.page -= 1; _s._build()
-                    await bi.response.edit_message(embed=build_embed(_s.page), view=_s)
-                async def nxt_cb(bi: discord.Interaction, _s=self):
-                    if bi.user.id != interaction.user.id:
-                        return await bi.response.send_message("This isn't your shop!", ephemeral=True)
-                    _s.page += 1; _s._build()
-                    await bi.response.edit_message(embed=build_embed(_s.page), view=_s)
-                prev.callback = prev_cb
-                nxt.callback = nxt_cb
-                self.add_item(prev)
-                self.add_item(nxt)
-
-        await interaction.followup.send(embed=build_embed(1), view=ShardShopView(1))
 
     # ── /daily ────────────────────────────────────────────────────────────
     @app_commands.command(name="daily", description="Claim your daily reward and apply sanctuary bonuses 🌅")
