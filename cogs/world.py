@@ -693,6 +693,9 @@ class World(commands.Cog):
     async def craft_autocomplete(self, interaction: discord.Interaction, current: str):
         """Show all craftable items — mark ready ones with ✅."""
         equipment, runes = load_equipment()
+        # Also include items with recipes (evolution items etc)
+        from utils.db import load_items as _li
+        craftable_items = {k: v for k, v in _li().items() if v.get("recipe")}
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
@@ -701,7 +704,7 @@ class World(commands.Cog):
             ) as c:
                 mats = {r["material_id"]: r["quantity"] for r in await c.fetchall()}
         choices = []
-        for item_id, item in {**equipment, **runes}.items():
+        for item_id, item in {**equipment, **runes, **craftable_items}.items():
             if current.lower() not in item["name"].lower():
                 continue
             recipe = item.get("recipe", {})
@@ -710,13 +713,16 @@ class World(commands.Cog):
             choices.append(app_commands.Choice(name=f"{prefix}{item['name']}", value=item_id))
         return choices[:25]
 
-    @app_commands.command(name="craft", description="Craft equipment or runes from materials ⚒️")
+    @app_commands.command(name="craft", description="Craft equipment, runes, or evolution items ⚒️")
     @app_commands.describe(item_name="Item to craft")
     @app_commands.autocomplete(item_name=craft_autocomplete)
     async def craft(self, interaction: discord.Interaction, item_name: str):
         await interaction.response.defer()
         equipment, runes = load_equipment()
-        all_craftable = {**equipment}
+        from utils.db import load_items as _li, add_item as _add_item
+        craftable_items = {k: v for k, v in _li().items() if v.get("recipe")}
+        all_craftable = {**equipment, **craftable_items}
+        is_item_craft = False  # True = goes to inventory, False = goes to equipment slot
 
         item_id = item_name.lower().replace(" ", "_").replace("-", "_")
         item = all_craftable.get(item_id)
@@ -730,6 +736,8 @@ class World(commands.Cog):
                     description=f"✦ `{item_name}` isn't a craftable item. Check `/recipes` for the full list.",
                     color=COLORS["error"]
                 ))
+
+        is_item_craft = item_id in craftable_items
 
         # Check material holdings
         materials = load_materials()
@@ -772,23 +780,43 @@ class World(commands.Cog):
                     (interaction.user.id, mat_id)
                 )
 
-            # Add item to player_equipment (unequipped)
-            await db.execute(
-                "INSERT INTO player_equipment (user_id, beast_row_id, equipment_id) VALUES (?, NULL, ?)",
-                (interaction.user.id, item_id)
-            )
+            # Grant item: equipment slot or inventory depending on type
+            if is_item_craft:
+                # Evolution items go to player inventory — commit materials first then add item
+                await db.commit()
+                await _add_item(interaction.user.id, item_id, 1)
+            else:
+                # Equipment/runes go to player_equipment (unequipped)
+                await db.execute(
+                    "INSERT INTO player_equipment (user_id, beast_row_id, equipment_id) VALUES (?, NULL, ?)",
+                    (interaction.user.id, item_id)
+                )
             await db.commit()
 
-        embed = discord.Embed(
-            title=f"⚒️ Crafted: {item['name']}!",
-            description=(
-                f"*{item['description']}*\n\n"
-                f"_{item['lore']}_\n\n"
-                + ("*Gnome Forge discount applied!* " if forge_discount else "")
-                + f"\nUse `/equip {item['name']} <beast_id>` to put it on a beast."
-            ),
-            color=COLORS.get(item["rarity"], COLORS["info"])
-        )
+        if is_item_craft:
+            # Evolution item — show lore-flavored result
+            r_emoji = RARITY_EMOJI.get(item.get("rarity","epic"), "⚪")
+            embed = discord.Embed(
+                title=f"⚒️ {r_emoji} {item['name']} crafted!",
+                description=(
+                    f"*{item['description']}*\n\n"
+                    f"_{item.get('lore','')}_\n\n"
+                    + ("*Gnome Forge discount applied!* " if forge_discount else "")
+                    + f"\nUse `/evolve` on an eligible beast to use it."
+                ),
+                color=COLORS.get(item.get("rarity","epic"), COLORS["epic"])
+            )
+        else:
+            embed = discord.Embed(
+                title=f"⚒️ Crafted: {item['name']}!",
+                description=(
+                    f"*{item['description']}*\n\n"
+                    f"_{item['lore']}_\n\n"
+                    + ("*Gnome Forge discount applied!* " if forge_discount else "")
+                    + f"\nUse `/equip {item['name']} <beast_id>` to put it on a beast."
+                ),
+                color=COLORS.get(item["rarity"], COLORS["info"])
+            )
         await interaction.followup.send(embed=embed)
 
     # ── /recipes ──────────────────────────────────────────────────────────
@@ -797,26 +825,66 @@ class World(commands.Cog):
     @app_commands.choices(category=[
         app_commands.Choice(name="⚔️ Armor",           value="armor"),
         app_commands.Choice(name="💎 Runes",            value="runes"),
+        app_commands.Choice(name="🌟 Evolution Items",  value="evolution"),
         app_commands.Choice(name="🪨 Material Sources", value="sources"),
     ])
     async def recipes(self, interaction: discord.Interaction, category: str = "armor"):
         await interaction.response.defer()
         equipment, runes = load_equipment()
+        from utils.db import load_items as _li
         materials_data = load_materials()
 
         RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "altered_divine"]
 
-        # ── Material sources map ───────────────────────────────────────────
-        # Materials drop from /explore catches at 60% chance, rarity-matched
-        # to the beast caught. Altered Divine mats have no current drop source.
         MAT_SOURCES = {
             "common":         "🗺️ `/explore` — catch any **Common** beast (60% drop chance)",
             "uncommon":       "🗺️ `/explore` — catch any **Uncommon** beast (60% drop chance)",
-            "rare":           "🗺️ `/explore` — catch any **Rare** beast (60% drop chance)",
-            "epic":           "🗺️ `/explore` — catch any **Epic** beast (60% drop chance)",
+            "rare":           "🗺️ `/explore` — catch any **Rare** beast (60% drop chance)\n"
+                              "        *Void Essence: shadow-type beasts · Spirit Crystal: arcane-type beasts*",
+            "epic":           "🗺️ `/explore` — catch any **Epic** beast (60% drop chance)\n"
+                              "        *Sunforge Residue: fire/earth-type beasts*",
             "legendary":      "🗺️ `/explore` — catch any **Legendary** beast (60% drop chance)",
             "altered_divine": "⚠️ *Not currently obtainable through gameplay — coming soon*",
         }
+
+        if category == "evolution":
+            craftable_items = {k: v for k, v in _li().items() if v.get("recipe")}
+            embed = discord.Embed(
+                title="🌟 Evolution Item Recipes",
+                description=(
+                    "*Craft these items to trigger Radiant evolutions. "
+                    "Ascended evolutions require **Genesis Fruit**, obtainable from Ancient raids.*\n\u200b"
+                ),
+                color=COLORS["legendary"]
+            )
+            for item_id, item in craftable_items.items():
+                recipe = item.get("recipe", {})
+                recipe_str = "\n".join(
+                    f"  • {qty}× {materials_data.get(mid, {}).get('name', mid)}"
+                    for mid, qty in recipe.items()
+                )
+                # Find which beast uses this
+                beast_hint = ""
+                from utils.db import load_beasts as _lb
+                for bid, b in _lb().items():
+                    evo = b.get("evolution")
+                    if evo and evo.get("method") == item_id:
+                        tgt = _lb().get(evo.get("evolves_to"), {})
+                        beast_hint = f"\n*Evolves: {b['name']} → {tgt.get('name','?')}*"
+                        break
+                r_emoji = RARITY_EMOJI.get(item.get("rarity","epic"), "⚪")
+                embed.add_field(
+                    name=f"{r_emoji} {item['name']}",
+                    value=f"{recipe_str}{beast_hint}",
+                    inline=True
+                )
+            embed.add_field(
+                name="📦 Abyssal Scale",
+                value="*Drop from: **Corrupted Leviathan** raid*\n*Evolves: Hydra → Radiant Hydra*",
+                inline=True
+            )
+            embed.set_footer(text="Use /craft <item name> to craft · Materials from /explore catches")
+            return await interaction.followup.send(embed=embed)
 
         if category == "sources":
             embed = discord.Embed(

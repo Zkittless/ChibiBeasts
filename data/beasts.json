@@ -82,7 +82,7 @@
       "evolution": {
         "evolves_to": "radiant_goblin",
         "form": "radiant",
-        "method": "sunforge_core",
+        "method": "forge_ember",
         "level_required": 25,
         "description": "The Sunforge didn't change what it was. It clarified it."
       },
@@ -117,7 +117,7 @@
       "evolution": {
         "evolves_to": "radiant_imp",
         "form": "radiant",
-        "method": "sunforge_core",
+        "method": "void_shard",
         "level_required": 20,
         "description": "It passed through the Sunforge and came out darker than it went in."
       },
@@ -187,7 +187,7 @@
       "evolution": {
         "evolves_to": "radiant_kitsune",
         "form": "radiant",
-        "method": "sunforge_core",
+        "method": "spirit_lantern",
         "level_required": 30,
         "description": "The tails stopped growing one at a time. All nine arrived together, and something about that was different from earning them."
       },
@@ -733,7 +733,7 @@
       "evolution": {
         "evolves_to": "radiant_hydra",
         "form": "radiant",
-        "method": "sunforge_core",
+        "method": "abyssal_scale",
         "level_required": 35,
         "description": "The heads stopped being heads. The Sunforge gave up and gave it a promotion."
       },

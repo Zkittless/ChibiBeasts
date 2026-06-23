@@ -17,9 +17,9 @@
       "name": "Brambleberries",
       "rarity": "common",
       "type": "happiness",
-      "value": 10,
-      "price": 30,
-      "description": "Sweet, thorny blue berries found in the server's outer woods. Boosts your beast's happiness slightly.",
+      "value": 20,
+      "price": 80,
+      "description": "Sweet, thorny blue berries found in the outer woods. Boosts your beast's happiness. A reliable daily treat.",
       "effect": {
         "happiness": 10
       }
@@ -46,32 +46,6 @@
       "description": "A swirling silver liquid that clears the mind. Instantly cures any status condition.",
       "effect": {
         "cure_all": true
-      }
-    },
-    "sugarsprout_cupcake": {
-      "id": "sugarsprout_cupcake",
-      "name": "Sugarsprout Cupcake",
-      "rarity": "uncommon",
-      "type": "happiness_boost",
-      "value": 30,
-      "price": 120,
-      "description": "A magical pastry topped with a leaf that never wilts. Increases happiness significantly and gives a temporary 5% speed boost.",
-      "effect": {
-        "happiness": 30,
-        "speed_boost_percent": 5,
-        "boost_duration": 1
-      }
-    },
-    "fable_feather": {
-      "id": "fable_feather",
-      "name": "Fable Feather",
-      "rarity": "uncommon",
-      "type": "battle",
-      "value": 0,
-      "price": 200,
-      "description": "A feather dropped by a migrating Harpy. Guarantees your beast gets the first move in its next match.",
-      "effect": {
-        "first_move": true
       }
     },
     "luna_nectar": {
@@ -128,18 +102,6 @@
         "heal_percent": 50
       }
     },
-    "nebula_macaron": {
-      "id": "nebula_macaron",
-      "name": "Nebula Macaron",
-      "rarity": "epic",
-      "type": "exp",
-      "value": 500,
-      "price": 2500,
-      "description": "A beautiful pastel pastry infused with real space dust. Grants a massive amount of EXP, instantly leveling up lower-tier beasts.",
-      "effect": {
-        "exp": 500
-      }
-    },
     "chrono_biscuit": {
       "id": "chrono_biscuit",
       "name": "Chrono-Biscuit",
@@ -166,46 +128,6 @@
         "damage_multiplier_permanent": 5
       }
     },
-    "sunforge_core": {
-      "id": "sunforge_core",
-      "name": "Sunforge Core",
-      "rarity": "legendary",
-      "type": "evolution",
-      "value": 0,
-      "price": 15000,
-      "description": "A blazing, miniature star enclosed in an enchanted glass orb. Triggers the Radiant form of certain beasts \u2014 the same creature, clarified by fire into something harder to ignore.",
-      "effect": {
-        "evolution_trigger": [
-          "radiant",
-          "ascended"
-        ]
-      }
-    },
-    "krakenshale_brew": {
-      "id": "krakenshale_brew",
-      "name": "Krakenshale Brew",
-      "rarity": "legendary",
-      "type": "battle",
-      "value": 0,
-      "price": 12000,
-      "description": "A deep black potion that ripples like stormy ocean water. Temporarily doubles defense stats for a single battle.",
-      "effect": {
-        "defense_multiplier": 2,
-        "duration_battles": 1
-      }
-    },
-    "tear_of_leviathan": {
-      "id": "tear_of_leviathan",
-      "name": "Tear of Leviathan",
-      "rarity": "divine",
-      "type": "reset",
-      "value": 0,
-      "price": 50000,
-      "description": "A flawless, glowing blue gemstone that holds the weight of the ocean. Completely resets all of a beast's stat points.",
-      "effect": {
-        "reset_stats": true
-      }
-    },
     "genesis_fruit": {
       "id": "genesis_fruit",
       "name": "Genesis Fruit",
@@ -216,18 +138,6 @@
       "description": "A fruit that shifts through every color of the rainbow. Triggers the Ascended form of certain beasts \u2014 a divine transformation that cannot be undone. The beast that steps through does not come back the same. Nothing that touches the Genesis Fruit does.",
       "effect": {
         "unlock_divine_trait": true
-      }
-    },
-    "cosmic_singularity_soda": {
-      "id": "cosmic_singularity_soda",
-      "name": "Singularity Soda",
-      "rarity": "divine",
-      "type": "exp",
-      "value": 0,
-      "price": 60000,
-      "description": "A starry drink in a bottle that seems to have no bottom. Instantly levels up any ChibiBeast by 5 levels.",
-      "effect": {
-        "instant_levels": 5
       }
     },
     "epoch_shard": {
@@ -267,6 +177,107 @@
       "lore": "The Abyss leaves these behind sometimes. It does not explain why. It does not explain anything.",
       "effect": {
         "summon": "ancient_abyss"
+      }
+    },
+    "forge_ember": {
+      "id": "forge_ember",
+      "name": "Forge Ember",
+      "rarity": "epic",
+      "type": "evolution",
+      "price": 0,
+      "value": 0,
+      "description": "A coal that hasn't stopped burning since the Sunforge last fired. It doesn't burn things \u2014 it clarifies them.",
+      "lore": "Goblins who handle these too long start hitting harder. No one has studied why. No one really wants to.",
+      "effect": {
+        "evolution_trigger": [
+          "radiant_goblin"
+        ]
+      },
+      "recipe": {
+        "hellhound_ember": 3,
+        "sunforge_residue": 5,
+        "dragon_scale": 1
+      }
+    },
+    "void_shard": {
+      "id": "void_shard",
+      "name": "Void Shard",
+      "rarity": "epic",
+      "type": "evolution",
+      "price": 0,
+      "value": 0,
+      "description": "A splinter of something that predates shadow. Light doesn't reflect off it \u2014 it disappears into it.",
+      "lore": "Found only in places where the Abyss has been present long enough to leave something behind. The Loom has noted its locations. The Loom has not shared them.",
+      "effect": {
+        "evolution_trigger": [
+          "radiant_imp"
+        ]
+      },
+      "recipe": {
+        "void_essence": 4,
+        "basilisk_eye": 2,
+        "kraken_ink": 1
+      }
+    },
+    "spirit_lantern": {
+      "id": "spirit_lantern",
+      "name": "Spirit Lantern",
+      "rarity": "epic",
+      "type": "evolution",
+      "price": 0,
+      "value": 0,
+      "description": "A lantern that lights itself when a Kitsune is near. The flame is the color of fox fire, which is to say it is several colors at once.",
+      "lore": "Kitsune spirits have been leaving these behind for centuries. They never explain why. The explanation is probably that they knew.",
+      "effect": {
+        "evolution_trigger": [
+          "radiant_kitsune"
+        ]
+      },
+      "recipe": {
+        "spirit_crystal": 4,
+        "unicorn_hair": 2,
+        "phoenix_ash": 1
+      }
+    },
+    "abyssal_scale": {
+      "id": "abyssal_scale",
+      "name": "Abyssal Scale",
+      "rarity": "legendary",
+      "type": "evolution",
+      "price": 0,
+      "value": 0,
+      "description": "Shed from something vast and patient in corrupted water. Still faintly wet, though it has no reason to be.",
+      "lore": "The Corrupted Leviathan doesn't shed scales \u2014 except once, and only for a Hydra it has decided deserves to become more than it is.",
+      "effect": {
+        "evolution_trigger": [
+          "radiant_hydra"
+        ]
+      }
+    },
+    "ironbark_salve": {
+      "id": "ironbark_salve",
+      "name": "Ironbark Salve",
+      "rarity": "uncommon",
+      "type": "defense_boost",
+      "price": 180,
+      "value": 0,
+      "description": "A thick resin from enchanted bark, hardened by gnome-iron dust. Temporarily reinforces a beast's hide before battle.",
+      "effect": {
+        "defense_boost_percent": 20,
+        "duration_battles": 1
+      }
+    },
+    "quicksilver_tonic": {
+      "id": "quicksilver_tonic",
+      "name": "Quicksilver Tonic",
+      "rarity": "rare",
+      "type": "speed_boost",
+      "price": 450,
+      "value": 0,
+      "description": "A shimmering liquid that makes a beast feel like it left before it arrived. Boosts speed significantly for one battle.",
+      "effect": {
+        "speed_boost_percent": 25,
+        "duration_battles": 1
       }
     }
   }

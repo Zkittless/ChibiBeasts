@@ -320,6 +320,35 @@ class Profile(commands.Cog):
                     value=f"Recovering — ready in `{timer}`\n*Use a **Phoenix Elixir** to revive instantly.*",
                     inline=False
                 )
+            # Evolution hint
+            evo = beast_data.get("evolution")
+            if evo and evo.get("evolves_to"):
+                from utils.db import load_items as _li
+                _items = _li()
+                method_id = evo.get("method", "")
+                method_item = _items.get(method_id, {})
+                method_name = method_item.get("name", method_id.replace("_"," ").title())
+                tgt_id = evo["evolves_to"]
+                tgt_bd = get_beast_data(tgt_id) or {}
+                tgt_name = tgt_bd.get("name", tgt_id)
+                tgt_r = RARITY_EMOJI.get(tgt_bd.get("rarity",""), "⚪")
+                form = evo.get("form","")
+                form_label = "✨ Ascended" if form == "ascended" else "🌟 Radiant" if form == "radiant" else "🔀 Evolves"
+                lvl_req = evo.get("level_required", 1)
+                recipe = method_item.get("recipe")
+                recipe_str = ""
+                if recipe:
+                    recipe_parts = ", ".join(f"{q}× {m.replace('_',' ').title()}" for m, q in recipe.items())
+                    recipe_str = f"\n*Craft: {recipe_parts}*"
+                elif method_id == "abyssal_scale":
+                    recipe_str = "\n*Drop: Corrupted Leviathan raid*"
+                can_evolve = row["level"] >= lvl_req
+                lvl_note = f"Lv.{lvl_req} required" if not can_evolve else f"✅ Lv.{lvl_req} — **ready to evolve!**"
+                embed.add_field(
+                    name=f"{form_label} → {tgt_r} {tgt_name}",
+                    value=f"**Item:** {method_name} · {lvl_note}{recipe_str}\n*Use `/evolve #{num}` when ready.*",
+                    inline=False
+                )
             if beast_data.get("divine_passive"):
                 dp = beast_data["divine_passive"]
                 passive_label = {

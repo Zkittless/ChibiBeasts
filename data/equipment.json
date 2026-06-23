@@ -1,133 +1,291 @@
 {
   "equipment": {
     "sprite_silk_attire": {
-      "id": "sprite_silk_attire", "name": "Sprite-Silk Attire", "rarity": "common", "slot": "armor",
+      "id": "sprite_silk_attire",
+      "name": "Sprite-Silk Attire",
+      "rarity": "common",
+      "slot": "armor",
       "description": "A vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings.",
       "lore": "Worn by Fairy scouts. Gives your beast the confident stride of something that belongs in the forest.",
-      "recipe": {"pixie_silk": 3, "enchanted_bark": 1},
-      "effect": {"speed_percent": 5, "dodge_woods": true}
+      "recipe": {
+        "pixie_silk": 3,
+        "enchanted_bark": 1
+      },
+      "effect": {
+        "speed_percent": 5,
+        "dodge_woods": true
+      }
     },
     "gnome_iron_plating": {
-      "id": "gnome_iron_plating", "name": "Gnome-Iron Plating", "rarity": "common", "slot": "armor",
+      "id": "gnome_iron_plating",
+      "name": "Gnome-Iron Plating",
+      "rarity": "common",
+      "slot": "armor",
       "description": "Slightly oversized clunky iron armor with a tiny round shield. Sturdy little knight energy.",
       "lore": "Built by Goblins trying to impersonate knights. Somehow works better than it looks.",
-      "recipe": {"gnome_iron_ore": 4},
-      "effect": {"defense_percent": 10, "speed_percent": -3}
+      "recipe": {
+        "gnome_iron_ore": 4
+      },
+      "effect": {
+        "defense_percent": 10,
+        "speed_percent": -3
+      }
     },
     "kelpie_scale_mail": {
-      "id": "kelpie_scale_mail", "name": "Kelpie-Scale Mail", "rarity": "uncommon", "slot": "armor",
+      "id": "kelpie_scale_mail",
+      "name": "Kelpie-Scale Mail",
+      "rarity": "uncommon",
+      "slot": "armor",
       "description": "Iridescent teal armor that glistens as if wet, trailing faint bubbles.",
       "lore": "The Kelpie would like this back. You found it fair and square.",
-      "recipe": {"kelpie_scale": 3, "pixie_silk": 2},
-      "effect": {"burn_immunity": true, "water_attack_percent": 8}
+      "recipe": {
+        "kelpie_scale": 3,
+        "pixie_silk": 2
+      },
+      "effect": {
+        "burn_immunity": true,
+        "water_attack_percent": 8
+      }
     },
     "cinder_guard_vest": {
-      "id": "cinder_guard_vest", "name": "Cinder-Guard Vest", "rarity": "uncommon", "slot": "armor",
+      "id": "cinder_guard_vest",
+      "name": "Cinder-Guard Vest",
+      "rarity": "uncommon",
+      "slot": "armor",
       "description": "Dark obsidian trim with a core that glows with smoldering orange flame.",
       "lore": "Hellhound-adjacent gear. Your beast will smell like embers for weeks.",
-      "recipe": {"hellhound_ember": 3, "gnome_iron_ore": 2},
-      "effect": {"singe_on_hit": true}
+      "recipe": {
+        "hellhound_ember": 3,
+        "gnome_iron_ore": 2
+      },
+      "effect": {
+        "singe_on_hit": true
+      }
     },
     "unicorn_healer_vestments": {
-      "id": "unicorn_healer_vestments", "name": "Unicorn-Healer Vestments", "rarity": "rare", "slot": "armor",
+      "id": "unicorn_healer_vestments",
+      "name": "Unicorn-Healer Vestments",
+      "rarity": "rare",
+      "slot": "armor",
       "description": "Elegant pure-white flowing robes emitting a soft comforting silver aura.",
       "lore": "The Unicorn contributed the hair willingly. That should make you feel better about wearing this.",
-      "recipe": {"unicorn_hair": 2, "pixie_silk": 3},
-      "effect": {"hp_regen_percent_per_round": 3}
+      "recipe": {
+        "unicorn_hair": 2,
+        "pixie_silk": 3
+      },
+      "effect": {
+        "hp_regen_percent_per_round": 3
+      }
     },
     "basilisk_gaze_pauldrons": {
-      "id": "basilisk_gaze_pauldrons", "name": "Basilisk Gaze Pauldrons", "rarity": "rare", "slot": "armor",
-      "description": "Heavy stone shoulder guards carved to look like roaring serpents with glowing green eyes.",
+      "id": "basilisk_gaze_pauldrons",
+      "name": "Basilisk Gaze Pauldrons",
+      "rarity": "rare",
+      "slot": "armor",
+      "description": "Heavy pauldrons carved from petrified basilisk eyes. Enemies caught in their gaze at battle start have a 30% chance to lose speed. Critical hits have a 15% chance to briefly petrify the target.",
       "lore": "The serpents carved into these appear to track movement. Do not look directly at them.",
-      "recipe": {"basilisk_eye": 2, "gnome_iron_ore": 2},
-      "effect": {"speed_debuff_on_battle_start_chance": 10}
+      "recipe": {
+        "basilisk_eye": 2,
+        "gnome_iron_ore": 2
+      },
+      "effect": {
+        "speed_debuff_on_battle_start_chance": 30,
+        "petrify_on_crit_chance": 15
+      }
     },
     "phoenix_born_shroud": {
-      "id": "phoenix_born_shroud", "name": "Phoenix-Born Shroud", "rarity": "epic", "slot": "armor",
+      "id": "phoenix_born_shroud",
+      "name": "Phoenix-Born Shroud",
+      "rarity": "epic",
+      "slot": "armor",
       "description": "A magnificent cape of pure crackling fire-feathers. They don't burn you. Mostly.",
       "lore": "Forged from ashes that refuse to grow cold.",
-      "recipe": {"phoenix_ash": 2, "hellhound_ember": 2, "unicorn_hair": 1},
-      "effect": {"attack_double_below_25hp": true}
+      "recipe": {
+        "phoenix_ash": 2,
+        "hellhound_ember": 2,
+        "unicorn_hair": 1
+      },
+      "effect": {
+        "attack_double_below_25hp": true
+      }
     },
     "thunderbird_storm_mail": {
-      "id": "thunderbird_storm_mail", "name": "Thunderbird Storm-Mail", "rarity": "epic", "slot": "armor",
+      "id": "thunderbird_storm_mail",
+      "name": "Thunderbird Storm-Mail",
+      "rarity": "epic",
+      "slot": "armor",
       "description": "Sleek blue-and-gold spiked armor crackling with static electricity when your beast moves.",
       "lore": "The sparks are not decorative. They are extremely, personally invested in every battle.",
-      "recipe": {"thunderbird_talon": 2, "harpy_down": 3},
-      "effect": {"stun_on_physical_chance": 15}
+      "recipe": {
+        "thunderbird_talon": 2,
+        "harpy_down": 3
+      },
+      "effect": {
+        "stun_on_physical_chance": 15
+      }
     },
     "dragon_lord_aegis": {
-      "id": "dragon_lord_aegis", "name": "Dragon-Lord Aegis", "rarity": "legendary", "slot": "armor",
+      "id": "dragon_lord_aegis",
+      "name": "Dragon-Lord Aegis",
+      "rarity": "legendary",
+      "slot": "armor",
       "description": "Massive diamond-hard crimson scales wrapping your beast like a protective dragon shell.",
       "lore": "The Dragon that shed these is still out there. It's not angry. But it's keeping count.",
-      "recipe": {"dragon_scale": 4, "gnome_iron_ore": 2},
-      "effect": {"damage_reduction_flat_percent": 20}
+      "recipe": {
+        "dragon_scale": 4,
+        "gnome_iron_ore": 2
+      },
+      "effect": {
+        "damage_reduction_flat_percent": 20
+      }
     },
     "abyssal_shroud": {
-      "id": "abyssal_shroud", "name": "The Abyssal Shroud", "rarity": "legendary", "slot": "armor",
+      "id": "abyssal_shroud",
+      "name": "The Abyssal Shroud",
+      "rarity": "legendary",
+      "slot": "armor",
       "description": "A cloak of living midnight shadow that blurs your beast's edges, making them look ghostly.",
       "lore": "The Kraken wove this from its own ink. It's an art piece. A very dangerous art piece.",
-      "recipe": {"kraken_ink": 3, "harpy_down": 2},
-      "effect": {"evasion_percent": 15, "crit_immunity": true}
+      "recipe": {
+        "kraken_ink": 3,
+        "harpy_down": 2
+      },
+      "effect": {
+        "evasion_percent": 15,
+        "crit_immunity": true
+      }
     },
     "chronos_paradox_plate": {
-      "id": "chronos_paradox_plate", "name": "Chronos Paradox Plate", "rarity": "altered_divine", "slot": "armor",
+      "id": "chronos_paradox_plate",
+      "name": "Chronos Paradox Plate",
+      "rarity": "altered_divine",
+      "slot": "armor",
       "description": "Golden clockwork plates floating around your beast, accompanied by a faint ticking sound.",
       "lore": "Twine gets very quiet around this armor. That either means it approves or it's afraid. Hard to tell.",
-      "recipe": {"chronos_gear": 3, "sphinx_papyrus": 2, "tear_of_the_creator": 1},
-      "effect": {"time_rewind_on_fatal_once_per_battle": true}
+      "recipe": {
+        "chronos_gear": 3,
+        "sphinx_papyrus": 2,
+        "tear_of_the_creator": 1
+      },
+      "effect": {
+        "time_rewind_on_fatal_once_per_battle": true
+      }
     },
     "blight_weaver_regalia": {
-      "id": "blight_weaver_regalia", "name": "Blight-Weaver Regalia", "rarity": "altered_divine", "slot": "armor",
+      "id": "blight_weaver_regalia",
+      "name": "Blight-Weaver Regalia",
+      "rarity": "altered_divine",
+      "slot": "armor",
       "description": "Corrupted branching black horn armor pulsing with unstable violet nebula patterns.",
       "lore": "Made from what the Loom left behind after a Sundering. It remembers being unfinished.",
-      "recipe": {"blighted_world_core": 3, "manticore_stinger": 2, "tear_of_the_creator": 1},
-      "effect": {"blight_on_attack_chance": 25}
+      "recipe": {
+        "blighted_world_core": 3,
+        "manticore_stinger": 2,
+        "tear_of_the_creator": 1
+      },
+      "effect": {
+        "blight_on_attack_chance": 25
+      }
     }
   },
   "runes": {
     "pixie_ribbon": {
-      "id": "pixie_ribbon", "name": "Pixie Ribbon", "rarity": "common", "slot": "rune",
+      "id": "pixie_ribbon",
+      "name": "Pixie Ribbon",
+      "rarity": "common",
+      "slot": "rune",
       "description": "A cute glowing bow. Small but sincere.",
       "lore": "Fairies tie these on things they like. Your beast is now a thing a Fairy liked.",
       "price": 200,
-      "effect": {"speed": 5}
+      "effect": {
+        "speed": 5
+      },
+      "recipe": {
+        "pixie_silk": 5
+      }
     },
     "gnome_forged_buckler": {
-      "id": "gnome_forged_buckler", "name": "Gnome-Forged Buckler", "rarity": "uncommon", "slot": "rune",
+      "id": "gnome_forged_buckler",
+      "name": "Gnome-Forged Buckler",
+      "rarity": "uncommon",
+      "slot": "rune",
       "description": "A tiny sturdy shield. Boosts defense reliably.",
       "lore": "Gnomes make ten of these for every one they sell. Quality control is taken seriously.",
       "price": 800,
-      "effect": {"defense": 8}
+      "effect": {
+        "defense": 8
+      },
+      "recipe": {
+        "gnome_iron_ore": 5,
+        "enchanted_bark": 2
+      }
     },
     "wyvern_talon": {
-      "id": "wyvern_talon", "name": "Wyvern Talon", "rarity": "rare", "slot": "rune",
+      "id": "wyvern_talon",
+      "name": "Wyvern Talon",
+      "rarity": "rare",
+      "slot": "rune",
       "description": "A sharp glowing claw accessory. Increases critical hit chance.",
       "lore": "The Wyvern that dropped this was going fast. So were you.",
       "price": 2500,
-      "effect": {"crit_chance": 5}
+      "effect": {
+        "crit_chance": 5
+      },
+      "recipe": {
+        "manticore_stinger": 2,
+        "basilisk_eye": 1
+      }
     },
     "thunderbird_feathers": {
-      "id": "thunderbird_feathers", "name": "Thunderbird Feathers", "rarity": "epic", "slot": "rune",
-      "description": "Infuses attacks with lightning, giving a 10% chance to stun enemies.",
+      "id": "thunderbird_feathers",
+      "name": "Thunderbird Feather",
+      "rarity": "epic",
+      "slot": "rune",
+      "description": "A single primary feather from a Thunderbird. Channels residual storm energy \u2014 each hit you land restores 8 mana.",
       "lore": "These crackle constantly. Storing them near electronics is not recommended.",
       "price": 8000,
-      "effect": {"lightning_stun_chance": 10}
+      "effect": {
+        "mana_regen_on_hit": 8
+      },
+      "recipe": {
+        "thunderbird_talon": 2,
+        "harpy_down": 3
+      }
     },
     "core_of_the_phoenix": {
-      "id": "core_of_the_phoenix", "name": "Core of the Phoenix", "rarity": "legendary", "slot": "rune",
+      "id": "core_of_the_phoenix",
+      "name": "Core of the Phoenix",
+      "rarity": "legendary",
+      "slot": "rune",
       "description": "If the equipped beast faints, it deals a massive fire explosion to the enemy.",
       "lore": "The Phoenix put something of itself in here. It's not quite gone. Use it wisely.",
       "price": 25000,
-      "effect": {"death_explosion_fire": true}
+      "effect": {
+        "death_explosion_fire": true
+      },
+      "recipe": {
+        "phoenix_ash": 3,
+        "hellhound_ember": 2,
+        "dragon_scale": 1
+      }
     },
     "ouroboros_ring": {
-      "id": "ouroboros_ring", "name": "Ouroboros Ring", "rarity": "divine", "slot": "rune",
+      "id": "ouroboros_ring",
+      "name": "Ouroboros Ring",
+      "rarity": "divine",
+      "slot": "rune",
       "description": "A tiny glowing ring. The equipped beast heals for 15% of all damage it deals.",
       "lore": "The snake eating its own tail figured something out. This is the leftover.",
       "price": 0,
       "drop_only": true,
-      "effect": {"lifesteal_percent": 15}
+      "effect": {
+        "lifesteal_percent": 15
+      },
+      "recipe": {
+        "chronos_gear": 1,
+        "tear_of_the_creator": 1,
+        "kraken_ink": 2
+      }
     }
   }
 }

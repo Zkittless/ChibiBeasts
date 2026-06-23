@@ -1,94 +1,172 @@
 {
   "materials": {
     "pixie_silk": {
-      "id": "pixie_silk", "name": "Pixie Silk", "rarity": "common", "emoji": "🟢",
+      "id": "pixie_silk",
+      "name": "Pixie Silk",
+      "rarity": "common",
+      "emoji": "\ud83d\udfe2",
       "description": "Fine, glowing threads left behind on branches by wandering Fairies.",
-      "lore": "The Loom recognizes these — they're offcuts from its own work, left wherever Fairies sleep."
+      "lore": "The Loom recognizes these \u2014 they're offcuts from its own work, left wherever Fairies sleep."
     },
     "gnome_iron_ore": {
-      "id": "gnome_iron_ore", "name": "Gnome-Iron Ore", "rarity": "common", "emoji": "🟢",
+      "id": "gnome_iron_ore",
+      "name": "Gnome-Iron Ore",
+      "rarity": "common",
+      "emoji": "\ud83d\udfe2",
       "description": "Dense, sturdy metal mined from shallow caves. Essential for basic armoring.",
       "lore": "Goblins hoard it. Gnomes refine it. Everyone else just finds it useful."
     },
     "enchanted_bark": {
-      "id": "enchanted_bark", "name": "Enchanted Bark", "rarity": "common", "emoji": "🟢",
+      "id": "enchanted_bark",
+      "name": "Enchanted Bark",
+      "rarity": "common",
+      "emoji": "\ud83d\udfe2",
       "description": "Wood from trees that listen to music. Still hums if you hold it right.",
       "lore": "Dryads shed this bark deliberately. Whether it's a gift or a warning is debated."
     },
     "harpy_down": {
-      "id": "harpy_down", "name": "Harpy Down", "rarity": "uncommon", "emoji": "🔵",
+      "id": "harpy_down",
+      "name": "Harpy Down",
+      "rarity": "uncommon",
+      "emoji": "\ud83d\udd35",
       "description": "Lightweight aerodynamic feathers. Gear made from these practically flies itself.",
       "lore": "Harpies lose these mid-flight. Collectors who chase them rarely catch them."
     },
     "kelpie_scale": {
-      "id": "kelpie_scale", "name": "Kelpie Scale", "rarity": "uncommon", "emoji": "🔵",
+      "id": "kelpie_scale",
+      "name": "Kelpie Scale",
+      "rarity": "uncommon",
+      "emoji": "\ud83d\udd35",
       "description": "Slimy but incredibly tough. Resists heat, cold, and most reasonable damage.",
       "lore": "Kelpies don't give these willingly. They do, however, shed them when startled."
     },
     "hellhound_ember": {
-      "id": "hellhound_ember", "name": "Hellhound Ember", "rarity": "uncommon", "emoji": "🔵",
+      "id": "hellhound_ember",
+      "name": "Hellhound Ember",
+      "rarity": "uncommon",
+      "emoji": "\ud83d\udd35",
       "description": "A chunk of charcoal that never stops smoking. Handle with caution.",
       "lore": "Stays warm for years. Some collectors use them as pocket heaters. Inadvisable."
     },
     "unicorn_hair": {
-      "id": "unicorn_hair", "name": "Unicorn Hair", "rarity": "rare", "emoji": "🟣",
+      "id": "unicorn_hair",
+      "name": "Unicorn Hair",
+      "rarity": "rare",
+      "emoji": "\ud83d\udfe3",
       "description": "A shimmering silver strand that radiates quiet, steady energy.",
       "lore": "Left on fence-posts and low branches. Unicorns are generous with these, which is suspicious."
     },
     "manticore_stinger": {
-      "id": "manticore_stinger", "name": "Manticore Stinger", "rarity": "rare", "emoji": "🟣",
+      "id": "manticore_stinger",
+      "name": "Manticore Stinger",
+      "rarity": "rare",
+      "emoji": "\ud83d\udfe3",
       "description": "A hollow venomous spike. Adds poison or piercing modifiers to anything it's forged into.",
       "lore": "The Manticore lost this in a fight it won. Make of that what you will."
     },
     "basilisk_eye": {
-      "id": "basilisk_eye", "name": "Basilisk Eye", "rarity": "rare", "emoji": "🟣",
+      "id": "basilisk_eye",
+      "name": "Basilisk Eye",
+      "rarity": "rare",
+      "emoji": "\ud83d\udfe3",
       "description": "A calcified glassy orb. Still faintly warm. Used to ward off status conditions.",
       "lore": "Looking into it now is fine. It stopped working when it left the Basilisk. Probably."
     },
     "phoenix_ash": {
-      "id": "phoenix_ash", "name": "Phoenix Ash", "rarity": "epic", "emoji": "🟡",
+      "id": "phoenix_ash",
+      "name": "Phoenix Ash",
+      "rarity": "epic",
+      "emoji": "\ud83d\udfe1",
       "description": "Warm glowing soot with a faint cinnamon smell. Carries latent revival energy.",
       "lore": "Collected from Phoenix rebirth sites within the first hour. Loses potency after that."
     },
     "thunderbird_talon": {
-      "id": "thunderbird_talon", "name": "Thunderbird Talon", "rarity": "epic", "emoji": "🟡",
+      "id": "thunderbird_talon",
+      "name": "Thunderbird Talon",
+      "rarity": "epic",
+      "emoji": "\ud83d\udfe1",
       "description": "A crackling claw that stores static electricity. Sparks when handled.",
       "lore": "Shed during storms. Finding one means a Thunderbird flew over recently. Look up."
     },
     "sphinx_papyrus": {
-      "id": "sphinx_papyrus", "name": "Sphinx Papyrus", "rarity": "epic", "emoji": "🟡",
+      "id": "sphinx_papyrus",
+      "name": "Sphinx Papyrus",
+      "rarity": "epic",
+      "emoji": "\ud83d\udfe1",
       "description": "Fragments of ancient indestructible scroll. The text is different each time you look.",
       "lore": "The Sphinx writes continuously. These fragments escape on their own."
     },
     "dragon_scale": {
-      "id": "dragon_scale", "name": "Dragon Scale", "rarity": "legendary", "emoji": "👑",
+      "id": "dragon_scale",
+      "name": "Dragon Scale",
+      "rarity": "legendary",
+      "emoji": "\ud83d\udc51",
       "description": "Harder than diamond and completely fireproof. The gold standard of armoring.",
       "lore": "Dragons shed these once a decade. Entire economies have been built around collecting them."
     },
     "kraken_ink": {
-      "id": "kraken_ink", "name": "Kraken Ink", "rarity": "legendary", "emoji": "👑",
+      "id": "kraken_ink",
+      "name": "Kraken Ink",
+      "rarity": "legendary",
+      "emoji": "\ud83d\udc51",
       "description": "A pitch-black fluid that warps light around it. Difficult to store.",
       "lore": "The Kraken produces this defensively. Obtaining it requires either luck or very fast swimming."
     },
     "fenrir_fur": {
-      "id": "fenrir_fur", "name": "Fenrir Fur", "rarity": "legendary", "emoji": "👑",
+      "id": "fenrir_fur",
+      "name": "Fenrir Fur",
+      "rarity": "legendary",
+      "emoji": "\ud83d\udc51",
       "description": "Thick icy fur that shrugs off magical attacks. Stays cold regardless of environment.",
       "lore": "Found along Fenrir's patrol routes. It sheds in winter. The winters up there are very short."
     },
     "tear_of_the_creator": {
-      "id": "tear_of_the_creator", "name": "Tear of the Creator", "rarity": "altered_divine", "emoji": "🌌",
+      "id": "tear_of_the_creator",
+      "name": "Tear of the Creator",
+      "rarity": "altered_divine",
+      "emoji": "\ud83c\udf0c",
       "description": "A floating droplet of pure space-time. Used only in the most powerful forgings.",
       "lore": "What the Loom cries when something breaks. Collecting it feels intrusive, but trainers do it anyway."
     },
     "blighted_world_core": {
-      "id": "blighted_world_core", "name": "Blighted World-Core", "rarity": "altered_divine", "emoji": "🌌",
+      "id": "blighted_world_core",
+      "name": "Blighted World-Core",
+      "rarity": "altered_divine",
+      "emoji": "\ud83c\udf0c",
       "description": "A corrupted pulsing fragment from a half-finished Divine. Dark energy, barely contained.",
       "lore": "What's left in the ground after an Altered Divine is finally finished. The Loom leaves these behind like scars."
     },
     "chronos_gear": {
-      "id": "chronos_gear", "name": "Chronos Gear", "rarity": "altered_divine", "emoji": "🌌",
+      "id": "chronos_gear",
+      "name": "Chronos Gear",
+      "rarity": "altered_divine",
+      "emoji": "\ud83c\udf0c",
       "description": "A perfectly spinning golden gear that ticks on no known schedule.",
       "lore": "Twine recognizes these. It won't say where they come from, but it gets very still when one is nearby."
+    },
+    "void_essence": {
+      "id": "void_essence",
+      "name": "Void Essence",
+      "rarity": "rare",
+      "emoji": "\ud83c\udf11",
+      "description": "A residue left behind when shadow is compressed into something denser than shadow should be.",
+      "lore": "Drops from Ancient Abyss encounters and shadow-type wild beasts. The Loom considers it a byproduct. The Loom is wrong."
+    },
+    "spirit_crystal": {
+      "id": "spirit_crystal",
+      "name": "Spirit Crystal",
+      "rarity": "rare",
+      "emoji": "\ud83d\udd2e",
+      "description": "A crystallized fragment of arcane energy, found where Kitsune have been present long enough to leave something behind.",
+      "lore": "Dropped by arcane-type beasts. Foxes leave these intentionally. They have been planning this for a while."
+    },
+    "sunforge_residue": {
+      "id": "sunforge_residue",
+      "name": "Sunforge Residue",
+      "rarity": "uncommon",
+      "emoji": "\ud83d\udd25",
+      "description": "Ash and heat-glass left at the edges of a Sunforge reaction. Still warm.",
+      "lore": "Drops from fire-type and earth-type beasts. The Sunforge throws a lot of this off. It is not concerned about waste."
     }
   }
 }
