@@ -10,7 +10,7 @@ from utils.progress import (
 
 DB_PATH = "db/chibibeast.db"
 TIER_ORDER = ["bronze", "silver", "gold", "platinum"]
-RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine"]
+RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine", "altered_divine", "corrupted", "ancient", "dev"]
 
 
 class Progression(commands.Cog):
