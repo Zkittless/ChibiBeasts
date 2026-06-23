@@ -798,7 +798,11 @@ class Guilds(commands.Cog):
             return max(1, int(atk * (1 - df)))
 
         party_dps_mid = sum(_est_dps(b["attack"], scaled_boss_def) * 10 for b in raid_beast_stats)
-        scaled_hp  = max(party_dps_mid * 30, boss["max_hp"] // 3)
+        # Scale by n_players^0.75 — meaningful fights at every party size
+        _n_players_est = max(1, len(guild_member_ids))
+        _party_scale_g = _n_players_est ** 0.75
+        _avg_player_dps_g = party_dps_mid / max(1, len(raid_beast_stats) // 3)
+        scaled_hp  = max(int(_avg_player_dps_g * 30 * _party_scale_g), boss["max_hp"] // 3)
         scaled_atk = max(int(avg_party_hp * 0.10), boss["attack"] // 20)
 
         active_raids[raid_id] = {

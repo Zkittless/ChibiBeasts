@@ -359,7 +359,10 @@ class Ancient(commands.Cog):
         _n_players = max(1, len(view.party))
         _avg_player_dps = party_dps_mid / _n_players
 
-        scaled_hp  = int(_avg_player_dps * 40)    # avg player DPS * 40 cycles — weak players don't inflate boss HP
+        # Scale by n_players^0.75 so larger parties face a proportionally bigger boss
+        # but it never becomes punishing — solo=1x, duo=1.68x, 3p=2.28x, 5p=3.34x
+        _party_scale = _n_players ** 0.75
+        scaled_hp  = int(_avg_player_dps * 40 * _party_scale)
         scaled_atk = int(avg_party_hp * 0.07)     # ancient hits ~7% avg HP — longer fight, kinder hits
         # Minimum floor from boss base stats so it never feels trivial
         scaled_hp  = max(scaled_hp,  boss["max_hp"] // 3)
