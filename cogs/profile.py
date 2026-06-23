@@ -1048,8 +1048,11 @@ class Shop(commands.Cog):
                 emb, items = build_embed_and_items(section)
 
                 if section == "instant":
-                    from cogs.hatch import HATCH_EGGS
-                    for i, (name, price, egg_id) in enumerate(items):
+                    per_page = 3  # rows 2,3,4 — tabs occupy rows 0,1
+                    page = getattr(self_v, "_instant_page", 1)
+                    total = max(1, (len(items)+per_page-1)//per_page)
+                    page_items = items[(page-1)*per_page:page*per_page]
+                    for i, (name, price, egg_id) in enumerate(page_items):
                         short = name.replace("🥚","").replace("✨","").replace("🌌","").replace("🌊💎","").strip()
                         ns = "Use `/hatch` to open it!"
                         b1 = discord.ui.Button(label=short, style=discord.ButtonStyle.success, emoji="🥚", row=i+2)
@@ -1063,6 +1066,17 @@ class Shop(commands.Cog):
                             await _do_purchase(bi, _id, _p, _n, _ns, 5)
                         b5.callback = _b5
                         self_v.add_item(b1); self_v.add_item(b5)
+                    if total > 1:
+                        prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=page<=1, row=4)
+                        nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=page>=total, row=4)
+                        async def _prev(bi, _v=self_v):
+                            _v._instant_page = getattr(_v,"_instant_page",1)-1; _v._rebuild()
+                            emb2, _ = build_embed_and_items("instant"); await _v._render(bi, emb2)
+                        async def _nxt(bi, _v=self_v):
+                            _v._instant_page = getattr(_v,"_instant_page",1)+1; _v._rebuild()
+                            emb2, _ = build_embed_and_items("instant"); await _v._render(bi, emb2)
+                        prev.callback = _prev; nxt.callback = _nxt
+                        self_v.add_item(prev); self_v.add_item(nxt)
 
                 elif section == "incubation":
                     per_page = 2
