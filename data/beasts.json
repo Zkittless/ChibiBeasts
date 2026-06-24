@@ -133,7 +133,7 @@
       "name": "Slime",
       "title": "The Gooey Guardian",
       "rarity": "common",
-      "type": "water",
+      "type": "nature",
       "base_stats": {
         "hp": 110,
         "attack": 30,
@@ -389,7 +389,7 @@
       "name": "Basilisk",
       "title": "The Stone Gaze",
       "rarity": "rare",
-      "type": "earth",
+      "type": "shadow",
       "base_stats": {
         "hp": 130,
         "attack": 70,
@@ -778,7 +778,7 @@
       "name": "Charybdis",
       "title": "The Maelstrom",
       "rarity": "legendary",
-      "type": "water",
+      "type": "wind",
       "base_stats": {
         "hp": 185,
         "attack": 110,
@@ -1472,7 +1472,7 @@
       "name": "Gloop",
       "title": "The Aspect's First Question",
       "rarity": "common",
-      "type": "water",
+      "type": "nature",
       "base_stats": {
         "hp": 105,
         "attack": 30,
@@ -1710,7 +1710,7 @@
       "name": "Will-o-Wisp",
       "title": "The Misleading Guide",
       "rarity": "uncommon",
-      "type": "light",
+      "type": "shadow",
       "base_stats": {
         "hp": 90,
         "attack": 60,
@@ -1826,7 +1826,7 @@
       "name": "Wendigo",
       "title": "The Hunger That Walks",
       "rarity": "epic",
-      "type": "ice",
+      "type": "shadow",
       "base_stats": {
         "hp": 170,
         "attack": 120,
@@ -1855,7 +1855,7 @@
       "name": "Jormungandr",
       "title": "The World Serpent",
       "rarity": "legendary",
-      "type": "water",
+      "type": "shadow",
       "base_stats": {
         "hp": 205,
         "attack": 115,
@@ -1884,7 +1884,7 @@
       "name": "Simurgh",
       "title": "The Ancient Witness",
       "rarity": "legendary",
-      "type": "light",
+      "type": "wind",
       "base_stats": {
         "hp": 185,
         "attack": 105,
@@ -2321,7 +2321,7 @@
       "name": "Ascended Slime",
       "title": "The Primordial Remnant",
       "rarity": "divine",
-      "type": "water",
+      "type": "nature",
       "description": "The Loom made the Slime as a test to see if resilience alone could become something divine. It passed. No one expected that.",
       "lore": "When the Genesis Fruit touched it, nothing changed visibly. Then everything else looked slightly smaller.",
       "base_stats": {
