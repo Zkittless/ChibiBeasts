@@ -54,7 +54,7 @@
       "rarity": "rare",
       "type": "mana",
       "value": 100,
-      "price": 500,
+      "price": 250,
       "description": "Liquid moonlight captured in a crystal flask. Restores 100% of a beast's mana/energy.",
       "effect": {
         "restore_mana_percent": 100
@@ -66,7 +66,7 @@
       "rarity": "rare",
       "type": "stat_boost",
       "value": 3,
-      "price": 800,
+      "price": 3000,
       "description": "Crunchy, glowing candy that tastes like popping rocks. Permanently increases one specific base stat by a small amount.",
       "effect": {
         "permanent_stat_boost": 3,

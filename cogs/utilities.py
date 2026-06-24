@@ -142,15 +142,15 @@ SHARD_SHOP = {
     "loom_fragment": {
         "name": "🧵 Loom Fragment",
         "desc": "Reduces the incubation time of your oldest egg by 6 hours.",
-        "cost": 10,
-        "weekly_limit": 3,
+        "cost": 15,
+        "weekly_limit": 2,
         "type": "incubation_skip",
     },
     # ── Page 2: Cosmetics & access ───────────────────────────────────────
     "prism_key": {
         "name": "🔑 Prism Key",
         "desc": "Grants access to a special /explore variant in the Celestial Loom with a 30% divine rate.",
-        "cost": 40,
+        "cost": 30,
         "weekly_limit": 1,
         "type": "key",
     },
@@ -172,7 +172,7 @@ SHARD_SHOP = {
     "epoch_shard": {
         "name": "⏳ Epoch Shard",
         "desc": "Calls Ancient Chronos to the altar. Time stutters around it. Also drops from Corrupted Fenrir.",
-        "cost": 150,
+        "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
         "grant_item_id": "epoch_shard",
@@ -180,7 +180,7 @@ SHARD_SHOP = {
     "firstborn_ember": {
         "name": "🔥 Firstborn Ember",
         "desc": "Calls Ancient Genesis to the altar. The flame that started everything, still burning. Also drops from Corrupted Dragon.",
-        "cost": 150,
+        "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
         "grant_item_id": "firstborn_ember",
