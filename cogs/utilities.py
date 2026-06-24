@@ -218,6 +218,103 @@ class Utilities(commands.Cog):
                 choices.append(app_commands.Choice(name=gear["name"], value=gid))
         return choices[:25]
 
+    @app_commands.command(name="gear", description="View a beast's equipped gear and what you have available 🛡️")
+    @app_commands.describe(beast_id="Your beast number from /collection")
+    async def gear(self, interaction: discord.Interaction, beast_id: int):
+        await interaction.response.defer()
+        equipment, runes = load_equipment()
+        all_gear = {**equipment, **runes}
+
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",
+                (interaction.user.id, beast_id)
+            ) as c:
+                beast_row = await c.fetchone()
+            if not beast_row:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description=f"✦ No beast found with number `#{beast_id}`.",
+                    color=COLORS["error"]
+                ))
+            beast_row = dict(beast_row)
+            # Equipped armor
+            async with db.execute(
+                "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id = ?",
+                (interaction.user.id, beast_row["id"])
+            ) as c:
+                armor_rows = [r["equipment_id"] for r in await c.fetchall()]
+            # Inventory gear (unequipped)
+            async with db.execute(
+                "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id IS NULL",
+                (interaction.user.id,)
+            ) as c:
+                inv_gear = [r["equipment_id"] for r in await c.fetchall()]
+
+        bd       = get_beast_data(beast_row["beast_id"]) or {}
+        r_emoji  = RARITY_EMOJI.get(beast_row["rarity"], "⚪")
+        name     = beast_row.get("nickname") or bd.get("name", "?")
+        rune_id  = beast_row.get("rune_id")
+
+        embed = discord.Embed(
+            title=f"🛡️ Gear — {r_emoji} {name} `#{beast_id}`",
+            description=f"Lv.{beast_row['level']} · `{beast_row['hp']}/{beast_row['max_hp']}HP`",
+            color=COLORS.get(beast_row["rarity"], COLORS["info"])
+        )
+
+        # Equipped armor
+        if armor_rows:
+            for aid in armor_rows:
+                g = all_gear.get(aid, {})
+                gr = RARITY_EMOJI.get(g.get("rarity","common"), "⚪")
+                eff_str = " · ".join(
+                    f"+{v}{'%' if 'percent' in k or 'chance' in k else ''} {k.replace('_',' ').replace(' percent','').replace(' chance','')}"
+                    if isinstance(v, (int,float)) else k.replace('_',' ')
+                    for k,v in g.get("effect",{}).items()
+                )
+                embed.add_field(name=f"🔰 {gr} {g.get('name','?')}", value=eff_str or "Special", inline=False)
+        else:
+            embed.add_field(name="🔰 Armor", value="*None equipped — use `/equip <armor> #{beast_id}`*", inline=False)
+
+        # Equipped rune
+        if rune_id:
+            g  = all_gear.get(rune_id, {})
+            gr = RARITY_EMOJI.get(g.get("rarity","common"), "⚪")
+            eff_str = " · ".join(
+                f"+{v} {k.replace('_',' ')}" if isinstance(v,(int,float)) else k.replace('_',' ')
+                for k,v in g.get("effect",{}).items()
+            )
+            embed.add_field(name=f"💎 {gr} {g.get('name','?')}", value=eff_str or "Special", inline=False)
+        else:
+            embed.add_field(name="💎 Rune", value="*None equipped — use `/equip <rune> #{beast_id}`*", inline=False)
+
+        # Available in inventory
+        available_armor = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot","armor") == "armor"]
+        available_runes = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot","rune") == "rune"]
+
+        if available_armor:
+            avail_str = "\n".join(
+                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}"
+                for g in available_armor if g in all_gear
+            )
+            embed.add_field(name="📦 Armor in Inventory", value=avail_str, inline=False)
+        if available_runes:
+            avail_str = "\n".join(
+                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}"
+                for g in available_runes if g in all_gear
+            )
+            embed.add_field(name="📦 Runes in Inventory", value=avail_str, inline=False)
+
+        if not available_armor and not available_runes and not armor_rows and not rune_id:
+            embed.add_field(
+                name="🔍 No Gear Available",
+                value="Craft gear with `/craft` · Browse recipes with `/recipes`",
+                inline=False
+            )
+
+        embed.set_footer(text="✦ /equip <item> <beast_id> to equip · /unequip <beast_id> to remove")
+        await interaction.followup.send(embed=embed)
+
     @app_commands.command(name="equip", description="Equip armor or a rune to a beast ⚔️")
     @app_commands.describe(
         item_name="Equipment or rune to equip (from your inventory)",

@@ -258,24 +258,76 @@ async def run_pve_battle(
         for _ar in _armors:
             _g = _ALL_GEAR.get(_ar["equipment_id"], {})
             _eff = _g.get("effect", {})
+            _gname = _g.get("name", _ar["equipment_id"])
             if "defense_percent" in _eff:
                 state["defense"] += int(state["defense"] * _eff["defense_percent"] / 100)
+            if "hp_percent" in _eff:
+                state["max_hp"] += int(state["max_hp"] * _eff["hp_percent"] / 100)
+                state["hp"]     += int(state["hp"]     * _eff["hp_percent"] / 100)
             if "damage_reduction_flat_percent" in _eff:
                 state["_armor_reduction"] = _eff["damage_reduction_flat_percent"]
+                state["_armor_name"]      = _gname
             if "hp_regen_percent_per_round" in _eff:
                 state["_hp_regen_percent"] = _eff["hp_regen_percent_per_round"]
+                state["_hp_regen_name"]    = _gname
             if "crit_immunity" in _eff:
                 state["_crit_immune"] = True
             if "evasion_percent" in _eff:
-                state["_evasion"] = _eff["evasion_percent"]
+                state["_evasion"]      = _eff["evasion_percent"]
+                state["_evasion_name"] = _gname
+            if "burn_immunity" in _eff:
+                state["_burn_immune"] = True
+            if "water_attack_percent" in _eff and state.get("beast_type") == "water":
+                state["attack"] += int(state["attack"] * _eff["water_attack_percent"] / 100)
+            if "water_resist_percent" in _eff:
+                state["_water_resist"] = _eff["water_resist_percent"]
+                state["_water_resist_name"] = _gname
+            if "reflect_damage_percent" in _eff:
+                state["_reflect_pct"] = _eff["reflect_damage_percent"]
+                state["_reflect_name"] = _gname
+            if "thorns_poison_on_hit_chance" in _eff:
+                state["_thorns_poison_chance"] = _eff["thorns_poison_on_hit_chance"]
+                state["_thorns_name"] = _gname
+            if "burn_on_hit_chance" in _eff:
+                state["_armor_burn_chance"] = _eff["burn_on_hit_chance"]
+                state["_armor_burn_name"]   = _gname
+            if "stun_on_hit_chance" in _eff:
+                state["_armor_stun_chance"] = _eff["stun_on_hit_chance"]
+                state["_armor_stun_name"]   = _gname
+            if "blight_on_hit_chance" in _eff:
+                state["_blight_chance"] = _eff["blight_on_hit_chance"]
+                state["_blight_name"]   = _gname
+            if "time_rewind_on_fatal_once" in _eff:
+                state["_time_rewind"] = True
+                state["_time_rewind_name"] = _gname
+            if "speed_percent" in _eff:
+                if _eff["speed_percent"] > 0:
+                    state["speed"] += int(state["speed"] * _eff["speed_percent"] / 100)
+                else:
+                    state["speed"] = max(1, state["speed"] - int(state["speed"] * abs(_eff["speed_percent"]) / 100))
         if _rune_id:
-            _r = _ALL_GEAR.get(_rune_id, {})
+            _r   = _ALL_GEAR.get(_rune_id, {})
             _eff = _r.get("effect", {})
-            if "speed" in _eff:  state["speed"]   += _eff["speed"]
-            if "defense" in _eff: state["defense"] += _eff["defense"]
+            _rname = _r.get("name", _rune_id)
+            if "speed" in _eff:     state["speed"]   += _eff["speed"]
+            if "attack" in _eff:    state["attack"]  += _eff["attack"]
+            if "hp_flat" in _eff:
+                state["hp"]      += _eff["hp_flat"]
+                state["max_hp"]  += _eff["hp_flat"]
+            if "defense" in _eff:  state["defense"] += _eff["defense"]
             if "crit_chance" in _eff: state["_rune_crit_bonus"] = _eff["crit_chance"]
-            if "lifesteal_percent" in _eff: state["_rune_lifesteal"] = _eff["lifesteal_percent"]
-            if "death_explosion_fire" in _eff: state["_death_explosion"] = True
+            if "lifesteal_percent" in _eff:
+                state["_rune_lifesteal"] = _eff["lifesteal_percent"]
+                state["_rune_lifesteal_name"] = _rname
+            if "death_explosion_fire" in _eff:
+                state["_death_explosion"] = True
+                state["_death_explosion_name"] = _rname
+            if "mana_regen_on_hit" in _eff:
+                state["_mana_regen_on_hit"] = _eff["mana_regen_on_hit"]
+                state["_mana_regen_name"] = _rname
+            if "burn_on_hit_chance" in _eff:
+                state["_rune_burn_chance"] = _eff["burn_on_hit_chance"]
+                state["_rune_burn_name"]   = _rname
 
     await _apply_equip(player_state)
 
@@ -399,17 +451,11 @@ async def run_pve_battle(
             else:
                 attacker_state["dp_crit_charges"] = 0
 
-        if attacker_state.get("_rune_lifesteal") and damage > 0:
-            heal = int(damage * attacker_state["_rune_lifesteal"] / 100)
-            attacker_state["hp"] = min(attacker_state["max_hp"], attacker_state["hp"] + heal)
+        # Lifesteal now handled in on-hit block above
 
         damage = apply_on_hit_taken_passives(attacker_state, defender_state, damage, battle_log)
 
-        if defender_state.get("_armor_reduction") and damage > 0:
-            damage = max(1, damage - int(damage * defender_state["_armor_reduction"] / 100))
-        if defender_state.get("_evasion") and random.random() < defender_state["_evasion"] / 100:
-            battle_log.append(f"💨 **{defender_state['name']}** evaded!")
-            damage = 0
+        # Armor reduction and evasion now handled above in the on-hit block
         if attacker_state.get("_phoenix_shroud") and not attacker_state.get("_phoenix_shroud_triggered"):
             if attacker_state["hp"] <= attacker_state["max_hp"] * 0.25:
                 attacker_state["attack"] = int(attacker_state["attack"] * 2)
@@ -420,15 +466,101 @@ async def run_pve_battle(
         if defender_state["hp"] - damage <= 0:
             if apply_ko_passives(defender_state, attacker_state, battle_log):
                 damage = 0
+            elif defender_state.get("_time_rewind") and not defender_state.get("_time_rewind_used"):
+                # Chronos Paradox Plate — rewind to 30% HP once
+                revive_hp = int(defender_state["max_hp"] * 0.30)
+                defender_state["hp"]             = revive_hp
+                defender_state["_time_rewind_used"] = True
+                damage = 0
+                battle_log.append(f"⏳ **{defender_state['name']}'s {defender_state.get('_time_rewind_name','Chronos Plate')}** rewound time — revived at `{revive_hp}HP`!")
             else:
                 if defender_state.get("_death_explosion"):
                     explosion = int(defender_state["max_hp"] * 0.30)
                     attacker_state["hp"] = max(0, attacker_state["hp"] - explosion)
-                    battle_log.append(f"💥 **Core of the Phoenix** explodes for {explosion} damage!")
-                # No phoenix perk for wild/NPC fights
+                    battle_log.append(f"💥 **{defender_state.get('_death_explosion_name','Core of the Phoenix')}** explodes for `{explosion}` damage!")
                 defender_state["hp"] = 0
         else:
             defender_state["hp"] = max(0, defender_state["hp"] - damage)
+
+        # ── On-hit attacker gear effects ──────────────────────────────────────
+        if damage > 0 and not skip_attack:
+            # Lifesteal rune — log it
+            if attacker_state.get("_rune_lifesteal") and damage > 0:
+                heal = int(damage * attacker_state["_rune_lifesteal"] / 100)
+                attacker_state["hp"] = min(attacker_state["max_hp"], attacker_state["hp"] + heal)
+                if heal > 0:
+                    battle_log.append(f"🩸 **{attacker_state['name']}'s {attacker_state.get('_rune_lifesteal_name','Lifesteal Rune')}** — healed `{heal}HP`!")
+
+            # Rune burn on hit
+            if attacker_state.get("_rune_burn_chance") and not defender_state.get("status"):
+                if random.random() < attacker_state["_rune_burn_chance"] / 100:
+                    defender_state["status"] = "burn"
+                    defender_state["status_turns"] = 3
+                    battle_log.append(f"🔥 **{attacker_state['name']}'s {attacker_state.get('_rune_burn_name','Ember Spark')}** — {defender_state['name']} is Burned!")
+
+            # Armor burn on hit (defender's thorns)
+            if attacker_state.get("_armor_burn_chance") and not defender_state.get("status"):
+                if random.random() < attacker_state["_armor_burn_chance"] / 100:
+                    defender_state["status"] = "burn"
+                    defender_state["status_turns"] = 3
+                    battle_log.append(f"🔥 **{attacker_state['name']}'s {attacker_state.get('_armor_burn_name','armor')}** — {defender_state['name']} is Burned!")
+
+            # Armor stun on hit
+            if attacker_state.get("_armor_stun_chance") and not defender_state.get("status"):
+                if random.random() < attacker_state["_armor_stun_chance"] / 100:
+                    defender_state["status"] = "freeze"
+                    defender_state["status_turns"] = 1
+                    battle_log.append(f"⚡ **{attacker_state['name']}'s {attacker_state.get('_armor_stun_name','Storm-Mail')}** — {defender_state['name']} is Stunned!")
+
+            # Blight on hit
+            if attacker_state.get("_blight_chance") and not defender_state.get("status"):
+                if random.random() < attacker_state["_blight_chance"] / 100:
+                    defender_state["status"] = "blight"
+                    defender_state["status_turns"] = 4
+                    battle_log.append(f"💜 **{attacker_state['name']}'s {attacker_state.get('_blight_name','Regalia')}** — {defender_state['name']} is Blighted!")
+
+            # Mana regen on hit (Thunderbird Feather rune)
+            if attacker_state.get("_mana_regen_on_hit"):
+                gain = attacker_state["_mana_regen_on_hit"]
+                attacker_state["mana"] = min(attacker_state.get("max_mana", 100), attacker_state.get("mana", 0) + gain)
+
+        # ── On-hit defender gear effects (thorns / reflect) ───────────────
+        if damage > 0:
+            # Armor reduction — log it
+            if defender_state.get("_armor_reduction") and damage > 0:
+                raw = damage
+                damage = max(1, damage - int(damage * defender_state["_armor_reduction"] / 100))
+                saved  = raw - damage
+                if saved > 0:
+                    battle_log.append(f"🛡️ **{defender_state.get('_armor_name','Aegis')}** absorbed `{saved}` damage!")
+
+            # Reflect damage
+            if defender_state.get("_reflect_pct") and damage > 0:
+                reflect = max(1, int(damage * defender_state["_reflect_pct"] / 100))
+                attacker_state["hp"] = max(0, attacker_state["hp"] - reflect)
+                battle_log.append(f"🔄 **{defender_state['name']}'s {defender_state.get('_reflect_name','Emberstone Vest')}** reflected `{reflect}` damage!")
+
+            # Thorns — poison chance on being hit
+            if defender_state.get("_thorns_poison_chance") and not attacker_state.get("status"):
+                if random.random() < defender_state["_thorns_poison_chance"] / 100:
+                    attacker_state["status"] = "poison"
+                    attacker_state["status_turns"] = 3
+                    battle_log.append(f"🌿 **{defender_state['name']}'s {defender_state.get('_thorns_name','Thornweave Cloak')}** — {attacker_state['name']} is Poisoned by the thorns!")
+
+            # Water resist
+            if defender_state.get("_water_resist") and attacker_state.get("beast_type") == "water":
+                raw   = damage
+                damage = max(1, damage - int(damage * defender_state["_water_resist"] / 100))
+                battle_log.append(f"🌊 **{defender_state.get('_water_resist_name','armor')}** resisted `{raw-damage}` water damage!")
+
+        # ── Evasion — log it (already handles damage=0) ───────────────────
+        if defender_state.get("_evasion") and damage > 0:
+            if random.random() < defender_state["_evasion"] / 100:
+                battle_log.append(f"💨 **{defender_state['name']}** ({defender_state.get('_evasion_name','Abyssal Shroud')}) evaded!")
+                damage = 0
+
+        # ── Burn immunity ─────────────────────────────────────────────────
+        # Applied at status-grant time — see status block
 
         # Log
         effectiveness = type_effectiveness_label(type_mult)
@@ -442,7 +574,10 @@ async def run_pve_battle(
         _status_chance = (_atk_spd / max(_atk_spd + _def_spd, 1)) * 0.25
         if random.random() < _status_chance and not defender_state["status"]:
             if not defender_state.get("divine_passive", {}).get("passive_effect", {}).get("status_immune"):
-                new_status = random.choice(["poison","burn","freeze","sleep","paralyze"])
+                status_pool = ["poison","burn","freeze","sleep","paralyze"]
+                if defender_state.get("_burn_immune"):
+                    status_pool = [s for s in status_pool if s != "burn"]
+                new_status = random.choice(status_pool) if status_pool else None
                 if defender_state.get("divine_passive", {}).get("passive_id") == "karmic_echo" and random.random() < 0.40:
                     attacker_state["status"] = new_status
                     attacker_state["status_turns"] = STATUS_EFFECTS[new_status].get("skip_turns", 0)
@@ -1323,9 +1458,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
                 attacker_state["dp_crit_charges"] = 0
 
         # Rune lifesteal
-        if attacker_state.get("_rune_lifesteal") and damage > 0:
-            heal = int(damage * attacker_state["_rune_lifesteal"] / 100)
-            attacker_state["hp"] = min(attacker_state["max_hp"], attacker_state["hp"] + heal)
+        # Lifesteal now handled in on-hit block above
             battle_log.append(f"💍 **Ouroboros Ring** — {attacker_state['name']} healed {heal} HP!")
 
         # On-hit-taken defender passives (Shield, Weight of Worlds, Mirror Reality, Bifrost Surge)

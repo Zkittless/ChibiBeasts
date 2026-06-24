@@ -12,8 +12,7 @@
         "enchanted_bark": 1
       },
       "effect": {
-        "speed_percent": 5,
-        "dodge_woods": true
+        "speed_percent": 8
       }
     },
     "gnome_iron_plating": {
@@ -44,7 +43,7 @@
       },
       "effect": {
         "burn_immunity": true,
-        "water_attack_percent": 8
+        "water_attack_percent": 12
       }
     },
     "cinder_guard_vest": {
@@ -59,7 +58,7 @@
         "gnome_iron_ore": 2
       },
       "effect": {
-        "singe_on_hit": true
+        "burn_on_hit_chance": 25
       }
     },
     "unicorn_healer_vestments": {
@@ -121,7 +120,7 @@
         "harpy_down": 3
       },
       "effect": {
-        "stun_on_physical_chance": 15
+        "stun_on_hit_chance": 15
       }
     },
     "dragon_lord_aegis": {
@@ -168,7 +167,7 @@
         "tear_of_the_creator": 1
       },
       "effect": {
-        "time_rewind_on_fatal_once_per_battle": true
+        "time_rewind_on_fatal_once": true
       }
     },
     "blight_weaver_regalia": {
@@ -184,7 +183,69 @@
         "tear_of_the_creator": 1
       },
       "effect": {
-        "blight_on_attack_chance": 25
+        "blight_on_hit_chance": 25
+      }
+    },
+    "mossbark_wrapping": {
+      "id": "mossbark_wrapping",
+      "name": "Mossbark Wrapping",
+      "rarity": "common",
+      "slot": "armor",
+      "description": "Strips of enchanted bark bound together with pixie silk. The forest holds things together.",
+      "lore": "Common beasts that survive their first year tend to be found wearing something like this. Nobody taught them. They figured it out.",
+      "effect": {
+        "hp_percent": 8
+      },
+      "recipe": {
+        "enchanted_bark": 3,
+        "pixie_silk": 2
+      }
+    },
+    "emberstone_vest": {
+      "id": "emberstone_vest",
+      "name": "Emberstone Vest",
+      "rarity": "common",
+      "slot": "armor",
+      "description": "Gnome-iron plates set in hellhound ember resin. Reflects a fraction of what hits it.",
+      "lore": "Anything that spends enough time near Hellhounds picks up their habits. One of those habits is making things that touch you regret it.",
+      "effect": {
+        "burn_immunity": true,
+        "reflect_damage_percent": 5
+      },
+      "recipe": {
+        "gnome_iron_ore": 3,
+        "hellhound_ember": 2
+      }
+    },
+    "thornweave_cloak": {
+      "id": "thornweave_cloak",
+      "name": "Thornweave Cloak",
+      "rarity": "uncommon",
+      "slot": "armor",
+      "description": "Woven from bark thorns and harpy feathers. When struck, the thorns answer.",
+      "lore": "The thorns don't care who started it. That's what makes them useful.",
+      "effect": {
+        "thorns_poison_on_hit_chance": 20
+      },
+      "recipe": {
+        "enchanted_bark": 4,
+        "harpy_down": 3
+      }
+    },
+    "deepwater_hide": {
+      "id": "deepwater_hide",
+      "name": "Deepwater Hide",
+      "rarity": "uncommon",
+      "slot": "armor",
+      "description": "Cured kelpie hide layered with harpy down. Dense enough to slow water, light enough to move in.",
+      "lore": "The kelpie didn't use it anymore. Something else did. The hide keeps its habits.",
+      "effect": {
+        "defense_percent": 12,
+        "water_resist_percent": 50
+      },
+      "recipe": {
+        "kelpie_scale": 3,
+        "harpy_down": 3
       }
     }
   },
@@ -285,6 +346,64 @@
         "chronos_gear": 1,
         "tear_of_the_creator": 1,
         "kraken_ink": 2
+      }
+    },
+    "iron_dust_chip": {
+      "id": "iron_dust_chip",
+      "name": "Iron Dust Chip",
+      "rarity": "common",
+      "slot": "rune",
+      "description": "A shard of gnome-iron worn smooth by grinding. Dense. Works.",
+      "lore": "Simple. The gnomes make them by accident and sell them on purpose.",
+      "effect": {
+        "attack": 8
+      },
+      "recipe": {
+        "gnome_iron_ore": 4
+      }
+    },
+    "bark_sigil": {
+      "id": "bark_sigil",
+      "name": "Bark Sigil",
+      "rarity": "common",
+      "slot": "rune",
+      "description": "A carved piece of enchanted bark. Adds to what's already there.",
+      "lore": "The tree didn't need this piece anymore. A beast will.",
+      "effect": {
+        "hp_flat": 15
+      },
+      "recipe": {
+        "enchanted_bark": 4
+      }
+    },
+    "ember_spark": {
+      "id": "ember_spark",
+      "name": "Ember Spark",
+      "rarity": "uncommon",
+      "slot": "rune",
+      "description": "A fragment of hellhound ember set in iron. It bites.",
+      "lore": "The Hellhound left something behind in everything it ever touched. This is that something, extracted and made useful.",
+      "effect": {
+        "burn_on_hit_chance": 12
+      },
+      "recipe": {
+        "hellhound_ember": 3,
+        "gnome_iron_ore": 2
+      }
+    },
+    "kelpie_charm": {
+      "id": "kelpie_charm",
+      "name": "Kelpie Charm",
+      "rarity": "uncommon",
+      "slot": "rune",
+      "description": "A carved kelpie scale on a silk cord. Water moves fast. So do things shaped like it.",
+      "lore": "Kelpie don't understand why anyone would want this. They move fast naturally. The charm doesn't make you a Kelpie. It just borrows the idea.",
+      "effect": {
+        "speed": 10
+      },
+      "recipe": {
+        "kelpie_scale": 3,
+        "pixie_silk": 2
       }
     }
   }
