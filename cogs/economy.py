@@ -48,43 +48,53 @@ MARKET_DURATION_DAYS = 7
 
 # Base appraisal values by rarity (at level 1)
 APPRAISE_BASE = {
-    "common":        200,
-    "uncommon":      1200,
-    "rare":          6000,
-    "epic":          25000,
-    "legendary":     100000,
-    "divine":        300000,
-    "altered_divine":600000,
-    "corrupted":     500000,
-    "ancient":       750000,
+    "common":        100,
+    "uncommon":      400,
+    "rare":          1500,
+    "epic":          6000,
+    "legendary":     20000,
+    "divine":        50000,
+    "altered_divine":120000,
+    "corrupted":     100000,
+    "ancient":       150000,
     "dev":           0,
 }
 
 
 def appraise_beast(beast_row: dict) -> int:
-    """Calculate estimated gold value of a beast."""
+    """Calculate estimated gold value of a beast.
+
+    Formula design targets (lv50 active player earns ~4,800g/day):
+      Common  lv50: ~350g   (same-day purchase)
+      Rare    lv50: ~5k     (1 day)
+      Epic    lv50: ~23k    (5 days)
+      Legendary lv50: ~69k  (14 days)
+      Divine  lv25: ~110k   (23 days)
+      Divine  lv50: ~172k   (36 days)
+      Divine  lv50 fully maxed: ~317k (66 days)
+    """
     rarity = beast_row.get("rarity", "common")
-    base   = APPRAISE_BASE.get(rarity, 200)
+    base   = APPRAISE_BASE.get(rarity, 100)
     level  = beast_row.get("level", 1)
 
-    # Level multiplier: +2% per level above 1
-    level_mult = 1.0 + (level - 1) * 0.02
+    # Level curve: 5% per level — meaningful but doesn't explode at divine
+    level_mult = 1.0 + (level - 1) * 0.05
 
-    # Training bonus: +1% per total training session
+    # Training bonus: 0.8% per session (reduced from 1% to prevent inflation)
     train_sessions = (
         (beast_row.get("train_atk", 0) or 0) +
         (beast_row.get("train_def", 0) or 0) +
         (beast_row.get("train_spd", 0) or 0) +
         (beast_row.get("train_hp",  0) or 0)
     )
-    train_mult = 1.0 + train_sessions * 0.01
+    train_mult = 1.0 + train_sessions * 0.008
 
-    # Gear bonus: +10% if has armor, +5% if has rune
+    # Gear bonus: 8% armor, 4% rune (reduced from 10%/5%)
     gear_mult = 1.0
     if beast_row.get("equipment_id"):
-        gear_mult += 0.10
+        gear_mult += 0.08
     if beast_row.get("rune_id"):
-        gear_mult += 0.05
+        gear_mult += 0.04
 
     value = int(base * level_mult * train_mult * gear_mult)
     return max(base, value)
