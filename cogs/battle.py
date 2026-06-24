@@ -277,11 +277,13 @@ async def run_pve_battle(
                 state["_evasion_name"] = _gname
             if "burn_immunity" in _eff:
                 state["_burn_immune"] = True
-            if "water_attack_percent" in _eff and state.get("beast_type") == "water":
-                state["attack"] += int(state["attack"] * _eff["water_attack_percent"] / 100)
             if "water_resist_percent" in _eff:
                 state["_water_resist"] = _eff["water_resist_percent"]
                 state["_water_resist_name"] = _gname
+            if "attack_percent" in _eff:
+                state["attack"] += int(state["attack"] * _eff["attack_percent"] / 100)
+            if "water_attack_percent" in _eff and state.get("beast_type") == "water":
+                state["attack"] += int(state["attack"] * _eff["water_attack_percent"] / 100)
             if "reflect_damage_percent" in _eff:
                 state["_reflect_pct"] = _eff["reflect_damage_percent"]
                 state["_reflect_name"] = _gname
@@ -315,7 +317,6 @@ async def run_pve_battle(
                 state["hp"]      += _eff["hp_flat"]
                 state["max_hp"]  += _eff["hp_flat"]
             if "defense" in _eff:  state["defense"] += _eff["defense"]
-            if "crit_chance" in _eff: state["_rune_crit_bonus"] = _eff["crit_chance"]
             if "lifesteal_percent" in _eff:
                 state["_rune_lifesteal"] = _eff["lifesteal_percent"]
                 state["_rune_lifesteal_name"] = _rname
@@ -328,6 +329,18 @@ async def run_pve_battle(
             if "burn_on_hit_chance" in _eff:
                 state["_rune_burn_chance"] = _eff["burn_on_hit_chance"]
                 state["_rune_burn_name"]   = _rname
+            if "attack_percent" in _eff:
+                state["attack"] += int(state["attack"] * _eff["attack_percent"] / 100)
+            if "speed_percent" in _eff:
+                state["speed"]  += int(state["speed"]  * _eff["speed_percent"]  / 100)
+            if "defense_percent" in _eff:
+                state["defense"]+= int(state["defense"]* _eff["defense_percent"] / 100)
+            if "hp_percent" in _eff:
+                bonus = int(state["max_hp"] * _eff["hp_percent"] / 100)
+                state["max_hp"] += bonus
+                state["hp"]     += bonus
+            if "crit_chance" in _eff:
+                state["_rune_crit_bonus"] = _eff["crit_chance"]
 
     await _apply_equip(player_state)
 

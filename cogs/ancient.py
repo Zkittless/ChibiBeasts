@@ -560,10 +560,18 @@ class Ancient(commands.Cog):
                 target_uid = random.choice(alive)
                 p_def = cur_raid["player_defense"].get(target_uid, 50)
                 dmg = calc_boss_damage(cur_raid["boss_attack"], p_def, cur_raid["player_max_hp"].get(target_uid, 0))
+                # Apply armor reduction (Dragon-Lord Aegis etc.)
+                _ared = cur_raid.get("player_armor_reduction", {}).get(target_uid, 0)
+                if _ared:
+                    dmg = max(1, dmg - int(dmg * _ared / 100))
+                # Evasion check (Abyssal Shroud)
+                _aeva = cur_raid.get("player_evasion", {}).get(target_uid, 0)
+                _aevaded = _aeva > 0 and random.random() < _aeva / 100
                 async with _ancient_locks[raid_id]:
                     if raid_id not in active_ancient_raids:
                         break
-                    cur_raid["player_hp"][target_uid] = max(0, cur_raid["player_hp"].get(target_uid, 0) - dmg)
+                    if not _aevaded:
+                        cur_raid["player_hp"][target_uid] = max(0, cur_raid["player_hp"].get(target_uid, 0) - dmg)
                     p_hp  = cur_raid["player_hp"][target_uid]
                     p_max = cur_raid["player_max_hp"].get(target_uid, 1)
                     _aslot = cur_raid.get("player_active_slot", {}).get(target_uid, 0)
@@ -572,10 +580,13 @@ class Ancient(commands.Cog):
                 # Store boss attack in last_event — no new messages
                 if raid_id in active_ancient_raids:
                     active_ancient_raids[raid_id]["embed_dirty"] = True
-                    active_ancient_raids[raid_id]["last_event"] = (
-                        f"\U0001f4a5 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
-                        + (" \u2014 **knocked out!** \U0001f480" if died else f" | `{p_hp}/{p_max}HP`")
-                    )
+                    if _aevaded:
+                        active_ancient_raids[raid_id]["last_event"] = f"💨 **{boss['name']}** strikes — <@{target_uid}>'s beast evaded!"
+                    else:
+                        active_ancient_raids[raid_id]["last_event"] = (
+                            f"\U0001f4a5 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
+                            + (" \u2014 **knocked out!** \U0001f480" if died else f" | `{p_hp}/{p_max}HP`")
+                        )
 
                 # Stamp KO timer on dead beast
                 if died:
@@ -746,6 +757,28 @@ class Ancient(commands.Cog):
                     cur_raid["player_defense"][uid] = slot["defense"]
                     cur_raid["player_atk"][uid]     = slot["attack"]
                     cur_raid["player_mana"][uid]    = 0
+                    # Load armor reduction for boss damage mitigation
+                    import json as _json
+                    with open("data/equipment.json") as _ef:
+                        _eqd = _json.load(_ef)
+                    _ALL_GEAR_ANC = {**_eqd["equipment"], **_eqd["runes"]}
+                    _a_red = 0; _a_eva = 0
+                    async with aiosqlite.connect(DB_PATH) as _edb:
+                        _edb.row_factory = aiosqlite.Row
+                        async with _edb.execute(
+                            "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id = ?",
+                            (uid, slot["id"])
+                        ) as _ec:
+                            for _er in await _ec.fetchall():
+                                _eg = _ALL_GEAR_ANC.get(_er["equipment_id"], {})
+                                _a_red = max(_a_red, _eg.get("effect", {}).get("damage_reduction_flat_percent", 0))
+                                _a_eva = max(_a_eva, _eg.get("effect", {}).get("evasion_percent", 0))
+                    if "player_armor_reduction" not in cur_raid:
+                        cur_raid["player_armor_reduction"] = {}
+                    if "player_evasion" not in cur_raid:
+                        cur_raid["player_evasion"] = {}
+                    cur_raid["player_armor_reduction"][uid] = _a_red
+                    cur_raid["player_evasion"][uid] = _a_eva
 
                 # Use party slot stats — not live DB
                 _slot = cur_raid["player_active_slot"].get(uid, 0)

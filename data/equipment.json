@@ -43,7 +43,8 @@
       },
       "effect": {
         "burn_immunity": true,
-        "water_attack_percent": 12
+        "attack_percent": 8,
+        "water_attack_percent": 15
       }
     },
     "cinder_guard_vest": {
@@ -210,7 +211,7 @@
       "lore": "Anything that spends enough time near Hellhounds picks up their habits. One of those habits is making things that touch you regret it.",
       "effect": {
         "burn_immunity": true,
-        "reflect_damage_percent": 5
+        "reflect_damage_percent": 8
       },
       "recipe": {
         "gnome_iron_ore": 3,
@@ -259,7 +260,8 @@
       "lore": "Fairies tie these on things they like. Your beast is now a thing a Fairy liked.",
       "price": 200,
       "effect": {
-        "speed": 5
+        "speed": 5,
+        "speed_percent": 3
       },
       "recipe": {
         "pixie_silk": 5
@@ -274,7 +276,8 @@
       "lore": "Gnomes make ten of these for every one they sell. Quality control is taken seriously.",
       "price": 800,
       "effect": {
-        "defense": 8
+        "defense": 8,
+        "defense_percent": 3
       },
       "recipe": {
         "gnome_iron_ore": 5,
@@ -290,7 +293,8 @@
       "lore": "The Wyvern that dropped this was going fast. So were you.",
       "price": 2500,
       "effect": {
-        "crit_chance": 5
+        "attack": 5,
+        "crit_chance": 8
       },
       "recipe": {
         "manticore_stinger": 2,
@@ -322,6 +326,7 @@
       "lore": "The Phoenix put something of itself in here. It's not quite gone. Use it wisely.",
       "price": 25000,
       "effect": {
+        "lifesteal_percent": 8,
         "death_explosion_fire": true
       },
       "recipe": {
@@ -340,7 +345,8 @@
       "price": 0,
       "drop_only": true,
       "effect": {
-        "lifesteal_percent": 15
+        "lifesteal_percent": 18,
+        "hp_percent": 5
       },
       "recipe": {
         "chronos_gear": 1,
@@ -353,10 +359,11 @@
       "name": "Iron Dust Chip",
       "rarity": "common",
       "slot": "rune",
-      "description": "A shard of gnome-iron worn smooth by grinding. Dense. Works.",
+      "description": "A shard of gnome-iron worn smooth by grinding. Dense. Works harder the harder the beast wearing it hits.",
       "lore": "Simple. The gnomes make them by accident and sell them on purpose.",
       "effect": {
-        "attack": 8
+        "attack": 8,
+        "attack_percent": 3
       },
       "recipe": {
         "gnome_iron_ore": 4
@@ -367,10 +374,11 @@
       "name": "Bark Sigil",
       "rarity": "common",
       "slot": "rune",
-      "description": "A carved piece of enchanted bark. Adds to what's already there.",
+      "description": "A carved piece of enchanted bark. Adds to what's already there, and then a little more for every beast it's worn by.",
       "lore": "The tree didn't need this piece anymore. A beast will.",
       "effect": {
-        "hp_flat": 15
+        "hp_flat": 20,
+        "hp_percent": 3
       },
       "recipe": {
         "enchanted_bark": 4
@@ -399,7 +407,8 @@
       "description": "A carved kelpie scale on a silk cord. Water moves fast. So do things shaped like it.",
       "lore": "Kelpie don't understand why anyone would want this. They move fast naturally. The charm doesn't make you a Kelpie. It just borrows the idea.",
       "effect": {
-        "speed": 10
+        "speed": 10,
+        "speed_percent": 5
       },
       "recipe": {
         "kelpie_scale": 3,
