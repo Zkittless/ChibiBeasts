@@ -28,13 +28,6 @@ async def on_ready():
             name="ChibiBeasts 🐾 | /start"
         )
     )
-    try:
-        guild = discord.Object(id=int(os.getenv("GUILD_ID", 0)))
-        bot.tree.copy_global_to(guild=guild)
-        synced = await bot.tree.sync(guild=guild)
-        print(f"✅ Synced {len(synced)} slash command(s)")
-    except Exception as e:
-        print(f"❌ Failed to sync commands: {e}")
 
 
 @bot.tree.error
@@ -87,6 +80,15 @@ async def main():
     async with bot:
         await init_db()
         await load_cogs()
-        await bot.start(os.getenv("DISCORD_TOKEN"))
+        # Sync after all cogs are loaded — guarantees every command is in the tree
+        await bot.login(os.getenv("DISCORD_TOKEN"))
+        try:
+            guild = discord.Object(id=int(os.getenv("GUILD_ID", 0)))
+            bot.tree.copy_global_to(guild=guild)
+            synced = await bot.tree.sync(guild=guild)
+            print(f"✅ Synced {len(synced)} slash command(s)")
+        except Exception as e:
+            print(f"❌ Failed to sync commands: {e}")
+        await bot.connect()
 
 asyncio.run(main())
