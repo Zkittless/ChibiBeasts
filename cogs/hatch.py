@@ -787,6 +787,12 @@ class Hatch(commands.Cog):
         if caught:
             beast_row_id = await add_beast_to_player(interaction.user.id, {**beast, "caught_from": "discover"})
             gold_bonus = random.randint(player_level * 3, player_level * 8)
+            # Beast count check for quests
+            async with __import__("aiosqlite").connect("db/chibibeast.db") as _bcdb:
+                async with _bcdb.execute("SELECT COUNT(*) FROM player_beasts WHERE user_id = ?", (interaction.user.id,)) as _bcc:
+                    _bc_count = (await _bcc.fetchone())[0]
+            from cogs.questline import advance_quest_step as _aqbc
+            await _aqbc(interaction.user.id, "beast_count_check", count=_bc_count)
             explore_exp = random.randint(player_level * 12, player_level * 20)
             await update_player(interaction.user.id, gold=player["gold"] + gold_bonus)
             from cogs.battle import award_player_exp as _award_exp
@@ -938,6 +944,10 @@ class Hatch(commands.Cog):
 
             # ── Progress tracking: quests, achievements, bestiary ──────
             catch_quests_completed = await track_quest_event(interaction.user.id, "catch")
+            # Pass beast type for type-specific quest steps
+            await advance_quest_step(interaction.user.id, "catch",
+                beast_id=beast.get("id", ""),
+                beast_type=beast.get("type", ""))
             unlocked = await unlock_simple_achievement(interaction.user.id, "first_steps")
             more_unlocked = await check_achievements(interaction.user.id)
             all_unlocked = (["first_steps"] if unlocked else []) + more_unlocked

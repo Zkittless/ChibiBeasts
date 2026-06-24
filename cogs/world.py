@@ -795,6 +795,8 @@ class World(commands.Cog):
                 )
             await db.commit()
         craft_completed = await track_quest_event(interaction.user.id, "craft")
+        from cogs.questline import advance_quest_step as _aqcraft
+        await _aqcraft(interaction.user.id, "craft")
         if craft_completed and interaction.channel:
             await notify_quest_completions(interaction.channel, craft_completed)
 

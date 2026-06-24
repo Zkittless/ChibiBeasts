@@ -1304,7 +1304,9 @@ class Guilds(commands.Cog):
                 # embed_loop handles refresh
 
                 await track_quest_event(uid, "raid_damage", amount=damage)
+                await track_quest_event(uid, "raid_attack")
                 await advance_quest_step(uid, "raid_participate")
+                await advance_quest_step(uid, "raid_damage", amount=damage)
 
                 if raid_ended:
                     await cog.end_raid(raid_id, btn_interaction.channel)
@@ -1592,6 +1594,14 @@ class Guilds(commands.Cog):
 
         embed.set_footer(text="ChibiBeasts 🐾  •  /raid to trigger another raid!")
         await channel.send(embed=embed)
+
+        if defeated:
+            for uid in raid.get("participants", []):
+                try:
+                    from cogs.questline import advance_quest_step as _aqr
+                    await _aqr(uid, "raid_complete", raid_type="corrupted")
+                except Exception:
+                    pass
 
         # Restore surviving (non-KO'd) party beasts to full HP after the raid
         async with aiosqlite.connect("db/chibibeast.db") as db:

@@ -175,21 +175,7 @@ async def advance_quest_step(user_id: int, event_type: str, **kwargs):
         if current >= target:
             continue
 
-        if step_type == "explore_count" and event_type == "explore":
-            # If tracking unique biomes, use biome name from kwargs
-            if step.get("track_unique_biomes"):
-                biomes_visited = set(json.loads(progress.get(step_id + "_biomes", "[]")))
-                biome = kwargs.get("biome")
-                if biome and biome not in biomes_visited:
-                    biomes_visited.add(biome)
-                    progress[step_id + "_biomes"] = json.dumps(list(biomes_visited))
-                    progress[step_id] = len(biomes_visited)
-                    changed = True
-            else:
-                progress[step_id] = current + 1
-                changed = True
-
-        elif step_type == "catch_count" and event_type == "catch":
+        if step_type == "catch_count" and event_type == "catch":
             progress[step_id] = current + 1
             changed = True
 
@@ -233,6 +219,80 @@ async def advance_quest_step(user_id: int, event_type: str, **kwargs):
             # This step completes when the player uses /questline
             progress[step_id] = 1
             changed = True
+
+        elif step_type == "battle_win" and event_type == "battle_win":
+            progress[step_id] = current + 1
+            changed = True
+
+        elif step_type == "catch_type" and event_type == "catch":
+            beast_type = kwargs.get("beast_type", "")
+            allowed    = step.get("beast_types", [])
+            if beast_type in allowed:
+                progress[step_id] = current + 1
+                changed = True
+
+        elif step_type == "craft_count" and event_type == "craft":
+            progress[step_id] = current + 1
+            changed = True
+
+        elif step_type == "material_collect_specific" and event_type == "material_gained":
+            # Check all required materials are in player inventory
+            required = step.get("materials", {})
+            mat_id   = kwargs.get("material_id")
+            if mat_id in required:
+                # Track per-material progress in sub-keys
+                for mid, qty in required.items():
+                    cur_mat = progress.get(f"{step_id}_{mid}", 0)
+                    if mid == mat_id:
+                        progress[f"{step_id}_{mid}"] = min(qty, cur_mat + kwargs.get("amount", 1))
+                # Check if all mats collected
+                all_mats_done = all(
+                    progress.get(f"{step_id}_{mid}", 0) >= qty
+                    for mid, qty in required.items()
+                )
+                if all_mats_done:
+                    progress[step_id] = 1
+                changed = True
+
+        elif step_type == "raid_count" and event_type == "raid_complete":
+            raid_type = step.get("raid_type", "")
+            event_raid_type = kwargs.get("raid_type", "")
+            if not raid_type or raid_type == event_raid_type:
+                progress[step_id] = current + 1
+                changed = True
+
+        elif step_type == "raid_damage" and event_type == "raid_damage":
+            progress[step_id] = current + kwargs.get("amount", 0)
+            changed = True
+
+        elif step_type == "raid_complete" and event_type == "raid_complete":
+            progress[step_id] = 1
+            changed = True
+
+        elif step_type == "beast_count" and event_type == "beast_count_check":
+            count = kwargs.get("count", 0)
+            if count >= target:
+                progress[step_id] = count
+                changed = True
+
+        elif step_type == "explore_count" and event_type == "explore":
+            # With optional biome filter
+            if step.get("track_biome"):
+                biome = kwargs.get("biome", "")
+                if biome and step["track_biome"] in biome:
+                    progress[step_id] = current + 1
+                    changed = True
+            elif step.get("track_unique_biomes"):
+                biomes_visited = set(json.loads(progress.get(step_id + "_biomes", "[]")))
+                biome = kwargs.get("biome")
+                if biome and biome not in biomes_visited:
+                    biomes_visited.add(biome)
+                    progress[step_id + "_biomes"] = json.dumps(list(biomes_visited))
+                    progress[step_id] = len(biomes_visited)
+                    changed = True
+            else:
+                progress[step_id] = current + 1
+                changed = True
 
     if changed:
         state["step_progress"][ch_id] = progress

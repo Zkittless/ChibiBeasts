@@ -1096,6 +1096,14 @@ class Ancient(commands.Cog):
                     )
             await db.commit()
 
+        if defeated:
+            for uid in raid.get("participants", []):
+                try:
+                    from cogs.questline import advance_quest_step as _aqanc
+                    await _aqanc(uid, "raid_complete", raid_type="ancient")
+                    await _aqanc(uid, "raid_damage", amount=0)  # ensure damage steps don't block
+                except Exception:
+                    pass
         await channel.send(embed=embed)
 
 
