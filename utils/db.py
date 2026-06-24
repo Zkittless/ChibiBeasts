@@ -257,13 +257,35 @@ async def _run_migrations():
         "ALTER TABLE player_beasts ADD COLUMN raid_slot INTEGER DEFAULT NULL",
         # KO recovery timer — NULL means healthy
         "ALTER TABLE player_beasts ADD COLUMN knocked_out_until TIMESTAMP DEFAULT NULL",
+        # Beast training — track how many sessions per stat
+        "ALTER TABLE player_beasts ADD COLUMN train_atk INTEGER DEFAULT 0",
+        "ALTER TABLE player_beasts ADD COLUMN train_def INTEGER DEFAULT 0",
+        "ALTER TABLE player_beasts ADD COLUMN train_spd INTEGER DEFAULT 0",
+        "ALTER TABLE player_beasts ADD COLUMN train_hp  INTEGER DEFAULT 0",
     ]
+
+    # Beast Market table
+    MARKET_TABLE = """
+        CREATE TABLE IF NOT EXISTS beast_market (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            seller_id   INTEGER NOT NULL,
+            beast_row_id INTEGER NOT NULL UNIQUE,
+            ask_price   INTEGER NOT NULL,
+            listed_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            expires_at  TIMESTAMP NOT NULL
+        )
+    """
+
     async with aiosqlite.connect(DB_PATH) as db:
         for sql in migrations:
             try:
                 await db.execute(sql)
             except Exception:
                 pass  # Column already exists — safe to skip
+        try:
+            await db.execute(MARKET_TABLE)
+        except Exception:
+            pass
         await db.commit()
 
 async def get_or_create_player(user_id: int, username: str):

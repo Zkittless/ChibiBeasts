@@ -812,6 +812,8 @@ class Hatch(commands.Cog):
                         mat_drop = mat_id
                         break
                 if mat_drop:
+                    import asyncio as _asyncio
+                    _asyncio.create_task(track_quest_event(interaction.user.id, "material_collect"))
                     async with __import__("aiosqlite").connect("db/chibibeast.db") as db:
                         async with db.execute(
                             "SELECT id, quantity FROM player_materials WHERE user_id = ? AND material_id = ?",

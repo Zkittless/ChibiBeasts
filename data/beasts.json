@@ -2567,6 +2567,100 @@
       },
       "evolves_from": "kitsune_1",
       "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_kitsune.png"
+    },
+    "frost_sprite": {
+      "id": "frost_sprite",
+      "name": "Frost Sprite",
+      "title": "The Cold That Stayed",
+      "rarity": "common",
+      "type": "ice",
+      "description": "A small spirit made of crystallized breath that forgot to dissipate. It follows people who smell like winter mornings.",
+      "lore": "The Loom made it as a pause \u2014 a moment of cold stillness pressed into something small. The pause never ended. The Frost Sprite doesn't mind.",
+      "base_stats": {
+        "hp": 85,
+        "attack": 40,
+        "defense": 45,
+        "speed": 50,
+        "mana": 60
+      },
+      "moves": [
+        "Frost Nip",
+        "Cold Shoulder",
+        "Rime Veil"
+      ],
+      "ultimate": "Winter's Breath",
+      "image_url": null
+    },
+    "permafrost": {
+      "id": "permafrost",
+      "name": "Permafrost",
+      "title": "The Patient Architecture",
+      "rarity": "uncommon",
+      "type": "ice",
+      "description": "A tortoise whose shell is made of ice that has not melted in eleven thousand years. It is in no hurry.",
+      "lore": "The Loom built it to last. It has. It will continue to. The Permafrost has no opinion about this \u2014 it's not the kind of beast that has opinions about things. It just keeps being cold, and dense, and present.",
+      "base_stats": {
+        "hp": 140,
+        "attack": 45,
+        "defense": 95,
+        "speed": 20,
+        "mana": 55
+      },
+      "moves": [
+        "Glacier Press",
+        "Frost Shell",
+        "Permafrost Wall"
+      ],
+      "ultimate": "Absolute Zero",
+      "image_url": null
+    },
+    "abyssal_eel": {
+      "id": "abyssal_eel",
+      "name": "Abyssal Eel",
+      "title": "The Current That Remembers",
+      "rarity": "epic",
+      "type": "water",
+      "description": "An electric eel from somewhere below the bottom of the ocean. It carries a charge that predates the concept of dry land.",
+      "lore": "The Sunken Trenches are dark. The Abyssal Eel is what the dark looks like when it decides to move. The current it leaves behind takes hours to dissipate. The memory of it takes longer.",
+      "base_stats": {
+        "hp": 155,
+        "attack": 110,
+        "defense": 75,
+        "speed": 115,
+        "mana": 110
+      },
+      "moves": [
+        "Abyssal Surge",
+        "Deep Current",
+        "Voltage Coil"
+      ],
+      "ultimate": "Trench Discharge",
+      "divine_passive": null,
+      "image_url": null
+    },
+    "loom_fragment": {
+      "id": "loom_fragment",
+      "name": "Loom Fragment",
+      "title": "The Question That Answered Itself",
+      "rarity": "rare",
+      "type": "cosmic",
+      "description": "A piece of the Celestial Loom that gained awareness during the Sundering. It doesn't know what it was before. It isn't sure what it is now. It keeps asking.",
+      "lore": "When the Loom fractured, most of the pieces fell. A few of them landed wrong \u2014 sideways, in the gap between material and intent \u2014 and started thinking. The Loom Fragment is the most lucid of these. That isn't saying much, but it's saying something.",
+      "base_stats": {
+        "hp": 130,
+        "attack": 75,
+        "defense": 80,
+        "speed": 85,
+        "mana": 120
+      },
+      "moves": [
+        "Warp Thread",
+        "Loom Pulse",
+        "Unraveling"
+      ],
+      "ultimate": "The Sundering Echo",
+      "divine_passive": null,
+      "image_url": null
     }
   },
   "rarity_rates": {

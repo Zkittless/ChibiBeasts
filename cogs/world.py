@@ -552,6 +552,8 @@ class World(commands.Cog):
                     color=COLORS.get(row["rarity"], COLORS["info"])
                 )
                 embed.set_footer(text="ChibiBeasts 🐾  •  Come back and tend again soon.")
+                import asyncio as _asyncio
+                _asyncio.create_task(track_quest_event(interaction.user.id, "tend"))
                 await interaction.followup.send(embed=embed)
 
     # ── /sanctuary ────────────────────────────────────────────────────────
@@ -792,6 +794,9 @@ class World(commands.Cog):
                     (interaction.user.id, item_id)
                 )
             await db.commit()
+        craft_completed = await track_quest_event(interaction.user.id, "craft")
+        if craft_completed and interaction.channel:
+            await notify_quest_completions(interaction.channel, craft_completed)
 
         if is_item_craft:
             # Evolution item — show lore-flavored result

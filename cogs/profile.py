@@ -837,6 +837,9 @@ class Inventory(commands.Cog):
 
         await remove_item(interaction.user.id, item_id)
         result_text = "\n".join(result_lines) if result_lines else "Item used!"
+        _use_done = await track_quest_event(interaction.user.id, "use_item")
+        if _use_done and interaction.channel:
+            await notify_quest_completions(interaction.channel, _use_done)
         await interaction.followup.send(embed=discord.Embed(
             title=f"✦ Used {item['name']}",
             description=result_text,

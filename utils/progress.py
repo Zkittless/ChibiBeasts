@@ -254,16 +254,49 @@ async def notify_unlocks(channel, member: discord.Member, unlocked_ids: list[str
 # from a pool, sized by category. Progress is tracked per (user, quest_id, date).
 
 QUEST_POOL = [
-    {"id": "win_battles",     "name": "Battle Hardened",   "emoji": "⚔️", "desc": "Win {target} battle(s)",                "target": 2,  "reward_gold": 200, "reward_exp": 50,  "event": "battle_win"},
-    {"id": "explore_times",   "name": "Wanderlust",        "emoji": "🗺️", "desc": "Explore {target} time(s)",              "target": 3,  "reward_gold": 150, "reward_exp": 40,  "event": "explore"},
-    {"id": "hatch_eggs",      "name": "Crack the Shell",   "emoji": "🥚", "desc": "Hatch {target} egg(s)",                 "target": 1,  "reward_gold": 150, "reward_exp": 40,  "event": "hatch"},
-    {"id": "catch_beasts",    "name": "Bounty Hunter",     "emoji": "🐾", "desc": "Catch {target} wild beast(s)",          "target": 2,  "reward_gold": 200, "reward_exp": 50,  "event": "catch"},
-    {"id": "deal_raid_dmg",   "name": "Boss Buster",       "emoji": "💀", "desc": "Deal {target:,} raid damage",          "target": 1000,"reward_gold": 250, "reward_exp": 60,  "event": "raid_damage"},
-    {"id": "spend_gold",      "name": "Big Spender",       "emoji": "🛍️", "desc": "Spend {target:,} gold in the shop",    "target": 500, "reward_gold": 150, "reward_exp": 30,  "event": "spend_gold"},
-    {"id": "trade_once",      "name": "Trader's Instinct", "emoji": "🤝", "desc": "Complete {target} trade(s)",            "target": 1,  "reward_gold": 200, "reward_exp": 40,  "event": "trade"},
+    # ── Combat ─────────────────────────────────────────────────────────────
+    {"id": "win_battles",          "name": "Battle Hardened",     "emoji": "⚔️",  "desc": "Win {target} battle(s)",                       "target": 2,     "reward_gold": 200,  "reward_exp": 50,   "event": "battle_win"},
+    {"id": "win_battles_hard",     "name": "Unstoppable",         "emoji": "⚔️",  "desc": "Win {target} battles",                         "target": 5,     "reward_gold": 500,  "reward_exp": 120,  "event": "battle_win"},
+    {"id": "pvp_win",              "name": "Rival Tamer",         "emoji": "🥊",  "desc": "Win {target} PvP challenge(s)",                 "target": 1,     "reward_gold": 300,  "reward_exp": 80,   "event": "battle_win"},
+    {"id": "spar_win",             "name": "Training Day",        "emoji": "🏋️",  "desc": "Win {target} spar(s)",                         "target": 3,     "reward_gold": 150,  "reward_exp": 50,   "event": "battle_win"},
+
+    # ── Exploration ────────────────────────────────────────────────────────
+    {"id": "explore_times",        "name": "Wanderlust",          "emoji": "🗺️",  "desc": "Explore {target} time(s)",                     "target": 3,     "reward_gold": 150,  "reward_exp": 40,   "event": "explore"},
+    {"id": "explore_deep",         "name": "Deep Diver",          "emoji": "🌊",  "desc": "Explore {target} times",                       "target": 6,     "reward_gold": 350,  "reward_exp": 90,   "event": "explore"},
+    {"id": "catch_beasts",         "name": "Bounty Hunter",       "emoji": "🐾",  "desc": "Catch {target} wild beast(s)",                 "target": 2,     "reward_gold": 200,  "reward_exp": 50,   "event": "catch"},
+    {"id": "catch_beasts_hard",    "name": "Beast Wrangler",      "emoji": "🐾",  "desc": "Catch {target} wild beasts",                   "target": 5,     "reward_gold": 450,  "reward_exp": 110,  "event": "catch"},
+    {"id": "catch_rare",           "name": "Rare Finder",         "emoji": "🔵",  "desc": "Catch {target} rare or higher beast(s)",       "target": 1,     "reward_gold": 400,  "reward_exp": 100,  "event": "catch_rare"},
+
+    # ── Eggs & Hatching ────────────────────────────────────────────────────
+    {"id": "hatch_eggs",           "name": "Crack the Shell",     "emoji": "🥚",  "desc": "Hatch {target} egg(s)",                        "target": 1,     "reward_gold": 150,  "reward_exp": 40,   "event": "hatch"},
+    {"id": "hatch_eggs_hard",      "name": "Hatchery Master",     "emoji": "🥚",  "desc": "Hatch {target} eggs",                          "target": 3,     "reward_gold": 400,  "reward_exp": 100,  "event": "hatch"},
+    {"id": "tend_egg",             "name": "Patient Keeper",      "emoji": "🌡️",  "desc": "Tend to an incubating egg {target} time(s)",   "target": 2,     "reward_gold": 120,  "reward_exp": 30,   "event": "tend"},
+
+    # ── Raids ──────────────────────────────────────────────────────────────
+    {"id": "deal_raid_dmg",        "name": "Boss Buster",         "emoji": "💀",  "desc": "Deal {target:,} raid damage",                  "target": 1000,  "reward_gold": 250,  "reward_exp": 60,   "event": "raid_damage"},
+    {"id": "deal_raid_dmg_hard",   "name": "Raid Destroyer",      "emoji": "💀",  "desc": "Deal {target:,} total raid damage",            "target": 5000,  "reward_gold": 600,  "reward_exp": 150,  "event": "raid_damage"},
+    {"id": "join_raid",            "name": "Raid Ready",          "emoji": "🏰",  "desc": "Join and attack in {target} raid(s)",          "target": 1,     "reward_gold": 200,  "reward_exp": 50,   "event": "raid_attack"},
+
+    # ── Economy ────────────────────────────────────────────────────────────
+    {"id": "spend_gold",           "name": "Big Spender",         "emoji": "🛍️",  "desc": "Spend {target:,} gold in the shop",            "target": 500,   "reward_gold": 150,  "reward_exp": 30,   "event": "spend_gold"},
+    {"id": "spend_gold_hard",      "name": "Whale",               "emoji": "🐋",  "desc": "Spend {target:,} gold in the shop",            "target": 2000,  "reward_gold": 400,  "reward_exp": 80,   "event": "spend_gold"},
+    {"id": "trade_once",           "name": "Trader's Instinct",   "emoji": "🤝",  "desc": "Complete {target} trade(s)",                   "target": 1,     "reward_gold": 200,  "reward_exp": 40,   "event": "trade"},
+
+    # ── Crafting & Gear ────────────────────────────────────────────────────
+    {"id": "craft_item",           "name": "Artisan",             "emoji": "⚒️",  "desc": "Craft {target} item(s)",                       "target": 1,     "reward_gold": 250,  "reward_exp": 60,   "event": "craft"},
+    {"id": "equip_gear",           "name": "Geared Up",           "emoji": "🛡️",  "desc": "Equip {target} piece(s) of gear",              "target": 1,     "reward_gold": 200,  "reward_exp": 50,   "event": "equip"},
+
+    # ── Progression ────────────────────────────────────────────────────────
+    {"id": "level_beast",          "name": "Growing Up",          "emoji": "⬆️",  "desc": "Level up {target} beast(s)",                   "target": 1,     "reward_gold": 300,  "reward_exp": 80,   "event": "beast_level_up"},
+    {"id": "use_item",             "name": "Item Hoarder",        "emoji": "🎒",  "desc": "Use {target} item(s)",                         "target": 2,     "reward_gold": 100,  "reward_exp": 25,   "event": "use_item"},
+    {"id": "collect_materials",    "name": "Material Girl",       "emoji": "🪨",  "desc": "Collect {target} crafting materials",          "target": 5,     "reward_gold": 200,  "reward_exp": 50,   "event": "material_collect"},
+
+    # ── Social ─────────────────────────────────────────────────────────────
+    {"id": "guild_contribute",     "name": "Guild Player",        "emoji": "🏰",  "desc": "Contribute to your guild {target} time(s)",    "target": 1,     "reward_gold": 175,  "reward_exp": 45,   "event": "guild_action"},
+    {"id": "check_bestiary",       "name": "Field Notes",         "emoji": "📖",  "desc": "Check the bestiary {target} time(s)",          "target": 1,     "reward_gold": 80,   "reward_exp": 20,   "event": "bestiary_check"},
 ]
 
-QUESTS_PER_DAY = 3
+QUESTS_PER_DAY = 4
 
 
 def _today_str() -> str:

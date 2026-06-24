@@ -1694,6 +1694,8 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
 
         # ── Progress tracking: quests + achievements for the winner ────
         completed_quests = await track_quest_event(winner_id, "battle_win")
+        if beast_leveled:
+            await track_quest_event(winner_id, "beast_level_up")
         unlocked = await check_achievements(winner_id)
 
         loser = opponent if winner_id == battle["challenger_id"] else challenger

@@ -433,6 +433,10 @@ class Utilities(commands.Cog):
             color=COLORS.get(gear.get("rarity", "common"), COLORS["info"])
         )
         embed.set_footer(text=f"ChibiBeasts 🐾  •  Use /unequip {beast_id} to remove this gear")
+        from utils.progress import track_quest_event as _eqtqe, notify_quest_completions as _eqnqc
+        _eq_done = await _eqtqe(interaction.user.id, "equip")
+        if _eq_done and interaction.channel:
+            await _eqnqc(interaction.channel, _eq_done)
         await interaction.followup.send(embed=embed)
 
     # ── /unequip ──────────────────────────────────────────────────────────
