@@ -196,11 +196,18 @@ class Economy(commands.Cog):
             cost          = TRAIN_COST.get(rarity, 50)
             gain          = TRAIN_GAIN.get(rarity, 1)
 
-            if sessions_done >= TRAIN_CAP:
+            RARITY_CAPS = {
+                "common": 20, "uncommon": 20, "rare": 20,
+                "epic": 20, "legendary": 15,
+                "divine": 20, "altered_divine": 20,
+                "corrupted": 20, "ancient": 20, "dev": 0
+            }
+            rarity_cap = RARITY_CAPS.get(rarity, 20)
+            if sessions_done >= rarity_cap:
                 return await interaction.followup.send(embed=discord.Embed(
                     description=(
                         f"✦ **{row.get('nickname') or (get_beast_data(row['beast_id']) or {}).get('name','?')}** "
-                        f"has already been trained to the maximum in **{stat.title()}** ({TRAIN_CAP}/{TRAIN_CAP} sessions)."
+                        f"has already been trained to the maximum in **{stat.title()}** ({sessions_done}/{rarity_cap} sessions)."
                     ),
                     color=COLORS["error"]
                 ))

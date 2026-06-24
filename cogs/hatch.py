@@ -967,6 +967,11 @@ class Hatch(commands.Cog):
 
             # ── Progress tracking: quests, achievements, bestiary ──────
             catch_quests_completed = await track_quest_event(interaction.user.id, "catch")
+            # Fire catch_rare event for rare+ beasts
+            if rarity in {"rare", "epic", "legendary", "divine", "altered_divine", "corrupted", "ancient"}:
+                rare_q = await track_quest_event(interaction.user.id, "catch_rare")
+                if rare_q:
+                    catch_quests_completed = catch_quests_completed + rare_q
             # Pass beast type for type-specific quest steps
             await advance_quest_step(interaction.user.id, "catch",
                 beast_id=beast.get("id", ""),
