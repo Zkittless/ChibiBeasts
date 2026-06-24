@@ -2347,7 +2347,9 @@
         }
       },
       "evolves_from": "slime",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_slime.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_slime.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "ascended_unicorn": {
       "id": "ascended_unicorn",
@@ -2381,7 +2383,9 @@
         }
       },
       "evolves_from": "unicorn",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_unicorn.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_unicorn.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "ascended_pegasus": {
       "id": "ascended_pegasus",
@@ -2415,7 +2419,9 @@
         }
       },
       "evolves_from": "pegasus",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_pegasus.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_pegasus.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "ascended_phoenix": {
       "id": "ascended_phoenix",
@@ -2451,7 +2457,9 @@
         }
       },
       "evolves_from": "phoenix",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_phoenix.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ascended_phoenix.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "radiant_goblin": {
       "id": "radiant_goblin",
@@ -2475,7 +2483,9 @@
       ],
       "ultimate": "Forge Rampage",
       "evolves_from": "goblin",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_goblin.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_goblin.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "radiant_imp": {
       "id": "radiant_imp",
@@ -2499,7 +2509,9 @@
       ],
       "ultimate": "Shadow Swarm",
       "evolves_from": "imp",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_imp.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_imp.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "radiant_hydra": {
       "id": "radiant_hydra",
@@ -2532,7 +2544,9 @@
         }
       },
       "evolves_from": "hydra",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_hydra.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_hydra.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "radiant_kitsune": {
       "id": "radiant_kitsune",
@@ -2566,7 +2580,9 @@
         }
       },
       "evolves_from": "kitsune_1",
-      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_kitsune.png"
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/radiant_kitsune.png",
+      "catch_rate": 0.0,
+      "wild_encounter": false
     },
     "frost_sprite": {
       "id": "frost_sprite",
@@ -2589,7 +2605,8 @@
         "Rime Veil"
       ],
       "ultimate": "Winter's Breath",
-      "image_url": null
+      "image_url": null,
+      "catch_rate": 0.9
     },
     "permafrost": {
       "id": "permafrost",
@@ -2612,7 +2629,8 @@
         "Permafrost Wall"
       ],
       "ultimate": "Absolute Zero",
-      "image_url": null
+      "image_url": null,
+      "catch_rate": 0.6
     },
     "abyssal_eel": {
       "id": "abyssal_eel",
@@ -2636,7 +2654,8 @@
       ],
       "ultimate": "Trench Discharge",
       "divine_passive": null,
-      "image_url": null
+      "image_url": null,
+      "catch_rate": 0.15
     },
     "loom_fragment": {
       "id": "loom_fragment",
@@ -2660,7 +2679,8 @@
       ],
       "ultimate": "The Sundering Echo",
       "divine_passive": null,
-      "image_url": null
+      "image_url": null,
+      "catch_rate": 0.35
     }
   },
   "rarity_rates": {

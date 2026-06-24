@@ -277,9 +277,21 @@ async def check_collection_completion(interaction, beast: dict, all_beasts: dict
 
 def get_beast_by_rarity(rarity: str, beasts: dict, exclude_ids: list = None) -> dict:
     excluded = set(exclude_ids or []) | STARTER_IDS
-    pool = [b for b in beasts.values() if b["rarity"] == rarity and b["id"] not in excluded]
+    pool = [
+        b for b in beasts.values()
+        if b["rarity"] == rarity
+        and b["id"] not in excluded
+        and b.get("wild_encounter", True)  # exclude evolution-only beasts
+        and b.get("catch_rate", 0) > 0     # exclude uncatchable beasts
+    ]
     if not pool:
-        pool = [b for b in beasts.values() if b["rarity"] == rarity and b["id"] not in STARTER_IDS]
+        pool = [
+            b for b in beasts.values()
+            if b["rarity"] == rarity
+            and b["id"] not in STARTER_IDS
+            and b.get("wild_encounter", True)
+            and b.get("catch_rate", 0) > 0
+        ]
     return random.choice(pool) if pool else None
 
 def check_glimmering_fortune(perks: list) -> bool:
@@ -782,11 +794,22 @@ class Hatch(commands.Cog):
 
         # Catch chance
         catch_chance = beast["catch_rate"]
+        # Pixie Pocket perk: +5% catch rate
+        for _pp in perks:
+            if _pp.get("perk_id") == "pixie_pocket" and _pp.get("equipped"):
+                catch_chance = min(0.99, catch_chance + 0.05)
+                break
         caught = random.random() < catch_chance
 
         if caught:
             beast_row_id = await add_beast_to_player(interaction.user.id, {**beast, "caught_from": "discover"})
             gold_bonus = random.randint(player_level * 3, player_level * 8)
+            # Pixie Pocket perk: +10% explore gold
+            async with __import__("aiosqlite").connect("db/chibibeast.db") as _ppdb:
+                _ppdb.row_factory = __import__("aiosqlite").Row
+                async with _ppdb.execute("SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1 AND perk_id = 'pixie_pocket'", (interaction.user.id,)) as _ppc:
+                    if await _ppc.fetchone():
+                        gold_bonus = int(gold_bonus * 1.10)
             # Beast count check for quests
             async with __import__("aiosqlite").connect("db/chibibeast.db") as _bcdb:
                 async with _bcdb.execute("SELECT COUNT(*) FROM player_beasts WHERE user_id = ?", (interaction.user.id,)) as _bcc:

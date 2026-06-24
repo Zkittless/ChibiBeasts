@@ -501,7 +501,104 @@ class Leaderboard(commands.Cog):
         await interaction.followup.send(embed=embed)
 
 
+class PerkUse(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
+    @app_commands.command(name="perk_use", description="Activate a perk's weekly ability 🎯")
+    @app_commands.describe(perk_name="The perk to activate (e.g. Astral Resonance)")
+    async def perk_use(self, interaction: discord.Interaction, perk_name: str):
+        await interaction.response.defer(ephemeral=True)
+        from utils.db import load_perks
+        all_perks = load_perks()
+        from datetime import datetime, timezone, timedelta
+
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            # Find the perk
+            match = None
+            for pid, p in all_perks.items():
+                if perk_name.lower() in p.get("name","").lower():
+                    async with db.execute(
+                        "SELECT * FROM player_perks WHERE user_id = ? AND perk_id = ? AND equipped = 1",
+                        (interaction.user.id, pid)
+                    ) as c:
+                        owned = await c.fetchone()
+                    if owned:
+                        match = (pid, p)
+                        break
+
+            if not match:
+                return await interaction.followup.send(
+                    "✦ No equipped perk found with that name.", ephemeral=True
+                )
+
+            perk_id, perk = match
+            effect = perk.get("effect", {})
+
+            # ── Astral Resonance: weekly incubation skip ──────────────────
+            if effect.get("weekly_incubation_skip"):
+                week_str = datetime.now(timezone.utc).strftime("%Y-W%W")
+                async with db.execute(
+                    "SELECT shard_shop_week FROM players WHERE user_id = ?",
+                    (interaction.user.id,)
+                ) as c:
+                    row = await c.fetchone()
+                import json as _json
+                week_data = {}
+                if row and row["shard_shop_week"]:
+                    try:
+                        week_data = _json.loads(row["shard_shop_week"])
+                    except Exception:
+                        pass
+                if week_data.get("week") != week_str:
+                    week_data = {"week": week_str}
+
+                if week_data.get("astral_resonance_used"):
+                    return await interaction.followup.send(
+                        "✦ **Astral Resonance** already used this week. Resets Monday.",
+                        ephemeral=True
+                    )
+
+                async with db.execute(
+                    "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
+                    (interaction.user.id,)
+                ) as c:
+                    egg = await c.fetchone()
+
+                if not egg:
+                    return await interaction.followup.send(
+                        "✦ No eggs currently incubating.", ephemeral=True
+                    )
+
+                from datetime import datetime as _dt
+                new_ready = _dt.strptime(egg["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc) - timedelta(hours=6)
+                await db.execute(
+                    "UPDATE incubating_eggs SET ready_at = ? WHERE id = ?",
+                    (new_ready.strftime("%Y-%m-%d %H:%M:%S"), egg["id"])
+                )
+                week_data["astral_resonance_used"] = True
+                await db.execute(
+                    "UPDATE players SET shard_shop_week = ? WHERE user_id = ?",
+                    (_json.dumps(week_data), interaction.user.id)
+                )
+                await db.commit()
+
+                return await interaction.followup.send(embed=discord.Embed(
+                    title="✨ Astral Resonance",
+                    description=f"**{egg['egg_name']}** incubation reduced by **6 hours**!\n*This ability resets weekly.*",
+                    color=COLORS["legendary"]
+                ), ephemeral=True)
+
+            else:
+                return await interaction.followup.send(
+                    f"✦ **{perk['name']}** doesn't have an active weekly ability.",
+                    ephemeral=True
+                )
+
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Trading(bot))
     await bot.add_cog(Perks(bot))
+    await bot.add_cog(PerkUse(bot))
     await bot.add_cog(Leaderboard(bot))

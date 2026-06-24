@@ -349,6 +349,11 @@ async def run_pve_battle(
     apply_battle_start_passives(player_state, enemy_state, battle_log)
     apply_battle_start_passives(enemy_state, player_state, battle_log)
 
+    # Genesis Spark: bonus mana at battle start
+    if any(p.get("perk_id") == "genesis_spark" and p.get("equipped") for p in player_perks):
+        player_state["mana"] = min(player_state.get("max_mana", 100), player_state.get("mana", 0) + 20)
+        battle_log.append("✨ **Genesis Spark** — started with 20 bonus mana!")
+
     player_goes_first = player_state["speed"] >= enemy_state["speed"]
     turn = 1
 
@@ -962,7 +967,7 @@ def calc_damage(attacker: dict, defender: dict, move: str, is_ultimate: bool = F
         if perks:
             for perk in perks:
                 if perk["perk_id"] == "genesis_spark" and perk["equipped"]:
-                    damage *= 1.05
+                    damage *= 1.10  # 10% ultimate boost
 
     # Crit chance
     crit_chance = 0.10

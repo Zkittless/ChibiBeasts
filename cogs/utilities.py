@@ -971,6 +971,12 @@ async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str
         level = player.get("level", 1)
         gold_reward  = 100 + (level * 15)
         shard_reward = 2   # flat base — scales via quest completion bonus
+        # Astral Resonance perk: +15% shards from daily
+        async with aiosqlite.connect(DB_PATH) as _ardb:
+            _ardb.row_factory = aiosqlite.Row
+            async with _ardb.execute("SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1 AND perk_id = 'astral_resonance'", (interaction.user.id,)) as _arc:
+                if await _arc.fetchone():
+                    shard_reward = int(shard_reward * 1.15) + 1
 
         lines = [f"+**{gold_reward:,} gold** 💰", f"+**{shard_reward} Celestial Shards** 🔮"]
 
