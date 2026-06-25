@@ -783,11 +783,13 @@ class Inventory(commands.Cog):
                     )
                     return
 
-            if "restore_mana_percent" in effect and active:
-                restore = int(active["max_mana"] * (effect["restore_mana_percent"] / 100))
-                new_mana = min(active["max_mana"], active["mana"] + restore)
-                await db.execute("UPDATE player_beasts SET mana = ? WHERE id = ?", (new_mana, active["id"]))
-                result_lines.append(f"💠 Restored **{restore} Mana**!")
+            # Luna Nectar — grant 1 ultimate charge
+            if "grant_ultimate_charge" in effect:
+                await db.execute(
+                    "UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + ?) WHERE user_id = ?",
+                    (effect["grant_ultimate_charge"], interaction.user.id)
+                )
+                result_lines.append(f"⚡ **1 Ultimate Charge** granted! Use it in your next battle.")
 
             if "happiness" in effect and active:
                 new_hap = min(100, active["happiness"] + effect["happiness"])
@@ -795,13 +797,16 @@ class Inventory(commands.Cog):
                 result_lines.append(f"😊 Happiness increased to **{new_hap}/100**!")
 
             if "exp" in effect and active:
-                new_exp = active["exp"] + effect["exp"]
+                exp_base = effect["exp"]
+                exp_per_level = effect.get("exp_per_level", 0)
+                total_exp = exp_base + (exp_per_level * player.get("level", 1))
+                new_exp = active["exp"] + total_exp
                 new_level = active["level"]
                 while new_exp >= get_beast_exp_for_level(active, new_level):
                     new_exp -= get_beast_exp_for_level(active, new_level)
                     new_level += 1
                 await apply_beast_levelup(db, active, new_level, new_exp)
-                result_lines.append(f"✨ Gained **{effect['exp']} EXP**!")
+                result_lines.append(f"✨ Gained **{total_exp} EXP**!")
                 if new_level > active["level"]:
                     result_lines.append(f"⬆️ **LEVEL UP!** Now Lv.{new_level}! Stats increased!")
 
@@ -810,25 +815,13 @@ class Inventory(commands.Cog):
                 await apply_beast_levelup(db, active, target_level, 0)
                 result_lines.append(f"⬆️ Leveled up **{effect['instant_levels']} levels** → Lv.{target_level}! Stats increased!")
 
-            # Chrono-Biscuit: instantly ready the oldest incubating egg for its next tend
-            if item_id == "chrono_biscuit":
-                async with db.execute(
-                    "SELECT id, egg_name, tends_done, tends_required FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
+            # Chrono-Biscuit: reset explore and challenge cooldowns
+            if item_id == "chrono_biscuit" or ("reset_explore" in effect and "reset_challenge" in effect):
+                await db.execute(
+                    "UPDATE players SET explore_last_at = 0, challenge_last_at = 0 WHERE user_id = ?",
                     (interaction.user.id,)
-                ) as c:
-                    egg_row = await c.fetchone()
-                if egg_row:
-                    await db.execute(
-                        "UPDATE incubating_eggs SET ready_at = datetime('now', '-1 minute'), next_tend_at = datetime('now', '-1 minute') WHERE id = ?",
-                        (egg_row[0],)
-                    )
-                    tends_left = (egg_row[3] or 1) - (egg_row[2] or 0)
-                    if tends_left <= 1:
-                        result_lines.append(f"⏰ **{egg_row[1]}** is ready for its final tend! Use `/tend`.")
-                    else:
-                        result_lines.append(f"⏰ **{egg_row[1]}** is ready to tend now! Use `/tend` — {tends_left} tend{'s' if tends_left != 1 else ''} remaining.")
-                else:
-                    result_lines.append("⏰ No eggs currently incubating.")
+                )
+                result_lines.append("⏰ **/explore** and **/challenge** cooldowns instantly reset!")
 
             # Star-Candy Shards: +3 to a random combat stat permanently
             if "stat_boost" in effect and active:
@@ -853,13 +846,34 @@ class Inventory(commands.Cog):
                 result_lines.append(f"💨 Speed boosted by **+{boost}** for your next battle!")
                 await db.execute("UPDATE players SET brew_active = brew_active + 1 WHERE user_id = ?", (interaction.user.id,))
 
-            # Spellbound Incense — encounter boost for 30 mins
+            # Spellbound Incense — boost next 3 encounters
             if "encounter_boost" in effect:
-                import time as _time
-                duration_mins = effect.get("duration_minutes", 30)
-                until = _time.time() + (duration_mins * 60)
-                await db.execute("UPDATE players SET incense_active_until = ? WHERE user_id = ?", (until, interaction.user.id))
-                result_lines.append(f"🌿 Encounter boost active for **{duration_mins} minutes**! Uncommon and Rare beasts more likely in `/explore`.")
+                charges = effect.get("charges", 3)
+                async with db.execute("SELECT incense_charges FROM players WHERE user_id = ?", (interaction.user.id,)) as _ic:
+                    _irow = await _ic.fetchone()
+                current = (_irow[0] if _irow and _irow[0] else 0)
+                await db.execute("UPDATE players SET incense_charges = ? WHERE user_id = ?", (current + charges, interaction.user.id))
+                result_lines.append(f"🌿 Encounter boost active for your **next {charges} wild encounters**! Uncommon, Rare and Epic beasts more likely.")
+
+            # Loom Catalyst — reduce incubation time by 50%
+            if "reduce_incubation_percent" in effect:
+                async with db.execute(
+                    "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
+                    (interaction.user.id,)
+                ) as c:
+                    egg_row = await c.fetchone()
+                if egg_row:
+                    await db.execute(
+                        """UPDATE incubating_eggs SET
+                           ready_at = datetime(ready_at, '-' || CAST(
+                               CAST((julianday(ready_at) - julianday('now')) * 24 * 60 / 2 AS INTEGER)
+                           || ' minutes'))
+                           WHERE id = ?""",
+                        (egg_row[0],)
+                    )
+                    result_lines.append(f"🌀 **{egg_row[1]}** will hatch **50% sooner** — the Loom accelerates its weaving.")
+                else:
+                    result_lines.append("🌀 No eggs currently incubating.")
 
             # Krakenshale Brew — double defense next battle
             if "defense_multiplier" in effect:

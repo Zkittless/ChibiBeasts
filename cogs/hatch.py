@@ -799,17 +799,25 @@ class Hatch(commands.Cog):
         rates = apply_explore_encounter_bonus(rates, user_sanctuary)
 
         # Spellbound Incense boost (persisted in DB)
-        import time as _t
         async with aiosqlite.connect("db/chibibeast.db") as _idb:
             _idb.row_factory = aiosqlite.Row
             async with _idb.execute(
-                "SELECT incense_active_until FROM players WHERE user_id = ?", (interaction.user.id,)
+                "SELECT incense_charges FROM players WHERE user_id = ?", (interaction.user.id,)
             ) as _ic:
                 _irow = await _ic.fetchone()
-        if _irow and _irow["incense_active_until"] and _t.time() < _irow["incense_active_until"]:
+        _incense_charges = (_irow["incense_charges"] if _irow and _irow["incense_charges"] else 0)
+        if _incense_charges > 0:
             rates["uncommon"] = min(rates.get("uncommon", 0) + 0.08, 0.45)
             rates["rare"]     = min(rates.get("rare",     0) + 0.05, 0.35)
-            rates["common"]   = max(rates.get("common",   0) - 0.10, 0.05)
+            rates["epic"]     = min(rates.get("epic",     0) + 0.03, 0.20)
+            rates["common"]   = max(rates.get("common",   0) - 0.13, 0.05)
+            # Consume one charge
+            async with aiosqlite.connect("db/chibibeast.db") as _cdb:
+                await _cdb.execute(
+                    "UPDATE players SET incense_charges = MAX(0, incense_charges - 1) WHERE user_id = ?",
+                    (interaction.user.id,)
+                )
+                await _cdb.commit()
 
         rarity = roll_rarity(rates)
         beast = get_beast_by_rarity(rarity, beasts)

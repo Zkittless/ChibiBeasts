@@ -31,9 +31,10 @@
       "type": "exp",
       "value": 25,
       "price": 40,
-      "description": "Crunchy, earthy vegetables. Feeding this to a beast gives a tiny, flat EXP boost.",
+      "description": "Crunchy, earthy vegetables cultivated with gnome precision. Gives your beast a meaningful EXP boost that scales with trainer level. Simple, reliable, effective.",
       "effect": {
-        "exp": 25
+        "exp": 25,
+        "exp_per_level": 10
       }
     },
     "aether_tonic": {
@@ -52,12 +53,12 @@
       "id": "luna_nectar",
       "name": "Luna Nectar",
       "rarity": "rare",
-      "type": "mana",
+      "type": "ultimate_charge",
       "value": 100,
-      "price": 250,
-      "description": "Liquid moonlight captured in a crystal flask. Restores 100% of a beast's mana/energy.",
+      "price": 500,
+      "description": "Liquid moonlight captured in a crystal flask. A beast that drinks it remembers every battle it has ever fought \u2014 all at once. Instantly grants 1 Ultimate Charge.",
       "effect": {
-        "restore_mana_percent": 100
+        "grant_ultimate_charge": 1
       }
     },
     "star_candy_shards": {
@@ -77,16 +78,17 @@
       "id": "spellbound_incense",
       "name": "Spellbound Incense",
       "rarity": "rare",
-      "type": "encounter",
+      "type": "encounter_boost",
       "value": 0,
-      "price": 600,
-      "description": "Smells of ancient lavender and ozone. Increases the encounter rate of Uncommon and Rare wild beasts for 30 minutes.",
+      "price": 500,
+      "description": "Smells of ancient lavender and ozone. Burns slowly through the next 3 wild encounters, drawing Uncommon, Rare, and Epic beasts toward you. The smoke knows what you're looking for.",
       "effect": {
         "encounter_boost": [
           "uncommon",
-          "rare"
+          "rare",
+          "epic"
         ],
-        "duration_minutes": 30
+        "charges": 3
       }
     },
     "phoenix_elixir": {
@@ -106,12 +108,13 @@
       "id": "chrono_biscuit",
       "name": "Chrono-Biscuit",
       "rarity": "epic",
-      "type": "cooldown",
+      "type": "cooldown_reset",
       "value": 0,
-      "price": 3000,
-      "description": "A clock-shaped cookie that tastes like cinnamon. Instantly completes any passive training or exploration task.",
+      "price": 1500,
+      "description": "A clock-shaped cookie that tastes like cinnamon. Time bends politely around whoever eats it. Instantly resets your /explore and /challenge cooldowns.",
       "effect": {
-        "complete_task": true
+        "reset_explore": true,
+        "reset_challenge": true
       }
     },
     "ambrosia_tart": {
@@ -279,6 +282,17 @@
         "speed_boost_percent": 25,
         "duration_battles": 1
       }
+    },
+    "loom_catalyst": {
+      "name": "Loom Catalyst",
+      "price": 800,
+      "type": "incubation_boost",
+      "effect": {
+        "reduce_incubation_percent": 50
+      },
+      "rarity": "rare",
+      "emoji": "\ud83c\udf00",
+      "description": "A shard of the Loom itself, still faintly warm. Feeding it to an incubating egg accelerates the process \u2014 the beast inside simply decides it's time. Reduces remaining incubation time by 50%."
     }
   }
 }
