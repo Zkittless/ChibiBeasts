@@ -724,6 +724,7 @@ class World(commands.Cog):
                 )
             await db.commit()
 
+        await unlock_simple_achievement(interaction.user.id, "first_sanctuary")
         await interaction.followup.send(embed=discord.Embed(
             title=f"✅ {up['name']} Built!",
             description=(
@@ -842,6 +843,7 @@ class World(commands.Cog):
         await _aqcraft(interaction.user.id, "craft")
         if craft_completed and interaction.channel:
             await notify_quest_completions(interaction.channel, craft_completed)
+        await unlock_simple_achievement(interaction.user.id, "first_craft")
 
         if is_item_craft:
             # Evolution item — show lore-flavored result

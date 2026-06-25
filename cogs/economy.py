@@ -9,6 +9,7 @@ import aiosqlite
 import random
 from datetime import datetime, timezone, timedelta
 
+from utils.progress import unlock_simple_achievement
 from utils.db import (
     get_or_create_player, get_player, update_player,
     get_beast_data, get_player_beasts, DB_PATH
@@ -269,6 +270,24 @@ class Economy(commands.Cog):
         if sessions_left == 0:
             embed.add_field(name="✨ Maxed Out", value=f"*This beast has been trained to the limit in {stat.title()}.*", inline=False)
         embed.set_footer(text=f"Use /appraise #{beast_id} to see how training affects market value")
+        await unlock_simple_achievement(interaction.user.id, "first_train")
+        # Check if all 4 stats are now maxed on this beast
+        _rarity_caps = {
+            "common": 20, "uncommon": 20, "rare": 20, "epic": 20,
+            "legendary": 15, "divine": 20, "altered_divine": 20,
+            "corrupted": 20, "ancient": 20, "dev": 0,
+        }
+        _cap = _rarity_caps.get(rarity, 20)
+        _new_sessions = sessions_done + 1
+        async with aiosqlite.connect(DB_PATH) as _tdb:
+            _tdb.row_factory = aiosqlite.Row
+            async with _tdb.execute(
+                "SELECT train_atk, train_def, train_spd, train_hp FROM player_beasts WHERE id = ?",
+                (row["id"],)
+            ) as _tc:
+                _tr = await _tc.fetchone()
+        if _tr and all((_tr[c] or 0) >= _cap for c in ["train_atk","train_def","train_spd","train_hp"]):
+            await unlock_simple_achievement(interaction.user.id, "max_train_beast")
         await interaction.followup.send(embed=embed)
 
     # ── /list ──────────────────────────────────────────────────────────────
@@ -342,6 +361,7 @@ class Economy(commands.Cog):
         r_emoji = RARITY_EMOJI.get(row["rarity"], "⚪")
         appraised = appraise_beast(row)
 
+        await unlock_simple_achievement(interaction.user.id, "first_market_sale")
         embed = discord.Embed(
             title="📋 Listed on the Market",
             description=(
@@ -602,6 +622,7 @@ class Economy(commands.Cog):
                         bdd  = get_beast_data(lst["beast_id"]) or {}
                         nm   = lst.get("nickname") or bdd.get("name","?")
                         re   = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")
+                        await unlock_simple_achievement(uid, "first_market_buy")
                         await bi.followup.send(embed=discord.Embed(
                             title=f"✅ Purchased: {re} {nm}",
                             description=(

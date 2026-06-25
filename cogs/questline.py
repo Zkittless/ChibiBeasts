@@ -304,6 +304,18 @@ async def advance_quest_step(user_id: int, event_type: str, **kwargs):
         for s in chapter["steps"]
     )
     if all_done and ch_id not in state["completed_chapters"]:
+        try:
+            from utils.progress import unlock_simple_achievement as _cusa
+            if ch_id == "chapter_5":
+                await _cusa(user_id, "loom_witness")
+            if ch_id == "chapter_10":
+                await _cusa(user_id, "second_stitch")
+            ch_data = questline["chapters"].get(ch_id, {})
+            unlock = ch_data.get("reward", {}).get("relationship_unlock", {})
+            if any(v == "trusted" for v in unlock.values()):
+                await _cusa(user_id, "npc_trusted")
+        except Exception:
+            pass
         return ch_id
     return None
 

@@ -1102,6 +1102,14 @@ class Ancient(commands.Cog):
                     from cogs.questline import advance_quest_step as _aqanc
                     await _aqanc(uid, "raid_complete", raid_type="ancient")
                     await _aqanc(uid, "raid_damage", amount=0)  # ensure damage steps don't block
+                    from utils.progress import unlock_simple_achievement as _usa, check_achievements as _ca, notify_unlocks as _nu
+                    await _usa(uid, "first_raid_win")
+                    await _usa(uid, "first_ancient_win")
+                    _anc_unlocked = await _ca(uid)
+                    if _anc_unlocked and channel:
+                        member = channel.guild.get_member(uid)
+                        if member:
+                            await _nu(channel, member, _anc_unlocked)
                 except Exception:
                     pass
         await channel.send(embed=embed)
