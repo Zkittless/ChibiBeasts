@@ -685,6 +685,29 @@ class Hatch(commands.Cog):
         # Questline: track biome visits (biome now assigned)
         await advance_quest_step(interaction.user.id, "explore", biome=biome["name"])
 
+        # Override lore_line with questline-aware flavor if on a relevant chapter
+        try:
+            from cogs.questline import get_quest_state as _gqs
+            _qstate = await _gqs(interaction.user.id)
+            _curr_ch = _qstate.get("current_chapter", "")
+            QUESTLINE_LORE_OVERRIDES = {
+                ("chapter_1",  "🌲 The Whispering Woods"):  "The woods feel different when you're paying attention to them. Maren would say that's not a coincidence.",
+                ("chapter_2",  "🌌 The Celestial Loom"):    "The Loom hums at a frequency you're starting to recognize. Cael said the fraying was subtle. He wasn't lying.",
+                ("chapter_3",  "🔥 The Ember Wastes"):      "The Wastes are loud and orange and honest. Something here lives the life Sable is trying to make with her hands.",
+                ("chapter_4",  "🌲 The Whispering Woods"):  "Orren was right — the woods remember things. You can feel it in how the roots have arranged themselves.",
+                ("chapter_5",  "❄️ The Glacial Hollows"):   "The ice is old enough to remember what came before the first Sundering. So is whatever is frozen inside it.",
+                ("chapter_5",  "🌊 The Sunken Abyssal Trenches"): "The Trenches go deeper than the world officially admits. The relic is down here, if you let something lead you to it.",
+                ("chapter_6",  "🌌 The Celestial Loom"):    "The fraying Cael mentioned — you think you can see it now. A thread that doesn't quite know what it's attached to.",
+                ("chapter_8",  "🌲 The Whispering Woods"):  "You're looking for something old. Not ancient — just old. Something that was here before the third revision.",
+                ("chapter_9",  "🔥 The Ember Wastes"):      "Sable's chalk map is still on the forge table. The corrupted bosses came from this direction. You keep thinking about that.",
+                ("chapter_10", "🌌 The Celestial Loom"):    "The Archivist's question echoes. *What kind of tamer are you becoming?* The Loom is waiting to see what you do next.",
+            }
+            _override = QUESTLINE_LORE_OVERRIDES.get((_curr_ch, location))
+            if _override:
+                lore_line = _override
+        except Exception:
+            pass
+
         loading = discord.Embed(
             title=f"🗺️ Exploring {location}...",
             description=f"*{lore_line}*",
@@ -969,13 +992,6 @@ class Hatch(commands.Cog):
             await msg.edit(embed=embed, view=view)
 
             # ── Progress tracking: quests, achievements, bestiary ──────
-            # Increment total catches for catch_50/catch_100 achievements
-            async with aiosqlite.connect(DB_PATH) as _catch_db:
-                await _catch_db.execute(
-                    "UPDATE players SET total_catches = COALESCE(total_catches, 0) + 1 WHERE user_id = ?",
-                    (interaction.user.id,)
-                )
-                await _catch_db.commit()
             catch_quests_completed = await track_quest_event(interaction.user.id, "catch")
             # Fire catch_rare event for rare+ beasts
             if rarity in {"rare", "epic", "legendary", "divine", "altered_divine", "corrupted", "ancient"}:

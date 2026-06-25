@@ -119,29 +119,78 @@ def build_progress_bar(current: int, target: int, length: int = 10) -> str:
     return "🟦" * filled + "⬛" * (length - filled) + f" `{current}/{target}`"
 
 
+# Mid-chapter reminder lines — one per NPC, shown while tasks are in progress
+CHAPTER_REMINDER_LINES = {
+    "maren": {
+        "chapter_1": "*'The catching feeling. Not what you caught. What the catching felt like.'*",
+        "chapter_4": "*'The Bestiary doesn't lie. Show me what's in it when you're ready.'*",
+        "chapter_8": "*'Bring him here when you're done. We have a long conversation to finish.'*",
+    },
+    "cael": {
+        "chapter_2": "*'I'll be here. Twine keeps telling me to sit down. I keep standing up.'*",
+        "chapter_6": "*'The fraying is subtle. You'll know it when you see it — it looks like something that doesn't know what it is anymore.'*",
+    },
+    "sable": {
+        "chapter_3": "*'Real Ash. Not shop-grade. The Wastes will know if you cut corners.'*",
+        "chapter_7": "*'Don't ask what it's for. Just bring what I asked for.'*",
+        "chapter_9": "*'Watch the patterns. Not the damage. The patterns.'*",
+    },
+    "orren": {
+        "chapter_4": "*'Twenty species. The Loom has already noticed you're paying attention.'*",
+        "chapter_8": "*'Something old. Something that remembers a version of this place.'*",
+    },
+    "the_archivist": {
+        "chapter_5": "*'The relics respond to attention. The biomes have already seen you coming.'*",
+        "chapter_10": "*'What kind of tamer are you becoming? Take your time with the answer.'*",
+    },
+}
+
+
 def build_chapter_embed(chapter: dict, state: dict, player: dict) -> discord.Embed:
     """Build a clean embed for the current chapter's quest status."""
     npc_id = chapter["npc"]
-    npcs = load_npcs()
-    npc = npcs.get(npc_id, {})
+    npcs   = load_npcs()
+    npc    = npcs.get(npc_id, {})
+
+    # Get a mid-chapter reminder line from the NPC if one exists
+    reminder = CHAPTER_REMINDER_LINES.get(npc_id, {}).get(chapter["id"], "")
+    desc = (
+        f"{reminder}\n\n"
+        f"*— {npc.get('emoji','')} **{npc.get('name', npc_id)}**, {chapter['location']}*"
+        if reminder else
+        f"*Speak with {npc.get('emoji','')} **{npc.get('name', npc_id)}** in the {chapter['location']}.*"
+    )
 
     embed = discord.Embed(
-        title=f"📜 Chapter: {chapter['name']}",
-        description=f"*Speak with {npc.get('emoji','')} **{npc.get('name', npc_id)}** in the {chapter['location']}.*",
+        title=f"📜 {chapter['name']}",
+        description=desc,
         color=COLORS["legendary"]
     )
 
     progress = state["step_progress"].get(chapter["id"], {})
+    completed_count = 0
     for step in chapter["steps"]:
-        done = progress.get(step["id"], 0)
+        done   = progress.get(step["id"], 0)
         target = step.get("target", 1)
         is_complete = done >= target
-        status = "✅" if is_complete else build_progress_bar(done, target)
+        if is_complete:
+            completed_count += 1
+        status = "✅ Done" if is_complete else build_progress_bar(done, target)
         embed.add_field(
             name=f"{'✅' if is_complete else '⏳'} {step['description']}",
             value=status,
             inline=False
         )
+
+    total = len(chapter["steps"])
+    if completed_count == total:
+        embed.add_field(
+            name="✦ Ready",
+            value="*All objectives complete — use `/questline` to report back.*",
+            inline=False
+        )
+    elif completed_count > 0:
+        embed.set_footer(text=f"ChibiBeasts 🐾  •  {completed_count}/{total} objectives done")
     return embed
 
 
@@ -304,18 +353,6 @@ async def advance_quest_step(user_id: int, event_type: str, **kwargs):
         for s in chapter["steps"]
     )
     if all_done and ch_id not in state["completed_chapters"]:
-        try:
-            from utils.progress import unlock_simple_achievement as _cusa
-            if ch_id == "chapter_5":
-                await _cusa(user_id, "loom_witness")
-            if ch_id == "chapter_10":
-                await _cusa(user_id, "second_stitch")
-            ch_data = questline["chapters"].get(ch_id, {})
-            unlock = ch_data.get("reward", {}).get("relationship_unlock", {})
-            if any(v == "trusted" for v in unlock.values()):
-                await _cusa(user_id, "npc_trusted")
-        except Exception:
-            pass
         return ch_id
     return None
 
@@ -533,10 +570,32 @@ class Questline(commands.Cog):
                 description=f"✦ `{name}` not found.", color=COLORS["error"]
             ))
 
-        state = await get_quest_state(interaction.user.id)
+        state     = await get_quest_state(interaction.user.id)
         rel_level = get_relationship_level(state, name)
         rel_lines = npc.get("relationship_levels", {})
-        line = rel_lines.get(rel_level, rel_lines.get("stranger", "*...*"))
+
+        # If this NPC is the current chapter's NPC, show chapter-specific context
+        current_ch = state.get("current_chapter", "")
+        questline  = load_questline()
+        current_chapter_data = questline["chapters"].get(current_ch, {}) if current_ch else {}
+        is_active_npc = current_chapter_data.get("npc") == name
+
+        if is_active_npc and current_ch:
+            # Show a chapter-aware greeting that references the current task
+            ch_progress = state["step_progress"].get(current_ch, {})
+            steps = current_chapter_data.get("steps", [])
+            all_done = all(ch_progress.get(s["id"], 0) >= s.get("target", 1) for s in steps)
+            if all_done and ch_progress:
+                line = f"*'You've done what I asked. Use `/questline` to report back.'*"
+            elif ch_progress:
+                # Mid-chapter — use reminder line if available
+                reminder = CHAPTER_REMINDER_LINES.get(name, {}).get(current_ch, "")
+                line = reminder if reminder else rel_lines.get(rel_level, rel_lines.get("stranger", "*...*"))
+            else:
+                # Chapter just started — use intro relationship line
+                line = rel_lines.get(rel_level, rel_lines.get("stranger", "*...*"))
+        else:
+            line = rel_lines.get(rel_level, rel_lines.get("stranger", "*...*"))
 
         # Pick a contextual quote too
         context_keys = [k for k in npc if k.startswith("on_")]
