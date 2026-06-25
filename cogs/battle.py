@@ -1933,7 +1933,7 @@ class Battle(commands.Cog):
                 from utils.progress import record_bestiary_sighting
                 disposition = roll_disposition(wild_beast_data.get("rarity", "common"))
                 await add_beast_to_player(interaction.user.id, {
-                    **wild_beast_data, "caught_from": "wild_battle"
+                    **wild_beast_data, "caught_from": "wild_battle", "level": wild_level
                 })
                 if interaction.guild:
                     await record_bestiary_sighting(

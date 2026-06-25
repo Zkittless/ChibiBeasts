@@ -237,8 +237,6 @@ async def _run_migrations():
         # New player tracking columns
         "ALTER TABLE players ADD COLUMN title TEXT DEFAULT NULL",
         "ALTER TABLE players ADD COLUMN explore_last_at REAL DEFAULT 0",
-        "ALTER TABLE players ADD COLUMN challenge_last_at REAL DEFAULT 0",
-        "ALTER TABLE players ADD COLUMN ultimate_charges INTEGER DEFAULT 0",
         "ALTER TABLE players ADD COLUMN total_catches INTEGER DEFAULT 0",
         "ALTER TABLE players ADD COLUMN total_gold_earned INTEGER DEFAULT 0",
         "ALTER TABLE players ADD COLUMN incense_active_until REAL DEFAULT 0",
@@ -485,6 +483,13 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
     # Apply disposition modifier to stats before storing
     final_stats = apply_disposition(beast_data["base_stats"], disposition)
 
+    # Apply stat growth if caught at a level above 1
+    start_level = max(1, int(beast_data.get("level", 1)))
+    if start_level > 1:
+        growth = calc_stat_growth({"rarity": beast_data["rarity"], "caught_from": "wild"}, start_level - 1)
+        for stat in ["hp", "attack", "defense", "speed", "mana"]:
+            final_stats[stat] = final_stats[stat] + growth.get(stat, 0)
+
     async with aiosqlite.connect(DB_PATH) as db:
         # Assign next sequential player_number for this user
         async with db.execute(
@@ -499,7 +504,7 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
              rarity, disposition, caught_from, player_number)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            user_id, beast_data["id"], 1,
+            user_id, beast_data["id"], start_level,
             final_stats["hp"], final_stats["hp"],
             final_stats["attack"], final_stats["defense"],
             final_stats["speed"],
