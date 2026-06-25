@@ -1004,6 +1004,11 @@ class Hatch(commands.Cog):
 
             # Show battle intro
             wild_level = max(1, min(50, player_level + random.randint(-2, 2)))
+            # Fetch active beast data for thumbnail
+            from cogs.battle import build_pve_beast_state, run_pve_battle, get_active_beast
+            active_row = await get_active_beast(interaction.user.id)
+            active_beast_data = get_beast_data(active_row["beast_id"]) or {} if active_row else {}
+
             battle_intro = discord.Embed(
                 title=f"⚔️ Wild {r_emoji} {beast['name']} Lv.{wild_level}!",
                 description=(
@@ -1020,8 +1025,6 @@ class Hatch(commands.Cog):
             await msg.edit(embed=battle_intro)
 
             # Run battle
-            from cogs.battle import build_pve_beast_state, run_pve_battle, get_active_beast
-            active_row = await get_active_beast(interaction.user.id)
             enemy_state = build_pve_beast_state(beast, wild_level)
 
             battle_won = False
