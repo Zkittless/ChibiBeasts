@@ -70,11 +70,15 @@ class Profile(commands.Cog):
             beast_data = get_beast_data(active["beast_id"])
             if beast_data:
                 name = active["nickname"] or beast_data["name"]
+                happiness = active.get("happiness", 100)
+                hap_filled = int(happiness / 10)
+                hap_bar = "🟨" * hap_filled + "⬛" * (10 - hap_filled)
                 embed.add_field(
                     name="⚔️ Active Beast",
                     value=(
                         f"{RARITY_EMOJI.get(active['rarity'], '⚪')} **{name}** — Lv.{active['level']}\n"
-                        f"❤️ {hp_bar(active['hp'], active['max_hp'])}"
+                        f"❤️ {hp_bar(active['hp'], active['max_hp'])}\n"
+                        f"😊 {hap_bar} `{happiness}/100`"
                     ),
                     inline=False
                 )
