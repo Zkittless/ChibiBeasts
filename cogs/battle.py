@@ -203,7 +203,7 @@ async def run_pve_battle(
     end with the final states so the caller can apply rewards/dialogue.
     """
     # Fetch ultimate charges from DB for this player
-    async with aiosqlite.connect(DB_PATH) as _cdb:
+    async with aiosqlite.connect("db/chibibeast.db") as _cdb:
         _cdb.row_factory = aiosqlite.Row
         async with _cdb.execute("SELECT ultimate_charges FROM players WHERE user_id = ?", (interaction.user.id,)) as _cc:
             _crow = await _cc.fetchone()
