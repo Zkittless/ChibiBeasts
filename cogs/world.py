@@ -885,58 +885,99 @@ class World(commands.Cog):
         ]
         RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "altered_divine"]
 
-        PER_PAGE = 6  # items per page for armor/runes
+        RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "altered_divine"]
+
+        def recipe_str(recipe, mats):
+            return "\n".join(f"  • {q}× {mats.get(m,{}).get('name',m)}" for m,q in recipe.items()) or "*No recipe*"
+
+        def build_armor_page(page: int):
+            equipment, _ = load_equipment()
+            mats = load_materials()
+            # Group by rarity in order
+            by_rarity = {}
+            for iid, item in equipment.items():
+                by_rarity.setdefault(item["rarity"], []).append((iid, item))
+            pages = [r for r in RARITY_ORDER if r in by_rarity]
+            total = len(pages)
+            page = max(1, min(page, total))
+            rarity = pages[page - 1]
+            items  = by_rarity[rarity]
+
+            r_emoji = RARITY_EMOJI.get(rarity, "⚪")
+            from utils.theme import RARITY_LABEL
+            embed = discord.Embed(
+                title=f"⚔️ Armor — {r_emoji} {RARITY_LABEL.get(rarity, rarity.title())}",
+                description=f"*Craft with `/craft <name>`. Materials from `/explore`.*\nPage {page}/{total}\n\u200b",
+                color=COLORS.get(rarity, COLORS["epic"])
+            )
+            for iid, item in sorted(items, key=lambda x: x[1]["name"]):
+                eff = item.get("effect", {})
+                eff_str = " · ".join(
+                    f"+{v}{'%' if 'percent' in k else ''} {k.replace('_percent','').replace('_',' ').title()}"
+                    if isinstance(v, (int, float)) else k.replace("_"," ").title()
+                    for k, v in eff.items()
+                ) or "Special effect"
+                embed.add_field(
+                    name=f"{r_emoji} {item['name']}",
+                    value=f"*{eff_str}*\n{recipe_str(item.get('recipe',{}), mats)}\n*{item.get('lore','')}*",
+                    inline=False
+                )
+            embed.set_footer(text=f"ChibiBeasts 🐾  •  {page}/{total} rarity tiers")
+            return embed, total
+
+        def build_runes_page(page: int):
+            _, runes = load_equipment()
+            mats = load_materials()
+            by_rarity = {}
+            for iid, item in runes.items():
+                by_rarity.setdefault(item["rarity"], []).append((iid, item))
+            pages = [r for r in RARITY_ORDER + ["divine"] if r in by_rarity]
+            total = len(pages)
+            page = max(1, min(page, total))
+            rarity = pages[page - 1]
+            items  = by_rarity[rarity]
+
+            r_emoji = RARITY_EMOJI.get(rarity, "⚪")
+            from utils.theme import RARITY_LABEL
+            embed = discord.Embed(
+                title=f"💎 Runes — {r_emoji} {RARITY_LABEL.get(rarity, rarity.title())}",
+                description=f"*Runes equip to any beast for bonus effects.*\nPage {page}/{total}\n\u200b",
+                color=COLORS.get(rarity, COLORS["rare"])
+            )
+            for iid, item in sorted(items, key=lambda x: x[1]["name"]):
+                eff = item.get("effect", {})
+                eff_str = " · ".join(
+                    f"+{v} {k.replace('_',' ').title()}" if isinstance(v,(int,float)) else k.replace("_"," ").title()
+                    for k, v in eff.items()
+                ) or "Special"
+                has_recipe = bool(item.get("recipe"))
+                source = recipe_str(item.get("recipe", {}), mats) if has_recipe else "*Drop only — from raids or events*"
+                embed.add_field(
+                    name=f"{r_emoji} {item['name']}",
+                    value=f"*{eff_str}*\n{source}\n*{item.get('lore','')}*",
+                    inline=False
+                )
+            embed.set_footer(text=f"ChibiBeasts 🐾  •  {page}/{total} rarity tiers")
+            return embed, total
 
         async def build_section(section: str, page: int = 1):
-            equipment, runes = load_equipment()
             from utils.db import load_items as _li
             mats = load_materials()
 
-            def recipe_str(recipe):
-                return "\n".join(f"  • {q}× {mats.get(m,{}).get('name',m)}" for m,q in recipe.items()) or "*No recipe*"
-
             if section == "armor":
-                items = sorted(equipment.items(), key=lambda x: RARITY_ORDER.index(x[1]["rarity"]) if x[1]["rarity"] in RARITY_ORDER else 99)
-                total_pages = max(1, (len(items) + PER_PAGE - 1) // PER_PAGE)
-                page = max(1, min(page, total_pages))
-                page_items = items[(page-1)*PER_PAGE : page*PER_PAGE]
-
-                embed = discord.Embed(
-                    title="⚔️ Armor Recipes",
-                    description=f"*Craft with `/craft <name>`. Materials from `/explore`.*\nPage {page}/{total_pages}\n\u200b",
-                    color=COLORS["epic"]
-                )
-                for iid, item in page_items:
-                    r = RARITY_EMOJI.get(item["rarity"],"⚪")
-                    embed.add_field(name=f"{r} {item['name']}", value=recipe_str(item.get("recipe",{})), inline=True)
-                embed.set_footer(text="ChibiBeasts 🐾")
-                return embed, (total_pages, lambda p: _build_armor_page(p))
+                emb, total = build_armor_page(page)
+                return emb, (total, build_armor_page)
 
             elif section == "runes":
-                items = sorted(runes.items(), key=lambda x: RARITY_ORDER.index(x[1]["rarity"]) if x[1]["rarity"] in RARITY_ORDER else 99)
-                total_pages = max(1, (len(items) + PER_PAGE - 1) // PER_PAGE)
-                page = max(1, min(page, total_pages))
-                page_items = items[(page-1)*PER_PAGE : page*PER_PAGE]
-
-                embed = discord.Embed(
-                    title="💎 Rune Recipes",
-                    description=f"*Runes slot into any beast as a bonus effect.*\nPage {page}/{total_pages}\n\u200b",
-                    color=COLORS["rare"]
-                )
-                for iid, item in page_items:
-                    eff = item.get("effect",{})
-                    eff_str = " · ".join(f"+{v} {k.replace('_',' ')}" for k,v in eff.items() if isinstance(v,(int,float))) or "Special"
-                    r = RARITY_EMOJI.get(item["rarity"],"⚪")
-                    embed.add_field(name=f"{r} {item['name']}", value=f"*{eff_str}*\n{recipe_str(item.get('recipe',{}))}", inline=True)
-                embed.set_footer(text="ChibiBeasts 🐾")
-                return embed, (total_pages, lambda p: _build_runes_page(p))
+                emb, total = build_runes_page(page)
+                return emb, (total, build_runes_page)
 
             elif section == "evolution":
                 craftable = {k:v for k,v in _li().items() if v.get("recipe")}
                 from utils.db import load_beasts as _lb
                 all_beasts = _lb()
                 embed = discord.Embed(title="🌟 Evolution Item Recipes",
-                    description="*Craft these to trigger Radiant evolutions. Ascended evolutions need **Genesis Fruit** from Ancient raids.*\n\u200b",
+                    description="*Craft these to trigger Radiant evolutions. Ascended evolutions need **Genesis Fruit** from Ancient raids.*\n​",
                     color=COLORS["legendary"])
                 for iid, item in craftable.items():
                     beast_hint = ""
@@ -947,7 +988,7 @@ class World(commands.Cog):
                             beast_hint = f"\n*{b['name']} → {tgt.get('name','?')}*"
                             break
                     r = RARITY_EMOJI.get(item.get("rarity","epic"),"⚪")
-                    embed.add_field(name=f"{r} {item['name']}", value=f"{recipe_str(item.get('recipe',{}))}{beast_hint}", inline=True)
+                    embed.add_field(name=f"{r} {item['name']}", value=f"{recipe_str(item.get('recipe',{}), mats)}{beast_hint}", inline=True)
                 embed.add_field(name="📦 Abyssal Scale", value="*Drop: Corrupted Leviathan*\n*Hydra → Radiant Hydra*", inline=True)
                 embed.set_footer(text="ChibiBeasts 🐾")
                 return embed, None
@@ -968,13 +1009,14 @@ class World(commands.Cog):
                 per_page = 3
                 total_pages = max(1,(len(all_rarities)+per_page-1)//per_page)
 
-                def build_source_page(page):
+                def build_source_page(pg):
                     emb = discord.Embed(title="🪨 Material Sources",
-                        description=f"*Page {page}/{total_pages} · Materials drop from `/explore` catches.*\n\u200b",
+                        description=f"*Page {pg}/{total_pages} · Materials drop from `/explore` catches.*\n​",
                         color=COLORS["info"])
-                    for rarity in all_rarities[(page-1)*per_page:page*per_page]:
+                    for rarity in all_rarities[(pg-1)*per_page:pg*per_page]:
                         mats_str = " · ".join(f"`{m}`" for m in by_rarity[rarity])
                         source = MAT_SOURCES.get(rarity,"")
+                        from utils.theme import RARITY_LABEL
                         emb.add_field(name=f"{RARITY_EMOJI.get(rarity,'⚪')} {RARITY_LABEL.get(rarity,rarity.title())}",
                             value=f"{source}\n{mats_str}", inline=False)
                     emb.set_footer(text="ChibiBeasts 🐾")
@@ -982,26 +1024,16 @@ class World(commands.Cog):
 
                 return build_source_page(1), (total_pages, build_source_page)
 
-        # Page builder helpers used by pagination lambdas
-        async def _build_armor_page(p):
-            emb, sub = await build_section("armor", p)
-            return emb
-
-        async def _build_runes_page(p):
-            emb, sub = await build_section("runes", p)
-            return emb
-
         class RecipeView(discord.ui.View):
-            def __init__(self_v, section="armor", sub_data=None):
+            def __init__(self_v, section="armor", sub_data=None, page=1):
                 super().__init__(timeout=180)
                 self_v.section  = section
-                self_v.sub_data = sub_data   # (total_pages, page_builder) for sources
-                self_v.sub_page = 1
+                self_v.sub_data = sub_data
+                self_v.sub_page = page
                 self_v._rebuild()
 
             def _rebuild(self_v):
                 self_v.clear_items()
-                # Row 0: section select
                 select = discord.ui.Select(
                     placeholder="📜 Browse recipes…",
                     options=[discord.SelectOption(label=f"{emoji} {name}", value=key, default=key==self_v.section)
@@ -1021,35 +1053,33 @@ class World(commands.Cog):
                     await bi.edit_original_response(embed=new_emb, view=self_v)
                 select.callback = _on_select
                 self_v.add_item(select)
-                # Row 1: pagination for armor, runes, and sources tabs
+
                 if self_v.sub_data:
-                    total, _ = self_v.sub_data
+                    total, builder = self_v.sub_data
                     prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=self_v.sub_page<=1, row=1)
                     pg   = discord.ui.Button(label=f"{self_v.sub_page}/{total}", style=discord.ButtonStyle.secondary, disabled=True, row=1)
                     nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self_v.sub_page>=total, row=1)
                     async def _prev(bi, _v=self_v):
                         await bi.response.defer()
-                        _, builder = _v.sub_data
+                        _, bld = _v.sub_data
                         _v.sub_page -= 1
                         _v._rebuild()
-                        result = builder(_v.sub_page)
-                        if hasattr(result, "__await__"):
-                            result = await result
+                        result = bld(_v.sub_page)
+                        if isinstance(result, tuple): result = result[0]
                         await bi.edit_original_response(embed=result, view=_v)
                     async def _nxt(bi, _v=self_v):
                         await bi.response.defer()
-                        _, builder = _v.sub_data
+                        _, bld = _v.sub_data
                         _v.sub_page += 1
                         _v._rebuild()
-                        result = builder(_v.sub_page)
-                        if hasattr(result, "__await__"):
-                            result = await result
+                        result = bld(_v.sub_page)
+                        if isinstance(result, tuple): result = result[0]
                         await bi.edit_original_response(embed=result, view=_v)
                     prev.callback = _prev; nxt.callback = _nxt
                     self_v.add_item(prev); self_v.add_item(pg); self_v.add_item(nxt)
 
         first_emb, first_sub = await build_section("armor", 1)
-        await interaction.followup.send(embed=first_emb, view=RecipeView("armor", first_sub))
+        await interaction.followup.send(embed=first_emb, view=RecipeView("armor", first_sub, 1))
 
     # ── /materials ────────────────────────────────────────────────────────
     @app_commands.command(name="materials", description="View your crafting materials 🪨")
