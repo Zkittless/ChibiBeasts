@@ -1604,13 +1604,6 @@ class Guilds(commands.Cog):
                 try:
                     from cogs.questline import advance_quest_step as _aqr
                     await _aqr(uid, "raid_complete", raid_type="corrupted")
-                    from utils.progress import unlock_simple_achievement as _usa2, check_achievements as _ca2
-                    await _usa2(uid, "first_raid_win")
-                    _g_unlocked = await _ca2(uid)
-                    if _g_unlocked and channel:
-                        from utils.progress import notify_unlocks as _gnu
-                        member = channel.guild.get_member(uid)
-                        if member: await _gnu(channel, member, _g_unlocked)
                 except Exception:
                     pass
 

@@ -437,7 +437,6 @@ class Utilities(commands.Cog):
         _eq_done = await _eqtqe(interaction.user.id, "equip")
         if _eq_done and interaction.channel:
             await _eqnqc(interaction.channel, _eq_done)
-        await unlock_simple_achievement(interaction.user.id, "first_equip")
         await interaction.followup.send(embed=embed)
 
     # ── /unequip ──────────────────────────────────────────────────────────
@@ -893,12 +892,6 @@ class Utilities(commands.Cog):
         await interaction.followup.send(embed=embed)
 
         # Check achievements after evolution
-        await unlock_simple_achievement(interaction.user.id, "first_evolution")
-        # Radiant vs Ascended specific achievements
-        if target_id in {"radiant_goblin","radiant_imp","radiant_hydra","radiant_kitsune"}:
-            await unlock_simple_achievement(interaction.user.id, "first_radiant")
-        if target_id in {"ascended_slime","ascended_unicorn","ascended_pegasus","ascended_phoenix"}:
-            await unlock_simple_achievement(interaction.user.id, "first_ascended")
         unlocked = await check_achievements(interaction.user.id)
         if unlocked:
             from utils.progress import notify_unlocks
@@ -1123,126 +1116,760 @@ async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str
         await interaction.response.defer()
 
         HELP = {
-    "start": {
-        "title": "🌱 Getting Started",
-        "desc": "New to ChibiBeasts? Start here.",
-        "commands": [
-            ("/start", "Create your trainer profile and choose your starter beast"),
-            ("/profile", "View your trainer profile, level, and stats"),
-            ("/daily", "Claim your daily gold and shard reward"),
-            ("/dailies", "View and track your 4 daily quests"),
-            ("/help", "Browse this help menu"),
+            "start": {
+                "title": "🌱 Getting Started",
+                "desc": "New to ChibiBeasts? Start here.",
+                "commands": [
+                    ("/start", "Begin your journey — choose your starter beast (Prismite, Twine, Gloop, or Barkley)"),
+                    ("/profile", "View your trainer profile, stats, and balance"),
+                    ("/daily", "Claim your daily gold and shard reward"),
+                    ("/lore", "Read the world's creation myth and story"),
+                    ("/meet", "See all the NPCs and where to find them"),
+                    ("/questline", "Track your story progress"),
+                    ("/help <category>", "Browse commands by category"),
+                ]
+            },
+            "beasts": {
+                "title": "🐾 Beasts & Collection",
+                "desc": "Manage your beast collection.",
+                "commands": [
+                    ("/collection", "View all your beasts"),
+                    ("/beastinfo <id>", "Detailed stats, moves, and disposition for a beast"),
+                    ("/setactive <id>", "Set your active battle beast"),
+                    ("/nickname <id> <name>", "Give a beast a nickname"),
+                    ("/release <id>", "Release a beast for a gold refund"),
+                    ("/evolve <id>", "Evolve a beast using the required item"),
+                    ("/codex <name>", "Look up any beast's lore and stats"),
+                    ("/bestiary", "See what your server has discovered"),
+                ]
+            },
+            "battle": {
+                "title": "⚔️ Battle",
+                "desc": "PvP combat, wild battles, and NPC spars.",
+                "commands": [
+                    ("/battle @trainer",  "Challenge another trainer to a PvP beast battle"),
+                    ("/challenge <biome>","Fight a wild beast in a biome — win to catch it"),
+                    ("/sparr <npc>",      "Spar with an NPC — deepen your bond and earn shards (once per NPC/day)"),
+                    ("/leaderboard",      "Server rankings by victories"),
+                    ("/typeinfo <type>",  "Look up type matchups and advantages"),
+                ]
+            },
+            "explore": {
+                "title": "🌍 Exploration & Eggs",
+                "desc": "Explore biomes and hatch beasts.",
+                "commands": [
+                    ("/explore", "Explore a biome — find wild beasts and materials (1hr cooldown)"),
+                    ("/hatch", "Instantly hatch an egg (Common/Rare/Celestial/Abyssal)"),
+                    ("/shop eggs",        "Browse and buy instant-hatch eggs"),
+                    ("/shop incubation",  "Browse and buy incubation eggs"),
+                    ("/incubate <egg name>", "Place a named egg in incubation (timed)"),
+                    ("/eggs", "Check your incubating eggs and timers"),
+                    ("/hatchegg", "Hatch a ready incubated egg"),
+                ]
+            },
+            "craft": {
+                "title": "⚒️ Crafting & Equipment",
+                "desc": "Materials, gear, and beast equipment.",
+                "commands": [
+                    ("/materials", "View your crafting material stash"),
+                    ("/recipes", "Browse all craftable armor and rune recipes"),
+                    ("/craft <item>", "Craft an armor set from materials"),
+                    ("/equip <item> <beast_id>", "Equip armor or a rune to a beast"),
+                    ("/unequip <beast_id>", "Remove all equipment from a beast"),
+                    ("/sell <item>", "Sell items or materials for gold"),
+                ]
+            },
+            "guild": {
+                "title": "🏰 Guilds & Raids",
+                "desc": "Build a guild and take on raids.",
+                "commands": [
+                    ("/guild_create <name>", "Found a new guild (costs 2,000 gold)"),
+                    ("/guild", "View your guild info"),
+                    ("/guild_invite @member", "Invite someone to your guild"),
+                    ("/raid", "Trigger a raid boss (guild officers only)"),
+                    ("/raid_attack", "Deal damage to the active raid boss"),
+                    ("/sanctuary", "View your guild's Sanctuary upgrades"),
+                    ("/build <upgrade>", "Build a Sanctuary tier (Fairy Garden / Gnome Forge / Observatory)"),
+                ]
+            },
+            "progress": {
+                "title": "📋 Quests & Progression",
+                "desc": "Daily quests, achievements, and story.",
+                "commands": [
+                    ("/dailies", "View your daily quest progress"),
+                    ("/daily", "Claim daily reward"),
+                    ("/achievements", "View your achievement collection"),
+                    ("/questline", "Track and advance the main story questline"),
+                    ("/npc <name>", "Talk to an NPC"),
+                    ("/meet", "Overview of all NPCs and locations"),
+                ]
+            },
+            "economy": {
+                "title": "💰 Economy & Trading",
+                "desc": "Gold, shards, shop, and trading.",
+                "commands": [
+                    ("/shop", "Browse the item and egg shop"),
+                    ("/shop items",    "Browse and buy items"),
+                    ("/use <item>", "Use an item from your inventory"),
+                    ("/inventory", "View your item inventory"),
+                    ("/sell <item>", "Sell items or materials for gold"),
+                    ("/trade @trainer", "Offer a beast/gold trade to another player"),
+                    ("/perks", "View your perks"),
+                    ("/perk_equip <perk>", "Equip a perk"),
+                    ("/shard_shop", "Spend Celestial Shards on exclusive items"),
+                ]
+            },
+            "lore": {
+                "title": "📖 Lore & World",
+                "desc": "The story and the world behind it.",
+                "commands": [
+                    ("/lore <chapter>", "Read lore chapters: creation, sundering, starters, etc."),
+                    ("/codex <beast>", "In-game beast encyclopedia with type lore"),
+                    ("/typeinfo <type>", "Elemental type matchup chart"),
+                    ("/stats", "Server-wide statistics"),
+                    ("/bestiary", "Server's beast discovery log"),
+                ]
+            },
+        }
+
+        uid = interaction.user.id
+
+        HELP_OPTIONS = [
+            ("start",    "🌱", "Getting Started"),
+            ("beasts",   "🐾", "Beasts & Collection"),
+            ("battle",   "⚔️", "Battle"),
+            ("explore",  "🌍", "Exploration & Eggs"),
+            ("craft",    "⚒️", "Crafting & Equipment"),
+            ("guild",    "🏰", "Guilds & Raids"),
+            ("progress", "📋", "Quests & Progression"),
+            ("economy",  "💰", "Economy & Trading"),
+            ("lore",     "📖", "Lore & World"),
         ]
-    },
-    "beasts": {
-        "title": "🐾 Beasts & Collection",
-        "desc": "Catch, hatch, manage, and inspect your beasts.",
-        "commands": [
-            ("/collection", "Browse all your beasts by rarity"),
-            ("/beastinfo <#>", "Detailed view of a specific beast"),
-            ("/setactive <#>", "Set your active battle beast"),
-            ("/nickname <#>", "Give a beast a nickname"),
-            ("/release <#>", "Release a beast back into the wild"),
-            ("/codex <name>", "Look up any beast's lore and stats"),
-            ("/bestiary", "View every beast the server has discovered"),
-            ("/typeinfo <type>", "Look up type matchups and weaknesses"),
+
+        def build_help_embed(category: str) -> discord.Embed:
+            cat = HELP.get(category, HELP["start"])
+            embed = discord.Embed(title=cat["title"], description=cat["desc"], color=COLORS["info"])
+            for cmd, desc in cat["commands"]:
+                embed.add_field(name=f"`{cmd}`", value=desc, inline=False)
+            embed.set_footer(text="ChibiBeasts 🐾")
+            return embed
+
+        class HelpView(discord.ui.View):
+            def __init__(self_v, section="start"):
+                super().__init__(timeout=180)
+                self_v.section = section
+                self_v._rebuild()
+
+            def _rebuild(self_v):
+                self_v.clear_items()
+                select = discord.ui.Select(
+                    placeholder="📚 Browse a category…",
+                    options=[
+                        discord.SelectOption(label=f"{emoji} {name}", value=key, default=key==self_v.section)
+                        for key, emoji, name in HELP_OPTIONS
+                    ],
+                    row=0
+                )
+                async def _on_select(bi):
+                    if bi.user.id != uid:
+                        return await bi.response.send_message("✦ This isn't your help menu!", ephemeral=True)
+                    self_v.section = bi.data["values"][0]
+                    self_v._rebuild()
+                    await bi.response.edit_message(embed=build_help_embed(self_v.section), view=self_v)
+                select.callback = _on_select
+                self_v.add_item(select)
+
+        await interaction.followup.send(embed=build_help_embed("start"), view=HelpView("start"))
+
+    # ── /title ────────────────────────────────────────────────────────────
+    @app_commands.command(name="title", description="Set your active trainer title 🏷️")
+    @app_commands.describe(new_title="The title to display (must be one you've earned)")
+    async def title_cmd(self, interaction: discord.Interaction, new_title: str = None):
+        await interaction.response.defer()
+
+        # Get all earned titles from achievements and questline
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT achievement_id FROM achievements WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                earned_ach = [r["achievement_id"] for r in await c.fetchall()]
+
+            async with db.execute(
+                "SELECT title FROM players WHERE user_id = ?",
+                (interaction.user.id,)
+            ) as c:
+                row = await c.fetchone()
+            current_title = row["title"] if row else None
+
+        from utils.progress import ACHIEVEMENTS
+        from cogs.hatch import COLLECTION_REWARDS
+
+        TITLE_SOURCES = {}
+        for aid in earned_ach:
+            ach = ACHIEVEMENTS.get(aid, {})
+            pass  # Achievements don't have titles yet; questline and collections do
+
+        # Collection titles
+        collection_titles = {r["title"]: r["title"] for r in COLLECTION_REWARDS.values()}
+        # Questline title
+        if "loom_witness" in earned_ach:
+            collection_titles["Witness to the Loom"] = "Witness to the Loom"
+
+        all_titles = list(collection_titles.values())
+
+        if not new_title:
+            embed = discord.Embed(
+                title="🏷️ Your Trainer Titles",
+                description=f"**Current title:** *{current_title or 'None'}*\n\nUse `/title <name>` to equip one.",
+                color=COLORS["info"]
+            )
+            if all_titles:
+                embed.add_field(name="Earned titles", value="\n".join(f"• {t}" for t in all_titles), inline=False)
+            else:
+                embed.add_field(name="No titles yet", value="Complete questlines and collections to earn titles.", inline=False)
+            return await interaction.followup.send(embed=embed)
+
+        # Check if they own this title
+        matching = [t for t in all_titles if new_title.lower() in t.lower()]
+        if not matching:
+            return await interaction.followup.send(embed=discord.Embed(
+                description=f"✦ You haven't earned the title **{new_title}** yet.",
+                color=COLORS["error"]
+            ))
+
+        chosen = matching[0]
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "UPDATE players SET title = ? WHERE user_id = ?",
+                (chosen, interaction.user.id)
+            )
+            await db.commit()
+
+        await interaction.followup.send(embed=discord.Embed(
+            description=f"✦ Title set to **{chosen}**. It will appear in your `/profile`.",
+            color=COLORS["success"]
+        ))
+
+    # ── /play ─────────────────────────────────────────────────────────────
+    @app_commands.command(name="play", description="Spend time with your active beast to boost their happiness 😊")
+    async def play(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        player = await get_or_create_player(interaction.user.id, str(interaction.user))
+
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+
+            # One play session per day
+            today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            async with db.execute(
+                "SELECT 1 FROM daily_quests WHERE user_id = ? AND quest_id = 'play_session' AND date = ?",
+                (interaction.user.id, today)
+            ) as c:
+                already_played = await c.fetchone()
+
+            if already_played:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description=(
+                        "✦ You've already played with your beast today.\n"
+                        "*They're happy — come back tomorrow.*"
+                    ),
+                    color=COLORS["info"]
+                ))
+
+            async with db.execute(
+                "SELECT * FROM player_beasts WHERE user_id = ? AND is_active = 1",
+                (interaction.user.id,)
+            ) as c:
+                active = await c.fetchone()
+
+            if not active:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description="✦ You don't have an active beast! Use `/setactive` first.",
+                    color=COLORS["error"]
+                ))
+
+            active = dict(active)
+            PLAY_GAIN = 15
+            new_happiness = min(100, active["happiness"] + PLAY_GAIN)
+            already_full = active["happiness"] >= 100
+
+            await db.execute(
+                "UPDATE player_beasts SET happiness = ? WHERE id = ?",
+                (new_happiness, active["id"])
+            )
+            await db.execute(
+                "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, 'play_session', 1, 1, ?)",
+                (interaction.user.id, today)
+            )
+            await db.commit()
+
+        from utils.db import get_beast_data as _gbd
+        beast_data = _gbd(active["beast_id"]) or {}
+        name = active.get("nickname") or beast_data.get("name", "your beast")
+
+        PLAY_LINES = [
+            f"*{name} chases something that isn't there, then pretends it wasn't doing that.*",
+            f"*You sit with {name} for a while. It doesn't move much. That seems to be the point.*",
+            f"*{name} does something you can't quite describe. You feel like you both understood something.*",
+            f"*{name} leans against you for exactly three seconds, then walks away like it didn't happen.*",
+            f"*You bring {name} somewhere it hasn't been. It sniffs everything. Twice.*",
         ]
-    },
-    "battle": {
-        "title": "⚔️ Battle",
-        "desc": "Fight other trainers and wild beasts.",
-        "commands": [
-            ("/challenge @user", "Challenge another trainer to a PvP battle"),
-            ("/sparr", "Spar against an NPC for gold and EXP"),
-            ("/battle", "Battle a random wild beast"),
-            ("/ranked @user", "Challenge someone to a rated ranked match"),
-            ("/rank", "View your ranked rating and stats"),
-            ("/ranked_leaderboard", "View the ranked PvP standings"),
-            ("/history", "View your battle, raid, and trade history"),
-            ("/stats", "View detailed battle statistics"),
+        import random as _r
+        play_line = _r.choice(PLAY_LINES)
+
+        if already_full:
+            desc = f"*{name} is already as happy as can be — but they don't mind the company.*\n\n😊 Happiness: `100/100`"
+        else:
+            desc = (
+                f"{play_line}\n\n"
+                f"😊 **+{PLAY_GAIN} happiness** → `{new_happiness}/100`"
+                + ("\n\n*Use `/shop` to buy Brambleberries or Sugarsprout Cupcakes for more happiness boosts!*"
+                   if new_happiness < 50 else "")
+            )
+
+        await interaction.followup.send(embed=discord.Embed(
+            title=f"🐾 Playing with {name}",
+            description=desc,
+            color=COLORS["success"]
+        ))
+
+    # ── /history ──────────────────────────────────────────────────────────
+    @app_commands.command(name="history", description="View your recent battle, raid, and trade history 📜")
+    async def history(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        uid = interaction.user.id
+        category = "battles"  # default; overridden by select
+
+        async with aiosqlite.connect(DB_PATH) as db:
+            db.row_factory = aiosqlite.Row
+
+            if category == "battles":
+                async with db.execute("""
+                    SELECT b.battle_type, b.winner_id, b.challenger_id, b.opponent_id,
+                           b.created_at,
+                           p1.username AS challenger_name,
+                           p2.username AS opponent_name
+                    FROM battles b
+                    LEFT JOIN players p1 ON b.challenger_id = p1.user_id
+                    LEFT JOIN players p2 ON b.opponent_id   = p2.user_id
+                    WHERE b.challenger_id = ? OR b.opponent_id = ?
+                    ORDER BY b.created_at DESC LIMIT 15
+                """, (interaction.user.id, interaction.user.id)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+
+                embed = discord.Embed(
+                    title="⚔️ Battle History",
+                    description=f"*Your last {len(rows)} battles.*" if rows else "*No battles recorded yet.*",
+                    color=COLORS["epic"]
+                )
+                for r in rows:
+                    btype = r["battle_type"] or "pvp"
+                    if btype == "pvp":
+                        opponent_name = r["opponent_name"] or "Unknown"
+                        if r["winner_id"] == interaction.user.id:
+                            result = "✅ Win"
+                        elif r["winner_id"] is None:
+                            result = "🤝 Draw"
+                        else:
+                            result = "💤 Loss"
+                        label = f"vs {opponent_name}"
+                    elif btype == "sparr":
+                        result = "✅ Win" if r["winner_id"] == interaction.user.id else "💤 Loss"
+                        label = "NPC Spar"
+                    else:
+                        result = "✅ Win" if r["winner_id"] == interaction.user.id else "💤 Loss"
+                        label = "Wild Battle"
+                    ts = r["created_at"][:10] if r["created_at"] else "?"
+                    embed.add_field(
+                        name=f"{result} — {label}",
+                        value=f"*{btype.upper()} · {ts}*",
+                        inline=True
+                    )
+
+            elif category == "raids":
+                async with db.execute("""
+                    SELECT r.boss_name, r.boss_type, r.status, r.started_at, r.ended_at,
+                           rp.damage_dealt
+                    FROM raid_participants rp
+                    JOIN raids r ON rp.raid_id = r.id
+                    WHERE rp.user_id = ?
+                    ORDER BY r.started_at DESC LIMIT 15
+                """, (interaction.user.id,)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+
+                async with db.execute("""
+                    SELECT beast_id, altered_name, caught_at
+                    FROM altered_divines
+                    WHERE caught_by = ?
+                    ORDER BY caught_at DESC LIMIT 5
+                """, (interaction.user.id,)) as c:
+                    divines = [dict(r) for r in await c.fetchall()]
+
+                embed = discord.Embed(
+                    title="💀 Raid History",
+                    description=f"*Your last {len(rows)} raids.*" if rows else "*No raids participated in yet.*",
+                    color=COLORS["legendary"]
+                )
+                for r in rows:
+                    status_icon = "🏆" if r["status"] == "completed" else "⏰"
+                    ts = r["started_at"][:10] if r["started_at"] else "?"
+                    embed.add_field(
+                        name=f"{status_icon} {r['boss_name']}",
+                        value=f"`{r['damage_dealt']:,}` dmg · {r['boss_type'].capitalize()} · {ts}",
+                        inline=True
+                    )
+                if divines:
+                    from utils.db import get_beast_data as _gbd
+                    divine_lines = []
+                    for d in divines:
+                        bd = _gbd(d["beast_id"])
+                        name = bd["name"] if bd else d["beast_id"]
+                        ts = d["caught_at"][:10] if d["caught_at"] else "?"
+                        divine_lines.append(f"🌸 **{d['altered_name']}** → {name} · {ts}")
+                    embed.add_field(
+                        name="✨ Altered Divines Caught",
+                        value="\n".join(divine_lines),
+                        inline=False
+                    )
+
+            else:  # trades
+                async with db.execute("""
+                    SELECT t.*, p1.username AS sender_name, p2.username AS receiver_name,
+                           pb1.beast_id AS sent_beast_id, pb2.beast_id AS received_beast_id,
+                           pb1.rarity   AS sent_rarity,    pb2.rarity   AS received_rarity
+                    FROM trades t
+                    LEFT JOIN players   p1  ON t.sender_id          = p1.user_id
+                    LEFT JOIN players   p2  ON t.receiver_id         = p2.user_id
+                    LEFT JOIN player_beasts pb1 ON t.sender_beast_id   = pb1.id
+                    LEFT JOIN player_beasts pb2 ON t.receiver_beast_id = pb2.id
+                    WHERE t.sender_id = ? OR t.receiver_id = ?
+                    ORDER BY t.created_at DESC LIMIT 15
+                """, (interaction.user.id, interaction.user.id)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+
+                embed = discord.Embed(
+                    title="🤝 Trade History",
+                    description=f"*Your last {len(rows)} trades.*" if rows else "*No completed trades yet.*",
+                    color=COLORS["success"]
+                )
+                from utils.db import get_beast_data as _gbd
+                for r in rows:
+                    sent_bd = _gbd(r["sent_beast_id"]) if r.get("sent_beast_id") else None
+                    recv_bd = _gbd(r.get("received_beast_id")) if r.get("received_beast_id") else None
+                    sent_name = sent_bd["name"] if sent_bd else "?"
+                    recv_name = recv_bd["name"] if recv_bd else "anything"
+                    sent_r = RARITY_EMOJI.get(r.get("sent_rarity"), "⚪")
+                    recv_r = RARITY_EMOJI.get(r.get("received_rarity"), "⚪") if recv_bd else ""
+                    direction = "📤 Sent" if r["sender_id"] == interaction.user.id else "📥 Received"
+                    other = r["receiver_name"] if r["sender_id"] == interaction.user.id else r["sender_name"]
+                    gold_note = f" + `{r['gold_offered']:,}` 💰" if r.get("gold_offered") else ""
+                    ts = r["created_at"][:10] if r.get("created_at") else "?"
+                    embed.add_field(
+                        name=f"{direction} with {other or '?'}",
+                        value=f"{sent_r} {sent_name}{gold_note} ↔ {recv_r} {recv_name} · {ts}",
+                        inline=False
+                    )
+
+        embed.set_footer(text="ChibiBeasts 🐾")
+
+        HIST_OPTIONS = [
+            ("battles", "⚔️", "Battles"),
+            ("raids",   "💀", "Raids"),
+            ("trades",  "🤝", "Trades"),
         ]
-    },
-    "explore": {
-        "title": "🌍 Exploration & Eggs",
-        "desc": "Explore biomes, hatch eggs, and catch wild beasts.",
-        "commands": [
-            ("/explore", "Explore a biome to find and catch wild beasts"),
-            ("/hatch", "Hatch an egg from your inventory"),
-            ("/eggs", "View your incubating eggs"),
-            ("/incubate <egg>", "Start incubating an egg"),
-            ("/tend", "Tend to a mid-incubation egg to speed it up"),
-            ("/shop", "Buy eggs, items, and more"),
-        ]
-    },
-    "craft": {
-        "title": "⚒️ Crafting & Equipment",
-        "desc": "Craft gear, equip your beasts, and evolve them.",
-        "commands": [
-            ("/craft <item>", "Craft a piece of gear or evolution item"),
-            ("/recipes", "Browse all craftable gear and their recipes"),
-            ("/materials", "View your crafting material stockpile"),
-            ("/equip <item> <#>", "Equip armor or a rune to a beast"),
-            ("/unequip <#>", "Remove gear from a beast"),
-            ("/gear <#>", "View a beast's equipped gear and available options"),
-            ("/evolve <#>", "Evolve a beast using the required item"),
-            ("/sell <item>", "Sell an item from your inventory"),
-        ]
-    },
-    "economy": {
-        "title": "💰 Economy & Trading",
-        "desc": "Trade beasts, use the market, train, and manage gold.",
-        "commands": [
-            ("/market", "Browse beasts listed for sale by other trainers"),
-            ("/list <#> <price>", "List a beast on the market for sale"),
-            ("/delist <#>", "Remove a beast from the market"),
-            ("/appraise <#>", "Get an estimated gold value for a beast"),
-            ("/train <#> <stat>", "Spend gold to permanently boost a beast's stat"),
-            ("/trade @user", "Offer a beast trade to another trainer"),
-            ("/inventory", "View your items and potions"),
-            ("/use <item>", "Use an item from your inventory"),
-        ]
-    },
-    "guild": {
-        "title": "🏰 Guilds & Raids",
-        "desc": "Join guilds, raid bosses, and build your Sanctuary.",
-        "commands": [
-            ("/guild", "View your guild's info and roster"),
-            ("/guild_create", "Create a new guild"),
-            ("/guild_invite @user", "Invite someone to your guild"),
-            ("/guild_leave", "Leave your current guild"),
-            ("/raid", "Start or join a Corrupted raid"),
-            ("/ancient", "Start or join an Ancient raid"),
-            ("/raidparty", "Manage your raid party slots"),
-            ("/party", "View your active raid party and HP"),
-            ("/sanctuary", "View your guild's Sanctuary upgrades"),
-            ("/build <upgrade>", "Build a Sanctuary upgrade (leaders/officers)"),
-        ]
-    },
-    "progress": {
-        "title": "📋 Quests & Progression",
-        "desc": "Track quests, achievements, and the main story.",
-        "commands": [
-            ("/questline", "View and advance the main story questline"),
-            ("/npc <name>", "Speak with an NPC"),
-            ("/meet <name>", "Meet an NPC for the first time"),
-            ("/dailies", "View today's 4 daily quests"),
-            ("/achievements", "View all your earned achievements"),
-            ("/title", "Set your trainer title"),
-            ("/profile", "View your full trainer progression"),
-        ]
-    },
-    "social": {
-        "title": "✨ Perks & Social",
-        "desc": "Manage your perks, check the leaderboard, and more.",
-        "commands": [
-            ("/perks", "View your owned trainer perks"),
-            ("/perk_equip <perk>", "Equip a perk to activate its bonus"),
-            ("/perk_unequip <perk>", "Unequip a perk"),
-            ("/perk_use <perk>", "Activate a perk's weekly special ability"),
-            ("/leaderboard", "View server-wide rankings"),
-            ("/lore", "Read the story of ChibiBeasts"),
-        ]
-    },
-}
+
+        async def build_hist_embed(cat: str) -> discord.Embed:
+            return await self.history.__wrapped__(self, interaction, cat) if False else embed
+
+        class HistView(discord.ui.View):
+            def __init__(self_v, section, first_embed):
+                super().__init__(timeout=120)
+                self_v.section = section
+                self_v.last_embed = first_embed
+                self_v._rebuild()
+
+            def _rebuild(self_v):
+                self_v.clear_items()
+                select = discord.ui.Select(
+                    placeholder="📜 Switch history…",
+                    options=[
+                        discord.SelectOption(label=f"{emoji} {name}", value=key, default=key==self_v.section)
+                        for key, emoji, name in HIST_OPTIONS
+                    ],
+                    row=0
+                )
+                async def _on_select(bi):
+                    if bi.user.id != uid:
+                        return await bi.response.send_message("✦ This isn't your history!", ephemeral=True)
+                    await bi.response.defer()
+                    new_cat = bi.data["values"][0]
+                    # Rebuild embed for new category
+                    async with aiosqlite.connect(DB_PATH) as _db:
+                        _db.row_factory = aiosqlite.Row
+                        new_emb = await _fetch_history_embed(_db, bi.user.id, new_cat)
+                    new_emb.set_footer(text="ChibiBeasts 🐾")
+                    self_v.section = new_cat
+                    self_v._rebuild()
+                    await bi.edit_original_response(embed=new_emb, view=self_v)
+                select.callback = _on_select
+                self_v.add_item(select)
+
+        async def _fetch_history_embed(db, user_id, cat):
+            if cat == "battles":
+                async with db.execute("""
+                    SELECT b.battle_type, b.winner_id, b.challenger_id, b.opponent_id,
+                           b.created_at,
+                           p1.username AS challenger_name,
+                           p2.username AS opponent_name
+                    FROM battles b
+                    LEFT JOIN players p1 ON b.challenger_id = p1.user_id
+                    LEFT JOIN players p2 ON b.opponent_id   = p2.user_id
+                    WHERE b.challenger_id = ? OR b.opponent_id = ?
+                    ORDER BY b.created_at DESC LIMIT 15
+                """, (user_id, user_id)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+                emb = discord.Embed(title="⚔️ Battle History",
+                    description=f"*Your last {len(rows)} battles.*" if rows else "*No battles recorded yet.*",
+                    color=COLORS["epic"])
+                for r in rows:
+                    btype = r["battle_type"] or "pvp"
+                    if btype == "pvp":
+                        opponent_name = r["opponent_name"] or "Unknown"
+                        result = "✅ Win" if r["winner_id"] == user_id else ("🤝 Draw" if r["winner_id"] is None else "💤 Loss")
+                        label = f"vs {opponent_name}"
+                    elif btype == "sparr":
+                        result = "✅ Win" if r["winner_id"] == user_id else "💤 Loss"
+                        label = "NPC Spar"
+                    else:
+                        result = "✅ Win" if r["winner_id"] == user_id else "💤 Loss"
+                        label = "Wild Battle"
+                    ts = r["created_at"][:10] if r["created_at"] else "?"
+                    emb.add_field(name=f"{result} — {label}", value=f"*{btype.upper()} · {ts}*", inline=True)
+                return emb
+
+            elif cat == "raids":
+                async with db.execute("""
+                    SELECT r.boss_name, r.boss_type, r.status, r.started_at,
+                           rp.damage_dealt
+                    FROM raid_participants rp
+                    JOIN raids r ON rp.raid_id = r.id
+                    WHERE rp.user_id = ?
+                    ORDER BY r.started_at DESC LIMIT 15
+                """, (user_id,)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+                emb = discord.Embed(title="💀 Raid History",
+                    description=f"*Your last {len(rows)} raids.*" if rows else "*No raids yet.*",
+                    color=COLORS["legendary"])
+                for r in rows:
+                    icon = "🏆" if r["status"] == "completed" else "⏰"
+                    ts   = r["started_at"][:10] if r["started_at"] else "?"
+                    emb.add_field(name=f"{icon} {r['boss_name']}", value=f"`{r['damage_dealt']:,}` dmg · {ts}", inline=True)
+                return emb
+
+            else:  # trades
+                async with db.execute("""
+                    SELECT t.*, p1.username AS sender_name, p2.username AS receiver_name,
+                           pb1.beast_id AS sent_beast_id, pb2.beast_id AS received_beast_id,
+                           pb1.rarity AS sent_rarity, pb2.rarity AS received_rarity
+                    FROM trades t
+                    LEFT JOIN players p1 ON t.sender_id = p1.user_id
+                    LEFT JOIN players p2 ON t.receiver_id = p2.user_id
+                    LEFT JOIN player_beasts pb1 ON t.sender_beast_id = pb1.id
+                    LEFT JOIN player_beasts pb2 ON t.receiver_beast_id = pb2.id
+                    WHERE t.sender_id = ? OR t.receiver_id = ?
+                    ORDER BY t.created_at DESC LIMIT 15
+                """, (user_id, user_id)) as c:
+                    rows = [dict(r) for r in await c.fetchall()]
+                from utils.db import get_beast_data as _gbd
+                emb = discord.Embed(title="🤝 Trade History",
+                    description=f"*Your last {len(rows)} trades.*" if rows else "*No trades yet.*",
+                    color=COLORS["success"])
+                for r in rows:
+                    sent_bd = _gbd(r["sent_beast_id"]) if r.get("sent_beast_id") else None
+                    recv_bd = _gbd(r.get("received_beast_id")) if r.get("received_beast_id") else None
+                    sent_name = sent_bd["name"] if sent_bd else "?"
+                    recv_name = recv_bd["name"] if recv_bd else "anything"
+                    sent_r = RARITY_EMOJI.get(r.get("sent_rarity"), "⚪")
+                    recv_r = RARITY_EMOJI.get(r.get("received_rarity"), "⚪") if recv_bd else ""
+                    direction = "📤 Sent" if r["sender_id"] == user_id else "📥 Received"
+                    other = r["receiver_name"] if r["sender_id"] == user_id else r["sender_name"]
+                    gold_note = f" + `{r['gold_offered']:,}` 💰" if r.get("gold_offered") else ""
+                    ts = r["created_at"][:10] if r.get("created_at") else "?"
+                    emb.add_field(name=f"{direction} with {other or '?'}",
+                        value=f"{sent_r} {sent_name}{gold_note} ↔ {recv_r} {recv_name} · {ts}", inline=False)
+                return emb
+
+        await interaction.followup.send(embed=embed, view=HistView("battles", embed))
 
 
+    @app_commands.command(name="party", description="Quick view of your raid party status 🐾")
+    async def party(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        from utils.db import get_raid_party, is_knocked_out, ko_time_remaining, get_beast_data as _gbd
+        from utils.theme import RARITY_EMOJI as _RE
+        uid = interaction.user.id
+        party = await get_raid_party(uid)
+        if not any(party):
+            return await interaction.followup.send(
+                "✦ No raid party set up. Use `/raidparty` to assign your 3 beasts.", ephemeral=True
+            )
+        embed = discord.Embed(title="⚔️ Raid Party", color=COLORS.get("legendary", 0xFFD700))
+        slot_labels = ["🥇 Slot 1", "🥈 Slot 2", "🥉 Slot 3"]
+        ready = 0
+        for i, beast in enumerate(party):
+            if beast:
+                bd = _gbd(beast["beast_id"]) or {}
+                emoji = _RE.get(beast["rarity"], "⚪")
+                name = beast.get("nickname") or bd.get("name", "?")
+                ko = is_knocked_out(beast)
+                if ko:
+                    val = f"💀 **Knocked out** — `{ko_time_remaining(beast)}` remaining"
+                else:
+                    val = f"❤️ `{beast['hp']}/{beast['max_hp']}HP` · Lv.{beast['level']} · `{beast['attack']}ATK`"
+                    ready += 1
+                embed.add_field(name=f"{slot_labels[i]}: {emoji} {name}", value=val, inline=False)
+            else:
+                embed.add_field(name=slot_labels[i], value="*Empty*", inline=False)
+        filled = sum(1 for b in party if b)
+        if filled < 3:
+            status = f"⚠️ {filled}/3 filled"
+        elif ready < 3:
+            status = f"💀 {filled-ready} recovering — raids locked"
+        else:
+            status = "✅ Party ready!"
+        embed.set_footer(text=status + " · /raidparty to edit")
+        await interaction.followup.send(embed=embed, ephemeral=True)
+
+    @app_commands.command(name="raidparty", description="Set up your 3-beast raid party ⚔️")
+    async def raidparty(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        uid = interaction.user.id
+        await get_or_create_player(uid, str(interaction.user))
+
+        async def build_embed(party: list) -> discord.Embed:
+            embed = discord.Embed(
+                title="⚔️ Raid Party",
+                description=(
+                    "Your raid party is the team of 3 beasts that fight together in all raids.\n"
+                    "All 3 slots must be filled before you can join or attack in a raid.\n\n"
+                    "*Select a slot below to assign or change a beast.*"
+                ),
+                color=COLORS.get("legendary", 0xFFD700)
+            )
+            slot_labels = ["🥇 Slot 1 — Front", "🥈 Slot 2 — Mid", "🥉 Slot 3 — Bench"]
+            ready = 0
+            for i, beast in enumerate(party):
+                if beast:
+                    bd    = get_beast_data(beast["beast_id"]) or {}
+                    emoji = RARITY_EMOJI.get(beast["rarity"], "⚪")
+                    name  = beast.get("nickname") or bd.get("name", "?")
+                    ko    = is_knocked_out(beast)
+                    timer = ko_time_remaining(beast)
+                    if ko:
+                        status_line = f"💀 **Knocked out** — recovers in `{timer}`\n*Use a Phoenix Elixir to revive instantly*"
+                    else:
+                        status_line = f"`{beast['hp']}/{beast['max_hp']}HP` · `{beast['attack']}ATK` · `{beast['defense']}DEF`"
+                        ready += 1
+                    embed.add_field(
+                        name=slot_labels[i],
+                        value=(
+                            f"{emoji} **{name}** `#{beast['player_number']}` · Lv.{beast['level']}\n"
+                            f"{status_line}"
+                        ),
+                        inline=False
+                    )
+                else:
+                    embed.add_field(
+                        name=slot_labels[i],
+                        value="*Empty — click to assign*",
+                        inline=False
+                    )
+            filled = sum(1 for b in party if b)
+            if filled < 3:
+                status = f"⚠️ {filled}/3 slots filled — raids locked until full"
+            elif ready < 3:
+                ko_count = filled - ready
+                status = f"💀 {ko_count} beast{'s' if ko_count>1 else ''} recovering — raids locked until revived"
+            else:
+                status = "✅ Party ready!"
+            embed.set_footer(text=status)
+            return embed
+
+        class SlotModal(discord.ui.Modal, title="Assign Beast to Slot"):
+            beast_num = discord.ui.TextInput(
+                label="Beast Number (e.g. 5)",
+                placeholder="Enter your beast's #number from /collection",
+                min_length=1, max_length=6
+            )
+            def __init__(self, slot: int, view: "PartyView"):
+                super().__init__()
+                self.slot = slot
+                self.party_view = view
+
+            async def on_submit(self, modal_interaction: discord.Interaction):
+                raw = self.beast_num.value.strip().lstrip("#")
+                if not raw.isdigit():
+                    return await modal_interaction.response.send_message(
+                        "✦ Enter a valid beast number.", ephemeral=True
+                    )
+                from utils.db import get_beast_by_player_number
+                beast_row = await get_beast_by_player_number(uid, int(raw))
+                if not beast_row:
+                    return await modal_interaction.response.send_message(
+                        f"✦ Beast `#{raw}` not found in your collection.", ephemeral=True
+                    )
+                await set_raid_slot(uid, beast_row["id"], self.slot)
+                new_party = await get_raid_party(uid)
+                # Rebuild buttons first, then edit — one atomic update
+                self.party_view.party = new_party
+                self.party_view._build_buttons()
+                await modal_interaction.response.edit_message(
+                    embed=await build_embed(new_party),
+                    view=self.party_view
+                )
+
+        class PartyView(discord.ui.View):
+            def __init__(self, party: list):
+                super().__init__(timeout=120)
+                self.party = party
+                self._build_buttons()
+
+            def _build_buttons(self):
+                self.clear_items()
+                slot_emojis = ["🥇", "🥈", "🥉"]
+                for i, beast in enumerate(self.party):
+                    label = f"Set Slot {i+1}" if not beast else f"Change Slot {i+1}"
+                    btn = discord.ui.Button(
+                        label=label, emoji=slot_emojis[i],
+                        style=discord.ButtonStyle.primary if not beast else discord.ButtonStyle.secondary,
+                        row=0
+                    )
+                    async def _assign(inter, slot=i+1, v=self):
+                        await inter.response.send_modal(SlotModal(slot, v))
+                    btn.callback = _assign
+                    self.add_item(btn)
+
+                    if beast:
+                        clear_btn = discord.ui.Button(
+                            label=f"Clear {i+1}", emoji="✖️",
+                            style=discord.ButtonStyle.danger,
+                            row=1
+                        )
+                        async def _clear(inter, slot=i+1, v=self):
+                            await clear_raid_slot(uid, slot)
+                            new_party = await get_raid_party(uid)
+                            v.party = new_party
+                            v._build_buttons()
+                            await inter.response.edit_message(embed=await build_embed(new_party), view=v)
+                        clear_btn.callback = _clear
+                        self.add_item(clear_btn)
+
+        party = await get_raid_party(uid)
+        view  = PartyView(party)
+        await interaction.followup.send(embed=await build_embed(party), view=view)
+
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(Utilities(bot))
