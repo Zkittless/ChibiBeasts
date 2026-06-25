@@ -237,6 +237,7 @@ async def _run_migrations():
         # New player tracking columns
         "ALTER TABLE players ADD COLUMN title TEXT DEFAULT NULL",
         "ALTER TABLE players ADD COLUMN explore_last_at REAL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN challenge_last_at REAL DEFAULT 0",
         "ALTER TABLE players ADD COLUMN total_catches INTEGER DEFAULT 0",
         "ALTER TABLE players ADD COLUMN total_gold_earned INTEGER DEFAULT 0",
         "ALTER TABLE players ADD COLUMN incense_active_until REAL DEFAULT 0",

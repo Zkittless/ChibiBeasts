@@ -148,7 +148,6 @@ def build_pve_beast_state(beast_data: dict, level: int) -> dict:
         "moves":       beast_data["moves"],
         "ultimate":    beast_data["ultimate"],
         "beast_type":  beast_data.get("type", ""),
-        "image_url":   beast_data.get("image_url", ""),
         # Divine passive (if applicable)
         **({} if not beast_data.get("divine_passive") else
            {"divine_passive": beast_data["divine_passive"],
@@ -211,7 +210,7 @@ async def run_pve_battle(
         "attack":      player_beast_row["attack"],
         "defense":     player_beast_row["defense"],
         "speed":       player_beast_row["speed"],
-        "mana":        player_beast_row["mana"],
+        "mana":        player_beast_row["max_mana"],  # reset to full at battle start
         "max_mana":    player_beast_row["max_mana"],
         "status":      None,
         "status_turns":0,
@@ -219,7 +218,6 @@ async def run_pve_battle(
         "moves":       player_beast_data["moves"],
         "ultimate":    player_beast_data["ultimate"],
         "beast_type":  player_beast_data.get("type", ""),
-        "image_url":   player_beast_data.get("image_url", ""),
         **({} if not player_beast_data.get("divine_passive") else
            {"divine_passive": player_beast_data["divine_passive"],
             "divine_passive_id": player_beast_data["divine_passive"].get("passive_id"),
@@ -417,16 +415,10 @@ async def run_pve_battle(
                     f"**{enemy_state['name']}**\n"
                     f"{hp_bar(enemy_state['hp'], enemy_state['max_hp'])}"
                 ),
-                color=COLORS["epic"]
+                color=COLORS["info"]
             )
             if battle_log:
                 state_embed.add_field(name="📜 Last Turn", value="\n".join(battle_log[-3:]), inline=False)
-            # Show enemy beast image in battle embed
-            if enemy_state.get("image_url"):
-                state_embed.set_image(url=enemy_state["image_url"])
-            # Show player beast as thumbnail
-            if player_state.get("image_url"):
-                state_embed.set_thumbnail(url=player_state["image_url"])
             state_embed.set_footer(text="Your turn — Choose a move!")
 
             move_view = MoveView(
@@ -509,7 +501,6 @@ async def run_pve_battle(
             defender_state["hp"] = max(0, defender_state["hp"] - damage)
 
         # ── On-hit attacker gear effects ──────────────────────────────────────
-        skip_attack = False  # True when attack is fully negated (e.g. stun, miss)
         if damage > 0 and not skip_attack:
             # Lifesteal rune — log it
             if attacker_state.get("_rune_lifesteal") and damage > 0:
@@ -1197,7 +1188,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         "id": c_beast_row["id"], "name": c_beast_row["nickname"] or c_beast_data["name"],
         "hp": c_beast_row["hp"], "max_hp": c_beast_row["max_hp"],
         "attack": c_beast_row["attack"], "defense": c_beast_row["defense"],
-        "speed": c_beast_row["speed"], "mana": c_beast_row["mana"],
+        "speed": c_beast_row["speed"], "mana": c_beast_row["max_mana"],
         "max_mana": c_beast_row["max_mana"], "status": None, "status_turns": 0,
         "phoenix_used": False, "moves": c_beast_data["moves"], "ultimate": c_beast_data["ultimate"],
         "beast_type": c_beast_data.get("type", ""),
@@ -1207,7 +1198,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         "id": o_beast_row["id"], "name": o_beast_row["nickname"] or o_beast_data["name"],
         "hp": o_beast_row["hp"], "max_hp": o_beast_row["max_hp"],
         "attack": o_beast_row["attack"], "defense": o_beast_row["defense"],
-        "speed": o_beast_row["speed"], "mana": o_beast_row["mana"],
+        "speed": o_beast_row["speed"], "mana": o_beast_row["max_mana"],
         "max_mana": o_beast_row["max_mana"], "status": None, "status_turns": 0,
         "phoenix_used": False, "moves": o_beast_data["moves"], "ultimate": o_beast_data["ultimate"],
         "beast_type": o_beast_data.get("type", ""),
@@ -1796,6 +1787,24 @@ class Battle(commands.Cog):
                 color=COLORS["error"]
             ))
 
+        # 30 minute cooldown on /challenge
+        import time as _time
+        _now = _time.time()
+        _challenge_last = player.get("challenge_last_at", 0) or 0
+        _remaining = 1800 - (_now - _challenge_last)
+        if _remaining > 0:
+            _m, _s = divmod(int(_remaining), 60)
+            return await interaction.followup.send(embed=discord.Embed(
+                description=f"⏳ Wild battles need time to reset. Ready in **{_m}m {_s}s**.",
+                color=COLORS["info"]
+            ))
+        async with aiosqlite.connect(DB_PATH) as _cddb:
+            await _cddb.execute(
+                "UPDATE players SET challenge_last_at = ? WHERE user_id = ?",
+                (_now, interaction.user.id)
+            )
+            await _cddb.commit()
+
         BIOME_GATES = {"woods": 1, "ember": 10, "glacial": 12, "trenches": 15, "loom": 25}
         BIOME_NAMES = {
             "woods":    "🌲 Whispering Woods",
@@ -2065,29 +2074,16 @@ class Battle(commands.Cog):
             ) as c:
                 player_perks = [dict(r) for r in await c.fetchall()]
 
-        npc_emoji   = npc.get("emoji", "🐾")
-        player_name = active_row.get("nickname") or active_beast_data.get("name", "?")
-        player_img  = active_beast_data.get("image_url", "")
-        enemy_img   = companion_data.get("image_url", "")
-        p_rarity    = RARITY_EMOJI.get(active_row["rarity"], "⚪")
-        e_rarity    = RARITY_EMOJI.get(companion_data.get("rarity","common"), "⚪")
-
-        intro_embed = discord.Embed(
-            title=f"{npc_emoji} {npc['name']} challenges you to a spar!",
+        npc_emoji = npc.get("emoji", "🐾")
+        await interaction.followup.send(embed=discord.Embed(
+            title=f"{npc_emoji} Sparring with {npc['name']}",
             description=(
-                f"{p_rarity} **{player_name}** Lv.{active_row['level']} "
-                f"**vs** "
-                f"{e_rarity} **{companion_data['name']}** Lv.{npc_level}\n\n"
+                f"*{npc.get('first_meeting', '').split('*')[1] if '*' in npc.get('first_meeting','') else ''}*\n\n"
+                f"**{npc['name']}** sends out **{companion_data['name']}** (Lv.{npc_level})!\n"
                 f"*{companion_data.get('description','')}*"
             ),
-            color=COLORS.get(companion_data.get("rarity","common"), COLORS["info"])
-        )
-        if enemy_img:
-            intro_embed.set_image(url=enemy_img)
-        if player_img:
-            intro_embed.set_thumbnail(url=player_img)
-        intro_embed.set_footer(text=f"ChibiBeasts 🐾  •  {npc['name']} — {npc.get('location','')}")
-        await interaction.followup.send(embed=intro_embed)
+            color=COLORS["info"]
+        ))
 
         # Win/loss dialogue per NPC — pulled from their established voice
         NPC_WIN_LINES = {
