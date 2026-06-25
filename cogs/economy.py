@@ -507,13 +507,14 @@ class Economy(commands.Cog):
                 select = discord.ui.Select(
                     placeholder="🔍 Filter by rarity…",
                     options=[
-                        discord.SelectOption(label="All Rarities", value="all", default=filter_rarity=="all"),
-                        discord.SelectOption(label="⚪ Common",    value="common",    default=filter_rarity=="common"),
-                        discord.SelectOption(label="🟢 Uncommon",  value="uncommon",  default=filter_rarity=="uncommon"),
-                        discord.SelectOption(label="🔵 Rare",      value="rare",      default=filter_rarity=="rare"),
-                        discord.SelectOption(label="🟣 Epic",      value="epic",      default=filter_rarity=="epic"),
-                        discord.SelectOption(label="🟡 Legendary", value="legendary", default=filter_rarity=="legendary"),
-                        discord.SelectOption(label="🌸 Divine",    value="divine",    default=filter_rarity=="divine"),
+                        discord.SelectOption(label="All Rarities", value="all",       default=filter_rarity=="all"),
+                        discord.SelectOption(label="⚪ Common",    value="common",     default=filter_rarity=="common"),
+                        discord.SelectOption(label="🟢 Uncommon",  value="uncommon",   default=filter_rarity=="uncommon"),
+                        discord.SelectOption(label="🔵 Rare",      value="rare",       default=filter_rarity=="rare"),
+                        discord.SelectOption(label="🟣 Epic",      value="epic",       default=filter_rarity=="epic"),
+                        discord.SelectOption(label="🟡 Legendary", value="legendary",  default=filter_rarity=="legendary"),
+                        discord.SelectOption(label="🌸 Divine",    value="divine",     default=filter_rarity=="divine"),
+                        discord.SelectOption(label="📋 My Listings", value="mine",     default=filter_rarity=="mine"),
                     ],
                     row=0
                 )
@@ -530,7 +531,17 @@ class Economy(commands.Cog):
                     # Re-run the market command with new filter inline
                     async with aiosqlite.connect(DB_PATH) as _db:
                         _db.row_factory = aiosqlite.Row
-                        if new_filter == "all":
+                        if new_filter == "mine":
+                            async with _db.execute(
+                                "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, "
+                                "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
+                                "p.username AS seller_name FROM beast_market bm "
+                                "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
+                                "JOIN players p ON p.user_id = bm.seller_id "
+                                "WHERE bm.seller_id = ? ORDER BY bm.ask_price ASC LIMIT 50", (uid,)
+                            ) as c2:
+                                new_listings = [dict(r) for r in await c2.fetchall()]
+                        elif new_filter == "all":
                             async with _db.execute(
                                 "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, "
                                 "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
@@ -553,23 +564,29 @@ class Economy(commands.Cog):
                                 new_listings = [dict(r) for r in await c2.fetchall()]
                     new_total = max(1, (len(new_listings)+per_page-1)//per_page)
                     def new_embed(pg):
+                        is_mine = new_filter == "mine"
+                        gold_str = f"💰 `{player['gold']:,}g`"
+                        desc = ("Your active listings" if is_mine else gold_str) + f" · {len(new_listings)} listing(s) · Page {pg}/{new_total}"
                         emb = discord.Embed(
-                            title="🏪 Beast Market",
-                            description=f"💰 `{player['gold']:,}g` · {len(new_listings)} listing(s) · Page {pg}/{new_total}",
-                            color=COLORS["legendary"]
+                            title="📋 My Listings" if is_mine else "🏪 Beast Market",
+                            description=desc,
+                            color=COLORS["info"] if is_mine else COLORS["legendary"]
                         )
+                        if not new_listings:
+                            emb.description = "*You have no active listings. Use `/list #beast <price>` to sell.*" if is_mine else "*No beasts listed.*"
+                            return emb
                         for lst in new_listings[(pg-1)*per_page:pg*per_page]:
                             bdd = get_beast_data(lst["beast_id"]) or {}
                             nm  = lst.get("nickname") or bdd.get("name","?")
                             re  = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")
-                            ca  = "✅" if player["gold"] >= lst["ask_price"] else "❌"
                             hr  = "💎" if lst.get("rune_id") else ""
-                            emb.add_field(
-                                name=f"{re} {nm} · Lv.{lst['level']} {hr}",
-                                value=f"**`{lst['ask_price']:,}g`** {ca} · {lst.get('seller_name','?')}\n`{lst['attack']}ATK` `{lst['defense']}DEF` `{lst['speed']}SPD` `{lst['max_hp']}HP`",
-                                inline=False
-                            )
-                        emb.set_footer(text="Click Buy to purchase · /list #beast <price> to sell")
+                            if is_mine:
+                                val = f"**`{lst['ask_price']:,}g`** · Use `/delist {lst.get('player_number','?')}` to remove\n`{lst['attack']}ATK` `{lst['defense']}DEF` `{lst['speed']}SPD` `{lst['max_hp']}HP`"
+                            else:
+                                ca  = "✅" if player["gold"] >= lst["ask_price"] else "❌"
+                                val = f"**`{lst['ask_price']:,}g`** {ca} · {lst.get('seller_name','?')}\n`{lst['attack']}ATK` `{lst['defense']}DEF` `{lst['speed']}SPD` `{lst['max_hp']}HP`"
+                            emb.add_field(name=f"{re} {nm} · Lv.{lst['level']} {hr}", value=val, inline=False)
+                        emb.set_footer(text="📋 My Listings — use /delist to remove" if is_mine else "Click Buy to purchase · /list #beast <price> to sell")
                         return emb
                     await interaction.edit_original_response(embed=new_embed(1))
                 select.callback = _filter
