@@ -12,24 +12,7 @@ class QuantityModal(discord.ui.Modal):
     A simple popup that asks the player for a quantity.
     Pass an async callback that receives (interaction, quantity).
     The callback is responsible for deferring/responding to the interaction.
-
-    Usage:
-        modal = QuantityModal(
-            title="How many to sell?",
-            item_name="Brambleberries",
-            max_quantity=15,
-            callback=my_async_fn
-        )
-        await interaction.response.send_modal(modal)
     """
-
-    quantity_input = discord.ui.TextInput(
-        label="Quantity",
-        placeholder="Enter a number (e.g. 5)",
-        min_length=1,
-        max_length=5,
-        required=True,
-    )
 
     def __init__(
         self,
@@ -41,8 +24,14 @@ class QuantityModal(discord.ui.Modal):
         super().__init__(title=title)
         self._callback = callback
         self._max = max_quantity
-        self.quantity_input.label = f"Quantity (you have {max_quantity:,})"
-        self.quantity_input.placeholder = f"1 – {max_quantity:,}"
+        self.quantity_input = discord.ui.TextInput(
+            label=f"Quantity (you have {max_quantity:,})",
+            placeholder=f"1 – {max_quantity:,}",
+            min_length=1,
+            max_length=5,
+            required=True,
+        )
+        self.add_item(self.quantity_input)
 
     async def on_submit(self, interaction: discord.Interaction):
         raw = self.quantity_input.value.strip()

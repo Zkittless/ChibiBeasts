@@ -317,7 +317,9 @@ class HatchView(discord.ui.View):
         async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (self.player_id,))
             await db.execute(
-                "UPDATE player_beasts SET is_active = 1 WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1",
+                "UPDATE player_beasts SET is_active = 1 WHERE id = ("
+                "SELECT id FROM player_beasts WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1"
+                ")",
                 (self.player_id, self.beast_data["id"])
             )
             await db.commit()
@@ -541,13 +543,18 @@ class Hatch(commands.Cog):
             await notify_quest_completions(modal_interaction.channel, completed_quests)
             await notify_unlocks(modal_interaction.channel, modal_interaction.user, more_unlocked)
 
-        from utils.modals import QuantityModal
-        await interaction.response.send_modal(QuantityModal(
-            title=f"Hatch {egg_def['name']}",
-            item_name=egg_def["name"],
-            max_quantity=inv_row["quantity"],
-            callback=do_hatch
-        ))
+        # Skip modal if only 1 egg — hatch immediately
+        if inv_row["quantity"] == 1:
+            await interaction.response.defer()
+            await do_hatch(interaction, 1)
+        else:
+            from utils.modals import QuantityModal
+            await interaction.response.send_modal(QuantityModal(
+                title=f"Hatch {egg_def['name']}",
+                item_name=egg_def["name"],
+                max_quantity=inv_row["quantity"],
+                callback=do_hatch
+            ))
 
 
 
