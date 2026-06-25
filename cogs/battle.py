@@ -510,6 +510,7 @@ async def run_pve_battle(
             defender_state["hp"] = max(0, defender_state["hp"] - damage)
 
         # ── On-hit attacker gear effects ──────────────────────────────────────
+        skip_attack = False
         if damage > 0 and not skip_attack:
             # Lifesteal rune — log it
             if attacker_state.get("_rune_lifesteal") and damage > 0:
