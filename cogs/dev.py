@@ -28,31 +28,25 @@ DB_PATH = "db/chibibeast.db"
 
 
 def dev_only():
-    """Check: interaction user must have the DEV_ROLE_ID role."""
+    """Check: interaction user must be the bot owner (OWNER_ID env var)."""
     async def predicate(interaction: discord.Interaction) -> bool:
-        role_id_str = os.getenv("DEV_ROLE_ID", "")
-        if not role_id_str:
+        owner_id_str = os.getenv("OWNER_ID", "")
+        if not owner_id_str:
             await interaction.response.send_message(
-                "✦ Dev commands are disabled — set `DEV_ROLE_ID` in environment variables.",
+                "✦ Dev commands are disabled — set `OWNER_ID` in environment variables.",
                 ephemeral=True
             )
             return False
         try:
-            role_id = int(role_id_str)
+            owner_id = int(owner_id_str)
         except ValueError:
             await interaction.response.send_message(
-                "✦ `DEV_ROLE_ID` is not a valid integer.", ephemeral=True
+                "✦ `OWNER_ID` is not a valid integer.", ephemeral=True
             )
             return False
-        if not interaction.guild:
+        if interaction.user.id != owner_id:
             await interaction.response.send_message(
-                "✦ Dev commands must be used in a server.", ephemeral=True
-            )
-            return False
-        member = interaction.guild.get_member(interaction.user.id)
-        if not member or not any(r.id == role_id for r in member.roles):
-            await interaction.response.send_message(
-                "✦ You don't have the dev role.", ephemeral=True
+                "✦ Dev commands are owner-only.", ephemeral=True
             )
             return False
         return True
