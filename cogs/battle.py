@@ -210,8 +210,9 @@ async def run_pve_battle(
         "attack":      player_beast_row["attack"],
         "defense":     player_beast_row["defense"],
         "speed":       player_beast_row["speed"],
-        "mana":        player_beast_row["max_mana"],  # reset to full at battle start
+        "mana":        player_beast_row["mana"],
         "max_mana":    player_beast_row["max_mana"],
+        "ultimate_charges": player.get("ultimate_charges", 0),
         "status":      None,
         "status_turns":0,
         "phoenix_used":False,
@@ -450,11 +451,10 @@ async def run_pve_battle(
         # A blind ultimate that misses still drains mana (the Loom doesn't
         # refund effort). A blind basic attack still earns its passive regen.
         if is_ultimate:
-            attacker_state["mana"] = max(0, attacker_state["mana"] - 50)
-        else:
-            # Mana gain scales with speed — faster beasts charge ultimates quicker
-            mana_gain = min(15, 8 + attacker_state.get("speed", 50) // 40)
-            attacker_state["mana"] = min(attacker_state["max_mana"], attacker_state["mana"] + mana_gain)
+            attacker_state["ultimate_charges"] = 0
+            async with aiosqlite.connect(DB_PATH) as _udb:
+                await _udb.execute("UPDATE players SET ultimate_charges = 0 WHERE user_id = ?", (interaction.user.id,))
+                await _udb.commit()
 
         if damage == 0 and attacker_state.get("status") == "blind":
             battle_log.append(f"👁️ **{attacker_state['name']}** missed! (Blinded)")
@@ -962,7 +962,7 @@ def calc_damage(attacker: dict, defender: dict, move: str, is_ultimate: bool = F
     if is_ultimate:
         ult_mult = attacker.get("divine_passive", {}).get(
             "passive_effect", {}
-        ).get("ultimate_damage_mod", 1.8)
+        ).get("ultimate_damage_mod", 2.5)
         damage *= ult_mult
         if perks:
             for perk in perks:
@@ -1119,10 +1119,10 @@ class MoveView(discord.ui.View):
             self.add_item(btn)
 
         ult_btn = discord.ui.Button(
-            label=f"⚡ {ultimate}",
+            label=f"⚡ {ultimate}" if battle_state.get("ultimate_charges",0) >= 3 else f"⚡ {ultimate} ({battle_state.get('ultimate_charges',0)}/3)",
             style=discord.ButtonStyle.danger,
             row=1,
-            disabled=battle_state.get("mana", 0) < 50
+            disabled=battle_state.get("ultimate_charges", 0) < 3
         )
         ult_btn.callback = self.make_callback(ultimate, is_ultimate=True)
         self.add_item(ult_btn)
@@ -1188,8 +1188,9 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         "id": c_beast_row["id"], "name": c_beast_row["nickname"] or c_beast_data["name"],
         "hp": c_beast_row["hp"], "max_hp": c_beast_row["max_hp"],
         "attack": c_beast_row["attack"], "defense": c_beast_row["defense"],
-        "speed": c_beast_row["speed"], "mana": c_beast_row["max_mana"],
-        "max_mana": c_beast_row["max_mana"], "status": None, "status_turns": 0,
+        "speed": c_beast_row["speed"], "mana": c_beast_row["mana"],
+        "max_mana": c_beast_row["max_mana"], "ultimate_charges": c_player.get("ultimate_charges", 0),
+        "status": None, "status_turns": 0,
         "phoenix_used": False, "moves": c_beast_data["moves"], "ultimate": c_beast_data["ultimate"],
         "beast_type": c_beast_data.get("type", ""),
         **init_divine_state(c_beast_data, dict(c_beast_row))
@@ -1198,8 +1199,9 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         "id": o_beast_row["id"], "name": o_beast_row["nickname"] or o_beast_data["name"],
         "hp": o_beast_row["hp"], "max_hp": o_beast_row["max_hp"],
         "attack": o_beast_row["attack"], "defense": o_beast_row["defense"],
-        "speed": o_beast_row["speed"], "mana": o_beast_row["max_mana"],
-        "max_mana": o_beast_row["max_mana"], "status": None, "status_turns": 0,
+        "speed": o_beast_row["speed"], "mana": o_beast_row["mana"],
+        "max_mana": o_beast_row["max_mana"], "ultimate_charges": o_player.get("ultimate_charges", 0),
+        "status": None, "status_turns": 0,
         "phoenix_used": False, "moves": o_beast_data["moves"], "ultimate": o_beast_data["ultimate"],
         "beast_type": o_beast_data.get("type", ""),
         **init_divine_state(o_beast_data, dict(o_beast_row))
@@ -1451,11 +1453,10 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
         # it), so a beast waking up from sleep at 0 mana will not regen on the
         # turn it skips — correct behaviour, not a bug.
         if is_ultimate:
-            attacker_state["mana"] = max(0, attacker_state["mana"] - 50)
-        else:
-            # Mana gain scales with speed — faster beasts charge ultimates quicker
-            mana_gain = min(15, 8 + attacker_state.get("speed", 50) // 40)
-            attacker_state["mana"] = min(attacker_state["max_mana"], attacker_state["mana"] + mana_gain)
+            attacker_state["ultimate_charges"] = 0
+            async with aiosqlite.connect(DB_PATH) as _udb:
+                await _udb.execute("UPDATE players SET ultimate_charges = 0 WHERE user_id = ?", (interaction.user.id,))
+                await _udb.commit()
 
         # Handle missed attack (Blind)
         if damage == 0 and attacker_state.get("status") == "blind":
@@ -1787,24 +1788,6 @@ class Battle(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        # 30 minute cooldown on /challenge
-        import time as _time
-        _now = _time.time()
-        _challenge_last = player.get("challenge_last_at", 0) or 0
-        _remaining = 1800 - (_now - _challenge_last)
-        if _remaining > 0:
-            _m, _s = divmod(int(_remaining), 60)
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"⏳ Wild battles need time to reset. Ready in **{_m}m {_s}s**.",
-                color=COLORS["info"]
-            ))
-        async with aiosqlite.connect(DB_PATH) as _cddb:
-            await _cddb.execute(
-                "UPDATE players SET challenge_last_at = ? WHERE user_id = ?",
-                (_now, interaction.user.id)
-            )
-            await _cddb.commit()
-
         BIOME_GATES = {"woods": 1, "ember": 10, "glacial": 12, "trenches": 15, "loom": 25}
         BIOME_NAMES = {
             "woods":    "🌲 Whispering Woods",
@@ -1950,11 +1933,17 @@ class Battle(commands.Cog):
 
             embed.add_field(name="🎁 Rewards", value=reward_text, inline=False)
             await track_quest_event(interaction.user.id, "battle_win")
+            async with aiosqlite.connect(DB_PATH) as _udb:
+                await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
+                await _udb.commit()
             unlocked = await check_achievements(interaction.user.id)
             if unlocked:
                 await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
         async def on_loss(embed, p_state, e_state):
+            async with aiosqlite.connect(DB_PATH) as _udb:
+                await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
+                await _udb.commit()
             consolation_gold = random.randint(10, 25)
             consolation_exp  = random.randint(active_row["level"] * 5, active_row["level"] * 10)
             await update_player(interaction.user.id, gold=player["gold"] + consolation_gold)
