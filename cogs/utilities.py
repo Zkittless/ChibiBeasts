@@ -1323,25 +1323,23 @@ class Utilities(commands.Cog):
     @app_commands.command(name="play", description="Spend time with your active beast to boost their happiness 😊")
     async def play(self, interaction: discord.Interaction):
         await interaction.response.defer()
+        import random as _r
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
 
-            # One play session per day
-            today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-            async with db.execute(
-                "SELECT 1 FROM daily_quests WHERE user_id = ? AND quest_id = 'play_session' AND date = ?",
-                (interaction.user.id, today)
-            ) as c:
-                already_played = await c.fetchone()
-
-            if already_played:
+            # 2 hour cooldown on /play (tracked via play_last_at)
+            import time as _t
+            _now = _t.time()
+            async with db.execute("SELECT play_last_at FROM players WHERE user_id = ?", (interaction.user.id,)) as c:
+                _prow = await c.fetchone()
+            _play_last = float(_prow["play_last_at"]) if _prow and _prow["play_last_at"] else 0
+            _remaining = 7200 - (_now - _play_last)
+            if _remaining > 0:
+                _m, _s = divmod(int(_remaining), 60)
                 return await interaction.followup.send(embed=discord.Embed(
-                    description=(
-                        "✦ You've already played with your beast today.\n"
-                        "*They're happy — come back tomorrow.*"
-                    ),
+                    description=f"✦ Your beast needs a little rest first. Ready in **{_m}m {_s}s**.",
                     color=COLORS["info"]
                 ))
 
@@ -1358,49 +1356,101 @@ class Utilities(commands.Cog):
                 ))
 
             active = dict(active)
+            from utils.db import get_beast_data as _gbd
+            beast_data = _gbd(active["beast_id"]) or {}
+            name = active.get("nickname") or beast_data.get("name", "your beast")
+            rarity = active.get("rarity", "common")
+
+            # Happiness gain
             PLAY_GAIN = 15
             new_happiness = min(100, active["happiness"] + PLAY_GAIN)
-            already_full = active["happiness"] >= 100
 
-            await db.execute(
-                "UPDATE player_beasts SET happiness = ? WHERE id = ?",
-                (new_happiness, active["id"])
-            )
-            await db.execute(
-                "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, 'play_session', 1, 1, ?)",
-                (interaction.user.id, today)
-            )
+            # Small EXP gain (scales with rarity)
+            EXP_GAIN = {"common": 8, "uncommon": 10, "rare": 13, "epic": 16, "legendary": 20, "divine": 25}.get(rarity, 8)
+            new_exp = active.get("exp", 0) + EXP_GAIN
+
+            # Random item find — small chance to find something
+            ITEM_FIND_CHANCE = 0.12
+            found_item = None
+            FINDABLE_ITEMS = [
+                ("brambleberries", "🫐 Brambleberries"),
+                ("star_candy", "🍬 Star-Candy"),
+                ("explore_incense", "🌿 Explore Incense"),
+            ]
+            if _r.random() < ITEM_FIND_CHANCE:
+                found_item = _r.choice(FINDABLE_ITEMS)
+                async with db.execute(
+                    "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
+                    (interaction.user.id, found_item[0])
+                ) as c:
+                    inv_row = await c.fetchone()
+                if inv_row:
+                    await db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (inv_row["id"],))
+                else:
+                    await db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (interaction.user.id, found_item[0]))
+
+            await db.execute("UPDATE player_beasts SET happiness = ?, exp = ? WHERE id = ?", (new_happiness, new_exp, active["id"]))
+            await db.execute("UPDATE players SET play_last_at = ? WHERE user_id = ?", (_now, interaction.user.id))
             await db.commit()
 
-        from utils.db import get_beast_data as _gbd
-        beast_data = _gbd(active["beast_id"]) or {}
-        name = active.get("nickname") or beast_data.get("name", "your beast")
+        # Flavor lines by rarity tier
+        PLAY_LINES = {
+            "common": [
+                f"*{name} chases something that isn't there, then pretends it wasn't doing that.*",
+                f"*You sit with {name} for a while. It doesn't move much. That seems to be the point.*",
+                f"*{name} leans against you for exactly three seconds, then walks away like it didn't happen.*",
+                f"*You bring {name} somewhere new. It sniffs everything. Twice.*",
+                f"*{name} does something small and perfect that you immediately want to tell someone about.*",
+            ],
+            "uncommon": [
+                f"*{name} leads you somewhere and then acts like it was your idea.*",
+                f"*{name} makes a sound you haven't heard before. You spend a while trying to figure out what it meant.*",
+                f"*You throw something for {name}. It retrieves it, considers it, and keeps it.*",
+            ],
+            "rare": [
+                f"*{name} shows you something. You're not sure what it is, but it feels significant.*",
+                f"*{name} does something that shouldn't be possible for a beast its size. You choose not to mention it.*",
+                f"*The air around {name} hums slightly while you're with it. You don't notice until it stops.*",
+            ],
+            "epic": [
+                f"*{name} looks at you like it knows something you don't. It probably does.*",
+                f"*You spend time with {name} and come away feeling like something was exchanged, though you can't say what.*",
+                f"*{name} does something that reminds you why you chose it.*",
+            ],
+            "legendary": [
+                f"*{name} tolerates your presence in a way that feels, somehow, like high praise.*",
+                f"*Being near {name} is like standing next to something the world is still deciding how to categorize.*",
+                f"*{name} regards you with ancient patience. You feel, briefly, like you're part of something larger.*",
+            ],
+            "divine": [
+                f"*Time moves strangely when you're with {name}. You leave feeling like you've been somewhere.*",
+                f"*{name} does nothing in particular. The nothing feels full.*",
+                f"*You sit with {name} and the Loom hums faintly in the distance. {name} doesn't seem surprised.*",
+            ],
+        }
+        tier = rarity if rarity in PLAY_LINES else "common"
+        play_line = _r.choice(PLAY_LINES[tier])
 
-        PLAY_LINES = [
-            f"*{name} chases something that isn't there, then pretends it wasn't doing that.*",
-            f"*You sit with {name} for a while. It doesn't move much. That seems to be the point.*",
-            f"*{name} does something you can't quite describe. You feel like you both understood something.*",
-            f"*{name} leans against you for exactly three seconds, then walks away like it didn't happen.*",
-            f"*You bring {name} somewhere it hasn't been. It sniffs everything. Twice.*",
-        ]
-        import random as _r
-        play_line = _r.choice(PLAY_LINES)
+        desc = (
+            f"{play_line}\n\n"
+            f"😊 **+{PLAY_GAIN} happiness** → `{new_happiness}/100`\n"
+            f"✨ **+{EXP_GAIN} EXP**"
+        )
+        if found_item:
+            desc += f"\n🎁 **Found:** {found_item[1]}! Added to your inventory."
+        if new_happiness < 50:
+            desc += "\n\n*Your beast could use more time together. Try `/shop` for happiness items.*"
 
-        if already_full:
-            desc = f"*{name} is already as happy as can be — but they don't mind the company.*\n\n😊 Happiness: `100/100`"
-        else:
-            desc = (
-                f"{play_line}\n\n"
-                f"😊 **+{PLAY_GAIN} happiness** → `{new_happiness}/100`"
-                + ("\n\n*Use `/shop` to buy Brambleberries or Sugarsprout Cupcakes for more happiness boosts!*"
-                   if new_happiness < 50 else "")
-            )
+        embed = discord.Embed(title=f"🐾 Time with {name}", description=desc, color=COLORS["success"])
+        if beast_data.get("image_url"):
+            embed.set_thumbnail(url=beast_data["image_url"])
+        embed.set_footer(text="ChibiBeasts 🐾  •  /play again in 2 hours")
+        await interaction.followup.send(embed=embed)
 
-        await interaction.followup.send(embed=discord.Embed(
-            title=f"🐾 Playing with {name}",
-            description=desc,
-            color=COLORS["success"]
-        ))
+        # Track quest event
+        from utils.progress import track_quest_event as _tqe, unlock_simple_achievement as _ua
+        await _tqe(interaction.user.id, "use_item")  # counts as interaction
+        await _ua(interaction.user.id, "first_play") if not _play_last else None
 
     # ── /history ──────────────────────────────────────────────────────────
     @app_commands.command(name="history", description="View your recent battle, raid, and trade history 📜")

@@ -273,6 +273,10 @@ async def _run_migrations():
         "ALTER TABLE guild_sanctuary ADD COLUMN arcane_library INTEGER DEFAULT 0",
         "ALTER TABLE guild_sanctuary ADD COLUMN raid_altar INTEGER DEFAULT 0",
         "ALTER TABLE guild_sanctuary ADD COLUMN beast_market_stall INTEGER DEFAULT 0",
+        # New engagement columns
+        "ALTER TABLE players ADD COLUMN challenge_last_at REAL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN ultimate_charges INTEGER DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN play_last_at REAL DEFAULT 0",
     ]
 
     # Beast Market table

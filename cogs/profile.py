@@ -95,15 +95,59 @@ class Profile(commands.Cog):
             party_status = f"\n💀 `{len(ko_in_party)}` beast{'s' if len(ko_in_party)>1 else ''} recovering in raid party"
 
         embed.set_thumbnail(url=target.display_avatar.url)
+        # Sanctuary active bonuses
+        sanctuary_status = ""
+        if interaction.guild:
+            try:
+                async with aiosqlite.connect("db/chibibeast.db") as _sdb:
+                    _sdb.row_factory = aiosqlite.Row
+                    async with _sdb.execute("SELECT * FROM guild_sanctuary WHERE guild_id = ?", (interaction.guild.id,)) as _sc:
+                        _sanc = await _sc.fetchone()
+                if _sanc:
+                    _sanc = dict(_sanc)
+                    _bonuses = []
+                    if _sanc.get("training_grounds"): _bonuses.append("⚒️ -10% train cost")
+                    if _sanc.get("arcane_library"):   _bonuses.append("📚 +15% EXP")
+                    if _sanc.get("raid_altar"):        _bonuses.append("⚔️ +10% raid dmg")
+                    if _sanc.get("celestial_observatory"): _bonuses.append("🔭 +2% rare encounters")
+                    if _bonuses:
+                        sanctuary_status = "\n🏛️ **Sanctuary:** " + " · ".join(_bonuses)
+            except Exception:
+                pass
+
         embed.add_field(
             name="🗺️ Explore",
-            value=explore_status + party_status,
+            value=explore_status + party_status + sanctuary_status,
             inline=False
         )
         embed.set_footer(text="ChibiBeasts 🐾  •  /collection to see all beasts")
 
-        # Show new player guide for lv1 players with <=1 beast viewing own profile
+        # Questline nudge for own profile
+        nudge_embed = None
         is_own = target.id == interaction.user.id
+        if is_own:
+            try:
+                from cogs.questline import get_quest_state as _gqs, load_questline as _lql
+                from utils.db import load_npcs as _ln
+                _qstate = await _gqs(interaction.user.id)
+                _curr_ch = _qstate.get("current_chapter", "")
+                if _curr_ch:
+                    _ql = _lql()
+                    _ch = _ql["chapters"].get(_curr_ch, {})
+                    if _ch:
+                        _npc = _ln().get(_ch.get("npc",""), {})
+                        nudge_embed = discord.Embed(
+                            description=(
+                                f"{_npc.get('emoji','📖')} **{_npc.get('name','your guide')}** is waiting — "
+                                f"*{_ch['name']}* is in progress.\n"
+                                f"Use `/questline` to check your objectives."
+                            ),
+                            color=COLORS["legendary"]
+                        )
+            except Exception:
+                pass
+
+        # Show new player guide for lv1 players with <=1 beast viewing own profile
         if is_own and player["level"] == 1 and len(beasts) <= 1:
             guide_lines = [
                 "*The Loom has noted your arrival. Here is what to do first:*",
@@ -115,7 +159,7 @@ class Profile(commands.Cog):
                 "**`/questline`** — Follow the main story for big rewards.",
                 "**`/daily`** — Claim free gold and shards once per day.",
                 "",
-                "*Use `/help` to browse all commands.*",
+                "*Use `/guide` to browse all commands.*",
             ]
             guide = discord.Embed(
                 title="Where to Start",
@@ -123,9 +167,15 @@ class Profile(commands.Cog):
                 color=COLORS["success"]
             )
             guide.set_footer(text="This guide disappears once you level up")
-            await interaction.followup.send(embeds=[embed, guide])
+            embeds = [embed, guide]
+            if nudge_embed:
+                embeds.append(nudge_embed)
+            await interaction.followup.send(embeds=embeds)
         else:
-            await interaction.followup.send(embed=embed)
+            embeds = [embed]
+            if nudge_embed:
+                embeds.append(nudge_embed)
+            await interaction.followup.send(embeds=embeds if len(embeds) > 1 else embeds[0])
 
     @app_commands.command(name="collection", description="View your ChibiBeast collection 🐾")
     async def collection(self, interaction: discord.Interaction):

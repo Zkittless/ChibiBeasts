@@ -178,7 +178,7 @@ HATCH_RATES = {
 EGG_PRICES = {k: v["price"] for k, v in HATCH_EGGS.items()}
 EGG_NAMES  = {k: v["name"]  for k, v in HATCH_EGGS.items()}
 
-EXPLORE_COOLDOWN = 3600  # 1 hour in seconds
+EXPLORE_COOLDOWN = 1800  # 30 minutes in seconds
 # No longer using in-memory dict — cooldowns now persist via players.explore_last_at
 
 def roll_rarity(rates: dict) -> str:
