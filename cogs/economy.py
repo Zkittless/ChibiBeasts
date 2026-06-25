@@ -400,6 +400,8 @@ class Economy(commands.Cog):
 
             await db.execute("DELETE FROM beast_market WHERE id = ?", (listing["id"],))
             await db.commit()
+        from utils.db import renumber_beasts as _renumber
+        await _renumber(interaction.user.id)
 
         bd   = get_beast_data(listing["beast_id"]) or {}
         name = listing.get("nickname") or bd.get("name", "?")
@@ -579,6 +581,9 @@ class Economy(commands.Cog):
                                     new_num = (await _c.fetchone())[0]
                                 await _db.execute("UPDATE player_beasts SET player_number = ? WHERE id = ?", (new_num, lst["beast_row_id"]))
                                 await _db.commit()
+                            from utils.db import renumber_beasts as _renumber
+                            await _renumber(uid)                      # buyer
+                            await _renumber(lst["seller_id"])         # seller
                             bdd = get_beast_data(lst["beast_id"]) or {}
                             nm  = lst.get("nickname") or bdd.get("name","?")
                             re  = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")

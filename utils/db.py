@@ -273,10 +273,6 @@ async def _run_migrations():
         "ALTER TABLE guild_sanctuary ADD COLUMN arcane_library INTEGER DEFAULT 0",
         "ALTER TABLE guild_sanctuary ADD COLUMN raid_altar INTEGER DEFAULT 0",
         "ALTER TABLE guild_sanctuary ADD COLUMN beast_market_stall INTEGER DEFAULT 0",
-        # New engagement columns
-        "ALTER TABLE players ADD COLUMN challenge_last_at REAL DEFAULT 0",
-        "ALTER TABLE players ADD COLUMN ultimate_charges INTEGER DEFAULT 0",
-        "ALTER TABLE players ADD COLUMN play_last_at REAL DEFAULT 0",
     ]
 
     # Beast Market table
@@ -487,13 +483,6 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
     # Apply disposition modifier to stats before storing
     final_stats = apply_disposition(beast_data["base_stats"], disposition)
 
-    # Apply stat growth if caught at a level above 1
-    start_level = max(1, int(beast_data.get("level", 1)))
-    if start_level > 1:
-        growth = calc_stat_growth({"rarity": beast_data["rarity"], "caught_from": "wild"}, start_level - 1)
-        for stat in ["hp", "attack", "defense", "speed", "mana"]:
-            final_stats[stat] = final_stats[stat] + growth.get(stat, 0)
-
     async with aiosqlite.connect(DB_PATH) as db:
         # Assign next sequential player_number for this user
         async with db.execute(
@@ -508,7 +497,7 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
              rarity, disposition, caught_from, player_number)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            user_id, beast_data["id"], start_level,
+            user_id, beast_data["id"], 1,
             final_stats["hp"], final_stats["hp"],
             final_stats["attack"], final_stats["defense"],
             final_stats["speed"],
@@ -708,6 +697,23 @@ def get_beast_exp_for_level(beast_row: dict, level: int) -> int:
     """
     is_starter = beast_row.get("caught_from") == "starter"
     return calc_exp_for_level(level) if is_starter else calc_exp_for_level_wild(level)
+
+async def renumber_beasts(user_id: int) -> None:
+    """Renumber all beasts sequentially (1..N) ordered by catch order (id).
+    Called after release, trade, or market sale so collection numbers stay clean."""
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute(
+            "SELECT id FROM player_beasts WHERE user_id = ? ORDER BY id ASC",
+            (user_id,)
+        ) as c:
+            rows = await c.fetchall()
+        for new_num, (row_id,) in enumerate(rows, start=1):
+            await db.execute(
+                "UPDATE player_beasts SET player_number = ? WHERE id = ?",
+                (new_num, row_id)
+            )
+        await db.commit()
+
 
 async def get_beast_by_player_number(user_id: int, player_number: int) -> dict | None:
     """Resolve a player_number to a player_beasts row. Falls back to global id for old beasts."""

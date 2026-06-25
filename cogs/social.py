@@ -213,6 +213,10 @@ class Trading(commands.Cog):
                     )
                     await db.commit()
 
+                from utils.db import renumber_beasts as _renumber
+                await _renumber(interaction.user.id)
+                await _renumber(member.id)
+
                 await inv_interaction.followup.send(embed=discord.Embed(
                     title="🤝 Trade Complete!",
                     description=f"**{your_name}** has been transferred to **{member.display_name}**!",

@@ -710,6 +710,8 @@ class Utilities(commands.Cog):
             await db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?",
                              (refund, interaction.user.id))
             await db.commit()
+        from utils.db import renumber_beasts as _renumber
+        await _renumber(interaction.user.id)
 
         # Lore-flavored release message
         RELEASE_LINES = {
