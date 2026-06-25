@@ -317,9 +317,7 @@ class HatchView(discord.ui.View):
         async with aiosqlite.connect("db/chibibeast.db") as db:
             await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (self.player_id,))
             await db.execute(
-                "UPDATE player_beasts SET is_active = 1 WHERE id = ("
-                "SELECT id FROM player_beasts WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1"
-                ")",
+                "UPDATE player_beasts SET is_active = 1 WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1",
                 (self.player_id, self.beast_data["id"])
             )
             await db.commit()
@@ -385,7 +383,7 @@ class Hatch(commands.Cog):
         if beast.get("image_url"):
             embed.set_image(url=beast["image_url"])
 
-        embed.set_footer(text="ChibiBeasts 🐾  •  Use /beast to view your collection")
+        embed.set_footer(text="ChibiBeasts 🐾  •  Use /collection to view your beasts")
         return embed
 
     @app_commands.command(name="hatch", description="Hatch an instant egg from your inventory 🥚")
@@ -421,8 +419,7 @@ class Hatch(commands.Cog):
         from utils.modals import QuantityModal
 
         async def do_hatch(modal_interaction: discord.Interaction, quantity: int):
-            if not modal_interaction.response.is_done():
-                await modal_interaction.response.defer()
+            await modal_interaction.response.defer()
 
             # Deduct all at once atomically
             async with aiosqlite.connect("db/chibibeast.db") as db:
@@ -544,17 +541,13 @@ class Hatch(commands.Cog):
             await notify_quest_completions(modal_interaction.channel, completed_quests)
             await notify_unlocks(modal_interaction.channel, modal_interaction.user, more_unlocked)
 
-        # If only 1 egg, skip the modal and hatch directly
-        if inv_row["quantity"] == 1:
-            await do_hatch(interaction, 1)
-        else:
-            from utils.modals import QuantityModal
-            await interaction.response.send_modal(QuantityModal(
-                title=f"Hatch {egg_def['name']}",
-                item_name=egg_def["name"],
-                max_quantity=inv_row["quantity"],
-                callback=do_hatch
-            ))
+        from utils.modals import QuantityModal
+        await interaction.response.send_modal(QuantityModal(
+            title=f"Hatch {egg_def['name']}",
+            item_name=egg_def["name"],
+            max_quantity=inv_row["quantity"],
+            callback=do_hatch
+        ))
 
 
 
