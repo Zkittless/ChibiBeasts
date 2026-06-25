@@ -904,44 +904,6 @@ class Utilities(commands.Cog):
 
 
     # ── /shard_shop ───────────────────────────────────────────────────────
-async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str:
-    """Execute the side-effect of a shard shop purchase. Returns result description string."""
-    import time as _time
-    item_type = shop_item["type"]
-    result_desc = ""
-    if item_type == "explore_boost":
-        boost_until = _time.time() + (3 * 3600)
-        await db.execute("UPDATE players SET incense_active_until = ? WHERE user_id = ?", (boost_until, user_id))
-        result_desc = "Your next 3 `/explore` runs have boosted Divine odds in the Celestial Loom!"
-    elif item_type == "incubation_skip":
-        from datetime import datetime, timezone, timedelta
-        async with db.execute(
-            "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
-            (user_id,)
-        ) as c:
-            egg = await c.fetchone()
-        if egg:
-            new_ready = datetime.strptime(egg["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc) - timedelta(hours=6)
-            await db.execute("UPDATE incubating_eggs SET ready_at = ? WHERE id = ?", (new_ready.strftime("%Y-%m-%d %H:%M:%S"), egg["id"]))
-            result_desc = f"**{egg['egg_name']}** incubation reduced by 6 hours!"
-        else:
-            result_desc = "No eggs currently incubating — the fragment is yours to use later."
-    elif item_type == "key":
-        await db.execute("UPDATE players SET brew_active = brew_active + 1 WHERE user_id = ?", (user_id,))
-        result_desc = "Prism Key added. Your next `/explore` in the Celestial Loom will have a 30% Divine rate."
-    elif item_type in ["cosmetic", "reroll"]:
-        result_desc = f"**{shop_item['name']}** is now yours."
-    elif item_type == "grant_item":
-        grant_id = shop_item["grant_item_id"]
-        async with db.execute("SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?", (user_id, grant_id)) as c:
-            inv_row = await c.fetchone()
-        if inv_row:
-            await db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (inv_row["id"],))
-        else:
-            await db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (user_id, grant_id))
-        result_desc = "Added to your inventory. Use `/ancient` to summon."
-    return result_desc
-
 
     # ── /daily ────────────────────────────────────────────────────────────
     @app_commands.command(name="daily", description="Claim your daily reward and apply sanctuary bonuses 🌅")
@@ -1876,5 +1838,46 @@ async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str
         await interaction.followup.send(embed=await build_embed(party), view=view)
 
 
+
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Utilities(bot))
+
+
+async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str:
+    """Execute the side-effect of a shard shop purchase. Returns result description string."""
+    import time as _time
+    item_type = shop_item["type"]
+    result_desc = ""
+    if item_type == "explore_boost":
+        boost_until = _time.time() + (3 * 3600)
+        await db.execute("UPDATE players SET incense_active_until = ? WHERE user_id = ?", (boost_until, user_id))
+        result_desc = "Your next 3 `/explore` runs have boosted Divine odds in the Celestial Loom!"
+    elif item_type == "incubation_skip":
+        from datetime import datetime, timezone, timedelta
+        async with db.execute(
+            "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
+            (user_id,)
+        ) as c:
+            egg = await c.fetchone()
+        if egg:
+            new_ready = datetime.strptime(egg["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc) - timedelta(hours=6)
+            await db.execute("UPDATE incubating_eggs SET ready_at = ? WHERE id = ?", (new_ready.strftime("%Y-%m-%d %H:%M:%S"), egg["id"]))
+            result_desc = f"**{egg['egg_name']}** incubation reduced by 6 hours!"
+        else:
+            result_desc = "No eggs currently incubating — the fragment is yours to use later."
+    elif item_type == "key":
+        await db.execute("UPDATE players SET brew_active = brew_active + 1 WHERE user_id = ?", (user_id,))
+        result_desc = "Prism Key added. Your next `/explore` in the Celestial Loom will have a 30% Divine rate."
+    elif item_type in ["cosmetic", "reroll"]:
+        result_desc = f"**{shop_item['name']}** is now yours."
+    elif item_type == "grant_item":
+        grant_id = shop_item["grant_item_id"]
+        async with db.execute("SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?", (user_id, grant_id)) as c:
+            inv_row = await c.fetchone()
+        if inv_row:
+            await db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (inv_row["id"],))
+        else:
+            await db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (user_id, grant_id))
+        result_desc = "Added to your inventory. Use `/ancient` to summon."
+    return result_desc
