@@ -421,7 +421,8 @@ class Hatch(commands.Cog):
         from utils.modals import QuantityModal
 
         async def do_hatch(modal_interaction: discord.Interaction, quantity: int):
-            await modal_interaction.response.defer()
+            if not modal_interaction.response.is_done():
+                await modal_interaction.response.defer()
 
             # Deduct all at once atomically
             async with aiosqlite.connect("db/chibibeast.db") as db:
@@ -543,9 +544,8 @@ class Hatch(commands.Cog):
             await notify_quest_completions(modal_interaction.channel, completed_quests)
             await notify_unlocks(modal_interaction.channel, modal_interaction.user, more_unlocked)
 
-        # Skip modal if only 1 egg — hatch immediately
+        # If only 1 egg, skip the modal and hatch directly
         if inv_row["quantity"] == 1:
-            await interaction.response.defer()
             await do_hatch(interaction, 1)
         else:
             from utils.modals import QuantityModal
