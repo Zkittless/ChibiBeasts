@@ -624,6 +624,24 @@ class Dev(commands.Cog):
             ephemeral=True
         )
 
+    # ── /dev reset_cooldowns ──────────────────────────────────────────────
+    @dev_group.command(name="reset_cooldowns", description="[DEV] Reset explore and challenge cooldowns for a player")
+    @app_commands.describe(member="Target player (defaults to you)")
+    @dev_only()
+    async def reset_cooldowns(self, interaction: discord.Interaction, member: discord.Member = None):
+        await interaction.response.defer(ephemeral=True)
+        target = member or interaction.user
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "UPDATE players SET explore_last_at = 0, challenge_last_at = 0 WHERE user_id = ?",
+                (target.id,)
+            )
+            await db.commit()
+        await interaction.followup.send(
+            f"✅ Explore and challenge cooldowns reset for **{target.display_name}**. Both show as ready in `/profile`.",
+            ephemeral=True
+        )
+
 
 async def setup(bot: commands.Bot):
     import discord as _d
