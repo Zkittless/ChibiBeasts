@@ -156,23 +156,13 @@ async def main():
         await bot.login(os.getenv("DISCORD_TOKEN"))
 
         # ── Sync strategy ──────────────────────────────────────────────────
-        # 1. Global sync — propagates to all servers (up to 1hr for new ones)
-        # 2. Home guild sync — instant for your main server
-        # 3. All current guilds — instant for every server already joined
+        # Global sync only on startup — copying to guild AND global causes duplicates.
+        # Use !sync guild in your server for instant updates after deploys.
         try:
             global_synced = await bot.tree.sync()
             print(f"✅ Global sync: {len(global_synced)} command(s)")
         except Exception as e:
             print(f"❌ Global sync failed: {e}")
-
-        if HOME_GUILD:
-            try:
-                home = discord.Object(id=HOME_GUILD)
-                bot.tree.copy_global_to(guild=home)
-                guild_synced = await bot.tree.sync(guild=home)
-                print(f"✅ Home guild synced instantly: {len(guild_synced)} command(s)")
-            except Exception as e:
-                print(f"❌ Home guild sync failed: {e}")
 
         await bot.connect()
 
