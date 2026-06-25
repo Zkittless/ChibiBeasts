@@ -622,10 +622,18 @@ class Dev(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    import os, discord as _discord
+    import os
     home_id = os.getenv("GUILD_ID", "")
     if home_id:
-        guild_obj = _discord.Object(id=int(home_id))
-        await bot.add_cog(Dev(bot), guilds=[guild_obj])
+        import discord as _d
+        # Register dev commands to home guild only — not global
+        guild = _d.Object(id=int(home_id))
+        await bot.add_cog(Dev(bot), guilds=[guild])
+        # Also register the 3 standalone commands to guild only
+        for cmd in ["give_ouroboros", "reset_shard_shop", "set_beast_level"]:
+            tree_cmd = bot.tree.get_command(cmd)
+            if tree_cmd:
+                bot.tree.remove_command(cmd)
+                bot.tree.add_command(tree_cmd, guild=guild)
     else:
         await bot.add_cog(Dev(bot))
