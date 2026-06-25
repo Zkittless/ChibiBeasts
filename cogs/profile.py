@@ -101,7 +101,31 @@ class Profile(commands.Cog):
             inline=False
         )
         embed.set_footer(text="ChibiBeasts 🐾  •  /collection to see all beasts")
-        await interaction.followup.send(embed=embed)
+
+        # Show new player guide for lv1 players with <=1 beast viewing own profile
+        is_own = target.id == interaction.user.id
+        if is_own and player["level"] == 1 and len(beasts) <= 1:
+            guide_lines = [
+                "*The Loom has noted your arrival. Here is what to do first:*",
+                "",
+                "**`/dailies`** — 4 quests reset every day. Best source of early gold.",
+                "**`/explore`** — Visit the Whispering Woods to catch wild beasts.",
+                "**`/shop`** — Buy and hatch a Common Egg for a new companion.",
+                "**`/sparr`** — Spar with an NPC to earn EXP and level up.",
+                "**`/questline`** — Follow the main story for big rewards.",
+                "**`/daily`** — Claim free gold and shards once per day.",
+                "",
+                "*Use `/help` to browse all commands.*",
+            ]
+            guide = discord.Embed(
+                title="Where to Start",
+                description="\n".join(guide_lines),
+                color=COLORS["success"]
+            )
+            guide.set_footer(text="This guide disappears once you level up")
+            await interaction.followup.send(embeds=[embed, guide])
+        else:
+            await interaction.followup.send(embed=embed)
 
     @app_commands.command(name="collection", description="View your ChibiBeast collection 🐾")
     async def collection(self, interaction: discord.Interaction):
