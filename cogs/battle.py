@@ -137,6 +137,7 @@ def build_pve_beast_state(beast_data: dict, level: int) -> dict:
     return {
         "id":          None,              # no DB row
         "name":        beast_data["name"],
+        "level":       level,
         "hp":          hp,
         "max_hp":      hp,
         "attack":      atk,
@@ -420,15 +421,22 @@ async def run_pve_battle(
         # Move selection
         if is_player_turn:
             # Show the battle state and present move buttons to the player
+            p_level = player_beast_row.get("level", 1)
+            e_level = enemy_state.get("level", 1)
+            p_status = f" ‹{STATUS_EFFECTS.get(player_state['status'],{}).get('emoji','?')}›" if player_state.get("status") else ""
+            e_status = f" ‹{STATUS_EFFECTS.get(enemy_state['status'],{}).get('emoji','?')}›" if enemy_state.get("status") else ""
+
             state_embed = discord.Embed(
                 title=f"⚔️ {battle_title} — Turn {turn}",
                 description=(
-                    f"**Your {player_state['name']}**\n"
-                    f"{hp_bar(player_state['hp'], player_state['max_hp'])}\n\n"
-                    f"**{enemy_state['name']}**\n"
-                    f"{hp_bar(enemy_state['hp'], enemy_state['max_hp'])}"
+                    f"**Your {player_state['name']}** Lv.{p_level}{p_status}\n"
+                    f"{hp_bar(player_state['hp'], player_state['max_hp'])}\n"
+                    f"`{player_state['attack']}ATK` `{player_state['defense']}DEF` `{player_state['speed']}SPD`\n\n"
+                    f"**{enemy_state['name']}** Lv.{e_level}{e_status}\n"
+                    f"{hp_bar(enemy_state['hp'], enemy_state['max_hp'])}\n"
+                    f"`{enemy_state['attack']}ATK` `{enemy_state['defense']}DEF` `{enemy_state['speed']}SPD`"
                 ),
-                color=COLORS["info"]
+                color=COLORS["epic"]
             )
             if battle_log:
                 state_embed.add_field(name="📜 Last Turn", value="\n".join(battle_log[-3:]), inline=False)
