@@ -148,6 +148,7 @@ def build_pve_beast_state(beast_data: dict, level: int) -> dict:
         "moves":       beast_data["moves"],
         "ultimate":    beast_data["ultimate"],
         "beast_type":  beast_data.get("type", ""),
+        "image_url":   beast_data.get("image_url", ""),
         # Divine passive (if applicable)
         **({} if not beast_data.get("divine_passive") else
            {"divine_passive": beast_data["divine_passive"],
@@ -218,6 +219,7 @@ async def run_pve_battle(
         "moves":       player_beast_data["moves"],
         "ultimate":    player_beast_data["ultimate"],
         "beast_type":  player_beast_data.get("type", ""),
+        "image_url":   player_beast_data.get("image_url", ""),
         **({} if not player_beast_data.get("divine_passive") else
            {"divine_passive": player_beast_data["divine_passive"],
             "divine_passive_id": player_beast_data["divine_passive"].get("passive_id"),
@@ -415,10 +417,16 @@ async def run_pve_battle(
                     f"**{enemy_state['name']}**\n"
                     f"{hp_bar(enemy_state['hp'], enemy_state['max_hp'])}"
                 ),
-                color=COLORS["info"]
+                color=COLORS["epic"]
             )
             if battle_log:
                 state_embed.add_field(name="📜 Last Turn", value="\n".join(battle_log[-3:]), inline=False)
+            # Show enemy beast image in battle embed
+            if enemy_state.get("image_url"):
+                state_embed.set_image(url=enemy_state["image_url"])
+            # Show player beast as thumbnail
+            if player_state.get("image_url"):
+                state_embed.set_thumbnail(url=player_state["image_url"])
             state_embed.set_footer(text="Your turn — Choose a move!")
 
             move_view = MoveView(
@@ -501,7 +509,6 @@ async def run_pve_battle(
             defender_state["hp"] = max(0, defender_state["hp"] - damage)
 
         # ── On-hit attacker gear effects ──────────────────────────────────────
-        skip_attack = False  # True when attack is fully negated (e.g. stun, miss)
         if damage > 0 and not skip_attack:
             # Lifesteal rune — log it
             if attacker_state.get("_rune_lifesteal") and damage > 0:
@@ -2057,16 +2064,29 @@ class Battle(commands.Cog):
             ) as c:
                 player_perks = [dict(r) for r in await c.fetchall()]
 
-        npc_emoji = npc.get("emoji", "🐾")
-        await interaction.followup.send(embed=discord.Embed(
-            title=f"{npc_emoji} Sparring with {npc['name']}",
+        npc_emoji   = npc.get("emoji", "🐾")
+        player_name = active_row.get("nickname") or active_beast_data.get("name", "?")
+        player_img  = active_beast_data.get("image_url", "")
+        enemy_img   = companion_data.get("image_url", "")
+        p_rarity    = RARITY_EMOJI.get(active_row["rarity"], "⚪")
+        e_rarity    = RARITY_EMOJI.get(companion_data.get("rarity","common"), "⚪")
+
+        intro_embed = discord.Embed(
+            title=f"{npc_emoji} {npc['name']} challenges you to a spar!",
             description=(
-                f"*{npc.get('first_meeting', '').split('*')[1] if '*' in npc.get('first_meeting','') else ''}*\n\n"
-                f"**{npc['name']}** sends out **{companion_data['name']}** (Lv.{npc_level})!\n"
+                f"{p_rarity} **{player_name}** Lv.{active_row['level']} "
+                f"**vs** "
+                f"{e_rarity} **{companion_data['name']}** Lv.{npc_level}\n\n"
                 f"*{companion_data.get('description','')}*"
             ),
-            color=COLORS["info"]
-        ))
+            color=COLORS.get(companion_data.get("rarity","common"), COLORS["info"])
+        )
+        if enemy_img:
+            intro_embed.set_image(url=enemy_img)
+        if player_img:
+            intro_embed.set_thumbnail(url=player_img)
+        intro_embed.set_footer(text=f"ChibiBeasts 🐾  •  {npc['name']} — {npc.get('location','')}")
+        await interaction.followup.send(embed=intro_embed)
 
         # Win/loss dialogue per NPC — pulled from their established voice
         NPC_WIN_LINES = {
