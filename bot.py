@@ -111,33 +111,12 @@ async def main():
         await load_cogs()
         await bot.login(os.getenv("DISCORD_TOKEN"))
 
-        home_id = os.getenv("GUILD_ID", "")
-        home_guild = discord.Object(id=int(home_id)) if home_id else None
-
-        # Remove dev commands from global tree so they never appear globally
-        for cmd_name in ["dev", "give_ouroboros", "reset_shard_shop", "set_beast_level"]:
-            cmd = bot.tree.get_command(cmd_name)
-            if cmd:
-                bot.tree.remove_command(cmd_name)
-                print(f"🔒 Removed {cmd_name} from global tree")
-                # Re-add to home guild only
-                if home_guild:
-                    bot.tree.add_command(cmd, guild=home_guild)
-
-        # Global sync — dev commands are now excluded
+        # Global sync — dev commands are protected by dev_only() check
         try:
             synced = await bot.tree.sync()
             print(f"✅ Global sync: {len(synced)} command(s)")
         except Exception as e:
             print(f"❌ Sync failed: {e}")
-
-        # Sync dev commands to home guild
-        if home_guild:
-            try:
-                guild_synced = await bot.tree.sync(guild=home_guild)
-                print(f"✅ Home guild sync: {len(guild_synced)} command(s) (includes dev)")
-            except Exception as e:
-                print(f"❌ Home guild sync failed: {e}")
 
         await bot.connect()
 

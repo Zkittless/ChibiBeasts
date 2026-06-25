@@ -64,7 +64,7 @@ class Dev(commands.Cog):
     )
 
     # ── /dev give_gold ────────────────────────────────────────────────────
-    @dev_group.command(name="give_gold", description="Give gold to a player")
+    @dev_group.command(name="give_gold", description="[DEV] Give gold to a player")
     @app_commands.describe(member="Target player", amount="Amount of gold")
     @dev_only()
     async def give_gold(self, interaction: discord.Interaction, member: discord.Member, amount: int):
@@ -78,7 +78,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev give_item ────────────────────────────────────────────────────
-    @dev_group.command(name="give_item", description="Give an item to a player")
+    @dev_group.command(name="give_item", description="[DEV] Give an item to a player")
     @app_commands.describe(member="Target player", item_id="Item ID (e.g. brambleberries)", quantity="Quantity")
     @dev_only()
     async def give_item(self, interaction: discord.Interaction, member: discord.Member, item_id: str, quantity: int = 1):
@@ -103,7 +103,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev give_material ────────────────────────────────────────────────
-    @dev_group.command(name="give_material", description="Give a crafting material to a player")
+    @dev_group.command(name="give_material", description="[DEV] Give a crafting material to a player")
     @app_commands.describe(member="Target player", material_id="Material ID (e.g. pixie_silk)", quantity="Quantity")
     @dev_only()
     async def give_material(self, interaction: discord.Interaction, member: discord.Member, material_id: str, quantity: int = 1):
@@ -144,7 +144,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev give_beast ───────────────────────────────────────────────────
-    @dev_group.command(name="give_beast", description="Add any beast to a player's collection")
+    @dev_group.command(name="give_beast", description="[DEV] Add any beast to a player's collection")
     @app_commands.describe(member="Target player", beast_id="Beast ID (e.g. prismite, twine)")
     @dev_only()
     async def give_beast(self, interaction: discord.Interaction, member: discord.Member, beast_id: str):
@@ -191,7 +191,7 @@ class Dev(commands.Cog):
             ),
             ephemeral=True
         )
-    @dev_group.command(name="give_shards", description="Give Celestial Shards to a player")
+    @dev_group.command(name="give_shards", description="[DEV] Give Celestial Shards to a player")
     @app_commands.describe(member="Target player", amount="Amount of shards")
     @dev_only()
     async def give_shards(self, interaction: discord.Interaction, member: discord.Member, amount: int):
@@ -204,7 +204,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev give_guild_tokens ────────────────────────────────────────────
-    @dev_group.command(name="give_guild_tokens", description="Add guild tokens to a player's guild")
+    @dev_group.command(name="give_guild_tokens", description="[DEV] Add guild tokens to a player's guild")
     @app_commands.describe(member="Any member of the target guild", amount="Tokens to add")
     @dev_only()
     async def give_guild_tokens(self, interaction: discord.Interaction, member: discord.Member, amount: int):
@@ -234,7 +234,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev set_guild_tokens ─────────────────────────────────────────────
-    @dev_group.command(name="set_guild_tokens", description="Set a guild's token count directly")
+    @dev_group.command(name="set_guild_tokens", description="[DEV] Set a guild's token count directly")
     @app_commands.describe(member="Any member of the target guild", amount="Token amount to set")
     @dev_only()
     async def set_guild_tokens(self, interaction: discord.Interaction, member: discord.Member, amount: int):
@@ -262,7 +262,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev reset_sanctuary ──────────────────────────────────────────────
-    @dev_group.command(name="reset_sanctuary", description="Reset a guild's sanctuary upgrades")
+    @dev_group.command(name="reset_sanctuary", description="[DEV] Reset a guild's sanctuary upgrades")
     @app_commands.describe(member="Any member of the target guild")
     @dev_only()
     async def reset_sanctuary(self, interaction: discord.Interaction, member: discord.Member):
@@ -291,7 +291,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev hatch_egg ────────────────────────────────────────────────────
-    @dev_group.command(name="hatch_egg", description="Instantly hatch a player's oldest incubating egg")
+    @dev_group.command(name="hatch_egg", description="[DEV] Instantly hatch a player's oldest incubating egg")
     @app_commands.describe(member="Target player", egg_id="Specific egg ID to hatch (leave blank for oldest)")
     @dev_only()
     async def hatch_egg(self, interaction: discord.Interaction, member: discord.Member, egg_id: int = None):
@@ -346,7 +346,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev set_level ────────────────────────────────────────────────────
-    @dev_group.command(name="set_level", description="Set a player's trainer level")
+    @dev_group.command(name="set_level", description="[DEV] Set a player's trainer level")
     @app_commands.describe(member="Target player", level="Target level")
     @dev_only()
     async def set_level(self, interaction: discord.Interaction, member: discord.Member, level: int):
@@ -361,7 +361,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev reset ────────────────────────────────────────────────────────
-    @dev_group.command(name="reset", description="Fully reset a player's account (cannot be undone)")
+    @dev_group.command(name="reset", description="[DEV] Fully reset a player's account (cannot be undone)")
     @app_commands.describe(member="Player to reset")
     @dev_only()
     async def reset(self, interaction: discord.Interaction, member: discord.Member):
@@ -484,7 +484,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev reset_progress ───────────────────────────────────────────────
-    @dev_group.command(name="reset_progress", description="Reset only daily quests and cooldowns (keep beasts/gold)")
+    @dev_group.command(name="reset_progress", description="[DEV] Reset only daily quests and cooldowns (keep beasts/gold)")
     @app_commands.describe(member="Target player")
     @dev_only()
     async def reset_progress(self, interaction: discord.Interaction, member: discord.Member):
@@ -503,7 +503,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev info ─────────────────────────────────────────────────────────
-    @dev_group.command(name="info", description="View raw account data for a player")
+    @dev_group.command(name="info", description="[DEV] View raw account data for a player")
     @app_commands.describe(member="Target player")
     @dev_only()
     async def info(self, interaction: discord.Interaction, member: discord.Member):
@@ -644,10 +644,4 @@ class Dev(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    import discord as _d
-    home_id = os.getenv("GUILD_ID", "")
-    if home_id:
-        guild = _d.Object(id=int(home_id))
-        await bot.add_cog(Dev(bot), guilds=[guild])
-    else:
-        await bot.add_cog(Dev(bot))
+    await bot.add_cog(Dev(bot))
