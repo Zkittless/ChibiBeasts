@@ -389,7 +389,8 @@ class Economy(commands.Cog):
                 "WHERE bm.seller_id = ? AND pb.player_number = ?",
                 (interaction.user.id, beast_id)
             ) as c:
-                listing = await c.fetchone()
+                _row = await c.fetchone()
+                listing = dict(_row) if _row else None
 
             if not listing:
                 return await interaction.followup.send(embed=discord.Embed(
@@ -411,13 +412,14 @@ class Economy(commands.Cog):
     @app_commands.command(name="market", description="Browse beasts listed for sale by other trainers 🏪")
     @app_commands.describe(filter_rarity="Filter by rarity (optional)")
     @app_commands.choices(filter_rarity=[
-        app_commands.Choice(name="All",              value="all"),
-        app_commands.Choice(name="⚪ Common",         value="common"),
-        app_commands.Choice(name="🟢 Uncommon",       value="uncommon"),
-        app_commands.Choice(name="🔵 Rare",           value="rare"),
-        app_commands.Choice(name="🟣 Epic",           value="epic"),
-        app_commands.Choice(name="🟡 Legendary",      value="legendary"),
-        app_commands.Choice(name="🌸 Divine",         value="divine"),
+        app_commands.Choice(name="All",            value="all"),
+        app_commands.Choice(name="📋 My Listings", value="mine"),
+        app_commands.Choice(name="⚪ Common",       value="common"),
+        app_commands.Choice(name="🟢 Uncommon",     value="uncommon"),
+        app_commands.Choice(name="🔵 Rare",         value="rare"),
+        app_commands.Choice(name="🟣 Epic",         value="epic"),
+        app_commands.Choice(name="🟡 Legendary",    value="legendary"),
+        app_commands.Choice(name="🌸 Divine",       value="divine"),
     ])
     async def market(self, interaction: discord.Interaction, filter_rarity: str = "all"):
         await interaction.response.defer()
@@ -425,252 +427,194 @@ class Economy(commands.Cog):
         uid    = interaction.user.id
         now    = datetime.now(timezone.utc).isoformat()
 
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            # Clean expired listings
-            await db.execute("DELETE FROM beast_market WHERE expires_at < ?", (now,))
-            await db.commit()
+        async def fetch_listings(flt):
+            async with aiosqlite.connect(DB_PATH) as db:
+                db.row_factory = aiosqlite.Row
+                await db.execute("DELETE FROM beast_market WHERE expires_at < ?", (now,))
+                await db.commit()
+                if flt == "mine":
+                    sql = (
+                        "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
+                        "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
+                        "p.username AS seller_name FROM beast_market bm "
+                        "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
+                        "JOIN players p ON p.user_id = bm.seller_id "
+                        "WHERE bm.seller_id = ? ORDER BY bm.ask_price ASC LIMIT 50"
+                    )
+                    params = (uid,)
+                elif flt == "all":
+                    sql = (
+                        "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
+                        "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
+                        "p.username AS seller_name FROM beast_market bm "
+                        "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
+                        "JOIN players p ON p.user_id = bm.seller_id "
+                        "WHERE bm.seller_id != ? ORDER BY bm.ask_price ASC LIMIT 50"
+                    )
+                    params = (uid,)
+                else:
+                    sql = (
+                        "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
+                        "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
+                        "p.username AS seller_name FROM beast_market bm "
+                        "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
+                        "JOIN players p ON p.user_id = bm.seller_id "
+                        "WHERE bm.seller_id != ? AND pb.rarity = ? ORDER BY bm.ask_price ASC LIMIT 50"
+                    )
+                    params = (uid, flt)
+                async with db.execute(sql, params) as c:
+                    return [dict(r) for r in await c.fetchall()]
 
-            if filter_rarity == "mine":
-                async with db.execute(
-                    "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
-                    "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
-                    "p.username AS seller_name "
-                    "FROM beast_market bm "
-                    "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
-                    "JOIN players p ON p.user_id = bm.seller_id "
-                    "WHERE bm.seller_id = ? "
-                    "ORDER BY bm.ask_price ASC LIMIT 50",
-                    (uid,)
-                ) as c:
-                    listings = [dict(r) for r in await c.fetchall()]
-            elif filter_rarity == "all":
-                async with db.execute(
-                    "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
-                    "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
-                    "p.username AS seller_name "
-                    "FROM beast_market bm "
-                    "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
-                    "JOIN players p ON p.user_id = bm.seller_id "
-                    "WHERE bm.seller_id != ? "
-                    "ORDER BY bm.ask_price ASC LIMIT 50",
-                    (uid,)
-                ) as c:
-                    listings = [dict(r) for r in await c.fetchall()]
-            else:
-                async with db.execute(
-                    "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
-                    "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
-                    "p.username AS seller_name "
-                    "FROM beast_market bm "
-                    "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
-                    "JOIN players p ON p.user_id = bm.seller_id "
-                    "WHERE bm.seller_id != ? AND pb.rarity = ? "
-                    "ORDER BY bm.ask_price ASC LIMIT 50",
-                    (uid, filter_rarity)
-                ) as c:
-                    listings = [dict(r) for r in await c.fetchall()]
+        listings    = await fetch_listings(filter_rarity)
+        per_page    = 5
+        is_mine     = filter_rarity == "mine"
+        gold_str    = f"💰 Your gold: `{player['gold']:,}g`"
 
+        def build_embed(page, lst, flt):
+            mine_tab = flt == "mine"
+            total_pg = max(1, (len(lst) + per_page - 1) // per_page)
+            desc = ("Your active listings" if mine_tab else gold_str) + f" · {len(lst)} listing(s) · Page {page}/{total_pg}"
+            emb = discord.Embed(
+                title="📋 My Listings" if mine_tab else "🏪 Beast Market",
+                description=desc,
+                color=COLORS["info"] if mine_tab else COLORS["legendary"]
+            )
+            if not lst:
+                emb.description = "*You have no active listings. Use `/list #beast <price>` to sell.*" if mine_tab else "*No beasts on the market right now.*"
+                return emb
+            for listing in lst[(page-1)*per_page : page*per_page]:
+                bd       = get_beast_data(listing["beast_id"]) or {}
+                name     = listing.get("nickname") or bd.get("name", "?")
+                r_emoji  = RARITY_EMOJI.get(listing.get("rarity","common"), "⚪")
+                price    = listing["ask_price"]
+                has_rune = "💎" if listing.get("rune_id") else ""
+                stats    = f"`{listing['attack']}ATK` `{listing['defense']}DEF` `{listing['speed']}SPD` `{listing['max_hp']}HP`"
+                if mine_tab:
+                    val = f"**`{price:,}g`** · Use `/delist {listing['player_number']}` to remove\n" + stats
+                else:
+                    ca  = "✅" if player["gold"] >= price else "❌"
+                    val = f"**`{price:,}g`** {ca} · Seller: {listing.get('seller_name','?')}\n" + stats
+                emb.add_field(name=f"{r_emoji} {name} · Lv.{listing['level']} {has_rune}", value=val, inline=False)
+            emb.set_footer(text="📋 My Listings — /delist to remove" if mine_tab else "Click Buy · /list #beast <price> to sell")
+            return emb
+
+        if not listings and is_mine:
+            return await interaction.followup.send(embed=build_embed(1, [], filter_rarity))
         if not listings:
-            no_msg = "*You have no active listings. Use `/list #beast <price>` to sell.*" if filter_rarity == "mine" else "✦ No beasts on the market right now. Be the first — use `/list #beast <price>`!"
             return await interaction.followup.send(embed=discord.Embed(
-                description=no_msg,
+                description="✦ No beasts on the market right now. Be the first — use `/list #beast <price>`!",
                 color=COLORS["info"]
             ))
 
-        per_page = 5
-        total_pages = max(1, (len(listings) + per_page - 1) // per_page)
-
-        RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine","altered_divine","corrupted","ancient"]
-
-        is_mine = filter_rarity == "mine"
-        gold_display = f"💰 Your gold: `{player['gold']:,}g`"
-
-        def build_market_embed(page: int) -> discord.Embed:
-            desc = ("Your active listings" if is_mine else gold_display) + f" · {len(listings)} listing(s) · Page {page}/{total_pages}"
-            embed = discord.Embed(
-                title="📋 My Listings" if is_mine else "🏪 Beast Market",
-                description=desc,
-                color=COLORS["info"] if is_mine else COLORS["legendary"]
-            )
-            for listing in listings[(page-1)*per_page : page*per_page]:
-                bd      = get_beast_data(listing["beast_id"]) or {}
-                name    = listing.get("nickname") or bd.get("name", "?")
-                rarity  = listing.get("rarity","common")
-                r_emoji = RARITY_EMOJI.get(rarity,"⚪")
-                seller  = listing.get("seller_name","?")
-                price   = listing["ask_price"]
-                can_afford = "✅" if player["gold"] >= price else "❌"
-                has_rune = "💎" if listing.get("rune_id") else ""
-                stats = f"`{listing['attack']}ATK` `{listing['defense']}DEF` `{listing['speed']}SPD` `{listing['max_hp']}HP`"
-                if is_mine:
-                    field_val = f"**`{price:,}g`** · Use `/delist {listing['player_number']}` to remove\n{stats}"
-                else:
-                    field_val = f"**`{price:,}g`** {can_afford} · Seller: {seller}\n{stats}"
-                embed.add_field(
-                    name=f"{r_emoji} {name} · Lv.{listing['level']} {has_rune}",
-                    value=field_val,
-                    inline=False
-                )
-            embed.set_footer(text="📋 My Listings — use /delist to remove" if is_mine else "Click Buy to purchase · /list #beast <price> to sell your own")
-            return embed
-
         class MarketView(discord.ui.View):
-            def __init__(self_v, page=1):
+            def __init__(self_v, page=1, lst=None, flt="all"):
                 super().__init__(timeout=120)
                 self_v.page = page
+                self_v.lst  = lst or []
+                self_v.flt  = flt
                 self_v._rebuild()
 
             def _rebuild(self_v):
                 self_v.clear_items()
-                # Rarity filter select
-                select = discord.ui.Select(
-                    placeholder="🔍 Filter by rarity…",
-                    options=[
-                        discord.SelectOption(label="All Rarities", value="all", default=filter_rarity=="all"),
-                        discord.SelectOption(label="⚪ Common",    value="common",    default=filter_rarity=="common"),
-                        discord.SelectOption(label="🟢 Uncommon",  value="uncommon",  default=filter_rarity=="uncommon"),
-                        discord.SelectOption(label="🔵 Rare",      value="rare",      default=filter_rarity=="rare"),
-                        discord.SelectOption(label="🟣 Epic",      value="epic",      default=filter_rarity=="epic"),
-                        discord.SelectOption(label="🟡 Legendary", value="legendary", default=filter_rarity=="legendary"),
-                        discord.SelectOption(label="🌸 Divine",    value="divine",    default=filter_rarity=="divine"),
-                    ],
-                    row=0
-                )
-                async def _filter(bi):
+                total_pg = max(1, (len(self_v.lst) + per_page - 1) // per_page)
+
+                # Rarity/filter select
+                options = [
+                    discord.SelectOption(label="All Rarities",   value="all",       default=self_v.flt=="all"),
+                    discord.SelectOption(label="📋 My Listings", value="mine",      default=self_v.flt=="mine"),
+                    discord.SelectOption(label="⚪ Common",       value="common",    default=self_v.flt=="common"),
+                    discord.SelectOption(label="🟢 Uncommon",     value="uncommon",  default=self_v.flt=="uncommon"),
+                    discord.SelectOption(label="🔵 Rare",         value="rare",      default=self_v.flt=="rare"),
+                    discord.SelectOption(label="🟣 Epic",         value="epic",      default=self_v.flt=="epic"),
+                    discord.SelectOption(label="🟡 Legendary",    value="legendary", default=self_v.flt=="legendary"),
+                    discord.SelectOption(label="🌸 Divine",       value="divine",    default=self_v.flt=="divine"),
+                ]
+                select = discord.ui.Select(placeholder="🔍 Filter…", options=options, row=0)
+                async def _filter(bi, _v=self_v):
                     if bi.user.id != uid:
                         return await bi.response.send_message("✦ This isn't your market view!", ephemeral=True)
                     await bi.response.defer()
-                    # Re-invoke market with new filter
-                    new_filter = bi.data["values"][0]
-                    await interaction.edit_original_response(
-                        embed=discord.Embed(description="*Refreshing...*", color=COLORS["info"]),
-                        view=None
-                    )
-                    # Re-run the market command with new filter inline
-                    async with aiosqlite.connect(DB_PATH) as _db:
-                        _db.row_factory = aiosqlite.Row
-                        if new_filter == "all":
-                            async with _db.execute(
-                                "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, "
-                                "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
-                                "p.username AS seller_name FROM beast_market bm "
-                                "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
-                                "JOIN players p ON p.user_id = bm.seller_id "
-                                "WHERE bm.seller_id != ? ORDER BY bm.ask_price ASC LIMIT 50", (uid,)
-                            ) as c2:
-                                new_listings = [dict(r) for r in await c2.fetchall()]
-                        else:
-                            async with _db.execute(
-                                "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, "
-                                "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
-                                "p.username AS seller_name FROM beast_market bm "
-                                "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
-                                "JOIN players p ON p.user_id = bm.seller_id "
-                                "WHERE bm.seller_id != ? AND pb.rarity = ? ORDER BY bm.ask_price ASC LIMIT 50",
-                                (uid, new_filter)
-                            ) as c2:
-                                new_listings = [dict(r) for r in await c2.fetchall()]
-                    new_total = max(1, (len(new_listings)+per_page-1)//per_page)
-                    def new_embed(pg):
-                        emb = discord.Embed(
-                            title="🏪 Beast Market",
-                            description=f"💰 `{player['gold']:,}g` · {len(new_listings)} listing(s) · Page {pg}/{new_total}",
-                            color=COLORS["legendary"]
-                        )
-                        for lst in new_listings[(pg-1)*per_page:pg*per_page]:
-                            bdd = get_beast_data(lst["beast_id"]) or {}
-                            nm  = lst.get("nickname") or bdd.get("name","?")
-                            re  = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")
-                            ca  = "✅" if player["gold"] >= lst["ask_price"] else "❌"
-                            hr  = "💎" if lst.get("rune_id") else ""
-                            emb.add_field(
-                                name=f"{re} {nm} · Lv.{lst['level']} {hr}",
-                                value=f"**`{lst['ask_price']:,}g`** {ca} · {lst.get('seller_name','?')}\n`{lst['attack']}ATK` `{lst['defense']}DEF` `{lst['speed']}SPD` `{lst['max_hp']}HP`",
-                                inline=False
-                            )
-                        emb.set_footer(text="Click Buy to purchase · /list #beast <price> to sell")
-                        return emb
-                    await interaction.edit_original_response(embed=new_embed(1))
+                    new_flt  = bi.data["values"][0]
+                    new_lst  = await fetch_listings(new_flt)
+                    _v.lst   = new_lst
+                    _v.flt   = new_flt
+                    _v.page  = 1
+                    _v._rebuild()
+                    await bi.edit_original_response(embed=build_embed(1, new_lst, new_flt), view=_v)
                 select.callback = _filter
                 self_v.add_item(select)
 
-                # Buy buttons for current page
-                page_listings = listings[(self_v.page-1)*per_page : self_v.page*per_page]
-                for i, listing in enumerate(page_listings):
-                    bd   = get_beast_data(listing["beast_id"]) or {}
-                    name = listing.get("nickname") or bd.get("name","?")
-                    can  = player["gold"] >= listing["ask_price"]
-                    btn  = discord.ui.Button(
-                        label=f"Buy {name[:18]} ({listing['ask_price']:,}g)",
-                        style=discord.ButtonStyle.success if can else discord.ButtonStyle.secondary,
-                        disabled=not can,
-                        row=i+1
-                    )
-                    async def _buy(bi, lst=listing):
-                        if bi.user.id != uid:
-                            return await bi.response.send_message("✦ This isn't your market!", ephemeral=True)
-                        await bi.response.defer(ephemeral=True)
-                        async with aiosqlite.connect(DB_PATH) as _db:
-                            _db.row_factory = aiosqlite.Row
-                            # Re-check listing still exists
-                            async with _db.execute(
-                                "SELECT id FROM beast_market WHERE beast_row_id = ? AND seller_id = ?",
-                                (lst["id"], lst["seller_id"])
-                            ) as _c:
-                                still_listed = await _c.fetchone()
-                            if not still_listed:
-                                return await bi.followup.send("✦ This beast has already been sold.", ephemeral=True)
-                            # Re-check gold
-                            async with _db.execute("SELECT gold FROM players WHERE user_id = ?", (uid,)) as _c:
-                                _pr = await _c.fetchone()
-                            if not _pr or _pr["gold"] < lst["ask_price"]:
-                                return await bi.followup.send(f"✦ Not enough gold. Need `{lst['ask_price']:,}g`.", ephemeral=True)
-                            # Transfer gold
-                            await _db.execute("UPDATE players SET gold = gold - ? WHERE user_id = ?", (lst["ask_price"], uid))
-                            await _db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?", (lst["ask_price"], lst["seller_id"]))
-                            # Transfer beast
-                            await _db.execute("UPDATE player_beasts SET user_id = ?, is_active = 0, raid_slot = NULL WHERE id = ?",
-                                (uid, lst["beast_row_id"]))
-                            # Remove listing
-                            await _db.execute("DELETE FROM beast_market WHERE beast_row_id = ?", (lst["beast_row_id"],))
-                            # Assign new player_number
-                            async with _db.execute("SELECT COALESCE(MAX(player_number),0)+1 FROM player_beasts WHERE user_id = ?", (uid,)) as _c:
-                                new_num = (await _c.fetchone())[0]
-                            await _db.execute("UPDATE player_beasts SET player_number = ? WHERE id = ?", (new_num, lst["beast_row_id"]))
-                            await _db.commit()
-                        bdd  = get_beast_data(lst["beast_id"]) or {}
-                        nm   = lst.get("nickname") or bdd.get("name","?")
-                        re   = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")
-                        await unlock_simple_achievement(uid, "first_market_buy")
-                        await bi.followup.send(embed=discord.Embed(
-                            title=f"✅ Purchased: {re} {nm}",
-                            description=(
-                                f"**`{lst['ask_price']:,}g`** spent · New balance: `{_pr['gold']-lst['ask_price']:,}g`\n\n"
-                                f"{nm} is now `#{new_num}` in your collection!\n"
-                                f"Use `/beastinfo {new_num}` to inspect it."
-                            ),
-                            color=COLORS["success"]
-                        ), ephemeral=True)
-                    btn.callback = _buy
-                    self_v.add_item(btn)
+                # Buy buttons (only for non-mine tabs)
+                if self_v.flt != "mine":
+                    page_lst = self_v.lst[(self_v.page-1)*per_page : self_v.page*per_page]
+                    for i, listing in enumerate(page_lst):
+                        bd   = get_beast_data(listing["beast_id"]) or {}
+                        name = listing.get("nickname") or bd.get("name","?")
+                        can  = player["gold"] >= listing["ask_price"]
+                        btn  = discord.ui.Button(
+                            label=f"Buy {name[:18]} ({listing['ask_price']:,}g)",
+                            style=discord.ButtonStyle.success if can else discord.ButtonStyle.secondary,
+                            disabled=not can, row=i+1
+                        )
+                        async def _buy(bi, lst=listing):
+                            if bi.user.id != uid:
+                                return await bi.response.send_message("✦ This isn't your market!", ephemeral=True)
+                            await bi.response.defer(ephemeral=True)
+                            async with aiosqlite.connect(DB_PATH) as _db:
+                                _db.row_factory = aiosqlite.Row
+                                async with _db.execute(
+                                    "SELECT id FROM beast_market WHERE beast_row_id = ? AND seller_id = ?",
+                                    (lst["id"], lst["seller_id"])
+                                ) as _c:
+                                    still_listed = await _c.fetchone()
+                                if not still_listed:
+                                    return await bi.followup.send("✦ This beast has already been sold.", ephemeral=True)
+                                async with _db.execute("SELECT gold FROM players WHERE user_id = ?", (uid,)) as _c:
+                                    _pr = await _c.fetchone()
+                                if not _pr or _pr["gold"] < lst["ask_price"]:
+                                    return await bi.followup.send(f"✦ Not enough gold. Need `{lst['ask_price']:,}g`.", ephemeral=True)
+                                await _db.execute("UPDATE players SET gold = gold - ? WHERE user_id = ?", (lst["ask_price"], uid))
+                                await _db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?", (lst["ask_price"], lst["seller_id"]))
+                                await _db.execute("UPDATE player_beasts SET user_id = ?, is_active = 0, raid_slot = NULL WHERE id = ?", (uid, lst["beast_row_id"]))
+                                await _db.execute("DELETE FROM beast_market WHERE beast_row_id = ?", (lst["beast_row_id"],))
+                                async with _db.execute("SELECT COALESCE(MAX(player_number),0)+1 FROM player_beasts WHERE user_id = ?", (uid,)) as _c:
+                                    new_num = (await _c.fetchone())[0]
+                                await _db.execute("UPDATE player_beasts SET player_number = ? WHERE id = ?", (new_num, lst["beast_row_id"]))
+                                await _db.commit()
+                            bdd = get_beast_data(lst["beast_id"]) or {}
+                            nm  = lst.get("nickname") or bdd.get("name","?")
+                            re  = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")
+                            await unlock_simple_achievement(uid, "first_market_buy")
+                            spent = lst['ask_price']
+                            new_bal = _pr['gold'] - spent
+                            await bi.followup.send(embed=discord.Embed(
+                                title=f"✅ Purchased: {re} {nm}",
+                                description=(
+                                    f"**`{spent:,}g`** spent · New balance: `{new_bal:,}g`\n\n"
+                                    f"{nm} is now `#{new_num}` in your collection!\n"
+                                    f"Use `/beastinfo {new_num}` to inspect it."
+                                ),
+                                color=COLORS["success"]
+                            ), ephemeral=True)
+                        btn.callback = _buy
+                        self_v.add_item(btn)
 
                 # Pagination
-                if total_pages > 1:
+                total_pg = max(1, (len(self_v.lst) + per_page - 1) // per_page)
+                if total_pg > 1:
                     prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=self_v.page<=1, row=4)
-                    pg   = discord.ui.Button(label=f"{self_v.page}/{total_pages}", style=discord.ButtonStyle.secondary, disabled=True, row=4)
-                    nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self_v.page>=total_pages, row=4)
+                    pg   = discord.ui.Button(label=f"{self_v.page}/{total_pg}", style=discord.ButtonStyle.secondary, disabled=True, row=4)
+                    nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self_v.page>=total_pg, row=4)
                     async def _prev(bi, _v=self_v):
                         _v.page -= 1; _v._rebuild()
-                        await bi.response.edit_message(embed=build_market_embed(_v.page), view=_v)
+                        await bi.response.edit_message(embed=build_embed(_v.page, _v.lst, _v.flt), view=_v)
                     async def _nxt(bi, _v=self_v):
                         _v.page += 1; _v._rebuild()
-                        await bi.response.edit_message(embed=build_market_embed(_v.page), view=_v)
+                        await bi.response.edit_message(embed=build_embed(_v.page, _v.lst, _v.flt), view=_v)
                     prev.callback = _prev; nxt.callback = _nxt
                     self_v.add_item(prev); self_v.add_item(pg); self_v.add_item(nxt)
 
-        await interaction.followup.send(embed=build_market_embed(1), view=MarketView(1))
-
+        await interaction.followup.send(embed=build_embed(1, listings, filter_rarity), view=MarketView(1, listings, filter_rarity))
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Economy(bot))
