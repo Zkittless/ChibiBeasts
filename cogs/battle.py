@@ -150,6 +150,7 @@ def build_pve_beast_state(beast_data: dict, level: int) -> dict:
         "moves":       beast_data["moves"],
         "ultimate":    beast_data["ultimate"],
         "beast_type":  beast_data.get("type", ""),
+        "image_url":   beast_data.get("image_url", ""),
         # Divine passive (if applicable)
         **({} if not beast_data.get("divine_passive") else
            {"divine_passive": beast_data["divine_passive"],
@@ -228,6 +229,7 @@ async def run_pve_battle(
         "moves":       player_beast_data["moves"],
         "ultimate":    player_beast_data["ultimate"],
         "beast_type":  player_beast_data.get("type", ""),
+        "image_url":   player_beast_data.get("image_url", ""),
         **({} if not player_beast_data.get("divine_passive") else
            {"divine_passive": player_beast_data["divine_passive"],
             "divine_passive_id": player_beast_data["divine_passive"].get("passive_id"),
@@ -430,6 +432,10 @@ async def run_pve_battle(
             )
             if battle_log:
                 state_embed.add_field(name="📜 Last Turn", value="\n".join(battle_log[-3:]), inline=False)
+            if enemy_state.get("image_url"):
+                state_embed.set_image(url=enemy_state["image_url"])
+            if player_state.get("image_url"):
+                state_embed.set_thumbnail(url=player_state["image_url"])
             state_embed.set_footer(text="Your turn — Choose a move!")
 
             move_view = MoveView(
