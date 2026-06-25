@@ -735,8 +735,6 @@ class Hatch(commands.Cog):
                         description=first_line,
                         color=COLORS["info"]
                     ))
-                    if biome["name"] == "🌌 The Celestial Loom":
-                        await unlock_simple_achievement(interaction.user.id, "first_celestial_loom")
         msg = await interaction.followup.send(embed=loading)
         await asyncio.sleep(2)
 
@@ -971,6 +969,13 @@ class Hatch(commands.Cog):
             await msg.edit(embed=embed, view=view)
 
             # ── Progress tracking: quests, achievements, bestiary ──────
+            # Increment total catches for catch_50/catch_100 achievements
+            async with aiosqlite.connect(DB_PATH) as _catch_db:
+                await _catch_db.execute(
+                    "UPDATE players SET total_catches = COALESCE(total_catches, 0) + 1 WHERE user_id = ?",
+                    (interaction.user.id,)
+                )
+                await _catch_db.commit()
             catch_quests_completed = await track_quest_event(interaction.user.id, "catch")
             # Fire catch_rare event for rare+ beasts
             if rarity in {"rare", "epic", "legendary", "divine", "altered_divine", "corrupted", "ancient"}:
