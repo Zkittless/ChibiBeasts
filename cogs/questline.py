@@ -647,7 +647,7 @@ class Questline(commands.Cog):
     @app_commands.command(name="meet", description="View all NPCs and where to find them 🗺️")
     async def meet(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        npcs = load_npcs()
+        npcs  = load_npcs()
         state = await get_quest_state(interaction.user.id)
 
         embed = discord.Embed(
@@ -671,7 +671,7 @@ class Questline(commands.Cog):
                 inline=False
             )
         embed.set_footer(
-            text="ChibiBeasts 🐾  •  Use /npc <name> to speak with anyone • /questline to track your story"
+            text="ChibiBeasts 🐾  •  /npc <name> to speak with anyone • /questline to track your story"
         )
         await interaction.followup.send(embed=embed)
 

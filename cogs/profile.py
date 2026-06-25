@@ -170,12 +170,12 @@ class Profile(commands.Cog):
             embeds = [embed, guide]
             if nudge_embed:
                 embeds.append(nudge_embed)
-            await interaction.followup.send(embeds=embeds)
+            await interaction.followup.send(embeds=embeds[:10])
         else:
-            embeds = [embed]
             if nudge_embed:
-                embeds.append(nudge_embed)
-            await interaction.followup.send(embeds=embeds if len(embeds) > 1 else embeds[0])
+                await interaction.followup.send(embeds=[embed, nudge_embed])
+            else:
+                await interaction.followup.send(embed=embed)
 
     @app_commands.command(name="collection", description="View your ChibiBeast collection 🐾")
     async def collection(self, interaction: discord.Interaction):
