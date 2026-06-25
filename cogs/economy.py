@@ -389,8 +389,7 @@ class Economy(commands.Cog):
                 "WHERE bm.seller_id = ? AND pb.player_number = ?",
                 (interaction.user.id, beast_id)
             ) as c:
-                row = await c.fetchone()
-                listing = dict(row) if row else None
+                listing = await c.fetchone()
 
             if not listing:
                 return await interaction.followup.send(embed=discord.Embed(
@@ -432,7 +431,20 @@ class Economy(commands.Cog):
             await db.execute("DELETE FROM beast_market WHERE expires_at < ?", (now,))
             await db.commit()
 
-            if filter_rarity == "all":
+            if filter_rarity == "mine":
+                async with db.execute(
+                    "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
+                    "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
+                    "p.username AS seller_name "
+                    "FROM beast_market bm "
+                    "JOIN player_beasts pb ON pb.id = bm.beast_row_id "
+                    "JOIN players p ON p.user_id = bm.seller_id "
+                    "WHERE bm.seller_id = ? "
+                    "ORDER BY bm.ask_price ASC LIMIT 50",
+                    (uid,)
+                ) as c:
+                    listings = [dict(r) for r in await c.fetchall()]
+            elif filter_rarity == "all":
                 async with db.execute(
                     "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
                     "pb.hp, pb.max_hp, pb.attack, pb.defense, pb.speed, pb.rune_id, "
@@ -460,8 +472,9 @@ class Economy(commands.Cog):
                     listings = [dict(r) for r in await c.fetchall()]
 
         if not listings:
+            no_msg = "*You have no active listings. Use `/list #beast <price>` to sell.*" if filter_rarity == "mine" else "✦ No beasts on the market right now. Be the first — use `/list #beast <price>`!"
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ No beasts on the market right now. Be the first — use `/list #beast <price>`!",
+                description=no_msg,
                 color=COLORS["info"]
             ))
 
@@ -470,11 +483,15 @@ class Economy(commands.Cog):
 
         RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine","altered_divine","corrupted","ancient"]
 
+        is_mine = filter_rarity == "mine"
+        gold_display = f"💰 Your gold: `{player['gold']:,}g`"
+
         def build_market_embed(page: int) -> discord.Embed:
+            desc = ("Your active listings" if is_mine else gold_display) + f" · {len(listings)} listing(s) · Page {page}/{total_pages}"
             embed = discord.Embed(
-                title="🏪 Beast Market",
-                description=f"💰 Your gold: `{player['gold']:,}g` · {len(listings)} listing(s) · Page {page}/{total_pages}",
-                color=COLORS["legendary"]
+                title="📋 My Listings" if is_mine else "🏪 Beast Market",
+                description=desc,
+                color=COLORS["info"] if is_mine else COLORS["legendary"]
             )
             for listing in listings[(page-1)*per_page : page*per_page]:
                 bd      = get_beast_data(listing["beast_id"]) or {}
@@ -485,15 +502,17 @@ class Economy(commands.Cog):
                 price   = listing["ask_price"]
                 can_afford = "✅" if player["gold"] >= price else "❌"
                 has_rune = "💎" if listing.get("rune_id") else ""
+                stats = f"`{listing['attack']}ATK` `{listing['defense']}DEF` `{listing['speed']}SPD` `{listing['max_hp']}HP`"
+                if is_mine:
+                    field_val = f"**`{price:,}g`** · Use `/delist {listing['player_number']}` to remove\n{stats}"
+                else:
+                    field_val = f"**`{price:,}g`** {can_afford} · Seller: {seller}\n{stats}"
                 embed.add_field(
                     name=f"{r_emoji} {name} · Lv.{listing['level']} {has_rune}",
-                    value=(
-                        f"**`{price:,}g`** {can_afford} · Seller: {seller}\n"
-                        f"`{listing['attack']}ATK` `{listing['defense']}DEF` `{listing['speed']}SPD` `{listing['max_hp']}HP`"
-                    ),
+                    value=field_val,
                     inline=False
                 )
-            embed.set_footer(text="Click Buy to purchase · /list #beast <price> to sell your own")
+            embed.set_footer(text="📋 My Listings — use /delist to remove" if is_mine else "Click Buy to purchase · /list #beast <price> to sell your own")
             return embed
 
         class MarketView(discord.ui.View):
