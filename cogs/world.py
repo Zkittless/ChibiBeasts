@@ -137,14 +137,16 @@ EGG_PRICES = {
 
 # ── Sanctuary upgrade definitions ─────────────────────────────────────────────
 SANCTUARY_UPGRADES = {
+    # ── Tier 1 ────────────────────────────────────────────────────────────
     "fairy_garden": {
         "name": "🌸 Fairy Garden",
         "tier": 1,
         "cost_tokens": 50,
-        "description": "Increases passive happiness gain for all members' benched beasts by 5%.",
+        "description": "Benched beasts gain +1 happiness per day passively.",
         "lore": "The Fairies help because they want to. That's more unsettling than if they were paid.",
         "db_column": "fairy_garden",
     },
+    # ── Tier 2 ────────────────────────────────────────────────────────────
     "gnome_forge": {
         "name": "⚒️ Gnome Forge",
         "tier": 2,
@@ -154,15 +156,52 @@ SANCTUARY_UPGRADES = {
         "db_column": "gnome_forge",
         "requires": "fairy_garden",
     },
+    "training_grounds": {
+        "name": "🏋️ Training Grounds",
+        "tier": 2,
+        "cost_tokens": 150,
+        "description": "Reduces gold cost of beast training by 10% for all guild members.",
+        "lore": "The Grounds remember every beast that ever trained here. The memory makes the next one faster.",
+        "db_column": "training_grounds",
+        "requires": "fairy_garden",
+    },
+    # ── Tier 3 ────────────────────────────────────────────────────────────
     "celestial_observatory": {
         "name": "🔭 Celestial Observatory",
         "tier": 3,
-        "cost_tokens": 350,
-        "description": "Grants all guild members a passive +2% encounter rate for Epic and Legendary beasts.",
-        "lore": "From here you can see the Celestial Loom directly, if you're patient and the night is clear. "
-                "Prismite likes to sit up here alone. Nobody asks why.",
+        "cost_tokens": 300,
+        "description": "Grants all guild members +2% encounter rate for Epic and Legendary beasts in explores.",
+        "lore": "From here you can see the Celestial Loom directly, if you're patient and the night is clear.",
         "db_column": "celestial_observatory",
         "requires": "gnome_forge",
+    },
+    "arcane_library": {
+        "name": "📚 Arcane Library",
+        "tier": 3,
+        "cost_tokens": 300,
+        "description": "All guild members gain +15% EXP from battles and explores.",
+        "lore": "Every book in the Library was written by something that no longer exists. They still have opinions.",
+        "db_column": "arcane_library",
+        "requires": "gnome_forge",
+    },
+    # ── Tier 4 ────────────────────────────────────────────────────────────
+    "raid_altar": {
+        "name": "⚔️ Raid Altar",
+        "tier": 4,
+        "cost_tokens": 500,
+        "description": "Guild raids deal +10% damage. All members get +5% armor reduction against raid bosses.",
+        "lore": "The Altar doesn't ask what you're fighting for. It only asks if you're ready.",
+        "db_column": "raid_altar",
+        "requires": "celestial_observatory",
+    },
+    "beast_market_stall": {
+        "name": "🏪 Market Stall",
+        "tier": 4,
+        "cost_tokens": 500,
+        "description": "Guild members can list 2 extra beasts on the market simultaneously.",
+        "lore": "The Stall has been here longer than the guild. It was waiting for someone to use it properly.",
+        "db_column": "beast_market_stall",
+        "requires": "arcane_library",
     },
 }
 
@@ -616,11 +655,15 @@ class World(commands.Cog):
 
     # ── /build ────────────────────────────────────────────────────────────
     @app_commands.command(name="build", description="Build a Sanctuary upgrade for your guild ⚒️")
-    @app_commands.describe(upgrade="Which upgrade to build: fairy_garden, gnome_forge, or celestial_observatory")
+    @app_commands.describe(upgrade="Which upgrade to build")
     @app_commands.choices(upgrade=[
-        app_commands.Choice(name="🌸 Fairy Garden (Tier 1)", value="fairy_garden"),
-        app_commands.Choice(name="⚒️ Gnome Forge (Tier 2)", value="gnome_forge"),
-        app_commands.Choice(name="🔭 Celestial Observatory (Tier 3)", value="celestial_observatory"),
+        app_commands.Choice(name="🌸 Fairy Garden (T1 — 50 tokens)",           value="fairy_garden"),
+        app_commands.Choice(name="⚒️ Gnome Forge (T2 — 150 tokens)",           value="gnome_forge"),
+        app_commands.Choice(name="🏋️ Training Grounds (T2 — 150 tokens)",      value="training_grounds"),
+        app_commands.Choice(name="🔭 Celestial Observatory (T3 — 300 tokens)",  value="celestial_observatory"),
+        app_commands.Choice(name="📚 Arcane Library (T3 — 300 tokens)",         value="arcane_library"),
+        app_commands.Choice(name="⚔️ Raid Altar (T4 — 500 tokens)",             value="raid_altar"),
+        app_commands.Choice(name="🏪 Market Stall (T4 — 500 tokens)",           value="beast_market_stall"),
     ])
     async def build(self, interaction: discord.Interaction, upgrade: str):
         await interaction.response.defer()
@@ -1127,7 +1170,7 @@ class World(commands.Cog):
         if type_name == "cosmic":
             embed.add_field(
                 name="🌌 Special",
-                value="*Cosmic types exist outside the elemental hierarchy — neutral to everything, super effective against nothing. Divine beings predate the type chart itself.*",
+                value="*Cosmic beings predate the elemental hierarchy. Shadow — the void before stars — cuts through cosmic presence. Pure Light still reaches them. Everything else simply watches.*",
                 inline=False
             )
         embed.set_footer(text="ChibiBeasts 🐾  •  /codex <beast name> to look up a specific beast")

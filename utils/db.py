@@ -262,6 +262,17 @@ async def _run_migrations():
         "ALTER TABLE player_beasts ADD COLUMN train_def INTEGER DEFAULT 0",
         "ALTER TABLE player_beasts ADD COLUMN train_spd INTEGER DEFAULT 0",
         "ALTER TABLE player_beasts ADD COLUMN train_hp  INTEGER DEFAULT 0",
+        # Ranked PvP
+        "ALTER TABLE players ADD COLUMN pvp_rating INTEGER DEFAULT 1000",
+        "ALTER TABLE players ADD COLUMN pvp_rank TEXT DEFAULT 'unranked'",
+        "ALTER TABLE players ADD COLUMN pvp_wins INTEGER DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN pvp_losses INTEGER DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN pvp_season INTEGER DEFAULT 1",
+        # Expanded sanctuary
+        "ALTER TABLE guild_sanctuary ADD COLUMN training_grounds INTEGER DEFAULT 0",
+        "ALTER TABLE guild_sanctuary ADD COLUMN arcane_library INTEGER DEFAULT 0",
+        "ALTER TABLE guild_sanctuary ADD COLUMN raid_altar INTEGER DEFAULT 0",
+        "ALTER TABLE guild_sanctuary ADD COLUMN beast_market_stall INTEGER DEFAULT 0",
     ]
 
     # Beast Market table

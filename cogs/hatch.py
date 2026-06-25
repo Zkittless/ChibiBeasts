@@ -817,6 +817,9 @@ class Hatch(commands.Cog):
             from cogs.questline import advance_quest_step as _aqbc
             await _aqbc(interaction.user.id, "beast_count_check", count=_bc_count)
             explore_exp = random.randint(player_level * 12, player_level * 20)
+            # Arcane Library sanctuary: +15% EXP
+            from utils.sanctuary import apply_exp_bonus as _aeb
+            explore_exp = _aeb(explore_exp, user_sanctuary)
             await update_player(interaction.user.id, gold=player["gold"] + gold_bonus)
             from cogs.battle import award_player_exp as _award_exp
             _p_lvl, _, _p_leveled = await _award_exp(interaction.user.id, explore_exp)

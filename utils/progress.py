@@ -23,46 +23,80 @@ DB_PATH = "db/chibibeast.db"
 # never drift out of sync with real game state.
 
 ACHIEVEMENTS = {
-    # --- Collecting ---
-    "first_steps":      {"name": "First Steps",        "emoji": "🐾", "desc": "Begin your ChibiBeasts journey",            "tier": "bronze", "reward": {"gold": 100}},
-    "first_catch":       {"name": "New Friend",          "emoji": "🥚", "desc": "Catch or hatch your first beast",           "tier": "bronze", "reward": {"gold": 100}},
-    "collector_10":       {"name": "Beast Collector",     "emoji": "📖", "desc": "Own 10 different beasts",                   "tier": "bronze", "reward": {"gold": 250}},
-    "collector_25":       {"name": "Beast Hoarder",       "emoji": "📚", "desc": "Own 25 different beasts",                   "tier": "silver", "reward": {"gold": 600}},
-    "collector_44":       {"name": "Living Bestiary",     "emoji": "🌟", "desc": "Own every beast species at least once",     "tier": "gold",   "reward": {"gold": 2000, "celestial_shards": 25}},
-    "first_rare":         {"name": "Lucky Find",          "emoji": "🔵", "desc": "Catch or hatch a Rare beast",               "tier": "bronze", "reward": {"gold": 150}},
-    "first_epic":         {"name": "Epic Encounter",      "emoji": "🟣", "desc": "Catch or hatch an Epic beast",              "tier": "silver", "reward": {"gold": 400}},
-    "first_legendary":    {"name": "Legend Among Us",     "emoji": "🟡", "desc": "Catch or hatch a Legendary beast",          "tier": "silver", "reward": {"gold": 800}},
-    "first_divine":       {"name": "Touched by Divinity", "emoji": "🌸", "desc": "Catch or hatch a Divine beast",             "tier": "gold",   "reward": {"gold": 1500, "celestial_shards": 10}},
-    "divine_collector_5": {"name": "Pantheon Builder",    "emoji": "🏛️", "desc": "Own 5 different Divine beasts",            "tier": "gold",   "reward": {"gold": 2500, "celestial_shards": 20}},
-    "divine_collector_16":{"name": "Ascended",            "emoji": "✨", "desc": "Own all 16 Divine beasts",                  "tier": "platinum","reward": {"gold": 10000, "celestial_shards": 100}},
-    "first_altered_divine":{"name": "Beyond Reality",     "emoji": "⚠️", "desc": "Catch an Altered Divine from a raid",       "tier": "platinum","reward": {"gold": 5000}},
+    # ── Collecting ─────────────────────────────────────────────────────────
+    "first_steps":         {"name": "First Steps",          "emoji": "🐾", "desc": "Begin your ChibiBeasts journey",                      "tier": "bronze",   "reward": {"gold": 100}},
+    "first_catch":         {"name": "New Friend",           "emoji": "🥚", "desc": "Catch or hatch your first beast",                     "tier": "bronze",   "reward": {"gold": 100}},
+    "collector_10":        {"name": "Beast Collector",      "emoji": "📖", "desc": "Own 10 different beasts",                             "tier": "bronze",   "reward": {"gold": 250}},
+    "collector_25":        {"name": "Beast Hoarder",        "emoji": "📚", "desc": "Own 25 different beasts",                             "tier": "silver",   "reward": {"gold": 600}},
+    "collector_50":        {"name": "Living Bestiary",      "emoji": "🌟", "desc": "Own 50 different beasts",                             "tier": "gold",     "reward": {"gold": 2000,  "celestial_shards": 20}},
+    "collector_all":       {"name": "The Complete Record",  "emoji": "📜", "desc": "Own every catchable beast at least once",             "tier": "platinum", "reward": {"gold": 15000, "celestial_shards": 100}},
+    "first_rare":          {"name": "Lucky Find",           "emoji": "🔵", "desc": "Catch or hatch a Rare beast",                         "tier": "bronze",   "reward": {"gold": 150}},
+    "first_epic":          {"name": "Epic Encounter",       "emoji": "🟣", "desc": "Catch or hatch an Epic beast",                        "tier": "silver",   "reward": {"gold": 400}},
+    "first_legendary":     {"name": "Legend Among Us",      "emoji": "🟡", "desc": "Catch or hatch a Legendary beast",                    "tier": "silver",   "reward": {"gold": 800}},
+    "first_divine":        {"name": "Touched by Divinity",  "emoji": "🌸", "desc": "Catch or hatch a Divine beast",                       "tier": "gold",     "reward": {"gold": 1500, "celestial_shards": 10}},
+    "divine_collector_5":  {"name": "Pantheon Builder",     "emoji": "🏛️", "desc": "Own 5 different Divine beasts",                      "tier": "gold",     "reward": {"gold": 2500, "celestial_shards": 20}},
+    "divine_collector_all":{"name": "Ascended",             "emoji": "✨", "desc": "Own all Divine beasts",                               "tier": "platinum", "reward": {"gold": 10000,"celestial_shards": 100}},
+    "first_altered_divine":{"name": "Beyond Reality",       "emoji": "⚠️", "desc": "Obtain an Altered Divine beast",                      "tier": "platinum", "reward": {"gold": 5000, "celestial_shards": 25}},
+    "first_cosmic":        {"name": "Loom-Touched",         "emoji": "🌌", "desc": "Catch or hatch a Cosmic type beast",                  "tier": "silver",   "reward": {"gold": 600}},
+    "first_shadow":        {"name": "Into the Dark",        "emoji": "🌑", "desc": "Catch or hatch a Shadow type beast",                  "tier": "bronze",   "reward": {"gold": 200}},
+    "type_collector":      {"name": "Type Scholar",         "emoji": "🔬", "desc": "Own at least one beast of every type",                "tier": "gold",     "reward": {"gold": 3000, "celestial_shards": 15}},
 
-    # --- Questline ---
-    "loom_witness":         {"name": "Witness to the Loom","emoji": "🧵", "desc": "Complete The Sundering of the Loom questline","tier": "platinum","reward": {"gold": 5000, "celestial_shards": 50}},
+    # ── Evolution ──────────────────────────────────────────────────────────
+    "first_evolution":     {"name": "Changed",              "emoji": "🌀", "desc": "Evolve a beast for the first time",                   "tier": "silver",   "reward": {"gold": 800}},
+    "first_radiant":       {"name": "Radiant",              "emoji": "🌟", "desc": "Obtain your first Radiant form beast",                "tier": "gold",     "reward": {"gold": 2000, "celestial_shards": 10}},
+    "first_ascended":      {"name": "Ascendant",            "emoji": "🌈", "desc": "Obtain your first Ascended form beast",               "tier": "gold",     "reward": {"gold": 2500, "celestial_shards": 15}},
+    "all_radiant":         {"name": "Forge-Blooded",        "emoji": "🔥", "desc": "Obtain all four Radiant form beasts",                 "tier": "platinum", "reward": {"gold": 8000, "celestial_shards": 50}},
 
-    # --- Battling ---
-    "first_win":          {"name": "First Victory",       "emoji": "⚔️", "desc": "Win your first battle",                     "tier": "bronze", "reward": {"gold": 150}},
-    "wins_10":             {"name": "Seasoned Battler",    "emoji": "🗡️", "desc": "Win 10 battles",                            "tier": "bronze", "reward": {"gold": 400}},
-    "wins_50":             {"name": "Battle Veteran",      "emoji": "🛡️", "desc": "Win 50 battles",                            "tier": "silver", "reward": {"gold": 1200}},
-    "wins_100":            {"name": "Arena Champion",      "emoji": "🏆", "desc": "Win 100 battles",                           "tier": "gold",   "reward": {"gold": 3000, "celestial_shards": 15}},
+    # ── Questline ──────────────────────────────────────────────────────────
+    "loom_witness":        {"name": "Witness to the Loom",  "emoji": "🧵", "desc": "Complete the first five chapters of the questline",   "tier": "gold",     "reward": {"gold": 3000, "celestial_shards": 30}},
+    "second_stitch":       {"name": "The Second Stitch",    "emoji": "🪡", "desc": "Complete all ten chapters of the questline",          "tier": "platinum", "reward": {"gold": 8000, "celestial_shards": 75}},
+    "npc_trusted":         {"name": "Known to Them",        "emoji": "📖", "desc": "Reach Trusted status with any NPC",                   "tier": "silver",   "reward": {"gold": 600}},
 
-    # --- Exploration ---
-    "first_explore":      {"name": "Wanderer",            "emoji": "🗺️", "desc": "Explore the world for the first time",      "tier": "bronze", "reward": {"gold": 75}},
+    # ── Battling ───────────────────────────────────────────────────────────
+    "first_win":           {"name": "First Victory",        "emoji": "⚔️", "desc": "Win your first battle",                               "tier": "bronze",   "reward": {"gold": 150}},
+    "wins_10":             {"name": "Seasoned Battler",     "emoji": "🗡️", "desc": "Win 10 battles",                                      "tier": "bronze",   "reward": {"gold": 400}},
+    "wins_50":             {"name": "Battle Veteran",       "emoji": "🛡️", "desc": "Win 50 battles",                                      "tier": "silver",   "reward": {"gold": 1200}},
+    "wins_100":            {"name": "Arena Champion",       "emoji": "🏆", "desc": "Win 100 battles",                                     "tier": "gold",     "reward": {"gold": 3000, "celestial_shards": 15}},
+    "wins_250":            {"name": "The Undefeated",       "emoji": "👑", "desc": "Win 250 battles",                                     "tier": "platinum", "reward": {"gold": 8000, "celestial_shards": 30}},
+    "first_ranked_win":    {"name": "Ranked",               "emoji": "🏅", "desc": "Win your first ranked PvP battle",                    "tier": "bronze",   "reward": {"gold": 300}},
+    "reach_gold_rank":     {"name": "Gold Tier",            "emoji": "🥇", "desc": "Reach Gold rank in ranked PvP",                       "tier": "gold",     "reward": {"gold": 3000, "celestial_shards": 20}},
+    "reach_diamond_rank":  {"name": "Diamond",              "emoji": "💎", "desc": "Reach Diamond rank in ranked PvP",                    "tier": "platinum", "reward": {"gold": 8000, "celestial_shards": 50}},
 
-    # --- Progression ---
-    "level_10":            {"name": "Rising Trainer",      "emoji": "⬆️", "desc": "Reach trainer level 10",                    "tier": "bronze", "reward": {"gold": 300}},
-    "level_25":            {"name": "Veteran Trainer",     "emoji": "⬆️", "desc": "Reach trainer level 25",                    "tier": "silver", "reward": {"gold": 800}},
-    "level_50":            {"name": "Master Trainer",      "emoji": "⬆️", "desc": "Reach trainer level 50",                    "tier": "gold",   "reward": {"gold": 2000, "celestial_shards": 15}},
+    # ── Gear & Crafting ────────────────────────────────────────────────────
+    "first_craft":         {"name": "Artisan",              "emoji": "⚒️", "desc": "Craft your first item",                               "tier": "bronze",   "reward": {"gold": 200}},
+    "first_equip":         {"name": "Geared Up",            "emoji": "🛡️", "desc": "Equip gear on a beast for the first time",            "tier": "bronze",   "reward": {"gold": 200}},
+    "first_legendary_gear":{"name": "Master Forged",        "emoji": "🏰", "desc": "Craft or equip a Legendary piece of gear",            "tier": "gold",     "reward": {"gold": 2000, "celestial_shards": 10}},
+    "first_train":         {"name": "Personal Trainer",     "emoji": "🏋️", "desc": "Train a beast for the first time",                    "tier": "bronze",   "reward": {"gold": 200}},
+    "max_train_beast":     {"name": "Peak Performance",     "emoji": "💪", "desc": "Fully train all stats on any one beast",              "tier": "gold",     "reward": {"gold": 3000, "celestial_shards": 15}},
 
-    # --- Economy ---
-    "gold_5000":           {"name": "Pocket Change",       "emoji": "💰", "desc": "Accumulate 5,000 gold",                     "tier": "bronze", "reward": {"gold": 200}},
-    "gold_50000":          {"name": "Small Fortune",       "emoji": "💎", "desc": "Accumulate 50,000 gold",                    "tier": "silver", "reward": {"gold": 1000}},
+    # ── Raids ──────────────────────────────────────────────────────────────
+    "first_raid_win":      {"name": "Raid Slayer",          "emoji": "💀", "desc": "Help defeat a raid boss",                             "tier": "silver",   "reward": {"gold": 600}},
+    "first_ancient_win":   {"name": "Ancient Slayer",       "emoji": "🌌", "desc": "Help defeat an Ancient raid boss",                    "tier": "gold",     "reward": {"gold": 2000, "celestial_shards": 10}},
+    "raids_10":            {"name": "Raid Regular",         "emoji": "🏰", "desc": "Participate in 10 raids",                             "tier": "silver",   "reward": {"gold": 800}},
 
-    # --- Social ---
-    "first_trade":         {"name": "Dealmaker",           "emoji": "🤝", "desc": "Complete your first trade",                 "tier": "bronze", "reward": {"gold": 150}},
-    "first_guild":         {"name": "Joiner",              "emoji": "🏰", "desc": "Join or create a guild",                    "tier": "bronze", "reward": {"gold": 150}},
-    "first_raid_win":      {"name": "Raid Slayer",         "emoji": "💀", "desc": "Help defeat a raid boss",                   "tier": "silver", "reward": {"gold": 600}},
-    "first_perk":          {"name": "Gifted",              "emoji": "🎯", "desc": "Obtain your first perk",                    "tier": "bronze", "reward": {"gold": 150}},
+    # ── Exploration ────────────────────────────────────────────────────────
+    "first_explore":       {"name": "Wanderer",             "emoji": "🗺️", "desc": "Explore the world for the first time",                "tier": "bronze",   "reward": {"gold": 75}},
+    "first_celestial_loom":{"name": "Loom Pilgrim",         "emoji": "🌌", "desc": "Explore the Celestial Loom for the first time",       "tier": "silver",   "reward": {"gold": 500}},
+    "catch_50":            {"name": "Field Expert",         "emoji": "🐾", "desc": "Catch 50 wild beasts",                                "tier": "silver",   "reward": {"gold": 800}},
+    "catch_100":           {"name": "Master Catcher",       "emoji": "🎯", "desc": "Catch 100 wild beasts",                               "tier": "gold",     "reward": {"gold": 2000, "celestial_shards": 10}},
+
+    # ── Progression ────────────────────────────────────────────────────────
+    "level_10":            {"name": "Rising Trainer",       "emoji": "⬆️", "desc": "Reach trainer level 10",                              "tier": "bronze",   "reward": {"gold": 300}},
+    "level_25":            {"name": "Veteran Trainer",      "emoji": "⬆️", "desc": "Reach trainer level 25",                              "tier": "silver",   "reward": {"gold": 800}},
+    "level_50":            {"name": "Master Trainer",       "emoji": "⬆️", "desc": "Reach trainer level 50",                              "tier": "gold",     "reward": {"gold": 2000, "celestial_shards": 15}},
+
+    # ── Economy ────────────────────────────────────────────────────────────
+    "gold_5000":           {"name": "Pocket Change",        "emoji": "💰", "desc": "Accumulate 5,000 gold",                               "tier": "bronze",   "reward": {"gold": 200}},
+    "gold_50000":          {"name": "Small Fortune",        "emoji": "💎", "desc": "Accumulate 50,000 gold",                              "tier": "silver",   "reward": {"gold": 1000}},
+    "gold_500000":         {"name": "Gilded Tamer",         "emoji": "🪙", "desc": "Accumulate 500,000 gold",                             "tier": "gold",     "reward": {"gold": 5000, "celestial_shards": 20}},
+    "first_market_sale":   {"name": "Open for Business",   "emoji": "🏪", "desc": "List a beast on the market",                          "tier": "bronze",   "reward": {"gold": 200}},
+    "first_market_buy":    {"name": "Savvy Buyer",         "emoji": "🛍️", "desc": "Buy a beast from the market",                         "tier": "bronze",   "reward": {"gold": 200}},
+
+    # ── Social ─────────────────────────────────────────────────────────────
+    "first_trade":         {"name": "Dealmaker",            "emoji": "🤝", "desc": "Complete your first trade",                           "tier": "bronze",   "reward": {"gold": 150}},
+    "first_guild":         {"name": "Joiner",               "emoji": "🏰", "desc": "Join or create a guild",                              "tier": "bronze",   "reward": {"gold": 150}},
+    "first_sanctuary":     {"name": "Home Base",            "emoji": "🏡", "desc": "Build your guild's first Sanctuary upgrade",          "tier": "silver",   "reward": {"gold": 500}},
+    "first_perk":          {"name": "Gifted",               "emoji": "🎯", "desc": "Obtain your first perk",                              "tier": "bronze",   "reward": {"gold": 150}},
 }
 
 TIER_COLOR = {
@@ -194,25 +228,58 @@ async def check_achievements(user_id: int) -> list[str]:
         if owned:                                             candidates.append("first_catch")
         if len(owned_species) >= 10:                         candidates.append("collector_10")
         if len(owned_species) >= 25:                         candidates.append("collector_25")
-        if all_beasts and owned_species >= set(all_beasts.keys()): candidates.append("collector_44")
+        if len(owned_species) >= 50:                         candidates.append("collector_50")
+        # All catchable beasts (exclude evolution-only + dev)
+        catchable_ids = {b["id"] for b in all_beasts.values()
+                         if b.get("wild_encounter", True) and b.get("catch_rate", 0) > 0}
+        if catchable_ids and owned_species >= catchable_ids: candidates.append("collector_all")
         if rarity_counts.get("rare",      0) >= 1:           candidates.append("first_rare")
         if rarity_counts.get("epic",      0) >= 1:           candidates.append("first_epic")
         if rarity_counts.get("legendary", 0) >= 1:           candidates.append("first_legendary")
         if rarity_counts.get("divine",    0) >= 1:           candidates.append("first_divine")
         if len(owned_divines) >= 5:                          candidates.append("divine_collector_5")
-        if all_divine_ids and owned_divines >= all_divine_ids: candidates.append("divine_collector_16")
+        all_divine_ids = {b["id"] for b in all_beasts.values() if b["rarity"] == "divine"}
+        if all_divine_ids and owned_divines >= all_divine_ids: candidates.append("divine_collector_all")
         if has_altered:                                       candidates.append("first_altered_divine")
+        # Type-specific
+        owned_types = {b.get("type") for bid, b in all_beasts.items() if bid in owned_species}
+        if "cosmic" in {all_beasts.get(bid, {}).get("type") for bid in owned_species}:
+            candidates.append("first_cosmic")
+        if "shadow" in {all_beasts.get(bid, {}).get("type") for bid in owned_species}:
+            candidates.append("first_shadow")
+        all_types = {"fire","water","nature","earth","wind","ice","arcane","shadow","light","cosmic"}
+        if all_types <= owned_types:                          candidates.append("type_collector")
+        # Radiant/Ascended
+        radiant_ids = {"radiant_goblin","radiant_imp","radiant_hydra","radiant_kitsune"}
+        ascended_ids = {"ascended_slime","ascended_unicorn","ascended_pegasus","ascended_phoenix"}
+        if owned_species & (radiant_ids | ascended_ids):     candidates.append("first_radiant") if owned_species & radiant_ids else None
+        if owned_species & ascended_ids:                     candidates.append("first_ascended")
+        if radiant_ids <= owned_species:                     candidates.append("all_radiant")
+        # Battle
         if player["wins"] >= 1:                              candidates.append("first_win")
         if player["wins"] >= 10:                             candidates.append("wins_10")
         if player["wins"] >= 50:                             candidates.append("wins_50")
         if player["wins"] >= 100:                            candidates.append("wins_100")
+        if player["wins"] >= 250:                            candidates.append("wins_250")
+        # Progression
         if player["level"] >= 10:                            candidates.append("level_10")
         if player["level"] >= 25:                            candidates.append("level_25")
         if player["level"] >= 50:                            candidates.append("level_50")
+        # Economy
         if player["gold"] >= 5000:                           candidates.append("gold_5000")
         if player["gold"] >= 50000:                          candidates.append("gold_50000")
+        if player["gold"] >= 500000:                         candidates.append("gold_500000")
+        # Catches
+        total_catches = player.get("total_catches", 0) or 0
+        if total_catches >= 50:                              candidates.append("catch_50")
+        if total_catches >= 100:                             candidates.append("catch_100")
+        # Social
         if has_perk:                                         candidates.append("first_perk")
         if in_guild:                                         candidates.append("first_guild")
+        # Ranked PvP rank
+        rated_rank = player.get("pvp_rank", "")
+        if rated_rank in ("gold","platinum","diamond"):      candidates.append("reach_gold_rank")
+        if rated_rank == "diamond":                          candidates.append("reach_diamond_rank")
 
         # Grant — still inside the same open connection
         for aid in candidates:

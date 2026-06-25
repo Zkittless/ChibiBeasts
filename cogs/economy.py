@@ -222,6 +222,11 @@ class Economy(commands.Cog):
                     color=COLORS["error"]
                 ))
 
+            # Training Grounds sanctuary: -10% cost
+            from utils.sanctuary import get_user_sanctuary as _gsanc, apply_training_discount as _atd
+            _sanc = await _gsanc(interaction.user.id)
+            cost = _atd(cost, _sanc)
+
             if player["gold"] < cost:
                 return await interaction.followup.send(embed=discord.Embed(
                     description=f"✦ Need `{cost:,}g` to train. You have `{player['gold']:,}g`.",

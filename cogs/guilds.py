@@ -1269,6 +1269,10 @@ class Guilds(commands.Cog):
                 player_spd = active_beast_row.get("speed", 50)
                 is_ultimate = False
                 damage = calc_player_damage(player_atk, defense, is_ultimate, is_crit)
+                # Raid Altar sanctuary: +10% damage
+                from utils.sanctuary import get_user_sanctuary as _gsanc_r, apply_raid_damage_bonus as _ardb
+                _rsanc = await _gsanc_r(uid)
+                damage = _ardb(damage, _rsanc)
 
                 raid_lock = _raid_locks.get(raid_id)
                 if not raid_lock:

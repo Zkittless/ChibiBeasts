@@ -84,3 +84,33 @@ async def apply_happiness_passive(user_id: int):
         )
         await db.commit()
     return 1  # amount added
+
+def apply_training_discount(cost: int, sanctuary: dict) -> int:
+    """Training Grounds: -10% training cost for guild members."""
+    if not sanctuary.get("training_grounds"):
+        return cost
+    return max(1, int(cost * 0.90))
+
+
+def apply_exp_bonus(exp: int, sanctuary: dict) -> int:
+    """Arcane Library: +15% EXP from battles and explores."""
+    if not sanctuary.get("arcane_library"):
+        return exp
+    return int(exp * 1.15)
+
+
+def apply_raid_damage_bonus(damage: int, sanctuary: dict) -> int:
+    """Raid Altar: +10% raid damage for all guild members."""
+    if not sanctuary.get("raid_altar"):
+        return damage
+    return int(damage * 1.10)
+
+
+def get_raid_armor_bonus(sanctuary: dict) -> int:
+    """Raid Altar: +5% armor reduction vs raid bosses."""
+    return 5 if sanctuary.get("raid_altar") else 0
+
+
+def get_market_slot_bonus(sanctuary: dict) -> int:
+    """Market Stall: +2 market listing slots."""
+    return 2 if sanctuary.get("beast_market_stall") else 0
