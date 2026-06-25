@@ -622,4 +622,10 @@ class Dev(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Dev(bot))
+    import os, discord as _discord
+    home_id = os.getenv("GUILD_ID", "")
+    if home_id:
+        guild_obj = _discord.Object(id=int(home_id))
+        await bot.add_cog(Dev(bot), guilds=[guild_obj])
+    else:
+        await bot.add_cog(Dev(bot))
