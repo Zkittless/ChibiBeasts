@@ -61,12 +61,20 @@ async def sync_commands(ctx: commands.Context, scope: str = "global"):
 
     try:
         if scope == "guild":
-            # Instant sync to current server only
+            # Clear guild-specific commands first (removes duplicates from old guild sync)
+            # then copy globals to guild for instant availability
+            bot.tree.clear_commands(guild=ctx.guild)
+            await bot.tree.sync(guild=ctx.guild)
+            # Now copy global commands to guild for instant sync
             bot.tree.copy_global_to(guild=ctx.guild)
             synced = await bot.tree.sync(guild=ctx.guild)
-            await ctx.send(f"✅ Synced `{len(synced)}` command(s) to **{ctx.guild.name}** instantly.")
+            await ctx.send(f"✅ Cleared old commands and synced `{len(synced)}` command(s) to **{ctx.guild.name}** instantly.")
 
-        elif scope == "all":
+        elif scope == "clear":
+            # Nuclear option — wipe all guild-scoped commands, leave only globals
+            bot.tree.clear_commands(guild=ctx.guild)
+            await bot.tree.sync(guild=ctx.guild)
+            await ctx.send(f"✅ Cleared all guild-scoped commands from **{ctx.guild.name}**. Global commands will appear shortly.")
             # Instant sync to every server
             total = 0
             for guild in bot.guilds:
