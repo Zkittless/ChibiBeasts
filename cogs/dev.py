@@ -1,3 +1,4 @@
+import os
 """
 Developer commands for ChibiBeasts.
 
@@ -57,7 +58,11 @@ class Dev(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    dev_group = app_commands.Group(name="dev", description="Developer tools 🛠️")
+    dev_group = app_commands.Group(
+        name="dev",
+        description="Developer tools 🛠️",
+        guild_ids=[int(os.getenv("GUILD_ID", 0))] if os.getenv("GUILD_ID") else None
+    )
 
     # ── /dev give_gold ────────────────────────────────────────────────────
     @dev_group.command(name="give_gold", description="Give gold to a player")
@@ -164,7 +169,7 @@ class Dev(commands.Cog):
         )
 
     # ── /dev give_ouroboros ───────────────────────────────────────────────
-    @app_commands.command(name="give_ouroboros", description="[DEV] Grant Desync the Infinite — your personal beast 👑")
+    @app_commands.command(name="give_ouroboros", guilds=[int(os.getenv("GUILD_ID",0))] if os.getenv("GUILD_ID") else [], description="[DEV] Grant Desync the Infinite — your personal beast 👑")
     @app_commands.describe(member="Target player (should be you)")
     @dev_only()
     async def give_ouroboros(self, interaction: discord.Interaction, member: discord.Member):
@@ -560,7 +565,7 @@ class Dev(commands.Cog):
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
 
-    @app_commands.command(name="reset_shard_shop", description="[DEV] Reset a player's shard shop weekly cooldown")
+    @app_commands.command(name="reset_shard_shop", guilds=[int(os.getenv("GUILD_ID",0))] if os.getenv("GUILD_ID") else [], description="[DEV] Reset a player's shard shop weekly cooldown")
     @app_commands.describe(member="Player to reset")
     @dev_only()
     async def reset_shard_shop(self, interaction: discord.Interaction, member: discord.Member):
@@ -572,7 +577,7 @@ class Dev(commands.Cog):
             f"✅ Shard shop cooldown reset for **{member.display_name}**.", ephemeral=True
         )
 
-    @app_commands.command(name="set_beast_level", description="[DEV] Set a beast's level directly")
+    @app_commands.command(name="set_beast_level", guilds=[int(os.getenv("GUILD_ID",0))] if os.getenv("GUILD_ID") else [], description="[DEV] Set a beast's level directly")
     @app_commands.describe(member="Player who owns the beast", beast_number="Beast #number from /collection", level="Target level (1-50)")
     @dev_only()
     async def set_beast_level(self, interaction: discord.Interaction, member: discord.Member, beast_number: int, level: int):
@@ -622,18 +627,4 @@ class Dev(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    import os
-    home_id = os.getenv("GUILD_ID", "")
-    if home_id:
-        import discord as _d
-        # Register dev commands to home guild only — not global
-        guild = _d.Object(id=int(home_id))
-        await bot.add_cog(Dev(bot), guilds=[guild])
-        # Also register the 3 standalone commands to guild only
-        for cmd in ["give_ouroboros", "reset_shard_shop", "set_beast_level"]:
-            tree_cmd = bot.tree.get_command(cmd)
-            if tree_cmd:
-                bot.tree.remove_command(cmd)
-                bot.tree.add_command(tree_cmd, guild=guild)
-    else:
-        await bot.add_cog(Dev(bot))
+    await bot.add_cog(Dev(bot))
