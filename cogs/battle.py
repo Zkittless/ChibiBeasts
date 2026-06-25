@@ -28,13 +28,13 @@ with open("data/equipment.json") as _eq_f:
 _ALL_GEAR: dict = {**_EQ_DATA["equipment"], **_EQ_DATA["runes"]}
 
 STATUS_EFFECTS = {
-    "poison":  {"damage_per_turn": 0.05, "emoji": "☠️"},
-    "burn":    {"damage_per_turn": 0.08, "emoji": "🔥"},
-    "freeze":  {"skip_turns": 1,          "emoji": "❄️"},
-    "sleep":   {"skip_turns": 2,          "emoji": "💤"},
-    "paralyze":{"speed_reduce": 0.5,      "emoji": "⚡"},
-    "blind":   {"miss_chance": 0.30,      "emoji": "👁️"},
-    "blight":  {"damage_per_turn": 0.06, "no_heal": True, "emoji": "💜"},
+    "poison":  {"damage_per_turn": 0.05, "emoji": "☠️", "verb": "is Poisoned"},
+    "burn":    {"damage_per_turn": 0.08, "emoji": "🔥", "verb": "is Burning"},
+    "freeze":  {"skip_turns": 1,          "emoji": "❄️", "verb": "is Frozen solid"},
+    "sleep":   {"skip_turns": 2,          "emoji": "💤", "verb": "fell asleep"},
+    "paralyze":{"speed_reduce": 0.5,      "emoji": "⚡", "verb": "is Paralyzed"},
+    "blind":   {"miss_chance": 0.30,      "emoji": "👁️", "verb": "is Blinded"},
+    "blight":  {"damage_per_turn": 0.06, "no_heal": True, "emoji": "💜", "verb": "is Blighted"},
 }
 
 pending_battles: dict[int, dict] = {}
@@ -409,7 +409,8 @@ async def run_pve_battle(
                 factor = {"poison":0.05,"burn":0.08,"blight":0.06}[status]
                 dot = max(1, int(attacker_state[key] * factor))
                 attacker_state["hp"] = max(0, attacker_state["hp"] - dot)
-                battle_log.append(f"{emoji} **{attacker_state['name']}** took `{dot}` {status} damage!")
+                _dot_labels = {"poison": "Poison", "burn": "Burn", "blight": "Blight"}
+                battle_log.append(f"{emoji} **{attacker_state['name']}** took `{dot}` {_dot_labels.get(status, status)} damage!")
 
         if attacker_state["hp"] <= 0:
             break
@@ -613,7 +614,7 @@ async def run_pve_battle(
                 else:
                     defender_state["status"] = new_status
                     defender_state["status_turns"] = STATUS_EFFECTS[new_status].get("skip_turns", 0)
-                    battle_log.append(f"{STATUS_EFFECTS[new_status]['emoji']} **{defender_state['name']}** is {new_status}!")
+                    battle_log.append(f"{STATUS_EFFECTS[new_status]['emoji']} **{defender_state['name']}** {STATUS_EFFECTS[new_status].get('verb', 'is ' + new_status)}!")
 
         # End-of-turn status cleanup
         for state in [player_state, enemy_state]:
@@ -838,7 +839,7 @@ def apply_on_hit_passives(attacker_state: dict, defender_state: dict, damage: in
         new_status = choice(["poison", "burn", "paralyze"])
         defender_state["status"] = new_status
         defender_state["status_turns"] = STATUS_EFFECTS[new_status].get("skip_turns", 0)
-        battle_log.append(f"☠️ **{attacker_state['name']}'s Final Word** — {defender_state['name']} is {new_status}!")
+        battle_log.append(f"☠️ **{attacker_state['name']}'s Final Word** — {defender_state['name']} {STATUS_EFFECTS.get(new_status, {}).get('verb', 'is ' + new_status)}!")
 
     return damage
 
@@ -1570,7 +1571,7 @@ async def start_battle(interaction: discord.Interaction, battle_id: int):
                     applied = apply_status(defender_state, new_status, defender_perks)
                     if applied:
                         defender_state["status_turns"] = STATUS_EFFECTS[new_status].get("skip_turns", 0)
-                        battle_log.append(f"{STATUS_EFFECTS[new_status]['emoji']} **{defender_state['name']}** is now **{new_status}**!")
+                        battle_log.append(f"{STATUS_EFFECTS[new_status]['emoji']} **{defender_state['name']}** {STATUS_EFFECTS[new_status].get('verb', 'is ' + new_status)}!")
 
         turn += 1
 
