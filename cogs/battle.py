@@ -2190,9 +2190,9 @@ class Battle(commands.Cog):
                 rel_advanced = True
 
             async with aiosqlite.connect("db/chibibeast.db") as db:
-                # Gold + shard in one statement
+                # Gold + shard + ultimate charge in one statement
                 await db.execute(
-                    "UPDATE players SET gold = gold + ?, celestial_shards = celestial_shards + 1 WHERE user_id = ?",
+                    "UPDATE players SET gold = gold + ?, celestial_shards = celestial_shards + 1, ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?",
                     (gold_gain, interaction.user.id)
                 )
                 # Relationship advancement written directly — same connection
@@ -2235,6 +2235,9 @@ class Battle(commands.Cog):
             loss_exp = random.randint(active_row["level"] * 5, active_row["level"] * 8)
             await update_player(interaction.user.id, gold=player["gold"] + 50)
             await award_player_exp(interaction.user.id, loss_exp)
+            async with aiosqlite.connect("db/chibibeast.db") as _udb:
+                await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
+                await _udb.commit()
             embed.add_field(
                 name="💤 Lesson",
                 value=f"+**50 gold** 💰 | +**{loss_exp} EXP** ✨\n\n{NPC_LOSS_LINES[npc_name]}",

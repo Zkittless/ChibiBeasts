@@ -1033,10 +1033,16 @@ class Hatch(commands.Cog):
                 nonlocal battle_won
                 if not timed_out:
                     battle_won = True
+                async with aiosqlite.connect("db/chibibeast.db") as _udb:
+                    await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
+                    await _udb.commit()
 
             async def on_explore_loss(embed, p_state, e_state):
                 nonlocal battle_won
                 battle_won = False
+                async with aiosqlite.connect("db/chibibeast.db") as _udb:
+                    await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
+                    await _udb.commit()
                 # Give consolation gold even on loss
                 consolation = random.randint(player_level * 2, player_level * 5)
                 await update_player(interaction.user.id, gold=player["gold"] + consolation)
