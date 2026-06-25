@@ -820,50 +820,79 @@ class Hatch(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        # Catch chance
-        catch_chance = beast["catch_rate"]
-        # Pixie Pocket perk: +5% catch rate
-        for _pp in perks:
-            if _pp.get("perk_id") == "pixie_pocket" and _pp.get("equipped"):
-                catch_chance = min(0.99, catch_chance + 0.05)
-                break
-        caught = random.random() < catch_chance
+        # ── Encounter type ─────────────────────────────────────────────────────
+        # Pixie Pocket perk: +5% affinity chance
+        pixie_pocket = any(p.get("perk_id") == "pixie_pocket" and p.get("equipped") for p in perks)
 
-        if caught:
+        # 15% chance beast takes a liking to you (scales slightly with catch_rate)
+        # Higher catch_rate beasts are friendlier — divine beasts never just walk up
+        base_affinity = 0.15 * beast["catch_rate"]
+        affinity_chance = min(0.20, base_affinity + (0.05 if pixie_pocket else 0))
+        takes_liking = random.random() < affinity_chance
+
+        TAKES_LIKING_LINES = {
+            "common": [
+                f"*{beast['name']} sniffs the air, looks at you, and decides you're probably fine.*",
+                f"*{beast['name']} walks up and sits down next to you. You didn't ask it to. It didn't ask you either.*",
+                f"*{beast['name']} examines you with the careful attention of a creature that has decided, without evidence, to trust you.*",
+            ],
+            "uncommon": [
+                f"*{beast['name']} circles you twice, then sits. Something was decided in that second circle.*",
+                f"*{beast['name']} looks at you for a long moment. Whatever it was checking for, you apparently have it.*",
+            ],
+            "rare": [
+                f"*{beast['name']} approaches slowly. Rare creatures don't do this. This one is.*",
+                f"*{beast['name']} stops a few feet away and doesn't leave. The Loom is watching this.*",
+            ],
+            "epic": [
+                f"*{beast['name']} regards you with something that might be recognition. You haven't met before. That's what makes it strange.*",
+            ],
+            "legendary": [
+                f"*{beast['name']} turns toward you. Legendary beasts don't turn toward things. They make things turn toward them. Something about you changed that.*",
+            ],
+            "divine": [
+                f"*{beast['name']} appears beside you without crossing the distance between. It looks at you as if you've already decided something important.*",
+            ],
+        }
+        tier = rarity if rarity in TAKES_LIKING_LINES else "common"
+
+        # ── Common reward helper (runs after any successful catch) ─────────────
+        async def apply_catch_rewards(caught_via_battle: bool = False) -> tuple:
+            """Apply all post-catch rewards. Returns (gold_bonus, explore_exp, mat_drop, leveled_up, new_level)."""
             beast_row_id = await add_beast_to_player(interaction.user.id, {**beast, "caught_from": "discover"})
             gold_bonus = random.randint(player_level * 3, player_level * 8)
-            # Pixie Pocket perk: +10% explore gold
-            async with __import__("aiosqlite").connect("db/chibibeast.db") as _ppdb:
-                _ppdb.row_factory = __import__("aiosqlite").Row
-                async with _ppdb.execute("SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1 AND perk_id = 'pixie_pocket'", (interaction.user.id,)) as _ppc:
-                    if await _ppc.fetchone():
-                        gold_bonus = int(gold_bonus * 1.10)
-            # Beast count check for quests
-            async with __import__("aiosqlite").connect("db/chibibeast.db") as _bcdb:
+            if pixie_pocket:
+                gold_bonus = int(gold_bonus * 1.10)
+            if caught_via_battle:
+                gold_bonus = int(gold_bonus * 1.25)  # battle bonus
+
+            async with aiosqlite.connect("db/chibibeast.db") as _bcdb:
                 async with _bcdb.execute("SELECT COUNT(*) FROM player_beasts WHERE user_id = ?", (interaction.user.id,)) as _bcc:
                     _bc_count = (await _bcc.fetchone())[0]
             from cogs.questline import advance_quest_step as _aqbc
             await _aqbc(interaction.user.id, "beast_count_check", count=_bc_count)
+
             explore_exp = random.randint(player_level * 12, player_level * 20)
-            # Arcane Library sanctuary: +15% EXP
+            if caught_via_battle:
+                explore_exp = int(explore_exp * 1.3)
             from utils.sanctuary import apply_exp_bonus as _aeb
             explore_exp = _aeb(explore_exp, user_sanctuary)
             await update_player(interaction.user.id, gold=player["gold"] + gold_bonus)
             from cogs.battle import award_player_exp as _award_exp
             _p_lvl, _, _p_leveled = await _award_exp(interaction.user.id, explore_exp)
 
-            # Material drop based on rarity — higher rarity = better materials
+            # Material drop
             RARITY_MATERIAL_POOLS = {
                 "common":    [("pixie_silk", 0.40), ("gnome_iron_ore", 0.35), ("enchanted_bark", 0.25)],
                 "uncommon":  [("harpy_down", 0.35), ("kelpie_scale", 0.35), ("hellhound_ember", 0.30)],
                 "rare":      [("unicorn_hair", 0.35), ("manticore_stinger", 0.33), ("basilisk_eye", 0.32)],
                 "epic":      [("phoenix_ash", 0.35), ("thunderbird_talon", 0.35), ("sphinx_papyrus", 0.30)],
                 "legendary": [("dragon_scale", 0.35), ("kraken_ink", 0.33), ("fenrir_fur", 0.32)],
-                "divine":    [],  # Divine beasts don't drop materials — they're above that
+                "divine":    [],
             }
             mat_pool = RARITY_MATERIAL_POOLS.get(rarity, [])
             mat_drop = None
-            if mat_pool and random.random() < 0.60:  # 60% chance for a material drop
+            if mat_pool and random.random() < 0.60:
                 roll = random.random()
                 cumulative = 0.0
                 for mat_id, chance in mat_pool:
@@ -872,123 +901,27 @@ class Hatch(commands.Cog):
                         mat_drop = mat_id
                         break
                 if mat_drop:
-                    import asyncio as _asyncio
-                    _asyncio.create_task(track_quest_event(interaction.user.id, "material_collect"))
-                    async with __import__("aiosqlite").connect("db/chibibeast.db") as db:
-                        async with db.execute(
-                            "SELECT id, quantity FROM player_materials WHERE user_id = ? AND material_id = ?",
-                            (interaction.user.id, mat_drop)
-                        ) as c:
+                    async with aiosqlite.connect("db/chibibeast.db") as db:
+                        async with db.execute("SELECT id, quantity FROM player_materials WHERE user_id = ? AND material_id = ?", (interaction.user.id, mat_drop)) as c:
                             existing = await c.fetchone()
                         if existing:
-                            await db.execute(
-                                "UPDATE player_materials SET quantity = quantity + 1 WHERE id = ?",
-                                (existing[0],)
-                            )
+                            await db.execute("UPDATE player_materials SET quantity = quantity + 1 WHERE id = ?", (existing[0],))
                         else:
-                            await db.execute(
-                                "INSERT INTO player_materials (user_id, material_id, quantity) VALUES (?,?,1)",
-                                (interaction.user.id, mat_drop)
-                            )
+                            await db.execute("INSERT INTO player_materials (user_id, material_id, quantity) VALUES (?,?,1)", (interaction.user.id, mat_drop))
                         await db.commit()
 
-            # ── Encounter situation flavor ──────────────────────────────
-            # What is the beast doing when the player finds it?
-            # A small story moment before the catch mechanic fires.
-            situations = beast.get("encounter_situations", [])
-            situation_line = random.choice(situations) if situations else ""
+            return gold_bonus, explore_exp, mat_drop, _p_leveled, _p_lvl, beast_row_id
 
-            # ── NPC ambient presence ────────────────────────────────────
-            # NPCs in their home biome occasionally leave a trace.
-            # Only fires if the player has at least 'known' relationship.
-            from cogs.questline import get_quest_state as _get_qs_exp
-            _qs_exp = await _get_qs_exp(interaction.user.id)
-            _npc_rel_exp = _qs_exp.get("npc_relationships", {})
-
-            NPC_AMBIENT = {
-                "🌲 The Whispering Woods": {
-                    "maren": [
-                        "*Maren\'s voice, from somewhere deeper in the trees:* \'You\'re walking too fast. The Woods notice when you\'re not paying attention.\'",
-                        "*A note pinned to a mushroom in Maren\'s handwriting:* \'If you see a Basilisk near the eastern rocks — don\'t stare. It\'s shy.\'",
-                        "*Barkley is sitting on the path ahead, alone. He watches you pass, then turns back toward wherever Maren is.*",
-                    ],
-                    "orren": [
-                        "*Orren is standing very still near an old tree.* \'The trees are remembering something today. It\'s not about you.\'",
-                        "*The Dryad at Orren\'s shoulder brightens slightly as you pass — recognition from something that\'s been here longer than you have.*",
-                        "*A small marker in the path — a stone placed just so. Orren\'s work. You step around it anyway.*",
-                    ],
-                },
-                "🔥 The Ember Wastes": {
-                    "sable": [
-                        "*Sable\'s voice, from somewhere in the smoke:* \'Phoenix Ash falls here sometimes. Check the ground after a burn.\'",
-                        "*A small Hellhound runs a patrol route you don\'t recognize. Sable\'s, probably. It glances at you and continues.*",
-                    ],
-                },
-                "🌌 The Celestial Loom": {
-                    "cael": [
-                        "*Cael is crouched nearby, writing fast.* \'The fraying\'s worse today. Don\'t touch the threads.\'",
-                        "*A page from Cael\'s notebook drifts past:* \'Loom density at 0.7 — check tomorrow. Check more carefully than last time.\'",
-                    ],
-                    "the_archivist": [
-                        "*Something says, from no particular direction:* \'You\'re going to find something interesting today. I won\'t say what. That would be impolite.\'",
-                    ],
-                },
-            }
-            ambient_text = ""
-            _biome_ambient = NPC_AMBIENT.get(biome["name"], {})
-            _eligible = [lines for npc_id, lines in _biome_ambient.items()
-                         if _npc_rel_exp.get(npc_id, "stranger") != "stranger"]
-            if _eligible and random.random() < 0.25:
-                ambient_text = random.choice(random.choice(_eligible))
-
-            # ── Questline-reactive flavor ───────────────────────────────
-            _curr_ch = _qs_exp.get("current_chapter")
-            CHAPTER_BIOME_FLAVOR = {
-                ("chapter_1", "🌲 The Whispering Woods"): [
-                    "*Maren wanted you to explore this place. You wonder what she expects you to notice.*",
-                ],
-                ("chapter_2", "🌌 The Celestial Loom"): [
-                    "*Cael is watching the Loom somewhere nearby. You can feel it being watched.*",
-                    "*The fraying Cael mentioned — you think you can almost see it. A thread that looks slightly wrong.*",
-                ],
-                ("chapter_3", "🔥 The Ember Wastes"): [
-                    "*Sable said the Wastes would have what she needs. She was right about the heat.*",
-                ],
-                ("chapter_4", "🌲 The Whispering Woods"): [
-                    "*Orren said the relic is north. You check which direction north is.*",
-                    "*The woods feel older today. Or maybe you\'re more aware of how old they are.*",
-                ],
-                ("chapter_5", "❄️ The Glacial Hollows"): [
-                    "*The Archivist said the relic would find you here. You\'re not sure what that means.*",
-                ],
-                ("chapter_5", "🌊 The Sunken Abyssal Trenches"): [
-                    "*The Archivist saw you finding this. They didn\'t say whether you\'d find it today.*",
-                ],
-            }
-            reactive_text = ""
-            _rl_key = (_curr_ch, biome["name"])
-            if _rl_key in CHAPTER_BIOME_FLAVOR and random.random() < 0.35:
-                reactive_text = random.choice(CHAPTER_BIOME_FLAVOR[_rl_key])
-
-            # ── Build encounter embed with layered narrative ────────────
+        async def show_catch_embed(flavor_line: str, gold_bonus: int, explore_exp: int, mat_drop, leveled_up: bool, new_level: int, caught_via_battle: bool = False):
+            """Build and display the catch embed."""
             mat_line = f"\n🪨 **{mat_drop.replace('_',' ').title()}** dropped!" if mat_drop else ""
-            encounter_subtitle = ""
-            if situation_line:
-                encounter_subtitle += f"*{situation_line}*\n\n"
-            if reactive_text:
-                encounter_subtitle += f"{reactive_text}\n\n"
-            if ambient_text:
-                encounter_subtitle += f"{ambient_text}\n\n"
-            encounter_subtitle += (
-                f"*You caught it!* +{gold_bonus} gold | +{explore_exp} EXP{mat_line}"
-                + (f"\n⬆️ **Trainer leveled up to {_p_lvl}!**" if _p_leveled else "")
+            battle_bonus_line = "\n⚔️ *Battle bonus: +25% gold & EXP!*" if caught_via_battle else ""
+            encounter_subtitle = (
+                f"*{flavor_line}*\n\n"
+                f"*You caught it!* +{gold_bonus} gold | +{explore_exp} EXP{mat_line}{battle_bonus_line}"
+                + (f"\n⬆️ **Trainer leveled up to {new_level}!**" if leveled_up else "")
             )
-
-            embed = self.build_beast_embed(
-                beast,
-                title=f"🌟 Wild **{beast['name']}**!",
-                subtitle=encounter_subtitle
-            )
+            embed = self.build_beast_embed(beast, title=f"🌟 Wild **{beast['name']}**!", subtitle=encounter_subtitle)
             count, is_milestone = await increment_catch_count(beast["id"], rarity)
             milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
             if milestone_line:
@@ -996,50 +929,40 @@ class Hatch(commands.Cog):
             view = HatchView(beast, interaction.user.id)
             await msg.edit(embed=embed, view=view)
 
-            # ── Progress tracking: quests, achievements, bestiary ──────
+        async def apply_catch_tracking():
+            """Quest/achievement/bestiary tracking after a successful catch."""
             catch_quests_completed = await track_quest_event(interaction.user.id, "catch")
-            # Fire catch_rare event for rare+ beasts
             if rarity in {"rare", "epic", "legendary", "divine", "altered_divine", "corrupted", "ancient"}:
                 rare_q = await track_quest_event(interaction.user.id, "catch_rare")
                 if rare_q:
                     catch_quests_completed = catch_quests_completed + rare_q
-            # Pass beast type for type-specific quest steps
-            await advance_quest_step(interaction.user.id, "catch",
-                beast_id=beast.get("id", ""),
-                beast_type=beast.get("type", ""))
+            await advance_quest_step(interaction.user.id, "catch", beast_id=beast.get("id",""), beast_type=beast.get("type",""))
             unlocked = await unlock_simple_achievement(interaction.user.id, "first_steps")
             more_unlocked = await check_achievements(interaction.user.id)
             all_unlocked = (["first_steps"] if unlocked else []) + more_unlocked
             if interaction.guild:
                 await record_bestiary_sighting(interaction.guild.id, beast["id"], interaction.user.id)
                 await check_collection_completion(interaction, beast, load_beasts())
-            # Questline: catch step with beast type tracking
             await advance_quest_step(interaction.user.id, "catch", beast_id=beast["id"])
 
-            # First Divine catch — lore moment
             if rarity == "divine" and "first_divine" in more_unlocked:
                 collection = beast.get("collection", "the Divine Collections")
                 await interaction.channel.send(embed=discord.Embed(
-                    title=f"🌸 Something Notices You",
+                    title="🌸 Something Notices You",
                     description=(
                         f"*When you catch {beast['name']}, the Loom pauses.*\n\n"
-                        f"*Not dramatically — it's a very small pause, the kind you feel in your back teeth "
-                        f"before you can name it. Then it passes.*\n\n"
-                        f"*{beast['name']} belongs to {collection}. "
-                        f"These beings predate the type chart, the biomes, and most of the words "
-                        f"currently available to describe them.*\n\n"
+                        f"*Not dramatically — it's a very small pause, the kind you feel in your back teeth before you can name it. Then it passes.*\n\n"
+                        f"*{beast['name']} belongs to {collection}. These beings predate the type chart, the biomes, and most of the words currently available to describe them.*\n\n"
                         f"*They don't usually let themselves be caught. This one did.*\n\n"
                         f"*Maren would want to know about this. Orren already does.*"
                     ),
                     color=COLORS["divine"]
                 ))
 
-            # Questline chapter 5: Relic drops in specific biomes
-            state = await get_quest_state(interaction.user.id) if True else None
+            # Chapter 5 relic drops
             RELIC_BIOME_MAP = {
-                "🌌 The Celestial Loom":          None,  # no relic here, handled by The Archivist
-                "❄️ The Glacial Hollows":         ("glacial_relic", "chapter_5"),
-                "🌊 The Sunken Abyssal Trenches": ("trench_relic", "chapter_5"),
+                "❄️ The Glacial Hollows":          ("glacial_relic", "chapter_5"),
+                "🌊 The Sunken Abyssal Trenches":  ("trench_relic",  "chapter_5"),
             }
             relic_info = RELIC_BIOME_MAP.get(biome["name"])
             if relic_info:
@@ -1048,10 +971,8 @@ class Hatch(commands.Cog):
                 qs = await _get_qs(interaction.user.id)
                 if (qs["current_chapter"] == needed_chapter
                         and relic_id not in qs["collected_relics"]
-                        and random.random() < 0.30):  # 30% chance per catch in correct biome
-                    relic_result = await advance_quest_step(
-                        interaction.user.id, "relic_found", relic_id=relic_id
-                    )
+                        and random.random() < 0.30):
+                    await advance_quest_step(interaction.user.id, "relic_found", relic_id=relic_id)
                     relic_name = relic_id.replace("_", " ").title()
                     await interaction.channel.send(embed=discord.Embed(
                         title=f"✨ Relic Discovered: {relic_name}!",
@@ -1063,23 +984,94 @@ class Hatch(commands.Cog):
                         ),
                         color=COLORS["legendary"]
                     ))
-            await notify_quest_completions(interaction.channel, explore_quests_completed + catch_quests_completed)
+
+            await notify_quest_completions(interaction.channel, catch_quests_completed)
             await notify_unlocks(interaction.channel, interaction.user, all_unlocked)
+
+        # ── PATH 1: Beast takes a liking to you ───────────────────────────────
+        if takes_liking:
+            liking_line = random.choice(TAKES_LIKING_LINES[tier])
+            gold, exp, mat, leveled, new_lvl, _ = await apply_catch_rewards(caught_via_battle=False)
+            await show_catch_embed(liking_line, gold, exp, mat, leveled, new_lvl, caught_via_battle=False)
+            await apply_catch_tracking()
+            await notify_quest_completions(interaction.channel, explore_quests_completed)
+
+        # ── PATH 2: Must battle ───────────────────────────────────────────────
         else:
-            rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
+            r_emoji  = RARITY_EMOJI.get(rarity, "⚪")
             situations = beast.get("encounter_situations", [])
-            escaped_situation = random.choice(situations) if situations else f"You found a wild **{beast['name']}** in {location}..."
-            await msg.edit(embed=discord.Embed(
-                title="🗺️ Encounter!",
+            situation_line = random.choice(situations) if situations else f"A wild {beast['name']} appears in {location}!"
+
+            # Show battle intro
+            wild_level = max(1, min(50, player_level + random.randint(-2, 2)))
+            battle_intro = discord.Embed(
+                title=f"⚔️ Wild {r_emoji} {beast['name']} Lv.{wild_level}!",
                 description=(
-                    f"*{escaped_situation}*\n\n"
-                    f"{rarity_emoji} **{beast['name']}** — {RARITY_LABEL.get(rarity)}\n\n"
-                    f"*...but it slipped away before you could catch it.*\n"
-                    f"Keep exploring — it might appear again."
+                    f"*{situation_line}*\n\n"
+                    f"**It won't go without a fight.**\n"
+                    f"*Defeat it to add it to your collection!*"
                 ),
                 color=COLORS.get(rarity, COLORS["info"])
-            ))
+            )
+            if beast.get("image_url"):
+                battle_intro.set_image(url=beast["image_url"])
+            if active_beast_data.get("image_url"):
+                battle_intro.set_thumbnail(url=active_beast_data["image_url"])
+            await msg.edit(embed=battle_intro)
+
+            # Run battle
+            from cogs.battle import build_pve_beast_state, run_pve_battle, get_active_beast
+            active_row = await get_active_beast(interaction.user.id)
+            enemy_state = build_pve_beast_state(beast, wild_level)
+
+            battle_won = False
+
+            async def on_explore_win(embed, p_state, e_state, timed_out=False):
+                nonlocal battle_won
+                if not timed_out:
+                    battle_won = True
+
+            async def on_explore_loss(embed, p_state, e_state):
+                nonlocal battle_won
+                battle_won = False
+                # Give consolation gold even on loss
+                consolation = random.randint(player_level * 2, player_level * 5)
+                await update_player(interaction.user.id, gold=player["gold"] + consolation)
+                escaped_embed = discord.Embed(
+                    title=f"💨 {beast['name']} escaped!",
+                    description=(
+                        f"*{beast['name']} slipped away — but the fight wasn't for nothing.*\n\n"
+                        f"You found **{consolation} gold** nearby. Keep exploring."
+                    ),
+                    color=COLORS["info"]
+                )
+                if beast.get("image_url"):
+                    escaped_embed.set_thumbnail(url=beast["image_url"])
+                await interaction.channel.send(embed=escaped_embed)
+
+            active_beast_data_row = dict(active_row) if active_row else {}
+            player_perks_list = perks
+
+            await run_pve_battle(
+                interaction=interaction,
+                player_beast_row=active_beast_data_row,
+                player_beast_data=active_beast_data,
+                player_perks=player_perks_list,
+                enemy_state=enemy_state,
+                enemy_personality="aggressive",
+                battle_title=f"Wild {beast['name']}",
+                on_win=on_explore_win,
+                on_loss=on_explore_loss,
+            )
+
+            if battle_won:
+                gold, exp, mat, leveled, new_lvl, _ = await apply_catch_rewards(caught_via_battle=True)
+                catch_flavor = f"You defeated {beast['name']} — and it recognized the strength. It follows."
+                await show_catch_embed(catch_flavor, gold, exp, mat, leveled, new_lvl, caught_via_battle=True)
+                await apply_catch_tracking()
+
             await notify_quest_completions(interaction.channel, explore_quests_completed)
+
 
 
 async def setup(bot: commands.Bot):
