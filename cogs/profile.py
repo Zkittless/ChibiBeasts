@@ -931,7 +931,7 @@ class Shop(commands.Cog):
         def get_incub_eggs():
             """Returns list of (id, egg_dict, price) sorted by rarity."""
             from cogs.world import EGGS, EGG_PRICES
-            RARITY_PRICE = {"common":300,"uncommon":1200,"rare":4000,"epic":12000,"legendary":50000,"divine":0}
+            RARITY_PRICE = {"common":300,"uncommon":1200,"rare":4000,"epic":12000,"legendary":50000,"divine":100000}
             out = []
             for eid, egg in EGGS.items():
                 price = RARITY_PRICE.get(egg.get("rarity","common"), 300)
@@ -992,7 +992,7 @@ class Shop(commands.Cog):
             emb = make_embed(label, f"💰 `{gold:,}g` · Page {page}/{total}\nUse with `/use <item name>`.\n\u200b", color)
             for item in items[(page-1)*per:page*per]:
                 r = RARITY_EMOJI.get(item["rarity"],"⚪")
-                emb.add_field(name=f"{r} {item['name']} — `{item['price']:,}g`", value=item["description"][:120], inline=False)
+                emb.add_field(name=f"{r} {item['name']} — `{item['price']:,}g`", value=item["description"][:200], inline=False)
             return emb, page, total
 
         def build_shard_embed(page, regular, summons, week_data, shards):
