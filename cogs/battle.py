@@ -4,6 +4,8 @@ from discord.ext import commands
 import random
 import asyncio
 import aiosqlite
+
+DB_PATH = "db/chibibeast.db"
 import json
 from utils.db import (
     get_or_create_player, get_player, update_player,
