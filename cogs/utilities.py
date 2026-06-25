@@ -437,6 +437,7 @@ class Utilities(commands.Cog):
         _eq_done = await _eqtqe(interaction.user.id, "equip")
         if _eq_done and interaction.channel:
             await _eqnqc(interaction.channel, _eq_done)
+        await unlock_simple_achievement(interaction.user.id, "first_equip")
         await interaction.followup.send(embed=embed)
 
     # ── /unequip ──────────────────────────────────────────────────────────
@@ -891,10 +892,14 @@ class Utilities(commands.Cog):
             embed.set_thumbnail(url=target_data["image_url"])
         await interaction.followup.send(embed=embed)
 
-        # Check achievements after evolution
+        # Achievement triggers for evolution
+        await unlock_simple_achievement(interaction.user.id, "first_evolution")
+        if target_id in {"radiant_goblin","radiant_imp","radiant_hydra","radiant_kitsune"}:
+            await unlock_simple_achievement(interaction.user.id, "first_radiant")
+        if target_id in {"ascended_slime","ascended_unicorn","ascended_pegasus","ascended_phoenix"}:
+            await unlock_simple_achievement(interaction.user.id, "first_ascended")
         unlocked = await check_achievements(interaction.user.id)
-        if unlocked:
-            from utils.progress import notify_unlocks
+        if unlocked and interaction.channel:
             await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
 
