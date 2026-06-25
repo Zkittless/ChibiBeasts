@@ -562,7 +562,7 @@ class Economy(commands.Cog):
                                 _db.row_factory = aiosqlite.Row
                                 async with _db.execute(
                                     "SELECT id FROM beast_market WHERE beast_row_id = ? AND seller_id = ?",
-                                    (lst["id"], lst["seller_id"])
+                                    (lst["beast_row_id"], lst["seller_id"])
                                 ) as _c:
                                     still_listed = await _c.fetchone()
                                 if not still_listed:
