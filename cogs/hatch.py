@@ -7,7 +7,7 @@ import aiosqlite
 from utils.db import (
     get_or_create_player, get_player, update_player,
     add_beast_to_player, get_player_beasts, load_beasts,
-    calc_player_exp_for_level, increment_catch_count
+    get_beast_data, calc_player_exp_for_level, increment_catch_count
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import (
@@ -42,10 +42,10 @@ def _catch_milestone_line(beast_name: str, rarity: str, count: int, is_milestone
         elif rarity == "legendary":
             return (
                 f"*The Bestiary has no entry for this yet.*\n"
-                f"*You have the first **{beast_name}** ever hatched.*"
+                f"*You have the first **{beast_name}** ever caught.*"
             )
         else:
-            return f"*The first **{beast_name}** ever hatched. The Loom notes it.*"
+            return f"*The first **{beast_name}** ever caught. The Loom notes it.*"
 
     ordinal = f"{count:,}{'th' if 11 <= count % 100 <= 13 else {1:'st',2:'nd',3:'rd'}.get(count%10,'th')}"
 

@@ -32,24 +32,15 @@ def dev_only():
     """Check: interaction user must be the bot owner (OWNER_ID env var)."""
     async def predicate(interaction: discord.Interaction) -> bool:
         owner_id_str = os.getenv("OWNER_ID", "")
-        if not owner_id_str:
-            await interaction.response.send_message(
-                "✦ Dev commands are disabled — set `OWNER_ID` in environment variables.",
-                ephemeral=True
-            )
-            return False
         try:
-            owner_id = int(owner_id_str)
+            owner_id = int(owner_id_str) if owner_id_str else 0
         except ValueError:
-            await interaction.response.send_message(
-                "✦ `OWNER_ID` is not a valid integer.", ephemeral=True
-            )
-            return False
+            owner_id = 0
         if interaction.user.id != owner_id:
             await interaction.response.send_message(
                 "✦ Dev commands are owner-only.", ephemeral=True
             )
-            return False
+            raise app_commands.CheckFailure("owner only")
         return True
     return app_commands.check(predicate)
 
