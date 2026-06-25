@@ -36,24 +36,28 @@ async def on_ready():
 @bot.command(name="sync")
 async def sync_commands(ctx: commands.Context, scope: str = "global"):
     """
-    !sync        — re-push global commands (use after adding new commands)
-    !sync clear  — wipe guild-scoped commands from THIS server (fixes duplicates)
+    !sync        — global sync (all servers)
+    !sync guild  — sync everything to this server instantly including dev commands
+    !sync clear  — wipe guild-scoped commands from this server
     Owner only.
     """
     if ctx.author.id != OWNER_ID:
         return await ctx.send("✦ Owner only.")
 
     if scope == "clear":
-        # Wipe guild-specific commands from this server only
-        # This fixes duplicates caused by old guild-scoped syncs
         bot.tree.clear_commands(guild=ctx.guild)
         await bot.tree.sync(guild=ctx.guild)
         await ctx.send(
             f"✅ Guild commands cleared from **{ctx.guild.name}**.\n"
-            f"Only global commands remain. They may take a moment to refresh in Discord."
+            f"Run `!sync guild` to restore."
         )
+    elif scope == "guild":
+        # Copy globals + sync guild-specific commands (includes dev group)
+        bot.tree.copy_global_to(guild=ctx.guild)
+        synced = await bot.tree.sync(guild=ctx.guild)
+        await ctx.send(f"✅ Synced `{len(synced)}` command(s) to **{ctx.guild.name}** instantly.")
     else:
-        # Global sync — pushes all commands to every server
+        # Global sync
         try:
             synced = await bot.tree.sync()
             await ctx.send(f"✅ Global sync complete — `{len(synced)}` command(s) pushed.")
