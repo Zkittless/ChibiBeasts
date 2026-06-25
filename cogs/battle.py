@@ -1886,7 +1886,7 @@ class Battle(commands.Cog):
                 player_perks = [dict(r) for r in await c.fetchall()]
 
         rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
-        await interaction.followup.send(embed=discord.Embed(
+        _challenge_intro = discord.Embed(
             title=f"⚔️ Wild Battle! {BIOME_NAMES[biome]}",
             description=(
                 f"A wild **{rarity_emoji} {wild_beast_data['name']}** (Lv.{wild_level}) "
@@ -1894,7 +1894,12 @@ class Battle(commands.Cog):
                 f"*{wild_beast_data['description']}*"
             ),
             color=COLORS.get(rarity, COLORS["info"])
-        ))
+        )
+        if wild_beast_data.get("image_url"):
+            _challenge_intro.set_image(url=wild_beast_data["image_url"])
+        if active_beast_data.get("image_url"):
+            _challenge_intro.set_thumbnail(url=active_beast_data["image_url"])
+        await interaction.followup.send(embed=_challenge_intro)
 
         # Reward callbacks
         async def on_win(embed, p_state, e_state, timed_out=False):
@@ -2098,7 +2103,7 @@ class Battle(commands.Cog):
                 player_perks = [dict(r) for r in await c.fetchall()]
 
         npc_emoji = npc.get("emoji", "🐾")
-        await interaction.followup.send(embed=discord.Embed(
+        _sparr_intro = discord.Embed(
             title=f"{npc_emoji} Sparring with {npc['name']}",
             description=(
                 f"*{npc.get('first_meeting', '').split('*')[1] if '*' in npc.get('first_meeting','') else ''}*\n\n"
@@ -2106,7 +2111,12 @@ class Battle(commands.Cog):
                 f"*{companion_data.get('description','')}*"
             ),
             color=COLORS["info"]
-        ))
+        )
+        if companion_data.get("image_url"):
+            _sparr_intro.set_image(url=companion_data["image_url"])
+        if active_beast_data.get("image_url"):
+            _sparr_intro.set_thumbnail(url=active_beast_data["image_url"])
+        await interaction.followup.send(embed=_sparr_intro)
 
         # Win/loss dialogue per NPC — pulled from their established voice
         NPC_WIN_LINES = {
