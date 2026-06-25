@@ -500,11 +500,9 @@ class Economy(commands.Cog):
 
         if not listings and is_mine:
             return await interaction.followup.send(embed=build_embed(1, [], filter_rarity))
-        if not listings:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ No beasts on the market right now. Be the first — use `/list #beast <price>`!",
-                color=COLORS["info"]
-            ))
+
+        # Always build the view so the dropdown is available even when empty
+        # so players can switch to My Listings tab
 
         class MarketView(discord.ui.View):
             def __init__(self_v, page=1, lst=None, flt="all"):
