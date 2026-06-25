@@ -2605,7 +2605,7 @@
         "Rime Veil"
       ],
       "ultimate": "Winter's Breath",
-      "image_url": null,
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/frost_sprite.png",
       "catch_rate": 0.9
     },
     "permafrost": {
@@ -2629,7 +2629,7 @@
         "Permafrost Wall"
       ],
       "ultimate": "Absolute Zero",
-      "image_url": null,
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/permafrost.png",
       "catch_rate": 0.6
     },
     "abyssal_eel": {
@@ -2654,7 +2654,7 @@
       ],
       "ultimate": "Trench Discharge",
       "divine_passive": null,
-      "image_url": null,
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/abyssal_eel.png",
       "catch_rate": 0.15
     },
     "loom_fragment": {
@@ -2679,7 +2679,7 @@
       ],
       "ultimate": "The Sundering Echo",
       "divine_passive": null,
-      "image_url": null,
+      "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/loom_fragment.png",
       "catch_rate": 0.35
     }
   },

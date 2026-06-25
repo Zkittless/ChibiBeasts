@@ -1125,119 +1125,125 @@ async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str
                 "title": "🌱 Getting Started",
                 "desc": "New to ChibiBeasts? Start here.",
                 "commands": [
-                    ("/start", "Begin your journey — choose your starter beast (Prismite, Twine, Gloop, or Barkley)"),
+                    ("/start", "Begin your journey — choose your starter beast"),
                     ("/profile", "View your trainer profile, stats, and balance"),
                     ("/daily", "Claim your daily gold and shard reward"),
-                    ("/lore", "Read the world's creation myth and story"),
-                    ("/meet", "See all the NPCs and where to find them"),
-                    ("/questline", "Track your story progress"),
-                    ("/help <category>", "Browse commands by category"),
+                    ("/dailies", "View your 4 daily quests"),
+                    ("/help", "Browse this help menu"),
                 ]
             },
             "beasts": {
                 "title": "🐾 Beasts & Collection",
                 "desc": "Manage your beast collection.",
                 "commands": [
-                    ("/collection", "View all your beasts"),
-                    ("/beastinfo <id>", "Detailed stats, moves, and disposition for a beast"),
-                    ("/setactive <id>", "Set your active battle beast"),
-                    ("/nickname <id> <name>", "Give a beast a nickname"),
-                    ("/release <id>", "Release a beast for a gold refund"),
-                    ("/evolve <id>", "Evolve a beast using the required item"),
+                    ("/collection", "Browse all your beasts by rarity"),
+                    ("/beastinfo <#>", "Detailed stats, moves, and info for a beast"),
+                    ("/setactive <#>", "Set your active battle beast"),
+                    ("/nickname <#>", "Give a beast a nickname"),
+                    ("/release <#>", "Release a beast for a gold refund"),
+                    ("/evolve <#>", "Evolve a beast using the required item"),
                     ("/codex <name>", "Look up any beast's lore and stats"),
                     ("/bestiary", "See what your server has discovered"),
+                    ("/typeinfo <type>", "Look up type matchups and weaknesses"),
+                    ("/gear <#>", "View a beast's equipped gear and options"),
                 ]
             },
             "battle": {
                 "title": "⚔️ Battle",
-                "desc": "PvP combat, wild battles, and NPC spars.",
+                "desc": "PvP combat, wild battles, and ranked play.",
                 "commands": [
-                    ("/battle @trainer",  "Challenge another trainer to a PvP beast battle"),
-                    ("/challenge <biome>","Fight a wild beast in a biome — win to catch it"),
-                    ("/sparr <npc>",      "Spar with an NPC — deepen your bond and earn shards (once per NPC/day)"),
-                    ("/leaderboard",      "Server rankings by victories"),
-                    ("/typeinfo <type>",  "Look up type matchups and advantages"),
+                    ("/challenge @user", "Challenge another trainer to a PvP battle"),
+                    ("/sparr", "Spar with an NPC for gold and EXP"),
+                    ("/battle", "Battle a random wild beast"),
+                    ("/ranked @user", "Challenge someone to a rated ranked match"),
+                    ("/rank", "View your ranked rating and stats"),
+                    ("/ranked_leaderboard", "View the ranked PvP standings"),
+                    ("/history", "View your battle, raid, and trade history"),
+                    ("/stats", "View server-wide statistics"),
                 ]
             },
             "explore": {
                 "title": "🌍 Exploration & Eggs",
                 "desc": "Explore biomes and hatch beasts.",
                 "commands": [
-                    ("/explore", "Explore a biome — find wild beasts and materials (1hr cooldown)"),
-                    ("/hatch", "Instantly hatch an egg (Common/Rare/Celestial/Abyssal)"),
-                    ("/shop eggs",        "Browse and buy instant-hatch eggs"),
-                    ("/shop incubation",  "Browse and buy incubation eggs"),
-                    ("/incubate <egg name>", "Place a named egg in incubation (timed)"),
+                    ("/explore", "Explore a biome — find wild beasts and materials"),
+                    ("/hatch", "Hatch an egg from your inventory"),
+                    ("/incubate", "Start incubating a timed egg"),
+                    ("/tend", "Tend to a mid-incubation egg to speed it up"),
                     ("/eggs", "Check your incubating eggs and timers"),
-                    ("/hatchegg", "Hatch a ready incubated egg"),
+                    ("/shop", "Browse and buy eggs, items, and shard shop"),
                 ]
             },
             "craft": {
                 "title": "⚒️ Crafting & Equipment",
                 "desc": "Materials, gear, and beast equipment.",
                 "commands": [
-                    ("/materials", "View your crafting material stash"),
-                    ("/recipes", "Browse all craftable armor and rune recipes"),
-                    ("/craft <item>", "Craft an armor set from materials"),
-                    ("/equip <item> <beast_id>", "Equip armor or a rune to a beast"),
-                    ("/unequip <beast_id>", "Remove all equipment from a beast"),
-                    ("/sell <item>", "Sell items or materials for gold"),
-                ]
-            },
-            "guild": {
-                "title": "🏰 Guilds & Raids",
-                "desc": "Build a guild and take on raids.",
-                "commands": [
-                    ("/guild_create <name>", "Found a new guild (costs 2,000 gold)"),
-                    ("/guild", "View your guild info"),
-                    ("/guild_invite @member", "Invite someone to your guild"),
-                    ("/raid", "Trigger a raid boss (guild officers only)"),
-                    ("/raid_attack", "Deal damage to the active raid boss"),
-                    ("/sanctuary", "View your guild's Sanctuary upgrades"),
-                    ("/build <upgrade>", "Build a Sanctuary tier (Fairy Garden / Gnome Forge / Observatory)"),
-                ]
-            },
-            "progress": {
-                "title": "📋 Quests & Progression",
-                "desc": "Daily quests, achievements, and story.",
-                "commands": [
-                    ("/dailies", "View your daily quest progress"),
-                    ("/daily", "Claim daily reward"),
-                    ("/achievements", "View your achievement collection"),
-                    ("/questline", "Track and advance the main story questline"),
-                    ("/npc <name>", "Talk to an NPC"),
-                    ("/meet", "Overview of all NPCs and locations"),
+                    ("/craft <item>", "Craft a piece of gear or evolution item"),
+                    ("/recipes", "Browse all craftable gear and their recipes"),
+                    ("/materials", "View your crafting material stockpile"),
+                    ("/equip <item> <#>", "Equip armor or a rune to a beast"),
+                    ("/unequip <#>", "Remove gear from a beast"),
+                    ("/sell <item>", "Sell an item or material for gold"),
                 ]
             },
             "economy": {
                 "title": "💰 Economy & Trading",
-                "desc": "Gold, shards, shop, and trading.",
+                "desc": "Market, trading, training, and gold.",
                 "commands": [
-                    ("/shop", "Browse the item and egg shop"),
-                    ("/shop items",    "Browse and buy items"),
+                    ("/market", "Browse beasts listed for sale by other trainers"),
+                    ("/list <#> <price>", "List a beast on the market"),
+                    ("/delist <#>", "Remove a beast from the market"),
+                    ("/appraise <#>", "Get an estimated gold value for a beast"),
+                    ("/train <#> <stat>", "Spend gold to permanently boost a beast's stat"),
+                    ("/trade @user", "Offer a beast trade to another trainer"),
+                    ("/inventory", "View your items and potions"),
                     ("/use <item>", "Use an item from your inventory"),
-                    ("/inventory", "View your item inventory"),
-                    ("/sell <item>", "Sell items or materials for gold"),
-                    ("/trade @trainer", "Offer a beast/gold trade to another player"),
-                    ("/perks", "View your perks"),
-                    ("/perk_equip <perk>", "Equip a perk"),
-                    ("/shard_shop", "Spend Celestial Shards on exclusive items"),
                 ]
             },
-            "lore": {
-                "title": "📖 Lore & World",
-                "desc": "The story and the world behind it.",
+            "guild": {
+                "title": "🏰 Guilds & Raids",
+                "desc": "Build a guild, raid bosses, and grow your Sanctuary.",
                 "commands": [
-                    ("/lore <chapter>", "Read lore chapters: creation, sundering, starters, etc."),
-                    ("/codex <beast>", "In-game beast encyclopedia with type lore"),
-                    ("/typeinfo <type>", "Elemental type matchup chart"),
-                    ("/stats", "Server-wide statistics"),
-                    ("/bestiary", "Server's beast discovery log"),
+                    ("/guild", "View your guild info and roster"),
+                    ("/guild_create", "Create a new guild"),
+                    ("/guild_invite @user", "Invite someone to your guild"),
+                    ("/guild_leave", "Leave your current guild"),
+                    ("/raid", "Start or join a Corrupted raid"),
+                    ("/ancient", "Start or join an Ancient raid"),
+                    ("/ancient_attack", "Attack in an active Ancient raid"),
+                    ("/party", "View your raid party and HP"),
+                    ("/raidparty", "Manage your 3-beast raid party"),
+                    ("/sanctuary", "View your guild's Sanctuary upgrades"),
+                    ("/build <upgrade>", "Build a Sanctuary upgrade"),
+                ]
+            },
+            "progress": {
+                "title": "📋 Quests & Progression",
+                "desc": "Daily quests, achievements, and the main story.",
+                "commands": [
+                    ("/questline", "View and advance the main story questline"),
+                    ("/npc <name>", "Speak with an NPC"),
+                    ("/meet <name>", "Meet an NPC for the first time"),
+                    ("/dailies", "View today's 4 daily quests"),
+                    ("/achievements", "View all your earned achievements"),
+                    ("/title", "Set your trainer title"),
+                    ("/play", "Spend time with your beast to boost happiness"),
+                    ("/profile", "View your full trainer progression"),
+                ]
+            },
+            "social": {
+                "title": "✨ Perks & Social",
+                "desc": "Manage your perks, leaderboards, and lore.",
+                "commands": [
+                    ("/perks", "View your owned trainer perks"),
+                    ("/perk_equip <perk>", "Equip a perk to activate its bonus"),
+                    ("/perk_unequip <perk>", "Unequip a perk"),
+                    ("/perk_use <perk>", "Activate a perk's weekly special ability"),
+                    ("/leaderboard", "View server-wide rankings"),
+                    ("/lore", "Read the story of ChibiBeasts"),
                 ]
             },
         }
-
-        uid = interaction.user.id
 
         HELP_OPTIONS = [
             ("start",    "🌱", "Getting Started"),
@@ -1245,10 +1251,10 @@ async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str
             ("battle",   "⚔️", "Battle"),
             ("explore",  "🌍", "Exploration & Eggs"),
             ("craft",    "⚒️", "Crafting & Equipment"),
+            ("economy",  "💰", "Economy & Trading"),
             ("guild",    "🏰", "Guilds & Raids"),
             ("progress", "📋", "Quests & Progression"),
-            ("economy",  "💰", "Economy & Trading"),
-            ("lore",     "📖", "Lore & World"),
+            ("social",   "✨", "Perks & Social"),
         ]
 
         def build_help_embed(category: str) -> discord.Embed:

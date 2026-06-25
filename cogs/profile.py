@@ -51,7 +51,7 @@ class Profile(commands.Cog):
                 f"⭐ **Level:** {player['level']}\n"
                 f"✨ **EXP:** {exp_bar(player['exp'], exp_needed)}\n"
                 f"💰 **Gold:** `{player['gold']:,}`\n"
-                f"💎 **Celestial Shards:** `{player['celestial_shards']}` — *spend at `/shard_shop`*\n"
+                f"💎 **Celestial Shards:** `{player['celestial_shards']}` — *spend at `/shop`*\n"
                 f"🎟️ **Guild Tokens:** `{player['guild_tokens']}`"
             ),
             inline=False
