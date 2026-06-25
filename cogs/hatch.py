@@ -735,6 +735,8 @@ class Hatch(commands.Cog):
                         description=first_line,
                         color=COLORS["info"]
                     ))
+                    if biome["name"] == "🌌 The Celestial Loom":
+                        await unlock_simple_achievement(interaction.user.id, "first_celestial_loom")
         msg = await interaction.followup.send(embed=loading)
         await asyncio.sleep(2)
 

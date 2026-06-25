@@ -352,6 +352,7 @@ class Economy(commands.Cog):
             ),
             color=COLORS["success"]
         )
+        await unlock_simple_achievement(interaction.user.id, "first_market_sale")
         await interaction.followup.send(embed=embed)
 
     # ── /delist ────────────────────────────────────────────────────────────
@@ -602,6 +603,7 @@ class Economy(commands.Cog):
                         bdd  = get_beast_data(lst["beast_id"]) or {}
                         nm   = lst.get("nickname") or bdd.get("name","?")
                         re   = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")
+                        await unlock_simple_achievement(uid, "first_market_buy")
                         await bi.followup.send(embed=discord.Embed(
                             title=f"✅ Purchased: {re} {nm}",
                             description=(
