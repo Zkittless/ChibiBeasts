@@ -1815,6 +1815,26 @@ class Battle(commands.Cog):
             "loom":     {"epic": 0.30, "legendary": 0.40, "divine": 0.30},
         }
 
+        # 20 minute cooldown
+        import time as _t
+        _now = _t.time()
+        _cd_last = player.get("challenge_last_at", 0) or 0
+        _remaining = 1200 - (_now - _cd_last)
+        if _remaining > 0:
+            _m, _s = divmod(int(_remaining), 60)
+            return await interaction.followup.send(embed=discord.Embed(
+                description=f"⏳ The wild needs time to settle. Ready in **{_m}m {_s}s**.",
+                color=COLORS["info"]
+            ))
+
+        # Stamp cooldown immediately so concurrent requests don't double-fire
+        async with aiosqlite.connect(DB_PATH) as _cddb:
+            await _cddb.execute(
+                "UPDATE players SET challenge_last_at = ? WHERE user_id = ?",
+                (_now, interaction.user.id)
+            )
+            await _cddb.commit()
+
         min_level = BIOME_GATES[biome]
         if player["level"] < min_level:
             return await interaction.followup.send(embed=discord.Embed(
