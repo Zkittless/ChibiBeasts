@@ -1842,10 +1842,13 @@ class Battle(commands.Cog):
         # Pick a wild beast of that rarity from the biome
         candidates = [
             b for b in all_beasts.values()
-            if b["rarity"] == rarity and not b.get("starter")
+            if b["rarity"] == rarity
+            and not b.get("starter")
+            and b.get("wild_encounter", True)
+            and b.get("catch_rate", 1) > 0
         ]
         if not candidates:
-            candidates = [b for b in all_beasts.values() if b["rarity"] == "common"]
+            candidates = [b for b in all_beasts.values() if b["rarity"] == "common" and b.get("wild_encounter", True)]
         wild_beast_data = random.choice(candidates)
 
         # Scale wild beast to player's active beast level ±2
