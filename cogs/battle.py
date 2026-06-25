@@ -202,6 +202,13 @@ async def run_pve_battle(
     enemy AI selecting via ai_pick_move(). Calls on_win or on_loss at the
     end with the final states so the caller can apply rewards/dialogue.
     """
+    # Fetch ultimate charges from DB for this player
+    async with aiosqlite.connect(DB_PATH) as _cdb:
+        _cdb.row_factory = aiosqlite.Row
+        async with _cdb.execute("SELECT ultimate_charges FROM players WHERE user_id = ?", (interaction.user.id,)) as _cc:
+            _crow = await _cc.fetchone()
+    _ult_charges = int(_crow["ultimate_charges"]) if _crow and _crow["ultimate_charges"] else 0
+
     player_state = {
         "id":          player_beast_row["id"],
         "name":        player_beast_row.get("nickname") or player_beast_data["name"],
@@ -212,7 +219,7 @@ async def run_pve_battle(
         "speed":       player_beast_row["speed"],
         "mana":        player_beast_row["mana"],
         "max_mana":    player_beast_row["max_mana"],
-        "ultimate_charges": player.get("ultimate_charges", 0),
+        "ultimate_charges": _ult_charges,
         "status":      None,
         "status_turns":0,
         "phoenix_used":False,
