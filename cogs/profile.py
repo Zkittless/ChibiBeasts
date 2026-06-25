@@ -80,12 +80,20 @@ class Profile(commands.Cog):
                 )
         import time as _t
         explore_last = player.get("explore_last_at", 0) or 0
-        explore_ready_in = max(0, 3600 - (_t.time() - explore_last))
+        explore_ready_in = max(0, 1800 - (_t.time() - explore_last))
         if explore_ready_in > 0:
             em, es = divmod(int(explore_ready_in), 60)
-            explore_status = f"⏳ Ready in `{em}m {es}s`"
+            explore_status = f"⏳ Explore ready in `{em}m {es}s`"
         else:
-            explore_status = "✅ Ready!"
+            explore_status = "✅ Explore ready!"
+
+        challenge_last = player.get("challenge_last_at", 0) or 0
+        challenge_ready_in = max(0, 1200 - (_t.time() - challenge_last))
+        if challenge_ready_in > 0:
+            cm, cs = divmod(int(challenge_ready_in), 60)
+            challenge_status = f"\n⚔️ Challenge ready in `{cm}m {cs}s`"
+        else:
+            challenge_status = "\n⚔️ Challenge ready!"
 
         # Raid party quick status
         raid_party = await get_raid_party(target.id)
@@ -116,8 +124,8 @@ class Profile(commands.Cog):
                 pass
 
         embed.add_field(
-            name="🗺️ Explore",
-            value=explore_status + party_status + sanctuary_status,
+            name="🗺️ Activity",
+            value=explore_status + challenge_status + party_status + sanctuary_status,
             inline=False
         )
         embed.set_footer(text="ChibiBeasts 🐾  •  /collection to see all beasts")
