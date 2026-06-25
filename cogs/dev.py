@@ -615,6 +615,22 @@ class Dev(commands.Cog):
             ephemeral=True
         )
 
+    # ── /dev renumber_all ────────────────────────────────────────────────
+    @dev_group.command(name="renumber_all", description="[DEV] Renumber all beasts for all players — run once after migration")
+    @dev_only()
+    async def renumber_all(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        async with aiosqlite.connect(DB_PATH) as db:
+            async with db.execute("SELECT DISTINCT user_id FROM player_beasts") as c:
+                user_ids = [r[0] for r in await c.fetchall()]
+        from utils.db import renumber_beasts as _renumber
+        for uid in user_ids:
+            await _renumber(uid)
+        await interaction.followup.send(
+            f"✅ Renumbered beasts for **{len(user_ids)}** player(s).",
+            ephemeral=True
+        )
+
     # ── /dev reset_cooldowns ──────────────────────────────────────────────
     @dev_group.command(name="reset_cooldowns", description="[DEV] Reset explore and challenge cooldowns for a player")
     @app_commands.describe(member="Target player (defaults to you)")
