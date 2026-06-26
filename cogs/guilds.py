@@ -512,6 +512,63 @@ class Guilds(commands.Cog):
         view = InviteView()
         view.message = await interaction.followup.send(content=member.mention, embed=embed, view=view)
 
+    # ── /guild_promote ────────────────────────────────────────────────────
+    @app_commands.command(name="guild_promote", description="Promote or demote a guild member 👑")
+    @app_commands.describe(member="Member to promote/demote", rank="New rank to assign")
+    @app_commands.choices(rank=[
+        app_commands.Choice(name="⚔️ Officer", value="officer"),
+        app_commands.Choice(name="🐾 Member",  value="member"),
+    ])
+    async def guild_promote(self, interaction: discord.Interaction, member: discord.Member, rank: str):
+        await interaction.response.defer(ephemeral=True)
+        uid = interaction.user.id
+
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            # Verify caller is leader
+            async with db.execute(
+                "SELECT guild_id, rank FROM guild_members WHERE user_id = ?", (uid,)
+            ) as c:
+                caller = await c.fetchone()
+            if not caller or caller["rank"] != "leader":
+                return await interaction.followup.send(
+                    "✦ Only the guild leader can promote or demote members.", ephemeral=True
+                )
+            guild_id = caller["guild_id"]
+
+            # Verify target is in the same guild
+            async with db.execute(
+                "SELECT rank FROM guild_members WHERE guild_id = ? AND user_id = ?",
+                (guild_id, member.id)
+            ) as c:
+                target = await c.fetchone()
+            if not target:
+                return await interaction.followup.send(
+                    f"✦ **{member.display_name}** is not in your guild.", ephemeral=True
+                )
+            if target["rank"] == "leader":
+                return await interaction.followup.send(
+                    "✦ You cannot change the rank of the guild leader.", ephemeral=True
+                )
+            if target["rank"] == rank:
+                return await interaction.followup.send(
+                    f"✦ **{member.display_name}** is already {rank}.", ephemeral=True
+                )
+
+            await db.execute(
+                "UPDATE guild_members SET rank = ? WHERE guild_id = ? AND user_id = ?",
+                (rank, guild_id, member.id)
+            )
+            await db.commit()
+
+        rank_label = "⚔️ Officer" if rank == "officer" else "🐾 Member"
+        action = "promoted to" if rank == "officer" else "demoted to"
+        await interaction.followup.send(embed=discord.Embed(
+            description=f"✅ **{member.display_name}** has been {action} **{rank_label}**.",
+            color=COLORS["success"]
+        ), ephemeral=True)
+
+    # ── /guild_leave ──────────────────────────────────────────────────────
     @app_commands.command(name="guild_leave", description="Leave your current guild 🚪")
     async def guild_leave(self, interaction: discord.Interaction):
         await interaction.response.defer()
