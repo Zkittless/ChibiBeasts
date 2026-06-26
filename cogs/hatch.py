@@ -887,7 +887,7 @@ class Hatch(commands.Cog):
             explore_exp = _aeb(explore_exp, user_sanctuary)
             await update_player(interaction.user.id, gold=player["gold"] + gold_bonus)
             from cogs.battle import award_player_exp as _award_exp
-            _p_lvl, _, _p_leveled = await _award_exp(interaction.user.id, explore_exp)
+            _p_lvl, _, _p_leveled = await _award_exp(interaction.user.id, explore_exp, interaction)
 
             # Material drop
             RARITY_MATERIAL_POOLS = {

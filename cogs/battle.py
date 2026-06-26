@@ -161,7 +161,128 @@ def build_pve_beast_state(beast_data: dict, level: int) -> dict:
     }
 
 
-async def award_player_exp(user_id: int, exp_gain: int) -> tuple[int, int, bool]:
+# ── Level milestone definitions ──────────────────────────────────────────
+LEVEL_MILESTONES = {
+    3: {
+        "title": "The Loom Notices You", "emoji": "🌱",
+        "body": (
+            "*You have proven you can survive out here. That is not nothing.*\n\n"
+            "*Somewhere in the Whispering Woods, an old woman named **Maren** has heard about you. "
+            "She keeps the First Bestiary — a record of every beast ever caught, "
+            "going back before anyone can remember. She wants to meet you.*\n\n"
+            "**Use `/questline` to begin your story.**\n"
+            "*The Loom has been waiting for you to be ready.*"
+        ),
+        "reward_gold": 500, "reward_shards": 5, "color": "legendary",
+    },
+    5: {
+        "title": "Lv.5 — Getting Dangerous", "emoji": "⚔️",
+        "body": (
+            "*Your beasts are stronger. You are learning how to read a fight.*\n\n"
+            "*The Ember Wastes are now accessible — fire-type territory, tougher encounters, "
+            "better rewards. Sable the Forger works there. "
+            "She does not take meetings, but she takes notice of trainers who can handle the heat.*"
+        ),
+        "reward_gold": 800, "reward_shards": 8, "color": "epic",
+    },
+    10: {
+        "title": "Lv.10 — A Real Trainer", "emoji": "🔥",
+        "body": (
+            "*Ten levels. Most people do not make it this far.*\n\n"
+            "*Guild Raids are now available — join a guild and take on Corrupted bosses "
+            "with other trainers. The rewards are unlike anything you find in the wild.\n\n"
+            "The Glacial Hollows have opened. Ice-type territory. "
+            "Whatever lives there has been waiting a long time for someone worth fighting.*"
+        ),
+        "reward_gold": 2000, "reward_shards": 15, "color": "rare",
+    },
+    15: {
+        "title": "Lv.15 — The Depths Call", "emoji": "🌊",
+        "body": (
+            "*The Sunken Abyssal Trenches are accessible. Few trainers reach this point. "
+            "The beasts down there are old and strange and difficult.*\n\n"
+            "*Cael the Loom-Watcher has been watching your progress. "
+            "He has questions only you can answer now.*"
+        ),
+        "reward_gold": 3500, "reward_shards": 20, "color": "epic",
+    },
+    25: {
+        "title": "Lv.25 — The Loom Opens", "emoji": "🌌",
+        "body": (
+            "*The Celestial Loom itself is accessible. This is where the world was made.*\n\n"
+            "*Legendary and Divine beasts inhabit this place. The Archivist — the keeper of "
+            "everything that has ever happened — has requested your presence. "
+            "This is the final chapter of the first story.*\n\n"
+            "*Whatever you find there will change what you understand about the Loom.*"
+        ),
+        "reward_gold": 10000, "reward_shards": 50, "color": "divine",
+    },
+    50: {
+        "title": "Lv.50 — The Weave Complete", "emoji": "✨",
+        "body": (
+            "*You have reached the end of what the Loom has measured so far.*\n\n"
+            "*This is not the end. The Loom is still weaving. More will come.*\n\n"
+            "*For now — you have caught beasts, fought battles, built bonds, and followed "
+            "a thread that started with a single choice in the Whispering Woods.*\n\n"
+            "*Maren would say something wise here. She probably already did.*"
+        ),
+        "reward_gold": 50000, "reward_shards": 100, "color": "divine",
+    },
+}
+
+
+async def notify_level_up(
+    interaction: discord.Interaction,
+    old_level: int,
+    new_level: int,
+    user_id: int,
+) -> None:
+    """Send a level-up announcement embed. Shows milestones with rewards."""
+    from utils.db import get_player, update_player
+    from utils.theme import COLORS
+
+    channel = interaction.channel
+    if not channel:
+        return
+
+    for lvl in range(old_level + 1, new_level + 1):
+        milestone = LEVEL_MILESTONES.get(lvl)
+
+        if milestone:
+            # Grant milestone rewards
+            player = await get_player(user_id)
+            if player:
+                await update_player(
+                    user_id,
+                    gold=player["gold"] + milestone["reward_gold"],
+                    celestial_shards=player.get("celestial_shards", 0) + milestone["reward_shards"],
+                )
+            embed = discord.Embed(
+                title=f"{milestone['emoji']} {milestone['title']}",
+                description=(
+                    f"**Trainer Level {lvl}!**\n\n"
+                    + milestone["body"]
+                    + f"\n\n🎁 **Milestone Rewards:** `+{milestone['reward_gold']:,}g` · `+{milestone['reward_shards']} 🔮`"
+                ),
+                color=COLORS.get(milestone["color"], COLORS["legendary"])
+            )
+            embed.set_footer(text="ChibiBeasts 🐾  •  Use /profile to see your progress")
+            await channel.send(f"<@{user_id}>", embed=embed)
+        else:
+            # Regular level up — clean simple embed
+            embed = discord.Embed(
+                title=f"⬆️ Trainer Level {lvl}!",
+                description=(
+                    "*The Loom acknowledges your growth.*\n\n"
+                    "Your beasts grow stronger alongside you.\n"
+                    "Check `/profile` for your updated stats."
+                ),
+                color=COLORS["success"]
+            )
+            await channel.send(f"<@{user_id}>", embed=embed)
+
+
+async def award_player_exp(user_id: int, exp_gain: int, interaction: discord.Interaction = None) -> tuple[int, int, bool]:
     """
     Add `exp_gain` to the player's EXP, handle level-ups, and persist.
     Returns (new_level, new_exp, leveled_up).
@@ -171,21 +292,25 @@ async def award_player_exp(user_id: int, exp_gain: int) -> tuple[int, int, bool]
     player = await get_player(user_id)
     if not player:
         return 1, 0, False
+    old_level = player["level"]
     new_exp   = player["exp"] + exp_gain
-    new_level = player["level"]
+    new_level = old_level
     while new_exp >= calc_player_exp_for_level(new_level):
         new_exp -= calc_player_exp_for_level(new_level)
         new_level += 1
-    leveled_up = new_level > player["level"]
+    leveled_up = new_level > old_level
     await update_player(user_id, exp=new_exp, level=new_level)
-    # Fire level_up quest event so chapter steps that check player level
-    # (e.g. chapter 2's "reach level 25") advance automatically on level-up.
     if leveled_up:
         try:
             from cogs.questline import advance_quest_step
             await advance_quest_step(user_id, "level_up", level=new_level)
         except Exception:
-            pass  # questline advance is best-effort — never block a reward
+            pass
+        if interaction:
+            try:
+                await notify_level_up(interaction, old_level, new_level, user_id)
+            except Exception:
+                pass
     return new_level, new_exp, leveled_up
 
 
@@ -2210,7 +2335,7 @@ class Battle(commands.Cog):
 
             # Player EXP (outside the DB block — uses update_player which opens its own conn)
             spar_exp = random.randint(active_row["level"] * 12, active_row["level"] * 20)
-            _p_lvl, _, _p_leveled = await award_player_exp(interaction.user.id, spar_exp)
+            _p_lvl, _, _p_leveled = await award_player_exp(interaction.user.id, spar_exp, interaction)
 
             if rel_advanced:
                 embed.add_field(
