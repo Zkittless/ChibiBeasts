@@ -1103,8 +1103,8 @@ class Shop(commands.Cog):
             def _load_section_data(self_v):
                 self_v._instant_items  = get_instant_eggs()
                 self_v._incub_items    = get_incub_eggs()
-                self_v._potion_items   = get_items_by_type({"heal","revive","cure","mana"})
-                self_v._consumable_items = get_items_by_type({"happiness","happiness_boost","exp","stat_boost","cooldown","encounter"})
+                self_v._potion_items   = get_items_by_type({"heal","revive","cure","mana","ultimate_charge"})
+                self_v._consumable_items = get_items_by_type({"happiness","happiness_boost","exp","stat_boost","cooldown","cooldown_reset","encounter","encounter_boost","incubation_boost"})
                 self_v._other_items    = get_items_by_type({"defense_boost","speed_boost","unlock","permanent_boost"})
 
             def _rebuild(self_v):
