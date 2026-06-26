@@ -1018,7 +1018,7 @@ class Shop(commands.Cog):
         def get_items_by_type(types):
             from utils.db import load_items
             items = load_items()
-            out = [i for i in items.values() if i.get("price",0) > 0 and i.get("type") in types]
+            out = [{**i, "id": k} for k, i in items.items() if i.get("price",0) > 0 and i.get("type") in types]
             out.sort(key=lambda i: (RARITY_ORDER.index(i["rarity"]) if i["rarity"] in RARITY_ORDER else 99, i["price"]))
             return out
 
