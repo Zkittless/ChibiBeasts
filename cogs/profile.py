@@ -73,12 +73,16 @@ class Profile(commands.Cog):
                 happiness = active.get("happiness", 100)
                 hap_filled = int(happiness / 10)
                 hap_bar = "🟨" * hap_filled + "⬛" * (10 - hap_filled)
+                ult_charges = player.get("ultimate_charges", 0) or 0
+                ult_bar = "⚡" * ult_charges + "◇" * (3 - ult_charges)
+                ult_label = "**READY**" if ult_charges >= 3 else f"{ult_charges}/3"
                 embed.add_field(
                     name="⚔️ Active Beast",
                     value=(
                         f"{RARITY_EMOJI.get(active['rarity'], '⚪')} **{name}** — Lv.{active['level']}\n"
                         f"❤️ {hp_bar(active['hp'], active['max_hp'])}\n"
-                        f"😊 {hap_bar} `{happiness}/100`"
+                        f"😊 {hap_bar} `{happiness}/100`\n"
+                        f"⚡ Ultimate: {ult_bar} {ult_label}"
                     ),
                     inline=False
                 )
@@ -325,6 +329,8 @@ class Profile(commands.Cog):
     async def beastinfo(self, interaction: discord.Interaction, beast_number: int = None):
         await interaction.response.defer()
 
+        player = await get_or_create_player(interaction.user.id, str(interaction.user))
+
         # Load all player beasts ordered by player_number
         all_beasts = await get_player_beasts(interaction.user.id)
         if not all_beasts:
@@ -368,12 +374,19 @@ class Profile(commands.Cog):
                 color=COLORS.get(rarity, COLORS["info"])
             )
             embed.add_field(name="📊 Stats", value=fmt_stats(row), inline=True)
+            ult_charges = player.get("ultimate_charges", 0) or 0
+            ult_line = ""
+            if row.get("is_active"):
+                ult_bar = "⚡" * ult_charges + "◇" * (3 - ult_charges)
+                ult_label = "**READY**" if ult_charges >= 3 else f"{ult_charges}/3"
+                ult_line = f"\n⚡ Ultimate: {ult_bar} {ult_label}"
             embed.add_field(
                 name="📈 Progress",
                 value=(
                     f"⭐ Level: `{row['level']}`\n"
                     f"✨ EXP: {exp_bar(row['exp'], exp_needed)}\n"
                     f"😊 Happiness: `{row['happiness']}/100`"
+                    + ult_line
                 ),
                 inline=True
             )
