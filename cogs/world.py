@@ -626,55 +626,74 @@ class World(commands.Cog):
                 "SELECT * FROM guild_sanctuary WHERE guild_id = ?", (guild_row["guild_id"],)
             ) as c:
                 sanctuary = await c.fetchone()
-            sanctuary = dict(sanctuary) if sanctuary else {
-                "fairy_garden": 0, "gnome_forge": 0, "celestial_observatory": 0
-            }
+            sanctuary = dict(sanctuary) if sanctuary else {}
 
-        embed = discord.Embed(
-            title=f"🏰 {guild_row['name']}'s Sanctuary",
-            description=(
-                "*Every guild is a small echo of what the Architects did at the start — "
-                "weaving a stable space together.*\n\n"
-                "Upgrade your Sanctuary to unlock powerful passive bonuses for all members."
-            ),
-            color=COLORS["legendary"]
-        )
+        upgrades = list(SANCTUARY_UPGRADES.items())
+        total = len(upgrades)
+        uid = interaction.user.id
 
-        last_built_img = None
-        next_buildable_img = None
-
-        for key, upgrade in SANCTUARY_UPGRADES.items():
-            col = upgrade["db_column"]
-            built = bool(sanctuary.get(col, 0))
-            req = upgrade.get("requires")
+        def build_page(page: int) -> discord.Embed:
+            page = max(1, min(page, total))
+            key, upgrade = upgrades[page - 1]
+            col     = upgrade["db_column"]
+            built   = bool(sanctuary.get(col, 0))
+            req     = upgrade.get("requires")
             req_met = not req or bool(sanctuary.get(req, 0))
-            img = upgrade.get("image_url", "")
+
             if built:
-                status = "✅ Built"
-                if img:
-                    last_built_img = img
+                status     = "✅ Built"
+                status_color = "success"
             elif not req_met:
-                req_name = SANCTUARY_UPGRADES[req]["name"]
-                status = f"🔒 Requires {req_name}"
+                req_name   = SANCTUARY_UPGRADES[req]["name"]
+                status     = f"🔒 Locked — requires {req_name}"
+                status_color = "info"
             else:
-                status = f"🔨 Cost: {upgrade['cost_tokens']} 🎟️ tokens" + (
-                    f" *(requires {SANCTUARY_UPGRADES[req]['name']})*" if req else "")
-                if img and not next_buildable_img:
-                    next_buildable_img = img
-            embed.add_field(
-                name=f"{upgrade['name']} (Tier {upgrade['tier']}) — {status}",
-                value=f"{upgrade['description']}\n*{upgrade['lore']}*",
-                inline=False
+                status     = f"🔨 Available — costs `{upgrade['cost_tokens']} 🎟️ tokens`"
+                status_color = "legendary"
+
+            built_count = sum(1 for k, u in SANCTUARY_UPGRADES.items() if sanctuary.get(u["db_column"], 0))
+
+            embed = discord.Embed(
+                title=f"{upgrade['name']}  ·  Tier {upgrade['tier']}",
+                description=(
+                    f"**{status}**\n\n"
+                    f"{upgrade['description']}\n\n"
+                    f"*{upgrade['lore']}*"
+                ),
+                color=COLORS.get(status_color, COLORS["legendary"])
             )
+            if upgrade.get("image_url"):
+                embed.set_image(url=upgrade["image_url"])
+            embed.set_footer(
+                text=f"🏰 {guild_row['name']} · {built_count}/{total} built · Page {page}/{total} · /build <upgrade> to construct"
+            )
+            return embed
 
-        # Show last built as thumbnail, next buildable as main image
-        if last_built_img:
-            embed.set_thumbnail(url=last_built_img)
-        if next_buildable_img:
-            embed.set_image(url=next_buildable_img)
+        class SancView(discord.ui.View):
+            def __init__(self_v, page=1):
+                super().__init__(timeout=180)
+                self_v.page = page
+                self_v._rebuild()
 
-        embed.set_footer(text=f"ChibiBeasts 🐾  •  Use /build <upgrade> to construct a Sanctuary upgrade")
-        await interaction.followup.send(embed=embed)
+            def _rebuild(self_v):
+                self_v.clear_items()
+                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=self_v.page <= 1, row=0)
+                pg   = discord.ui.Button(label=f"{self_v.page}/{total}", style=discord.ButtonStyle.secondary, disabled=True, row=0)
+                nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self_v.page >= total, row=0)
+                async def _prev(bi, _v=self_v):
+                    if bi.user.id != uid:
+                        return await bi.response.send_message("✦ This isn't your sanctuary view!", ephemeral=True)
+                    _v.page -= 1; _v._rebuild()
+                    await bi.response.edit_message(embed=build_page(_v.page), view=_v)
+                async def _nxt(bi, _v=self_v):
+                    if bi.user.id != uid:
+                        return await bi.response.send_message("✦ This isn't your sanctuary view!", ephemeral=True)
+                    _v.page += 1; _v._rebuild()
+                    await bi.response.edit_message(embed=build_page(_v.page), view=_v)
+                prev.callback = _prev; nxt.callback = _nxt
+                self_v.add_item(prev); self_v.add_item(pg); self_v.add_item(nxt)
+
+        await interaction.followup.send(embed=build_page(1), view=SancView(1))
 
     # ── /build ────────────────────────────────────────────────────────────
     @app_commands.command(name="build", description="Build a Sanctuary upgrade for your guild ⚒️")
