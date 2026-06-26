@@ -278,6 +278,10 @@ async def _run_migrations():
         "ALTER TABLE players ADD COLUMN ultimate_charges INTEGER DEFAULT 0",
         "ALTER TABLE players ADD COLUMN play_last_at REAL DEFAULT 0",
         "ALTER TABLE players ADD COLUMN incense_charges INTEGER DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN guild_tickets INTEGER DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN contribute_last_at REAL DEFAULT 0",
+        "ALTER TABLE guild_members ADD COLUMN tickets_contributed INTEGER DEFAULT 0",
+        "ALTER TABLE guilds ADD COLUMN total_contributions INTEGER DEFAULT 0",
     ]
 
     # Beast Market table

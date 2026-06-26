@@ -690,6 +690,181 @@ class Guilds(commands.Cog):
             color=COLORS["info"]
         ), view=LeaveView())
 
+    # ── /contribute ──────────────────────────────────────────────────────
+    @app_commands.command(name="contribute", description="Contribute to your guild and earn tickets 🎫")
+    async def contribute(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        import time as _t, random as _r
+        uid = interaction.user.id
+
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute("SELECT guild_id FROM guild_members WHERE user_id = ?", (uid,)) as c:
+                member_row = await c.fetchone()
+            if not member_row:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description="❖ You are not in a guild. Create one with /guild_create or ask to be invited.",
+                    color=COLORS["info"]
+                ))
+            guild_id = member_row["guild_id"]
+
+            async with db.execute("SELECT contribute_last_at FROM players WHERE user_id = ?", (uid,)) as c:
+                _pr = await c.fetchone()
+            _last = float(_pr["contribute_last_at"]) if _pr and _pr["contribute_last_at"] else 0
+            _remaining = 86400 - (_t.time() - _last)
+            if _remaining > 0:
+                _h, _rem = divmod(int(_remaining), 3600)
+                _m = _rem // 60
+                return await interaction.followup.send(embed=discord.Embed(
+                    description=f"⧗ You already contributed today. Next contribution in **{_h}h {_m}m**.",
+                    color=COLORS["info"]
+                ))
+
+            guild_exp_gain = _r.randint(80, 150)
+            guild_token_gain = _r.randint(8, 15)
+            player_tickets = _r.randint(5, 10)
+
+            async with db.execute("SELECT * FROM guilds WHERE id = ?", (guild_id,)) as c:
+                guild = dict(await c.fetchone())
+
+            new_guild_exp = guild["exp"] + guild_exp_gain
+            new_guild_level = guild["level"]
+            EXP_PER_LEVEL = 500
+            leveled_up = False
+            while new_guild_exp >= new_guild_level * EXP_PER_LEVEL:
+                new_guild_exp -= new_guild_level * EXP_PER_LEVEL
+                new_guild_level += 1
+                leveled_up = True
+
+            await db.execute(
+                "UPDATE guilds SET exp = ?, level = ?, guild_tokens = guild_tokens + ?, total_contributions = COALESCE(total_contributions, 0) + 1 WHERE id = ?",
+                (new_guild_exp, new_guild_level, guild_token_gain, guild_id)
+            )
+            await db.execute(
+                "UPDATE players SET guild_tickets = COALESCE(guild_tickets, 0) + ?, contribute_last_at = ? WHERE user_id = ?",
+                (player_tickets, _t.time(), uid)
+            )
+            await db.execute(
+                "UPDATE guild_members SET tickets_contributed = COALESCE(tickets_contributed, 0) + ? WHERE guild_id = ? AND user_id = ?",
+                (player_tickets, guild_id, uid)
+            )
+            await db.commit()
+
+            async with db.execute("SELECT guild_tickets FROM players WHERE user_id = ?", (uid,)) as c:
+                _tp = await c.fetchone()
+            total_tickets = _tp["guild_tickets"] if _tp else player_tickets
+
+        CONTRIBUTE_LINES = [
+            "*The guild acknowledges the effort. The Sanctuary feels slightly more solid.*",
+            "*Something in the Sanctuary hums approvingly.*",
+            "*Your contribution has been logged. The guild grows stronger.*",
+            "*The Loom records the gesture. It records everything.*",
+            "*Small contributions build large things. The guild knows this.*",
+        ]
+
+        desc = (
+            f"*{_r.choice(CONTRIBUTE_LINES)}*\n\n"
+            f"**Guild received:** +`{guild_exp_gain}` EXP · +`{guild_token_gain}` 🎫 Tokens\n"
+            f"**You earned:** +`{player_tickets}` 🎫 Guild Tickets\n"
+            f"**Your total tickets:** `{total_tickets}` 🎫\n\n"
+            f"*Guild EXP: `{new_guild_exp}/{new_guild_level * EXP_PER_LEVEL}`*"
+        )
+        if leveled_up:
+            perk = GUILD_LEVEL_PERKS.get(new_guild_level, {})
+            desc += f"\n\n🎉 **Guild leveled up to Lv.{new_guild_level}!**"
+            if perk.get("unlocks"):
+                desc += f"\n✨ *Unlocked: {perk['unlocks']}*"
+
+        embed = discord.Embed(title="🏰 Guild Contribution", description=desc, color=COLORS["success"])
+        embed.set_footer(text="ChibiBeasts 🐾  •  Contribute again in 24 hours · Spend tickets at /guild_shop")
+        await interaction.followup.send(embed=embed)
+
+    # ── /guild_shop ───────────────────────────────────────────────────────
+    @app_commands.command(name="guild_shop", description="Spend guild tickets on exclusive items 🎫")
+    async def guild_shop(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        uid = interaction.user.id
+
+        async with aiosqlite.connect("db/chibibeast.db") as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute("SELECT guild_id FROM guild_members WHERE user_id = ?", (uid,)) as c:
+                member_row = await c.fetchone()
+            if not member_row:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description="❖ You must be in a guild to use the guild shop.",
+                    color=COLORS["info"]
+                ))
+            guild_id = member_row["guild_id"]
+            async with db.execute("SELECT level, guild_tokens FROM guilds WHERE id = ?", (guild_id,)) as c:
+                guild = dict(await c.fetchone())
+            async with db.execute("SELECT guild_tickets FROM players WHERE user_id = ?", (uid,)) as c:
+                player = dict(await c.fetchone())
+
+        tickets = player.get("guild_tickets", 0)
+        guild_level = guild["level"]
+
+        GUILD_SHOP_ITEMS = [
+            {"id": "raid_totem",           "name": "🪩 Raid Totem",          "cost": 20,  "desc": "Boosts your damage in the next raid by 20%. Single use.",                               "guild_level_req": 1},
+            {"id": "beastkeeper_seal",     "name": "🦋 Beastkeeper Seal",    "cost": 15,  "desc": "Boosts catch rate for your next 3 /explore encounters.",                                "guild_level_req": 1},
+            {"id": "guild_elixir",         "name": "⚗️ Guild Elixir",        "cost": 10,  "desc": "Restores 50% HP. Guild members only.",                                                 "guild_level_req": 1},
+            {"id": "ancient_compass",      "name": "🧭 Ancient Compass",     "cost": 35,  "desc": "Guarantees next /explore encounter is Rare or higher.",                                 "guild_level_req": 5},
+            {"id": "guild_crest",          "name": "🏅 Guild Crest",          "cost": 50,  "desc": "A cosmetic token of guild dedication. Tradeable for a title.",                         "guild_level_req": 5},
+            {"id": "loom_fragment",        "name": "🧵 Loom Fragment",        "cost": 80,  "desc": "A shard of the Celestial Loom. Used to evolve certain beasts.",                        "guild_level_req": 10},
+            {"id": "sanctuary_blueprint",  "name": "📐 Sanctuary Blueprint",  "cost": 150, "desc": "Unlocks one free Sanctuary upgrade for your guild.",                                    "guild_level_req": 15},
+        ]
+
+        available = [i for i in GUILD_SHOP_ITEMS if guild_level >= i["guild_level_req"]]
+
+        embed = discord.Embed(
+            title="🏰 Guild Shop",
+            description=f"🎫 **Your tickets:** `{tickets}`\n*Earn more with `/contribute` daily.*\n​",
+            color=COLORS["legendary"]
+        )
+        for item in available:
+            can = "✅" if tickets >= item["cost"] else "❌"
+            embed.add_field(name=f"{item['name']} — `{item['cost']} 🎫` {can}", value=item["desc"], inline=False)
+        if len(available) < len(GUILD_SHOP_ITEMS):
+            locked = len(GUILD_SHOP_ITEMS) - len(available)
+            embed.add_field(name=f"🔒 {locked} item(s) locked", value="*Raise your guild level to unlock more items.*", inline=False)
+        embed.set_footer(text="ChibiBeasts 🐾  •  /contribute to earn tickets daily")
+
+        class GuildShopView(discord.ui.View):
+            def __init__(self_v):
+                super().__init__(timeout=120)
+                for item in available[:5]:
+                    btn = discord.ui.Button(
+                        label=f"{item['name'][:20]} ({item['cost']}🎫)",
+                        style=discord.ButtonStyle.success if tickets >= item["cost"] else discord.ButtonStyle.secondary,
+                        disabled=tickets < item["cost"]
+                    )
+                    async def _buy(bi, _item=item):
+                        if bi.user.id != uid:
+                            return await bi.response.send_message("❖ This is not your shop!", ephemeral=True)
+                        await bi.response.defer(ephemeral=True)
+                        async with aiosqlite.connect("db/chibibeast.db") as _db:
+                            async with _db.execute("SELECT guild_tickets FROM players WHERE user_id = ?", (uid,)) as _c:
+                                _p = await _c.fetchone()
+                            if not _p or _p["guild_tickets"] < _item["cost"]:
+                                return await bi.followup.send(f"❖ Need `{_item['cost']} 🎫`.", ephemeral=True)
+                            await _db.execute("UPDATE players SET guild_tickets = guild_tickets - ? WHERE user_id = ?", (_item["cost"], uid))
+                            item_id = _item["id"]
+                            async with _db.execute("SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?", (uid, item_id)) as _c:
+                                _inv = await _c.fetchone()
+                            if _inv:
+                                await _db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (_inv[0],))
+                            else:
+                                await _db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (uid, item_id))
+                            await _db.commit()
+                        await bi.followup.send(embed=discord.Embed(
+                            title=f"✅ Purchased: {_item['name']}",
+                            description="Added to your inventory. Use `/inventory` to view.",
+                            color=COLORS["success"]
+                        ), ephemeral=True)
+                    btn.callback = _buy
+                    self_v.add_item(btn)
+
+        await interaction.followup.send(embed=embed, view=GuildShopView())
+
     @app_commands.command(name="raid", description="Trigger a raid boss battle! ⚔️")
     @app_commands.choices(raid_type=[
         app_commands.Choice(name="⚔️ Corrupted Raid", value="corrupted"),
