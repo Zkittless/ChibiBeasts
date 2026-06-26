@@ -708,15 +708,22 @@ def get_beast_exp_for_level(beast_row: dict, level: int) -> int:
     return calc_exp_for_level(level) if is_starter else calc_exp_for_level_wild(level)
 
 async def renumber_beasts(user_id: int) -> None:
-    """Renumber all beasts sequentially (1..N) ordered by catch order (id).
-    Called after release, trade, or market sale so collection numbers stay clean."""
+    """Renumber all beasts sequentially (1..N) ordered by rarity then catch order (id).
+    Common beasts first, divine last. Within same rarity, catch order preserved."""
+    RARITY_RANK = {
+        "common": 0, "uncommon": 1, "rare": 2, "epic": 3,
+        "legendary": 4, "divine": 5, "altered_divine": 6,
+        "corrupted": 7, "ancient": 8, "dev": 9,
+    }
     async with aiosqlite.connect(DB_PATH) as db:
         async with db.execute(
-            "SELECT id FROM player_beasts WHERE user_id = ? ORDER BY id ASC",
+            "SELECT id, rarity FROM player_beasts WHERE user_id = ? ORDER BY id ASC",
             (user_id,)
         ) as c:
             rows = await c.fetchall()
-        for new_num, (row_id,) in enumerate(rows, start=1):
+        # Sort by rarity rank then by original catch order (id)
+        sorted_rows = sorted(rows, key=lambda r: (RARITY_RANK.get(r[1], 99), r[0]))
+        for new_num, (row_id, _) in enumerate(sorted_rows, start=1):
             await db.execute(
                 "UPDATE player_beasts SET player_number = ? WHERE id = ?",
                 (new_num, row_id)

@@ -649,6 +649,25 @@ class Dev(commands.Cog):
             ephemeral=True
         )
 
+    # ── /dev set_charges ──────────────────────────────────────────────────
+    @dev_group.command(name="set_charges", description="[DEV] Set ultimate charges for a player (0-3)")
+    @app_commands.describe(charges="Charge count to set (0-3)", member="Target player (defaults to you)")
+    @dev_only()
+    async def set_charges(self, interaction: discord.Interaction, charges: int, member: discord.Member = None):
+        await interaction.response.defer(ephemeral=True)
+        target = member or interaction.user
+        charges = max(0, min(3, charges))
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "UPDATE players SET ultimate_charges = ? WHERE user_id = ?",
+                (charges, target.id)
+            )
+            await db.commit()
+        await interaction.followup.send(
+            f"✅ Ultimate charges set to **{charges}/3** for **{target.display_name}**.",
+            ephemeral=True
+        )
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Dev(bot))
