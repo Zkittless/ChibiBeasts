@@ -23,6 +23,7 @@ DB_PATH = "db/chibibeast.db"
 # never drift out of sync with real game state.
 
 ACHIEVEMENTS = {
+    "guild_heart": {"name":"Guild Heart","emoji":"💚","desc":"Use a Guild Crest to celebrate your guild","tier":"silver","reward":{}},
     # ── Collecting ─────────────────────────────────────────────────────────
     "first_steps":         {"name": "First Steps",          "emoji": "🐾", "desc": "Begin your ChibiBeasts journey",                      "tier": "bronze",   "reward": {"gold": 100}},
     "first_catch":         {"name": "New Friend",           "emoji": "🥚", "desc": "Catch or hatch your first beast",                     "tier": "bronze",   "reward": {"gold": 100}},
@@ -35,7 +36,7 @@ ACHIEVEMENTS = {
     "first_legendary":     {"name": "Legend Among Us",      "emoji": "🟡", "desc": "Catch or hatch a Legendary beast",                    "tier": "silver",   "reward": {"gold": 800}},
     "first_divine":        {"name": "Touched by Divinity",  "emoji": "🌸", "desc": "Catch or hatch a Divine beast",                       "tier": "gold",     "reward": {"gold": 1500, "celestial_shards": 10}},
     "divine_collector_5":  {"name": "Pantheon Builder",     "emoji": "🏛️", "desc": "Own 5 different Divine beasts",                      "tier": "gold",     "reward": {"gold": 2500, "celestial_shards": 20}},
-    "divine_collector_all":{"name": "Ascended",             "emoji": "✨", "desc": "Own all Divine beasts",                               "tier": "platinum", "reward": {"gold": 10000,"celestial_shards": 100}},
+    "divine_collector_all":{"name": "Ascended",             "emoji": "✨", "desc": "Own all five Divine Collections",                               "tier": "platinum", "reward": {"gold": 10000,"celestial_shards": 100}},
     "first_altered_divine":{"name": "Beyond Reality",       "emoji": "⚠️", "desc": "Obtain an Altered Divine beast",                      "tier": "platinum", "reward": {"gold": 5000, "celestial_shards": 25}},
     "first_cosmic":        {"name": "Loom-Touched",         "emoji": "🌌", "desc": "Catch or hatch a Cosmic type beast",                  "tier": "silver",   "reward": {"gold": 600}},
     "first_shadow":        {"name": "Into the Dark",        "emoji": "🌑", "desc": "Catch or hatch a Shadow type beast",                  "tier": "bronze",   "reward": {"gold": 200}},
@@ -120,30 +121,16 @@ async def _has_achievement(db, user_id: int, achievement_id: str) -> bool:
         return (await c.fetchone()) is not None
 
 
-async def grant_achievement(db, user_id: int, achievement_id: str) -> bool:
-    """Insert the achievement row and apply its gold/shard reward. Returns True if newly granted."""
-    if await _has_achievement(db, user_id, achievement_id):
-        return False
-    ach = ACHIEVEMENTS.get(achievement_id)
-    if not ach:
-        return False
-    await db.execute(
-        "INSERT OR IGNORE INTO achievements (user_id, achievement_id) VALUES (?, ?)",
-        (user_id, achievement_id)
-    )
-    reward = ach.get("reward", {})
-    if reward:
-        sets = []
-        values = []
-        if "gold" in reward:
-            sets.append("gold = gold + ?")
-            values.append(reward["gold"])
-        if "celestial_shards" in reward:
-            sets.append("celestial_shards = celestial_shards + ?")
-            values.append(reward["celestial_shards"])
-        if sets:
-            values.append(user_id)
-            await db.execute(f"UPDATE players SET {', '.join(sets)} WHERE user_id = ?", values)
+async def grant_achievement(db,user_id,achievement_id):
+    ach=ACHIEVEMENTS.get(achievement_id)
+    if not ach:return False
+    cursor=await db.execute("INSERT OR IGNORE INTO achievements(user_id,achievement_id) VALUES(?,?)",(user_id,achievement_id))
+    if not cursor.rowcount:return False
+    reward=ach.get("reward",{})
+    await db.execute("UPDATE players SET gold=gold+? WHERE user_id=?",(reward.get("gold",0),user_id))
+    if reward.get("celestial_shards"):
+        from utils.rewards import shards
+        await shards(db,user_id,reward["celestial_shards"])
     return True
 
 
@@ -182,6 +169,7 @@ async def check_achievements(user_id: int) -> list[str]:
     newly_unlocked = []
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
+        await db.execute("BEGIN IMMEDIATE")
 
         # ── Single connection, all reads batched ──────────────────────────
         async with db.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)) as c:
@@ -189,6 +177,8 @@ async def check_achievements(user_id: int) -> list[str]:
         if not player:
             return []
         player = dict(player)
+        from utils.events import unlock_perks
+        await unlock_perks(db,user_id,player)
 
         # Batch: owned beasts (id + rarity only — no full row fetch needed)
         async with db.execute(
@@ -222,7 +212,7 @@ async def check_achievements(user_id: int) -> list[str]:
             rarity_counts[b["rarity"]] = rarity_counts.get(b["rarity"], 0) + 1
 
         all_beasts    = load_beasts()
-        all_divine_ids = {b["id"] for b in all_beasts.values() if b["rarity"] == "divine"}
+        all_divine_ids = {b["id"] for b in all_beasts.values() if b["rarity"] == "divine" and b.get("collection") in {"Cosmic Creators","Architects of Reality","Celestial Loom","Primordial Aspects","Mythological Pillars"}}
 
         candidates = []
         if owned:                                             candidates.append("first_catch")
@@ -231,14 +221,14 @@ async def check_achievements(user_id: int) -> list[str]:
         if len(owned_species) >= 50:                         candidates.append("collector_50")
         # All catchable beasts (exclude evolution-only + dev)
         catchable_ids = {b["id"] for b in all_beasts.values()
-                         if b.get("wild_encounter", True) and b.get("catch_rate", 0) > 0}
+                         if b.get("wild_encounter", True) and b.get("catch_rate", 0) > 0 and not b.get("starter")}
         if catchable_ids and owned_species >= catchable_ids: candidates.append("collector_all")
         if rarity_counts.get("rare",      0) >= 1:           candidates.append("first_rare")
         if rarity_counts.get("epic",      0) >= 1:           candidates.append("first_epic")
         if rarity_counts.get("legendary", 0) >= 1:           candidates.append("first_legendary")
         if rarity_counts.get("divine",    0) >= 1:           candidates.append("first_divine")
         if len(owned_divines) >= 5:                          candidates.append("divine_collector_5")
-        all_divine_ids = {b["id"] for b in all_beasts.values() if b["rarity"] == "divine"}
+        all_divine_ids = {b["id"] for b in all_beasts.values() if b["rarity"] == "divine" and b.get("collection") in {"Cosmic Creators","Architects of Reality","Celestial Loom","Primordial Aspects","Mythological Pillars"}}
         if all_divine_ids and owned_divines >= all_divine_ids: candidates.append("divine_collector_all")
         if has_altered:                                       candidates.append("first_altered_divine")
         # Type-specific
@@ -281,6 +271,13 @@ async def check_achievements(user_id: int) -> list[str]:
         if rated_rank in ("gold","platinum","diamond"):      candidates.append("reach_gold_rank")
         if rated_rank == "diamond":                          candidates.append("reach_diamond_rank")
 
+        async with db.execute("SELECT npc_relationships FROM player_questline WHERE user_id=?",(user_id,)) as c:
+            rel=await c.fetchone()
+        import json
+        if rel and any(v in {"trusted","companion"} for v in json.loads(rel[0] or "{}").values()):candidates.append("npc_trusted")
+        async with db.execute("SELECT value FROM player_progress WHERE user_id=? AND stat_key='raid_complete'",(user_id,)) as c:
+            raids=await c.fetchone()
+        if raids and raids[0]>=10:candidates.append("raids_10")
         # Grant — still inside the same open connection
         for aid in candidates:
             granted = await grant_achievement(db, user_id, aid)
@@ -297,6 +294,7 @@ async def unlock_simple_achievement(user_id: int, achievement_id: str) -> bool:
     (first_steps, first_explore, first_trade, first_raid_win). Call directly
     from the triggering cog. Returns True if newly granted."""
     async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("BEGIN IMMEDIATE")
         granted = await grant_achievement(db, user_id, achievement_id)
         await db.commit()
     return granted
@@ -324,8 +322,8 @@ QUEST_POOL = [
     # ── Combat ─────────────────────────────────────────────────────────────
     {"id": "win_battles",          "name": "Battle Hardened",     "emoji": "⚔️",  "desc": "Win {target} battle(s)",                       "target": 2,     "reward_gold": 200,  "reward_exp": 50,   "event": "battle_win"},
     {"id": "win_battles_hard",     "name": "Unstoppable",         "emoji": "⚔️",  "desc": "Win {target} battles",                         "target": 5,     "reward_gold": 500,  "reward_exp": 120,  "reward_shards": 2,  "event": "battle_win"},
-    {"id": "pvp_win",              "name": "Rival Tamer",         "emoji": "🥊",  "desc": "Win {target} PvP challenge(s)",                 "target": 1,     "reward_gold": 300,  "reward_exp": 80,   "event": "battle_win"},
-    {"id": "spar_win",             "name": "Training Day",        "emoji": "🏋️",  "desc": "Win {target} spar(s)",                         "target": 3,     "reward_gold": 150,  "reward_exp": 50,   "event": "battle_win"},
+    {"id": "pvp_win",              "name": "Rival Tamer",         "emoji": "🥊",  "desc": "Win {target} PvP challenge(s)",                 "target": 1,     "reward_gold": 300,  "reward_exp": 80,   "event": "pvp_win"},
+    {"id": "spar_win",             "name": "Training Day",        "emoji": "🏋️",  "desc": "Win {target} spar(s)",                         "target": 3,     "reward_gold": 150,  "reward_exp": 50,   "event": "spar_win"},
 
     # ── Exploration ────────────────────────────────────────────────────────
     {"id": "explore_times",        "name": "Wanderlust",          "emoji": "🗺️",  "desc": "Explore {target} time(s)",                     "target": 3,     "reward_gold": 150,  "reward_exp": 40,   "event": "explore"},
@@ -381,7 +379,7 @@ async def get_daily_quests(user_id: int) -> list[dict]:
     """Return today's quest set for a user with current progress, creating
     rows on first access."""
     date_str = _today_str()
-    quests = _daily_quest_set(user_id, date_str)
+    quests = await eligible_daily_set(user_id, date_str)
 
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
@@ -405,7 +403,7 @@ async def get_daily_quests(user_id: int) -> list[dict]:
         return result
 
 
-async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[dict]:
+async def _track_daily_event(user_id: int, event: str, amount: int = 1) -> list[dict]:
     """
     Call this after a gameplay event relevant to quests (e.g. event="battle_win").
     Advances progress on any of today's quests matching that event type, marks
@@ -413,7 +411,7 @@ async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[d
     Returns a list of quest dicts that were JUST completed by this call.
     """
     date_str = _today_str()
-    quests = _daily_quest_set(user_id, date_str)
+    quests = await eligible_daily_set(user_id, date_str)
     matching = [q for q in quests if q["event"] == event]
     if not matching:
         return []
@@ -421,6 +419,7 @@ async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[d
     just_completed = []
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
+        await db.execute("BEGIN IMMEDIATE")
         for q in matching:
             async with db.execute(
                 "SELECT * FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
@@ -453,10 +452,8 @@ async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[d
                 )
                 # Shard reward if quest has one
                 if q.get("reward_shards", 0) > 0:
-                    await db.execute(
-                        "UPDATE players SET celestial_shards = celestial_shards + ? WHERE user_id = ?",
-                        (q["reward_shards"], user_id)
-                    )
+                    from utils.rewards import shards
+                    await shards(db,user_id,q["reward_shards"])
                 just_completed.append(q)
 
         await db.commit()
@@ -487,9 +484,10 @@ async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[d
     # weekly shop items (Reroll 15 + Loom Fragment 10×2 = 35) in 4-5 days.
     if just_completed:
         date_str = _today_str()
-        quests = _daily_quest_set(user_id, date_str)
+        quests = await eligible_daily_set(user_id, date_str)
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
+            await db.execute("BEGIN IMMEDIATE")
             completed_count = 0
             for q in quests:
                 async with db.execute(
@@ -507,10 +505,9 @@ async def track_quest_event(user_id: int, event: str, amount: int = 1) -> list[d
                 ) as c:
                     already_granted = await c.fetchone()
                 if not already_granted:
-                    await db.execute(
-                        "UPDATE players SET celestial_shards = celestial_shards + 5, gold = gold + 500 WHERE user_id = ?",
-                        (user_id,)
-                    )
+                    from utils.rewards import shards
+                    await shards(db,user_id,5)
+                    await db.execute("UPDATE players SET gold=gold+500 WHERE user_id=?",(user_id,))
                     # Award guild tokens if the player is in a guild
                     async with db.execute(
                         "SELECT guild_id FROM guild_members WHERE user_id = ?", (user_id,)
@@ -636,3 +633,22 @@ async def get_bestiary_progress(guild_id: int) -> dict:
         ) as c:
             rows = await c.fetchall()
         return {r["beast_id"]: dict(r) for r in rows}
+
+async def eligible_daily_set(user_id,date_str):
+    import json
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("BEGIN IMMEDIATE")
+        async with db.execute("SELECT quest_ids FROM daily_sets WHERE user_id=? AND date=?",(user_id,date_str)) as c:stored=await c.fetchone()
+        if stored:
+            ids=json.loads(stored[0]);by_id={q["id"]:q for q in QUEST_POOL};return [by_id[key] for key in ids if key in by_id]
+        async with db.execute("SELECT level FROM players WHERE user_id=?",(user_id,)) as c:p=await c.fetchone()
+        async with db.execute("SELECT 1 FROM guild_members WHERE user_id=?",(user_id,)) as c:guild=await c.fetchone()
+        async with db.execute("SELECT COUNT(*) FROM player_beasts WHERE user_id=?",(user_id,)) as c:count=(await c.fetchone())[0]
+        pool=[q for q in QUEST_POOL if (q["event"] not in {"raid_attack","raid_damage"} or (p and p[0]>=10 and guild and count>=3)) and (q["event"]!="guild_action" or guild)]
+        selected=random.Random(f"{user_id}:{date_str}").sample(pool,k=min(QUESTS_PER_DAY,len(pool)))
+        await db.execute("INSERT INTO daily_sets VALUES(?,?,?)",(user_id,date_str,json.dumps([q["id"] for q in selected])))
+        await db.commit();return selected
+
+async def track_quest_event(user_id,event,amount=1,**context):
+    from utils.events import record_event
+    return await record_event(user_id,event,amount,**context)

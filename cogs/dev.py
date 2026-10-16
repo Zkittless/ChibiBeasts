@@ -1,3 +1,4 @@
+from utils import db as storage
 import os
 """
 Developer commands for ChibiBeasts.
@@ -95,7 +96,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def give_material(self, interaction: discord.Interaction, member: discord.Member, material_id: str, quantity: int = 1):
         await interaction.response.defer(ephemeral=True)
-        with open("data/materials.json") as f:
+        with open("data/materials.json", encoding="utf-8") as f:
             mats = json.load(f)["materials"]
         mat = mats.get(material_id)
         if not mat:
@@ -556,7 +557,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def reset_shard_shop(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             await db.execute("UPDATE players SET shard_shop_week = NULL WHERE user_id = ?", (member.id,))
             await db.commit()
         await interaction.followup.send(

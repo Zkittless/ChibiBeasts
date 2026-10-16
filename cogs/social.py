@@ -1,3 +1,4 @@
+from utils import db as storage
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -37,7 +38,7 @@ class Trading(commands.Cog):
                 description="✦ You can't trade with yourself!", color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
@@ -143,7 +144,7 @@ class Trading(commands.Cog):
                 # Re-validate everything fresh, inside one connection, right before
                 # committing — prevents double-spend / double-click / stale-state exploits
                 # where gold or beasts moved in the time between the offer and the accept.
-                async with aiosqlite.connect("db/chibibeast.db") as db:
+                async with aiosqlite.connect(storage.DB_PATH) as db:
                     db.row_factory = aiosqlite.Row
 
                     # Re-check the offered beast is still owned by the sender and untraded
@@ -266,10 +267,12 @@ class Perks(commands.Cog):
     async def perks(self, interaction: discord.Interaction):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
+        from utils.progress import check_achievements
+        await check_achievements(interaction.user.id)
         perks_data = load_perks()
         all_perks = perks_data["perks"]
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ?", (interaction.user.id,)
@@ -292,7 +295,7 @@ class Perks(commands.Cog):
         if not owned_perks:
             embed.add_field(
                 name="No Perks Yet!",
-                value="Perks can be obtained from the shop, events, and achievements.",
+                value="Perks unlock through trainer levels, catches, victories, exploration, raids and the campaign. Your first unlock is at trainer level 3.",
                 inline=False
             )
         else:
@@ -315,7 +318,7 @@ class Perks(commands.Cog):
         """Show perks the player owns but hasn't equipped yet."""
         perks_data = load_perks()
         all_perks = perks_data["perks"]
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT perk_id, equipped FROM player_perks WHERE user_id = ?",
@@ -354,44 +357,10 @@ class Perks(commands.Cog):
                     description=f"✦ Perk `{perk_name}` not found!", color=COLORS["error"]
                 ))
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_perks WHERE user_id = ? AND perk_id = ?",
-                (interaction.user.id, perk_id)
-            ) as c:
-                owned = await c.fetchone()
-
-            if not owned:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ You don't own this perk!", color=COLORS["error"]
-                ))
-
-            async with db.execute(
-                "SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1",
-                (interaction.user.id,)
-            ) as c:
-                equipped_perks = [dict(r) for r in await c.fetchall()]
-
-        total_slots = get_perk_slots(player["level"])
-        used_slots = sum(all_perks[p["perk_id"]]["slot_cost"] for p in equipped_perks if p["perk_id"] in all_perks)
-        if used_slots + perk["slot_cost"] > total_slots:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Not enough perk slots! Used: `{used_slots}/{total_slots}`. This perk costs `{perk['slot_cost']}` slots.",
-                color=COLORS["error"]
-            ))
-
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            await db.execute(
-                "UPDATE player_perks SET equipped = 1 WHERE user_id = ? AND perk_id = ?",
-                (interaction.user.id, perk_id)
-            )
-            await db.commit()
-
-        await interaction.followup.send(embed=discord.Embed(
-            description=f"✦ **{perk['name']}** equipped! `{used_slots + perk['slot_cost']}/{total_slots}` slots used.",
-            color=COLORS["success"]
-        ))
+        from utils.gameplay import equip_perk
+        try:used,total=await equip_perk(interaction.user.id,perk_id)
+        except ValueError as error:return await interaction.followup.send(str(error))
+        await interaction.followup.send(f"{perk['name']} equipped. {used}/{total} slots used.")
 
         perk_unlocked = await unlock_simple_achievement(interaction.user.id, "first_perk")
         if perk_unlocked:
@@ -401,7 +370,7 @@ class Perks(commands.Cog):
         """Show only currently equipped perks."""
         perks_data = load_perks()
         all_perks = perks_data["perks"]
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -437,7 +406,7 @@ class Perks(commands.Cog):
                     description=f"✦ Perk `{perk_name}` not found!", color=COLORS["error"]
                 ))
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             await db.execute(
                 "UPDATE player_perks SET equipped = 0 WHERE user_id = ? AND perk_id = ?",
                 (interaction.user.id, perk_id)
@@ -464,7 +433,7 @@ class Leaderboard(commands.Cog):
     async def leaderboard(self, interaction: discord.Interaction, category: str = "level"):
         await interaction.response.defer()
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             if category == "level":
                 query = "SELECT username, level, exp FROM players ORDER BY level DESC, exp DESC LIMIT 10"
@@ -511,94 +480,27 @@ class PerkUse(commands.Cog):
 
     @app_commands.command(name="perk_use", description="Activate a perk's weekly ability 🎯")
     @app_commands.describe(perk_name="The perk to activate (e.g. Astral Resonance)")
-    async def perk_use(self, interaction: discord.Interaction, perk_name: str):
+    async def perk_use(self,interaction:discord.Interaction,perk_name:str):
         await interaction.response.defer(ephemeral=True)
-        from utils.db import load_perks
-        all_perks = load_perks()
-        from datetime import datetime, timezone, timedelta
-
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-            # Find the perk
-            match = None
-            for pid, p in all_perks.items():
-                if perk_name.lower() in p.get("name","").lower():
-                    async with db.execute(
-                        "SELECT * FROM player_perks WHERE user_id = ? AND perk_id = ? AND equipped = 1",
-                        (interaction.user.id, pid)
-                    ) as c:
-                        owned = await c.fetchone()
-                    if owned:
-                        match = (pid, p)
-                        break
-
-            if not match:
-                return await interaction.followup.send(
-                    "✦ No equipped perk found with that name.", ephemeral=True
-                )
-
-            perk_id, perk = match
-            effect = perk.get("effect", {})
-
-            # ── Astral Resonance: weekly incubation skip ──────────────────
-            if effect.get("weekly_incubation_skip"):
-                week_str = datetime.now(timezone.utc).strftime("%Y-W%W")
-                async with db.execute(
-                    "SELECT shard_shop_week FROM players WHERE user_id = ?",
-                    (interaction.user.id,)
-                ) as c:
-                    row = await c.fetchone()
-                import json as _json
-                week_data = {}
-                if row and row["shard_shop_week"]:
-                    try:
-                        week_data = _json.loads(row["shard_shop_week"])
-                    except Exception:
-                        pass
-                if week_data.get("week") != week_str:
-                    week_data = {"week": week_str}
-
-                if week_data.get("astral_resonance_used"):
-                    return await interaction.followup.send(
-                        "✦ **Astral Resonance** already used this week. Resets Monday.",
-                        ephemeral=True
-                    )
-
-                async with db.execute(
-                    "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
-                    (interaction.user.id,)
-                ) as c:
-                    egg = await c.fetchone()
-
-                if not egg:
-                    return await interaction.followup.send(
-                        "✦ No eggs currently incubating.", ephemeral=True
-                    )
-
-                from datetime import datetime as _dt
-                new_ready = _dt.strptime(egg["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc) - timedelta(hours=6)
-                await db.execute(
-                    "UPDATE incubating_eggs SET ready_at = ? WHERE id = ?",
-                    (new_ready.strftime("%Y-%m-%d %H:%M:%S"), egg["id"])
-                )
-                week_data["astral_resonance_used"] = True
-                await db.execute(
-                    "UPDATE players SET shard_shop_week = ? WHERE user_id = ?",
-                    (_json.dumps(week_data), interaction.user.id)
-                )
-                await db.commit()
-
-                return await interaction.followup.send(embed=discord.Embed(
-                    title="✨ Astral Resonance",
-                    description=f"**{egg['egg_name']}** incubation reduced by **6 hours**!\n*This ability resets weekly.*",
-                    color=COLORS["legendary"]
-                ), ephemeral=True)
-
-            else:
-                return await interaction.followup.send(
-                    f"✦ **{perk['name']}** doesn't have an active weekly ability.",
-                    ephemeral=True
-                )
+        from utils.gameplay import shorten_incubation
+        from utils.rewards import has_perk
+        from datetime import datetime,timezone
+        import json
+        if "astral" not in perk_name.lower():return await interaction.followup.send("Astral Resonance is the perk with a weekly active ability.",ephemeral=True)
+        async with aiosqlite.connect(storage.DB_PATH) as db:
+            await db.execute("BEGIN IMMEDIATE")
+            if not await has_perk(db,interaction.user.id,"astral_resonance"):return await interaction.followup.send("Equip Astral Resonance first.",ephemeral=True)
+            async with db.execute("SELECT shard_shop_week FROM players WHERE user_id=?",(interaction.user.id,)) as c:row=await c.fetchone()
+            try:week_data=json.loads(row[0] or "{}")
+            except (ValueError,TypeError):week_data={}
+            week=datetime.now(timezone.utc).strftime("%G-W%V")
+            if week_data.get("week")!=week:week_data={"week":week}
+            if week_data.get("astral_resonance_used"):return await interaction.followup.send("Already used this week. Resets Monday UTC.",ephemeral=True)
+            try:result=await shorten_incubation(db,interaction.user.id,hours=6)
+            except ValueError as error:return await interaction.followup.send(str(error),ephemeral=True)
+            week_data["astral_resonance_used"]=True
+            await db.execute("UPDATE players SET shard_shop_week=? WHERE user_id=?",(json.dumps(week_data),interaction.user.id));await db.commit()
+        await interaction.followup.send(result,ephemeral=True)
 
 
 async def setup(bot: commands.Bot):

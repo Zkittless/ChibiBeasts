@@ -1,3 +1,5 @@
+from utils import db as storage
+from utils.db import credit_gold
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -7,7 +9,7 @@ import aiosqlite
 from utils.db import (
     get_or_create_player, get_player, update_player,
     add_beast_to_player, get_player_beasts, load_beasts,
-    get_beast_data, calc_player_exp_for_level, increment_catch_count
+    get_beast_data, calc_player_exp_for_level, get_catch_count, get_active_beast
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import (
@@ -137,37 +139,22 @@ HATCH_EGGS = {
 }
 
 
-def get_egg_pool(egg_type: str, perks: list = None, sanctuary: dict = None) -> dict:
-    """
-    Return the effective rarity pool for an egg type, with all active
-    perk and sanctuary modifiers applied at call time.
-
-    - Stardust Touch perk: +10% rare, +5% epic, proportionally reduce common
-    - Celestial Observatory sanctuary: +2% epic, +2% legendary
-    - Pools are re-normalised after each modifier so they never exceed 1.0
-    """
-    import copy
-    pool = copy.copy(_BASE_EGG_POOLS.get(egg_type, {"common": 1.0}))
-    # Strip non-rarity keys before normalising
-    pool = {k: v for k, v in pool.items() if k != "altered_chance"}
-
-    if perks:
-        for perk in perks:
-            if perk.get("perk_id") == "stardust_touch" and perk.get("equipped"):
-                pool["rare"]   = min(pool.get("rare",   0) + 0.10, 0.50)
-                pool["epic"]   = min(pool.get("epic",   0) + 0.05, 0.40)
-                pool["common"] = max(pool.get("common", 0) - 0.10, 0.05)
-
+def get_egg_pool(egg_type: str, perks=None, sanctuary=None) -> dict:
+    pool={k:v for k,v in _BASE_EGG_POOLS.get(egg_type,{"common":1.0}).items() if k!="altered_chance"}
+    def promote(target,amount):
+        rank=RARITY_ORDER.index(target)
+        donors=[k for k in pool if RARITY_ORDER.index(k)<rank]
+        available=sum(pool[k] for k in donors)
+        moved=min(amount,available)
+        if not moved:return
+        for key in donors:pool[key]-=moved*pool[key]/available
+        pool[target]=pool.get(target,0)+moved
+    if any(p.get("perk_id")=="stardust_touch" and p.get("equipped") for p in perks or ()):
+        promote("rare",.10);promote("epic",.10)
     if sanctuary and sanctuary.get("celestial_observatory"):
-        pool["epic"]      = min(pool.get("epic",      0) + 0.02, 0.50)
-        pool["legendary"] = min(pool.get("legendary", 0) + 0.02, 0.45)
-
-    # Re-normalise so all weights sum to exactly 1.0
-    total = sum(pool.values())
-    if total > 0 and abs(total - 1.0) > 0.001:
-        pool = {k: v / total for k, v in pool.items()}
-
-    return pool
+        promote("epic",.02);promote("legendary",.02)
+    total=sum(pool.values())
+    return {k:v/total for k,v in pool.items() if v>0}
 
 
 # Keep for explore wild encounter rolls only
@@ -229,7 +216,7 @@ async def check_collection_completion(interaction, beast: dict, all_beasts: dict
 
     # Check if player now owns ALL beasts in this collection
     import aiosqlite
-    async with aiosqlite.connect("db/chibibeast.db") as db:
+    async with aiosqlite.connect(storage.DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT DISTINCT beast_id FROM player_beasts WHERE user_id = ?",
@@ -250,15 +237,16 @@ async def check_collection_completion(interaction, beast: dict, all_beasts: dict
                 return  # Already got this reward
 
         # Grant reward
+        await db.execute("BEGIN IMMEDIATE")
         reward = COLLECTION_REWARDS[collection]
-        await db.execute(
+        claimed=await db.execute(
             "INSERT OR IGNORE INTO achievements (user_id, achievement_id) VALUES (?, ?)",
             (interaction.user.id, ach_id)
         )
-        await db.execute(
-            "UPDATE players SET gold = gold + ?, celestial_shards = celestial_shards + ? WHERE user_id = ?",
-            (reward["gold"], reward["celestial_shards"], interaction.user.id)
-        )
+        if not claimed.rowcount:return
+        from utils.rewards import shards
+        await shards(db,interaction.user.id,reward["celestial_shards"])
+        await db.execute("UPDATE players SET gold=gold+? WHERE user_id=?",(reward["gold"],interaction.user.id))
         await db.commit()
 
     embed = discord.Embed(
@@ -314,7 +302,7 @@ class HatchView(discord.ui.View):
         if interaction.user.id != self.player_id:
             return await interaction.response.send_message("This isn't your hatch!", ephemeral=True)
         import aiosqlite
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (self.player_id,))
             await db.execute(
                 "UPDATE player_beasts SET is_active = 1 WHERE id = (SELECT id FROM player_beasts WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1)",
@@ -399,7 +387,7 @@ class Hatch(commands.Cog):
         egg_def = HATCH_EGGS[egg_type]
 
         # Check inventory
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
@@ -423,8 +411,9 @@ class Hatch(commands.Cog):
                 await modal_interaction.response.defer()
 
             # Deduct all at once atomically
-            async with aiosqlite.connect("db/chibibeast.db") as db:
+            async with aiosqlite.connect(storage.DB_PATH) as db:
                 db.row_factory = aiosqlite.Row
+                await db.execute("BEGIN IMMEDIATE")
                 async with db.execute(
                     "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
                     (modal_interaction.user.id, egg_type)
@@ -444,7 +433,7 @@ class Hatch(commands.Cog):
                     )
                 await db.commit()
 
-            async with aiosqlite.connect("db/chibibeast.db") as db:
+            async with aiosqlite.connect(storage.DB_PATH) as db:
                 db.row_factory = aiosqlite.Row
                 async with db.execute(
                     "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -459,7 +448,7 @@ class Hatch(commands.Cog):
             for i in range(quantity):
                 if check_glimmering_fortune(perks):
                     rarity = "divine"
-                    divine_pool = [b for b in beasts_data.values() if b["rarity"] == "divine" and b["id"] not in STARTER_IDS]
+                    divine_pool = [b for b in beasts_data.values() if b["rarity"] == "divine" and b["id"] not in STARTER_IDS and not b.get("evolution_only")]
                     beast = random.choice(divine_pool)
                 else:
                     rarity, is_altered = roll_with_altered(egg_type)
@@ -471,6 +460,9 @@ class Hatch(commands.Cog):
                         rarity = roll_rarity(effective_pool)
                         beast = get_beast_by_rarity(rarity, beasts_data)
                 if beast:
+                    from utils.hatching import attune_hatch
+                    beast=await attune_hatch(modal_interaction.user.id,beast,beasts_data)
+                    rarity=beast["rarity"]
                     beast_row_id = await add_beast_to_player(modal_interaction.user.id, {**beast, "caught_from": "hatch"})
                     hatched.append((beast, rarity, beast_row_id))
 
@@ -482,14 +474,14 @@ class Hatch(commands.Cog):
             # Auto-set active if first ever beast
             all_owned = await get_player_beasts(modal_interaction.user.id)
             if len(all_owned) == len(hatched):
-                async with aiosqlite.connect("db/chibibeast.db") as db:
+                async with aiosqlite.connect(storage.DB_PATH) as db:
                     await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (hatched[0][2],))
                     await db.commit()
 
             if quantity == 1:
                 # Single hatch — full dramatic reveal
                 beast, rarity, beast_row_id = hatched[0]
-                count, is_milestone = await increment_catch_count(beast["id"], rarity)
+                count, is_milestone = await get_catch_count(beast["id"], rarity)
                 subtitle = f"*A new companion emerged from your {egg_def['name']}!*"
                 msg = await modal_interaction.followup.send(embed=discord.Embed(
                     title="🥚 Hatching...", description=f"*{egg_def['flavor']}*", color=COLORS["info"]
@@ -518,7 +510,7 @@ class Hatch(commands.Cog):
                 for beast, rarity, beast_row_id in hatched:
                     r_emoji = RARITY_EMOJI.get(rarity, "⚪")
                     lines.append(f"{r_emoji} **{beast['name']}** — {RARITY_LABEL.get(rarity, rarity)}")
-                    count, is_milestone = await increment_catch_count(beast["id"], rarity)
+                    count, is_milestone = await get_catch_count(beast["id"], rarity)
                     ml = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
                     if ml:
                         milestone_lines.append(ml)
@@ -532,7 +524,7 @@ class Hatch(commands.Cog):
                 embed.set_footer(text="ChibiBeasts 🐾  •  Check /collection to see your new beasts!")
                 await modal_interaction.followup.send(embed=embed)
 
-            completed_quests = await track_quest_event(modal_interaction.user.id, "hatch")
+            completed_quests = await track_quest_event(modal_interaction.user.id, "hatch",amount=len(hatched))
             await unlock_simple_achievement(modal_interaction.user.id, "first_steps")
             more_unlocked = await check_achievements(modal_interaction.user.id)
             if modal_interaction.guild:
@@ -557,16 +549,28 @@ class Hatch(commands.Cog):
 
 
     @app_commands.command(name="explore", description="Explore the world and discover wild ChibiBeasts! 🗺️")
-    async def explore(self, interaction: discord.Interaction):
+    @app_commands.choices(destination=[app_commands.Choice(name="Whispering Woods · Lv1",value="woods"),app_commands.Choice(name="Ember Wastes · Lv3",value="ember"),app_commands.Choice(name="Glacial Hollows · Lv5",value="glacial"),app_commands.Choice(name="Sunken Trenches · Lv8",value="trenches"),app_commands.Choice(name="Celestial Loom · Lv10",value="loom")])
+    async def explore(self, interaction: discord.Interaction, destination: str = "woods"):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
+        from utils.habitats import BIOMES as DESTINATIONS
+        from utils.db import get_active_beast
+        active_for_explore=await get_active_beast(interaction.user.id)
+        from utils.db import is_knocked_out
+        from utils.duels import active_fighters
+        if interaction.user.id in active_fighters:return await interaction.followup.send("Finish your battle before exploring.")
+        if active_for_explore and is_knocked_out(active_for_explore):return await interaction.followup.send("Your companion is recovering. Choose a healthy beast or use a revive.")
+        if not active_for_explore:
+            return await interaction.followup.send("Choose a companion with /start first.")
+        if player["level"]<DESTINATIONS[destination]["min_level"]:
+            return await interaction.followup.send(f"Reach trainer level {DESTINATIONS[destination]['min_level']} to visit that destination.")
         # Cooldown check — persisted in DB so it survives bot restarts
         import time
         now = time.time()
         cooldown = EXPLORE_COOLDOWN
 
-        async with aiosqlite.connect("db/chibibeast.db") as _cddb:
+        async with aiosqlite.connect(storage.DB_PATH) as _cddb:
             _cddb.row_factory = aiosqlite.Row
             async with _cddb.execute(
                 "SELECT explore_last_at FROM players WHERE user_id = ?", (interaction.user.id,)
@@ -594,15 +598,16 @@ class Hatch(commands.Cog):
             ))
 
         # Update last explore time in DB
-        async with aiosqlite.connect("db/chibibeast.db") as _upddb:
-            await _upddb.execute(
-                "UPDATE players SET explore_last_at = ? WHERE user_id = ?",
-                (now, interaction.user.id)
+        async with aiosqlite.connect(storage.DB_PATH) as _upddb:
+            claimed=await _upddb.execute(
+                "UPDATE players SET explore_last_at = ? WHERE user_id = ? AND COALESCE(explore_last_at,0)<=?",
+                (now, interaction.user.id,now-cooldown)
             )
             await _upddb.commit()
+            if not claimed.rowcount:return await interaction.followup.send("An exploration is already underway.")
 
         # ── Quest tracking: every explore call counts toward the explore quest ──
-        explore_quests_completed = await track_quest_event(interaction.user.id, "explore")
+        explore_quests_completed = []
         explore_unlocked = await unlock_simple_achievement(interaction.user.id, "first_explore")
         if explore_unlocked:
             await notify_unlocks(interaction.channel, interaction.user, ["first_explore"])
@@ -682,13 +687,13 @@ class Hatch(commands.Cog):
         if not available_biomes:
             available_biomes = [BIOMES[0]]  # always have at least Whispering Woods
 
-        biome = random.choice(available_biomes)
+        biome = next(b for b in BIOMES if b["name"]==DESTINATIONS[destination]["name"])
         location = biome["name"]
         lore_line = random.choice(biome["lore"])
-        biome_weights = biome["rarity_weights"]
+        biome_weights = DESTINATIONS[destination]["weights"]
 
         # Questline: track biome visits (biome now assigned)
-        await advance_quest_step(interaction.user.id, "explore", biome=biome["name"])
+        explore_quests_completed = await track_quest_event(interaction.user.id,"explore",biome=biome["name"])
 
         # Override lore_line with questline-aware flavor if on a relevant chapter
         try:
@@ -721,7 +726,7 @@ class Hatch(commands.Cog):
 
         # First-time biome discovery check
         BIOME_DISCOVERY_KEY = f"biome_discovered_{biome['name'].replace(' ','_').replace('🌌','').replace('❄️','').replace('🌊','').replace('🔥','').replace('🌲','').strip()}"
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT 1 FROM achievements WHERE user_id = ? AND achievement_id = ?",
@@ -772,7 +777,7 @@ class Hatch(commands.Cog):
         if outcome < 0.05:
             # Nothing found
             gold_found = random.randint(10, 50)
-            await update_player(interaction.user.id, gold=player["gold"] + gold_found)
+            await credit_gold(interaction.user.id, gold_found)
             await msg.edit(embed=discord.Embed(
                 title=f"🗺️ {location}",
                 description=(
@@ -790,16 +795,15 @@ class Hatch(commands.Cog):
 
         for perk in perks:
             if perk["perk_id"] == "stardust_touch":
-                rates["rare"]   = min(rates.get("rare",   0) + 0.05, 0.35)
-                rates["epic"]   = min(rates.get("epic",   0) + 0.05, 0.25)
-                rates["common"] = max(rates.get("common", 0) - 0.10, 0.10)
+                from utils.hatching import promote_rates
+                rates=promote_rates(rates,{"rare":.10,"epic":.10})
 
         # Celestial Observatory sanctuary bonus
         user_sanctuary = await get_user_sanctuary(interaction.user.id)
         rates = apply_explore_encounter_bonus(rates, user_sanctuary)
 
         # Spellbound Incense boost (persisted in DB)
-        async with aiosqlite.connect("db/chibibeast.db") as _idb:
+        async with aiosqlite.connect(storage.DB_PATH) as _idb:
             _idb.row_factory = aiosqlite.Row
             async with _idb.execute(
                 "SELECT incense_charges FROM players WHERE user_id = ?", (interaction.user.id,)
@@ -807,20 +811,38 @@ class Hatch(commands.Cog):
                 _irow = await _ic.fetchone()
         _incense_charges = (_irow["incense_charges"] if _irow and _irow["incense_charges"] else 0)
         if _incense_charges > 0:
-            rates["uncommon"] = min(rates.get("uncommon", 0) + 0.08, 0.45)
-            rates["rare"]     = min(rates.get("rare",     0) + 0.05, 0.35)
-            rates["epic"]     = min(rates.get("epic",     0) + 0.03, 0.20)
-            rates["common"]   = max(rates.get("common",   0) - 0.13, 0.05)
+            from utils.hatching import promote_rates
+            rates=promote_rates(rates,{"uncommon":.08,"rare":.05,"epic":.03})
             # Consume one charge
-            async with aiosqlite.connect("db/chibibeast.db") as _cdb:
+            async with aiosqlite.connect(storage.DB_PATH) as _cdb:
                 await _cdb.execute(
                     "UPDATE players SET incense_charges = MAX(0, incense_charges - 1) WHERE user_id = ?",
                     (interaction.user.id,)
                 )
                 await _cdb.commit()
 
-        rarity = roll_rarity(rates)
-        beast = get_beast_by_rarity(rarity, beasts)
+        from utils.habitats import pick_encounter
+        if player.get("divine_compass_charges",0)>0 and not player.get("prism_keys",0) and destination=="loom":
+            rates["divine"]=.20
+            async with aiosqlite.connect(storage.DB_PATH) as db:
+                await db.execute("UPDATE players SET divine_compass_charges=divine_compass_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
+        if player.get("prism_keys",0)>0 and destination=="loom":
+            rates["divine"]=.30
+            async with aiosqlite.connect(storage.DB_PATH) as db:
+                await db.execute("UPDATE players SET prism_keys=prism_keys-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
+        # Set exact divine odds, preserving the relative weights of other rarities.
+        if destination=="loom" and (player.get("divine_compass_charges",0)>0 or player.get("prism_keys",0)>0):
+            target=rates["divine"];other=sum(v for k,v in rates.items() if k!="divine")
+            rates={k:(target if k=="divine" else v/other*(1-target)) for k,v in rates.items()}
+        if player.get("ancient_compass_charges",0)>0:
+            rates={k:v for k,v in rates.items() if k not in {"common","uncommon"}}
+            async with aiosqlite.connect(storage.DB_PATH) as db:
+                await db.execute("UPDATE players SET ancient_compass_charges=ancient_compass_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
+        beast=pick_encounter(rates,destination)
+        qs=await get_quest_state(interaction.user.id)
+        if qs["current_chapter"]=="chapter_6" and destination=="loom" and qs["step_progress"].get("chapter_6",{}).get("explore_loom_3",0)>=3 and not qs["step_progress"].get("chapter_6",{}).get("catch_cosmic_beast",0):
+            beast=beasts["loom_fragment"]
+        rarity=beast["rarity"] if beast else "common"
 
         if not beast:
             return await msg.edit(embed=discord.Embed(
@@ -835,7 +857,10 @@ class Hatch(commands.Cog):
         # 15% chance beast takes a liking to you (scales slightly with catch_rate)
         # Higher catch_rate beasts are friendlier — divine beasts never just walk up
         base_affinity = 0.15 * beast["catch_rate"]
-        affinity_chance = min(0.20, base_affinity + (0.05 if pixie_pocket else 0))
+        affinity_chance = min(0.40, base_affinity + (0.05 if pixie_pocket else 0) + (.15 if player.get("catch_boost_charges",0)>0 else 0))
+        if player.get("catch_boost_charges",0)>0:
+            async with aiosqlite.connect(storage.DB_PATH) as db:
+                await db.execute("UPDATE players SET catch_boost_charges=catch_boost_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
         takes_liking = random.random() < affinity_chance
 
         TAKES_LIKING_LINES = {
@@ -874,7 +899,7 @@ class Hatch(commands.Cog):
             if caught_via_battle:
                 gold_bonus = int(gold_bonus * 1.25)  # battle bonus
 
-            async with aiosqlite.connect("db/chibibeast.db") as _bcdb:
+            async with aiosqlite.connect(storage.DB_PATH) as _bcdb:
                 async with _bcdb.execute("SELECT COUNT(*) FROM player_beasts WHERE user_id = ?", (interaction.user.id,)) as _bcc:
                     _bc_count = (await _bcc.fetchone())[0]
             from cogs.questline import advance_quest_step as _aqbc
@@ -885,38 +910,14 @@ class Hatch(commands.Cog):
                 explore_exp = int(explore_exp * 1.3)
             from utils.sanctuary import apply_exp_bonus as _aeb
             explore_exp = _aeb(explore_exp, user_sanctuary)
-            await update_player(interaction.user.id, gold=player["gold"] + gold_bonus)
+            await credit_gold(interaction.user.id, gold_bonus)
             from cogs.battle import award_player_exp as _award_exp
             _p_lvl, _, _p_leveled = await _award_exp(interaction.user.id, explore_exp, interaction)
 
-            # Material drop
-            RARITY_MATERIAL_POOLS = {
-                "common":    [("pixie_silk", 0.40), ("gnome_iron_ore", 0.35), ("enchanted_bark", 0.25)],
-                "uncommon":  [("harpy_down", 0.35), ("kelpie_scale", 0.35), ("hellhound_ember", 0.30)],
-                "rare":      [("unicorn_hair", 0.35), ("manticore_stinger", 0.33), ("basilisk_eye", 0.32)],
-                "epic":      [("phoenix_ash", 0.35), ("thunderbird_talon", 0.35), ("sphinx_papyrus", 0.30)],
-                "legendary": [("dragon_scale", 0.35), ("kraken_ink", 0.33), ("fenrir_fur", 0.32)],
-                "divine":    [],
-            }
-            mat_pool = RARITY_MATERIAL_POOLS.get(rarity, [])
-            mat_drop = None
-            if mat_pool and random.random() < 0.60:
-                roll = random.random()
-                cumulative = 0.0
-                for mat_id, chance in mat_pool:
-                    cumulative += chance
-                    if roll <= cumulative:
-                        mat_drop = mat_id
-                        break
-                if mat_drop:
-                    async with aiosqlite.connect("db/chibibeast.db") as db:
-                        async with db.execute("SELECT id, quantity FROM player_materials WHERE user_id = ? AND material_id = ?", (interaction.user.id, mat_drop)) as c:
-                            existing = await c.fetchone()
-                        if existing:
-                            await db.execute("UPDATE player_materials SET quantity = quantity + 1 WHERE id = ?", (existing[0],))
-                        else:
-                            await db.execute("INSERT INTO player_materials (user_id, material_id, quantity) VALUES (?,?,1)", (interaction.user.id, mat_drop))
-                        await db.commit()
+            from utils.habitats import material_pool
+            from utils.gameplay import grant_material
+            mat_drop=random.choice(material_pool(beast,destination))
+            await grant_material(interaction.user.id,mat_drop)
 
             return gold_bonus, explore_exp, mat_drop, _p_leveled, _p_lvl, beast_row_id
 
@@ -930,7 +931,7 @@ class Hatch(commands.Cog):
                 + (f"\n⬆️ **Trainer leveled up to {new_level}!**" if leveled_up else "")
             )
             embed = self.build_beast_embed(beast, title=f"🌟 Wild **{beast['name']}**!", subtitle=encounter_subtitle)
-            count, is_milestone = await increment_catch_count(beast["id"], rarity)
+            count, is_milestone = await get_catch_count(beast["id"], rarity)
             milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
             if milestone_line:
                 embed.add_field(name="📜 The Loom Stirs", value=milestone_line, inline=False)
@@ -939,19 +940,13 @@ class Hatch(commands.Cog):
 
         async def apply_catch_tracking():
             """Quest/achievement/bestiary tracking after a successful catch."""
-            catch_quests_completed = await track_quest_event(interaction.user.id, "catch")
-            if rarity in {"rare", "epic", "legendary", "divine", "altered_divine", "corrupted", "ancient"}:
-                rare_q = await track_quest_event(interaction.user.id, "catch_rare")
-                if rare_q:
-                    catch_quests_completed = catch_quests_completed + rare_q
-            await advance_quest_step(interaction.user.id, "catch", beast_id=beast.get("id",""), beast_type=beast.get("type",""))
+            catch_quests_completed = []  # acquisition emits one canonical catch event
             unlocked = await unlock_simple_achievement(interaction.user.id, "first_steps")
             more_unlocked = await check_achievements(interaction.user.id)
             all_unlocked = (["first_steps"] if unlocked else []) + more_unlocked
             if interaction.guild:
                 await record_bestiary_sighting(interaction.guild.id, beast["id"], interaction.user.id)
                 await check_collection_completion(interaction, beast, load_beasts())
-            await advance_quest_step(interaction.user.id, "catch", beast_id=beast["id"])
 
             if rarity == "divine" and "first_divine" in more_unlocked:
                 collection = beast.get("collection", "the Divine Collections")
@@ -966,32 +961,6 @@ class Hatch(commands.Cog):
                     ),
                     color=COLORS["divine"]
                 ))
-
-            # Chapter 5 relic drops
-            RELIC_BIOME_MAP = {
-                "❄️ The Glacial Hollows":          ("glacial_relic", "chapter_5"),
-                "🌊 The Sunken Abyssal Trenches":  ("trench_relic",  "chapter_5"),
-            }
-            relic_info = RELIC_BIOME_MAP.get(biome["name"])
-            if relic_info:
-                relic_id, needed_chapter = relic_info
-                from cogs.questline import get_quest_state as _get_qs
-                qs = await _get_qs(interaction.user.id)
-                if (qs["current_chapter"] == needed_chapter
-                        and relic_id not in qs["collected_relics"]
-                        and random.random() < 0.30):
-                    await advance_quest_step(interaction.user.id, "relic_found", relic_id=relic_id)
-                    relic_name = relic_id.replace("_", " ").title()
-                    await interaction.channel.send(embed=discord.Embed(
-                        title=f"✨ Relic Discovered: {relic_name}!",
-                        description=(
-                            f"*While catching {beast['name']}, something catches your eye — "
-                            f"a faint shimmer at the edge of the {biome['name'].split()[-1]}...*\n\n"
-                            f"You've found the **{relic_name}**.\n"
-                            f"*Use `/questline` to continue your story.*"
-                        ),
-                        color=COLORS["legendary"]
-                    ))
 
             await notify_quest_completions(interaction.channel, catch_quests_completed)
             await notify_unlocks(interaction.channel, interaction.user, all_unlocked)
@@ -1011,7 +980,7 @@ class Hatch(commands.Cog):
             situation_line = random.choice(situations) if situations else f"A wild {beast['name']} appears in {location}!"
 
             # Show battle intro
-            wild_level = max(1, min(50, player_level + random.randint(-2, 2)))
+            wild_level = max(1, active_for_explore["level"] + random.randint(-2, 2))
             # Fetch active beast data for thumbnail
             from cogs.battle import build_pve_beast_state, run_pve_battle, get_active_beast
             active_row = await get_active_beast(interaction.user.id)
@@ -1041,19 +1010,19 @@ class Hatch(commands.Cog):
                 nonlocal battle_won
                 if not timed_out:
                     battle_won = True
-                async with aiosqlite.connect("db/chibibeast.db") as _udb:
+                async with aiosqlite.connect(storage.DB_PATH) as _udb:
                     await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                     await _udb.commit()
 
             async def on_explore_loss(embed, p_state, e_state):
                 nonlocal battle_won
                 battle_won = False
-                async with aiosqlite.connect("db/chibibeast.db") as _udb:
+                async with aiosqlite.connect(storage.DB_PATH) as _udb:
                     await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                     await _udb.commit()
                 # Give consolation gold even on loss
                 consolation = random.randint(player_level * 2, player_level * 5)
-                await update_player(interaction.user.id, gold=player["gold"] + consolation)
+                await credit_gold(interaction.user.id, consolation)
                 escaped_embed = discord.Embed(
                     title=f"💨 {beast['name']} escaped!",
                     description=(

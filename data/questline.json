@@ -2,7 +2,7 @@
   "questline": {
     "id": "sundering_of_the_loom",
     "name": "The Sundering of the Loom",
-    "description": "A series of conversations, catches, and quiet revelations that ends with the World-Tree Seed \u2014 and a world that knows your name.",
+    "description": "Meet the people of the Loom, raise a companion and loosen the old stitch that has forgotten how to let go.",
     "reward_final": "world_tree_seed",
     "chapters": {
       "chapter_1": {
@@ -14,21 +14,20 @@
         "intro": [
           "You find Maren mid-sentence, talking to her Barkley about something it clearly already knows.",
           "She doesn't look up immediately.",
-          "When she does: *'Oh good. Another one. Sit down \u2014 Barkley, move over \u2014 and tell me what you've seen so far.'*",
+          "When she does: *'Oh good. Another one. Sit down — Barkley, move over — and tell me what you've seen so far.'*",
           "",
           "You tell her you're just starting.",
           "",
-          "*'Good,'* she says. *'Then you haven't learned any bad habits yet. I'm writing a new page of the Bestiary \u2014 the server's record of what exists here, officially. For that I need firsthand accounts. Not mine. I've been here too long. I see what I expect to see.'*",
+          "*'Good,'* she says. *'Then you haven't learned any bad habits yet. I'm writing a new page of the Bestiary — the server's record of what exists here, officially. For that I need firsthand accounts. Not mine. I've been here too long. I see what I expect to see.'*",
           "",
-          "*'Go out. Explore three different places. Catch something from each. Come back and tell me what the catching felt like. Not what the beast was \u2014 I know what the beasts are. What the catching felt like. That's the part that goes in the record.'*"
+          "*'Go out three times. Pick a path you want to know better. Catch three companions and tell me what meeting them felt like. That's the part that goes in the record.'*"
         ],
         "steps": [
           {
             "id": "explore_3_biomes",
-            "description": "Explore 3 different biomes",
+            "description": "Explore three times; choose your destination with /explore",
             "type": "explore_count",
-            "target": 3,
-            "track_unique_biomes": true
+            "target": 3
           },
           {
             "id": "catch_3_beasts",
@@ -42,15 +41,15 @@
           "",
           "She listens to everything you say without interrupting. When you finish, she writes something in her book.",
           "",
-          "*'That thing you felt when it looked at you before you caught it \u2014 that pause \u2014 that's what the Loom feels like from the outside. Every beast is a question the Loom asked and then answered. You were there for the answer.'*",
+          "*'That thing you felt when it looked at you before you caught it — that pause — that's what the Loom feels like from the outside. Every beast is a question the Loom asked and then answered. You were there for the answer.'*",
           "",
           "She closes the book.",
           "",
-          "*'The Bestiary page is written. Your name is in it \u2014 as the trainer present for these catches. That matters more than you know. The Loom keeps its own records, but ours are more legible.'*",
+          "*'The Bestiary page is written. Your name is in it — as the trainer present for these catches. That matters more than you know. The Loom keeps its own records, but ours are more legible.'*",
           "",
           "She looks at you for a long moment.",
           "",
-          "*'There's a young man camped near the Celestial Loom. Cael. He's been trying to reach me for a week but his messages arrive in the wrong order \u2014 Twine's doing, probably. Find him. He seems worried about something.'*"
+          "*'There's a young man camped near the Celestial Loom. Cael. He's been trying to reach me for a week but his messages arrive in the wrong order — Twine's doing, probably. Find him. He seems worried about something.'*"
         ],
         "reward": {
           "gold": 500,
@@ -69,7 +68,7 @@
         "unlock_condition": "chapter_1_complete",
         "location": "Celestial Loom",
         "intro": [
-          "*'Oh \u2014 you're here. Right. I knew you were coming. That's not a skill, Twine just \u2014 anyway.'*",
+          "*'Oh — you're here. Right. I knew you were coming. That's not a skill, Twine just — anyway.'*",
           "",
           "He glances at his Twine, who twitches an ear.",
           "",
@@ -81,16 +80,16 @@
           "",
           "He sits down on a rock that may or may not exist and runs a hand through his hair.",
           "",
-          "*'The Sundering events \u2014 the Altered Divines \u2014 they're accelerating. Three last month. One the month before. Before that, one every three months. The rate is wrong. Something is pulling at the Loom from somewhere I can't see, and when I try to follow the thread it goes into a place that Twine won't enter, which is the first time I've ever seen Twine refuse to go anywhere.'*",
+          "*'The Sundering events — the Altered Divines — they're accelerating. Three last month. One the month before. Before that, one every three months. The rate is wrong. Something is pulling at the Loom from somewhere I can't see, and when I try to follow the thread it goes into a place that Twine won't enter, which is the first time I've ever seen Twine refuse to go anywhere.'*",
           "",
           "*'I need someone at the next Altered Divine event. Someone who can hold the line while I watch what the Loom does when the thread snaps. I've been watching from too far away. I need to be closer. And I can't be closer if I'm also fighting.'*"
         ],
         "steps": [
           {
             "id": "reach_celestial_loom",
-            "description": "Reach the Celestial Loom biome (level 25 required)",
+            "description": "Reach trainer level 10 and visit the Celestial Loom",
             "type": "player_level",
-            "target": 25
+            "target": 10
           },
           {
             "id": "participate_raid",
@@ -110,15 +109,15 @@
           "",
           "Twine puts a small paw on his arm.",
           "",
-          "*'Right. What I do know is that the Altered Divines are being pulled from the same direction each time. Not a biome \u2014 a direction. Southwest of the Ember Wastes. There's nothing there. Or there's nothing that used to be there.'*",
+          "*'Right. What I do know is that the Altered Divines are being pulled from the same direction each time. Not a biome — a direction. Southwest of the Ember Wastes. There's nothing there. Or there's nothing that used to be there.'*",
           "",
-          "*'Talk to Sable. She's been in the Ember Wastes longer than anyone. If something changed out there, she'd know. She's \u2014 she can be a lot. Just be direct. She respects direct.'*"
+          "*'Talk to Sable. She's been in the Ember Wastes longer than anyone. If something changed out there, she'd know. She's — she can be a lot. Just be direct. She respects direct.'*"
         ],
         "reward": {
           "gold": 750,
           "exp": 350,
           "materials": {
-            "loom_shard": 1
+            "spirit_crystal": 1
           },
           "celestial_shards": 8,
           "relationship_unlock": {
@@ -150,7 +149,7 @@
           "",
           "She picks her tools back up.",
           "",
-          "*'I'll forge the first component of whatever Cael's building. But I need Phoenix Ash \u2014 real Ash, not shop-grade. That means you go into the Wastes and you catch something that lives here. A Phoenix. A Wyvern. A Dragon, if you can manage it. Bring me what they drop. Then we'll talk.'*"
+          "*'I'll forge the first component of whatever Cael's building. But I need Phoenix Ash — real Ash, not shop-grade. That means you go into the Wastes and you catch something that lives here. A Phoenix. A Wyvern. A Dragon, if you can manage it. Bring me what they drop. Then we'll talk.'*"
         ],
         "steps": [
           {
@@ -181,7 +180,7 @@
           "",
           "Twenty minutes later she holds up something small and warm. It pulses faintly, like it's breathing.",
           "",
-          "*'Ember Relic. One of four. I made it from what the Wastes gave you and what you brought me. That's how Relics work \u2014 they're not made from materials, they're made from attention. The materials are just the medium.'*",
+          "*'Ember Relic. One of four. I made it from what the Wastes gave you and what you brought me. That's how Relics work — they're not made from materials, they're made from attention. The materials are just the medium.'*",
           "",
           "She holds it out.",
           "",
@@ -195,7 +194,7 @@
           "gold": 1200,
           "exp": 500,
           "items": {
-            "forge_token": 1
+            "loom_catalyst": 1
           },
           "relic": "ember_relic",
           "celestial_shards": 10,
@@ -203,6 +202,9 @@
             "sable": "known"
           },
           "unlock_next": "chapter_4"
+        },
+        "consume_materials": {
+          "phoenix_ash": 2
         }
       },
       "chapter_4": {
@@ -228,14 +230,14 @@
           "",
           "He folds his hands.",
           "",
-          "*'I know about the hollow spot southwest of the Wastes. I've known about it for four months. Before I tell you what I know, I want to see your Bestiary. Not to judge \u2014 to understand what kind of attention you're bringing to this. The relics respond to attention. They always have.'*"
+          "*'I know about the hollow spot southwest of the Wastes. I've known about it for four months. Before I tell you what I know, I want to see your Bestiary. Not to judge — to understand what kind of attention you're bringing to this. The relics respond to attention. They always have.'*"
         ],
         "steps": [
           {
             "id": "bestiary_progress",
-            "description": "Discover 20 beasts in the server Bestiary",
+            "description": "Discover 12 species in this server's Bestiary",
             "type": "server_bestiary_count",
-            "target": 20
+            "target": 12
           },
           {
             "id": "talk_to_orren",
@@ -247,11 +249,11 @@
         "completion_dialogue": [
           "Orren looks at your Bestiary for a long time.",
           "",
-          "*'Twenty-three species. Good. More than I expected.'*",
+          "*'You kept a record. Good. Enough different lives to know that no one shape is the right one.'*",
           "",
           "He stands, slowly, and the Dryad's vines shift to make room.",
           "",
-          "*'Before the biomes had names, the Architects left markers. Not deliberately \u2014 they were places where something important was decided. The Whispering Woods has one: a place where Pillar said, 'this part holds.' It's under a root cluster three hours north of here. I've been watching it since the second Sundering.'*",
+          "*'Before the biomes had names, the Architects left markers. Not deliberately — they were places where something important was decided. The Whispering Woods has one: a place where Pillar said, 'this part holds.' It's under a root cluster three hours north of here. I've been watching it since the second Sundering.'*",
           "",
           "He hands you a small, smooth stone that feels heavier than it should.",
           "",
@@ -287,39 +289,9 @@
           "trench_relic"
         ],
         "intro": [
-          "The Celestial Loom is different when you arrive this time.",
-          "",
-          "The stars that were drifting at eye level have arranged themselves into something that might be a corridor. At the end of it, something that might be a library.",
-          "",
-          "The Archivist is already in the middle of a sentence when you find them.",
-          "",
-          "*'\u2014 and that's why the hollow spot exists. Oh, you're here. You brought all four relics. Good.'*",
-          "",
-          "Their Paradox sphinx walks around you on all sides simultaneously.",
-          "",
-          "*'You're about to ask me what they mean. The answer is: they are proof of your attention. The Loom doesn't give the World-Tree Seed to anyone who wants it. It gives it to anyone who has shown up, consistently, in all four places where the world first decided to hold.'*",
-          "",
-          "*'You have now met Maren, who keeps the record. Cael, who watches the thread. Sable, who shapes what the Loom leaves behind. Orren, who remembers what the Loom forgets.'*",
-          "",
-          "*'They are going to need you. Not now. Later \u2014 in the direction the Sundering is accelerating toward. I can tell you what the hollow spot is.'*",
-          "",
-          "Paradox sits down in front of you and looks at you with eyes that contain several possible versions of this moment.",
-          "",
-          "*'The hollow spot southwest of the Ember Wastes is where the Loom made its first decision. The very first stitch. Not the First Stitch that the old texts mention \u2014 that was the second decision. The first one was quieter and happened slightly earlier, in a direction that doesn't have a name.'*",
-          "",
-          "*'Something has reached through the hollow spot and pulled on that first stitch. If it unravels, the Loom doesn't end. But it resets.'*",
-          "",
-          "A pause. The library is very quiet.",
-          "",
-          "*'Not today. Not for a long time. But that's what the Sundering acceleration is. That's what Cael has been watching. And that's why the four people you've met exist \u2014 they each hold one of the things the world needs to not reset.'*",
-          "",
-          "They hold out the World-Tree Seed.",
-          "",
-          "*'Here. Hatch this. What comes from it will understand the problem better than I've just explained it. And \u2014 unrequested \u2014 something that might be friendship, from someone for whom time doesn't work properly. I find this conversation remarkable. I've had it forty-seven times in various timelines and you are the first person who didn't ask what the hollow spot was before I told them.'*",
-          "",
-          "Paradox blinks. The library rearranges itself slightly.",
-          "",
-          "*'That was a compliment.'*"
+          "A corridor of low stars leads to a library. The Archivist looks up from a book that has not yet been written.",
+          "*'Two relics. Two acts of attention. There are two more: one in the Glacial Hollows, one in the Trenches. Follow the marks; the places remember being held together.'*",
+          "Their Paradox sits beside an empty chair. *'The hollow southwest of the Wastes is an old protective stitch. It has tightened around creatures it was meant to shelter. It needs help learning to let go. Bring back the other relics, and I will give you something that can take root there.'*"
         ],
         "steps": [
           {
@@ -344,17 +316,10 @@
           }
         ],
         "completion_dialogue": [
-          "*'The World-Tree Seed is yours. Everything else \u2014 the hollow spot, the Sundering, what comes next \u2014 is a story that hasn't happened yet.'*",
-          "",
-          "*'Go find Cael. He's worried. He's always worried. In this case he's right to be, but it would help him to hear that someone knows what they're looking at.'*",
-          "",
-          "The corridor of stars behind you begins to close.",
-          "",
-          "*'One more thing. Unrequested.'*",
-          "",
-          "Paradox stands up and puts its nose briefly against your hand.",
-          "",
-          "*'It says you're interesting. That is, as I mentioned, very high praise.'*"
+          "You lay all four relics on the table. They settle into the shape of a small, open circle.",
+          "*'There. A place that can hold without closing,'* says the Archivist. They set a World-Tree Seed in your hands.",
+          "*'Hatch this with /incubate, then care for it with /tend. A Pillar will remember how to leave room for another life. Take it to Cael. He has been trying to loosen the stitch by pulling harder. You can imagine how that has gone.'*",
+          "Paradox presses its nose into your palm. The library, for once, waits for you to leave before rearranging itself."
         ],
         "reward": {
           "gold": 5000,
@@ -369,8 +334,9 @@
             "cael": "trusted",
             "sable": "trusted",
             "orren": "trusted",
-            "the_archivist": "companion"
-          }
+            "the_archivist": "trusted"
+          },
+          "unlock_next": "chapter_6"
         }
       },
       "chapter_6": {
@@ -385,9 +351,9 @@
           "",
           "His Twine tugs his ear.",
           "",
-          "*'Right, right \u2014 I'll tell them. There's a beast that's been acting strange. Not corrupted \u2014 that's different. Corrupted beasts know something happened to them. This one acts like it doesn't know what it is anymore. Like the Loom revised it mid-sentence and forgot to finish.'*",
+          "*'Right, right — I'll tell them. There's a beast that's been acting strange. Not corrupted — that's different. Corrupted beasts know something happened to them. This one acts like it doesn't know what it is anymore. Like the Loom revised it mid-sentence and forgot to finish.'*",
           "",
-          "*'I need you to find it. It won't come to me. I've tried. But you \u2014 you're new here. The Loom hasn't filed you under anything yet. It might let you close enough to look.'*"
+          "*'I need you to find it. It won't come to me. I've tried. But you — you're new here. The Loom hasn't filed you under anything yet. It might let you close enough to look.'*"
         ],
         "steps": [
           {
@@ -395,29 +361,23 @@
             "description": "Explore the Celestial Loom 3 times",
             "type": "explore_count",
             "target": 3,
-            "track_biome": "\ud83c\udf0c The Celestial Loom"
+            "track_biome": "🌌 The Celestial Loom"
           },
           {
             "id": "catch_cosmic_beast",
-            "description": "Catch any cosmic or divine type beast",
-            "type": "catch_type",
+            "description": "Befriend the Loom Fragment; the third Loom exploration reveals it if you have not met one",
+            "type": "catch_specific_beast",
             "target": 1,
-            "beast_types": [
-              "cosmic",
-              "divine"
+            "target_beasts": [
+              "loom_fragment"
             ]
           }
         ],
         "completion_dialogue": [
-          "*'You found it.'*",
-          "",
-          "Cael is quiet for longer than usual. Twine doesn't tug his ear. Even the Loom seems to pause.",
-          "",
-          "*'It's not broken. That's what I couldn't figure out. The fraying isn't damage \u2014 it's the Loom revising something on purpose. Something it wasn't ready to say yet.'*",
-          "",
-          "He finally looks at you.",
-          "",
-          "*'The Loom is still writing. That should be comforting. I haven't decided if it is yet.'*"
+          "The Loom Fragment asks Cael whether a question can have a name.",
+          "*'Yes,'* he says, after thinking about it. *'We can call you Thread, if you like.'*",
+          "Thread folds a loose end around your wrist. Twine puts one paw on the knot and stops the ticking for a moment.",
+          "*'It wasn't the Loom revising it,'* Cael says. *'The old stitch is trying to protect everything at once. It holds so tightly that nothing can finish changing. Thread found the loose end. Now we know where to begin.'*"
         ],
         "reward": {
           "gold": 2000,
@@ -425,7 +385,8 @@
           "celestial_shards": 18,
           "relationship_unlock": {
             "cael": "trusted"
-          }
+          },
+          "unlock_next": "chapter_7"
         }
       },
       "chapter_7": {
@@ -439,9 +400,9 @@
           "",
           "When she hears you, she closes her hand around it before you can see what it is.",
           "",
-          "*'I need something made,'* she says. *'I'd do it myself but \u2014 this one I can't. The materials won't work for me. That happens sometimes with forge work. The metal knows who it's for.'*",
+          "*'I need something made,'* she says. *'I'd do it myself but — this one I can't. The materials won't work for me. That happens sometimes with forge work. The metal knows who it's for.'*",
           "",
-          "*'It's for someone I owe. I've owed it for a long time. They stopped asking but the debt didn't go anywhere, just \u2014 sat there, being a debt. I'm tired of it sitting.'*",
+          "*'It's for someone I owe. I've owed it for a long time. They stopped asking but the debt didn't go anywhere, just — sat there, being a debt. I'm tired of it sitting.'*",
           "",
           "She gives you a list of materials without looking up.",
           "",
@@ -466,17 +427,10 @@
           }
         ],
         "completion_dialogue": [
-          "Sable doesn't say anything for a while after you hand her the materials.",
-          "",
-          "She works. You watch without being asked to. The forge sounds different \u2014 lower, more patient.",
-          "",
-          "When she's done, she holds up something small. A clasp. Simple. The kind of thing you'd use to close a cloak.",
-          "",
-          "*'It's not much,'* she says. *'That's why I owe it. The small things are the ones you forget and then carry.'*",
-          "",
-          "She pockets it.",
-          "",
-          "*'You did good work here. You didn't ask what it was for. That's the kind of thing Orren would have done. Take that as the compliment it is \u2014 I don't give many.'*"
+          "The clasp Sable makes is simple: two leaves that meet without locking shut.",
+          "*'It's for Maren. She gave me her coat the night my first forge burned. I promised I'd mend its clasp. I built two forges and led a guild before I remembered that promise.'*",
+          "You carry it to Maren together. Sable fastens it to the old coat without asking for thanks.",
+          "Maren tests the catch, then opens it again. *'A good clasp knows when to let go.'* Sable looks at you. Neither of you has to mention the hollow."
         ],
         "reward": {
           "gold": 2500,
@@ -487,7 +441,12 @@
           },
           "relationship_unlock": {
             "sable": "trusted"
-          }
+          },
+          "unlock_next": "chapter_8"
+        },
+        "consume_materials": {
+          "hellhound_ember": 5,
+          "dragon_scale": 3
         }
       },
       "chapter_8": {
@@ -499,41 +458,47 @@
         "intro": [
           "Orren is waiting for you at the edge of the woods where the light changes.",
           "",
-          "*'Maren sent word,'* he says. *'She doesn't usually do that. We've been \u2014 we've been not-talking to each other for about twelve years. On purpose. It was the right decision at the time.'*",
+          "*'Maren sent word,'* he says. *'She doesn't usually do that. We've been — we've been not-talking to each other for about twelve years. On purpose. It was the right decision at the time.'*",
           "",
           "He pauses. Something moves in the trees and he watches it pass with the particular attention of someone who knows what it is and is thinking about something else entirely.",
           "",
-          "*'She wants to finish a conversation. The one we stopped. I think she's right that it's time. But I'd like \u2014 I'd like you to be there. As a witness. The Loom values witnessed things.'*",
+          "*'She wants to finish a conversation. The one we stopped. I think she's right that it's time. But I'd like — I'd like you to be there. As a witness. The Loom values witnessed things.'*",
           "",
-          "*'Before that, I need you to do something for me. Go into the woods. Catch something old. Not ancient \u2014 just old. Something that remembers a version of this place I remember too. Bring it back and show me what you found. Then we'll go see Maren.'*"
+          "*'Before that, I need you to do something for me. Go into the woods. Catch something old. Not ancient — just old. Something that remembers a version of this place I remember too. Bring it back and show me what you found. Then we'll go see Maren.'*"
         ],
         "steps": [
           {
             "id": "explore_woods_4",
-            "description": "Explore the Whispering Woods 4 times",
+            "description": "Explore the Whispering Woods twice",
             "type": "explore_count",
-            "target": 4,
-            "track_biome": "\ud83c\udf32 The Whispering Woods"
+            "target": 2,
+            "track_biome": "🌲 The Whispering Woods"
           },
           {
             "id": "win_battle_3",
             "description": "Win 3 battles",
             "type": "battle_win",
             "target": 3
+          },
+          {
+            "id": "catch_old_friend",
+            "description": "Meet a Fairy, Dryad, Centry or Behemoth from the old woods",
+            "type": "catch_specific_beast",
+            "target_beasts": [
+              "fairy",
+              "dryad",
+              "centry",
+              "behemoth"
+            ],
+            "target": 1
           }
         ],
         "completion_dialogue": [
-          "Orren looks at what you caught for a long time.",
-          "",
-          "*'Yes,'* he says eventually. *'That's the one. That one was here before the third revision. Before the Loom decided the woods should have memory instead of just time. You can tell by the way it holds still \u2014 like it's used to waiting for something that isn't there anymore.'*",
-          "",
-          "He stands.",
-          "",
-          "*'All right. Let's go find Maren.'*",
-          "",
-          "What happens at Maren's is not something you'll be able to describe well. They talk. They don't argue. At one point Orren says something very short and Maren nods for a long time. At another point Maren says something that makes Orren laugh \u2014 the kind of laugh that has years in it.",
-          "",
-          "When it's over, Maren pats your hand and says: *'You were a good witness. The Loom noticed. It does, when someone pays attention.'*"
+          "Maren sets out three cups. Orren looks at his for a long time.",
+          "*'I wrote your name out of the record,'* Maren says. *'I thought that was how to respect your wish to be forgotten.'*",
+          "*'I wanted that one mistake forgotten,'* Orren says. *'Not the years before it. I should have said so.'*",
+          "Maren opens a blank page. *'Tell me what belongs here.'* He begins with the old woods, and then the first creature he failed to help. This time she writes the whole account.",
+          "You keep the kettle warm. There are no witnesses standing above this conversation; there are three people making enough room to finish it."
         ],
         "reward": {
           "gold": 3000,
@@ -542,7 +507,8 @@
           "relationship_unlock": {
             "orren": "trusted",
             "maren": "companion"
-          }
+          },
+          "unlock_next": "chapter_9"
         }
       },
       "chapter_9": {
@@ -552,41 +518,29 @@
         "unlock_condition": "chapter_8_complete",
         "location": "Ember Wastes",
         "intro": [
-          "Sable is at her forge again, but she's not working. She's looking at a map she's drawn on the forge table in chalk that will burn off the next time she fires it.",
-          "",
-          "*'I know what the corrupted bosses are,'* she says without preamble. *'You've fought them \u2014 or your guild has. You've seen what they look like.'*",
-          "",
-          "*'They weren't always that. The Leviathan was the sea's sovereign. The Fenrir was the World Eater \u2014 that sounds frightening until you know the World Eater is what the Loom uses to clean up the parts of the world that are done. And the Dragon was the apex predator, which means it was what kept everything below it honest.'*",
-          "",
-          "*'Something turned them. Something got into the Loom's work and \u2014 revised it. Not the way the Loom revises things. The way something revises things when it wants to see what breaks.'*",
-          "",
-          "*'I don't know what it is yet. I need you to fight the corrupted bosses again. Carefully. Watch what they do \u2014 not just the damage. What they say with their patterns. Come back and tell me.'*"
+          "Sable has spread Cael's notes across her forge bench. Thread keeps one corner from curling.",
+          "*'They aren't becoming cruel,'* she says. *'They're caught in the same protection loop. The old stitch feels them struggling and holds tighter. We mistook a grip for an enemy.'*",
+          "*'Fight beside your guild twice more. Give them room to breathe. Watch when the corrupted shapes loosen; that is the rhythm we'll use at the hollow.'*"
         ],
         "steps": [
           {
             "id": "participate_corrupted_raid",
-            "description": "Participate in 2 Corrupted raids",
+            "description": "Help stabilize two Corrupted raids",
             "type": "raid_count",
             "target": 2,
             "raid_type": "corrupted"
           },
           {
             "id": "deal_raid_damage_big",
-            "description": "Deal 10,000 total raid damage",
+            "description": "Contribute 3,000 total raid damage; attacks and ultimates both count",
             "type": "raid_damage",
-            "target": 10000
+            "target": 3000
           }
         ],
         "completion_dialogue": [
-          "Sable listens to everything you tell her. She doesn't interrupt. That alone tells you it matters.",
-          "",
-          "*'They're trying to come back,'* she says. *'That's what the patterns mean. The corruption isn't consuming them \u2014 it's holding them. Keeping them in a state of \u2014 of trying to return to what they were. And failing. Over and over.'*",
-          "",
-          "She erases part of the chalk map with her sleeve.",
-          "",
-          "*'Whatever changed them isn't gone. I think it's waiting to see if we notice. I think we just did.'*",
-          "",
-          "*'Tell the Archivist. This is \u2014 this is the kind of thing the Archivist should know we know.'*"
+          "You show Sable the pauses between the attacks. Cael taps them on the bench. A rhythm, not a weakness.",
+          "*'A clasp knows when to open,'* she says. *'A record knows what to keep. A thread knows how to wait. Orren can show us where to plant.'*",
+          "She closes her tools. *'Bring the Pillar from your seed. We're going southwest.'*"
         ],
         "reward": {
           "gold": 4000,
@@ -597,64 +551,54 @@
           },
           "relationship_unlock": {
             "sable": "companion"
-          }
+          },
+          "unlock_next": "chapter_10"
         }
       },
       "chapter_10": {
         "id": "chapter_10",
-        "name": "The Second Stitch",
+        "name": "Room to Grow",
         "npc": "the_archivist",
         "unlock_condition": "chapter_9_complete",
         "location": "Celestial Loom",
         "intro": [
-          "The Archivist is already looking at you when you arrive. This is not unusual.",
-          "",
-          "*'You know about the thing that corrupted the bosses,'* the Archivist says. *'You came to tell me. I appreciate that, even though I already know.'*",
-          "",
-          "*'What I don't know \u2014 what I find genuinely interesting \u2014 is what you intend to do with what you know.'*",
-          "",
-          "The Loom hums behind them. It always does. You've stopped noticing it, mostly. Right now you notice it again.",
-          "",
-          "*'The Loom is a record and a process. It writes and it witnesses itself writing. You are part of that now \u2014 you have been since your first day here, but it's more true now than it was then.'*",
-          "",
-          "*'I want to ask you something. Not rhetorically. An actual question, that I don't know the answer to, because the answer is yours.'*",
-          "",
-          "*'What kind of tamer are you becoming?'*"
+          "The hollow is smaller than the stories made it. A root has grown in a tight circle around a knot of frightened light.",
+          "Your Pillar settles beside it. Maren opens the repaired clasp. Orren puts both hands on the soil. Cael waits for Twine's signal. Sable sets down her tools.",
+          "*'We are not pulling this open,'* says the Archivist. *'We are making somewhere safe for it to open into.'*",
+          "*'When you are ready, choose what you will bring to that place: care, curiosity, or courage. The answer changes how we begin. All three leave room for the creature to choose.'*"
         ],
         "steps": [
           {
             "id": "reach_player_level",
-            "description": "Reach player level 30",
+            "description": "Reach trainer level 15",
             "type": "player_level",
-            "target": 30
+            "target": 15
           },
           {
             "id": "collect_beasts_20",
-            "description": "Have 20 beasts in your collection",
+            "description": "Care for a collection of 12 beasts",
             "type": "beast_count",
-            "target": 20
+            "target": 12
+          },
+          {
+            "id": "hatch_the_seed",
+            "description": "Hatch the World-Tree Seed with /incubate and /tend",
+            "type": "seed_hatched",
+            "target": 1
           },
           {
             "id": "complete_any_raid",
-            "description": "Complete any raid",
+            "description": "Help stabilize a raid",
             "type": "raid_complete",
             "target": 1
           }
         ],
         "completion_dialogue": [
-          "The Archivist listens to your answer for a long time even after you've stopped speaking.",
-          "",
-          "*'Good,'* they say finally. Not dismissively \u2014 with the weight of someone who has been waiting for a particular word for a long time and finally heard it.",
-          "",
-          "*'The thing that corrupted the bosses is real. It will need to be addressed. We will address it \u2014 not today, not this chapter. But the Loom is still writing, which means this story isn't finished.'*",
-          "",
-          "*'What I can tell you: you have been noticed. Not by me. By the Loom. It doesn't notice most things it makes \u2014 they're scenery, not participants. You are a participant. That means the next part of the story will have you in it.'*",
-          "",
-          "*'Come back. There will be more to do. There always is, when the Loom is still writing.'*",
-          "",
-          "They smile \u2014 you think. It's hard to tell, with the Archivist.",
-          "",
-          "*'Well done.'*"
+          "The Pillar's roots find the ground beneath the knot. They grow outward, leaving a gap where the light can move.",
+          "The old stitch loosens. Not a snap; a breath. A small creature steps free, looks back at the shelter that held it too tightly, and decides to stay nearby.",
+          "Thread asks if this is what growing means. *'Part of it,'* Maren says. Sable's Hellhound settles by the new roots. Orren sits beside it.",
+          "The Archivist closes the book they brought. *'This part is finished. The hollow is a place to begin again, now. You did that together.'*",
+          "On your next visit to the woods, the wind reaches a place that used to be still. Your companion notices it first."
         ],
         "reward": {
           "gold": 8000,
@@ -666,6 +610,23 @@
           "achievement": "second_stitch",
           "relationship_unlock": {
             "the_archivist": "companion"
+          }
+        },
+        "choices": {
+          "care": {
+            "label": "Care — make a shelter",
+            "title": "Keeper of Gentle Things",
+            "scene": "You kneel beside the knot and wait. Your companion rests its head against your hand. The first loose loop opens toward the shelter you have made."
+          },
+          "curiosity": {
+            "label": "Curiosity — listen to the thread",
+            "title": "Listener to the Loom",
+            "scene": "You follow Thread's questions instead of its tangles. The knot answers in little pulses. Cael hears the rhythm, and the first loop opens without being pulled."
+          },
+          "courage": {
+            "label": "Courage — hold the opening",
+            "title": "Guardian of the Open Path",
+            "scene": "You stand where the knot is tightest and hold the safe space steady. Your companion takes the other side. The first loop opens, and neither of you closes it again."
           }
         }
       }

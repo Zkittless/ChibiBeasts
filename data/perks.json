@@ -10,6 +10,10 @@
       "effect": {
         "shop_discount": 5,
         "sell_bonus": true
+      },
+      "unlock": {
+        "stat": "level",
+        "target": 3
       }
     },
     "pixie_pocket": {
@@ -22,6 +26,10 @@
       "effect": {
         "explore_gold_bonus_percent": 10,
         "catch_rate_bonus": 0.05
+      },
+      "unlock": {
+        "stat": "total_catches",
+        "target": 3
       }
     },
     "fable_scholar": {
@@ -33,6 +41,10 @@
       "flavor": "You've spent hours reading ancient, dusty scrolls about beast behavior.",
       "effect": {
         "exp_bonus_percent": 10
+      },
+      "unlock": {
+        "stat": "level",
+        "target": 5
       }
     },
     "bramble_walker": {
@@ -44,6 +56,10 @@
       "flavor": "Woodland spirits guide your steps, making travel easier.",
       "effect": {
         "cooldown_reduction_percent": 10
+      },
+      "unlock": {
+        "stat": "explore",
+        "target": 5
       }
     },
     "tether_of_fate": {
@@ -55,6 +71,10 @@
       "flavor": "A glowing red string bonds your spirit to your lead beast.",
       "effect": {
         "auto_cure_chance": 25
+      },
+      "unlock": {
+        "stat": "wins",
+        "target": 5
       }
     },
     "stardust_touch": {
@@ -62,11 +82,15 @@
       "name": "Stardust Touch",
       "rarity": "rare",
       "slot_cost": 1,
-      "description": "Permanently increases the chance of encountering or hatching Rare and Epic beasts by 10%.",
+      "description": "Moves up to 10 percentage points of lower-tier encounter and instant-hatch odds into Rare, then Epic. Never downgrades a high-tier pool.",
       "flavor": "A faint, glowing cosmic shimmer permanently rests on your fingertips.",
       "effect": {
         "rare_encounter_bonus": 10,
         "epic_encounter_bonus": 10
+      },
+      "unlock": {
+        "stat": "total_catches",
+        "target": 15
       }
     },
     "spellbound_focus": {
@@ -78,6 +102,10 @@
       "flavor": "You can channel your own energy to perfectly direct your beast's strikes.",
       "effect": {
         "crit_chance_bonus": 10
+      },
+      "unlock": {
+        "stat": "wins",
+        "target": 15
       }
     },
     "chronos_hourglass": {
@@ -85,10 +113,14 @@
       "name": "Chronos's Hourglass",
       "rarity": "epic",
       "slot_cost": 1,
-      "description": "Reduces all passive training and cooldown timers across the bot by 20%.",
+      "description": "Reduces exploration, wild challenge, play and new egg incubation timers by 20%.",
       "flavor": "You carry a pocket watch that subtly warps time around your daily routines.",
       "effect": {
         "global_cooldown_reduction": 20
+      },
+      "unlock": {
+        "stat": "level",
+        "target": 15
       }
     },
     "aura_of_phoenix": {
@@ -101,6 +133,10 @@
       "effect": {
         "survive_ko": true,
         "uses_per_battle": 1
+      },
+      "unlock": {
+        "stat": "raid_complete",
+        "target": 3
       }
     },
     "astral_resonance": {
@@ -113,6 +149,10 @@
       "effect": {
         "shard_bonus_percent": 15,
         "weekly_incubation_skip": true
+      },
+      "unlock": {
+        "stat": "chapter",
+        "target": 5
       }
     },
     "glimmering_fortune": {
@@ -124,6 +164,10 @@
       "flavor": "The universe itself bends to ensure your success.",
       "effect": {
         "divine_upgrade_chance": 0.05
+      },
+      "unlock": {
+        "stat": "chapter",
+        "target": 10
       }
     },
     "genesis_spark": {
@@ -136,6 +180,10 @@
       "effect": {
         "ultimate_boost_percent": 10,
         "battle_start_mana": 20
+      },
+      "unlock": {
+        "stat": "level",
+        "target": 25
       }
     }
   },

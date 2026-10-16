@@ -36,25 +36,10 @@ async def get_user_sanctuary(user_id: int) -> dict:
     return dict(row)
 
 
-def apply_explore_encounter_bonus(rarity_weights: dict, sanctuary: dict) -> dict:
-    """
-    Celestial Observatory: +2% encounter rate for Epic and Legendary.
-    Returns modified rarity_weights dict.
-    """
-    if not sanctuary.get("celestial_observatory"):
-        return rarity_weights
-    weights = dict(rarity_weights)
-    bonus = 0.02
-    if "epic" in weights:
-        weights["epic"] = min(weights["epic"] + bonus, 0.60)
-    if "legendary" in weights:
-        weights["legendary"] = min(weights["legendary"] + bonus, 0.40)
-    # Normalize so weights sum to ≤ 1 (reduce common/uncommon slightly)
-    total = sum(weights.values())
-    if total > 1.0:
-        scale = 1.0 / total
-        weights = {k: v * scale for k, v in weights.items()}
-    return weights
+def apply_explore_encounter_bonus(rarity_weights,sanctuary):
+    if not sanctuary.get("celestial_observatory"):return rarity_weights
+    from utils.hatching import promote_rates
+    return promote_rates(rarity_weights,{"epic":.02,"legendary":.02})
 
 
 def apply_craft_discount(recipe: dict, sanctuary: dict) -> dict:

@@ -22,11 +22,11 @@ DB_PATH = "db/chibibeast.db"
 
 # ── Data loaders ──────────────────────────────────────────────────────────────
 def load_materials():
-    with open("data/materials.json") as f:
+    with open("data/materials.json", encoding="utf-8") as f:
         return json.load(f)["materials"]
 
 def load_equipment():
-    with open("data/equipment.json") as f:
+    with open("data/equipment.json", encoding="utf-8") as f:
         d = json.load(f)
         return d["equipment"], d["runes"]
 
@@ -124,7 +124,7 @@ EGGS = {
                             "divine_pool": ["supernova", "nebula", "abyss"],
                             "flavor": "A pitch-black miniature black hole in a fragile cage of neon-purple stellar gas.",
                             "lore": "Obtained from Altered Divine raid drops. The Loom made this as a warning."},
-    "world_tree_seed":     {"name": "World-Tree Seed",   "rarity": "divine",   "emoji": "🏮", "incubation_hours": 96,
+    "world_tree_seed":     {"name": "World-Tree Seed",   "rarity": "divine",   "emoji": "🏮", "incubation_hours": 24,
                             "pool": {"divine": 1.0},
                             "divine_pool": ["atlas", "asgard", "nirvana"],
                             "flavor": "An ancient golden seed with tiny roots made of light breaking through the shell.",
@@ -142,7 +142,7 @@ SANCTUARY_UPGRADES = {
         "name": "🌸 Fairy Garden",
         "tier": 1,
         "cost_tokens": 50,
-        "description": "Benched beasts gain +1 happiness per day passively.",
+        "description": "Claiming /daily gives benched companions +5 happiness, offsetting daily decay.",
         "lore": "The Fairies help because they want to. That's more unsettling than if they were paid.",
         "db_column": "fairy_garden",
         "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/fairy_garden.png",
@@ -245,10 +245,10 @@ def pick_beast_for_rarity(rarity: str, egg: dict) -> dict | None:
     pool_key = f"{rarity}_pool"
     if pool_key in egg:
         pool_ids = egg[pool_key]
-        pool = [all_beasts[bid] for bid in pool_ids if bid in all_beasts]
+        pool = [all_beasts[bid] for bid in pool_ids if bid in all_beasts and not all_beasts[bid].get("evolution_only")]
     else:
         pool = [b for b in all_beasts.values()
-                if b["rarity"] == rarity and b["id"] not in STARTER_IDS]
+                if b["rarity"] == rarity and b["id"] not in STARTER_IDS and not b.get("evolution_only") and b.get("wild_encounter",True)]
     return random.choice(pool) if pool else None
 
 
@@ -298,6 +298,7 @@ class World(commands.Cog):
         # Check inventory
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
+            await db.execute("BEGIN IMMEDIATE")
             async with db.execute(
                 "SELECT * FROM player_inventory WHERE user_id = ? AND item_id = ?",
                 (interaction.user.id, egg_id)
@@ -322,7 +323,8 @@ class World(commands.Cog):
                     color=COLORS["error"]
                 ))
 
-            hours = egg["incubation_hours"]
+            from utils.rewards import has_perk
+            hours = egg["incubation_hours"] * (.8 if await has_perk(db,interaction.user.id,"chronos_hourglass") else 1)
             ready_at = datetime.now(timezone.utc) + timedelta(hours=hours)
 
             # Calculate tend schedule
@@ -401,7 +403,7 @@ class World(commands.Cog):
         now = datetime.now(timezone.utc)
         embed = discord.Embed(
             title="🥚 Your Incubating Eggs",
-            description="*Eggs only progress when tended. Miss a tend and the egg waits.*",
+            description="*Tend along the way, or return at the deadline for the final hatch. Time skips move both clocks.*",
             color=COLORS["info"]
         )
         for row in rows:
@@ -446,6 +448,11 @@ class World(commands.Cog):
     @app_commands.command(name="tend", description="Tend to an incubating egg — final tend hatches it! 🤲")
     @app_commands.describe(egg_id="The incubation ID from /eggs (leave blank for oldest ready egg)")
     async def tend(self, interaction: discord.Interaction, egg_id: int = None):
+        from utils.hatching import incubation_locks
+        async with incubation_locks[interaction.user.id]:
+            await self._tend(interaction,egg_id)
+
+    async def _tend(self, interaction, egg_id=None):
         await interaction.response.defer()
         await get_or_create_player(interaction.user.id, str(interaction.user))
         now = datetime.now(timezone.utc)
@@ -463,9 +470,9 @@ class World(commands.Cog):
                 async with db.execute(
                     """SELECT * FROM incubating_eggs
                        WHERE user_id = ? AND hatched = 0
-                         AND (next_tend_at IS NULL OR next_tend_at <= ?)
+                         AND (next_tend_at IS NULL OR next_tend_at <= ? OR ready_at <= ?)
                        ORDER BY ready_at ASC LIMIT 1""",
-                    (interaction.user.id, now.strftime("%Y-%m-%d %H:%M:%S"))
+                    (interaction.user.id, now.strftime("%Y-%m-%d %H:%M:%S"), now.strftime("%Y-%m-%d %H:%M:%S"))
                 ) as c:
                     row = await c.fetchone()
 
@@ -495,7 +502,7 @@ class World(commands.Cog):
             # Verify tend window if specific egg_id was given
             if egg_id and row.get("next_tend_at"):
                 next_dt = datetime.strptime(row["next_tend_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-                if now < next_dt:
+                if now < next_dt and now < datetime.strptime(row["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc):
                     remaining = next_dt - now
                     hrs, rem = divmod(int(remaining.total_seconds()), 3600)
                     mins = rem // 60
@@ -504,7 +511,10 @@ class World(commands.Cog):
                         color=COLORS["error"]
                     ))
 
+            deadline=datetime.strptime(row["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
             tends_done = (row.get("tends_done") or 0) + 1
+            if now>=deadline:
+                tends_done=row.get("tends_required") or 1
             tends_required = row.get("tends_required") or 1
             egg_def = EGGS.get(row["egg_type"], {})
             hours = egg_def.get("incubation_hours", 1)
@@ -521,7 +531,7 @@ class World(commands.Cog):
                     ))
 
                 beast_row_id = await add_beast_to_player(
-                    interaction.user.id, {**beast, "caught_from": "incubation"}
+                    interaction.user.id, {**beast, "caught_from": "incubation:"+row["egg_type"]},grant_key=f"egg:{row['id']}"
                 )
                 await db.execute("UPDATE incubating_eggs SET hatched = 1, tends_done = ? WHERE id = ?",
                                  (tends_done, row["id"]))
@@ -532,8 +542,8 @@ class World(commands.Cog):
                 color = COLORS.get(rarity, COLORS["info"])
 
                 # Milestone catch count
-                from cogs.hatch import increment_catch_count, _catch_milestone_line
-                count, is_milestone = await increment_catch_count(beast["id"], rarity)
+                from cogs.hatch import get_catch_count, _catch_milestone_line
+                count, is_milestone = await get_catch_count(beast["id"], rarity)
                 milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
 
                 embed = discord.Embed(
@@ -555,10 +565,16 @@ class World(commands.Cog):
                     embed.add_field(name=f"{plabel}: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
                 if milestone_line:
                     embed.add_field(name="📜 The Loom Stirs", value=milestone_line, inline=False)
-                embed.set_footer(text=f"ChibiBeasts 🐾  •  Beast added to your collection!")
-                await interaction.followup.send(embed=embed)
-
+                embed.set_image(url=beast["image_url"])
+                embed.set_footer(text="ChibiBeasts 🐾  •  Beast added to your collection!")
                 completed_quests = await track_quest_event(interaction.user.id, "hatch")
+                if row["egg_type"]=="world_tree_seed":
+                    from cogs.questline import advance_quest_step
+                    await advance_quest_step(interaction.user.id,"seed_hatched")
+                    embed.add_field(name="A root for the hollow",value="Your new companion remembers a place that needs room to grow. Return to /questline.",inline=False)
+                await interaction.followup.send(embed=embed)
+                from cogs.hatch import check_collection_completion
+                await check_collection_completion(interaction,beast,load_beasts())
                 unlocked = await check_achievements(interaction.user.id)
                 if interaction.guild:
                     await record_bestiary_sighting(interaction.guild.id, beast["id"], interaction.user.id)
@@ -568,7 +584,7 @@ class World(commands.Cog):
             else:
                 # Intermediate tend — advance schedule
                 interval_hours = hours / (row.get("tends_required") or 1)
-                next_tend_at = now + timedelta(hours=interval_hours)
+                next_tend_at = min(deadline,now + timedelta(hours=interval_hours))
                 await db.execute(
                     "UPDATE incubating_eggs SET tends_done = ?, next_tend_at = ? WHERE id = ?",
                     (tends_done, next_tend_at.strftime("%Y-%m-%d %H:%M:%S"), row["id"])
@@ -599,7 +615,7 @@ class World(commands.Cog):
                 )
                 embed.set_footer(text="ChibiBeasts 🐾  •  Come back and tend again soon.")
                 import asyncio as _asyncio
-                _asyncio.create_task(track_quest_event(interaction.user.id, "tend"))
+                await track_quest_event(interaction.user.id, "tend")
                 await interaction.followup.send(embed=embed)
 
     # ── /sanctuary ────────────────────────────────────────────────────────
@@ -717,6 +733,7 @@ class World(commands.Cog):
 
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
+            await db.execute("BEGIN IMMEDIATE")
             async with db.execute(
                 "SELECT gm.rank, gm.guild_id, g.name, g.guild_tokens "
                 "FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
@@ -749,15 +766,19 @@ class World(commands.Cog):
                     color=COLORS["error"]
                 ))
 
-            if up["cost_tokens"] and guild_row["guild_tokens"] < up["cost_tokens"]:
+            async with db.execute("SELECT id FROM player_inventory WHERE user_id=? AND item_id='sanctuary_blueprint' AND quantity>0",(interaction.user.id,)) as c:blueprint=await c.fetchone()
+            cost=0 if blueprint else up["cost_tokens"]
+            if cost and guild_row["guild_tokens"] < cost:
                 return await interaction.followup.send(embed=discord.Embed(
                     description=f"✦ Not enough guild tokens! Need **{up['cost_tokens']}**, have **{guild_row['guild_tokens']}**.",
                     color=COLORS["error"]
                 ))
 
-            if up["cost_tokens"]:
-                await db.execute("UPDATE guilds SET guild_tokens = guild_tokens - ? WHERE id = ?",
-                                 (up["cost_tokens"], gid))
+            if blueprint:
+                await db.execute("UPDATE player_inventory SET quantity=quantity-1 WHERE id=?",(blueprint["id"],))
+                await db.execute("DELETE FROM player_inventory WHERE id=? AND quantity<=0",(blueprint["id"],))
+            elif cost:
+                await db.execute("UPDATE guilds SET guild_tokens=guild_tokens-? WHERE id=?",(cost,gid))
             if sanctuary:
                 await db.execute(f"UPDATE guild_sanctuary SET {col} = 1 WHERE guild_id = ?", (gid,))
             else:
@@ -812,7 +833,7 @@ class World(commands.Cog):
         equipment, runes = load_equipment()
         from utils.db import load_items as _li, add_item as _add_item
         craftable_items = {k: v for k, v in _li().items() if v.get("recipe")}
-        all_craftable = {**equipment, **craftable_items}
+        all_craftable = {**equipment, **runes, **craftable_items}
         is_item_craft = False  # True = goes to inventory, False = goes to equipment slot
 
         item_id = item_name.lower().replace(" ", "_").replace("-", "_")
@@ -828,13 +849,15 @@ class World(commands.Cog):
                     color=COLORS["error"]
                 ))
 
-        is_item_craft = item_id in craftable_items
+        is_rune = item_id in runes
+        is_item_craft = item_id in craftable_items or is_rune
 
         # Check material holdings
         materials = load_materials()
         recipe = item.get("recipe", {})
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
+            await db.execute("BEGIN IMMEDIATE")
             async with db.execute(
                 "SELECT material_id, quantity FROM player_materials WHERE user_id = ?",
                 (interaction.user.id,)
@@ -873,9 +896,8 @@ class World(commands.Cog):
 
             # Grant item: equipment slot or inventory depending on type
             if is_item_craft:
-                # Evolution items go to player inventory — commit materials first then add item
-                await db.commit()
-                await _add_item(interaction.user.id, item_id, 1)
+                from utils.gameplay import add_stack
+                await add_stack(db,"player_inventory",interaction.user.id,item_id)
             else:
                 # Equipment/runes go to player_equipment (unequipped)
                 await db.execute(
@@ -885,10 +907,12 @@ class World(commands.Cog):
             await db.commit()
         craft_completed = await track_quest_event(interaction.user.id, "craft")
         from cogs.questline import advance_quest_step as _aqcraft
-        await _aqcraft(interaction.user.id, "craft")
+        # Shared event tracking already advances the story.
         if craft_completed and interaction.channel:
             await notify_quest_completions(interaction.channel, craft_completed)
         await unlock_simple_achievement(interaction.user.id, "first_craft")
+        if item.get("rarity")=="legendary" and not is_item_craft:
+            await unlock_simple_achievement(interaction.user.id,"first_legendary_gear")
 
         if is_item_craft:
             # Evolution item — show lore-flavored result
@@ -899,7 +923,7 @@ class World(commands.Cog):
                     f"*{item['description']}*\n\n"
                     f"_{item.get('lore','')}_\n\n"
                     + ("*Gnome Forge discount applied!* " if forge_discount else "")
-                    + f"\nUse `/evolve` on an eligible beast to use it."
+                    + ("\nUse /equip to place this rune on a companion." if is_rune else "\nUse /evolve on an eligible companion.")
                 ),
                 color=COLORS.get(item.get("rarity","epic"), COLORS["epic"])
             )
@@ -985,10 +1009,10 @@ class World(commands.Cog):
                 MAT_SOURCES = {
                     "common":         "🗺️ `/explore` — any **Common** beast",
                     "uncommon":       "🗺️ `/explore` — any **Uncommon** beast",
-                    "rare":           "🗺️ `/explore` — any **Rare** beast\n*Void Essence: shadow · Spirit Crystal: arcane*",
-                    "epic":           "🗺️ `/explore` — any **Epic** beast\n*Sunforge Residue: fire/earth*",
+                    "rare":           "🗺️ `/explore` — **Trenches/shadow** for Void Essence; **Woods/Loom/arcane** for Spirit Crystal.",
+                    "epic":           "🗺️ `/explore` — Phoenix, Thunderbird and Sphinx habitats. Sunforge Residue: **Ember Wastes**, fire/earth creatures.",
                     "legendary":      "🗺️ `/explore` — any **Legendary** beast",
-                    "altered_divine": "⚠️ *Not currently obtainable — coming soon*",
+                    "altered_divine": "🏛️ `/ancient` victories award forging materials to every contributor.",
                 }
                 by_rarity = {}
                 for mid, mat in mats.items():
@@ -1239,7 +1263,7 @@ class World(commands.Cog):
                     "The Loom was not a place. It was the act of weaving itself: an endless, formless "
                     "process spinning raw possibility into shape.\n\n"
                     "Then, in a single instant called the **First Stitch**, the Loom wove four threads "
-                    "tighter than any others — and they woke up. These four became the **Architects**: "
+                    "tighter than any others — and they woke up. These four became the **First Voices**: Prism, Loom, Aspect and Pillar — "
                     "vast, curious ideas that each wanted one small companion to carry their question "
                     "out into the world.\n\n"
                     "This is why every trainer's journey begins with a choice between four companions. "
@@ -1274,13 +1298,12 @@ class World(commands.Cog):
                     "wove went *wrong*.\n\n"
                     "Not evil — the Loom doesn't do evil. But it tried to weave something too big, "
                     "too fast, and the thread **snapped**.\n\n"
-                    "What came loose is called an **Altered Divine**: a being that was *supposed* to "
-                    "become something like Genesis or Atlas, but fractured halfway through. The result "
-                    "is a Divine-scale creature without a finished shape — unstable, in pain, and "
-                    "instinctively consuming whatever's nearby trying to complete itself.\n\n"
-                    "**A raid doesn't kill the Altered Divine. It finally finishes being born — correctly, "
-                    "this time.** Which is why defeating one occasionally lets a trainer walk away with "
-                    "a piece of what it was always meant to become."
+                    "The pressure can leave **Altered Divines**, changed but stable companions, or "
+                    "overwhelm a creature into a **Corrupted** protection loop. These are different states.\n\n"
+                    "In raids, trainers loosen the loop through battle, guarding and shared care. "
+                    "**The creature survives.** Sometimes it chooses to accompany a trainer; every "
+                    "successful rescue builds toward that friendship. Ancient raids are meetings with "
+                    "the original powers, not executions."
                 ),
                 "color": COLORS["error"]
             },
@@ -1296,7 +1319,7 @@ class World(commands.Cog):
                     "**Battling** isn't conquest — beasts in ChibiBeasts fight to test and grow, the same "
                     "way the starters were sent out to see whether their Architect's idea could survive "
                     "contact with the world.\n\n"
-                    "**Raiding** an Altered Divine is the highest-stakes form of the same instinct: "
+                    "**Raiding** a Corrupted or Ancient beast is the highest-stakes form of the same instinct: "
                     "*helping something finish being born.*\n\n"
                     "The stakes are always really just: *help this unfinished thing settle into a shape "
                     "it can be happy with.* That's true of a wild Slime in the Whispering Woods and "
@@ -1318,7 +1341,9 @@ class World(commands.Cog):
                     "existence cheerfully proving yes, over and over, in a slightly different shape each time.\n\n"
                     "🌿 **Barkley** *(The Pillar's First Promise)*\n"
                     "Pillar shaped Barkley to prove that steadiness didn't have to be boring. Barkley "
-                    "has never once let anyone down, and never plans to start."
+                    "has never once let anyone down, and never plans to start.\n\n"
+                    "Their bonds can grow into **Prismara, Timestitch, Nebuloom and Rootwarden**. "
+                    "Reach beast level 15, bond 30 and happiness 70; use /bond to follow your progress."
                 ),
                 "color": COLORS["divine"]
             },

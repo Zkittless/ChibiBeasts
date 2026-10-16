@@ -176,9 +176,13 @@ class Economy(commands.Cog):
     async def train(self, interaction: discord.Interaction, beast_id: int, stat: str):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
+        from utils.duels import active_fighters
+        if interaction.user.id in active_fighters:return await interaction.followup.send("Finish your battle before training.")
 
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
+            await db.execute("BEGIN IMMEDIATE")
+            async with db.execute("SELECT gold FROM players WHERE user_id=?",(interaction.user.id,)) as c:player["gold"]=(await c.fetchone())[0]
             async with db.execute(
                 "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",
                 (interaction.user.id, beast_id)
@@ -254,7 +258,7 @@ class Economy(commands.Cog):
         bd     = get_beast_data(row["beast_id"]) or {}
         name   = row.get("nickname") or bd.get("name", "?")
         r_emoji = RARITY_EMOJI.get(rarity, "⚪")
-        sessions_left = TRAIN_CAP - sessions_done - 1
+        sessions_left = rarity_cap - sessions_done - 1
         stat_emoji = {"attack":"⚔️","defense":"🛡️","speed":"💨","hp":"❤️"}.get(stat,"📈")
 
         embed = discord.Embed(
@@ -270,6 +274,10 @@ class Economy(commands.Cog):
         if sessions_left == 0:
             embed.add_field(name="✨ Maxed Out", value=f"*This beast has been trained to the limit in {stat.title()}.*", inline=False)
         embed.set_footer(text=f"Use /appraise #{beast_id} to see how training affects market value")
+        from utils.progress import track_quest_event
+        from utils.duels import beast_exp
+        await beast_exp(interaction.user.id,row["id"],10)
+        await track_quest_event(interaction.user.id,"train",beast_row_id=row["id"])
         await unlock_simple_achievement(interaction.user.id, "first_train")
         # Check if all 4 stats are now maxed on this beast
         _rarity_caps = {

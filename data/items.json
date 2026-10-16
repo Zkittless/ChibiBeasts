@@ -44,9 +44,9 @@
       "type": "cure",
       "value": 0,
       "price": 150,
-      "description": "A swirling silver liquid that clears the mind. Instantly cures any status condition.",
+      "description": "Protects your beast from the first status condition in its next battle. Use before entering combat.",
       "effect": {
-        "cure_all": true
+        "status_ward": 1
       }
     },
     "luna_nectar": {
@@ -56,7 +56,7 @@
       "type": "ultimate_charge",
       "value": 100,
       "price": 500,
-      "description": "Liquid moonlight captured in a crystal flask. A beast that drinks it remembers every battle it has ever fought \u2014 all at once. Instantly grants 1 Ultimate Charge.",
+      "description": "Liquid moonlight captured in a crystal flask. A beast that drinks it remembers every battle it has ever fought — all at once. Instantly grants 1 Ultimate Charge.",
       "effect": {
         "grant_ultimate_charge": 1
       }
@@ -124,7 +124,7 @@
       "type": "permanent_boost",
       "value": 0,
       "price": 10000,
-      "description": "The literal food of the gods, shimmering with a golden aura. Maxes out happiness and permanently grants +5% damage multiplier.",
+      "description": "Permanently increases one beast's damage by 5%, up to 25%. The bonus stays through evolution.",
       "effect": {
         "happiness": 100,
         "permanent_damage_boost": 5,
@@ -138,9 +138,9 @@
       "type": "unlock",
       "value": 0,
       "price": 75000,
-      "description": "A fruit that shifts through every color of the rainbow. Triggers the Ascended form of certain beasts \u2014 a divine transformation that cannot be undone. The beast that steps through does not come back the same. Nothing that touches the Genesis Fruit does.",
+      "description": "A fruit that shifts through every color of the rainbow. Triggers the Ascended form of certain beasts — a divine transformation that cannot be undone. The beast that steps through does not come back the same. Nothing that touches the Genesis Fruit does.",
       "effect": {
-        "unlock_divine_trait": true
+        "evolution_item": true
       }
     },
     "epoch_shard": {
@@ -189,12 +189,10 @@
       "type": "evolution",
       "price": 0,
       "value": 0,
-      "description": "A coal that hasn't stopped burning since the Sunforge last fired. It doesn't burn things \u2014 it clarifies them.",
+      "description": "A coal that hasn't stopped burning since the Sunforge last fired. It doesn't burn things — it clarifies them.",
       "lore": "Goblins who handle these too long start hitting harder. No one has studied why. No one really wants to.",
       "effect": {
-        "evolution_trigger": [
-          "radiant_goblin"
-        ]
+        "evolution_item": true
       },
       "recipe": {
         "hellhound_ember": 3,
@@ -209,12 +207,10 @@
       "type": "evolution",
       "price": 0,
       "value": 0,
-      "description": "A splinter of something that predates shadow. Light doesn't reflect off it \u2014 it disappears into it.",
+      "description": "A splinter of something that predates shadow. Light doesn't reflect off it — it disappears into it.",
       "lore": "Found only in places where the Abyss has been present long enough to leave something behind. The Loom has noted its locations. The Loom has not shared them.",
       "effect": {
-        "evolution_trigger": [
-          "radiant_imp"
-        ]
+        "evolution_item": true
       },
       "recipe": {
         "void_essence": 4,
@@ -232,9 +228,7 @@
       "description": "A lantern that lights itself when a Kitsune is near. The flame is the color of fox fire, which is to say it is several colors at once.",
       "lore": "Kitsune spirits have been leaving these behind for centuries. They never explain why. The explanation is probably that they knew.",
       "effect": {
-        "evolution_trigger": [
-          "radiant_kitsune"
-        ]
+        "evolution_item": true
       },
       "recipe": {
         "spirit_crystal": 4,
@@ -250,11 +244,9 @@
       "price": 0,
       "value": 0,
       "description": "Shed from something vast and patient in corrupted water. Still faintly wet, though it has no reason to be.",
-      "lore": "The Corrupted Leviathan doesn't shed scales \u2014 except once, and only for a Hydra it has decided deserves to become more than it is.",
+      "lore": "The Corrupted Leviathan doesn't shed scales — except once, and only for a Hydra it has decided deserves to become more than it is.",
       "effect": {
-        "evolution_trigger": [
-          "radiant_hydra"
-        ]
+        "evolution_item": true
       }
     },
     "ironbark_salve": {
@@ -291,8 +283,164 @@
         "reduce_incubation_percent": 50
       },
       "rarity": "rare",
-      "emoji": "\ud83c\udf00",
-      "description": "A shard of the Loom itself, still faintly warm. Feeding it to an incubating egg accelerates the process \u2014 the beast inside simply decides it's time. Reduces remaining incubation time by 50%."
+      "emoji": "🌀",
+      "description": "A shard of the Loom itself, still faintly warm. Feeding it to an incubating egg accelerates the process — the beast inside simply decides it's time. Reduces remaining incubation time by 50%."
+    },
+    "astral_reroll": {
+      "id": "astral_reroll",
+      "name": "Astral Reroll",
+      "rarity": "rare",
+      "type": "attunement",
+      "price": 0,
+      "value": 0,
+      "description": "Choose an element with /use. Your next instant hatch uses that element's eligible species pool.",
+      "effect": {
+        "choose_element": true
+      }
+    },
+    "beast_rename_token": {
+      "id": "beast_rename_token",
+      "name": "Rename Token",
+      "rarity": "rare",
+      "type": "rename",
+      "price": 0,
+      "value": 0,
+      "description": "Use on your active beast to choose a name of up to 40 characters.",
+      "effect": {
+        "rename": true
+      }
+    },
+    "trainer_title_reset": {
+      "id": "trainer_title_reset",
+      "name": "Title Reset",
+      "rarity": "rare",
+      "type": "title_reset",
+      "price": 0,
+      "value": 0,
+      "description": "Clears your current trainer title. Earned titles remain available through /title.",
+      "effect": {
+        "clear_title": true
+      }
+    },
+    "loom_fragment": {
+      "id": "loom_fragment",
+      "name": "Loom Fragment",
+      "rarity": "rare",
+      "type": "incubation_boost",
+      "price": 0,
+      "value": 0,
+      "description": "Moves your oldest egg's tending schedule and hatch deadline six hours closer.",
+      "effect": {
+        "reduce_incubation_hours": 6
+      }
+    },
+    "raid_totem": {
+      "id": "raid_totem",
+      "name": "Raid Totem",
+      "rarity": "rare",
+      "type": "raid_boost",
+      "price": 0,
+      "value": 0,
+      "description": "Use before a raid. Your next raid receives 20% more attack damage.",
+      "effect": {
+        "raid_damage_boost": 20
+      }
+    },
+    "beastkeeper_seal": {
+      "id": "beastkeeper_seal",
+      "name": "Beastkeeper Seal",
+      "rarity": "rare",
+      "type": "catch_boost",
+      "price": 0,
+      "value": 0,
+      "description": "Your next three wild challenge catches get 15 percentage points of extra catch chance; exploration affinity is also boosted.",
+      "effect": {
+        "catch_boost_charges": 3
+      }
+    },
+    "guild_elixir": {
+      "id": "guild_elixir",
+      "name": "Guild Elixir",
+      "rarity": "rare",
+      "type": "heal",
+      "price": 0,
+      "value": 0,
+      "description": "Restores half your active beast's HP.",
+      "effect": {
+        "heal_percent": 50
+      }
+    },
+    "ancient_compass": {
+      "id": "ancient_compass",
+      "name": "Ancient Compass",
+      "rarity": "rare",
+      "type": "encounter_boost",
+      "price": 0,
+      "value": 0,
+      "description": "Your next exploration chooses only Rare or higher creatures in its habitat.",
+      "effect": {
+        "guaranteed_rare_charges": 1
+      }
+    },
+    "guild_crest": {
+      "id": "guild_crest",
+      "name": "Guild Crest",
+      "rarity": "rare",
+      "type": "cosmetic",
+      "price": 0,
+      "value": 0,
+      "description": "Use to unlock and equip the Guild Heart title.",
+      "effect": {
+        "guild_title": true
+      }
+    },
+    "sanctuary_blueprint": {
+      "id": "sanctuary_blueprint",
+      "name": "Sanctuary Blueprint",
+      "rarity": "rare",
+      "type": "blueprint",
+      "price": 0,
+      "value": 0,
+      "description": "An officer can spend this instead of tokens on /build; upgrade prerequisites still apply.",
+      "effect": {
+        "free_sanctuary_upgrade": true
+      }
+    },
+    "tear_of_leviathan": {
+      "id": "tear_of_leviathan",
+      "name": "Tear of Leviathan",
+      "rarity": "rare",
+      "type": "reset",
+      "price": 0,
+      "value": 0,
+      "description": "Fully recovers your active companion and assigned raid party, including knocked-out beasts.",
+      "effect": {
+        "revive_party": true
+      }
+    },
+    "sunforge_core": {
+      "id": "sunforge_core",
+      "name": "Sunforge Core",
+      "rarity": "rare",
+      "type": "evolution",
+      "price": 0,
+      "value": 0,
+      "description": "Can substitute for a crafted Radiant evolution catalyst. Use /evolve with an eligible beast.",
+      "effect": {
+        "universal_evolution": true
+      }
+    },
+    "singularity_soda": {
+      "id": "singularity_soda",
+      "name": "Singularity Soda",
+      "rarity": "rare",
+      "type": "exp",
+      "price": 0,
+      "value": 0,
+      "description": "A tiny fizzy universe. Grants your active beast two levels.",
+      "effect": {
+        "instant_levels": 2
+      }
     }
   }
 }

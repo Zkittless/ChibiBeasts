@@ -1,3 +1,4 @@
+from utils import db as storage
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -15,10 +16,10 @@ from cogs.questline import advance_quest_step
 GUILD_LEVEL_PERKS = {
     1:  {"max_members": 10,  "unlocks": "Guild created!"},
     5:  {"max_members": 20,  "unlocks": "Corrupted Raids"},
-    10: {"max_members": 30,  "unlocks": "Ancient Raids + Guild Shop"},
-    15: {"max_members": 40,  "unlocks": "Guild Leaderboard Bonuses"},
-    20: {"max_members": 50,  "unlocks": "Exclusive Titles"},
-    25: {"max_members": 50,  "unlocks": "Guild Ancient Divine Raids"},
+    10: {"max_members": 30,  "unlocks": "Loom Fragments in the Guild Shop"},
+    15: {"max_members": 40,  "unlocks": "Sanctuary Blueprints in the Guild Shop"},
+    20: {"max_members": 50,  "unlocks": "Room for 50 guild companions"},
+    25: {"max_members": 50,  "unlocks": "A home established in the Loom"},
 }
 
 RAID_BOSSES = {
@@ -93,70 +94,67 @@ BOSS_SIGNATURES = {
 }
 
 # ── Boss kill scenes — shown as a cinematic embed when a raid boss falls ──────
-BOSS_KILL_SCENES = {
-    "corrupted_leviathan": {
-        "title": "🌊 The Tainted Deep Goes Still",
-        "lines": [
-            "The water darkens one final time.",
-            "Then the darkness lifts. Not slowly — all at once, as if the sea finally remembers what it was before.",
-            "The Corrupted Leviathan descends. The ocean it poisoned for miles in every direction clears within seconds.",
-            "*It was still the Leviathan, somewhere underneath all that corruption. The sea knew it. The sea let it go.*",
-        ],
-        "color": "corrupted",
-    },
-    "corrupted_fenrir": {
-        "title": "🐺 The Howling Void Falls Silent",
-        "lines": [
-            "The last howl tears one more rift — smaller than the others, already closing.",
-            "Corrupted Fenrir collapses. The rifts it left in the air seal shut, one by one, like wounds healing backward.",
-            "The void energy unravels from its body in threads, pulled apart by something that doesn't want it here.",
-            "*The gods who chained it once are not watching. They don't need to be. This time, you did it.*",
-        ],
-        "color": "corrupted",
-    },
-    "corrupted_dragon": {
-        "title": "🔥 The Broken Apex Burns Out",
-        "lines": [
-            "The null-flame gutters. For a moment, the Corrupted Dragon is just a dragon — the apex of everything, briefly visible through the ruin.",
-            "Then it falls, and the fire that leaves nothing behind leaves nothing of itself either.",
-            "The air tastes clean. You hadn't noticed how wrong it smelled until it stopped.",
-            "*Whatever it was before the corruption, it was something worth becoming. You saw that at the end.*",
-        ],
-        "color": "corrupted",
-    },
-    "ancient_chronos": {
-        "title": "⏳ Time Catches Its Breath",
-        "lines": [
-            "Ancient Chronos does not fall. It simply stops.",
-            "One moment it is there — vast, ageless, older than the word 'old' — and then the moment passes.",
-            "Time resumes normally. You hadn't noticed it had been moving strangely until it didn't.",
-            "*Chronos does not die. It steps back. It will be here before everything else again, when everything else ends.*",
-            "*It is choosing, now, to let you have this.*",
-        ],
-        "color": "ancient",
-    },
-    "ancient_genesis": {
-        "title": "🔥 The First Flame Dims",
-        "lines": [
-            "The light that predates color fades to something the eye can actually hold.",
-            "Ancient Genesis folds inward — not extinguished, but contained. The flame that started everything becomes small enough to cup in two hands.",
-            "Everything alive in the vicinity flickers, briefly, as if reminded of something it was before it knew what it was.",
-            "*You did not kill the First Flame. That is not possible. You simply proved you were worth sharing it with.*",
-        ],
-        "color": "ancient",
-    },
-    "ancient_abyss": {
-        "title": "🌑 The Darkness Recedes",
-        "lines": [
-            "The light comes back. Not all at once — in edges, then corners, then the middle of things.",
-            "Ancient Abyss does not retreat. It simply becomes less present, pulling back into whatever it was before it chose to fill the room.",
-            "The silence changes again. It becomes ordinary silence — the kind that just means no one is talking.",
-            "*The void before stars is still out there. It will be out there after the stars are gone. It simply has no reason to be here anymore.*",
-            "*You gave it a reason to leave. That is not nothing.*",
-        ],
-        "color": "ancient",
-    },
-}
+BOSS_KILL_SCENES = {'corrupted_leviathan': {'title': '🌊 A Clear Current',
+                         'lines': ['The tainted water lifts from the Leviathan in long dark '
+                                   'ribbons.',
+                                   'It breathes once, slowly. Light reaches the ocean floor again.',
+                                   'The creature circles the party, then swims into the clear '
+                                   'current. Something small and shining remains in its wake.',
+                                   '*It was still the Leviathan underneath the pressure. Now it '
+                                   'has room to be itself.*'],
+                         'color': 'corrupted'},
+ 'corrupted_fenrir': {'title': '🐺 A Path Between the Rifts',
+                      'lines': ['The last rift folds shut. Fenrir plants all four paws on ground '
+                                'that stays beneath them.',
+                                'The void loosens from its fur, thread by thread. It stops looking '
+                                'over its shoulder.',
+                                'It rests beside the party long enough to catch its breath, then '
+                                'chooses a path through the trees.',
+                                '*No chain replaces the old one. There is a path, and it can '
+                                'choose where that path goes.*'],
+                      'color': 'corrupted'},
+ 'corrupted_dragon': {'title': '🔥 Warmth After the Null-Flame',
+                      'lines': ['The null-flame gutters into an ordinary, warm light.',
+                                'The Dragon lowers itself beside the forge stones. Its breathing '
+                                'settles. Its wings are whole.',
+                                'It nudges a few loose scales and pieces of heat-glass toward the '
+                                'companions, then lifts its head to the clear sky.',
+                                '*The creature is still here. The pressure is not. There is room '
+                                'to become something tomorrow.*'],
+                      'color': 'corrupted'},
+ 'ancient_chronos': {'title': '⏳ Time Catches Its Breath',
+                     'lines': ['Ancient Chronos does not fall. It simply stops.',
+                               "One moment it is there — vast, ageless, older than the word 'old' "
+                               '— and then the moment passes.',
+                               "Time resumes normally. You hadn't noticed it had been moving "
+                               "strangely until it didn't.",
+                               '*Chronos does not die. It steps back. It will be here before '
+                               'everything else again, when everything else ends.*',
+                               '*It is choosing, now, to let you have this.*'],
+                     'color': 'ancient'},
+ 'ancient_genesis': {'title': '🔥 The First Flame Dims',
+                     'lines': ['The light that predates color fades to something the eye can '
+                               'actually hold.',
+                               'Ancient Genesis folds inward — not extinguished, but contained. '
+                               'The flame that started everything becomes small enough to cup in '
+                               'two hands.',
+                               'Everything alive in the vicinity flickers, briefly, as if reminded '
+                               'of something it was before it knew what it was.',
+                               '*You did not kill the First Flame. That is not possible. You '
+                               'simply proved you were worth sharing it with.*'],
+                     'color': 'ancient'},
+ 'ancient_abyss': {'title': '🌑 The Darkness Recedes',
+                   'lines': ['The light comes back. Not all at once — in edges, then corners, then '
+                             'the middle of things.',
+                             'Ancient Abyss does not retreat. It simply becomes less present, '
+                             'pulling back into whatever it was before it chose to fill the room.',
+                             'The silence changes again. It becomes ordinary silence — the kind '
+                             'that just means no one is talking.',
+                             '*The void before stars is still out there. It will be out there '
+                             'after the stars are gone. It simply has no reason to be here '
+                             'anymore.*',
+                             '*You gave it a reason to leave. That is not nothing.*'],
+                   'color': 'ancient'}}
 
 BOSS_DEFEAT_SCENES = {
     "corrupted_leviathan": {
@@ -261,61 +259,24 @@ class Guilds(commands.Cog):
     @app_commands.describe(name="Guild name", description="Guild description")
     async def guild_create(self, interaction: discord.Interaction, name: str, description: str = ""):
         await interaction.response.defer()
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
-
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            async with db.execute(
-                "SELECT id FROM guilds WHERE leader_id = ?", (interaction.user.id,)
-            ) as c:
-                existing_leader = await c.fetchone()
-            async with db.execute(
-                "SELECT guild_id FROM guild_members WHERE user_id = ?", (interaction.user.id,)
-            ) as c:
-                existing_member = await c.fetchone()
-            # Self-heal: if players.guild_id is set but no actual membership row exists,
-            # clear it — this happens after a /dev reset or other data inconsistency.
-            if not existing_leader and not existing_member:
-                await db.execute(
-                    "UPDATE players SET guild_id = NULL WHERE user_id = ?",
-                    (interaction.user.id,)
-                )
+        await get_or_create_player(interaction.user.id,str(interaction.user))
+        cost=1000
+        name=name.strip()
+        if not 2<=len(name)<=40:return await interaction.followup.send("Choose a guild name of 2–40 characters.")
+        try:
+            async with aiosqlite.connect(storage.DB_PATH) as db:
+                await db.execute("BEGIN IMMEDIATE")
+                async with db.execute("SELECT 1 FROM guild_members WHERE user_id=? UNION SELECT 1 FROM guilds WHERE leader_id=?",(interaction.user.id,interaction.user.id)) as c:member=await c.fetchone()
+                if member:raise ValueError("Leave your current guild before founding another.")
+                paid=await db.execute("UPDATE players SET gold=gold-? WHERE user_id=? AND gold>=?",(cost,interaction.user.id,cost))
+                if not paid.rowcount:raise ValueError("Creating a guild needs 1,000 gold.")
+                inserted=await db.execute("INSERT INTO guilds(name,description,leader_id) VALUES(?,?,?)",(name,description[:500],interaction.user.id))
+                guild_id=inserted.lastrowid
+                await db.execute("INSERT INTO guild_members(guild_id,user_id,rank) VALUES(?,?,'leader')",(guild_id,interaction.user.id))
+                await db.execute("UPDATE players SET guild_id=? WHERE user_id=?",(guild_id,interaction.user.id))
                 await db.commit()
-
-        if existing_leader or existing_member:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You're already in a guild! Leave it first with `/guild_leave`.",
-                color=COLORS["error"]
-            ))
-
-        cost = 1000
-        if player["gold"] < cost:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Creating a guild costs `{cost:,} gold`. You have `{player['gold']:,}`.",
-                color=COLORS["error"]
-            ))
-
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            try:
-                await db.execute(
-                    "INSERT INTO guilds (name, description, leader_id) VALUES (?, ?, ?)",
-                    (name, description, interaction.user.id)
-                )
-                await db.commit()
-                async with db.execute("SELECT last_insert_rowid()") as c:
-                    guild_id = (await c.fetchone())[0]
-                await db.execute(
-                    "INSERT INTO guild_members (guild_id, user_id, rank) VALUES (?, ?, 'leader')",
-                    (guild_id, interaction.user.id)
-                )
-                await db.execute("UPDATE players SET guild_id = ? WHERE user_id = ?", (guild_id, interaction.user.id))
-                await db.commit()
-            except Exception as e:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ Guild name already taken! Try a different name.",
-                    color=COLORS["error"]
-                ))
-
-        await update_player(interaction.user.id, gold=player["gold"] - cost)
+        except aiosqlite.IntegrityError:return await interaction.followup.send("That guild name is already taken.")
+        except ValueError as error:return await interaction.followup.send(str(error))
         await interaction.followup.send(embed=discord.Embed(
             title=f"🏰 Guild **{name}** Created!",
             description=(
@@ -334,7 +295,7 @@ class Guilds(commands.Cog):
     @app_commands.command(name="guild", description="View your guild info 🏰")
     async def guild(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT guild_id FROM guild_members WHERE user_id = ?", (interaction.user.id,)
@@ -348,7 +309,7 @@ class Guilds(commands.Cog):
             ))
 
         guild_id = member_row["guild_id"]
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT * FROM guilds WHERE id = ?", (guild_id,)) as c:
                 guild = dict(await c.fetchone())
@@ -395,7 +356,7 @@ class Guilds(commands.Cog):
     @app_commands.describe(member="Player to invite")
     async def guild_invite(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer()
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT guild_id, rank FROM guild_members WHERE user_id = ?", (interaction.user.id,)
@@ -408,7 +369,7 @@ class Guilds(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT * FROM guilds WHERE id = ?", (inviter["guild_id"],)) as c:
                 guild = dict(await c.fetchone())
@@ -476,7 +437,7 @@ class Guilds(commands.Cog):
                     return await inv_interaction.response.send_message("This isn't for you!", ephemeral=True)
                 self.accepted = True
                 self.stop()
-                async with aiosqlite.connect("db/chibibeast.db") as db:
+                async with aiosqlite.connect(storage.DB_PATH) as db:
                     await db.execute(
                         "INSERT INTO guild_members (guild_id, user_id) VALUES (?, ?)",
                         (inviter["guild_id"], member.id)
@@ -524,7 +485,7 @@ class Guilds(commands.Cog):
         await interaction.response.defer(ephemeral=True)
         uid = interaction.user.id
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             # Verify caller is leader
             async with db.execute(
@@ -574,7 +535,7 @@ class Guilds(commands.Cog):
     async def guild_leave(self, interaction: discord.Interaction):
         await interaction.response.defer()
 
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT gm.rank, gm.guild_id, g.name, g.leader_id, g.member_count FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
@@ -584,7 +545,7 @@ class Guilds(commands.Cog):
 
         if not member_row:
             # Check if players.guild_id is orphaned (membership row was deleted but player row wasn't cleaned)
-            async with aiosqlite.connect("db/chibibeast.db") as db:
+            async with aiosqlite.connect(storage.DB_PATH) as db:
                 db.row_factory = aiosqlite.Row
                 async with db.execute(
                     "SELECT guild_id FROM players WHERE user_id = ? AND guild_id IS NOT NULL",
@@ -622,7 +583,7 @@ class Guilds(commands.Cog):
                         self.stop()
                         for item in self.children: item.disabled = True
                         await inv.response.edit_message(view=self)
-                        async with aiosqlite.connect("db/chibibeast.db") as db:
+                        async with aiosqlite.connect(storage.DB_PATH) as db:
                             await db.execute("DELETE FROM guild_members WHERE guild_id = ?", (guild_id,))
                             await db.execute("DELETE FROM guilds WHERE id = ?", (guild_id,))
                             await db.execute("UPDATE players SET guild_id = NULL, guild_tokens = 0 WHERE user_id = ?", (interaction.user.id,))
@@ -650,7 +611,7 @@ class Guilds(commands.Cog):
                 ), view=DisbandView())
             else:
                 # Other members exist — must promote an officer or member first
-                async with aiosqlite.connect("db/chibibeast.db") as db:
+                async with aiosqlite.connect(storage.DB_PATH) as db:
                     db.row_factory = aiosqlite.Row
                     async with db.execute(
                         "SELECT user_id, rank FROM guild_members WHERE guild_id = ? AND user_id != ? ORDER BY CASE rank WHEN 'officer' THEN 0 ELSE 1 END LIMIT 1",
@@ -679,7 +640,7 @@ class Guilds(commands.Cog):
                         self.stop()
                         for item in self.children: item.disabled = True
                         await inv.response.edit_message(view=self)
-                        async with aiosqlite.connect("db/chibibeast.db") as db:
+                        async with aiosqlite.connect(storage.DB_PATH) as db:
                             await db.execute("UPDATE guilds SET leader_id = ? WHERE id = ?", (new_leader_id, guild_id))
                             await db.execute("UPDATE guild_members SET rank = 'leader' WHERE guild_id = ? AND user_id = ?", (guild_id, new_leader_id))
                             await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
@@ -724,7 +685,7 @@ class Guilds(commands.Cog):
                 self.stop()
                 for item in self.children: item.disabled = True
                 await inv.response.edit_message(view=self)
-                async with aiosqlite.connect("db/chibibeast.db") as db:
+                async with aiosqlite.connect(storage.DB_PATH) as db:
                     await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
                     await db.execute("UPDATE guilds SET member_count = member_count - 1 WHERE id = ?", (guild_id,))
                     await db.execute("UPDATE players SET guild_id = NULL WHERE user_id = ?", (interaction.user.id,))
@@ -754,7 +715,7 @@ class Guilds(commands.Cog):
         await interaction.response.defer()
         import time as _t, random as _r
         uid = interaction.user.id
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT guild_id FROM guild_members WHERE user_id = ?", (uid,)) as c:
                 member_row = await c.fetchone()
@@ -788,6 +749,8 @@ class Guilds(commands.Cog):
                 new_guild_exp -= new_guild_level * EXP_PER_LEVEL
                 new_guild_level += 1
                 leveled_up = True
+            capacity=max((p["max_members"] for level,p in GUILD_LEVEL_PERKS.items() if level<=new_guild_level),default=10)
+            await db.execute("UPDATE guilds SET max_members=? WHERE id=?",(capacity,guild_id))
             await db.execute(
                 "UPDATE guilds SET exp = ?, level = ?, guild_tokens = guild_tokens + ?, total_contributions = COALESCE(total_contributions, 0) + 1 WHERE id = ?",
                 (new_guild_exp, new_guild_level, guild_token_gain, guild_id)
@@ -824,1016 +787,42 @@ class Guilds(commands.Cog):
                 desc += f"\n✨ *Unlocked: {perk['unlocks']}*"
         embed = discord.Embed(title="🏰 Guild Contribution", description=desc, color=COLORS["success"])
         embed.set_footer(text="ChibiBeasts 🐾  •  Contribute again in 24 hours · Spend tickets at /guild_shop")
+        from utils.progress import track_quest_event
+        await track_quest_event(uid,"guild_action")
         await interaction.followup.send(embed=embed)
 
     # ── /guild_shop ───────────────────────────────────────────────────────
     @app_commands.command(name="guild_shop", description="Spend guild tickets on exclusive items 🎫")
-    async def guild_shop(self, interaction: discord.Interaction):
+    async def guild_shop(self,interaction:discord.Interaction):
         await interaction.response.defer()
-        uid = interaction.user.id
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute("SELECT guild_id FROM guild_members WHERE user_id = ?", (uid,)) as c:
-                member_row = await c.fetchone()
-            if not member_row:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="❖ You must be in a guild to use the guild shop.", color=COLORS["info"]
-                ))
-            guild_id = member_row["guild_id"]
-            async with db.execute("SELECT level FROM guilds WHERE id = ?", (guild_id,)) as c:
-                guild = dict(await c.fetchone())
-            async with db.execute("SELECT guild_tickets FROM players WHERE user_id = ?", (uid,)) as c:
-                player = dict(await c.fetchone())
-        tickets = player.get("guild_tickets", 0)
-        guild_level = guild["level"]
-        GUILD_SHOP_ITEMS = [
-            {"id": "raid_totem",          "name": "🪩 Raid Totem",         "cost": 20,  "desc": "Boosts your damage in the next raid by 20%. Single use.", "req": 1},
-            {"id": "beastkeeper_seal",    "name": "🦋 Beastkeeper Seal",   "cost": 15,  "desc": "Boosts catch rate for your next 3 /explore encounters.",  "req": 1},
-            {"id": "guild_elixir",        "name": "⚗️ Guild Elixir",       "cost": 10,  "desc": "Restores 50% HP. Guild members only.",                    "req": 1},
-            {"id": "ancient_compass",     "name": "🧭 Ancient Compass",    "cost": 35,  "desc": "Guarantees next /explore is Rare or higher.",              "req": 5},
-            {"id": "guild_crest",         "name": "🏅 Guild Crest",         "cost": 50,  "desc": "Cosmetic token of guild dedication.",                      "req": 5},
-            {"id": "loom_fragment",       "name": "🧵 Loom Fragment",       "cost": 80,  "desc": "Used to evolve certain beasts.",                           "req": 10},
-            {"id": "sanctuary_blueprint", "name": "📐 Sanctuary Blueprint", "cost": 150, "desc": "Unlocks one free Sanctuary upgrade for your guild.",       "req": 15},
-        ]
-        available = [i for i in GUILD_SHOP_ITEMS if guild_level >= i["req"]]
-        embed = discord.Embed(
-            title="🏰 Guild Shop",
-            description=f"🎫 **Your tickets:** `{tickets}`\n*Earn more with `/contribute` daily.*\n​",
-            color=COLORS["legendary"]
-        )
-        for item in available:
-            can = "✅" if tickets >= item["cost"] else "❌"
-            embed.add_field(name=f"{item['name']} — `{item['cost']} 🎫` {can}", value=item["desc"], inline=False)
-        if len(available) < len(GUILD_SHOP_ITEMS):
-            embed.add_field(name=f"🔒 {len(GUILD_SHOP_ITEMS)-len(available)} locked", value="*Raise your guild level to unlock more.*", inline=False)
-        embed.set_footer(text="ChibiBeasts 🐾  •  /contribute to earn tickets daily")
+        from utils.shops import GUILD_ITEMS,purchase_guild
+        uid=interaction.user.id
+        embed=discord.Embed(title="🏰 Guild Shop",description="Earn tickets with /contribute. Purchases go to /inventory; activate with /use. Blueprints are spent by /build.",color=COLORS["legendary"])
+        view=discord.ui.View(timeout=180)
+        from utils.db import load_items
+        items=load_items()
+        for index,(id,(cost,level,description)) in enumerate(GUILD_ITEMS.items()):
+            embed.add_field(name=f"{items[id]['name']} · {cost} tickets · Guild Lv{level}",value=description,inline=False)
+            button=discord.ui.Button(label=items[id]["name"]+f" · {cost} tickets",style=discord.ButtonStyle.primary,row=index//3)
+            async def buy(bi,key=id):
+                if bi.user.id!=uid:return await bi.response.send_message("Not your shop.",ephemeral=True)
+                await bi.response.defer(ephemeral=True)
+                try:result=await purchase_guild(uid,key)
+                except ValueError as error:result=str(error)
+                await bi.followup.send(result,ephemeral=True)
+            button.callback=buy;view.add_item(button)
+        await interaction.followup.send(embed=embed,view=view)
 
-        class GuildShopView(discord.ui.View):
-            def __init__(self_v):
-                super().__init__(timeout=120)
-                for item in available[:5]:
-                    btn = discord.ui.Button(
-                        label=f"{item['name'][:20]} ({item['cost']}🎫)",
-                        style=discord.ButtonStyle.success if tickets >= item["cost"] else discord.ButtonStyle.secondary,
-                        disabled=tickets < item["cost"]
-                    )
-                    async def _buy(bi, _item=item):
-                        if bi.user.id != uid:
-                            return await bi.response.send_message("❖ Not your shop!", ephemeral=True)
-                        await bi.response.defer(ephemeral=True)
-                        async with aiosqlite.connect("db/chibibeast.db") as _db:
-                            async with _db.execute("SELECT guild_tickets FROM players WHERE user_id = ?", (uid,)) as _c:
-                                _p = await _c.fetchone()
-                            if not _p or _p["guild_tickets"] < _item["cost"]:
-                                return await bi.followup.send(f"❖ Need `{_item['cost']} 🎫`.", ephemeral=True)
-                            await _db.execute("UPDATE players SET guild_tickets = guild_tickets - ? WHERE user_id = ?", (_item["cost"], uid))
-                            async with _db.execute("SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?", (uid, _item["id"])) as _c:
-                                _inv = await _c.fetchone()
-                            if _inv:
-                                await _db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (_inv[0],))
-                            else:
-                                await _db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (uid, _item["id"]))
-                            await _db.commit()
-                        await bi.followup.send(embed=discord.Embed(
-                            title=f"✅ Purchased: {_item['name']}",
-                            description="Added to your inventory.",
-                            color=COLORS["success"]
-                        ), ephemeral=True)
-                    btn.callback = _buy
-                    self_v.add_item(btn)
-        await interaction.followup.send(embed=embed, view=GuildShopView())
-
-    @app_commands.command(name="raid", description="Trigger a raid boss battle! ⚔️")
-    @app_commands.choices(raid_type=[
-        app_commands.Choice(name="⚔️ Corrupted Raid", value="corrupted"),
-    ])
-    async def raid(self, interaction: discord.Interaction, raid_type: str = "corrupted"):
+    @app_commands.command(name="raid",description="Gather your guild to help a Corrupted beast ⚔️")
+    async def raid(self,interaction:discord.Interaction):
         await interaction.response.defer()
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT gm.rank, g.* FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
-                (interaction.user.id,)
-            ) as c:
-                guild_data = await c.fetchone()
-
-        if not guild_data:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need to be in a guild to trigger Corrupted Raids!", color=COLORS["error"]
-            ))
-
-        guild_data = dict(guild_data)
-
-        if guild_data["rank"] not in ["leader", "officer"]:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Only Guild Leaders and Officers can trigger Corrupted Raids!", color=COLORS["error"]
-            ))
-
-        min_level = 5
-        if guild_data["level"] < min_level:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Your guild needs to be Level {min_level} to trigger Corrupted Raids!",
-                color=COLORS["error"]
-            ))
-
-        token_cost = 50
-        if guild_data["guild_tokens"] < token_cost:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Triggering a Corrupted Raid costs `{token_cost}` Guild Tokens. You have `{guild_data['guild_tokens']}`.",
-                color=COLORS["error"]
-            ))
-
-        # Pick random corrupted boss
-        boss = random.choice(RAID_BOSSES["corrupted"])
-
-        # Lore-flavored intro lines
-        SUNDERING_LINES = [
-            "Something in the Loom snapped. The thread didn't finish weaving — and now it's here.",
-            "The Loom tried to make something too large, too quickly. The result is in front of you now.",
-            "A Corrupted beast has torn through. It isn't evil — it's unfinished, and it's in pain. Fight it down long enough for the Loom to recapture the thread.",
-            "The weave split. What came loose is trying to finish becoming itself the wrong way. Your guild needs to hold it steady.",
-        ]
-        sundering_line = random.choice(SUNDERING_LINES)
-
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            await db.execute(
-                "UPDATE guilds SET guild_tokens = guild_tokens - ? WHERE id = ?",
-                (token_cost, guild_data["id"])
-            )
-            await db.execute("""
-                INSERT INTO raids (boss_id, boss_name, boss_type, max_hp, current_hp, guild_id, channel_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (boss["id"], boss["name"], "corrupted", boss["max_hp"], boss["max_hp"], guild_data["id"], interaction.channel_id))
-            await db.commit()
-            async with db.execute("SELECT last_insert_rowid()") as c:
-                raid_id = (await c.fetchone())[0]
-
-        # Pre-cache guild members and fetch their active beast stats for dynamic scaling
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT user_id FROM guild_members WHERE guild_id = ?", (guild_data["id"],)
-            ) as c:
-                member_rows = await c.fetchall()
-            guild_member_ids = {r["user_id"] for r in member_rows}
-
-            # Fetch raid party beasts for all guild members for dynamic scaling
-            # Falls back to active beast if no raid party set
-            raid_beast_stats = []
-            for uid in guild_member_ids:
-                async with db.execute(
-                    "SELECT max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
-                    (uid,)
-                ) as c:
-                    party_beasts = [dict(r) for r in await c.fetchall()]
-                if party_beasts:
-                    raid_beast_stats.extend(party_beasts)
-                else:
-                    # Fallback: active beast
-                    async with db.execute(
-                        "SELECT max_hp, attack, defense FROM player_beasts WHERE user_id = ? AND is_active = 1",
-                        (uid,)
-                    ) as c:
-                        b = await c.fetchone()
-                    if b:
-                        raid_beast_stats.append(dict(b))
-
-        if not raid_beast_stats:
-            raid_beast_stats = [{"max_hp": 220, "attack": 120, "defense": 100}]
-
-        avg_party_hp  = sum(b["max_hp"]  for b in raid_beast_stats) / len(raid_beast_stats)
-        avg_party_def = sum(b["defense"] for b in raid_beast_stats) / len(raid_beast_stats)
-
-        scaled_boss_def = min(200, int(avg_party_def * 0.60))  # lower DEF so mid-tier beasts deal meaningful damage
-
-        def _est_dps(atk, bdef):
-            df = bdef / (bdef + 100)
-            return max(1, int(atk * (1 - df)))
-
-        party_dps_mid = sum(_est_dps(b["attack"], scaled_boss_def) * 10 for b in raid_beast_stats)
-        # Scale by n_players^0.75 — meaningful fights at every party size
-        _n_players_est = max(1, len(guild_member_ids))
-        _party_scale_g = _n_players_est ** 0.75
-        _avg_player_dps_g = party_dps_mid / max(1, len(raid_beast_stats) // 3)
-        # cycles=10 calibrated to realistic ~1.5s/attack cadence
-        scaled_hp  = max(int(_avg_player_dps_g * 10 * _party_scale_g), boss["max_hp"] // 3)
-        scaled_atk = max(int(avg_party_hp * 0.10), boss["attack"] // 20)
-
-        active_raids[raid_id] = {
-            "boss": boss, "current_hp": scaled_hp,
-            "max_hp": scaled_hp, "participants": {},
-            "guild_id": guild_data["id"], "channel": interaction.channel,
-            "raid_message": None,
-            "attack_counts": {},
-            "embed_lock": None,
-            "embed_dirty": False,
-            "guild_members": guild_member_ids,
-            "last_attack": {},
-            "last_ultimate": {},
-            "player_hp": {},
-            "player_max_hp": {},
-            "player_mana": {},
-            "player_defense": {},
-            "player_atk": {},
-            "phase_fired": set(),
-            "phase_log": [],       # accumulated phase events shown on embed
-            "boss_attack": scaled_atk,
-            "last_event": "",
-            "scaled_boss_def": scaled_boss_def,
-            "player_party": {},       # uid -> [beast_row, beast_row, beast_row]
-            "player_active_slot": {}, # uid -> int (0,1,2)
-            "player_party_hp": {},    # (uid, slot) -> current HP for each party beast
-        }
-        _raid_locks[raid_id] = asyncio.Lock()
-        active_raids[raid_id]["embed_lock"] = asyncio.Lock()
-
-        ATTACK_COOLDOWN = 0.5
-        BOSS_ATK_INTERVAL = 10  # seconds between boss auto-attacks
-
-        async def _write_raid_db(raid_id: int, uid: int, current_hp: int, damage: int):
-            """Fire-and-forget DB write — never inside the state lock."""
-            try:
-                async with aiosqlite.connect("db/chibibeast.db") as db:
-                    await db.execute("UPDATE raids SET current_hp = ? WHERE id = ?", (current_hp, raid_id))
-                    async with db.execute("SELECT damage_dealt FROM raid_participants WHERE raid_id = ? AND user_id = ?", (raid_id, uid)) as c:
-                        existing = await c.fetchone()
-                    if existing:
-                        await db.execute("UPDATE raid_participants SET damage_dealt = damage_dealt + ? WHERE raid_id = ? AND user_id = ?", (damage, raid_id, uid))
-                    else:
-                        await db.execute("INSERT INTO raid_participants (raid_id, user_id, damage_dealt) VALUES (?, ?, ?)", (raid_id, uid, damage))
-                    await db.commit()
-            except Exception:
-                pass
-
-        async def _update_embed(ended=False):
-            """Refresh embed — skip if already editing."""
-            if raid_id not in active_raids:
-                return
-            r = active_raids[raid_id]
-            lock = r.get("embed_lock")
-            if lock is None or lock.locked():
-                return
-            async with lock:
-                if raid_id not in active_raids:
-                    return
-                r = active_raids[raid_id]
-                msg = r.get("raid_message")
-                if not msg:
-                    return
-                v = raid_view_ref[0]
-                if ended:
-                    v = None
-                try:
-                    if v:
-                        v.update_ult_style("_multi", r)
-                    await msg.edit(embed=build_raid_embed(r), view=v)
-                except discord.HTTPException:
-                    pass
-
-        async def _embed_loop():
-            """Background loop: refresh embed — fast when dirty, slow otherwise."""
-            while raid_id in active_raids:
-                await asyncio.sleep(0.3)
-                if raid_id in active_raids and active_raids[raid_id].get("embed_dirty"):
-                    active_raids[raid_id]["embed_dirty"] = False
-                    await _update_embed()
-
-        raid_view_ref = [None]  # set after view is created
-
-        def boss_effective_defense(raid: dict) -> int:
-            """Defense drops as boss HP falls — rewards sustained DPS."""
-            pct = raid["current_hp"] / max(raid["max_hp"], 1)
-            base_def = raid.get("scaled_boss_def", scaled_boss_def)
-            if pct < 0.15:
-                return int(base_def * 0.40)
-            elif pct < 0.40:
-                return int(base_def * 0.60)
-            elif pct < 0.70:
-                return int(base_def * 0.80)
-            return base_def
-
-        def calc_player_damage(atk: int, defense: int, is_ultimate: bool, is_crit: bool, mana: int = 50) -> int:
-            defense_factor = defense / (defense + 100)
-            dmg = atk * (1 - defense_factor)
-            if is_ultimate:
-                # Mana above 50 scales damage: 1.8× at 50, 2.7× at 100
-                ult_mult = 1.8 + max(0, mana - 50) / 50 * 0.9
-                dmg *= ult_mult
-            if is_crit:
-                dmg *= 1.5
-            return max(1, int(dmg * random.uniform(0.85, 1.15)))
-
-        def calc_boss_damage(boss_atk: int, player_def: int, player_max_hp: int = 0) -> int:
-            # Flat % of player max HP — immune to defense outliers like Desync
-            if player_max_hp > 0:
-                pct = random.uniform(0.08, 0.12)  # corrupted: 10% avg HP per hit
-                return max(1, int(player_max_hp * pct))
-            # Fallback to formula if no HP provided
-            defense_factor = min(player_def, 300) / (min(player_def, 300) + 100)
-            return max(1, int(boss_atk * (1 - defense_factor) * random.uniform(0.80, 1.20)))
-
-        def build_raid_embed(raid: dict) -> discord.Embed:
-            current_hp = raid["current_hp"]
-            max_hp = raid["max_hp"]
-            pct = current_hp / max_hp
-            status = "🔴 CRITICAL" if pct < 0.15 else "🟠 Weakened" if pct < 0.40 else "🟡 Damaged" if pct < 0.70 else "🟢 Active"
-            def_pct = int((1 - boss_effective_defense(raid) / max(raid.get("scaled_boss_def", scaled_boss_def), 1)) * 100)
-            def_note = f" *(−{def_pct}% DEF)*" if def_pct > 0 else ""
-
-            embed = discord.Embed(
-                title=f"⚔️ CORRUPTED RAID — {boss['name']}!",
-                description=(
-                    f"*{sundering_line}*\n\n"
-                    f"*{boss['description']}*\n\n"
-                    f"💀 **HP:** {hp_bar(current_hp, max_hp)} {status}{def_note}\n"
-                    f"`{current_hp:,} / {max_hp:,}`\n\n"
-                    f"🏆 Top 3 damage dealers can catch the boss itself!"
-                ),
-                color=COLORS["epic"]
-            )
-            if raid["participants"]:
-                top = sorted(raid["participants"].items(), key=lambda x: x[1], reverse=True)[:5]
-                medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
-                lines = []
-                for i, (uid, dmg) in enumerate(top):
-                    p_hp = raid["player_hp"].get(uid, 0)
-                    p_max = raid["player_max_hp"].get(uid, 1)
-                    p_mana = raid["player_mana"].get(uid, 0)
-                    if p_hp <= 0:
-                        status = "💀"
-                    elif p_mana >= 50:
-                        status = f"⚡`{p_mana}/100`"
-                    else:
-                        status = f"🔵`{p_mana}/100`"
-                    lines.append(f"{medals[i]} <@{uid}> — `{dmg:,}` dmg {status} `{p_hp}/{p_max}HP`")
-                embed.add_field(name="⚔️ Party", value="\n".join(lines), inline=False)
-            # Show party slot names for each participant
-            party_lines = []
-            for uid in list(raid.get("player_party", {}).keys())[:5]:
-                party = raid["player_party"][uid]
-                slot_names = []
-                for si, b in enumerate(party):
-                    bd = get_beast_data(b["beast_id"]) or {}
-                    bname = b.get("nickname") or bd.get("name", "?")
-                    hp = raid["player_party_hp"].get((uid, si), b["hp"])
-                    max_hp = b["max_hp"]
-                    if hp <= 0:
-                        slot_names.append(f"~~{bname}~~💀")
-                    else:
-                        slot_names.append(bname if si != raid.get("player_active_slot",{}).get(uid,0) else f"**{bname}**")
-                party_lines.append(f"<@{uid}>: {' · '.join(slot_names)}")
-            if party_lines:
-                embed.add_field(name="🐾 Parties", value="\n".join(party_lines), inline=False)
-            if raid.get("phase_log"):
-                embed.add_field(name="📋 Phase Log", value="\n".join(raid["phase_log"]), inline=False)
-            if raid.get("last_event"):
-                embed.add_field(name="📣 Last Event", value=raid["last_event"], inline=False)
-            if boss.get("image_url"):
-                embed.set_image(url=boss["image_url"])
-            embed.set_footer(text=f"Raid ID: #{raid_id} | Triggered by {interaction.user.display_name} | Boss attacks every {BOSS_ATK_INTERVAL}s")
-            return embed
-
-        async def boss_attack_loop():
-            """Boss auto-attacks a random active player every BOSS_ATK_INTERVAL seconds."""
-            while raid_id in active_raids:
-                await asyncio.sleep(BOSS_ATK_INTERVAL)
-                if raid_id not in active_raids:
-                    break
-                raid = active_raids[raid_id]
-                if not raid["participants"]:
-                    continue
-
-                # Pick a random alive participant
-                alive = [uid for uid, hp in raid["player_hp"].items() if hp > 0]
-                if not alive:
-                    continue
-
-                target_uid = random.choice(alive)
-                p_def = raid["player_defense"].get(target_uid, 50)
-                dmg = calc_boss_damage(raid["boss_attack"], p_def, raid["player_max_hp"].get(target_uid, 0))
-
-                # Apply armor reduction if player has Dragon-Lord Aegis or similar
-                armor_reduction = raid.get("player_armor_reduction", {}).get(target_uid, 0)
-                if armor_reduction:
-                    raw_dmg = dmg
-                    dmg = max(1, dmg - int(dmg * armor_reduction / 100))
-
-                # Evasion check (Abyssal Shroud)
-                evasion = raid.get("player_evasion", {}).get(target_uid, 0)
-                evaded = evasion > 0 and random.random() < evasion / 100
-
-                async with _raid_locks[raid_id]:
-                    if raid_id not in active_raids:
-                        break
-                    if not evaded:
-                        raid["player_hp"][target_uid] = max(0, raid["player_hp"].get(target_uid, 0) - dmg)
-                    p_hp = raid["player_hp"][target_uid]
-                    p_max = raid["player_max_hp"].get(target_uid, 1)
-                    _active_slot = raid.get("player_active_slot", {}).get(target_uid, 0)
-                    raid["player_party_hp"][(target_uid, _active_slot)] = p_hp
-
-                died = p_hp <= 0
-                raid["embed_dirty"] = True
-                if evaded:
-                    raid["last_event"] = f"💨 **{boss['name']}** swings — <@{target_uid}>'s beast evaded!"
-                else:
-                    raid["last_event"] = (
-                        f"💥 **{boss['name']}** strikes <@{target_uid}>! `{dmg:,}` dmg"
-                        + (f" — **knocked out!** 💀" if died else f" | `{p_hp}/{p_max}HP`")
-                    )
-
-                # Stamp KO timer on the dead beast's DB row
-                if died:
-                    party = raid.get("player_party", {}).get(target_uid, [])
-                    slot  = raid.get("player_active_slot", {}).get(target_uid, 0)
-                    if slot < len(party):
-                        beast_row = party[slot]
-                        asyncio.create_task(knockout_beast(beast_row["id"], beast_row.get("rarity", "common")))
-
-                # Check full party wipe — end raid if every participant is down with no bench left
-                if raid["participants"] and raid_id in active_raids:
-                    def _has_bench(uid):
-                        party = raid.get("player_party", {}).get(uid, [])
-                        slot  = raid.get("player_active_slot", {}).get(uid, 0)
-                        return any(raid["player_hp"].get(uid, 1) > 0 or i != slot
-                                   for i, _ in enumerate(party) if i != slot)
-                    all_down = all(
-                        raid["player_hp"].get(uid, 1) <= 0
-                        for uid in raid["participants"]
-                    )
-                    any_bench = any(
-                        len(raid.get("player_party", {}).get(uid, [])) > 1 and
-                        raid["player_active_slot"].get(uid, 0) < len(raid["player_party"][uid]) - 1
-                        for uid in raid["participants"]
-                    )
-                    if all_down and not any_bench:
-                        await cog.end_raid(raid_id, channel)
-                        break
-
-                # Update embed
-                # embed_loop handles refresh
-
-        # Map threshold -> defense reduction % for phase display
-        _PHASE_DEF_REDUCTION = {0.70: 20, 0.40: 40, 0.15: 60}
-
-        async def check_phase_transitions(raid: dict, channel):
-            """Fire boss signature moves at phase thresholds."""
-            pct = raid["current_hp"] / raid["max_hp"]
-            signatures = BOSS_SIGNATURES.get(boss["id"], [])
-            for sig in signatures:
-                if pct <= sig["threshold"] and sig["threshold"] not in raid["phase_fired"]:
-                    raid["phase_fired"].add(sig["threshold"])
-                    # Apply AoE damage to all alive players silently
-                    alive = [uid for uid, hp in raid["player_hp"].items() if hp > 0]
-                    for uid in alive:
-                        raw = calc_boss_damage(raid["boss_attack"], raid["player_defense"].get(uid, 50), raid["player_max_hp"].get(uid, 0))
-                        dmg = int(raw * sig["mult"])
-                        raid["player_hp"][uid] = max(0, raid["player_hp"].get(uid, 0) - dmg)
-                        _pslot = raid.get("player_active_slot", {}).get(uid, 0)
-                        raid["player_party_hp"][(uid, _pslot)] = raid["player_hp"][uid]
-                        # Stamp KO if this hit killed the beast
-                        if raid["player_hp"][uid] <= 0:
-                            party = raid.get("player_party", {}).get(uid, [])
-                            if _pslot < len(party):
-                                asyncio.create_task(knockout_beast(party[_pslot]["id"], party[_pslot].get("rarity", "common")))
-
-                    # Store as last_event on the embed — no new channel message
-                    phase_status = (
-                        "🔴 CRITICAL — Boss DEF −60%" if sig["threshold"] == 0.15 else
-                        "🟠 Weakened — Boss DEF −40%"  if sig["threshold"] == 0.40 else
-                        "🟡 Damaged — Boss DEF −20%"
-                    )
-                    raid["last_event"] = f"⚡ **{sig['name']}** — {phase_status}"
-                    raid["phase_log"].append(f"{phase_status} · *{sig['name']}*")
-
-        cog = self
-
-        class RaidView(discord.ui.View):
-            def __init__(self):
-                super().__init__(timeout=1800)
-
-            def update_ult_style(self, uid: str, raid: dict):
-                """Update ultimate button colour — blue if any active player has 50+ mana."""
-                mana = raid.get("player_mana", {}).get(uid, 0) if uid != "_multi" else max(
-                    (v for v in raid.get("player_mana", {}).values()), default=0
-                )
-                for item in self.children:
-                    if isinstance(item, discord.ui.Button) and "Ultimate" in item.label:
-                        item.style = discord.ButtonStyle.primary if mana >= 50 else discord.ButtonStyle.secondary
-
-            @discord.ui.button(label="⚔️ Attack!", style=discord.ButtonStyle.danger, emoji="💥")
-            async def attack_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
-                import time
-                try:
-                    if not btn_interaction.response.is_done():
-                        await btn_interaction.response.defer(ephemeral=True, thinking=False)
-                except Exception as e:
-                    return  # interaction already failed at Discord level — bail cleanly
-
-                uid = btn_interaction.user.id
-
-                if raid_id not in active_raids:
-                    try: await btn_interaction.followup.send("\u200b", ephemeral=True, delete_after=0)
-                    except Exception: pass
-                    return
-                raid = active_raids[raid_id]
-                if uid not in raid["guild_members"]:
-                    return await btn_interaction.followup.send("✦ You need to be in this guild to attack!", ephemeral=True)
-
-                # Knocked out — show swap UI if bench slots remain
-                if uid in raid["player_hp"] and raid["player_hp"][uid] <= 0:
-                    party = raid.get("player_party", {}).get(uid, [])
-                    current_slot = raid.get("player_active_slot", {}).get(uid, 0)
-                    bench = [(i, b) for i, b in enumerate(party) if i != current_slot and raid.get("player_party_hp", {}).get((uid, i), 1) > 0]
-                    if not bench:
-                        return await btn_interaction.followup.send("✦ All your beasts are down. You can still watch.", ephemeral=True)
-
-                    async def do_swap(slot_idx: int, swap_interaction: discord.Interaction):
-                        if raid_id not in active_raids:
-                            return await swap_interaction.response.send_message("✦ Raid ended!", ephemeral=True)
-                        r = active_raids[raid_id]
-                        new_beast = r["player_party"][uid][slot_idx]
-                        r["player_active_slot"][uid]  = slot_idx
-                        # Use tracked HP so a previously-damaged beast re-enters at correct HP
-                        tracked_hp = r["player_party_hp"].get((uid, slot_idx), new_beast["hp"])
-                        r["player_hp"][uid]           = tracked_hp
-                        r["player_max_hp"][uid]       = new_beast["max_hp"]
-                        r["player_defense"][uid]      = new_beast["defense"]
-                        r["player_atk"][uid]          = new_beast["attack"]
-                        r["player_mana"][uid]         = 0
-                        bd = get_beast_data(new_beast["beast_id"]) or {}
-                        name = new_beast.get("nickname") or bd.get("name", "Beast")
-                        hp_str = f"`{tracked_hp}/{new_beast['max_hp']}HP`"
-                        await swap_interaction.response.send_message(
-                            f"✅ **{name}** enters the fight! {hp_str}",
-                            ephemeral=True
-                        )
-
-                    class SwapView(discord.ui.View):
-                        def __init__(self):
-                            super().__init__(timeout=30)
-                            for slot_idx, beast_row in bench:
-                                bd = get_beast_data(beast_row["beast_id"]) or {}
-                                label = beast_row.get("nickname") or bd.get("name", f"Beast {slot_idx+1}")
-                                _tracked = raid.get("player_party_hp", {}).get((uid, slot_idx), beast_row["hp"])
-                                btn = discord.ui.Button(
-                                    label=f"{label} ({_tracked}HP)",
-                                    style=discord.ButtonStyle.primary,
-                                    emoji="🔄"
-                                )
-                                async def _cb(inter, si=slot_idx):
-                                    self.stop()
-                                    for item in self.children: item.disabled = True
-                                    await do_swap(si, inter)
-                                btn.callback = _cb
-                                self.add_item(btn)
-
-                    return await btn_interaction.followup.send(
-                        "💀 **Your beast is down!** Send in your next one:",
-                        view=SwapView(),
-                        ephemeral=True
-                    )
-
-                now = time.monotonic()
-                cooldown_remaining = now - raid["last_attack"].get(uid, 0)
-                if cooldown_remaining < ATTACK_COOLDOWN:
-                    try: await btn_interaction.followup.send("\u200b", ephemeral=True, delete_after=0)
-                    except Exception: pass
-                    return
-                raid["last_attack"][uid] = now
-
-                active = await get_active_beast(uid)
-                if not active:
-                    return await btn_interaction.followup.send("✦ You need an active beast! Use `/setactive`.", ephemeral=True)
-
-                # Load raid party on first attack — must have 3 slots assigned via /raidparty
-                if uid not in raid["player_party"]:
-                    async with aiosqlite.connect("db/chibibeast.db") as _pdb:
-                        _pdb.row_factory = aiosqlite.Row
-                        async with _pdb.execute(
-                            "SELECT * FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
-                            (uid,)
-                        ) as _c:
-                            party_rows = [dict(r) for r in await _c.fetchall()]
-                    if len(party_rows) < 3:
-                        return await btn_interaction.followup.send(
-                            f"✦ You need a full 3-beast raid party! You have {len(party_rows)}/3 slots filled.\n"
-                            f"Use `/raidparty` to set up your team before joining a raid.",
-                            ephemeral=True
-                        )
-                    # Block KO'd beasts
-                    ko_beasts = [r for r in party_rows if is_knocked_out(r)]
-                    if ko_beasts:
-                        names = ", ".join(r.get("nickname") or (get_beast_data(r["beast_id"]) or {}).get("name", "?") for r in ko_beasts)
-                        timers = ", ".join(f"`{ko_time_remaining(r)}`" for r in ko_beasts)
-                        return await btn_interaction.followup.send(
-                            f"✦ **{names}** {'are' if len(ko_beasts)>1 else 'is'} still recovering! ({timers})\n"
-                            f"Use a **Phoenix Elixir** to revive instantly, or wait for recovery.",
-                            ephemeral=True
-                        )
-                    raid["player_party"][uid]       = party_rows
-                    raid["player_active_slot"][uid] = 0
-                    # Initialise per-slot HP tracking
-                    for _si, _br in enumerate(party_rows):
-                        raid["player_party_hp"][(uid, _si)] = _br["hp"]
-                    slot = party_rows[0]
-                    raid["player_hp"][uid]      = slot["hp"]
-                    raid["player_max_hp"][uid]  = slot["max_hp"]
-                    raid["player_defense"][uid] = slot["defense"]
-                    raid["player_atk"][uid]     = slot["attack"]
-                    raid["player_mana"][uid]    = 0
-                    # Load armor reduction for boss damage mitigation
-                    from utils.db import DB_PATH as _DB_PATH
-                    import aiosqlite as _aio
-                    import json as _json
-                    with open("data/equipment.json") as _eqf:
-                        _eqdata = _json.load(_eqf)
-                    _ALL_GEAR_RAID = {**_eqdata["equipment"], **_eqdata["runes"]}
-                    _armor_reduction = 0
-                    _evasion = 0
-                    async with _aio.connect(_DB_PATH) as _edb:
-                        _edb.row_factory = _aio.Row
-                        async with _edb.execute(
-                            "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id = ?",
-                            (uid, slot["id"])
-                        ) as _ec:
-                            for _er in await _ec.fetchall():
-                                _eg = _ALL_GEAR_RAID.get(_er["equipment_id"], {})
-                                _armor_reduction = max(_armor_reduction, _eg.get("effect", {}).get("damage_reduction_flat_percent", 0))
-                                _evasion = max(_evasion, _eg.get("effect", {}).get("evasion_percent", 0))
-                    if "player_armor_reduction" not in raid:
-                        raid["player_armor_reduction"] = {}
-                    if "player_evasion" not in raid:
-                        raid["player_evasion"] = {}
-                    raid["player_armor_reduction"][uid] = _armor_reduction
-                    raid["player_evasion"][uid] = _evasion
-
-                # Use party slot stats — not live DB (prevents setactive exploit)
-                active_slot = raid["player_active_slot"].get(uid, 0)
-                party = raid["player_party"].get(uid, [])
-                if not party:
-                    return await btn_interaction.followup.send("✦ No party loaded!", ephemeral=True)
-                active_beast_row = party[active_slot] if active_slot < len(party) else party[0]
-                active_beast_data = get_beast_data(active_beast_row["beast_id"]) or {}
-
-                is_crit = random.random() < 0.15
-                defense = boss_effective_defense(raid)
-                player_atk = raid["player_atk"].get(uid, active_beast_row["attack"])
-                player_spd = active_beast_row.get("speed", 50)
-                is_ultimate = False
-                damage = calc_player_damage(player_atk, defense, is_ultimate, is_crit)
-                # Raid Altar sanctuary: +10% damage
-                from utils.sanctuary import get_user_sanctuary as _gsanc_r, apply_raid_damage_bonus as _ardb
-                _rsanc = await _gsanc_r(uid)
-                damage = _ardb(damage, _rsanc)
-
-                raid_lock = _raid_locks.get(raid_id)
-                if not raid_lock:
-                    return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
-
-                # In-memory update under lock — no DB I/O inside
-                async with raid_lock:
-                    if raid_id not in active_raids:
-                        return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
-                    raid = active_raids[raid_id]
-                    raid["current_hp"] = max(0, raid["current_hp"] - damage)
-                    raid["participants"][uid] = raid["participants"].get(uid, 0) + damage
-                    raid["attack_counts"][uid] = raid["attack_counts"].get(uid, 0) + 1
-                    mana_gain = min(15, 8 + player_spd // 40)
-                    raid["player_mana"][uid] = min(100, raid["player_mana"].get(uid, 0) + mana_gain)
-                    raid["embed_dirty"] = True
-                    raid_ended = raid["current_hp"] <= 0
-                    snap_hp    = raid["current_hp"]
-                    snap_dmg   = raid["participants"][uid]
-
-                # DB write outside lock — doesn't block other players
-                asyncio.create_task(_write_raid_db(raid_id, uid, snap_hp, damage))
-
-                # Phase transition check
-                await check_phase_transitions(active_raids.get(raid_id, raid), btn_interaction.channel)
-
-                # Store last player action as last_event in embed — no ephemeral needed
-                if raid_id in active_raids:
-                    crit_tag = "⭐ CRIT! " if is_crit else ""
-                    active_raids[raid_id]["embed_dirty"] = True
-                    active_raids[raid_id]["last_event"] = f"{crit_tag}<@{uid}> hit for `{damage:,}` dmg"
-
-                # embed_loop handles refresh
-
-                await track_quest_event(uid, "raid_damage", amount=damage)
-                await track_quest_event(uid, "raid_attack")
-                await advance_quest_step(uid, "raid_participate")
-                await advance_quest_step(uid, "raid_damage", amount=damage)
-
-                if raid_ended:
-                    await cog.end_raid(raid_id, btn_interaction.channel)
-
-            @discord.ui.button(label="⚡ Ultimate", style=discord.ButtonStyle.secondary, emoji="💫")
-            async def ultimate_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
-                import time
-                try:
-                    if not btn_interaction.response.is_done():
-                        await btn_interaction.response.defer(ephemeral=True, thinking=False)
-                except Exception:
-                    return
-
-                if raid_id not in active_raids:
-                    return
-                raid = active_raids[raid_id]
-                uid = btn_interaction.user.id
-
-                if uid not in raid["guild_members"]:
-                    return await btn_interaction.followup.send("✦ You need to be in this guild!", ephemeral=True)
-                if uid in raid["player_hp"] and raid["player_hp"][uid] <= 0:
-                    return await btn_interaction.followup.send("✦ Your beast is knocked out!", ephemeral=True)
-
-                now = time.monotonic()
-                if now - raid.get("last_ultimate", {}).get(uid, 0) < ATTACK_COOLDOWN:
-                    try:
-                        await btn_interaction.followup.send("\u200b", ephemeral=True, delete_after=0)
-                    except Exception:
-                        pass
-                    return
-                raid.setdefault("last_ultimate", {})[uid] = now
-
-                # Load party if not yet done — preserve existing mana
-                if uid not in raid["player_party"]:
-                    async with aiosqlite.connect("db/chibibeast.db") as _pdb:
-                        _pdb.row_factory = aiosqlite.Row
-                        async with _pdb.execute(
-                            "SELECT * FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
-                            (uid,)
-                        ) as _c:
-                            party_rows = [dict(r) for r in await _c.fetchall()]
-                    if len(party_rows) < 3:
-                        return await btn_interaction.followup.send(
-                            f"✦ You need a full 3-beast raid party! Use `/raidparty` first.", ephemeral=True
-                        )
-                    ko_ult = [r for r in party_rows if is_knocked_out(r)]
-                    if ko_ult:
-                        names = ", ".join(r.get("nickname") or (get_beast_data(r["beast_id"]) or {}).get("name","?") for r in ko_ult)
-                        timers = " / ".join(f"`{ko_time_remaining(r)}`" for r in ko_ult)
-                        return await btn_interaction.followup.send(
-                            f"✦ **{names}** still recovering! ({timers})\nUse a **Phoenix Elixir** to revive, or wait.", ephemeral=True
-                        )
-                    raid["player_party"][uid]       = party_rows
-                    raid["player_active_slot"][uid] = 0
-                    for _si, _br in enumerate(party_rows):
-                        raid["player_party_hp"][(uid, _si)] = _br["hp"]
-                    slot = party_rows[0]
-                    raid["player_hp"][uid]      = slot["hp"]
-                    raid["player_max_hp"][uid]  = slot["max_hp"]
-                    raid["player_defense"][uid] = slot["defense"]
-                    raid["player_atk"][uid]     = slot["attack"]
-                    if uid not in raid["player_mana"]:
-                        raid["player_mana"][uid] = 0  # only init if not already set
-
-                # Mana check after party load
-                if raid["player_mana"].get(uid, 0) < 50:
-                    return await btn_interaction.followup.send(f"✦ Not enough mana! `{raid['player_mana'].get(uid,0)}/100`", ephemeral=True)
-
-                # Use party slot — not live DB
-                ult_slot = raid.get("player_active_slot", {}).get(uid, 0)
-                ult_party = raid.get("player_party", {}).get(uid, [])
-                if not ult_party:
-                    return await btn_interaction.followup.send("✦ No party found!", ephemeral=True)
-                ult_beast_row = ult_party[ult_slot] if ult_slot < len(ult_party) else ult_party[0]
-                ult_beast_data = get_beast_data(ult_beast_row["beast_id"]) or {}
-                ult_name = ult_beast_data.get("ultimate", "Ultimate")
-                ult_atk  = raid["player_atk"].get(uid, ult_beast_row["attack"])
-
-                is_crit = random.random() < 0.20
-                defense = boss_effective_defense(raid)
-                ult_mana = raid["player_mana"].get(uid, 50)
-                damage = calc_player_damage(ult_atk, defense, True, is_crit, ult_mana)
-
-                raid_lock = _raid_locks.get(raid_id)
-                if not raid_lock:
-                    return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
-
-                async with raid_lock:
-                    if raid_id not in active_raids:
-                        return await btn_interaction.followup.send("✦ The raid just ended!", ephemeral=True)
-                    raid = active_raids[raid_id]
-                    raid["current_hp"] = max(0, raid["current_hp"] - damage)
-                    raid["participants"][uid] = raid["participants"].get(uid, 0) + damage
-                    raid["attack_counts"][uid] = raid["attack_counts"].get(uid, 0) + 1
-                    raid["player_mana"][uid] = 0
-                    raid["embed_dirty"] = True
-                    raid_ended = raid["current_hp"] <= 0
-                    snap_hp  = raid["current_hp"]
-
-                asyncio.create_task(_write_raid_db(raid_id, uid, snap_hp, damage))
-
-                # Public ultimate announcement
-                await check_phase_transitions(active_raids.get(raid_id, raid), btn_interaction.channel)
-
-                # Ultimate stored as last_event — visible on embed, no new messages
-                if raid_id in active_raids:
-                    crit_tag = "⭐ CRIT! " if is_crit else ""
-                    active_raids[raid_id]["embed_dirty"] = True
-                    active_raids[raid_id]["last_event"] = f"⚡ <@{uid}> unleashes **{ult_name}**! {crit_tag}`{damage:,}` dmg"
-
-                # embed_loop handles refresh
-
-                await track_quest_event(uid, "raid_damage", amount=damage)
-                await advance_quest_step(uid, "raid_participate")
-
-                if raid_ended:
-                    await cog.end_raid(raid_id, btn_interaction.channel)
-
-            async def on_timeout(self):
-                if raid_id in active_raids:
-                    await cog.end_raid(raid_id, interaction.channel, timed_out=True)
-
-        view = RaidView()
-        raid_msg = await interaction.followup.send(embed=build_raid_embed(active_raids[raid_id]), view=view)
-        active_raids[raid_id]["raid_message"] = raid_msg
-
-        # Start background loops
-        asyncio.create_task(boss_attack_loop())
-        asyncio.create_task(_embed_loop())
-
-        # Auto-end after 30 minutes
-        await asyncio.sleep(1800)
-        if raid_id in active_raids:
-            await cog.end_raid(raid_id, interaction.channel, timed_out=True)
-
-    async def end_raid(self, raid_id: int, channel, timed_out: bool = False):
-        if raid_id not in active_raids:
-            return
-        raid = active_raids[raid_id]
-        # Force final embed update to show true HP before popping
-        msg = raid.get("raid_message")
-        if msg:
-            try:
-                raid["current_hp"] = 0 if raid["current_hp"] < 0 else raid["current_hp"]
-                await msg.edit(embed=build_raid_embed(raid), view=None)
-            except Exception:
-                pass
-        active_raids.pop(raid_id)
-        _raid_locks.pop(raid_id, None)  # clean up lock — raid is over
-        boss = raid["boss"]
-        defeated = raid["current_hp"] <= 0
-
-        sorted_participants = sorted(raid["participants"].items(), key=lambda x: x[1], reverse=True)
-
-        if defeated:
-            scene = BOSS_KILL_SCENES.get(boss["id"])
-            if scene:
-                kill_embed = discord.Embed(
-                    title=scene["title"],
-                    description="\n\n".join(scene["lines"]),
-                    color=COLORS.get(scene["color"], COLORS["legendary"])
-                )
-                if boss.get("image_url"):
-                    kill_embed.set_image(url=boss["image_url"])
-                await channel.send(embed=kill_embed)
-
-            embed = discord.Embed(
-                title=f"🏆 {boss['name']} Defeated!",
-                description=(
-                    f"*The guild has prevailed. Rewards are being distributed.*\n\n"
-                    f"⚠️ **Top 3 damage dealers have a chance to catch {boss['name']}.**\n"
-                    f"Rank 1: **5%** · Rank 2: **3%** · Rank 3: **2%**"
-                ),
-                color=COLORS["legendary"]
-            )
-        else:
-            scene = BOSS_DEFEAT_SCENES.get(boss["id"])
-            if scene:
-                defeat_embed = discord.Embed(
-                    title=scene["title"],
-                    description="\n\n".join(scene["lines"]),
-                    color=COLORS.get(scene["color"], COLORS["error"])
-                )
-                if boss.get("image_url"):
-                    defeat_embed.set_image(url=boss["image_url"])
-                await channel.send(embed=defeat_embed)
-
-            embed = discord.Embed(
-                title=f"💀 {boss['name']} — The Guild Falls",
-                description="*The boss was not defeated. Regroup, grow stronger, and return.*",
-                color=COLORS["error"]
-            )
-
-        # Rewards
-        reward_lines = []
-        guild_id_for_tokens = raid.get("guild_id")
-
-        # ── Guild token award on victory ──────────────────────────────────
-        # Every participant earns tokens scaled by rank so contributing to
-        # a kill is always worth doing. The guild pot gets a flat bonus too
-        # so the guild itself banks tokens toward future raids organically.
-        #   Rank 1: 30 tokens | Rank 2-3: 20 | Rank 4-10: 10 | All others: 5
-        # Ancient raids pay 1.5× (rounded) to reflect their higher cost and
-        # difficulty — solo-qualifying an ancient should feel distinctly rewarding.
-        RANK_TOKENS  = {1: 30, 2: 20, 3: 20}
-        BASE_TOKENS  = 10
-        CONSOLATION  = 5
-        ancient_mult = 1.5 if boss.get("type") == "ancient" else 1.0
-        GUILD_BONUS  = int(50 * ancient_mult)
-
-        for i, (user_id, damage) in enumerate(sorted_participants[:10]):
-            member = channel.guild.get_member(user_id)
-            display_name = member.display_name if member else f"<@{user_id}>"
-            rank = i + 1
-            gold = 500 if rank == 1 else 300 if rank == 2 else 200 if rank == 3 else 100
-            exp = 200 if rank == 1 else 150 if rank <= 3 else 80
-
-            if defeated:
-                await update_player(user_id, gold=(await get_player(user_id))["gold"] + gold)
-
-                # ── Guild token earn: scaled by rank, 1.5× for ancient raids ──
-                player_tokens = int(RANK_TOKENS.get(rank, BASE_TOKENS) * ancient_mult)
-                async with aiosqlite.connect("db/chibibeast.db") as _tdb:
-                    await _tdb.execute(
-                        "UPDATE players SET guild_tokens = guild_tokens + ? WHERE user_id = ?",
-                        (player_tokens, user_id)
-                    )
-                    await _tdb.commit()
-
-                # ── Achievement tracking: raid victory + any stat thresholds crossed ──
-                raid_win_unlocked = await unlock_simple_achievement(user_id, "first_raid_win")
-                stat_unlocked = await check_achievements(user_id)
-                all_raid_unlocks = (["first_raid_win"] if raid_win_unlocked else []) + stat_unlocked
-                if all_raid_unlocks:
-                    if member:
-                        await notify_unlocks(channel, member, all_raid_unlocks)
-
-                # Loot drop
-                if random.random() < (0.8 - (i * 0.1)):
-                    loot = random.choice(boss["loot_table"])
-                    from utils.db import add_item
-                    await add_item(user_id, loot)
-                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️ | 🎁 {loot.replace('_',' ').title()}")
-                else:
-                    reward_lines.append(f"{'🥇' if rank==1 else '🥈' if rank==2 else '🥉' if rank==3 else '🏅'} **{display_name}** — `{damage:,}` dmg | +{gold}💰 | +{player_tokens}🎟️")
-
-                # ── Raid boss catch chance for top 3 ─────────────────────────
-                if rank <= 3:
-                    catch_chances = {1: 0.05, 2: 0.03, 3: 0.02}
-                    catch_chance = catch_chances.get(rank, 0)
-                    if random.random() < catch_chance:
-                        boss_beast_data = get_beast_data(boss["id"])
-                        if boss_beast_data:
-                            from utils.db import add_beast_to_player
-                            await add_beast_to_player(user_id, {**boss_beast_data, "caught_from": "raid"})
-                            from utils.progress import record_bestiary_sighting
-                            await record_bestiary_sighting(channel.guild.id, boss["id"], user_id)
-                            await channel.send(embed=discord.Embed(
-                                title="⚔️ THE RAID BOSS HAS BEEN CAUGHT!",
-                                description=(
-                                    f"*In the moment of defeat, something shifts.*\n\n"
-                                    f"🌟 **{display_name}** has caught **{boss_beast_data['name']}** — *{boss_beast_data['title']}*!\n\n"
-                                    f"*{boss_beast_data['description']}*\n\n"
-                                    f"**Corrupted** form — obtainable only through guild raids."
-                                ),
-                                color=COLORS.get(boss_beast_data["rarity"], COLORS["legendary"])
-                            ))
-
-        if reward_lines:
-            embed.add_field(name="🏆 Top Damage Dealers", value="\n".join(reward_lines), inline=False)
-
-        # ── Guild treasury bonus on victory ───────────────────────────────
-        if defeated and guild_id_for_tokens:
-            async with aiosqlite.connect("db/chibibeast.db") as _gdb:
-                await _gdb.execute(
-                    "UPDATE guilds SET guild_tokens = guild_tokens + ? WHERE id = ?",
-                    (GUILD_BONUS, guild_id_for_tokens)
-                )
-                await _gdb.commit()
-            embed.add_field(
-                name="🎟️ Guild Treasury",
-                value=f"+**{GUILD_BONUS} Guild Tokens** added to the guild!",
-                inline=False
-            )
-
-        embed.set_footer(text="ChibiBeasts 🐾  •  /raid to trigger another raid!")
-        await channel.send(embed=embed)
-
-        if defeated:
-            for uid in raid.get("participants", []):
-                try:
-                    from cogs.questline import advance_quest_step as _aqr
-                    await _aqr(uid, "raid_complete", raid_type="corrupted")
-                except Exception:
-                    pass
-
-        # Restore surviving (non-KO'd) party beasts to full HP after the raid
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            await db.execute(
-                "UPDATE raids SET status = ?, ended_at = CURRENT_TIMESTAMP WHERE id = ?",
-                ("completed" if defeated else "expired", raid_id)
-            )
-            for uid, party in raid.get("player_party", {}).items():
-                for beast_row in party:
-                    if not beast_row.get("knocked_out_until"):
-                        await db.execute(
-                            "UPDATE player_beasts SET hp = max_hp WHERE id = ? AND (knocked_out_until IS NULL OR knocked_out_until = '')",
-                            (beast_row["id"],)
-                        )
-            await db.commit()
-
-async def setup(bot: commands.Bot):
-    await bot.add_cog(Guilds(bot))
+        async with aiosqlite.connect(storage.DB_PATH) as db:
+            db.row_factory=aiosqlite.Row
+            async with db.execute("SELECT m.rank,g.* FROM guild_members m JOIN guilds g ON g.id=m.guild_id WHERE m.user_id=?",(interaction.user.id,)) as c:guild=await c.fetchone()
+        if not guild or guild["rank"] not in {"leader","officer"}:return await interaction.followup.send("A guild leader or officer opens the raid.")
+        if guild["level"]<5 or guild["guild_tokens"]<50:return await interaction.followup.send("Your guild needs level 5 and 50 guild tokens.")
+        from utils.raids import open_raid
+        try:await open_raid(interaction,random.choice(RAID_BOSSES["corrupted"]),guild_id=guild["id"])
+        except ValueError as error:await interaction.followup.send(str(error))
+
+async def setup(bot):await bot.add_cog(Guilds(bot))

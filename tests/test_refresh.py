@@ -18,7 +18,7 @@ class Artwork(unittest.TestCase):
     def test_every_beast_has_one_versioned_alpha_png(self):
         roster = storage.load_beasts()
         manifest = artwork_manifest()
-        self.assertEqual(len(roster), 82)
+        self.assertEqual(len(roster), 86)
         self.assertEqual(set(roster), set(manifest))
         self.assertEqual(
             {p.name for p in (PROJECT_ROOT / "data/sprites").glob("*.png")},
@@ -59,10 +59,10 @@ class Artwork(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
-    def test_all_82_generation_prompts_are_saved(self):
+    def test_all_generation_prompts_are_saved(self):
         prompts = json.loads((PROJECT_ROOT / "docs/art-prompts.json").read_text(encoding="utf-8"))
         self.assertEqual({entry["id"] for entry in prompts["characters"]}, set(storage.load_beasts()))
-        self.assertEqual(len(prompts["characters"]), 82)
+        self.assertEqual(len(prompts["characters"]), 86)
 
     def test_raid_art_uses_the_same_resolver(self):
         from cogs.guilds import RAID_BOSSES
@@ -152,13 +152,19 @@ class Extensions(unittest.IsolatedAsyncioTestCase):
             async with bot:
                 for path in sorted((PROJECT_ROOT / "cogs").glob("*.py")):
                     await bot.load_extension(f"cogs.{path.stem}")
-                self.assertEqual(len(bot.extensions), 15)
+                self.assertEqual(len(bot.extensions), 16)
                 self.assertIsNone(bot.tree.get_command("dev"))
                 group = bot.tree.get_command("dev", guild=discord.Object(id=456))
                 self.assertIsNotNone(group)
                 for command in group.walk_commands():
                     self.assertTrue(command.checks, f"/dev {command.name} lacks its owner check")
                 self.assertIsNotNone(bot.tree.get_command("guide"))
+                import inspect
+                import re
+                from cogs.utilities import Utilities
+                guide_commands=set(re.findall(r"/([a-z_]+)",inspect.getsource(Utilities.help_cmd.callback)))
+                registered={command.name for command in bot.tree.get_commands()}
+                self.assertFalse(guide_commands-registered,f"Guide references missing commands: {guide_commands-registered}")
                 from cogs.starter import FIRST_STEPS, Starter
                 self.assertIn("/guide", [step[1] for step in FIRST_STEPS])
                 embed = Starter(bot).build_starter_embed(storage.get_beast_data("prismite"))

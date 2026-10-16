@@ -1,3 +1,4 @@
+from utils import db as storage
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -115,7 +116,7 @@ class Profile(commands.Cog):
         sanctuary_status = ""
         if interaction.guild:
             try:
-                async with aiosqlite.connect("db/chibibeast.db") as _sdb:
+                async with aiosqlite.connect(storage.DB_PATH) as _sdb:
                     _sdb.row_factory = aiosqlite.Row
                     async with _sdb.execute("SELECT * FROM guild_sanctuary WHERE guild_id = ?", (interaction.guild.id,)) as _sc:
                         _sanc = await _sc.fetchone()
@@ -525,7 +526,7 @@ class Profile(commands.Cog):
     @app_commands.describe(beast_number="Your beast number from /collection")
     async def setactive(self, interaction: discord.Interaction, beast_number: int):
         await interaction.response.defer()
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             async with db.execute(
                 "SELECT id FROM player_beasts WHERE player_number = ? AND user_id = ?",
                 (beast_number, interaction.user.id)
@@ -558,7 +559,7 @@ class Profile(commands.Cog):
             return await interaction.response.send_message(embed=discord.Embed(
                 description="✦ Nickname must be 20 characters or less!", color=COLORS["error"]
             ), ephemeral=True)
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             async with db.execute(
                 "SELECT id FROM player_beasts WHERE player_number = ? AND user_id = ?",
                 (beast_number, interaction.user.id)
@@ -707,257 +708,35 @@ class Inventory(commands.Cog):
     @app_commands.command(name="use", description="Use an item from your inventory 💊")
     @app_commands.describe(item_name="Item to use")
     @app_commands.autocomplete(item_name=use_autocomplete)
-    async def use(self, interaction: discord.Interaction, item_name: str):
-        await interaction.response.defer()
-        items_data = load_items()
-        item_id = item_name.lower().replace(" ", "_").replace("-", "_")
-        item = items_data.get(item_id)
-
-        if not item:
-            matches = [i for i in items_data.values() if item_name.lower() in i["name"].lower()]
-            if matches:
-                item = matches[0]
-                item_id = item["id"]
-            else:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ Item `{item_name}` not found!", color=COLORS["error"]
-                ))
-
-        inv = await get_inventory(interaction.user.id)
-        has_item = any(e["item_id"] == item_id and e["quantity"] > 0 for e in inv)
-        if not has_item:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ You don't have **{item['name']}** in your inventory!",
-                color=COLORS["error"]
-            ))
-
-        active = await get_active_beast(interaction.user.id)
-        if not active and item["type"] not in ["cooldown", "unlock", "reset", "revive"]:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need an active beast to use this item!", color=COLORS["error"]
-            ))
-
-        effect = item["effect"]
-        result_lines = []
-
-        async with aiosqlite.connect("db/chibibeast.db") as db:
-            if "heal_percent" in effect and active:
-                heal = int(active["max_hp"] * (effect["heal_percent"] / 100))
-                new_hp = min(active["max_hp"], active["hp"] + heal)
-                await db.execute("UPDATE player_beasts SET hp = ? WHERE id = ?", (new_hp, active["id"]))
-                result_lines.append(f"❤️ Healed **{heal} HP** ({active['hp']} → {new_hp})")
-
-            if "revive" in effect:
-                raid_party = await get_raid_party(interaction.user.id)
-                ko_beasts = [b for b in raid_party if b and is_knocked_out(b)]
-                if not ko_beasts and active and active["hp"] <= 0:
-                    ko_beasts = [active]
-                if not ko_beasts:
-                    result_lines.append("✦ No knocked-out beast to revive! Your party is already healthy.")
-                elif len(ko_beasts) == 1:
-                    ko_beast = ko_beasts[0]
-                    heal = int(ko_beast["max_hp"] * (effect.get("heal_percent", 50) / 100))
-                    await db.execute(
-                        "UPDATE player_beasts SET knocked_out_until = NULL, hp = ? WHERE id = ?",
-                        (heal, ko_beast["id"])
-                    )
-                    bd = get_beast_data(ko_beast["beast_id"]) or {}
-                    bname = ko_beast.get("nickname") or bd.get("name", "Beast")
-                    result_lines.append(f"🔥 **{bname}** revived with `{heal}/{ko_beast['max_hp']}HP`! Ready to fight.")
-                else:
-                    # Multiple KO'd — let player choose via buttons
-                    await db.commit()  # commit current db state before sending view
-                    heal_pct = effect.get("heal_percent", 50)
-                    class ReviveView(discord.ui.View):
-                        def __init__(self):
-                            super().__init__(timeout=30)
-                            for b in ko_beasts:
-                                bdd = get_beast_data(b["beast_id"]) or {}
-                                bname = b.get("nickname") or bdd.get("name","Beast")
-                                timer = ko_time_remaining(b)
-                                btn = discord.ui.Button(
-                                    label=f"{bname} ({timer})",
-                                    style=discord.ButtonStyle.danger,
-                                    emoji="🔥"
-                                )
-                                async def _cb(inter, beast=b, name=bname):
-                                    heal = int(beast["max_hp"] * (heal_pct / 100))
-                                    async with aiosqlite.connect("db/chibibeast.db") as _db:
-                                        await _db.execute(
-                                            "UPDATE player_beasts SET knocked_out_until = NULL, hp = ? WHERE id = ?",
-                                            (heal, beast["id"])
-                                        )
-                                        await _db.commit()
-                                    await inter.response.edit_message(
-                                        content=f"🔥 **{name}** revived with `{heal}/{beast['max_hp']}HP`! Ready to fight.",
-                                        view=None
-                                    )
-                                btn.callback = _cb
-                                self.add_item(btn)
-                    await interaction.followup.send(
-                        f"🔥 You have `{len(ko_beasts)}` knocked-out beasts. Which one to revive?",
-                        view=ReviveView(), ephemeral=True
-                    )
-                    return
-
-            # Luna Nectar — grant 1 ultimate charge
-            if "grant_ultimate_charge" in effect:
-                await db.execute(
-                    "UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + ?) WHERE user_id = ?",
-                    (effect["grant_ultimate_charge"], interaction.user.id)
-                )
-                result_lines.append(f"⚡ **1 Ultimate Charge** granted! Use it in your next battle.")
-
-            if "happiness" in effect and active:
-                new_hap = min(100, active["happiness"] + effect["happiness"])
-                await db.execute("UPDATE player_beasts SET happiness = ? WHERE id = ?", (new_hap, active["id"]))
-                result_lines.append(f"😊 Happiness increased to **{new_hap}/100**!")
-
-            if "exp" in effect and active:
-                exp_base = effect["exp"]
-                exp_per_level = effect.get("exp_per_level", 0)
-                total_exp = exp_base + (exp_per_level * player.get("level", 1))
-                new_exp = active["exp"] + total_exp
-                new_level = active["level"]
-                while new_exp >= get_beast_exp_for_level(active, new_level):
-                    new_exp -= get_beast_exp_for_level(active, new_level)
-                    new_level += 1
-                await apply_beast_levelup(db, active, new_level, new_exp)
-                result_lines.append(f"✨ Gained **{total_exp} EXP**!")
-                if new_level > active["level"]:
-                    result_lines.append(f"⬆️ **LEVEL UP!** Now Lv.{new_level}! Stats increased!")
-
-            if "instant_levels" in effect and active:
-                target_level = active["level"] + effect["instant_levels"]
-                await apply_beast_levelup(db, active, target_level, 0)
-                result_lines.append(f"⬆️ Leveled up **{effect['instant_levels']} levels** → Lv.{target_level}! Stats increased!")
-
-            # Chrono-Biscuit: reset explore and challenge cooldowns
-            if item_id == "chrono_biscuit" or ("reset_explore" in effect and "reset_challenge" in effect):
-                await db.execute(
-                    "UPDATE players SET explore_last_at = 0, challenge_last_at = 0 WHERE user_id = ?",
-                    (interaction.user.id,)
-                )
-                result_lines.append("⏰ **/explore** and **/challenge** cooldowns instantly reset!")
-
-            # Star-Candy Shards: +3 to a random combat stat permanently
-            if "stat_boost" in effect and active:
-                import random as _rand
-                stat_choices = ["attack", "defense", "speed"]
-                boosted_stat = _rand.choice(stat_choices)
-                boost_amt = effect.get("stat_boost", 3)
-                await db.execute(
-                    f"UPDATE player_beasts SET {boosted_stat} = {boosted_stat} + ? WHERE id = ?",
-                    (boost_amt, active["id"])
-                )
-                result_lines.append(f"⭐ **{boosted_stat.capitalize()}** permanently increased by **+{boost_amt}**!")
-
-
-            # Aether Tonic — cure_all
-            if "cure_all" in effect:
-                result_lines.append("✨ All status conditions cleared! Effect persists into next battle.")
-
-            # Sugarsprout Cupcake — temp speed boost flag
-            if "speed_boost_percent" in effect and active:
-                boost = int(active["speed"] * (effect["speed_boost_percent"] / 100))
-                result_lines.append(f"💨 Speed boosted by **+{boost}** for your next battle!")
-                await db.execute("UPDATE players SET brew_active = brew_active + 1 WHERE user_id = ?", (interaction.user.id,))
-
-            # Spellbound Incense — boost next 3 encounters
-            if "encounter_boost" in effect:
-                charges = effect.get("charges", 3)
-                async with db.execute("SELECT incense_charges FROM players WHERE user_id = ?", (interaction.user.id,)) as _ic:
-                    _irow = await _ic.fetchone()
-                current = (_irow[0] if _irow and _irow[0] else 0)
-                await db.execute("UPDATE players SET incense_charges = ? WHERE user_id = ?", (current + charges, interaction.user.id))
-                result_lines.append(f"🌿 Encounter boost active for your **next {charges} wild encounters**! Uncommon, Rare and Epic beasts more likely.")
-
-            # Loom Catalyst — reduce incubation time by 50%
-            if "reduce_incubation_percent" in effect:
-                async with db.execute(
-                    "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
-                    (interaction.user.id,)
-                ) as c:
-                    egg_row = await c.fetchone()
-                if egg_row:
-                    await db.execute(
-                        """UPDATE incubating_eggs SET
-                           ready_at = datetime(ready_at, '-' || CAST(
-                               CAST((julianday(ready_at) - julianday('now')) * 24 * 60 / 2 AS INTEGER)
-                           || ' minutes'))
-                           WHERE id = ?""",
-                        (egg_row[0],)
-                    )
-                    result_lines.append(f"🌀 **{egg_row[1]}** will hatch **50% sooner** — the Loom accelerates its weaving.")
-                else:
-                    result_lines.append("🌀 No eggs currently incubating.")
-
-            # Krakenshale Brew — double defense next battle
-            if "defense_multiplier" in effect:
-                await db.execute("UPDATE players SET brew_active = brew_active + 2 WHERE user_id = ?", (interaction.user.id,))
-                result_lines.append("🛡️ **Defense doubled** for your next battle! (Krakenshale Brew)")
-
-            # Tear of Leviathan — stat reset to base at current level
-            if "reset_stats" in effect and active:
-                from utils.db import load_beasts as _lb, calc_stat_growth as _csg
-                all_b = _lb()
-                bbase = all_b.get(active["beast_id"], {}).get("base_stats", {})
-                if bbase:
-                    growth = _csg(dict(active), active["level"] - 1)
-                    await db.execute("""UPDATE player_beasts SET max_hp=?, hp=?, attack=?, defense=?, speed=?, mana=?, max_mana=? WHERE id=?""",
-                        (bbase["hp"]+growth["hp"], bbase["hp"]+growth["hp"],
-                         bbase["attack"]+growth["attack"], bbase["defense"]+growth["defense"],
-                         bbase["speed"]+growth["speed"], bbase["mana"]+growth["mana"],
-                         bbase["mana"]+growth["mana"], active["id"]))
-                    result_lines.append("💎 **Stats fully reset** to optimal base values for current level!")
-
-            # Genesis Fruit — unlock divine_trait_slot
-            if "unlock_divine_trait" in effect and active:
-                await db.execute("UPDATE player_beasts SET divine_trait = 'unlocked' WHERE id = ?", (active["id"],))
-                result_lines.append("🌈 **Divine Trait Slot unlocked** on this beast!")
-                result_lines.append("*Something stayed behind when the fruit disappeared.*")
-
-            # Sunforge Core — evolve if level met
-            if "evolution_trigger" in effect and active:
-                from utils.db import load_beasts as _lb2, calc_stat_growth as _csg2
-                all_b2 = _lb2()
-                bdata = all_b2.get(active["beast_id"], {})
-                evo = bdata.get("evolution")
-                if evo and evo.get("method") == "sunforge_core":
-                    lvl_req = evo.get("level_required", 1)
-                    if active["level"] >= lvl_req:
-                        tid = evo["evolves_to"]
-                        tdata = all_b2.get(tid, {})
-                        ns = tdata.get("base_stats", {})
-                        g2 = _csg2({"rarity": tdata.get("rarity","common")}, active["level"]-1)
-                        await db.execute("""UPDATE player_beasts SET beast_id=?,rarity=?,max_hp=?,hp=?,attack=?,defense=?,speed=?,mana=?,max_mana=? WHERE id=?""",
-                            (tid, tdata.get("rarity","common"),
-                             ns.get("hp",100)+g2["hp"], ns.get("hp",100)+g2["hp"],
-                             ns.get("attack",50)+g2["attack"], ns.get("defense",50)+g2["defense"],
-                             ns.get("speed",50)+g2["speed"], ns.get("mana",50)+g2["mana"],
-                             ns.get("mana",50)+g2["mana"], active["id"]))
-                        result_lines.append(f"🌟 **{bdata.get('name','Beast')}** evolved into **{tdata.get('name','?')}**!")
-                        if tdata.get("divine_passive"):
-                            result_lines.append(f"✨ New passive: **{tdata['divine_passive']['passive_name']}**!")
-                    else:
-                        result_lines.append(f"✦ Needs to be Level **{lvl_req}** to evolve. Currently Lv.{active['level']}.")
-                elif evo:
-                    result_lines.append(f"✦ This beast needs **{evo.get('method','?').replace('_',' ').title()}** to evolve, not a Sunforge Core.")
-                else:
-                    result_lines.append("✦ This beast has no evolution path.")
-
-            await db.commit()
-
-        await remove_item(interaction.user.id, item_id)
-        result_text = "\n".join(result_lines) if result_lines else "Item used!"
-        _use_done = await track_quest_event(interaction.user.id, "use_item")
-        if _use_done and interaction.channel:
-            await notify_quest_completions(interaction.channel, _use_done)
-        await interaction.followup.send(embed=discord.Embed(
-            title=f"✦ Used {item['name']}",
-            description=result_text,
-            color=COLORS["success"]
-        ))
+    async def use(self,interaction:discord.Interaction,item_name:str,beast_number:int=None):
+        await interaction.response.defer(ephemeral=True)
+        from utils.items import use_item,ELEMENTS
+        items=load_items();key=item_name.lower().replace(" ","_").replace("-","_")
+        if key not in items:key=next((k for k,v in items.items() if item_name.lower() in v["name"].lower()),None)
+        if not key:return await interaction.followup.send("That item was not found. Check /inventory.",ephemeral=True)
+        async def activate(bi,choice=None):
+            try:result=await use_item(bi.user.id,key,choice=choice,beast_number=beast_number)
+            except ValueError as error:result=str(error)
+            await bi.followup.send(result,ephemeral=True)
+        if items[key]["effect"].get("choose_element"):
+            view=discord.ui.View(timeout=120);select=discord.ui.Select(placeholder="Choose your next hatch's element",options=[discord.SelectOption(label=t.title(),value=t) for t in ELEMENTS])
+            async def selected(bi):
+                if bi.user.id!=interaction.user.id:return await bi.response.send_message("This is not your item.",ephemeral=True)
+                await bi.response.defer(ephemeral=True);await activate(bi,select.values[0]);view.stop()
+            select.callback=selected;view.add_item(select)
+            return await interaction.followup.send("The token is consumed only after a valid choice.",view=view,ephemeral=True)
+        if items[key]["effect"].get("rename"):
+            class Rename(discord.ui.Modal,title="Name your companion"):
+                name=discord.ui.TextInput(label="Name",min_length=1,max_length=40)
+                async def on_submit(self,bi):
+                    await bi.response.defer(ephemeral=True);await activate(bi,str(self.name))
+            view=discord.ui.View(timeout=120);button=discord.ui.Button(label="Choose name",style=discord.ButtonStyle.primary)
+            async def open_modal(bi):
+                if bi.user.id!=interaction.user.id:return await bi.response.send_message("This is not your item.",ephemeral=True)
+                await bi.response.send_modal(Rename())
+            button.callback=open_modal;view.add_item(button)
+            return await interaction.followup.send("Rename your active beast, or supply its collection number with /use.",view=view,ephemeral=True)
+        await activate(interaction)
 
 class Shop(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -971,13 +750,20 @@ class Shop(commands.Cog):
         player   = await get_or_create_player(interaction.user.id, str(interaction.user))
         uid      = interaction.user.id
         RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine","altered_divine"]
+        async with aiosqlite.connect(storage.DB_PATH) as db:
+            from utils.rewards import has_perk
+            merchant=await has_perk(db,uid,"whimsy_merchant")
 
         # ── purchase helper ────────────────────────────────────────────────
         async def _buy(bi, item_id, price, name, next_step, qty=1):
             await bi.response.defer(ephemeral=True)
             total = price * qty
-            async with aiosqlite.connect("db/chibibeast.db") as db:
+            async with aiosqlite.connect(storage.DB_PATH) as db:
                 db.row_factory = aiosqlite.Row
+                await db.execute("BEGIN IMMEDIATE")
+                from utils.rewards import has_perk
+                unit_price=max(1,int(price*.95)) if await has_perk(db,bi.user.id,"whimsy_merchant") else price
+                total=unit_price*qty
                 async with db.execute("SELECT gold FROM players WHERE user_id=?", (bi.user.id,)) as c:
                     pr = await c.fetchone()
                 if not pr or pr["gold"] < total:
@@ -1023,6 +809,7 @@ class Shop(commands.Cog):
             RARITY_PRICE = {"common":300,"uncommon":1200,"rare":4000,"epic":12000,"legendary":50000,"divine":0}
             out = []
             for eid, egg in EGGS.items():
+                if eid=="world_tree_seed":continue
                 price = RARITY_PRICE.get(egg.get("rarity","common"), 300)
                 out.append((eid, egg, price))
             out.sort(key=lambda x: RARITY_ORDER.index(x[1].get("rarity","common")) if x[1].get("rarity","common") in RARITY_ORDER else 99)
@@ -1045,7 +832,7 @@ class Shop(commands.Cog):
         # ── embed builders ─────────────────────────────────────────────────
         def make_embed(title, description, color="legendary"):
             emb = discord.Embed(title=f"🏪 {title}", description=description, color=COLORS.get(color, COLORS["legendary"]))
-            emb.set_footer(text="ChibiBeasts 🐾")
+            emb.set_footer(text="ChibiBeasts 🐾"+(" · Whimsy Merchant: 5% off gold prices at checkout" if merchant else ""))
             return emb
 
         def build_instant_embed(page, items):
@@ -1247,31 +1034,14 @@ class Shop(commands.Cog):
                             style=discord.ButtonStyle.primary if (can and not done) else discord.ButtonStyle.secondary,
                             disabled=not can or done, row=i+1)
                         async def _cb(bi, _sid=sid):
-                            if bi.user.id!=uid: return await bi.response.send_message("✦ Not your shop!",ephemeral=True)
-                            from cogs.utilities import _handle_shard_item
-                            shop_item = SHARD_SHOP[_sid]
+                            if bi.user.id!=uid:return await bi.response.send_message("Not your shop.",ephemeral=True)
                             await bi.response.defer(ephemeral=True)
-                            fp = await get_player(bi.user.id)
-                            fs = fp.get("celestial_shards",0) if fp else 0
-                            if fs < shop_item["cost"]:
-                                return await bi.followup.send(f"✦ Need `{shop_item['cost']} 🔮`.", ephemeral=True)
-                            if self_v.week_data.get(_sid,0) >= shop_item["weekly_limit"] > 0:
-                                return await bi.followup.send("✦ Already bought this week.", ephemeral=True)
-                            async with aiosqlite.connect("db/chibibeast.db") as _db:
-                                await _db.execute("UPDATE players SET celestial_shards=celestial_shards-? WHERE user_id=?", (shop_item["cost"], bi.user.id))
-                                if shop_item["weekly_limit"] > 0:
-                                    self_v.week_data[_sid] = self_v.week_data.get(_sid,0)+1
-                                    import json as _j
-                                    from datetime import datetime as _dt, timezone as _tz
-                                    wk = _dt.now(_tz.utc).strftime("%Y-W%W")
-                                    d  = {**self_v.week_data,"week":wk}
-                                    await _db.execute("UPDATE players SET shard_shop_week=? WHERE user_id=?", (_j.dumps(d), bi.user.id))
-                                res = await _handle_shard_item(_db, bi.user.id, _sid, shop_item)
-                                await _db.commit()
-                            await bi.followup.send(embed=discord.Embed(
-                                title=f"🔮 {shop_item['name']}",
-                                description=f"{res}\n\nRemaining: `{fs-shop_item['cost']} 🔮`",
-                                color=COLORS["divine"]), ephemeral=True)
+                            from utils.shops import purchase_shard
+                            try:
+                                result,remaining,limits=await purchase_shard(uid,_sid)
+                                self_v.week_data=limits
+                                await bi.followup.send(f"{result}\nRemaining: {remaining} Celestial Shards.",ephemeral=True)
+                            except ValueError as error:await bi.followup.send(str(error),ephemeral=True)
                         btn.callback=_cb
                         self_v.add_item(btn)
                     self_v._add_pagination(total, s)

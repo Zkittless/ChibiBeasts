@@ -1,0 +1,70 @@
+CHIBIBEASTS — GAMEPLAY REVIVAL
+
+Starter awakenings
+Prismite -> Prismara: crystal serval, shard mantle and three faceted tails.
+Twine -> Timestitch: clockwork jerboa, spring legs, spool back and ribbon tail.
+Gloop -> Nebuloom: jelly salamander, four flippers, star fins and crescent tail.
+Barkley -> Rootwarden: forest drake, leaf wings, wooden antlers and eggshell chestplate.
+
+All four have distinct ImageGen artwork and new passives. Reach beast level 15,
+bond 30 and happiness 70; check /bond, then /evolve. No catalyst is required.
+Nickname, level, EXP, training, disposition, earned stat boosts, Ambrosia bonus,
+equipment and party assignments are preserved.
+
+Changes addressing the game review
+1. All ten campaign chapters connect. Material events, snapshot objectives,
+   chapter links and legacy chapter-five continuation now work. Claims pay once.
+2. Shard and guild purchases grant real effects. Items validate their target
+   before consumption. Time skips move both tending and hatching schedules.
+3. All duel modes share one combat engine. Armor, evasion, guard and shields
+   apply before HP loss. An enemy ultimate only spends its own charge.
+4. Runes can be crafted and equipped. Every crafting material has a real route.
+   Ancient loot is defined and routed to the right inventory. Evolution-only
+   forms cannot hatch randomly. All twelve perks have normal unlock conditions.
+5. Catch, hatch, battle, training and other events feed a shared progression
+   path. Batch actions count correctly. Daily sets stay stable and gate raid
+   objectives. Titles require earned achievements, collections or story choices.
+6. The three move roles now differ: mana-building attack, typed or healing skill,
+   and guard/focus. Ranked uses the interactive duel rules and dated seasons.
+7. Starters use the same EXP curve as other companions and have bond awakenings.
+8. Exploration and challenges use chosen destinations and regional species.
+   Region gates are 1/3/5/8/10. Relic searches finish after three relevant visits.
+9. Raids have lobbies, three companions per trainer, swapping, tending allies
+   and six boss responses. Active support earns rewards. Catch progress
+   guarantees a companion after eight Corrupted or twelve Ancient clears of
+   that species. Interrupted paid summons are refunded once on restart.
+10. The finale offers care, curiosity or courage. Each has a scene and title,
+    restores the hollow, and leaves persistent post-story NPC dialogue.
+11. Sable's clasp reaches Maren, Maren and Orren reunite, and the hatched World
+    Tree Seed helps resolve the Fraying. Corrupted raid victories leave the
+    creatures alive. Lore distinguishes the First Voices, Divine Collections,
+    Altered companions, Corrupted encounters and Ancient encounters.
+12. /guide lists real registered commands and current destinations. Item,
+    Sanctuary and perk descriptions were brought into line with their effects.
+
+Additional fixes
+Concurrent crafting, claims, item use, equipment changes, perk equipping and
+guild creation validate fresh state. Replacing armor preserves other copies.
+KO timers do not restart on every boss action, and expired companions recover.
+Achievement pages fit Discord embed limits. Windows JSON reads use UTF-8.
+Retired duplicate combat and raid implementations were removed.
+
+Verification
+55 automated tests passed, with zero failures or errors. Python compilation
+passed. All 16 Discord extensions loaded without login. All 86 artwork hashes
+match the manifest. The tests use disposable databases and mocked interactions.
+See docs/gameplay-validation.json and tests/test_gameplay.py for details.
+
+Review and deployment
+The update is saved on the local revamp/gameplay-completion branch. No remote
+push or deployment was performed. The existing live player database was not
+used for testing. Back up your deployment database before upgrading; startup
+migrations preserve existing accounts and collections. Deploy the code and
+PNG artwork together, then sync commands and playtest on a Discord server.
+Permissions, multi-player timing and long-term balance need that live test.
+
+The ZIP contains the bot, data, all 86 sprites, tests, exact art prompts, this
+report and lightweight local previews. Large standalone gallery exports and
+the historical five-design comparison are kept in the repository; rebuild
+them with the gallery scripts if needed. Player databases, secrets, caches,
+local tools and nested ZIPs are excluded.

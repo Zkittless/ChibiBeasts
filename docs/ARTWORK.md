@@ -1,7 +1,7 @@
 # Beast artwork
 
 The roster uses one isolated pixel-style PNG per beast in `data/sprites`.
-The filenames match the 82 IDs in `data/beasts.json`, including the evolved,
+The filenames match the 86 IDs in `data/beasts.json`, including the evolved,
 corrupted, ancient and altered divine forms. The former
 `void_chronosv2.png` alias is now `void_chronos.png`.
 
@@ -33,3 +33,13 @@ python scripts/build_art_gallery.py --output chibibeasts-gallery.html --standalo
 The finalizer checks completeness and PNG alpha channels and refreshes hashes;
 it does not redraw or resize images. The gallery builder only packages image
 files into HTML. Existing sprites remain recoverable through Git history.
+
+The gameplay revamp adds four distinct starter awakenings: Prismara, Timestitch,
+Nebuloom and Rootwarden. Their exact initial prompts and reference roles are
+also saved in `docs/awakening-art-prompts.json`. The main prompt record includes
+the Nebuloom background cleanup. No raster pixels were edited by scripts.
+
+`python scripts/build_revamp_preview.py` builds the four before-and-after pairs.
+Add `--standalone` to embed the original PNG bytes. Use
+`python scripts/build_art_gallery.py --output chibibeasts-gallery.html --page-size 10`
+to rebuild the paginated roster, with all 86 creatures across nine pages.

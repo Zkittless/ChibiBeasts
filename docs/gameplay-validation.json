@@ -1,0 +1,31 @@
+{
+  "checked_at_utc": "2026-10-16T23:26:19.139433+00:00",
+  "passed": true,
+  "compilation_passed": true,
+  "tests_run": 55,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "test_details": [],
+  "roster_count": 86,
+  "sprite_count": 86,
+  "sprite_hashes_valid": true,
+  "extensions": 16,
+  "coverage": [
+    "Ten chapters and all three endings, including incubating and hatching the World Tree Seed",
+    "Legacy chapter-five continuation, atomic claims and preserved evolution investments",
+    "Canonical acquisition and battle events, perk unlocks and eligible stable daily sets",
+    "Item validation, live healing, attunement, time skips, fractional shard bonuses and concurrent consumption",
+    "Runes, armor ownership, concurrent crafting, blueprints and all seven guild shop purchases",
+    "Shared combat mitigation, evasion, moves, ultimates, survival and every creature/gear combination",
+    "Interactive duel cleanup, ranked seasons, idempotent ratings and raid rewards",
+    "Raid catch guarantees, support rewards, KO recovery and interrupted-summon refunds",
+    "All 16 Discord extensions, guide command references and all 86 artwork hashes"
+  ],
+  "live_discord_tested": false,
+  "remote_pushed": false,
+  "limitations": [
+    "Local tests use disposable databases and mocked Discord interactions.",
+    "Live permissions, command sync, multi-player timing and long-term balance need a server playtest."
+  ]
+}
