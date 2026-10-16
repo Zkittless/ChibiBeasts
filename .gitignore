@@ -1,6 +1,6 @@
 # Secrets
 .env
-art-exploration/
+/art-exploration/
 
 # SQLite database (Railway gives you a persistent volume — don't ship the db file)
 data/chibibeast.db

@@ -157,3 +157,21 @@ python scripts/build_art_gallery.py --output chibibeasts-gallery.html --standalo
 The checks load all 15 extensions without connecting to Discord, verify image
 coverage and hashes, test command scope, and exercise concurrent starter claims
 against temporary databases. GitHub Actions runs the same checks on pull requests.
+
+## Saved previews and download
+
+Download or clone the repository and open the HTML files locally:
+
+- [Paginated artwork gallery](chibibeasts-gallery.html) includes all 82 beasts
+  across nine self-contained pages in `chibibeasts-gallery-pages/`.
+- [Full artwork gallery](chibibeasts-gallery-full.html) embeds the complete
+  roster in one offline HTML file (about 58 MiB).
+- [Original five-design preview](chibibeasts-preview.html) compares the first
+  concepts with the previous artwork. Its linked concepts, prompts, and
+  historical review notes are saved in `docs/art-exploration/`; those notes
+  describe the project before the completed refresh.
+- [ChibiBeasts revamp ZIP](ChibiBeasts-revamp.zip) is the verified bot source
+  snapshot with all 82 sprites, before these saved previews were added.
+
+The local `.tools` Python installation, temporary scripts, caches, environment
+secrets, and player databases are excluded from the repository.

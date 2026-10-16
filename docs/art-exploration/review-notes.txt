@@ -1,0 +1,70 @@
+ChibiBeasts — art exploration and focused review
+Date: 2026-10-16
+Repository: https://github.com/Zkittless/ChibiBeasts
+Reviewed commit: 4a31bd097eb44b3a065845acba2753c5caaf0284
+
+Scope
+Reviewed all 82 beast descriptions in data/beasts.json, the lore bible,
+the starter flow, image references, and selected existing sprites.
+This is an art-focused review, not a full gameplay or security audit.
+The bot was not started.
+
+New concepts
+prismite-v1.png — Porcelain kitten, golden diamond eyes, halo.
+twine-v1.png — Crimson thread hamster, clock gear shell.
+gloop-v1.png — Pastel galaxy slime with sparse star accents.
+barkley-v1.png — Bark-and-moss dragon hatchling, eggshell helmet.
+chronos-v1.png — Chibi Epoch Hare, moon crown and simplified clock.
+
+View preview.html for existing/new comparisons and smaller previews.
+All five PNGs were generated using built-in image_gen.
+generation-prompts.json records the exact prompts. The four later
+concepts used the new Prismite concept as their style reference.
+The prompts ask for a coarse 32 x 32 style, sparse colors and transparency.
+The delivered images are high-resolution visual concepts, not verified
+32 x 32 sprites. Generated shading, grid alignment, palette counts and
+partial edge alpha require cleanup for a strict production sprite set.
+The PNGs have alpha channels; small residual alpha values occur in some
+transparent areas. No generated image was altered after generation.
+
+Art direction
+Use simple silhouettes and a shared coarse pixel grid.
+Give every creature one or two instantly readable identity cues.
+Restrict shading and palette size during the production pass.
+Keep divine beasts companionable; express their domains through a few
+clear motifs rather than realistic anatomy and dense cosmic effects.
+For a production set, establish the native grid and palette on the first
+approved sprite, then apply those measured constraints to the roster.
+
+Confirmed loose ends
+1. Missing local copies of 13 remotely referenced images
+   data/beasts.json points at Cloudinary. data/sprites contains 69 PNGs.
+   Matching each URL filename against the local folder leaves:
+   leviathan, ascended_slime, ascended_unicorn, ascended_pegasus,
+   ascended_phoenix, radiant_goblin, radiant_imp, radiant_hydra,
+   radiant_kitsune, frost_sprite, permafrost, abyssal_eel, loom_fragment.
+   void_chronos is covered by its intentional void_chronosv2.png filename.
+   Missing local copies do not prove the remote URLs are broken.
+   Remote Cloudinary availability was not tested.
+
+2. Guild raid art is not wired up
+   cogs/guilds.py: RAID_BOSSES has six empty image_url values
+   for corrupted_leviathan, corrupted_fenrir, corrupted_dragon,
+   ancient_chronos, ancient_genesis and ancient_abyss.
+   Embeds in that cog set artwork only when image_url is nonempty.
+   cogs/ancient.py separately supplies URLs for its own ancient bosses.
+   The duplicated definitions make drift easy.
+
+3. Lore has an outdated starter implementation note
+   data/LORE.md section VI says /start still gives a random Common.
+   cogs/starter.py already offers Prismite, Twine, Gloop and Barkley.
+   Documentation should reflect that implemented flow.
+
+4. Live artwork is served from Cloudinary
+   cogs/starter.py, cogs/profile.py and other cogs embed image_url.
+   Local sprite replacement alone will not change live Discord artwork.
+   A replacement pass should track IDs, filenames, URLs, palette and
+   native sprite dimensions in one manifest.
+
+Files added only under art-exploration. Existing project artwork and code
+were not replaced. No commits were pushed and no live bot was changed.
