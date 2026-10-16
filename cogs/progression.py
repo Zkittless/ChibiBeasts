@@ -1,3 +1,4 @@
+from utils import db as storage
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -72,41 +73,9 @@ class Progression(commands.Cog):
             ) as c:
                 earned = {r["achievement_id"]: r["earned_at"] for r in await c.fetchall()}
 
-        total = len(ACHIEVEMENTS)
-        unlocked = len(earned)
-
-        embed = discord.Embed(
-            title=f"🏆 {target.display_name}'s Achievements",
-            description=(
-                f"**Progress:** `{unlocked}/{total}` unlocked\n"
-                f"*The Architects are watching. Every catch, every battle, every raid — "
-                f"it all becomes part of the weave.*"
-            ),
-            color=COLORS["legendary"]
-        )
-
-        by_tier = {t: [] for t in TIER_ORDER}
-        for aid, ach in ACHIEVEMENTS.items():
-            by_tier[ach["tier"]].append((aid, ach))
-
-        for tier in TIER_ORDER:
-            entries = by_tier[tier]
-            if not entries:
-                continue
-            lines = []
-            for aid, ach in entries:
-                if aid in earned:
-                    lines.append(f"{ach['emoji']} **{ach['name']}** — *{ach['desc']}* ✅")
-                else:
-                    lines.append(f"{ach['emoji']} ~~{ach['name']}~~ — *{ach['desc']}*")
-            embed.add_field(
-                name=f"{tier.capitalize()} Tier",
-                value="\n".join(lines),
-                inline=False
-            )
-
-        embed.set_footer(text="ChibiBeasts 🐾  •  Achievements unlock automatically as you play!")
-        await interaction.followup.send(embed=embed)
+        from utils.pages import achievement_pages,EmbedPages
+        pages=achievement_pages(target,ACHIEVEMENTS,earned)
+        await interaction.followup.send(embed=pages[0],view=EmbedPages(interaction.user.id,pages))
 
     # ── /bestiary ────────────────────────────────────────────────────────
     @app_commands.command(name="bestiary", description="View the server's beast discovery log 📖")
@@ -116,9 +85,12 @@ class Progression(commands.Cog):
         all_beasts    = load_beasts()
         guild_id      = interaction.guild.id if interaction.guild else 0
         discovered    = await get_bestiary_progress(guild_id)
+        await get_or_create_player(interaction.user.id,str(interaction.user))
+        from utils.progress import track_quest_event
+        await track_quest_event(interaction.user.id,"bestiary_check")
 
         # Load global catch counts
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT beast_id, catch_count FROM global_catch_counts") as c:
                 catch_counts = {r["beast_id"]: r["catch_count"] for r in await c.fetchall()}

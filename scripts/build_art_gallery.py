@@ -35,8 +35,10 @@ document.querySelector('#size').addEventListener('input',event=>document.documen
 document.querySelector('#background').addEventListener('click',()=>document.body.classList.toggle('dark'));filter();
 """
 
-def build(output: Path, standalone: bool):
+def build(output: Path, standalone: bool, beast_ids=None, navigation=""):
     roster = json.loads((ROOT / "data/beasts.json").read_text(encoding="utf-8"))["beasts"]
+    total_roster=len(roster)
+    if beast_ids is not None:roster={key:roster[key] for key in beast_ids}
     cards = []
     for beast_id, beast in roster.items():
         path = ROOT / "data/sprites" / f"{beast_id}.png"
@@ -60,9 +62,9 @@ def build(output: Path, standalone: bool):
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         f'<title>ChibiBeasts — complete pixel art roster</title><style>{STYLE}</style></head><body><main>'
         '<div class="eyebrow">ChibiBeasts / complete art refresh</div><h1>Meet the whole collection.</h1>'
-        f'<p class="intro">{len(roster)} creatures, one shared pixel art direction. Search by name, type, rarity or description. '
+        f'<p class="intro">{total_roster} creatures, one shared pixel art direction. Search this page by name, type, rarity or description. '
         'The starter designs you approved set the style for the rest of the collection.</p>'
-        '<div class="tools"><input id="query" type="search" placeholder="Find a beast…" aria-label="Search beasts">'
+        + navigation + '<div class="tools"><input id="query" type="search" placeholder="Find a beast…" aria-label="Search beasts">'
         f'<select id="rarity" aria-label="Filter by rarity"><option value="">All rarities</option>{options}</select>'
         '<label>Size <input id="size" type="range" min="48" max="210" value="190" aria-label="Image display size"></label>'
         '<button id="background" type="button">Light / dark backdrop</button><span id="count"></span></div>'
@@ -76,9 +78,24 @@ def build(output: Path, standalone: bool):
     output.write_text(document, encoding="utf-8")
     print(f"Saved {len(cards)}-beast gallery to {output}")
 
+
+def build_pages(output,page_size):
+    roster=json.loads((ROOT/'data/beasts.json').read_text(encoding='utf-8'))['beasts']
+    keys=list(roster);total=(len(keys)+page_size-1)//page_size
+    paths=[output]+[output.parent/'chibibeasts-gallery-pages'/f'{i+1:02}.html' for i in range(1,total)]
+    for index,path in enumerate(paths):
+        links=[]
+        for number,target in enumerate(paths,1):
+            href=os.path.relpath(target,path.parent).replace(os.sep,'/')
+            links.append(f'<strong aria-current="page">{number}</strong>' if number==index+1 else f'<a href="{escape(href,quote=True)}">{number}</a>')
+        navigation=f'<nav aria-label="Gallery pages" style="display:flex;gap:18px;flex-wrap:wrap;margin:20px 0">Pages {" ".join(links)}</nav>'
+        build(path,True,keys[index*page_size:(index+1)*page_size],navigation)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "art-exploration/gallery.html")
     parser.add_argument("--standalone", action="store_true", help="Embed image bytes so the HTML opens on its own")
+    parser.add_argument("--page-size",type=int,default=0,help="Split into self-contained pages of this many creatures")
     args = parser.parse_args()
-    build(args.output.resolve(), args.standalone)
+    if args.page_size>0:build_pages(args.output.resolve(),args.page_size)
+    else:build(args.output.resolve(), args.standalone)

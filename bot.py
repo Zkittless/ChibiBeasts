@@ -80,7 +80,9 @@ async def on_app_command_error(interaction: discord.Interaction, error: discord.
         exc_info=cause,
     )
 
-    if isinstance(cause, discord.errors.Forbidden):
+    if isinstance(cause, ValueError):
+        message = str(cause)
+    elif isinstance(cause, discord.errors.Forbidden):
         message = "✦ I'm missing permissions to do that here."
     elif isinstance(cause, discord.errors.NotFound):
         message = "✦ Couldn't find what you were looking for — it may have been deleted."

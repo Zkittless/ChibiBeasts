@@ -286,6 +286,18 @@ async def _run_migrations():
         "ALTER TABLE players ADD COLUMN contribute_last_at REAL DEFAULT 0",
         "ALTER TABLE guild_members ADD COLUMN tickets_contributed INTEGER DEFAULT 0",
         "ALTER TABLE guilds ADD COLUMN total_contributions INTEGER DEFAULT 0",
+        "ALTER TABLE player_beasts ADD COLUMN bond INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE player_beasts ADD COLUMN damage_bonus INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN divine_compass_charges INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN prism_keys INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN astral_type TEXT DEFAULT NULL",
+        "ALTER TABLE players ADD COLUMN next_defense_boost INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN next_speed_boost INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN status_ward_charges INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN raid_totem_charges INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN catch_boost_charges INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN ancient_compass_charges INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE players ADD COLUMN shard_bonus_remainder INTEGER NOT NULL DEFAULT 0",
     ]
 
     # Beast Market table
@@ -308,6 +320,39 @@ async def _run_migrations():
                 if "duplicate column name" not in str(error).lower():
                     raise
         await db.execute(MARKET_TABLE)
+        await db.executescript("""
+            CREATE TABLE IF NOT EXISTS story_claims (
+                user_id INTEGER, chapter_id TEXT, claimed_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY(user_id,chapter_id));
+            CREATE TABLE IF NOT EXISTS story_choices (
+                user_id INTEGER, chapter_id TEXT, choice TEXT,
+                PRIMARY KEY(user_id,chapter_id));
+            CREATE TABLE IF NOT EXISTS gameplay_events (
+                event_key TEXT PRIMARY KEY, user_id INTEGER, event_type TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+            CREATE TABLE IF NOT EXISTS player_progress (
+                user_id INTEGER, stat_key TEXT, value INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY(user_id,stat_key));
+            CREATE TABLE IF NOT EXISTS raid_catch_progress (
+                user_id INTEGER, beast_id TEXT, clears INTEGER DEFAULT 0,
+                PRIMARY KEY(user_id,beast_id));
+            CREATE TABLE IF NOT EXISTS game_meta (key TEXT PRIMARY KEY,value TEXT);
+            CREATE TABLE IF NOT EXISTS daily_sets(user_id INTEGER,date TEXT,quest_ids TEXT,PRIMARY KEY(user_id,date));
+            CREATE TABLE IF NOT EXISTS ranked_history (
+                season INTEGER,user_id INTEGER,rating INTEGER,wins INTEGER,losses INTEGER,
+                PRIMARY KEY(season,user_id));
+            CREATE TABLE IF NOT EXISTS ranked_matches (
+                match_id INTEGER PRIMARY KEY,season INTEGER,winner_id INTEGER,loser_id INTEGER,
+                played_at TEXT DEFAULT CURRENT_TIMESTAMP);
+            CREATE TABLE IF NOT EXISTS gameplay_grants (
+                grant_key TEXT PRIMARY KEY,user_id INTEGER,beast_row_id INTEGER);
+            CREATE TABLE IF NOT EXISTS raid_payments (
+                raid_id INTEGER PRIMARY KEY,user_id INTEGER,guild_id INTEGER,item_id TEXT,
+                refunded INTEGER DEFAULT 0);
+            CREATE TABLE IF NOT EXISTS raid_rewards (
+                raid_id INTEGER,user_id INTEGER,caught INTEGER DEFAULT 0,
+                PRIMARY KEY(raid_id,user_id));
+        """)
         # Preserve onboarding history for accounts created before this column.
         await db.execute("""
             UPDATE players SET starter_claimed = 1
@@ -352,6 +397,7 @@ async def update_player(user_id: int, **kwargs):
         await db.commit()
 
 async def get_player_beasts(user_id: int):
+    await recover_beasts(user_id)
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -362,6 +408,7 @@ async def get_player_beasts(user_id: int):
             return [dict(r) for r in rows]
 
 async def get_active_beast(user_id: int):
+    await recover_beasts(user_id)
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -372,6 +419,7 @@ async def get_active_beast(user_id: int):
 
 async def get_raid_party(user_id: int) -> list:
     """Return the player's 3 raid party beasts ordered by slot. Empty slots are None."""
+    await recover_beasts(user_id)
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
@@ -431,17 +479,18 @@ KO_RECOVERY_SECONDS = {
 }
 
 async def knockout_beast(beast_row_id: int, rarity: str):
-    """Stamp a beast as knocked out. Recovery time based on rarity."""
     from datetime import datetime, timezone, timedelta
-    seconds = KO_RECOVERY_SECONDS.get(rarity, 30 * 60)
-    if seconds == 0:
-        return  # dev beasts skip KO timer
-    recovers_at = datetime.now(timezone.utc) + timedelta(seconds=seconds)
+    seconds = KO_RECOVERY_SECONDS.get(rarity, 1800)
+    if not seconds:return
+    now=datetime.now(timezone.utc)
     async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute(
-            "UPDATE player_beasts SET knocked_out_until = ? WHERE id = ?",
-            (recovers_at.isoformat(), beast_row_id)
-        )
+        await db.execute("UPDATE player_beasts SET hp=0,knocked_out_until=? WHERE id=? AND (knocked_out_until IS NULL OR julianday(knocked_out_until)<=julianday(?))",((now+timedelta(seconds=seconds)).isoformat(),beast_row_id,now.isoformat()))
+        await db.commit()
+
+async def recover_beasts(user_id):
+    from datetime import datetime, timezone
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?)",(user_id,datetime.now(timezone.utc).isoformat()))
         await db.commit()
 
 async def revive_beast(beast_row_id: int):
@@ -494,7 +543,7 @@ def ko_time_remaining(beast_row: dict) -> str:
     except Exception:
         return ""
 
-async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool = False):
+async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool = False, grant_key=None):
     """Grant a beast atomically; each trainer can claim a starter only once."""
     from utils.dispositions import roll_disposition, apply_disposition
 
@@ -508,6 +557,10 @@ async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool =
     async with aiosqlite.connect(DB_PATH) as db:
         # Serialize number allocation and starter claims across separate views.
         await db.execute("BEGIN IMMEDIATE")
+        if grant_key:
+            async with db.execute("SELECT beast_row_id FROM gameplay_grants WHERE grant_key=? AND user_id=?",(grant_key,user_id)) as cursor:
+                previous=await cursor.fetchone()
+            if previous:return previous[0]
         if starter:
             async with db.execute(
                 "SELECT starter_claimed, EXISTS(SELECT 1 FROM player_beasts WHERE user_id = ?) "
@@ -526,7 +579,7 @@ async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool =
         ) as c:
             player_number = (await c.fetchone())[0]
 
-        await db.execute("""
+        beast_insert = await db.execute("""
             INSERT INTO player_beasts
             (user_id, beast_id, level, hp, max_hp, attack, defense, speed, mana, max_mana,
              rarity, disposition, caught_from, player_number, is_active)
@@ -543,12 +596,15 @@ async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool =
             player_number,
             int(starter),
         ))
+        new_id=beast_insert.lastrowid
         if starter:
             await db.execute("UPDATE players SET starter_claimed = 1 WHERE user_id = ?", (user_id,))
+        if grant_key:
+            await db.execute("INSERT INTO gameplay_grants VALUES(?,?,?)",(grant_key,user_id,new_id))
         await db.commit()
-        async with db.execute("SELECT last_insert_rowid()") as cursor:
-            row = await cursor.fetchone()
-            return row[0]
+    from utils.events import acquired_beast
+    await acquired_beast(user_id,new_id,beast_data,beast_data.get("caught_from","hatch"))
+    return new_id
 
 async def get_inventory(user_id: int):
     async with aiosqlite.connect(DB_PATH) as db:
@@ -560,7 +616,9 @@ async def get_inventory(user_id: int):
             return [dict(r) for r in rows]
 
 async def add_item(user_id: int, item_id: str, quantity: int = 1):
+    if quantity < 1: raise ValueError("Quantity must be positive.")
     async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("BEGIN IMMEDIATE")
         async with db.execute(
             "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
             (user_id, item_id)
@@ -579,7 +637,9 @@ async def add_item(user_id: int, item_id: str, quantity: int = 1):
         await db.commit()
 
 async def remove_item(user_id: int, item_id: str, quantity: int = 1) -> bool:
+    if quantity < 1: return False
     async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("BEGIN IMMEDIATE")
         async with db.execute(
             "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
             (user_id, item_id)
@@ -617,33 +677,16 @@ def get_beast_data(beast_id: str):
     return beasts.get(beast_id)
 
 def calc_exp_for_level(level: int) -> int:
-    """
-    EXP required to advance FROM `level` to `level+1`.
-
-    Two separate curves prevent the single-carry trap:
-    - Starters use this steeper curve (100 * level^1.5). They are long-term
-      companions and should take real investment to grow.
-    - Wild catches use calc_exp_for_level_wild() — a flatter curve that lets
-      players bring a new capture up to speed in ~12 battles at low levels,
-      so experimenting with type combinations never feels punishing.
-    """
-    return int(100 * (level ** 1.5))
-
+    """Compatibility name for the shared companion EXP curve."""
+    return calc_exp_for_level_wild(level)
 
 def calc_exp_for_level_wild(level: int) -> int:
-    """
-    Flatter EXP curve for wild-caught beasts (caught_from != 'starter').
-    Lv10 in ~12 battles, Lv15 in ~30 battles at average 32 EXP/win.
-    Players can experiment freely with type matchups without a multi-week grind.
-    """
-    return int(15 * (level ** 1.1))
+    """Companion EXP needed for the next level, for starters and wild catches."""
+    return int(15 * level ** 1.1)
 
 def calc_player_exp_for_level(level: int) -> int:
-    # Base lowered from 200 → 100 so active players reach Lv10 in ~13 days
-    # instead of ~27. The curve shape (^1.8) is unchanged — progression still
-    # accelerates naturally so mid/late game feels meaningfully harder than
-    # early game, just without the early wall that causes new player churn.
-    return int(100 * (level ** 1.8))
+    """Trainer EXP needed for the next level."""
+    return int(60 * level ** 1.45)
 
 def get_perk_slots(player_level: int) -> int:
     if player_level >= 50: return 5
@@ -685,10 +728,7 @@ async def apply_beast_levelup(db, beast_row: dict, new_level: int, new_exp: int)
     battle and the level never advanced until a single action pushed the beast
     over the threshold from scratch.
 
-    Automatically uses the wild EXP curve for non-starter beasts so callers
-    don't need to know which curve to use — the beast row's caught_from field
-    determines it. Starters use the steeper curve; everything else uses the
-    flatter wild curve that lets players experiment with type matchups freely.
+    Callers use get_beast_exp_for_level for the shared companion curve.
 
     HP clamping note: SQLite evaluates SET expressions against the original row
     values, not the intermediate state of other assignments in the same UPDATE.
@@ -731,13 +771,8 @@ async def apply_beast_levelup(db, beast_row: dict, new_level: int, new_exp: int)
 
 
 def get_beast_exp_for_level(beast_row: dict, level: int) -> int:
-    """
-    Return the correct EXP threshold for a beast's next level based on
-    whether it was a starter or wild catch. Use this everywhere instead
-    of calling calc_exp_for_level directly.
-    """
-    is_starter = beast_row.get("caught_from") == "starter"
-    return calc_exp_for_level(level) if is_starter else calc_exp_for_level_wild(level)
+    """All companions share the same progression curve, including starters."""
+    return calc_exp_for_level_wild(level)
 
 async def renumber_beasts(user_id: int) -> None:
     """Renumber all beasts sequentially (1..N) ordered by rarity then catch order (id).
@@ -765,6 +800,7 @@ async def renumber_beasts(user_id: int) -> None:
 
 async def get_beast_by_player_number(user_id: int, player_number: int) -> dict | None:
     """Resolve a player_number to a player_beasts row. Falls back to global id for old beasts."""
+    await recover_beasts(user_id)
     async with aiosqlite.connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         # Try player_number first
@@ -817,3 +853,15 @@ async def increment_catch_count(beast_id: str, rarity: str) -> tuple[int, bool]:
     count = row[0] if row else 1
     is_milestone = count in thresholds
     return count, is_milestone
+
+async def get_catch_count(beast_id,rarity):
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute("SELECT catch_count FROM global_catch_counts WHERE beast_id=?",(beast_id,)) as c:
+            row=await c.fetchone()
+    count=row[0] if row else 0
+    return count,count in MILESTONE_THRESHOLDS.get(rarity,[1,10,100])
+
+async def credit_gold(user_id,amount):
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("UPDATE players SET gold=gold+?,total_gold_earned=total_gold_earned+? WHERE user_id=?",(amount,max(0,amount),user_id))
+        await db.commit()

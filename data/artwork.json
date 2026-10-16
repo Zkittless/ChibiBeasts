@@ -576,6 +576,34 @@
       "width": 1298,
       "height": 1212,
       "source": "image_gen"
+    },
+    "prismara": {
+      "file": "prismara.png",
+      "sha256": "71bfbe41356b1aaed63e751e2129ca500915f6e899f1fb78d7a38621470f6052",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "timestitch": {
+      "file": "timestitch.png",
+      "sha256": "f4660274e2cc4595ecbf11908886b9f0d1077a326e1e0df1f64e317efb345fd9",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "nebuloom": {
+      "file": "nebuloom.png",
+      "sha256": "4ed0e424dfa03ca312de4c8b157ce7cddc01d8f6238195083cf3424d4f531b7e",
+      "width": 1536,
+      "height": 1024,
+      "source": "image_gen"
+    },
+    "rootwarden": {
+      "file": "rootwarden.png",
+      "sha256": "ceb03fa9bf7faa174c0fd0bd3c67b98fb93b67d0564a66e2a966e1ebb983c80b",
+      "width": 1312,
+      "height": 1199,
+      "source": "image_gen"
     }
   }
 }

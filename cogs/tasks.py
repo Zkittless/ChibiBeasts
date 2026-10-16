@@ -20,9 +20,22 @@ class Tasks(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.happiness_decay.start()
+        self.season_check.start()
 
     def cog_unload(self):
         self.happiness_decay.cancel()
+        self.season_check.cancel()
+
+    @tasks.loop(hours=1)
+    async def season_check(self):
+        from cogs.ranked import ensure_season
+        await ensure_season()
+
+    @season_check.before_loop
+    async def before_season(self):
+        await self.bot.wait_until_ready()
+        from utils.raids import recover_raids
+        await recover_raids()
 
     @tasks.loop(time=time(hour=0, minute=0, tzinfo=timezone.utc))
     async def happiness_decay(self):

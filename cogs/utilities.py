@@ -1,3 +1,4 @@
+from utils import db as storage
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -114,12 +115,12 @@ EVOLUTION_FORM_LABELS = {
 DB_PATH = "db/chibibeast.db"
 
 def load_equipment():
-    with open("data/equipment.json") as f:
+    with open("data/equipment.json", encoding="utf-8") as f:
         d = json.load(f)
     return d["equipment"], d["runes"]
 
 def load_materials():
-    with open("data/materials.json") as f:
+    with open("data/materials.json", encoding="utf-8") as f:
         return json.load(f)["materials"]
 
 # ── Shard Shop inventory ───────────────────────────────────────────────────────
@@ -127,7 +128,7 @@ SHARD_SHOP = {
     # ── Page 1: Utility items ────────────────────────────────────────────
     "astral_reroll": {
         "name": "🌌 Astral Reroll",
-        "desc": "Guarantees your next `/hatch` produces a specific element type of your choice.",
+        "desc": "Attune an instant hatch to your chosen element at its rolled rarity. Saved until a matching form is available.",
         "cost": 15,
         "weekly_limit": 1,
         "type": "reroll",
@@ -149,14 +150,14 @@ SHARD_SHOP = {
     # ── Page 2: Cosmetics & access ───────────────────────────────────────
     "prism_key": {
         "name": "🔑 Prism Key",
-        "desc": "Grants access to a special /explore variant in the Celestial Loom with a 30% divine rate.",
+        "desc": "Gives one Celestial Loom exploration a 30% divine rate. Used before a Divine Compass charge.",
         "cost": 30,
         "weekly_limit": 1,
         "type": "key",
     },
     "beast_rename_token": {
         "name": "✏️ Rename Token",
-        "desc": "Rename any beast — even with special characters.",
+        "desc": "Give a companion an extended nickname of up to 40 characters (free /nickname allows 20).",
         "cost": 10,
         "weekly_limit": 0,
         "type": "cosmetic",
@@ -205,7 +206,7 @@ class Utilities(commands.Cog):
         """Show equipment and runes from the player's inventory."""
         equipment, runes = load_equipment()
         all_gear = {**equipment, **runes}
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
@@ -339,79 +340,9 @@ class Utilities(commands.Cog):
                     color=COLORS["error"]
                 ))
 
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-
-            # Resolve beast by player_number
-            beast_row_data = await get_beast_by_player_number(interaction.user.id, beast_id)
-            if not beast_row_data:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ Beast `#{beast_id}` not found in your collection!", color=COLORS["error"]
-                ))
-            beast_row = beast_row_data
-            actual_id = beast_row["id"]
-
-            # Verify ownership of gear (in player_equipment or rune in inventory)
-            is_rune = gear.get("slot") == "rune"
-            if is_rune:
-                # Runes are bought and stored in player_inventory
-                async with db.execute(
-                    "SELECT quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                    (interaction.user.id, gear_id)
-                ) as c:
-                    inv_row = await c.fetchone()
-                if not inv_row or inv_row["quantity"] < 1:
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description=f"✦ You don't own a **{gear['name']}**! Buy one from `/shop` or earn it from raids.",
-                        color=COLORS["error"]
-                    ))
-                # Each beast can only have one rune
-                if beast_row.get("rune_id"):
-                    old_rune = all_gear.get(beast_row["rune_id"], {})
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description=(
-                            f"✦ This beast already has **{old_rune.get('name', beast_row['rune_id'])}** equipped.\n"
-                            f"Use `/unequip {beast_id}` first."
-                        ),
-                        color=COLORS["error"]
-                    ))
-                # Equip rune — remove from inventory, set on beast
-                await db.execute(
-                    "UPDATE player_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?",
-                    (interaction.user.id, gear_id)
-                )
-                await db.execute(
-                    "DELETE FROM player_inventory WHERE user_id = ? AND item_id = ? AND quantity <= 0",
-                    (interaction.user.id, gear_id)
-                )
-                await db.execute(
-                    "UPDATE player_beasts SET rune_id = ? WHERE id = ?",
-                    (gear_id, actual_id)
-                )
-            else:
-                # Armor: check player_equipment table for ownership
-                async with db.execute(
-                    "SELECT id FROM player_equipment WHERE user_id = ? AND equipment_id = ? AND beast_row_id IS NULL",
-                    (interaction.user.id, gear_id)
-                ) as c:
-                    gear_row = await c.fetchone()
-                if not gear_row:
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description=f"✦ You don't own **{gear['name']}**! Craft it with `/craft`.",
-                        color=COLORS["error"]
-                    ))
-                # Unequip from any other beast first
-                await db.execute(
-                    "UPDATE player_equipment SET beast_row_id = NULL WHERE user_id = ? AND equipment_id = ?",
-                    (interaction.user.id, gear_id)
-                )
-                await db.execute(
-                    "UPDATE player_equipment SET beast_row_id = ? WHERE id = ?",
-                    (actual_id, gear_row["id"])
-                )
-
-            await db.commit()
-
+        from utils.equipment import equip as equip_owned
+        try:beast_row,gear=await equip_owned(interaction.user.id,beast_id,gear_id)
+        except ValueError as error:return await interaction.followup.send(str(error))
         beast_data = get_beast_data(beast_row["beast_id"]) or {}
         beast_name = beast_row.get("nickname") or beast_data.get("name", "Beast")
 
@@ -438,85 +369,27 @@ class Utilities(commands.Cog):
         if _eq_done and interaction.channel:
             await _eqnqc(interaction.channel, _eq_done)
         await unlock_simple_achievement(interaction.user.id, "first_equip")
+        if gear.get("rarity")=="legendary":await unlock_simple_achievement(interaction.user.id,"first_legendary_gear")
         await interaction.followup.send(embed=embed)
 
     # ── /unequip ──────────────────────────────────────────────────────────
     @app_commands.command(name="unequip", description="Remove equipment from a beast 🛡️")
     @app_commands.describe(beast_id="Your beast number from /collection")
-    async def unequip(self, interaction: discord.Interaction, beast_id: int):
+    async def unequip(self,interaction:discord.Interaction,beast_id:int):
         await interaction.response.defer()
-        equipment, runes = load_equipment()
-        all_gear = {**equipment, **runes}
-
-        beast_row = await get_beast_by_player_number(interaction.user.id, beast_id)
-        if not beast_row:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Beast `#{beast_id}` not found!", color=COLORS["error"]
-            ))
-        actual_id = beast_row["id"]
-
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            removed = []
-
-            # Unequip rune → return to inventory
-            if beast_row.get("rune_id"):
-                rune_id = beast_row["rune_id"]
-                rune = all_gear.get(rune_id, {})
-                async with db.execute(
-                    "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                    (interaction.user.id, rune_id)
-                ) as c:
-                    inv = await c.fetchone()
-                if inv:
-                    await db.execute(
-                        "UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (inv["id"],)
-                    )
-                else:
-                    await db.execute(
-                        "INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)",
-                        (interaction.user.id, rune_id)
-                    )
-                await db.execute("UPDATE player_beasts SET rune_id = NULL WHERE id = ?", (actual_id,))
-                removed.append(f"🔮 {rune.get('name', rune_id)} returned to inventory")
-
-            # Unequip armor
-            async with db.execute(
-                "SELECT equipment_id FROM player_equipment WHERE beast_row_id = ? AND user_id = ?",
-                (actual_id, interaction.user.id)
-            ) as c:
-                armor_rows = [dict(r) for r in await c.fetchall()]
-            for ar in armor_rows:
-                equip_data = all_gear.get(ar["equipment_id"], {})
-                await db.execute(
-                    "UPDATE player_equipment SET beast_row_id = NULL WHERE beast_row_id = ? AND equipment_id = ?",
-                    (actual_id, ar["equipment_id"])
-                )
-                removed.append(f"⚔️ {equip_data.get('name', ar['equipment_id'])} unequipped")
-
-            await db.commit()
-
-        if not removed:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ This beast has no equipment to remove.", color=COLORS["info"]
-            ))
-
-        beast_data = get_beast_data(beast_row["beast_id"]) or {}
-        beast_name = beast_row.get("nickname") or beast_data.get("name", "Beast")
-        await interaction.followup.send(embed=discord.Embed(
-            title=f"🛡️ Equipment Removed",
-            description=f"**{beast_name}** unequipped:\n" + "\n".join(removed),
-            color=COLORS["success"]
-        ))
+        from utils.equipment import unequip as remove_gear
+        try:removed=await remove_gear(interaction.user.id,beast_id)
+        except ValueError as error:return await interaction.followup.send(str(error))
+        await interaction.followup.send(embed=discord.Embed(title="🛡️ Equipment removed",description="\n".join(removed) or "This companion has no gear to remove.",color=COLORS["success"]))
 
     # ── /sell ─────────────────────────────────────────────────────────────
     async def sell_autocomplete(self, interaction: discord.Interaction, current: str):
         """Show items and materials in inventory that can be sold."""
         items_data = load_items()
-        with open("data/materials.json") as f:
+        with open("data/materials.json", encoding="utf-8") as f:
             import json as _j
             mats_data = _j.load(f)["materials"]
-        async with aiosqlite.connect("db/chibibeast.db") as db:
+        async with aiosqlite.connect(storage.DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
@@ -545,7 +418,7 @@ class Utilities(commands.Cog):
     async def sell(self, interaction: discord.Interaction, item_name: str):
         from utils.modals import QuantityModal
 
-        with open("data/items.json") as f:
+        with open("data/items.json", encoding="utf-8") as f:
             items_data = json.load(f)["items"]
         materials = load_materials()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
@@ -576,10 +449,11 @@ class Utilities(commands.Cog):
             ), ephemeral=True)
 
         table = "player_materials" if is_material else "player_inventory"
+        key_column="material_id" if is_material else "item_id"
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
-                f"SELECT id, quantity FROM {table} WHERE user_id = ? AND item_id = ?",
+                f"SELECT id, quantity FROM {table} WHERE user_id = ? AND {key_column} = ?",
                 (interaction.user.id, item_id)
             ) as c:
                 inv_row = await c.fetchone()
@@ -599,13 +473,14 @@ class Utilities(commands.Cog):
             await modal_interaction.response.defer(ephemeral=True)
             async with aiosqlite.connect(DB_PATH) as db:
                 db.row_factory = aiosqlite.Row
+                await db.execute("BEGIN IMMEDIATE")
                 async with db.execute(
                     "SELECT 1 FROM player_perks WHERE user_id = ? AND perk_id = 'whimsy_merchant' AND equipped = 1",
                     (modal_interaction.user.id,)
                 ) as c:
                     has_merchant = await c.fetchone()
                 async with db.execute(
-                    f"SELECT id, quantity FROM {table} WHERE user_id = ? AND item_id = ?",
+                    f"SELECT id, quantity FROM {table} WHERE user_id = ? AND {key_column} = ?",
                     (modal_interaction.user.id, item_id)
                 ) as c:
                     fresh = await c.fetchone()
@@ -730,263 +605,48 @@ class Utilities(commands.Cog):
     # ── /evolve ───────────────────────────────────────────────────────────
     @app_commands.command(name="evolve", description="Evolve a beast using the right item 🌟")
     @app_commands.describe(beast_id="Your beast number from /collection")
-    async def evolve(self, interaction: discord.Interaction, beast_id: int):
+    async def evolve(self,interaction:discord.Interaction,beast_id:int):
         await interaction.response.defer()
-        all_beasts = load_beasts()
-
-        beast_row = await get_beast_by_player_number(interaction.user.id, beast_id)
-        if not beast_row:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ Beast `#{beast_id}` not found!", color=COLORS["error"]
-            ))
-        beast_data = all_beasts.get(beast_row["beast_id"])
-        if not beast_data:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Beast data not found!", color=COLORS["error"]
-            ))
-
-        evolution = beast_data.get("evolution")
-        if not evolution:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=(
-                    f"✦ **{beast_data['name']}** has no known evolution.\n"
-                    f"*Not everything the Loom wove was meant to become something else.*"
-                ),
-                color=COLORS["info"]
-            ))
-
-        level_req = evolution.get("level_required", 1)
-        if beast_row["level"] < level_req:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=(
-                    f"✦ **{beast_data['name']}** needs to be **Level {level_req}** to evolve.\n"
-                    f"Current level: `{beast_row['level']}`\n\n"
-                    f"*{evolution['description']}*"
-                ),
-                color=COLORS["error"]
-            ))
-
-        method = evolution.get("method", "sunforge_core")
-        target_id = evolution.get("evolves_to")
-        target_data = all_beasts.get(target_id)
-        if not target_data:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Evolution target data missing. Please report this.", color=COLORS["error"]
-            ))
-
-        # Check inventory for the required item
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                (interaction.user.id, method)
-            ) as c:
-                item_row = await c.fetchone()
-
-        with open("data/items.json") as f:
-            items_data = json.load(f)["items"]
-        method_item = items_data.get(method, {})
-
-        if not item_row or item_row["quantity"] < 1:
-            return await interaction.followup.send(embed=discord.Embed(
-                title=f"🌟 {beast_data['name']} Wants to Evolve...",
-                description=(
-                    f"*{evolution['description']}*\n\n"
-                    f"**Required:** 1x **{method_item.get('name', method.replace('_',' ').title())}**\n"
-                    f"**Evolves into:** {RARITY_EMOJI.get(target_data['rarity'],'⚪')} **{target_data['name']}**\n\n"
-                    f"✦ You don't have the required item. Find it in the shop or from raids."
-                ),
-                color=COLORS["epic"]
-            ))
-
-        # Perform evolution
-        async with aiosqlite.connect(DB_PATH) as db:
-            # Consume item
-            if item_row["quantity"] == 1:
-                await db.execute("DELETE FROM player_inventory WHERE id = ?", (item_row["id"],))
-            else:
-                await db.execute(
-                    "UPDATE player_inventory SET quantity = quantity - 1 WHERE id = ?",
-                    (item_row["id"],)
-                )
-
-            # Update beast_id, rarity, and reset stats to new beast's base
-            new_stats = target_data["base_stats"]
-            # Scale stats by the difference in levels the beast already has
-            from utils.db import calc_stat_growth
-            levels_above_base = max(0, beast_row["level"] - 1)
-            growth = calc_stat_growth({"rarity": target_data["rarity"]}, levels_above_base)
-            await db.execute("""
-                UPDATE player_beasts SET
-                    beast_id = ?, rarity = ?,
-                    max_hp = ?, hp = ?,
-                    attack = ?, defense = ?, speed = ?,
-                    mana = ?, max_mana = ?
-                WHERE id = ?
-            """, (
-                target_id, target_data["rarity"],
-                new_stats["hp"] + growth["hp"], new_stats["hp"] + growth["hp"],
-                new_stats["attack"] + growth["attack"],
-                new_stats["defense"] + growth["defense"],
-                new_stats["speed"] + growth["speed"],
-                new_stats["mana"] + growth["mana"],
-                new_stats["mana"] + growth["mana"],
-                beast_row["id"]
-            ))
-            await db.commit()
-
-        rarity_emoji = RARITY_EMOJI.get(target_data["rarity"], "⚪")
-        color = COLORS.get(target_data["rarity"], COLORS["legendary"])
-        form  = evolution.get("form", "")
-
-        # ── Cinematic scene (if one exists for this target) ────────────────
-        scene = EVOLUTION_SCENES.get(target_id)
-        if scene:
-            scene_embed = discord.Embed(
-                title=scene["title"],
-                description="\n\n".join(scene["lines"]),
-                color=COLORS.get(scene["color"], color)
-            )
-            if target_data.get("image_url"):
-                scene_embed.set_image(url=target_data["image_url"])
-            await interaction.followup.send(embed=scene_embed)
-
-        # ── Result embed ───────────────────────────────────────────────────
-        form_title, form_tagline = EVOLUTION_FORM_LABELS.get(form, ("🌟 Evolution!", ""))
-
-        embed = discord.Embed(
-            title=form_title,
-            description=(
-                f"{rarity_emoji} **{beast_data['name']}** → **{target_data['name']}**\n"
-                f"*{target_data['title']}*\n\n"
-                f"{target_data['description']}\n\n"
-                + (f"*{form_tagline}*" if form_tagline else "")
-            ),
-            color=color
-        )
-
-        # Stat summary
-        from utils.db import calc_stat_growth
-        levels_done = max(0, beast_row["level"] - 1)
-        growth = calc_stat_growth({"rarity": target_data["rarity"]}, levels_done)
-        new_stats = target_data["base_stats"]
-        embed.add_field(
-            name="📊 New Stats",
-            value=(
-                f"❤️ `{new_stats['hp'] + growth['hp']}HP` · "
-                f"⚔️ `{new_stats['attack'] + growth['attack']}ATK` · "
-                f"🛡️ `{new_stats['defense'] + growth['defense']}DEF` · "
-                f"💨 `{new_stats['speed'] + growth['speed']}SPD`"
-            ),
-            inline=False
-        )
-
-        if target_data.get("divine_passive"):
-            dp = target_data["divine_passive"]
-            embed.add_field(
-                name=f"✨ New Divine Passive: **{dp['passive_name']}**",
-                value=dp["passive_desc"],
-                inline=False
-            )
-
-        embed.set_footer(text="Use /beastinfo to inspect · /collection to see your full roster")
-        if target_data.get("image_url"):
-            embed.set_thumbnail(url=target_data["image_url"])
+        from utils.gameplay import evolve_beast
+        try:before,after,stats=await evolve_beast(interaction.user.id,beast_id)
+        except ValueError as error:return await interaction.followup.send(str(error))
+        embed=discord.Embed(title=f"✨ {before['name']} became {after['name']}!",description=after['description']+"\n\nYour levels, nickname, bond and earned stat investments continue with your companion.",color=COLORS["divine"])
+        scene=after.get("awakening_scene") or EVOLUTION_CINEMATICS.get(after["id"],{}).get("lines")
+        if scene:embed.add_field(name="A familiar friend",value="\n\n".join(scene)[:1024],inline=False)
+        if after.get("divine_passive"):embed.add_field(name=after["divine_passive"]["passive_name"],value=after["divine_passive"]["passive_desc"],inline=False)
+        embed.set_image(url=after["image_url"])
         await interaction.followup.send(embed=embed)
-
-        # Achievement triggers for evolution
-        await unlock_simple_achievement(interaction.user.id, "first_evolution")
-        if target_id in {"radiant_goblin","radiant_imp","radiant_hydra","radiant_kitsune"}:
-            await unlock_simple_achievement(interaction.user.id, "first_radiant")
-        if target_id in {"ascended_slime","ascended_unicorn","ascended_pegasus","ascended_phoenix"}:
-            await unlock_simple_achievement(interaction.user.id, "first_ascended")
-        unlocked = await check_achievements(interaction.user.id)
-        if unlocked and interaction.channel:
-            await notify_unlocks(interaction.channel, interaction.user, unlocked)
+        if interaction.guild:
+            from utils.progress import record_bestiary_sighting
+            await record_bestiary_sighting(interaction.guild.id,after["id"],interaction.user.id)
+        from cogs.hatch import check_collection_completion
+        await check_collection_completion(interaction,after,load_beasts())
 
 
     # ── /shard_shop ───────────────────────────────────────────────────────
 
     # ── /daily ────────────────────────────────────────────────────────────
     @app_commands.command(name="daily", description="Claim your daily reward and apply sanctuary bonuses 🌅")
-    async def daily(self, interaction: discord.Interaction):
+    async def daily(self,interaction:discord.Interaction):
         await interaction.response.defer()
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
-
-        # Daily reset check using date string in DB
-        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        uid=interaction.user.id
+        player=await get_or_create_player(uid,str(interaction.user))
+        today=datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        sanctuary=await get_user_sanctuary(uid)
+        from utils.rewards import shards
         async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT quest_id, date FROM daily_quests WHERE user_id = ? AND quest_id = 'daily_claim' ORDER BY date DESC LIMIT 1",
-                (interaction.user.id,)
-            ) as c:
-                last_claim = await c.fetchone()
-
-        if last_claim and last_claim["date"] == today:
-            next_reset = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
-            remaining = next_reset - datetime.now(timezone.utc)
-            hrs, rem = divmod(int(remaining.total_seconds()), 3600)
-            mins = rem // 60
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ You've already claimed today's daily reward!\n⏳ Next reset in `{hrs}h {mins}m`.",
-                color=COLORS["info"]
-            ))
-
-        # Base reward — 2 shards flat, scaling gold with level
-        # Flat 2 shards (not level-gated) so new players can reach the shard
-        # shop in a reasonable time. Level-scaling gold keeps the economy
-        # meaningful as trainers grow.
-        level = player.get("level", 1)
-        gold_reward  = 100 + (level * 15)
-        shard_reward = 2   # flat base — scales via quest completion bonus
-        # Astral Resonance perk: +15% shards from daily
-        async with aiosqlite.connect(DB_PATH) as _ardb:
-            _ardb.row_factory = aiosqlite.Row
-            async with _ardb.execute("SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1 AND perk_id = 'astral_resonance'", (interaction.user.id,)) as _arc:
-                if await _arc.fetchone():
-                    shard_reward = int(shard_reward * 1.15) + 1
-
-        lines = [f"+**{gold_reward:,} gold** 💰", f"+**{shard_reward} Celestial Shards** 🔮"]
-
-        async with aiosqlite.connect(DB_PATH) as db:
-            await db.execute(
-                "UPDATE players SET gold = gold + ?, celestial_shards = celestial_shards + ? WHERE user_id = ?",
-                (gold_reward, shard_reward, interaction.user.id)
-            )
-
-            # Apply Fairy Garden happiness bonus to benched beasts
-            sanctuary = await get_user_sanctuary(interaction.user.id)
-            happiness_added = 0
+            await db.execute("BEGIN IMMEDIATE")
+            claim=await db.execute("INSERT OR IGNORE INTO daily_quests(user_id,quest_id,progress,completed,date) VALUES(?,'daily_claim',1,1,?)",(uid,today))
+            if not claim.rowcount:return await interaction.followup.send("Today's reward has already been claimed. Resets at midnight UTC.")
+            gold=100+player["level"]*15
+            actual_shards=await shards(db,uid,2)
+            await db.execute("UPDATE players SET gold=gold+? WHERE user_id=?",(gold,uid))
             if sanctuary.get("fairy_garden"):
-                await db.execute(
-                    "UPDATE player_beasts SET happiness = MIN(100, happiness + 5) WHERE user_id = ? AND is_active = 0 AND happiness < 100",
-                    (interaction.user.id,)
-                )
-                async with db.execute(
-                    "SELECT COUNT(*) FROM player_beasts WHERE user_id = ? AND is_active = 0",
-                    (interaction.user.id,)
-                ) as c:
-                    count = (await c.fetchone())[0]
-                if count:
-                    happiness_added = count
-                    lines.append(f"🌸 **Fairy Garden:** +5 happiness to {count} benched beast{'s' if count != 1 else ''}")
-
-            # Mark claim
-            await db.execute(
-                "INSERT OR REPLACE INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, 'daily_claim', 1, 1, ?)",
-                (interaction.user.id, today)
-            )
+                await db.execute("UPDATE player_beasts SET happiness=MIN(100,happiness+5) WHERE user_id=? AND is_active=0",(uid,))
             await db.commit()
-
-        embed = discord.Embed(
-            title="🌅 Daily Reward Claimed!",
-            description="\n".join(lines),
-            color=COLORS["success"]
-        )
-        embed.set_footer(text="ChibiBeasts 🐾  •  Beasts lose happiness daily — build a Fairy Garden to offset it")
-        embed.set_footer(text=f"ChibiBeasts 🐾  •  Come back tomorrow! Level {level} trainer bonus applied.")
-        await interaction.followup.send(embed=embed)
+        description=f"+**{gold} gold** 💰\n+**{actual_shards} Celestial Shards** 🔮"
+        if sanctuary.get("fairy_garden"):description+="\n🌸 Fairy Garden: +5 happiness to benched companions."
+        await interaction.followup.send(embed=discord.Embed(title="🌅 Daily reward claimed",description=description,color=COLORS["success"]))
 
     # ── /stats ────────────────────────────────────────────────────────────
     @app_commands.command(name="stats", description="View server-wide ChibiBeasts statistics 📊")
@@ -1081,245 +741,38 @@ class Utilities(commands.Cog):
 
     # ── /guide ────────────────────────────────────────────────────────────
     @app_commands.command(name="guide", description="Browse all ChibiBeasts commands 📚")
-    async def help_cmd(self, interaction: discord.Interaction):
+    async def help_cmd(self,interaction:discord.Interaction):
         await interaction.response.defer()
-
-        HELP = {
-            "start": {
-                "title": "🌱 Getting Started",
-                "desc": "New to ChibiBeasts? Start here.",
-                "commands": [
-                    ("/start", "Begin your journey — choose your starter beast (Prismite, Twine, Gloop, or Barkley)"),
-                    ("/profile", "View your trainer profile, stats, and balance"),
-                    ("/daily", "Claim your daily gold and shard reward"),
-                    ("/lore", "Read the world's creation myth and story"),
-                    ("/meet", "See all the NPCs and where to find them"),
-                    ("/questline", "Track your story progress"),
-                    ("/guide", "Browse all commands by category"),
-                ]
-            },
-            "beasts": {
-                "title": "🐾 Beasts & Collection",
-                "desc": "Manage your beast collection.",
-                "commands": [
-                    ("/collection", "View all your beasts"),
-                    ("/beastinfo <id>", "Detailed stats, moves, and disposition for a beast"),
-                    ("/setactive <id>", "Set your active battle beast"),
-                    ("/nickname <id> <name>", "Give a beast a nickname"),
-                    ("/release <id>", "Release a beast for a gold refund"),
-                    ("/evolve <id>", "Evolve a beast using the required item"),
-                    ("/codex <name>", "Look up any beast's lore and stats"),
-                    ("/bestiary", "See what your server has discovered"),
-                ]
-            },
-            "battle": {
-                "title": "⚔️ Battle",
-                "desc": "PvP combat, wild battles, and NPC spars.",
-                "commands": [
-                    ("/battle @trainer",  "Challenge another trainer to a PvP beast battle"),
-                    ("/challenge <biome>","Fight a wild beast in a biome — win to catch it"),
-                    ("/sparr <npc>",      "Spar with an NPC — deepen your bond and earn shards (once per NPC/day)"),
-                    ("/leaderboard",      "Server rankings by victories"),
-                    ("/typeinfo <type>",  "Look up type matchups and advantages"),
-                ]
-            },
-            "explore": {
-                "title": "🌍 Exploration & Eggs",
-                "desc": "Explore biomes and hatch beasts.",
-                "commands": [
-                    ("/explore", "Explore a biome — find wild beasts and materials (1hr cooldown)"),
-                    ("/hatch", "Instantly hatch an egg (Common/Rare/Celestial/Abyssal)"),
-                    ("/shop eggs",        "Browse and buy instant-hatch eggs"),
-                    ("/shop incubation",  "Browse and buy incubation eggs"),
-                    ("/incubate <egg name>", "Place a named egg in incubation (timed)"),
-                    ("/eggs", "Check your incubating eggs and timers"),
-                    ("/hatchegg", "Hatch a ready incubated egg"),
-                ]
-            },
-            "craft": {
-                "title": "⚒️ Crafting & Equipment",
-                "desc": "Materials, gear, and beast equipment.",
-                "commands": [
-                    ("/materials", "View your crafting material stash"),
-                    ("/recipes", "Browse all craftable armor and rune recipes"),
-                    ("/craft <item>", "Craft an armor set from materials"),
-                    ("/equip <item> <beast_id>", "Equip armor or a rune to a beast"),
-                    ("/unequip <beast_id>", "Remove all equipment from a beast"),
-                    ("/sell <item>", "Sell items or materials for gold"),
-                ]
-            },
-            "guild": {
-                "title": "🏰 Guilds & Raids",
-                "desc": "Build a guild and take on raids.",
-                "commands": [
-                    ("/guild_create <name>", "Found a new guild (costs 2,000 gold)"),
-                    ("/guild", "View your guild info"),
-                    ("/guild_invite @member", "Invite someone to your guild"),
-                    ("/raid", "Trigger a raid boss (guild officers only)"),
-                    ("/raid_attack", "Deal damage to the active raid boss"),
-                    ("/sanctuary", "View your guild's Sanctuary upgrades"),
-                    ("/build <upgrade>", "Build a Sanctuary tier (Fairy Garden / Gnome Forge / Observatory)"),
-                ]
-            },
-            "progress": {
-                "title": "📋 Quests & Progression",
-                "desc": "Daily quests, achievements, and story.",
-                "commands": [
-                    ("/dailies", "View your daily quest progress"),
-                    ("/daily", "Claim daily reward"),
-                    ("/achievements", "View your achievement collection"),
-                    ("/questline", "Track and advance the main story questline"),
-                    ("/npc <name>", "Talk to an NPC"),
-                    ("/meet", "Overview of all NPCs and locations"),
-                ]
-            },
-            "economy": {
-                "title": "💰 Economy & Trading",
-                "desc": "Gold, shards, shop, and trading.",
-                "commands": [
-                    ("/shop", "Browse the item and egg shop"),
-                    ("/shop items",    "Browse and buy items"),
-                    ("/use <item>", "Use an item from your inventory"),
-                    ("/inventory", "View your item inventory"),
-                    ("/sell <item>", "Sell items or materials for gold"),
-                    ("/trade @trainer", "Offer a beast/gold trade to another player"),
-                    ("/perks", "View your perks"),
-                    ("/perk_equip <perk>", "Equip a perk"),
-                    ("/shard_shop", "Spend Celestial Shards on exclusive items"),
-                ]
-            },
-            "lore": {
-                "title": "📖 Lore & World",
-                "desc": "The story and the world behind it.",
-                "commands": [
-                    ("/lore <chapter>", "Read lore chapters: creation, sundering, starters, etc."),
-                    ("/codex <beast>", "In-game beast encyclopedia with type lore"),
-                    ("/typeinfo <type>", "Elemental type matchup chart"),
-                    ("/stats", "Server-wide statistics"),
-                    ("/bestiary", "Server's beast discovery log"),
-                ]
-            },
-        }
-
-        uid = interaction.user.id
-
-        HELP_OPTIONS = [
-            ("start",    "🌱", "Getting Started"),
-            ("beasts",   "🐾", "Beasts & Collection"),
-            ("battle",   "⚔️", "Battle"),
-            ("explore",  "🌍", "Exploration & Eggs"),
-            ("craft",    "⚒️", "Crafting & Equipment"),
-            ("guild",    "🏰", "Guilds & Raids"),
-            ("progress", "📋", "Quests & Progression"),
-            ("economy",  "💰", "Economy & Trading"),
-            ("lore",     "📖", "Lore & World"),
-        ]
-
-        def build_help_embed(category: str) -> discord.Embed:
-            cat = HELP.get(category, HELP["start"])
-            embed = discord.Embed(title=cat["title"], description=cat["desc"], color=COLORS["info"])
-            for cmd, desc in cat["commands"]:
-                embed.add_field(name=f"`{cmd}`", value=desc, inline=False)
-            embed.set_footer(text="ChibiBeasts 🐾")
-            return embed
-
-        class HelpView(discord.ui.View):
-            def __init__(self_v, section="start"):
-                super().__init__(timeout=180)
-                self_v.section = section
-                self_v._rebuild()
-
-            def _rebuild(self_v):
-                self_v.clear_items()
-                select = discord.ui.Select(
-                    placeholder="📚 Browse a category…",
-                    options=[
-                        discord.SelectOption(label=f"{emoji} {name}", value=key, default=key==self_v.section)
-                        for key, emoji, name in HELP_OPTIONS
-                    ],
-                    row=0
-                )
-                async def _on_select(bi):
-                    if bi.user.id != uid:
-                        return await bi.response.send_message("✦ This isn't your guide menu!", ephemeral=True)
-                    self_v.section = bi.data["values"][0]
-                    self_v._rebuild()
-                    await bi.response.edit_message(embed=build_help_embed(self_v.section), view=self_v)
-                select.callback = _on_select
-                self_v.add_item(select)
-
-        await interaction.followup.send(embed=build_help_embed("start"), view=HelpView("start"))
+        from utils.habitats import BIOMES
+        player=await get_or_create_player(interaction.user.id,str(interaction.user))
+        from utils.story import get_quest_state,load_questline
+        state=await get_quest_state(interaction.user.id)
+        next_ch=next((c for k,c in load_questline()["chapters"].items() if k not in state["completed_chapters"]),None)
+        embed=discord.Embed(title="🌱 Your next step",description=("Choose your first companion with /start." if not player.get("starter_claimed") else f"Story: {next_ch['name'] if next_ch else 'The hollow is restored'} · open /questline.\nCompanion: /bond shows your next awakening milestone."),color=COLORS["info"])
+        categories={"Adventure":"/explore — choose a habitat, every 30 minutes\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/questline · /npc · /meet · /lore", "Companions":"/collection · /beastinfo · /setactive · /nickname\n/bond · /play · /train · /evolve\n/codex · /bestiary · /typeinfo", "Eggs and items":"/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — timed eggs\n/inventory · /use [beast_number]", "Builds and trade":"/materials · /recipes · /craft · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade", "Guilds and endgame":"/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard", "Progress":"/daily · /dailies · /achievements · /profile\n/title · /history · /stats · /leaderboard · /party"}
+        for label,value in categories.items():embed.add_field(name=label,value=value,inline=False)
+        embed.add_field(name="Available destinations",value=" · ".join(b["name"] for b in BIOMES.values() if player["level"]>=b["min_level"]),inline=False)
+        await interaction.followup.send(embed=embed)
 
     # ── /title ────────────────────────────────────────────────────────────
     @app_commands.command(name="title", description="Set your active trainer title 🏷️")
     @app_commands.describe(new_title="The title to display (must be one you've earned)")
-    async def title_cmd(self, interaction: discord.Interaction, new_title: str = None):
+    async def title_cmd(self,interaction:discord.Interaction,new_title:str=None):
         await interaction.response.defer()
-
-        # Get all earned titles from achievements and questline
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT achievement_id FROM achievements WHERE user_id = ?",
-                (interaction.user.id,)
-            ) as c:
-                earned_ach = [r["achievement_id"] for r in await c.fetchall()]
-
-            async with db.execute(
-                "SELECT title FROM players WHERE user_id = ?",
-                (interaction.user.id,)
-            ) as c:
-                row = await c.fetchone()
-            current_title = row["title"] if row else None
-
-        from utils.progress import ACHIEVEMENTS
         from cogs.hatch import COLLECTION_REWARDS
-
-        TITLE_SOURCES = {}
-        for aid in earned_ach:
-            ach = ACHIEVEMENTS.get(aid, {})
-            pass  # Achievements don't have titles yet; questline and collections do
-
-        # Collection titles
-        collection_titles = {r["title"]: r["title"] for r in COLLECTION_REWARDS.values()}
-        # Questline title
-        if "loom_witness" in earned_ach:
-            collection_titles["Witness to the Loom"] = "Witness to the Loom"
-
-        all_titles = list(collection_titles.values())
-
-        if not new_title:
-            embed = discord.Embed(
-                title="🏷️ Your Trainer Titles",
-                description=f"**Current title:** *{current_title or 'None'}*\n\nUse `/title <name>` to equip one.",
-                color=COLORS["info"]
-            )
-            if all_titles:
-                embed.add_field(name="Earned titles", value="\n".join(f"• {t}" for t in all_titles), inline=False)
-            else:
-                embed.add_field(name="No titles yet", value="Complete questlines and collections to earn titles.", inline=False)
-            return await interaction.followup.send(embed=embed)
-
-        # Check if they own this title
-        matching = [t for t in all_titles if new_title.lower() in t.lower()]
-        if not matching:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ You haven't earned the title **{new_title}** yet.",
-                color=COLORS["error"]
-            ))
-
-        chosen = matching[0]
+        from utils.story import load_questline
         async with aiosqlite.connect(DB_PATH) as db:
-            await db.execute(
-                "UPDATE players SET title = ? WHERE user_id = ?",
-                (chosen, interaction.user.id)
-            )
-            await db.commit()
-
-        await interaction.followup.send(embed=discord.Embed(
-            description=f"✦ Title set to **{chosen}**. It will appear in your `/profile`.",
-            color=COLORS["success"]
-        ))
+            async with db.execute("SELECT achievement_id FROM achievements WHERE user_id=?",(interaction.user.id,)) as c:earned={r[0] for r in await c.fetchall()}
+            async with db.execute("SELECT choice FROM story_choices WHERE user_id=? AND chapter_id='chapter_10'",(interaction.user.id,)) as c:choice=await c.fetchone()
+            titles=[r["title"] for collection,r in COLLECTION_REWARDS.items() if "collection_"+collection.lower().replace(" ","_") in earned]
+            if "loom_witness" in earned:titles.append("Witness to the Loom")
+            if "guild_heart" in earned:titles.append("Guild Heart")
+            if choice:titles.append(load_questline()["chapters"]["chapter_10"]["choices"][choice[0]]["title"])
+            if not new_title:return await interaction.followup.send("Earned titles:\n"+"\n".join(titles) if titles else "Complete stories, collections or earn a Guild Crest to unlock a title.")
+            title=next((t for t in titles if t.lower()==new_title.lower()),None)
+            if not title:return await interaction.followup.send("You have not earned that title. Use /title to see yours.")
+            await db.execute("UPDATE players SET title=? WHERE user_id=?",(title,interaction.user.id));await db.commit()
+        await interaction.followup.send(f"Title equipped: {title}.")
 
     # ── /play ─────────────────────────────────────────────────────────────
     @app_commands.command(name="play", description="Spend time with your active beast to boost their happiness 😊")
@@ -1330,6 +783,7 @@ class Utilities(commands.Cog):
 
         async with aiosqlite.connect(DB_PATH) as db:
             db.row_factory = aiosqlite.Row
+            await db.execute("BEGIN IMMEDIATE")
 
             # 2 hour cooldown on /play (tracked via play_last_at)
             import time as _t
@@ -1337,7 +791,8 @@ class Utilities(commands.Cog):
             async with db.execute("SELECT play_last_at FROM players WHERE user_id = ?", (interaction.user.id,)) as c:
                 _prow = await c.fetchone()
             _play_last = float(_prow["play_last_at"]) if _prow and _prow["play_last_at"] else 0
-            _remaining = 7200 - (_now - _play_last)
+            from utils.rewards import cooldown
+            _remaining = await cooldown(db,interaction.user.id,7200) - (_now - _play_last)
             if _remaining > 0:
                 _m, _s = divmod(int(_remaining), 60)
                 return await interaction.followup.send(embed=discord.Embed(
@@ -1376,8 +831,8 @@ class Utilities(commands.Cog):
             found_item = None
             FINDABLE_ITEMS = [
                 ("brambleberries", "🫐 Brambleberries"),
-                ("star_candy", "🍬 Star-Candy"),
-                ("explore_incense", "🌿 Explore Incense"),
+                ("star_candy_shards", "🍬 Star-Candy Shards"),
+                ("spellbound_incense", "🌿 Spellbound Incense"),
             ]
             if _r.random() < ITEM_FIND_CHANCE:
                 found_item = _r.choice(FINDABLE_ITEMS)
@@ -1391,7 +846,12 @@ class Utilities(commands.Cog):
                 else:
                     await db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (interaction.user.id, found_item[0]))
 
-            await db.execute("UPDATE player_beasts SET happiness = ?, exp = ? WHERE id = ?", (new_happiness, new_exp, active["id"]))
+            from utils.db import apply_beast_levelup,get_beast_exp_for_level
+            new_level=active["level"]
+            while new_exp>=get_beast_exp_for_level(active,new_level):
+                new_exp-=get_beast_exp_for_level(active,new_level);new_level+=1
+            await apply_beast_levelup(db,active,new_level,new_exp)
+            await db.execute("UPDATE player_beasts SET happiness=? WHERE id=?",(new_happiness,active["id"]))
             await db.execute("UPDATE players SET play_last_at = ? WHERE user_id = ?", (_now, interaction.user.id))
             await db.commit()
 
@@ -1451,7 +911,7 @@ class Utilities(commands.Cog):
 
         # Track quest event
         from utils.progress import track_quest_event as _tqe, unlock_simple_achievement as _ua
-        await _tqe(interaction.user.id, "use_item")  # counts as interaction
+        await _tqe(interaction.user.id, "play",beast_row_id=active["id"])
         await _ua(interaction.user.id, "first_play") if not _play_last else None
 
     # ── /history ──────────────────────────────────────────────────────────
@@ -1896,40 +1356,6 @@ async def setup(bot: commands.Bot):
     await bot.add_cog(Utilities(bot))
 
 
-async def _handle_shard_item(db, user_id: int, sid: str, shop_item: dict) -> str:
-    """Execute the side-effect of a shard shop purchase. Returns result description string."""
-    import time as _time
-    item_type = shop_item["type"]
-    result_desc = ""
-    if item_type == "explore_boost":
-        boost_until = _time.time() + (3 * 3600)
-        await db.execute("UPDATE players SET incense_active_until = ? WHERE user_id = ?", (boost_until, user_id))
-        result_desc = "Your next 3 `/explore` runs have boosted Divine odds in the Celestial Loom!"
-    elif item_type == "incubation_skip":
-        from datetime import datetime, timezone, timedelta
-        async with db.execute(
-            "SELECT id, egg_name, ready_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY started_at ASC LIMIT 1",
-            (user_id,)
-        ) as c:
-            egg = await c.fetchone()
-        if egg:
-            new_ready = datetime.strptime(egg["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc) - timedelta(hours=6)
-            await db.execute("UPDATE incubating_eggs SET ready_at = ? WHERE id = ?", (new_ready.strftime("%Y-%m-%d %H:%M:%S"), egg["id"]))
-            result_desc = f"**{egg['egg_name']}** incubation reduced by 6 hours!"
-        else:
-            result_desc = "No eggs currently incubating — the fragment is yours to use later."
-    elif item_type == "key":
-        await db.execute("UPDATE players SET brew_active = brew_active + 1 WHERE user_id = ?", (user_id,))
-        result_desc = "Prism Key added. Your next `/explore` in the Celestial Loom will have a 30% Divine rate."
-    elif item_type in ["cosmetic", "reroll"]:
-        result_desc = f"**{shop_item['name']}** is now yours."
-    elif item_type == "grant_item":
-        grant_id = shop_item["grant_item_id"]
-        async with db.execute("SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?", (user_id, grant_id)) as c:
-            inv_row = await c.fetchone()
-        if inv_row:
-            await db.execute("UPDATE player_inventory SET quantity = quantity + 1 WHERE id = ?", (inv_row["id"],))
-        else:
-            await db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (user_id, grant_id))
-        result_desc = "Added to your inventory. Use `/ancient` to summon."
-    return result_desc
+async def _handle_shard_item(db,user_id,sid,shop_item):
+    from utils.shops import shard_effect
+    return await shard_effect(db,user_id,sid,shop_item)
