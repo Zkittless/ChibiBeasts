@@ -1,5 +1,6 @@
 # Secrets
 .env
+art-exploration/
 
 # SQLite database (Railway gives you a persistent volume — don't ship the db file)
 data/chibibeast.db
@@ -7,6 +8,10 @@ data/*.db
 data/*.db-journal
 data/*.db-wal
 data/*.db-shm
+db/*.db
+db/*.db-journal
+db/*.db-wal
+db/*.db-shm
 
 # Python
 __pycache__/

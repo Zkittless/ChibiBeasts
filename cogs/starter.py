@@ -97,7 +97,7 @@ FIRST_STEPS = [
     ("🥚", "/shop",    "Buy a Common Egg and hatch it for a new companion"),
     ("⚔️", "/sparr",   "Spar with an NPC to earn EXP and deepen your bond"),
     ("📖", "/questline","Begin the main story — follow the thread"),
-    ("📚", "/help",    "Browse all commands any time"),
+    ("📚", "/guide",   "Browse all commands any time"),
 ]
 
 
@@ -129,13 +129,13 @@ class StarterView(discord.ui.View):
 
         # ── Grant starter to player ────────────────────────────────────────
         beast_row_id = await add_beast_to_player(
-            self.trainer_id, {**starter, "caught_from": "starter"}
+            self.trainer_id, {**starter, "caught_from": "starter"}, starter=True
         )
-        async with aiosqlite.connect(DB_PATH) as db:
-            await db.execute(
-                "UPDATE player_beasts SET is_active = 1 WHERE id = ?", (beast_row_id,)
+        if beast_row_id is None:
+            return await interaction.followup.send(
+                "✦ You've already chosen your starter. Use `/profile` to see your companion.",
+                ephemeral=True,
             )
-            await db.commit()
 
         # ── Stage 1: Architect cinematic ───────────────────────────────────
         scene_embed = discord.Embed(
@@ -248,11 +248,11 @@ class Starter(commands.Cog):
 
         if player:
             existing = await get_player_beasts(interaction.user.id)
-            if existing:
+            if existing or player.get("starter_claimed"):
                 return await interaction.followup.send(embed=discord.Embed(
                     description=(
                         f"✦ You've already started your journey, **{interaction.user.display_name}**!\n"
-                        f"Use `/profile` to see your progress, or `/help` to browse all commands."
+                        f"Use `/profile` to see your progress, or `/guide` to browse all commands."
                     ),
                     color=COLORS["info"]
                 ))

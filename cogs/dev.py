@@ -2,13 +2,9 @@ import os
 """
 Developer commands for ChibiBeasts.
 
-All commands in this cog require the role ID set in the DEV_ROLE_ID
-environment variable. Set it in Railway (or .env locally) to your
-tester/admin role ID. If DEV_ROLE_ID is not set, the commands are
-disabled entirely.
-
-These commands are intentionally not listed in /help so they stay
-invisible to regular players.
+All commands require the user ID in OWNER_ID. They are registered only
+in the home server specified by GUILD_ID, and are disabled if either ID
+is missing. They are intentionally omitted from /guide.
 """
 
 import discord
@@ -670,4 +666,9 @@ class Dev(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Dev(bot))
+    owner_id = os.getenv("OWNER_ID", "0")
+    guild_id = os.getenv("GUILD_ID", "0")
+    if not owner_id.isdecimal() or not guild_id.isdecimal():
+        raise ValueError("OWNER_ID and GUILD_ID must be numeric Discord IDs.")
+    if int(owner_id) and int(guild_id):
+        await bot.add_cog(Dev(bot), guild=discord.Object(id=int(guild_id)))

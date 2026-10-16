@@ -87,7 +87,7 @@ To keep new beasts, items, and systems feeling like they belong in this world:
 
 This lore was written specifically to make the next systems easy to design honestly, rather than as decoration bolted onto mechanics that already existed. Some direct threads to pull on:
 
-- **Starters (Prismite/Twine/Gloop/Barkley):** currently `/start` hands out a random Common instead of these four. Fixing that is now also a *lore* fix, not just a code fix — these four are supposed to be the very first beasts every trainer can choose.
+- **Starters (Prismite/Twine/Gloop/Barkley):** `/start` lets every new trainer choose one of these four, with a cinematic introduction from its Architect. Each starter continues the four-sided conversation at the heart of the creation myth.
 - **Beast Dispositions/Natures:** can be framed as "how loudly your beast's Architect's original idea still echoes in them" — a Whimsical disposition leans Twine/Aspect-flavored, an Ancient disposition leans Pillar-flavored, etc. Gives the random stat-roll system actual meaning instead of being pure mechanics.
 - **Egg Incubation:** eggs can be framed as "still-weaving" beasts — narratively consistent with calling a hatch "finishing" rather than "spawning."
 - **Equipment/Crafting materials:** every material already sourced from a named beast (Dragon Scale, Phoenix Ash, etc.) is implicitly "a piece of that beast's idea, repurposed with consent" — worth a one-line crafting-flavor convention so gear never feels like trophy-hunting.

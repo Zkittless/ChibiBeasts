@@ -7,7 +7,8 @@ A creature-collector RPG Discord bot. Collect, raise, and battle ChibiBeasts acr
 - **Library:** discord.py
 - **Database:** SQLite via aiosqlite
 - **Hosting:** Railway
-- **Images:** Cloudinary (cloud: dpy3fwmkh)
+- **Beast images:** versioned PNGs in `data/sprites`, served from GitHub Raw or `BEAST_IMAGE_BASE_URL`
+- **Sanctuary images:** existing Cloudinary illustrations
 
 ## Repository Structure
 ```
@@ -37,7 +38,9 @@ utils/
   theme.py              — Colors, emojis, embed helpers
   type_chart.py         — Full type advantage/resistance matrix
 data/
-  beasts.json           — 82 beasts with stats, moves, Cloudinary image URLs
+  beasts.json           — 82 beasts with stats, moves, descriptions
+  artwork.json          — canonical sprite filenames, hashes and dimensions
+  sprites/              — complete 82-beast pixel art set
   equipment.json        — Armor and runes with recipes and effects
   items.json            — Shop items, evolution items, consumables
   materials.json        — Crafting materials and drop sources
@@ -59,7 +62,7 @@ Hosted on Railway. Environment variables required:
 ## Current State
 
 ### Beasts
-- **82 total** — all with Cloudinary image URLs
+- **82 total** — each with a local PNG and a versioned public image URL
 - Rarities: common → uncommon → rare → epic → legendary → divine → altered divine
 - Types: fire, water, ice, earth, wind, nature, arcane, shadow, cosmic, light
 - Evolution system: Radiant (items) and Ascended (Genesis Fruit from Ancient raids)
@@ -127,11 +130,30 @@ Hosted on Railway. Environment variables required:
 ### Multi-Server
 - Global command sync on startup
 - Dev commands (under `/dev` group) scoped to home guild only — invisible globally
-- `on_guild_join` auto-syncs to new servers
-- 66 user-facing commands globally, dev commands home-guild only
+- Global player commands are available in every server after sync
+- Owner-only developer commands require both `OWNER_ID` and `GUILD_ID`
 
 ## Known Architecture Notes
 - SQLite with aiosqlite — fine for current scale, migrate to PostgreSQL if `database is locked` errors appear under heavy load
 - `battle.py` has `DB_PATH` defined at module level for `run_pve_battle` (module-level function, no cog scope)
-- `utilities.py` — `_handle_shard_item` must remain AFTER `setup()` at end of file; moving it back into the class breaks all commands after it
-- All file edits should use `/mnt/user-data/outputs/battle.py` as base, not uploaded versions, to preserve accumulated fixes
+- JSON loaders use UTF-8 and resolve shared data relative to the repository root
+- Starter claims and collection-number allocation are atomic across concurrent interactions
+- A saved starter-claim flag prevents reclaiming a starter after selling or trading away a collection
+
+## Artwork and local checks
+
+See [docs/ARTWORK.md](docs/ARTWORK.md) for the sprite manifest, exact generation
+prompts, public image hosting, and the gallery builder. Deploy the refreshed
+PNGs and code together. A preview deployment can point `BEAST_IMAGE_BASE_URL`
+at its branch's `data/sprites` directory.
+
+```sh
+python -m pip install -r requirements.txt
+python -m compileall -q bot.py cogs utils scripts tests
+python -m unittest discover -s tests -v
+python scripts/build_art_gallery.py --output chibibeasts-gallery.html --standalone
+```
+
+The checks load all 15 extensions without connecting to Discord, verify image
+coverage and hashes, test command scope, and exercise concurrent starter claims
+against temporary databases. GitHub Actions runs the same checks on pull requests.

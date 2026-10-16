@@ -2,10 +2,13 @@ import discord
 from discord.ext import commands
 import os
 import asyncio
+import sys
 from dotenv import load_dotenv
 from utils.db import init_db
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 print(f"📁 Working directory: {os.getcwd()}")
 print(f"📂 Files visible: {os.listdir('.')[:8]}")
 
@@ -96,6 +99,7 @@ async def on_app_command_error(interaction: discord.Interaction, error: discord.
 
 
 async def load_cogs():
+    failures = []
     for filename in sorted(os.listdir("./cogs")):
         if filename.endswith(".py"):
             try:
@@ -103,13 +107,19 @@ async def load_cogs():
                 print(f"✅ Loaded cog: {filename}")
             except Exception as e:
                 print(f"❌ Failed to load {filename}: {e}")
+                failures.append(filename)
+    if failures:
+        raise RuntimeError(f"Cannot start with failed extensions: {', '.join(failures)}")
 
 
 async def main():
+    token = os.getenv("DISCORD_TOKEN")
+    if not token or token == "your_bot_token_here":
+        raise RuntimeError("Set DISCORD_TOKEN in .env or your hosting environment before starting the bot.")
     async with bot:
         await init_db()
         await load_cogs()
-        await bot.login(os.getenv("DISCORD_TOKEN"))
+        await bot.login(token)
 
         # Global sync — dev commands are protected by dev_only() check
         try:
@@ -121,4 +131,5 @@ async def main():
         await bot.connect()
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

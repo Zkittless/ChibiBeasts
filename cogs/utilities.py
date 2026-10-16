@@ -1079,7 +1079,7 @@ class Utilities(commands.Cog):
         embed.set_footer(text="ChibiBeasts 🐾  •  /leaderboard for individual rankings")
         await interaction.followup.send(embed=embed)
 
-    # ── /help ─────────────────────────────────────────────────────────────
+    # ── /guide ────────────────────────────────────────────────────────────
     @app_commands.command(name="guide", description="Browse all ChibiBeasts commands 📚")
     async def help_cmd(self, interaction: discord.Interaction):
         await interaction.response.defer()

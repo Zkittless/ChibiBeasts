@@ -4,6 +4,7 @@ from discord.ext import commands
 import aiosqlite
 import random
 import asyncio
+from utils.artwork import beast_image_url
 from utils.db import get_or_create_player, get_player, update_player, get_beast_data, get_active_beast, knockout_beast, revive_beast, is_knocked_out, ko_time_remaining
 from utils.theme import COLORS, RARITY_EMOJI, hp_bar, SPARKLE
 from utils.progress import (
@@ -23,34 +24,34 @@ GUILD_LEVEL_PERKS = {
 RAID_BOSSES = {
     "corrupted": [
         {"id": "corrupted_leviathan", "name": "Corrupted Leviathan", "type": "corrupted",
-         "max_hp": 50000, "attack": 800, "defense": 120, "image_url": "",
+         "max_hp": 50000, "attack": 800, "defense": 120, "image_url": beast_image_url("corrupted_leviathan"),
          "description": "A once-great sea sovereign, now twisted by dark energy into something monstrous.",
          "loot_table": ["phoenix_elixir", "luna_nectar", "star_candy_shards", "void_prism", "abyssal_scale"],
          "min_guild_level": 5},
         {"id": "corrupted_fenrir", "name": "Corrupted Fenrir", "type": "corrupted",
-         "max_hp": 45000, "attack": 900, "defense": 130, "image_url": "",
+         "max_hp": 45000, "attack": 900, "defense": 130, "image_url": beast_image_url("corrupted_fenrir"),
          "description": "The World Eater consumed by void energy, its howl now tears rifts in reality.",
          "loot_table": ["phoenix_elixir", "star_candy_shards", "void_shard", "epoch_shard"],
          "min_guild_level": 5},
         {"id": "corrupted_dragon", "name": "Corrupted Dragon", "type": "corrupted",
-         "max_hp": 55000, "attack": 850, "defense": 140, "image_url": "",
+         "max_hp": 55000, "attack": 850, "defense": 140, "image_url": beast_image_url("corrupted_dragon"),
          "description": "The apex predator twisted into a creature of pure destructive energy.",
          "loot_table": ["ambrosia_tart", "phoenix_elixir", "star_candy_shards", "firstborn_ember"],
          "min_guild_level": 5},
     ],
     "ancient": [
         {"id": "ancient_chronos", "name": "Ancient Chronos", "type": "ancient",
-         "max_hp": 150000, "attack": 2000, "defense": 300, "image_url": "",
+         "max_hp": 150000, "attack": 2000, "defense": 300, "image_url": beast_image_url("ancient_chronos"),
          "description": "The primordial form of the Epoch Hare, existing before time itself had a name.",
          "loot_table": ["genesis_fruit", "ambrosia_tart", "spirit_crystal", "star_candy_shards"],
          "altered_divine": "void_chronos", "min_guild_level": 10},
         {"id": "ancient_genesis", "name": "Ancient Genesis", "type": "ancient",
-         "max_hp": 160000, "attack": 2200, "defense": 280, "image_url": "",
+         "max_hp": 160000, "attack": 2200, "defense": 280, "image_url": beast_image_url("ancient_genesis"),
          "description": "The original Origin Phoenix, carrying the flame of the universe's first moment.",
          "loot_table": ["genesis_fruit", "ambrosia_tart", "sunforge_residue", "phoenix_ash"],
          "altered_divine": "fractured_genesis", "min_guild_level": 10},
         {"id": "ancient_abyss", "name": "Ancient Abyss", "type": "ancient",
-         "max_hp": 140000, "attack": 2100, "defense": 260, "image_url": "",
+         "max_hp": 140000, "attack": 2100, "defense": 260, "image_url": beast_image_url("ancient_abyss"),
          "description": "The Dark Matter Panther in its oldest form, a void that predates existence.",
          "loot_table": ["genesis_fruit", "ambrosia_tart", "void_essence", "void_shard"],
          "altered_divine": "abyssal_nebula", "min_guild_level": 10},

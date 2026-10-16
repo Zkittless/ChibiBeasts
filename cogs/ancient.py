@@ -19,6 +19,7 @@ from discord.ext import commands
 import aiosqlite
 import random
 import asyncio
+from utils.artwork import beast_image_url
 from utils.db import get_or_create_player, get_player, update_player, get_beast_data, get_active_beast, knockout_beast, is_knocked_out, ko_time_remaining
 from utils.theme import COLORS, RARITY_EMOJI, hp_bar
 from utils.progress import track_quest_event, unlock_simple_achievement, notify_unlocks, check_achievements
@@ -28,15 +29,15 @@ DB_PATH = "db/chibibeast.db"
 
 ANCIENT_BOSSES = [
     {"id": "ancient_chronos", "name": "Ancient Chronos", "type": "ancient",
-     "max_hp": 150000, "attack": 2000, "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ancient_chronos.png",
+     "max_hp": 150000, "attack": 2000, "image_url": beast_image_url("ancient_chronos"),
      "description": "The primordial form of Chronos, existing before time itself had a name. It doesn't govern time. It is time.",
      "loot_table": ["tear_of_leviathan", "genesis_fruit", "ambrosia_tart", "sunforge_core"]},
     {"id": "ancient_genesis", "name": "Ancient Genesis", "type": "ancient",
-     "max_hp": 160000, "attack": 2200, "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ancient_genesis.png",
+     "max_hp": 160000, "attack": 2200, "image_url": beast_image_url("ancient_genesis"),
      "description": "The original Origin Phoenix, carrying the flame of the universe's first moment. Everything alive exists because this beast once burned.",
      "loot_table": ["genesis_fruit", "singularity_soda", "tear_of_leviathan"]},
     {"id": "ancient_abyss", "name": "Ancient Abyss", "type": "ancient",
-     "max_hp": 140000, "attack": 2100, "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/ancient_abyss.png",
+     "max_hp": 140000, "attack": 2100, "image_url": beast_image_url("ancient_abyss"),
      "description": "The Dark Matter Panther in its oldest form — the void that existed before the universe had anything to put in it.",
      "loot_table": ["tear_of_leviathan", "ambrosia_tart", "genesis_fruit"]},
 ]

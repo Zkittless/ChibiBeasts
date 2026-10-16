@@ -1,10 +1,12 @@
 import aiosqlite
 import json
 import os
+from utils.artwork import PROJECT_ROOT, beast_image_url
 
 DB_PATH = "db/chibibeast.db"
 
 async def init_db():
+    os.makedirs(os.path.dirname(DB_PATH) or ".", exist_ok=True)
     async with aiosqlite.connect(DB_PATH) as db:
         await db.executescript("""
         CREATE TABLE IF NOT EXISTS players (
@@ -19,6 +21,7 @@ async def init_db():
             wins INTEGER DEFAULT 0,
             losses INTEGER DEFAULT 0,
             happiness_avg REAL DEFAULT 100.0,
+            starter_claimed INTEGER NOT NULL DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -226,7 +229,7 @@ async def init_db():
         await db.commit()
 
     await _run_migrations()
-    print("✅ Database initialized")
+    print("Database initialized")
 
 async def _run_migrations():
     """Safe schema migrations — ALTER TABLE IF NOT EXISTS equivalent via try/except.
@@ -235,6 +238,7 @@ async def _run_migrations():
         "ALTER TABLE player_beasts ADD COLUMN disposition TEXT DEFAULT NULL",
         "ALTER TABLE guilds ADD COLUMN sanctuary_tier INTEGER DEFAULT 0",
         # New player tracking columns
+        "ALTER TABLE players ADD COLUMN starter_claimed INTEGER NOT NULL DEFAULT 0",
         "ALTER TABLE players ADD COLUMN title TEXT DEFAULT NULL",
         "ALTER TABLE players ADD COLUMN explore_last_at REAL DEFAULT 0",
         "ALTER TABLE players ADD COLUMN total_catches INTEGER DEFAULT 0",
@@ -300,12 +304,20 @@ async def _run_migrations():
         for sql in migrations:
             try:
                 await db.execute(sql)
-            except Exception:
-                pass  # Column already exists — safe to skip
-        try:
-            await db.execute(MARKET_TABLE)
-        except Exception:
-            pass
+            except aiosqlite.OperationalError as error:
+                if "duplicate column name" not in str(error).lower():
+                    raise
+        await db.execute(MARKET_TABLE)
+        # Preserve onboarding history for accounts created before this column.
+        await db.execute("""
+            UPDATE players SET starter_claimed = 1
+            WHERE starter_claimed = 0 AND (
+                EXISTS (SELECT 1 FROM player_beasts WHERE player_beasts.user_id = players.user_id)
+                OR EXISTS (SELECT 1 FROM achievements
+                           WHERE achievements.user_id = players.user_id
+                           AND achievement_id = 'first_steps')
+            )
+        """)
         await db.commit()
 
 async def get_or_create_player(user_id: int, username: str):
@@ -315,7 +327,7 @@ async def get_or_create_player(user_id: int, username: str):
             player = await cursor.fetchone()
         if not player:
             await db.execute(
-                "INSERT INTO players (user_id, username) VALUES (?, ?)",
+                "INSERT OR IGNORE INTO players (user_id, username) VALUES (?, ?)",
                 (user_id, username)
             )
             await db.commit()
@@ -482,7 +494,8 @@ def ko_time_remaining(beast_row: dict) -> str:
     except Exception:
         return ""
 
-async def add_beast_to_player(user_id: int, beast_data: dict):
+async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool = False):
+    """Grant a beast atomically; each trainer can claim a starter only once."""
     from utils.dispositions import roll_disposition, apply_disposition
 
     disposition = beast_data.get("disposition")  # allow override (e.g. starters pass None)
@@ -493,6 +506,19 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
     final_stats = apply_disposition(beast_data["base_stats"], disposition)
 
     async with aiosqlite.connect(DB_PATH) as db:
+        # Serialize number allocation and starter claims across separate views.
+        await db.execute("BEGIN IMMEDIATE")
+        if starter:
+            async with db.execute(
+                "SELECT starter_claimed, EXISTS(SELECT 1 FROM player_beasts WHERE user_id = ?) "
+                "FROM players WHERE user_id = ?", (user_id, user_id)
+            ) as cursor:
+                account = await cursor.fetchone()
+                if account is None:
+                    raise ValueError("Create a trainer before claiming a starter.")
+                if account[0] or account[1]:
+                    await db.rollback()
+                    return None
         # Assign next sequential player_number for this user
         async with db.execute(
             "SELECT COALESCE(MAX(player_number), 0) + 1 FROM player_beasts WHERE user_id = ?",
@@ -503,8 +529,8 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
         await db.execute("""
             INSERT INTO player_beasts
             (user_id, beast_id, level, hp, max_hp, attack, defense, speed, mana, max_mana,
-             rarity, disposition, caught_from, player_number)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             rarity, disposition, caught_from, player_number, is_active)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             user_id, beast_data["id"], 1,
             final_stats["hp"], final_stats["hp"],
@@ -515,7 +541,10 @@ async def add_beast_to_player(user_id: int, beast_data: dict):
             disposition,
             beast_data.get("caught_from", "hatch"),
             player_number,
+            int(starter),
         ))
+        if starter:
+            await db.execute("UPDATE players SET starter_claimed = 1 WHERE user_id = ?", (user_id,))
         await db.commit()
         async with db.execute("SELECT last_insert_rowid()") as cursor:
             row = await cursor.fetchone()
@@ -569,15 +598,18 @@ async def remove_item(user_id: int, item_id: str, quantity: int = 1) -> bool:
         return True
 
 def load_beasts():
-    with open("data/beasts.json") as f:
-        return json.load(f)["beasts"]
+    with (PROJECT_ROOT / "data" / "beasts.json").open(encoding="utf-8") as f:
+        beasts = json.load(f)["beasts"]
+    for beast_id, beast in beasts.items():
+        beast["image_url"] = beast_image_url(beast_id)
+    return beasts
 
 def load_items():
-    with open("data/items.json") as f:
+    with (PROJECT_ROOT / "data" / "items.json").open(encoding="utf-8") as f:
         return json.load(f)["items"]
 
 def load_perks():
-    with open("data/perks.json") as f:
+    with (PROJECT_ROOT / "data" / "perks.json").open(encoding="utf-8") as f:
         return json.load(f)
 
 def get_beast_data(beast_id: str):

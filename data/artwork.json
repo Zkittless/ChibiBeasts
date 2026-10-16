@@ -1,0 +1,581 @@
+{
+  "style": "Chunky pixel art, based on user-approved starter concepts",
+  "generation": "built-in image_gen",
+  "grid": "Pixel-style renders; not native 32x32 exports",
+  "beasts": {
+    "fairy": {
+      "file": "fairy.png",
+      "sha256": "1794bd842b87d0203c604bf029df8c534da685d21549b049a637c6dc40032bab",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "pixie": {
+      "file": "pixie.png",
+      "sha256": "046be70f698d95ad4b906fa46f8a5a59caf9af9990d20244a4bd231402fbf1dc",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "goblin": {
+      "file": "goblin.png",
+      "sha256": "0e90c728957b88a75653f4e0d0c6515d8bb1b920feb03b441598d52192eb7fc2",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "imp": {
+      "file": "imp.png",
+      "sha256": "e7dc03a1168c5169b2c47ca55cbedd93fad0652f74dd457b5da7c8b68315932e",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "slime": {
+      "file": "slime.png",
+      "sha256": "4d8822254015a2ff57e48a6b85062eba659a500a7521a182d9847b02e50c3a40",
+      "width": 1298,
+      "height": 1212,
+      "source": "image_gen"
+    },
+    "kitsune_1": {
+      "file": "kitsune_1.png",
+      "sha256": "7c3730c52b51c3583be00083c67a78a0243f64257bb383a01625831a67f4b693",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "dryad": {
+      "file": "dryad.png",
+      "sha256": "567a74c2ba548d16963eb87a3d49e1c828f299064b109c13f590ce97c55460e9",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "hellhound": {
+      "file": "hellhound.png",
+      "sha256": "0be1e0d51a8be129d97394f606e3b51b45772fc9f8218f83b496af397c73f4fd",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "harpy": {
+      "file": "harpy.png",
+      "sha256": "5d713c437dfe551dde01e26c99937d80d9685cda2bba6df61826f64c2211c17a",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "unicorn": {
+      "file": "unicorn.png",
+      "sha256": "10473d68bb8ccbb6ca76bc4ffa0307d86ec48e2ef3ddaf90652a98da3ee085f8",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "pegasus": {
+      "file": "pegasus.png",
+      "sha256": "2fd2a413e78ffedd9a95c0694ec078f4b9c9adaeed4dfc81d4329f27bc885f0c",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "griffin": {
+      "file": "griffin.png",
+      "sha256": "477b9f8d381e7d21058b76c9dd26f8555392124b7c3d89b818f1580b26c57b14",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "basilisk": {
+      "file": "basilisk.png",
+      "sha256": "25ef85bce7a3cb66f8ba8ebc641b663532c2ad3c2a15fc3dc1e6c7530e6e3262",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "cerberus": {
+      "file": "cerberus.png",
+      "sha256": "4cafec871cef1a3f70e1beaf359cdc679afb4df6ee310073cad4d79a6c86cab6",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "wyvern": {
+      "file": "wyvern.png",
+      "sha256": "b732a6a261681637356375dcb9bc675576887b779cd45e6dc625eba71d855884",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "phoenix": {
+      "file": "phoenix.png",
+      "sha256": "ae67ce176f35fffb9b89a45814f0c7eb8de761eb5548d418a4ff904e3a12d0b8",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "thunderbird": {
+      "file": "thunderbird.png",
+      "sha256": "85969263a78e0d0d803f2e265d7d652e90b74bde08ab14c91a825f751f8c03be",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "sphinx": {
+      "file": "sphinx.png",
+      "sha256": "bb571606fdb125d6be2647c04a8077c798fc4dd765232aa3798f4f221d4dea86",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "yeti": {
+      "file": "yeti.png",
+      "sha256": "47f4f0dc2385c8b99855ac7d2df179cf10465f11322663304345fd1622383c6c",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "minotaur": {
+      "file": "minotaur.png",
+      "sha256": "b03e362335aac898714292aa987a621ab64a49892b58288a374b9bc6bcea1873",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "kitsune_9": {
+      "file": "kitsune_9.png",
+      "sha256": "8adf7187f70851c5e515f0109a41f46e0293116b9eba798931604444ff8bfa1a",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "dragon": {
+      "file": "dragon.png",
+      "sha256": "fa41b85ab24d808414841a658dd0290bfbe25bb3ad047101f2e11cc830148c9f",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "kraken": {
+      "file": "kraken.png",
+      "sha256": "0f9b25f79b2b89370bccbbeae139ffd373bb527806c1d8aaefa3cfc4e0cf700c",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "hydra": {
+      "file": "hydra.png",
+      "sha256": "b31663feb4161c4c6baad056c07475c68c5ab6ff8d8add034d4a6c6473b759ef",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "fenrir": {
+      "file": "fenrir.png",
+      "sha256": "14e7c482ef5ef472655b470e6c086bd73a15aadd5b62140bfc1bdaba57ae9e5c",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "charybdis": {
+      "file": "charybdis.png",
+      "sha256": "8bece2b646e9fa1e58394f5d79bfb14b52607e4f1996d70807b0276ba330fa82",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "leviathan": {
+      "file": "leviathan.png",
+      "sha256": "b5495ba70bee57a07c675d01d1e062a30a7481501af9e7b56fe88e66bb299810",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "singularity": {
+      "file": "singularity.png",
+      "sha256": "39a20ea1a9fcbf48f0220804d768ecdfd4499c55e21fa0a20c296a9ed2b29c0f",
+      "width": 1298,
+      "height": 1212,
+      "source": "image_gen"
+    },
+    "astraea": {
+      "file": "astraea.png",
+      "sha256": "e7c1794e475a257b37d4b84a4f89323ebe6a9dbb6d7754e5d4cf08d6116e8c95",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "chronos": {
+      "file": "chronos.png",
+      "sha256": "3f332d75eb57aae2b4558568eccd25769f6531e1aa3b809769fdb8645a05bf68",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "aetherius": {
+      "file": "aetherius.png",
+      "sha256": "d0ed352c6734b5d8ef7062f7ef6904884eb7b061f0963da6028eda42ac323fdb",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "genesis": {
+      "file": "genesis.png",
+      "sha256": "3ba584a5cecbdbd8e5540e8bb2ea8c96e0dfe4cf388433c72a91ea368610a4fa",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "terminus": {
+      "file": "terminus.png",
+      "sha256": "b77f508a838951969b1836deb7020f7d3260157331fa6c83e1de1a0424934324",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "paradox": {
+      "file": "paradox.png",
+      "sha256": "ae5d1bf83853c6e6b4e3b1450a03ed746722db806a5bb89bbae66a2b79d1cb6b",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "horizon": {
+      "file": "horizon.png",
+      "sha256": "87a78708cb58f6c173421c2b74de6411909e512065216958cf877047c01abe8e",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "karma": {
+      "file": "karma.png",
+      "sha256": "fafc7a42997e0623169c95f4338b2000d3cb4c2ef9b571e7bbcaeb20c78e22e0",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "zodiac": {
+      "file": "zodiac.png",
+      "sha256": "53d67c3335ef10aa08dffb797b77da46a2328b6ee6e5f7046855ccab8e01713f",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "abyss": {
+      "file": "abyss.png",
+      "sha256": "e9c4a0869383aa755d648551ac51a24d3d04ca977d9efc0ed379dad0f55a8ef7",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "nebula": {
+      "file": "nebula.png",
+      "sha256": "c965ffe390c17476c67136bf647c8b3e7da343e7ddf7dbb1b549ff79be9bcf18",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "supernova": {
+      "file": "supernova.png",
+      "sha256": "8d187b02ebb6939c34beefba5c413055e25c88416bab70f9c8d2b1178d5aee62",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "nirvana": {
+      "file": "nirvana.png",
+      "sha256": "4076cee35b23f1702440dc94c76cbe79ab0ffb6979652ba422b48603e494cfe6",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "asgard": {
+      "file": "asgard.png",
+      "sha256": "9fd901e66638c619b7bc86dc5ddabaf2dba99bb3eab243fdcf982e954eedb21b",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "atlas": {
+      "file": "atlas.png",
+      "sha256": "159b4d180f7b60f7f37b43b251a22564891da48cfa03d77045fec8a0aeecad1c",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "prismite": {
+      "file": "prismite.png",
+      "sha256": "ff143c7f2afe4513299809275db79b375166f09c519f5a8d0e4e172cbba9a194",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "twine": {
+      "file": "twine.png",
+      "sha256": "650246a367a8c42594cf7372904c16e648f99f909455797c95d4f631721b60af",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "gloop": {
+      "file": "gloop.png",
+      "sha256": "34e2445a08d692c8a690599937f9d6c08c1f80b804fda63233fa03e50db572c6",
+      "width": 1298,
+      "height": 1212,
+      "source": "image_gen"
+    },
+    "barkley": {
+      "file": "barkley.png",
+      "sha256": "11840cdb482e56654711bfc09a96afb3fede4651e029ef4b797a2414f9b49e09",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "centry": {
+      "file": "centry.png",
+      "sha256": "ebad10edfbd5cff9c669a0112983667dd3f52e8df69c2b4e8ed5994dd740e7fe",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "wisp": {
+      "file": "wisp.png",
+      "sha256": "563ee976db7eef610e3cb60eca39eb5cb77b7eb6000859e761ad3f073f862cee",
+      "width": 1298,
+      "height": 1212,
+      "source": "image_gen"
+    },
+    "mudpup": {
+      "file": "mudpup.png",
+      "sha256": "e2bcbdcef5402b5c5f056340c858c87d1edb57ffc0f007d80b79710fc7a2e033",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "strix": {
+      "file": "strix.png",
+      "sha256": "188b94026d1fb0152b7152a9fc319c3c61e3f47e42ae7073f6d96df29d61d374",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "kelpie": {
+      "file": "kelpie.png",
+      "sha256": "8b95342b7353d507d1153e23c169d2008ffa74f235975dba6691cddad18c2485",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "manticore": {
+      "file": "manticore.png",
+      "sha256": "ccd341910ee0183ad15215462652c3133b7e462131df35206662d6e5e089af09",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "will_o_wisp": {
+      "file": "will_o_wisp.png",
+      "sha256": "f7051bc641a70c58ebe1d4f6cc5a4a71bcd4aee20b6e1c1ce06ab3a88b12bddc",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "rukh": {
+      "file": "rukh.png",
+      "sha256": "7bc853bf6f68a20914662cd721fb9698b4c02abaf3ee92160d59f8ce72140221",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "glacius": {
+      "file": "glacius.png",
+      "sha256": "22922d902876ae5f7f46ca99d3aa19c16f15b3f5103d88e5ef38ec5870be605a",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "behemoth": {
+      "file": "behemoth.png",
+      "sha256": "a0a7367132b5694682cae14b53d8d8d0875cbae309583aaf7a31c298f03ece8f",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "wendigo": {
+      "file": "wendigo.png",
+      "sha256": "a808cd8434ad4cdd656ee934243e50e22fc6b0e7fa66c71f897eb5bcbec2f49f",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "jormungandr": {
+      "file": "jormungandr.png",
+      "sha256": "8b1497487926bb36a70ed949429f9b28b22fd59a700387fe5f149283a7fc50f5",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "simurgh": {
+      "file": "simurgh.png",
+      "sha256": "c029bb5f649d8effb4ebefa583f21c5825724057d1dd1550dd619fc6d6bdf24a",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "void_chronos": {
+      "file": "void_chronos.png",
+      "sha256": "d5a5c9ed29b3f2c214c97c0e2b49e9915cd51453655fbe266968f2f0d1da1a0d",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "fractured_genesis": {
+      "file": "fractured_genesis.png",
+      "sha256": "d5ecdd2b7bd1ef9e903b08ebe78b432767c736a6f86f0fa55bfc104b1547a9df",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "abyssal_nebula": {
+      "file": "abyssal_nebula.png",
+      "sha256": "57e7aff8761432774dedc2bb7f12db9d6811b0e11e513b400a8980a65762d2be",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "corrupted_leviathan": {
+      "file": "corrupted_leviathan.png",
+      "sha256": "bd4ca5c74e25787f03db13e3252e000971f3730f019bf6ef677046f3c5cae6e0",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "corrupted_fenrir": {
+      "file": "corrupted_fenrir.png",
+      "sha256": "e2919ace1ecd208231baeb46e804b93583227a7696de90c7c83b30ac6e389b25",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "corrupted_dragon": {
+      "file": "corrupted_dragon.png",
+      "sha256": "5ee13341751618b8856026c6752de9232e3b49ec065cfbfec2974bbf940e1487",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "ancient_chronos": {
+      "file": "ancient_chronos.png",
+      "sha256": "2c0d035bf9ec4451038ee0a91a31166b6666c4e860f7f937fa0502c9640d8c20",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "ancient_genesis": {
+      "file": "ancient_genesis.png",
+      "sha256": "044d87910a0bcc53022f6005a30ec61bbd1691066b6569c1345b156ea005ce7f",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "ancient_abyss": {
+      "file": "ancient_abyss.png",
+      "sha256": "3c0e83f4473f932603aad0690d17e2a33cba3e6a47f2d624159a7a978a00b415",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "ouroboros": {
+      "file": "ouroboros.png",
+      "sha256": "737907adda8aef19594f0cd49158cf932c057052d7b538f4438369acd1dc892a",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "ascended_slime": {
+      "file": "ascended_slime.png",
+      "sha256": "03d8c7bcdd1720739b27ee3792b4338f69e16c4541eedb2d5520a6ecfa7ec5eb",
+      "width": 1298,
+      "height": 1212,
+      "source": "image_gen"
+    },
+    "ascended_unicorn": {
+      "file": "ascended_unicorn.png",
+      "sha256": "3efa7b973a70300fcaf56105b73df7eb25e048cde1cf16223f7871236c8512fa",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "ascended_pegasus": {
+      "file": "ascended_pegasus.png",
+      "sha256": "04650ee7e2bd20e248924ba8dab86321172bfb238cd70a987dfb391dd29fc0ab",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "ascended_phoenix": {
+      "file": "ascended_phoenix.png",
+      "sha256": "38a5374f4856356bc8f1dc75dd71ab27142cb7e116e2508ecc7cb42b13b9da98",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "radiant_goblin": {
+      "file": "radiant_goblin.png",
+      "sha256": "1a934f1b18542228585b951228e444d62993dd189b8775ce75e1e7680d05ff91",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "radiant_imp": {
+      "file": "radiant_imp.png",
+      "sha256": "7589bad0a725240530596c35f20f730a5effa6c9c0bcdfc988dd4c4e355445d6",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "radiant_hydra": {
+      "file": "radiant_hydra.png",
+      "sha256": "2aba643fae3cc121c46f2f4e357154bdc03f157aadd7e7e57ab5d2e9630ac9aa",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "radiant_kitsune": {
+      "file": "radiant_kitsune.png",
+      "sha256": "645c4426dc143a9d72061a2a6c6626a14c9ff499ad1e9bab923a8db292b940fb",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "frost_sprite": {
+      "file": "frost_sprite.png",
+      "sha256": "44e6d75053317377933e3ba8b2e0a7e52fba73667960ef2147c2d617d6c0dca4",
+      "width": 1298,
+      "height": 1212,
+      "source": "image_gen"
+    },
+    "permafrost": {
+      "file": "permafrost.png",
+      "sha256": "ff17372d86263ea86f284500915c61881d6f9125ee48bf82614863f0f3a4f5c9",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "abyssal_eel": {
+      "file": "abyssal_eel.png",
+      "sha256": "1fbc0fef85a1c4499eefa6ad7fff17e78cf3516300b119e7b5a667d5febda1f8",
+      "width": 1212,
+      "height": 1298,
+      "source": "image_gen"
+    },
+    "loom_fragment": {
+      "file": "loom_fragment.png",
+      "sha256": "2b6e52d1a72b64cd2e1a41636cf1c604a3c235937a1287ec8411b2b3a4c14297",
+      "width": 1298,
+      "height": 1212,
+      "source": "image_gen"
+    }
+  }
+}

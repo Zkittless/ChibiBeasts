@@ -10,7 +10,7 @@ import json
 from utils.db import (
     get_or_create_player, get_player, update_player,
     get_active_beast, get_beast_data, calc_player_exp_for_level,
-    apply_beast_levelup, calc_exp_for_level, get_beast_exp_for_level
+    apply_beast_levelup, calc_exp_for_level, get_beast_exp_for_level, load_beasts
 )
 from utils.theme import COLORS, RARITY_EMOJI, TYPE_EMOJI, hp_bar, SPARKLE
 from utils.progress import (
@@ -1981,7 +1981,7 @@ class Battle(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        all_beasts = json.load(open("data/beasts.json"))["beasts"]
+        all_beasts = load_beasts()
         pool_weights = dict(BIOME_POOLS[biome])
         # Bias rarity pool toward player's active beast rarity — prevents trivial dead zones
         _RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine"]
@@ -2222,7 +2222,7 @@ class Battle(commands.Cog):
         scale, personality = NPC_SCALING[npc_name]
         npc_level = max(1, min(50, int(active_row["level"] * scale)))
 
-        all_beasts = json.load(open("data/beasts.json"))["beasts"]
+        all_beasts = load_beasts()
         companion_id = npc["beast_companion"]
         companion_data = all_beasts.get(companion_id, {})
         if not companion_data:
