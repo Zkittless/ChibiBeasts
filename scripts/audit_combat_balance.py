@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT))
 from utils import combat, db as storage
 from utils.catalog import load_catalog
 from utils.duels import ai_move
-from utils.raids import RaidSession
+from utils.raids import RaidSession, RaidCooldownError
 from cogs.ancient import ANCIENT_BOSSES
 from cogs.guilds import RAID_BOSSES
 from utils.type_chart import get_type_multiplier
@@ -111,9 +111,8 @@ def simulate_raid(species, level, boss, count, cadence, *, build='bare', seed=0,
                         raid.resolve_action(uid, kind)
                         actions += 1
                         swaps += kind == 'swap'
-                    except ValueError as error:
-                        if 'moment' not in str(error):
-                            raise
+                    except RaidCooldownError:
+                        pass
                 interval = max(cadence, raid.action_cooldown(uid)) if hasattr(raid, 'action_cooldown') else cadence
                 due[uid] = seconds + interval
                 if raid.enemy['hp'] <= 0:

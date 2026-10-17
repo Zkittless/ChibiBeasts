@@ -1,0 +1,25 @@
+{
+  "measured_at_utc": "2026-10-17T17:44:20.750415+00:00",
+  "environment": "Local Python 3.12; disposable SQLite WAL database, 10 trainers / 30 companions. Synthetic timings exclude Discord and network latency.",
+  "resolved_hit_all_86_species": {
+    "median_ms": 0.004,
+    "p95_ms": 0.006,
+    "samples": 2580
+  },
+  "ten_player_attack_burst": {
+    "median_ms": 403.128,
+    "p95_ms": 431.056,
+    "samples": 6,
+    "connections_per_action": 5.0
+  },
+  "ten_player_guard_burst": {
+    "median_ms": 40.728,
+    "p95_ms": 41.739,
+    "samples": 6,
+    "connections_per_action": 1.0
+  },
+  "thirty_knockouts": {
+    "elapsed_ms": 9.082,
+    "connections": 1
+  }
+}

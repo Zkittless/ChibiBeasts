@@ -4,7 +4,7 @@ import random
 import time
 import json
 import logging
-from contextlib import suppress
+from contextlib import AsyncExitStack, suppress
 import aiosqlite
 import discord
 from utils import db as storage, combat
@@ -14,6 +14,8 @@ from utils.theme import COLORS, hp_bar
 from utils.raid_balance import BOSS_INTERVAL
 active_raids = {}
 open_lobbies = set()
+RAID_IO_TIMEOUT = 15
+RAID_LOBBY_SECONDS = 60
 MECHANICS = {'corrupted_leviathan': ('Cleanse the current', 'Tainted water is gathering. Use Weave to cleanse it before the next surge.', 'cleanse'), 'corrupted_fenrir': ('Close the rift', 'A rift marks the next strike. Weave it shut or guard against the echo.', 'rift'), 'corrupted_dragon': ('Vent the flame', 'Null-flame is rising. Guard shelters you; Weave vents part of the pressure.', 'flame'), 'ancient_chronos': ('Anchor this moment', 'Chronos is recording an echo of your attacks. Guard before the echo returns; Weave weakens it.', 'echo'), 'ancient_genesis': ('Share the ember', 'An ember is seeking a place to rest. Weave together to turn the coming burst into a shield.', 'ember'), 'ancient_abyss': ('Place a guiding star', "The light is thinning. Weave guiding stars to restore everyone's attack strength.", 'stars')}
 
 async def party_rows(uid):
@@ -24,10 +26,32 @@ async def party_rows(uid):
         raise ValueError('A party companion is recovering. Use Phoenix Elixir or choose another party.')
     return rows
 
-class RaidLobby(discord.ui.View):
+class RaidCooldownError(ValueError):
+    """A valid raid input that is still recovering, rather than an invalid action."""
+
+
+class RaidControls(discord.ui.View):
+    async def on_error(self, interaction, error, item):
+        logging.getLogger(__name__).error(
+            'Raid control failed: raid=%s trainer=%s control=%s',
+            getattr(getattr(self, 'session', None), 'id', None), interaction.user.id,
+            getattr(item, 'custom_id', None), exc_info=error,
+        )
+        try:
+            async with asyncio.timeout(RAID_IO_TIMEOUT):
+                message = 'That raid action could not finish. Check the raid panel before trying again.'
+                if interaction.response.is_done():
+                    await interaction.followup.send(message, ephemeral=True)
+                else:
+                    await interaction.response.send_message(message, ephemeral=True)
+        except (discord.HTTPException, TimeoutError):
+            pass
+
+
+class RaidLobby(RaidControls):
 
     def __init__(self, owner, guild_id):
-        super().__init__(timeout=60)
+        super().__init__(timeout=RAID_LOBBY_SECONDS)
         self.owner = owner
         self.guild_id = guild_id
         self.users = {owner}
@@ -95,21 +119,37 @@ async def open_raid(interaction, boss, *, guild_id=None, summon_item=None):
         raise ValueError('A raid or lobby is already open here.')
     lobby = RaidLobby(uid, guild_id)
     open_lobbies.add(channel.id)
+    message = None
     try:
         await lobby.eligible(uid)
-        message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nUp to ten trainers. Set three healthy companions with /raidparty. Aim for a prepared party and a 5–8 minute fight; bring healing and answer the patterns.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins.", color=COLORS['legendary']), view=lobby)
-        await lobby.wait()
+        async with asyncio.timeout(RAID_IO_TIMEOUT):
+            message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nUp to ten trainers. Set three healthy companions with /raidparty. Aim for a prepared party and a 5–8 minute fight; bring healing and answer the patterns.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins.", color=COLORS['legendary']), view=lobby)
+        try:
+            # View's idle timeout resets on clicks; the advertised lobby deadline does not.
+            async with asyncio.timeout(RAID_LOBBY_SECONDS):
+                await lobby.wait()
+        except TimeoutError:
+            pass
         lobby.closed = True
+        lobby.stop()
+        async with asyncio.timeout(RAID_IO_TIMEOUT):
+            await message.edit(view=None)
+        message = None
         if lobby.cancelled:
             return
         for member in sorted(lobby.users):
             await lobby.eligible(member)
         session = RaidSession(channel, boss, lobby.users, guild_id)
-        await message.edit(view=None)
         await session.start(uid, summon_item)
         await session.run()
     finally:
+        lobby.closed = True
+        lobby.stop()
         open_lobbies.discard(channel.id)
+        if message is not None:
+            with suppress(discord.HTTPException, TimeoutError):
+                async with asyncio.timeout(RAID_IO_TIMEOUT):
+                    await message.edit(view=None)
 
 class RaidSession:
 
@@ -133,9 +173,15 @@ class RaidSession:
         self.pattern_grace = 6
         self.phase = 0
         self.message = None
-        self.tasks = []
         self._refresh_task = None
+        self._refresh_revision = 0
         self._render_lock = asyncio.Lock()
+        self._finish_task = None
+        self._finished = asyncio.Event()
+        self._display_error = None
+        self._pattern_needs_publish = False
+        self._participated = set()
+        self._progress_locks = {uid: asyncio.Lock() for uid in self.users}
         self.refresh_interval = 1.5
         self.totems = {}
         self.clock = time.monotonic
@@ -238,24 +284,48 @@ class RaidSession:
         lines = []
         for uid in self.users:
             state = self.state(uid)
-            lines.append(f"<@{uid}> · {state['name']} · {state['hp']}/{state['max_hp']} HP · {state['mana']} MP · {self.action_cooldown(uid):.1f}s actions · {self.damage[uid]} damage / {self.support[uid]} support")
-        embed.add_field(name='Companions', value='\n'.join(lines)[:1024], inline=False)
+            name = discord.utils.escape_markdown(state['name'])
+            lines.append(f"<@{uid}> · **{name}**\n{state['hp']}/{state['max_hp']} HP · {state['mana']}/{state['max_mana']} MP · ⚡ {state.get('ultimate_charges', 0)}/3 · {self.action_cooldown(uid):.1f}s actions · {self.damage[uid]} damage / {self.support[uid]} support")
+        chunk = ''
+        for line in lines:
+            if len(chunk) + len(line) + 2 > 1024:
+                embed.add_field(name='Companions' if not embed.fields else 'Companions (continued)', value=chunk, inline=False)
+                chunk = ''
+            chunk += ('\n\n' if chunk else '') + line
+        if chunk:
+            embed.add_field(name='Companions' if not embed.fields else 'Companions (continued)', value=chunk, inline=False)
         embed.set_image(url=self.boss['image_url'])
         embed.set_footer(text='Weave answers patterns · Tend heals · Speed controls action recovery · Bosses resist repeated stuns')
         return embed
 
     async def refresh(self):
-        if not self.closed and self.message and (self._refresh_task is None or self._refresh_task.done()):
-            self._refresh_task = asyncio.create_task(self._flush_refresh())
+        if not self.closed and self.message:
+            self._refresh_revision += 1
+            if self._refresh_task is None or self._refresh_task.done():
+                self._refresh_task = asyncio.create_task(self._flush_refresh())
 
     async def _flush_refresh(self):
-        await asyncio.sleep(self.refresh_interval)
-        async with self._render_lock:
-            if not self.closed and self.message:
+        while not self.closed and self.message:
+            await asyncio.sleep(self.refresh_interval)
+            async with self._render_lock:
+                if self.closed or not self.message:
+                    return
+                revision, phase = self._refresh_revision, self.phase
                 try:
-                    await self.message.edit(embed=self.embed(), view=self.view)
+                    async with asyncio.timeout(RAID_IO_TIMEOUT):
+                        await self.message.edit(embed=self.embed(), view=self.view)
+                    if self.pending and self.phase == phase and self._pattern_needs_publish:
+                        # The full response window starts when the warning is visible.
+                        self.pattern_started = self.clock()
+                        self._pattern_needs_publish = False
+                except (discord.NotFound, discord.Forbidden, TimeoutError):
+                    self._display_error = ValueError('The raid panel is unavailable. This raid has closed; check /profile before starting another.')
+                    self._finished.set()
+                    return
                 except discord.HTTPException:
                     logging.getLogger(__name__).warning('Raid display update failed', exc_info=True)
+                if revision == self._refresh_revision:
+                    return
 
     async def _stop_refresh(self):
         if self._refresh_task is not None:
@@ -268,9 +338,17 @@ class RaidSession:
         self.view = RaidView(self)
         self.started = self.clock()
         try:
-            self.message = await self.channel.send(embed=self.embed(), view=self.view)
+            async with asyncio.timeout(RAID_IO_TIMEOUT):
+                self.message = await self.channel.send(embed=self.embed(), view=self.view)
             while not self.closed and self.clock() - self.started < 600:
-                await asyncio.sleep(BOSS_INTERVAL)
+                try:
+                    async with asyncio.timeout(min(BOSS_INTERVAL, max(0, 600 - (self.clock() - self.started)))):
+                        await self._finished.wait()
+                    if self._display_error:
+                        raise self._display_error
+                    break
+                except TimeoutError:
+                    pass
                 async with self.lock, combat.lock_states(self.users):
                     if self.closed:
                         break
@@ -283,13 +361,32 @@ class RaidSession:
                 if not any(s['hp'] > 0 for party in self.party.values() for s in party):
                     await self.finish(False)
             if not self.closed:
-                await self.finish(False)
+                await self.finish(self.enemy['hp'] <= 0)
+            if self._finish_task is not None:
+                await asyncio.shield(self._finish_task)
         except BaseException:
             # A recorded victory is resumed on restart; an unstarted/failed session is refunded.
+            async with self.lock, combat.lock_states(self.users):
+                won = self.enemy['hp'] <= 0
+                if not won and self._finish_task is None:
+                    self.closed = True
+                    for party in self.party.values():
+                        for state in party:
+                            state['closed'] = True
+            if won and self._finish_task is None:
+                with suppress(Exception):
+                    await self.finish(True)
+            if self._finish_task is not None:
+                with suppress(Exception):
+                    await asyncio.shield(self._finish_task)
+            await self._wait_for_progress()
             await refund_raid(self.id)
             raise
         finally:
             self.closed = True
+            for party in self.party.values():
+                for state in party:
+                    state['closed'] = True
             try:
                 await self._stop_refresh()
             finally:
@@ -313,7 +410,7 @@ class RaidSession:
             combat.end_turn(self.enemy, self.state(alive[0]), log)
             self.last_event = ' · '.join(log[-2:]) or 'The creature pauses.'
             return
-        ready_pattern = self.pending and self.clock() - self.pattern_started >= self.pattern_grace
+        ready_pattern = self.pending and not self._pattern_needs_publish and self.clock() - self.pattern_started >= self.pattern_grace
         if ready_pattern:
             kind = MECHANICS[self.boss['id']][2]
             required = self.weave_required()
@@ -349,15 +446,13 @@ class RaidSession:
         combat.end_turn(self.enemy, self.state(alive[0]), [])
 
     async def record_knockouts(self):
-        for uid in self.users:
-            for state in self.party[uid]:
-                if state['hp'] <= 0 and (not state.get('ko_recorded')):
-                    state['ko_recorded'] = True
-                    async with storage.connect() as db:
-                        async with db.execute('SELECT rarity FROM player_beasts WHERE id=?', (state['id'],)) as c:
-                            row = await c.fetchone()
-                    if row:
-                        await storage.knockout_beast(state['id'], row[0])
+        knocked_out = [state for uid in self.users for state in self.party[uid]
+                       if state['hp'] <= 0 and not state.get('ko_recorded')]
+        if knocked_out:
+            await storage.knockout_beasts((state['id'], state['rarity']) for state in knocked_out)
+            # A failed commit leaves these eligible for the next tick's retry.
+            for state in knocked_out:
+                state['ko_recorded'] = True
 
     async def action(self, uid, kind):
         if uid not in self.party:
@@ -365,19 +460,25 @@ class RaidSession:
         async with self.lock, combat.lock_states(self.users):
             damage, defeated = self.resolve_action(uid, kind)
             await self.record_knockouts()
+            # Keep snapshots ordered with combat. A delayed older callback must
+            # never overwrite the final boss HP or a newer contribution total.
+            async with storage.connect() as db:
+                await db.execute('INSERT INTO raid_participants VALUES(?,?,?) ON CONFLICT(raid_id,user_id) DO UPDATE SET damage_dealt=excluded.damage_dealt', (self.id, uid, self.damage[uid]))
+                await db.execute('UPDATE raids SET current_hp=? WHERE id=?', (self.enemy['hp'], self.id))
+                await db.commit()
         from utils.progress import track_quest_event
-        if kind not in {'swap'}:
-            await track_quest_event(uid, 'raid_attack', event_key=f'raid-join:{self.id}:{uid}')
-        if damage:
-            await track_quest_event(uid, 'raid_damage', amount=damage)
-        async with storage.connect() as db:
-            await db.execute('INSERT INTO raid_participants VALUES(?,?,?) ON CONFLICT(raid_id,user_id) DO UPDATE SET damage_dealt=excluded.damage_dealt', (self.id, uid, self.damage[uid]))
-            await db.execute('UPDATE raids SET current_hp=? WHERE id=?', (self.enemy['hp'], self.id))
-            await db.commit()
-        if defeated:
-            await self.finish(True)
-        else:
-            await self.refresh()
+        try:
+            async with self._progress_locks[uid]:
+                if kind != 'swap' and uid not in self._participated:
+                    await track_quest_event(uid, 'raid_attack', event_key=f'raid-join:{self.id}:{uid}')
+                    self._participated.add(uid)
+                if damage:
+                    await track_quest_event(uid, 'raid_damage', amount=damage)
+        finally:
+            if defeated:
+                await self.finish(True)
+            else:
+                await self.refresh()
 
     def resolve_action(self, uid, kind):
         """Resolve one validated input; caller owns locks and persistence."""
@@ -385,17 +486,22 @@ class RaidSession:
             raise ValueError('Join the lobby before the raid begins.')
         if self.closed or (hasattr(self, 'enemy') and self.enemy['hp'] <= 0):
             raise ValueError('This raid is complete.')
+        if kind not in {'attack', 'skill', 'guard', 'ultimate', 'swap', 'weave', 'tend'}:
+            raise ValueError('Choose an action from the raid controls.')
         state = self.state(uid)
         if state['hp'] <= 0 and kind != 'swap':
             raise ValueError('Swap to a healthy bench companion.')
-        cooldown = 8 if kind in {'weave', 'tend'} else self.action_cooldown(uid)
-        if self.clock() - self.last.get((uid, kind if kind in {'weave', 'tend'} else 'action'), 0) < cooldown:
-            raise ValueError('Give your companion a moment before that action.')
         key = (uid, kind if kind in {'weave', 'tend'} else 'action')
+        cooldown = 8 if kind in {'weave', 'tend'} else self.action_cooldown(uid)
+        last = self.last.get(key)
+        if last is not None and (remaining := cooldown - (self.clock() - last)) > 0:
+            raise RaidCooldownError(f'Your companion is ready for that action in {max(.1, remaining):.1f}s.')
         log = []
         damage = 0
         if kind == 'swap':
-            options = [i for i, s in enumerate(self.party[uid]) if i != self.slots[uid] and s['hp'] > 0]
+            count = len(self.party[uid])
+            options = [(self.slots[uid] + offset) % count for offset in range(1, count)
+                       if self.party[uid][(self.slots[uid] + offset) % count]['hp'] > 0]
             if not options:
                 raise ValueError('No healthy companion remains on the bench.')
             self.slots[uid] = options[0]
@@ -457,15 +563,35 @@ class RaidSession:
             self.weaves = 0
             self.weavers.clear()
             self.pattern_started = self.clock()
+            self._pattern_needs_publish = bool(self.message)
             self.last_event = MECHANICS[self.boss['id']][1]
         defeated = self.enemy['hp'] <= 0
         return damage, defeated
 
     async def finish(self, victory):
+        # A callback can be cancelled independently of the command's raid runner.
+        # One shielded settlement task owns the result; every caller waits for it.
+        if self._finish_task is None:
+            self._finish_task = asyncio.create_task(self._finish_and_signal(victory))
+        return await asyncio.shield(self._finish_task)
+
+    async def _finish_and_signal(self, victory):
+        try:
+            await self._finish(victory)
+        finally:
+            self._finished.set()
+
+    async def _wait_for_progress(self):
+        async with AsyncExitStack() as stack:
+            for uid in self.users:
+                await stack.enter_async_context(self._progress_locks[uid])
+
+    async def _finish(self, victory):
         async with self.lock, combat.lock_states(self.users):
             if self.closed:
                 return
             self.closed = True
+            await self.record_knockouts()
             for party in self.party.values():
                 for state in party:
                     state['closed'] = True
@@ -483,29 +609,40 @@ class RaidSession:
                 await db.execute('INSERT OR IGNORE INTO raid_settlements(raid_id,payload) VALUES(?,?)', (self.id, json.dumps(payload)))
                 await db.execute("UPDATE raids SET status='settling' WHERE id=?", (self.id,))
                 await db.commit()
+            # Save the victory first so restart recovery can resume it. Then let
+            # resolved damage events finish before raid_complete advances story.
+            await self._wait_for_progress()
             lines = await self._settle_rewards(payload['server_id'])
         else:
+            await self._wait_for_progress()
             async with storage.connect() as db:
                 await db.execute("UPDATE raids SET status='failed',ended_at=CURRENT_TIMESTAMP WHERE id=?", (self.id,))
                 await db.commit()
             lines = []
-        if getattr(self, 'view', None):
-            self.view.stop()
         # Reward settlement precedes every Discord edit/send; deleted messages cannot eat rewards.
         try:
-            async with self._render_lock:
-                if self.message:
-                    await self.message.edit(embed=self.embed(), view=None)
-            if not victory:
-                await self.channel.send('The companions step back. The stitch can wait while they recover. No catch progress was lost.')
-                return
-            from cogs.guilds import BOSS_KILL_SCENES
-            scene = BOSS_KILL_SCENES.get(self.boss['id'])
-            if scene:
-                await self.channel.send(embed=discord.Embed(title=scene['title'], description='\n\n'.join(scene['lines']), color=COLORS['legendary']))
-            await self.channel.send(embed=discord.Embed(title='🌱 The weave settles', description='\n'.join(lines)[:3700] + '\n\nEvery active contributor earns rewards, including support. Catch progress guarantees a companion after enough successful rescues.', color=COLORS['success']))
-        except discord.HTTPException:
+            async with asyncio.timeout(RAID_IO_TIMEOUT):
+                async with self._render_lock:
+                    if self.message:
+                        try:
+                            await self.message.edit(embed=self.embed(), view=None)
+                        except discord.NotFound:
+                            logging.getLogger(__name__).info('Raid panel %s was already removed; rewards are saved', getattr(self.message, 'id', None))
+                        except discord.HTTPException:
+                            logging.getLogger(__name__).warning('Raid rewards saved, but closed controls could not be removed', exc_info=True)
+                if not victory:
+                    await self.channel.send('The companions step back. The stitch can wait while they recover. No catch progress was lost.')
+                    return
+                from cogs.guilds import BOSS_KILL_SCENES
+                scene = BOSS_KILL_SCENES.get(self.boss['id'])
+                if scene:
+                    await self.channel.send(embed=discord.Embed(title=scene['title'], description='\n\n'.join(scene['lines']), color=COLORS['legendary']))
+                await self.channel.send(embed=discord.Embed(title='🌱 The weave settles', description='\n'.join(lines)[:3700] + '\n\nEvery active contributor earns rewards, including support. Catch progress guarantees a companion after enough successful rescues.', color=COLORS['success']))
+        except (discord.HTTPException, TimeoutError):
             logging.getLogger(__name__).warning('Raid rewards saved, but the result message could not be sent', exc_info=True)
+        finally:
+            if getattr(self, 'view', None):
+                self.view.stop()
 
     async def _settle_rewards(self, server_id):
         from utils.progress import track_quest_event, record_bestiary_sighting
@@ -596,7 +733,7 @@ class RaidSession:
                 await track_quest_event(uid, 'beast_level_up', amount=len(json.loads(details['beast_levels'])), event_key=f'raid-levels:{self.id}:{uid}')
         return (caught, 0 if caught else clears)
 
-class RaidView(discord.ui.View):
+class RaidView(RaidControls):
 
     def __init__(self, session):
         super().__init__(timeout=None)

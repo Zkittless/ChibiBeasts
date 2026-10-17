@@ -529,12 +529,19 @@ KO_RECOVERY_SECONDS = {
 }
 
 async def knockout_beast(beast_row_id: int, rarity: str):
+    await knockout_beasts([(beast_row_id, rarity)])
+
+async def knockout_beasts(beasts):
+    """Persist a volley's knockouts together without extending existing timers."""
     from datetime import datetime, timezone, timedelta
-    seconds = KO_RECOVERY_SECONDS.get(rarity, 1800)
-    if not seconds:return
     now=datetime.now(timezone.utc)
+    updates = [((now + timedelta(seconds=seconds)).isoformat(), row_id, now.isoformat())
+               for row_id, rarity in beasts
+               if (seconds := KO_RECOVERY_SECONDS.get(rarity, 1800))]
+    if not updates:
+        return
     async with connect(DB_PATH) as db:
-        await db.execute("UPDATE player_beasts SET hp=0,knocked_out_until=? WHERE id=? AND (knocked_out_until IS NULL OR julianday(knocked_out_until)<=julianday(?))",((now+timedelta(seconds=seconds)).isoformat(),beast_row_id,now.isoformat()))
+        await db.executemany("UPDATE player_beasts SET hp=0,knocked_out_until=? WHERE id=? AND (knocked_out_until IS NULL OR julianday(knocked_out_until)<=julianday(?))", updates)
         await db.commit()
 
 async def recover_beasts(user_id,db=None):
