@@ -1,0 +1,443 @@
+{
+  "version": 1,
+  "portrait_size": [
+    768,
+    448
+  ],
+  "beasts": {
+    "abyss": {
+      "file": "card_art/abyss.png",
+      "sha256": "185b0280955630ac51430e71e1fa1521423ed708f61326d0baf288ba983a2e17",
+      "source_sha256": "e9c4a0869383aa755d648551ac51a24d3d04ca977d9efc0ed379dad0f55a8ef7"
+    },
+    "abyssal_eel": {
+      "file": "card_art/abyssal_eel.png",
+      "sha256": "a9c8a3c62b5a324e80619f291cc6fefb76e4d2cedfe5c5bec09712eab93ebd15",
+      "source_sha256": "1fbc0fef85a1c4499eefa6ad7fff17e78cf3516300b119e7b5a667d5febda1f8"
+    },
+    "abyssal_nebula": {
+      "file": "card_art/abyssal_nebula.png",
+      "sha256": "48b0dec64157ea0b809bf144aba67f5d293b5570a3de92922ec92ed75730090b",
+      "source_sha256": "57e7aff8761432774dedc2bb7f12db9d6811b0e11e513b400a8980a65762d2be"
+    },
+    "aetherius": {
+      "file": "card_art/aetherius.png",
+      "sha256": "a45f1d81b7d9bf92ae4cf5c02e1a83a9e084cde089bf7ad0140abd94195492b6",
+      "source_sha256": "d0ed352c6734b5d8ef7062f7ef6904884eb7b061f0963da6028eda42ac323fdb"
+    },
+    "ancient_abyss": {
+      "file": "card_art/ancient_abyss.png",
+      "sha256": "3862f9d6967acc1f57a448125ae32040771ef8204f289dbd4371c082a9e2de1f",
+      "source_sha256": "3c0e83f4473f932603aad0690d17e2a33cba3e6a47f2d624159a7a978a00b415"
+    },
+    "ancient_chronos": {
+      "file": "card_art/ancient_chronos.png",
+      "sha256": "31c094aca90b071ef34281ff29d180217b0b63c1448a735449b8262c5dd3857d",
+      "source_sha256": "2c0d035bf9ec4451038ee0a91a31166b6666c4e860f7f937fa0502c9640d8c20"
+    },
+    "ancient_genesis": {
+      "file": "card_art/ancient_genesis.png",
+      "sha256": "c9799f73cfbd66607d973a020423c3ed83b1768dfe226710c0780393b6c63fe3",
+      "source_sha256": "044d87910a0bcc53022f6005a30ec61bbd1691066b6569c1345b156ea005ce7f"
+    },
+    "ascended_pegasus": {
+      "file": "card_art/ascended_pegasus.png",
+      "sha256": "4100f1e017dd2bbd4aaf86ae97822eb48ad3025746232572c9a53ea25cd4872b",
+      "source_sha256": "04650ee7e2bd20e248924ba8dab86321172bfb238cd70a987dfb391dd29fc0ab"
+    },
+    "ascended_phoenix": {
+      "file": "card_art/ascended_phoenix.png",
+      "sha256": "78a639a0efd6d8ad38e9e7a76808a65ce3f5253789bfee497a66205efe9eaf58",
+      "source_sha256": "38a5374f4856356bc8f1dc75dd71ab27142cb7e116e2508ecc7cb42b13b9da98"
+    },
+    "ascended_slime": {
+      "file": "card_art/ascended_slime.png",
+      "sha256": "14fde82344a6cca9528ff22ec4ed982667553473dc1e5a443f1e38fa5b4c01c1",
+      "source_sha256": "03d8c7bcdd1720739b27ee3792b4338f69e16c4541eedb2d5520a6ecfa7ec5eb"
+    },
+    "ascended_unicorn": {
+      "file": "card_art/ascended_unicorn.png",
+      "sha256": "826f155026767a9929aca8283eaf9d6c073fde0cabcc362e598de6e02132c1ea",
+      "source_sha256": "3efa7b973a70300fcaf56105b73df7eb25e048cde1cf16223f7871236c8512fa"
+    },
+    "asgard": {
+      "file": "card_art/asgard.png",
+      "sha256": "e0e57aeb0c3de7b24810a838f24cb212b25243aa0b4898478f14c2fe7004d1b7",
+      "source_sha256": "9fd901e66638c619b7bc86dc5ddabaf2dba99bb3eab243fdcf982e954eedb21b"
+    },
+    "astraea": {
+      "file": "card_art/astraea.png",
+      "sha256": "1fc703a6aa03099f16f8624ce25a1b858db41952c02bdd4b2ae288274a98b18b",
+      "source_sha256": "e7c1794e475a257b37d4b84a4f89323ebe6a9dbb6d7754e5d4cf08d6116e8c95"
+    },
+    "atlas": {
+      "file": "card_art/atlas.png",
+      "sha256": "e49bf9234cf1bcc86b7faf8620691b3ac955f541709451d77247896958d84ab0",
+      "source_sha256": "159b4d180f7b60f7f37b43b251a22564891da48cfa03d77045fec8a0aeecad1c"
+    },
+    "barkley": {
+      "file": "card_art/barkley.png",
+      "sha256": "67a14a6965f9b9d1f32e3957a67eb3518279e0c37ce280807b366b003c1c0028",
+      "source_sha256": "11840cdb482e56654711bfc09a96afb3fede4651e029ef4b797a2414f9b49e09"
+    },
+    "basilisk": {
+      "file": "card_art/basilisk.png",
+      "sha256": "1c1b1220663862379f81dc4ea41fda0eeb9030a0b03b265f989d96feee8632bf",
+      "source_sha256": "25ef85bce7a3cb66f8ba8ebc641b663532c2ad3c2a15fc3dc1e6c7530e6e3262"
+    },
+    "behemoth": {
+      "file": "card_art/behemoth.png",
+      "sha256": "7d1a8cabe34ab21e85d53a060038d15bcb39c8df06fbb58d47d98f79b40af650",
+      "source_sha256": "a0a7367132b5694682cae14b53d8d8d0875cbae309583aaf7a31c298f03ece8f"
+    },
+    "centry": {
+      "file": "card_art/centry.png",
+      "sha256": "c1b1bffc503c61b2239ebcff46faa9a92d4922ebbd2f3e66f24981f1b9be3599",
+      "source_sha256": "ebad10edfbd5cff9c669a0112983667dd3f52e8df69c2b4e8ed5994dd740e7fe"
+    },
+    "cerberus": {
+      "file": "card_art/cerberus.png",
+      "sha256": "97a5bcca8e9cb619a0d6ae0f4d84c4e97d7011b6d52405b6dc290933af5bfe26",
+      "source_sha256": "4cafec871cef1a3f70e1beaf359cdc679afb4df6ee310073cad4d79a6c86cab6"
+    },
+    "charybdis": {
+      "file": "card_art/charybdis.png",
+      "sha256": "bb7c8b183e050d3d58a54606145c7cc46c8564ddd440742f6ff881cd8550f893",
+      "source_sha256": "8bece2b646e9fa1e58394f5d79bfb14b52607e4f1996d70807b0276ba330fa82"
+    },
+    "chronos": {
+      "file": "card_art/chronos.png",
+      "sha256": "aaee7c66ecaf69b827379a192c88ef01b3e9889b439fe0b95b5ee776d83b0145",
+      "source_sha256": "3f332d75eb57aae2b4558568eccd25769f6531e1aa3b809769fdb8645a05bf68"
+    },
+    "corrupted_dragon": {
+      "file": "card_art/corrupted_dragon.png",
+      "sha256": "6e61aa1c5cc508303fef3ee865025e4ea0563d90830b3752126e0a9d16be23d0",
+      "source_sha256": "5ee13341751618b8856026c6752de9232e3b49ec065cfbfec2974bbf940e1487"
+    },
+    "corrupted_fenrir": {
+      "file": "card_art/corrupted_fenrir.png",
+      "sha256": "210e28633b45b390dad79856ab3ee7a3376b67bce2add7e801dccccdcf5ce330",
+      "source_sha256": "e2919ace1ecd208231baeb46e804b93583227a7696de90c7c83b30ac6e389b25"
+    },
+    "corrupted_leviathan": {
+      "file": "card_art/corrupted_leviathan.png",
+      "sha256": "d777cb27d5ac80efaf0de9b6245d24f58c8913a7b70fe76145f7705b60b3ed6b",
+      "source_sha256": "bd4ca5c74e25787f03db13e3252e000971f3730f019bf6ef677046f3c5cae6e0"
+    },
+    "dragon": {
+      "file": "card_art/dragon.png",
+      "sha256": "9de3480561a28a8f03185352aae76c51c80d5f39c42a8023c54b6ffa9aed97e4",
+      "source_sha256": "fa41b85ab24d808414841a658dd0290bfbe25bb3ad047101f2e11cc830148c9f"
+    },
+    "dryad": {
+      "file": "card_art/dryad.png",
+      "sha256": "8ad90eb77e7e31b39a9578251d7a9184f5a1e4c43dba003d6790c35d45d8e29d",
+      "source_sha256": "567a74c2ba548d16963eb87a3d49e1c828f299064b109c13f590ce97c55460e9"
+    },
+    "fairy": {
+      "file": "card_art/fairy.png",
+      "sha256": "2ab4f1ea91f712e5d0e60fbc837dd06261b6dd51e6ce4f57112bee51688260c4",
+      "source_sha256": "1794bd842b87d0203c604bf029df8c534da685d21549b049a637c6dc40032bab"
+    },
+    "fenrir": {
+      "file": "card_art/fenrir.png",
+      "sha256": "504f2ed0d67a7f9aa69e81ec64c77fe1142c9bdb09d46b03bb27a0b7a91a9a03",
+      "source_sha256": "14e7c482ef5ef472655b470e6c086bd73a15aadd5b62140bfc1bdaba57ae9e5c"
+    },
+    "fractured_genesis": {
+      "file": "card_art/fractured_genesis.png",
+      "sha256": "e49f8b90ca7d68c78e03dfcd72dba20d8df5f3b91b150e38bdcfe457230ba130",
+      "source_sha256": "d5ecdd2b7bd1ef9e903b08ebe78b432767c736a6f86f0fa55bfc104b1547a9df"
+    },
+    "frost_sprite": {
+      "file": "card_art/frost_sprite.png",
+      "sha256": "16c758410223b65b5ac3e680f818bc457e72a3cda35d679d5d3b3928c5c4a750",
+      "source_sha256": "44e6d75053317377933e3ba8b2e0a7e52fba73667960ef2147c2d617d6c0dca4"
+    },
+    "genesis": {
+      "file": "card_art/genesis.png",
+      "sha256": "a72152e971d15aaa781eaa664901625b3ace2b75e581f62eb673f6482dbf8cd4",
+      "source_sha256": "3ba584a5cecbdbd8e5540e8bb2ea8c96e0dfe4cf388433c72a91ea368610a4fa"
+    },
+    "glacius": {
+      "file": "card_art/glacius.png",
+      "sha256": "5df6310c13f6d93c1441bff51900b2ffe0847c8fe53fe945a6d25c6b9838552c",
+      "source_sha256": "22922d902876ae5f7f46ca99d3aa19c16f15b3f5103d88e5ef38ec5870be605a"
+    },
+    "gloop": {
+      "file": "card_art/gloop.png",
+      "sha256": "29838f113515bec4802069f3d0c78d630d9b397cee610eda397ee8bd065f7b0b",
+      "source_sha256": "34e2445a08d692c8a690599937f9d6c08c1f80b804fda63233fa03e50db572c6"
+    },
+    "goblin": {
+      "file": "card_art/goblin.png",
+      "sha256": "c148fbb3c029d8b08fa1522ad02b7fd869609514b220d501f31ed5bda1f9c55b",
+      "source_sha256": "0e90c728957b88a75653f4e0d0c6515d8bb1b920feb03b441598d52192eb7fc2"
+    },
+    "griffin": {
+      "file": "card_art/griffin.png",
+      "sha256": "78f3f9b8b9b7194899804fbfe349c0c9b2e88fa29c9fdd4e4cf2efe4bc3de62c",
+      "source_sha256": "477b9f8d381e7d21058b76c9dd26f8555392124b7c3d89b818f1580b26c57b14"
+    },
+    "harpy": {
+      "file": "card_art/harpy.png",
+      "sha256": "ea9965a082df9f6ba062b53b15c8159c4accd2e4dfb3009a5a41341b2dfc27d4",
+      "source_sha256": "5d713c437dfe551dde01e26c99937d80d9685cda2bba6df61826f64c2211c17a"
+    },
+    "hellhound": {
+      "file": "card_art/hellhound.png",
+      "sha256": "de02f785ef8400916f3b699d255c6281170af1bd1a03173331aeec2b69eee932",
+      "source_sha256": "0be1e0d51a8be129d97394f606e3b51b45772fc9f8218f83b496af397c73f4fd"
+    },
+    "horizon": {
+      "file": "card_art/horizon.png",
+      "sha256": "0ac6d6b80e5f6cc6f7ff22b2d7db1d23317cee0f68161812d2d431d40526fdeb",
+      "source_sha256": "87a78708cb58f6c173421c2b74de6411909e512065216958cf877047c01abe8e"
+    },
+    "hydra": {
+      "file": "card_art/hydra.png",
+      "sha256": "2967b200070ba73bd7fb94e3b2aa71762d7d631b8bf5a70afbcd122834385023",
+      "source_sha256": "b31663feb4161c4c6baad056c07475c68c5ab6ff8d8add034d4a6c6473b759ef"
+    },
+    "imp": {
+      "file": "card_art/imp.png",
+      "sha256": "f63f3f4cfe185b742da998f404c1ff4ba22cb6a3d59ae3af0cc3074dfd3637de",
+      "source_sha256": "e7dc03a1168c5169b2c47ca55cbedd93fad0652f74dd457b5da7c8b68315932e"
+    },
+    "jormungandr": {
+      "file": "card_art/jormungandr.png",
+      "sha256": "f25ec76653c682e3357722fbb80383017a554e3b88e790440b4bdfe0b1b81853",
+      "source_sha256": "8b1497487926bb36a70ed949429f9b28b22fd59a700387fe5f149283a7fc50f5"
+    },
+    "karma": {
+      "file": "card_art/karma.png",
+      "sha256": "3e829c63f569d7d91686c423870984b72b15871b17c387a6218441267138ae4a",
+      "source_sha256": "fafc7a42997e0623169c95f4338b2000d3cb4c2ef9b571e7bbcaeb20c78e22e0"
+    },
+    "kelpie": {
+      "file": "card_art/kelpie.png",
+      "sha256": "dd6cb5793650837a9493d69426ae0f34fbbe0f6f54470094397a2690fdcf43b4",
+      "source_sha256": "8b95342b7353d507d1153e23c169d2008ffa74f235975dba6691cddad18c2485"
+    },
+    "kitsune_1": {
+      "file": "card_art/kitsune_1.png",
+      "sha256": "57a990d60936eab089cdd1c6700b07ebeadd65af5bf845d0311e10291f96ef96",
+      "source_sha256": "7c3730c52b51c3583be00083c67a78a0243f64257bb383a01625831a67f4b693"
+    },
+    "kitsune_9": {
+      "file": "card_art/kitsune_9.png",
+      "sha256": "86b42b2e978f738db0efc2db368391e5212f6538107c8cc829d3a11322a8c76c",
+      "source_sha256": "8adf7187f70851c5e515f0109a41f46e0293116b9eba798931604444ff8bfa1a"
+    },
+    "kraken": {
+      "file": "card_art/kraken.png",
+      "sha256": "827e19eca6e3e35b4487534af63bf40d73d97ed2b45c99eb28dee38013157ae0",
+      "source_sha256": "0f9b25f79b2b89370bccbbeae139ffd373bb527806c1d8aaefa3cfc4e0cf700c"
+    },
+    "leviathan": {
+      "file": "card_art/leviathan.png",
+      "sha256": "9d6be5606beec90622c05e8e1a786c4d69dbb857e27d5387be4b9efe217e413c",
+      "source_sha256": "b5495ba70bee57a07c675d01d1e062a30a7481501af9e7b56fe88e66bb299810"
+    },
+    "loom_fragment": {
+      "file": "card_art/loom_fragment.png",
+      "sha256": "a0249ef15374c0387a93584327c5d47295b5f559381f3dc3dc31fe397c9d4dbf",
+      "source_sha256": "2b6e52d1a72b64cd2e1a41636cf1c604a3c235937a1287ec8411b2b3a4c14297"
+    },
+    "manticore": {
+      "file": "card_art/manticore.png",
+      "sha256": "dffb0cb92a5644f6c9677e7ff5b134dcdda311c051f21f0715c8ce25c8e93ca0",
+      "source_sha256": "ccd341910ee0183ad15215462652c3133b7e462131df35206662d6e5e089af09"
+    },
+    "minotaur": {
+      "file": "card_art/minotaur.png",
+      "sha256": "74986a5cf2b17affd6be8dbc90af0bd31b64d157157304c98f5fd7c99135e2ce",
+      "source_sha256": "b03e362335aac898714292aa987a621ab64a49892b58288a374b9bc6bcea1873"
+    },
+    "mudpup": {
+      "file": "card_art/mudpup.png",
+      "sha256": "848d1afa4c0145f3da9aa0c35854612efa94c77bc6d471fdfdab062ea224f8d1",
+      "source_sha256": "e2bcbdcef5402b5c5f056340c858c87d1edb57ffc0f007d80b79710fc7a2e033"
+    },
+    "nebula": {
+      "file": "card_art/nebula.png",
+      "sha256": "d52b7de62fc8167f48a3c086e43d0114d3c4e5c76b69c483495fc3bf0c951d0a",
+      "source_sha256": "c965ffe390c17476c67136bf647c8b3e7da343e7ddf7dbb1b549ff79be9bcf18"
+    },
+    "nebuloom": {
+      "file": "card_art/nebuloom.png",
+      "sha256": "3856da9124700f60173fa3869848330dfb618f2dbf49e632ce55e1c798c8fcb4",
+      "source_sha256": "4ed0e424dfa03ca312de4c8b157ce7cddc01d8f6238195083cf3424d4f531b7e"
+    },
+    "nirvana": {
+      "file": "card_art/nirvana.png",
+      "sha256": "697e4561df16559be263d77b36de2de6eee6bdbd09035c599082dd7709fe183c",
+      "source_sha256": "4076cee35b23f1702440dc94c76cbe79ab0ffb6979652ba422b48603e494cfe6"
+    },
+    "ouroboros": {
+      "file": "card_art/ouroboros.png",
+      "sha256": "31bbb155ed59eeea38562e442439f927f23f541b912a234926bb7de54624160f",
+      "source_sha256": "737907adda8aef19594f0cd49158cf932c057052d7b538f4438369acd1dc892a"
+    },
+    "paradox": {
+      "file": "card_art/paradox.png",
+      "sha256": "6115a7e316800471a6d477b5329bc4d2edf0032b8ddf21da97fea8e79bf81236",
+      "source_sha256": "ae5d1bf83853c6e6b4e3b1450a03ed746722db806a5bb89bbae66a2b79d1cb6b"
+    },
+    "pegasus": {
+      "file": "card_art/pegasus.png",
+      "sha256": "8465002f6d26deb3f323012f7d89c4e525ef5a5660133bac497d7dfaf6782535",
+      "source_sha256": "2fd2a413e78ffedd9a95c0694ec078f4b9c9adaeed4dfc81d4329f27bc885f0c"
+    },
+    "permafrost": {
+      "file": "card_art/permafrost.png",
+      "sha256": "77c7ea9f9784437260e2c174ada4b585b77818597482104a702e0d27f1bee93a",
+      "source_sha256": "ff17372d86263ea86f284500915c61881d6f9125ee48bf82614863f0f3a4f5c9"
+    },
+    "phoenix": {
+      "file": "card_art/phoenix.png",
+      "sha256": "9812833246d0148466d547da114680bc4f300a39f088fadf6b437456d65c8a96",
+      "source_sha256": "ae67ce176f35fffb9b89a45814f0c7eb8de761eb5548d418a4ff904e3a12d0b8"
+    },
+    "pixie": {
+      "file": "card_art/pixie.png",
+      "sha256": "8b14192925f7ad2f318ab25695a9b5731f835faf804f734fe9d185b391a50a9e",
+      "source_sha256": "046be70f698d95ad4b906fa46f8a5a59caf9af9990d20244a4bd231402fbf1dc"
+    },
+    "prismara": {
+      "file": "card_art/prismara.png",
+      "sha256": "577bf000ed93ecfebde9580d6bee0eeb1cda2cb5cb1238fead186a220ffc631d",
+      "source_sha256": "71bfbe41356b1aaed63e751e2129ca500915f6e899f1fb78d7a38621470f6052"
+    },
+    "prismite": {
+      "file": "card_art/prismite.png",
+      "sha256": "67a9b198634c72017e28652b3f06dcec654d1adecb8f78a892c039cee8f69e9e",
+      "source_sha256": "ff143c7f2afe4513299809275db79b375166f09c519f5a8d0e4e172cbba9a194"
+    },
+    "radiant_goblin": {
+      "file": "card_art/radiant_goblin.png",
+      "sha256": "a7fca2a7c276c03e1d7727a5c0b766ce1c8e81e1e273a5f481dfb749d16dfa6a",
+      "source_sha256": "1a934f1b18542228585b951228e444d62993dd189b8775ce75e1e7680d05ff91"
+    },
+    "radiant_hydra": {
+      "file": "card_art/radiant_hydra.png",
+      "sha256": "f96493269c1890d68698b613c3e23ff65c0d0456011d13af4f75a1f36ea9dc3e",
+      "source_sha256": "2aba643fae3cc121c46f2f4e357154bdc03f157aadd7e7e57ab5d2e9630ac9aa"
+    },
+    "radiant_imp": {
+      "file": "card_art/radiant_imp.png",
+      "sha256": "6e33136719bd51613b5349905a9661bc929e72c5666bd10ab27b0c77d5bd087d",
+      "source_sha256": "7589bad0a725240530596c35f20f730a5effa6c9c0bcdfc988dd4c4e355445d6"
+    },
+    "radiant_kitsune": {
+      "file": "card_art/radiant_kitsune.png",
+      "sha256": "87c48b720c890da27ebca02157091cfd4f3cd42fc19fba7463c622e38408bc03",
+      "source_sha256": "645c4426dc143a9d72061a2a6c6626a14c9ff499ad1e9bab923a8db292b940fb"
+    },
+    "rootwarden": {
+      "file": "card_art/rootwarden.png",
+      "sha256": "ebc9163071d8cccb4ac589c4b4756d8255de18e8c24f35439dba42726ea3cc29",
+      "source_sha256": "ceb03fa9bf7faa174c0fd0bd3c67b98fb93b67d0564a66e2a966e1ebb983c80b"
+    },
+    "rukh": {
+      "file": "card_art/rukh.png",
+      "sha256": "a19ed241378a048d6726636737a1705d2da8777510c85932b5c0c83cabe6bdf4",
+      "source_sha256": "7bc853bf6f68a20914662cd721fb9698b4c02abaf3ee92160d59f8ce72140221"
+    },
+    "simurgh": {
+      "file": "card_art/simurgh.png",
+      "sha256": "a204d905eca529129f9d8f863d57b080a76247db53fe00be332ab423f5fd922c",
+      "source_sha256": "c029bb5f649d8effb4ebefa583f21c5825724057d1dd1550dd619fc6d6bdf24a"
+    },
+    "singularity": {
+      "file": "card_art/singularity.png",
+      "sha256": "461694efd6fe3e58cdc339381b7e710e265012d74c7034d5dcc4eea80c902e4c",
+      "source_sha256": "39a20ea1a9fcbf48f0220804d768ecdfd4499c55e21fa0a20c296a9ed2b29c0f"
+    },
+    "slime": {
+      "file": "card_art/slime.png",
+      "sha256": "01a8f9e109e6e7a20e5ade2cda73d3d8091b826606f4e8a3ad1e546a0880df8c",
+      "source_sha256": "4d8822254015a2ff57e48a6b85062eba659a500a7521a182d9847b02e50c3a40"
+    },
+    "sphinx": {
+      "file": "card_art/sphinx.png",
+      "sha256": "3751123851a268fef162ea8bf8bc6689506df14cecf8d85026933d83233760ed",
+      "source_sha256": "bb571606fdb125d6be2647c04a8077c798fc4dd765232aa3798f4f221d4dea86"
+    },
+    "strix": {
+      "file": "card_art/strix.png",
+      "sha256": "1135b50eb87a3345776b04565a37b811cb41e0695a97ce8c0ce5f4c5b04eea50",
+      "source_sha256": "188b94026d1fb0152b7152a9fc319c3c61e3f47e42ae7073f6d96df29d61d374"
+    },
+    "supernova": {
+      "file": "card_art/supernova.png",
+      "sha256": "820f797399ffcfbf1cacd223924ccefed6ff81cf7ea32afb65b9f5eeed748471",
+      "source_sha256": "8d187b02ebb6939c34beefba5c413055e25c88416bab70f9c8d2b1178d5aee62"
+    },
+    "terminus": {
+      "file": "card_art/terminus.png",
+      "sha256": "b3078e0b91528048838576a02dc0a79cbe94906a0c07be81816cb7b4cfe37b2e",
+      "source_sha256": "b77f508a838951969b1836deb7020f7d3260157331fa6c83e1de1a0424934324"
+    },
+    "thunderbird": {
+      "file": "card_art/thunderbird.png",
+      "sha256": "647cf9ee83609f0d71f1e8ca23243630b57ddc193d1e3be147bf2da013cdc074",
+      "source_sha256": "85969263a78e0d0d803f2e265d7d652e90b74bde08ab14c91a825f751f8c03be"
+    },
+    "timestitch": {
+      "file": "card_art/timestitch.png",
+      "sha256": "a4093875b6ce2dceef2c5e5921e05da45690a2fce6215baa09e0342810a15a8c",
+      "source_sha256": "f4660274e2cc4595ecbf11908886b9f0d1077a326e1e0df1f64e317efb345fd9"
+    },
+    "twine": {
+      "file": "card_art/twine.png",
+      "sha256": "c23042973a9eee2ce7158f2211515afc07def3efecbe4ad55081c419122b5a5d",
+      "source_sha256": "650246a367a8c42594cf7372904c16e648f99f909455797c95d4f631721b60af"
+    },
+    "unicorn": {
+      "file": "card_art/unicorn.png",
+      "sha256": "4970ce13290ef3064c5a52b9d26e64b844157d4f1c890292252849f21a1c6d60",
+      "source_sha256": "10473d68bb8ccbb6ca76bc4ffa0307d86ec48e2ef3ddaf90652a98da3ee085f8"
+    },
+    "void_chronos": {
+      "file": "card_art/void_chronos.png",
+      "sha256": "1377f3f0190cd4c0bc78e40113f49c80c5208c723cf1bd1c0efcf0b07c7902f8",
+      "source_sha256": "d5a5c9ed29b3f2c214c97c0e2b49e9915cd51453655fbe266968f2f0d1da1a0d"
+    },
+    "wendigo": {
+      "file": "card_art/wendigo.png",
+      "sha256": "60038d1c7821ce8027914585de1ba2bad1ed793ea42ab11995db925f792ff21a",
+      "source_sha256": "a808cd8434ad4cdd656ee934243e50e22fc6b0e7fa66c71f897eb5bcbec2f49f"
+    },
+    "will_o_wisp": {
+      "file": "card_art/will_o_wisp.png",
+      "sha256": "a9d0a51acc871f716080622f7bd31060e252943d6127e0f37e143a4e74b90bd7",
+      "source_sha256": "f7051bc641a70c58ebe1d4f6cc5a4a71bcd4aee20b6e1c1ce06ab3a88b12bddc"
+    },
+    "wisp": {
+      "file": "card_art/wisp.png",
+      "sha256": "5c90e870a992154fc8a05137795c20a02cc3a1835eb1c035d4bb7827b15a19e1",
+      "source_sha256": "563ee976db7eef610e3cb60eca39eb5cb77b7eb6000859e761ad3f073f862cee"
+    },
+    "wyvern": {
+      "file": "card_art/wyvern.png",
+      "sha256": "d2718ab2bc7486e5c7944ac3451d32eff8f2450a847f534d1ca29320f83ffdce",
+      "source_sha256": "b732a6a261681637356375dcb9bc675576887b779cd45e6dc625eba71d855884"
+    },
+    "yeti": {
+      "file": "card_art/yeti.png",
+      "sha256": "68bbd81ea3c9bfaf1e92acb9b2235b45d38aff69d12bacf1389b6f9456aa4488",
+      "source_sha256": "47f4f0dc2385c8b99855ac7d2df179cf10465f11322663304345fd1622383c6c"
+    },
+    "zodiac": {
+      "file": "card_art/zodiac.png",
+      "sha256": "e335fce87735144faaf8d23ea042b47e5b9f82fd9d814db219d3057cecea82af",
+      "source_sha256": "53d67c3335ef10aa08dffb797b77da46a2328b6ee6e5f7046855ccab8e01713f"
+    }
+  },
+  "starter_lineup": {
+    "file": "card_art/starter-lineup.png",
+    "sha256": "1235138575af7a6b4f8a7c37762b96de441dae0d6166aaf59eee75f5aff819c0"
+  }
+}
