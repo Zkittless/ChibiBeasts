@@ -7,7 +7,8 @@ import aiosqlite
 import discord
 from utils import db as storage
 from utils import combat
-from utils.theme import hp_bar, COLORS
+from utils.battle_art import Action, BattlePresentation, realm_key, snapshot
+from utils.theme import COLORS
 active_fighters = set()
 DUEL_IO_TIMEOUT = 15
 
@@ -104,6 +105,11 @@ class MoveView(discord.ui.View):
     def open_turn(self):
         self._accepting = not self._closed and not self.is_finished()
 
+    def pause_input(self):
+        self._accepting = False
+        for child in self.children:
+            child.disabled = True
+
     def close_input(self):
         self._closed = True
         self._accepting = False
@@ -172,15 +178,16 @@ def ai_move(state, opp, personality):
         return (state['moves'][1], False)
     return (state['moves'][0], False)
 
-async def duel(interaction, states, users, title, personality='wild', view_class=MoveView, *, reserved=False):
+async def duel(interaction, states, users, title, personality='wild', view_class=MoveView, *, reserved=False, realm=None):
     with nullcontext() if reserved else reserve_fighters(users):
-        return await _duel(interaction, states, users, title, personality, view_class)
+        return await _duel(interaction, states, users, title, personality, view_class, realm)
 
-async def _duel(interaction, states, users, title, personality, view_class):
+async def _duel(interaction, states, users, title, personality, view_class, realm):
     ids = [u for u in users if u is not None]
     for state in states:
         if state['hp'] <= 0:
             raise ValueError('Your beast needs recovery before it can battle.')
+    presentation = BattlePresentation(realm_key(realm, states))
     for uid, state in zip(users, states):
         if uid is not None:
             combat.active_states[uid] = state
@@ -189,6 +196,61 @@ async def _duel(interaction, states, users, title, personality, view_class):
     view = None
     timed_out = False
     winner = None
+
+    def battle_embed(round_number, *, action=None, uid=None, finished=False):
+        embed = discord.Embed(title=f'⚔️ {title} · Round {round_number}', color=COLORS['epic'])
+        if action:
+            embed.description = f"**{states[action.actor]['name']}** — {action.name}"
+        else:
+            # Compact text remains readable with GIF autoplay disabled and by
+            # screen readers; the large bars live above the shared battlefield.
+            embed.description = '\n'.join(
+                f"**{s['name']}** · {s['hp']:,}/{s['max_hp']:,} HP · "
+                f"{s['mana']}/{s['max_mana']} MP · {s.get('status') or ('KO' if s['hp'] <= 0 else 'ready')}"
+                for s in states)
+            if uid is not None:
+                state = states[users.index(uid)]
+                embed.add_field(name=f'<@{uid}> — choose a move', value='\n'.join(
+                    f"**{m}** — {combat.move_spec(state, m)['description']}" for m in state['moves']), inline=False)
+            if log:
+                embed.add_field(name='Last actions', value='\n'.join(log[-3:])[-1000:], inline=False)
+            if finished:
+                result = f"**{states[winner]['name']}** wins." if winner is not None else 'Both companions finish together. A draw.'
+                if timed_out:
+                    result += ' Match decided on time.'
+                embed.add_field(name='Battle complete', value=result, inline=False)
+        return embed
+
+    def close_defeated():
+        # The result is already authoritative while its clip is playing. Item
+        # use must not resurrect a resolved KO just because rendering adds time.
+        if any(s['hp'] <= 0 for s in states):
+            for state in states:
+                state['closed'] = True
+
+    async def animate(before, action, round_number, after=None):
+        nonlocal message, view
+        if presentation is None:  # Injectable text-only presentation for engine/router tests.
+            return
+        if view is None:
+            first = next((i for i, uid in enumerate(users) if uid is not None), 0)
+            state = states[first]
+            view = view_class(state['moves'], state['ultimate'], users[first], state)
+        view.pause_input()
+        try:
+            message = await presentation.publish(interaction, message, battle_embed(round_number, action=action),
+                                                 view, before, after if after is not None else snapshot(states), action)
+        except discord.NotFound:
+            logging.getLogger('chibibeasts.battle').info('Battle panel removed during playback; next prompt will recreate it')
+            message = None
+            view.stop()
+            view = None
+        except (discord.HTTPException, TimeoutError):
+            presentation.enabled = False
+            logging.getLogger('chibibeasts.battle').warning('Battle playback unavailable; continuing with text controls', exc_info=True)
+        if view is not None:
+            view.message = message
+
     try:
         async with combat.lock_states(users):
             combat.start_battle(*states, log)
@@ -199,29 +261,40 @@ async def _duel(interaction, states, users, title, personality, view_class):
                 if min((s['hp'] for s in states)) <= 0:
                     break
                 async with combat.lock_states(users):
+                    before = snapshot(states)
                     can_act = combat.begin_turn(state, opp, log)
+                    close_defeated()
+                    changed = before != snapshot(states)
+                if changed or not can_act:
+                    effect_name = 'Turn effects' if can_act else f"{before[index].status or 'Recovery'} — turn skipped"
+                    await animate(before, Action(index, effect_name, 'status'), round_number)
                 if can_act:
                     uid = users[index]
                     if uid is None:
                         name, ult = ai_move(state, opp, personality)
                     else:
-                        embed = discord.Embed(title=f'⚔️ {title} · Round {round_number}', description='\n\n'.join((f"**{s['name']}** Lv.{s.get('level', 1)}\n{hp_bar(s['hp'], s['max_hp'])}\n{s['mana']}/{s['max_mana']} MP · {s.get('status') or 'ready'}" for s in states)), color=COLORS['epic'])
-                        embed.add_field(name=f'<@{uid}> — choose a move', value='\n'.join((f"**{m}** — {combat.move_spec(state, m)['description']}" for m in state['moves'])), inline=False)
-                        if log:
-                            embed.add_field(name='Last actions', value='\n'.join(log[-3:])[-1000:], inline=False)
-                        if opp.get('image_url'):
-                            embed.set_image(url=opp['image_url'])
-                        if state.get('image_url'):
-                            embed.set_thumbnail(url=state['image_url'])
+                        embed = battle_embed(round_number, uid=uid)
                         if view is None:
                             view = view_class(state['moves'], state['ultimate'], uid, state)
                         else:
                             view.prepare_turn(state['moves'], state['ultimate'], uid, state)
-                        async with asyncio.timeout(DUEL_IO_TIMEOUT):
-                            if message:
-                                await message.edit(embed=embed, view=view)
-                            else:
-                                message = await interaction.channel.send(embed=embed, view=view)
+                        if presentation is not None:
+                            current = snapshot(states)
+                            try:
+                                message = await presentation.publish(interaction, message, embed, view, current, current)
+                            except discord.NotFound:
+                                # Deleting a battle message must not strand the
+                                # reserved trainers at the next decision point.
+                                # Retire the old message's router entries too.
+                                view.stop()
+                                view = view_class(state['moves'], state['ultimate'], uid, state)
+                                message = await presentation.publish(interaction, None, embed, view, current, current)
+                        else:
+                            async with asyncio.timeout(DUEL_IO_TIMEOUT):
+                                if message:
+                                    await message.edit(embed=embed, view=view)
+                                else:
+                                    message = await interaction.channel.send(embed=embed, view=view)
                         view.message = message
                         view.open_turn()
                         # Limit this prompt independently of the long-lived UI;
@@ -240,11 +313,39 @@ async def _duel(interaction, states, users, title, personality, view_class):
                             break
                         name, ult = view.chosen_move
                     async with combat.lock_states(users):
-                        combat.resolve_move(state, opp, name, ult, log)
+                        # Item use can change MP while the trainer chooses. Match
+                        # resolve_move's fallback so the clip names the real move.
+                        if not combat.can_use(state, name, ult):
+                            name, ult = state['moves'][0], False
+                        spec = combat.move_spec(state, name, ult)
+                        before = snapshot(states)
+                        damage = combat.resolve_move(state, opp, name, ult, log)
+                        after = snapshot(states)
+                        extra = None
+                        # Preserve the original atomic primary+bonus resolution;
+                        # playback adds no new item-use window between the rolls.
                         if state['hp'] > 0 and opp['hp'] > 0 and combat.bonus_action(state):
-                            combat.resolve_move(state, opp, state['moves'][0], False, log, grant_charge=False)
+                            extra_before = snapshot(states)
+                            extra_damage = combat.resolve_move(state, opp, state['moves'][0], False, log, grant_charge=False)
+                            extra = (extra_before, snapshot(states), extra_damage)
+                        close_defeated()
+                    if spec.get('guard_percent'):
+                        kind = 'guard'
+                    elif spec.get('heal_percent') or after[index].hp > before[index].hp and not damage:
+                        kind = 'heal'
+                    else:
+                        kind = 'skill' if name != state['moves'][0] else 'attack'
+                    await animate(before, Action(index, name, kind, damage, ult), round_number, after)
+                    if extra is not None:
+                        extra_before, extra_after, extra_damage = extra
+                        await animate(extra_before, Action(index, state['moves'][0] + ' (bonus)', damage=extra_damage), round_number, extra_after)
                 async with combat.lock_states(users):
+                    before = snapshot(states)
                     combat.end_turn(state, opp, log)
+                    close_defeated()
+                    changed = before != snapshot(states)
+                if changed:
+                    await animate(before, Action(index, 'End-of-turn effects', 'status'), round_number)
             if winner is not None or min((s['hp'] for s in states)) <= 0:
                 break
         if winner is None:
@@ -258,10 +359,26 @@ async def _duel(interaction, states, users, title, personality, view_class):
                 timed_out = True
                 ratios = [s['hp'] / s['max_hp'] for s in states]
                 winner = None if abs(ratios[0] - ratios[1]) < 1e-06 else int(ratios[1] > ratios[0])
+        async with combat.lock_states(users):
+            for state in states:
+                state['closed'] = True
+        if presentation is not None and message:
+            if view is not None:
+                view.close_input()
+            current = snapshot(states)
+            try:
+                message = await presentation.publish(interaction, message, battle_embed(round_number, finished=True),
+                                                     view, current, current)
+            except (discord.HTTPException, TimeoutError):
+                # A cosmetic final redraw cannot cancel an already resolved
+                # battle, its rewards or the caller's daily spar settlement.
+                logging.getLogger('chibibeasts.battle').info('Final battle artwork could not be displayed', exc_info=True)
         return (winner, states, log, timed_out)
     finally:
         if view is not None:
             view.close_input()
+            if message is None:
+                message = view.message
         try:
             async with combat.lock_states(users):
                 for state in states:

@@ -27,6 +27,12 @@ class DatabaseCase(unittest.IsolatedAsyncioTestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.db_path = str(Path(self.temp.name) / 'game.db')
         self.patches = []
+        # These fixtures exercise game math/DB/router deadlines without media
+        # playback. test_battle_art explicitly enables the real presentation.
+        if not getattr(self, 'battle_art_enabled', False):
+            presentation = patch('utils.duels.BattlePresentation', return_value=None)
+            presentation.start()
+            self.patches.append(presentation)
         for module_name in ('utils.db', 'utils.progress', 'cogs.battle', 'cogs.world', 'cogs.ranked', 'cogs.utilities', 'utils.sanctuary'):
             module = importlib.import_module(module_name)
             if hasattr(module, 'DB_PATH'):

@@ -162,18 +162,18 @@ async def award_player_exp(user_id: int, exp_gain: int, interaction=None):
     return result
 
 
-async def run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,reserved=False):
+async def run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,reserved=False,realm=None):
     from utils.duels import reserve_fighters
     from contextlib import nullcontext
     with nullcontext() if reserved else reserve_fighters([interaction.user.id]):
-        return await _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss)
+        return await _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,realm=realm)
 
-async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss):
+async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,realm=None):
     from utils.duels import prepare_state,duel,beast_exp,active_fighters
     from utils.db import is_knocked_out
     if is_knocked_out(player_beast_row):raise ValueError("Your companion is recovering. Use /use Phoenix Elixir or choose another beast.")
     state=await prepare_state(interaction.user.id,player_beast_row,player_beast_data,player_perks)
-    winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView,reserved=True)
+    winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView,reserved=True,realm=realm)
     embed=discord.Embed(title=f"⚔️ {battle_title} — {'Victory' if winner==0 else 'Draw' if winner is None else 'Lesson learned'}",description="\n".join(f"**{s['name']}** — {hp_bar(s['hp'],s['max_hp'])}" for s in states),color=COLORS["success"] if winner==0 else COLORS["info"])
     embed.add_field(name="Battle log",value="\n".join(log[-5:])[-1000:] or "The companions watched each other.",inline=False)
     if timed_out:embed.add_field(name="Time limit",value="The match ended on time. Reduced rewards; wild creatures are not caught on a time-limit win.",inline=False)
@@ -538,6 +538,7 @@ class Battle(commands.Cog):
             enemy_state,
             enemy_personality="wild",
             battle_title=f"Wild {wild_beast_data['name']}",
+            realm=biome,
             on_win=on_win,
             on_loss=on_loss,
             reserved=True,
@@ -810,6 +811,7 @@ class Battle(commands.Cog):
                 enemy_state,
                 enemy_personality=personality,
                 battle_title=f"Spar with {npc['name']}",
+                realm=npc['location'],
                 on_win=on_win,
                 on_loss=on_loss,
                 reserved=True,

@@ -1,0 +1,79 @@
+{
+  "size": [
+    640,
+    448
+  ],
+  "roster_portraits": 86,
+  "realms": [
+    "woods",
+    "ember",
+    "glacial",
+    "trenches",
+    "loom"
+  ],
+  "clips": {
+    "attack": {
+      "bytes": 670778,
+      "frames": 19,
+      "duration_ms": 1400,
+      "one_shot": true,
+      "log": [
+        "Twine uses Tick Bite \u2192 33 damage."
+      ]
+    },
+    "skill": {
+      "bytes": 629934,
+      "frames": 19,
+      "duration_ms": 1400,
+      "one_shot": true,
+      "log": [
+        "Twine uses Thread Snap \u2192 19 damage.",
+        "\ud83d\udd3b Gloop is weakened."
+      ]
+    },
+    "guard": {
+      "bytes": 201770,
+      "frames": 10,
+      "duration_ms": 1200,
+      "one_shot": true,
+      "log": [
+        "\ud83d\udee1\ufe0f Twine uses Rewind Nibble: protects its next hit and prepares a stronger strike."
+      ]
+    },
+    "heal": {
+      "bytes": 526103,
+      "frames": 21,
+      "duration_ms": 1200,
+      "one_shot": true,
+      "log": [
+        "\ud83c\udf3f Gloop uses Glitter Bounce: +25 HP and status cleared."
+      ]
+    },
+    "ultimate": {
+      "bytes": 1092467,
+      "frames": 29,
+      "duration_ms": 1900,
+      "one_shot": true,
+      "log": [
+        "\u2b50 Twine uses Borrowed Moment \u2192 110 damage."
+      ]
+    },
+    "knockout": {
+      "bytes": 677423,
+      "frames": 19,
+      "duration_ms": 1400,
+      "one_shot": true,
+      "log": [
+        "Twine uses Tick Bite \u2192 8 damage."
+      ]
+    }
+  },
+  "performance": {
+    "render_median_ms": 181.91,
+    "render_max_ms": 235.8,
+    "event_loop_delay_p95_ms": 7.88,
+    "event_loop_delay_max_ms": 16.08,
+    "samples": 6,
+    "scope": "Synthetic local renders; excludes Discord upload/client playback latency."
+  }
+}
