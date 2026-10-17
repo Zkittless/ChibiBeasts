@@ -1,9 +1,9 @@
+from utils import db as storage
 import discord
 from discord.ext import commands, tasks
 import aiosqlite
 from datetime import datetime, timezone, time
 
-DB_PATH = "db/chibibeast.db"
 
 # Happiness decay rates (per day).
 # Decay timeline without any care:  100 → 0 in ~33 days (active) or ~20 days (benched)
@@ -46,7 +46,7 @@ class Tasks(commands.Cog):
         Clamped to a minimum of 0.
         """
         try:
-            async with aiosqlite.connect(DB_PATH) as db:
+            async with storage.connect() as db:
                 # Active beasts: smaller decay
                 await db.execute("""
                     UPDATE player_beasts

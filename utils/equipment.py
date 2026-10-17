@@ -1,20 +1,18 @@
 """Own and equip one armor piece and one rune without losing other copies."""
-import json
 import aiosqlite
 from utils import db as storage
-from utils.artwork import PROJECT_ROOT
 from utils.gameplay import add_stack
+from utils.duels import exclusive_player
 
 def definitions():
-    data = json.loads((PROJECT_ROOT / 'data/equipment.json').read_text(encoding='utf-8'))
-    return {**data['equipment'], **data['runes']}
+    from utils.catalog import load_catalog
+    data=load_catalog('equipment.json')
+    return {**data['equipment'],**data['runes']}
 
+@exclusive_player
 async def equip(user_id, number, gear_id):
-    from utils.duels import active_fighters
-    if user_id in active_fighters:
-        raise ValueError('Finish your battle before changing gear.')
     gear = definitions()[gear_id]
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND player_number=?', (user_id, number)) as c:
@@ -46,13 +44,11 @@ async def equip(user_id, number, gear_id):
         await db.commit()
     return (dict(beast), gear)
 
+@exclusive_player
 async def unequip(user_id, number):
-    from utils.duels import active_fighters
-    if user_id in active_fighters:
-        raise ValueError('Finish your battle before changing gear.')
     gear = definitions()
     removed = []
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND player_number=?', (user_id, number)) as c:

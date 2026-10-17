@@ -2,7 +2,6 @@
 import asyncio
 from collections import defaultdict
 import random
-import aiosqlite
 from utils import db as storage
 incubation_locks = defaultdict(asyncio.Lock)
 RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'divine', 'altered_divine']
@@ -23,7 +22,7 @@ def promote_rates(rates, changes):
 
 async def attune_hatch(user_id, rolled, roster):
     """Use an attunement on a matching beast of the rolled tier; otherwise keep it."""
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute('SELECT astral_type FROM players WHERE user_id=?', (user_id,)) as c:
             row = await c.fetchone()

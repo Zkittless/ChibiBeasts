@@ -1,13 +1,13 @@
 import aiosqlite
-import json
 import os
 from utils.artwork import PROJECT_ROOT, beast_image_url
 
-DB_PATH = "db/chibibeast.db"
+DB_PATH = str(PROJECT_ROOT / 'db' / 'chibibeast.db')
 
 async def init_db():
     os.makedirs(os.path.dirname(DB_PATH) or ".", exist_ok=True)
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
+        await db.execute("PRAGMA journal_mode=WAL")
         await db.executescript("""
         CREATE TABLE IF NOT EXISTS players (
             user_id INTEGER PRIMARY KEY,
@@ -312,7 +312,7 @@ async def _run_migrations():
         )
     """
 
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         for sql in migrations:
             try:
                 await db.execute(sql)
@@ -352,6 +352,31 @@ async def _run_migrations():
             CREATE TABLE IF NOT EXISTS raid_rewards (
                 raid_id INTEGER,user_id INTEGER,caught INTEGER DEFAULT 0,
                 PRIMARY KEY(raid_id,user_id));
+            CREATE TABLE IF NOT EXISTS trade_claims (
+                offer_key TEXT PRIMARY KEY, trade_id INTEGER NOT NULL);
+            CREATE TABLE IF NOT EXISTS raid_settlements (
+                raid_id INTEGER PRIMARY KEY, payload TEXT NOT NULL, completed INTEGER DEFAULT 0);
+            CREATE TABLE IF NOT EXISTS raid_reward_details (
+                raid_id INTEGER, user_id INTEGER, player_level INTEGER, beast_levels TEXT,
+                PRIMARY KEY(raid_id,user_id));
+        """)
+        await db.executescript("""
+            CREATE INDEX IF NOT EXISTS ix_beasts_owner_number ON player_beasts(user_id,player_number);
+            CREATE INDEX IF NOT EXISTS ix_beasts_owner_active ON player_beasts(user_id,is_active);
+            CREATE INDEX IF NOT EXISTS ix_beasts_owner_party ON player_beasts(user_id,raid_slot);
+            CREATE INDEX IF NOT EXISTS ix_beasts_owner_ko ON player_beasts(user_id,knocked_out_until) WHERE knocked_out_until IS NOT NULL;
+            CREATE INDEX IF NOT EXISTS ix_inventory_owner_item ON player_inventory(user_id,item_id);
+            CREATE INDEX IF NOT EXISTS ix_materials_owner_item ON player_materials(user_id,material_id);
+            CREATE INDEX IF NOT EXISTS ix_equipment_owner_beast ON player_equipment(user_id,beast_row_id);
+            CREATE INDEX IF NOT EXISTS ix_equipment_owner_item ON player_equipment(user_id,equipment_id,beast_row_id);
+            CREATE INDEX IF NOT EXISTS ix_perks_owner ON player_perks(user_id,perk_id);
+            CREATE INDEX IF NOT EXISTS ix_members_user ON guild_members(user_id);
+            CREATE INDEX IF NOT EXISTS ix_market_expiry ON beast_market(expires_at);
+            CREATE INDEX IF NOT EXISTS ix_market_seller ON beast_market(seller_id,ask_price);
+            CREATE INDEX IF NOT EXISTS ix_battles_challenger ON battles(challenger_id,created_at);
+            CREATE INDEX IF NOT EXISTS ix_battles_opponent ON battles(opponent_id,created_at);
+            CREATE INDEX IF NOT EXISTS ix_raid_participants_user ON raid_participants(user_id,raid_id);
+            CREATE INDEX IF NOT EXISTS ix_ranked_pair_time ON ranked_matches(winner_id,loser_id,played_at);
         """)
         # Preserve onboarding history for accounts created before this column.
         await db.execute("""
@@ -366,7 +391,7 @@ async def _run_migrations():
         await db.commit()
 
 async def get_or_create_player(user_id: int, username: str):
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)) as cursor:
             player = await cursor.fetchone()
@@ -381,7 +406,7 @@ async def get_or_create_player(user_id: int, username: str):
         return dict(player)
 
 async def get_player(user_id: int):
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute("SELECT * FROM players WHERE user_id = ?", (user_id,)) as cursor:
             row = await cursor.fetchone()
@@ -392,14 +417,14 @@ async def update_player(user_id: int, **kwargs):
         return
     sets = ", ".join(f"{k} = ?" for k in kwargs)
     values = list(kwargs.values()) + [user_id]
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         await db.execute(f"UPDATE players SET {sets} WHERE user_id = ?", values)
         await db.commit()
 
 async def get_player_beasts(user_id: int):
-    await recover_beasts(user_id)
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
+        await recover_beasts(user_id,db)
         async with db.execute(
             "SELECT * FROM player_beasts WHERE user_id = ? ORDER BY COALESCE(player_number, id)",
             (user_id,)
@@ -408,9 +433,9 @@ async def get_player_beasts(user_id: int):
             return [dict(r) for r in rows]
 
 async def get_active_beast(user_id: int):
-    await recover_beasts(user_id)
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
+        await recover_beasts(user_id,db)
         async with db.execute(
             "SELECT * FROM player_beasts WHERE user_id = ? AND is_active = 1", (user_id,)
         ) as cursor:
@@ -419,9 +444,9 @@ async def get_active_beast(user_id: int):
 
 async def get_raid_party(user_id: int) -> list:
     """Return the player's 3 raid party beasts ordered by slot. Empty slots are None."""
-    await recover_beasts(user_id)
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
+        await recover_beasts(user_id,db)
         async with db.execute(
             "SELECT * FROM player_beasts WHERE user_id = ? AND raid_slot IN (1,2,3) ORDER BY raid_slot",
             (user_id,)
@@ -436,33 +461,51 @@ async def get_raid_party(user_id: int) -> list:
     return party
 
 async def set_raid_slot(user_id: int, beast_row_id: int, slot: int):
-    """Assign a beast to a raid slot (1-3). Clears the slot first, then assigns."""
-    async with aiosqlite.connect(DB_PATH) as db:
-        # Clear any beast already in this slot
-        await db.execute(
-            "UPDATE player_beasts SET raid_slot = NULL WHERE user_id = ? AND raid_slot = ?",
-            (user_id, slot)
-        )
-        # Clear this beast from any existing slot
-        await db.execute(
-            "UPDATE player_beasts SET raid_slot = NULL WHERE id = ? AND user_id = ?",
-            (beast_row_id, user_id)
-        )
-        # Assign
-        await db.execute(
-            "UPDATE player_beasts SET raid_slot = ? WHERE id = ? AND user_id = ?",
-            (slot, beast_row_id, user_id)
-        )
-        await db.commit()
+    """Validate the target before replacing an existing party slot."""
+    from utils.duels import reserve_fighters
+    if slot not in (1, 2, 3):
+        raise ValueError('Choose raid slot 1, 2 or 3.')
+    with reserve_fighters([user_id]):
+        async with connect() as db:
+            await db.execute('BEGIN IMMEDIATE')
+            async with db.execute('SELECT 1 FROM player_beasts WHERE user_id=? AND id=?', (user_id, beast_row_id)) as c:
+                if not await c.fetchone():
+                    raise ValueError('That companion is no longer in your collection.')
+            async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (beast_row_id,)) as c:
+                if await c.fetchone():
+                    raise ValueError('Delist this companion before assigning it to your raid party.')
+            await db.execute('UPDATE player_beasts SET raid_slot=NULL WHERE user_id=? AND raid_slot=?', (user_id, slot))
+            await db.execute('UPDATE player_beasts SET raid_slot=? WHERE user_id=? AND id=?', (slot, user_id, beast_row_id))
+            await db.commit()
 
 async def clear_raid_slot(user_id: int, slot: int):
-    """Remove a beast from a raid slot."""
-    async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute(
-            "UPDATE player_beasts SET raid_slot = NULL WHERE user_id = ? AND raid_slot = ?",
-            (user_id, slot)
-        )
-        await db.commit()
+    from utils.duels import reserve_fighters
+    if slot not in (1, 2, 3):
+        raise ValueError('Choose raid slot 1, 2 or 3.')
+    with reserve_fighters([user_id]):
+        async with connect() as db:
+            await db.execute('UPDATE player_beasts SET raid_slot=NULL WHERE user_id=? AND raid_slot=?', (user_id, slot))
+            await db.commit()
+
+async def set_active_companion(user_id, number):
+    from utils.duels import reserve_fighters
+    with reserve_fighters([user_id]):
+        async with connect() as db:
+            db.row_factory = aiosqlite.Row
+            await recover_beasts(user_id, db)
+            await db.execute('BEGIN IMMEDIATE')
+            async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND (player_number=? OR (player_number IS NULL AND id=?))', (user_id, number, number)) as c:
+                row = await c.fetchone()
+            if not row:
+                raise ValueError(f'Companion #{number} is not in your collection.')
+            if is_knocked_out(dict(row)) or row['hp'] <= 0:
+                raise ValueError('Let this companion recover before making it active.')
+            async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (row['id'],)) as c:
+                if await c.fetchone():
+                    raise ValueError('Delist this companion before making it active.')
+            await db.execute('UPDATE player_beasts SET is_active=0 WHERE user_id=? AND is_active=1', (user_id,))
+            await db.execute('UPDATE player_beasts SET is_active=1 WHERE user_id=? AND id=?', (user_id, row['id']))
+            await db.commit()
 
 # KO recovery time by rarity (seconds)
 KO_RECOVERY_SECONDS = {
@@ -483,19 +526,24 @@ async def knockout_beast(beast_row_id: int, rarity: str):
     seconds = KO_RECOVERY_SECONDS.get(rarity, 1800)
     if not seconds:return
     now=datetime.now(timezone.utc)
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         await db.execute("UPDATE player_beasts SET hp=0,knocked_out_until=? WHERE id=? AND (knocked_out_until IS NULL OR julianday(knocked_out_until)<=julianday(?))",((now+timedelta(seconds=seconds)).isoformat(),beast_row_id,now.isoformat()))
         await db.commit()
 
-async def recover_beasts(user_id):
-    from datetime import datetime, timezone
-    async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute("UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?)",(user_id,datetime.now(timezone.utc).isoformat()))
-        await db.commit()
+async def recover_beasts(user_id,db=None):
+    from datetime import datetime,timezone
+    if db is None:
+        async with connect() as connection:return await recover_beasts(user_id,connection)
+    now=datetime.now(timezone.utc).isoformat()
+    async with db.execute("SELECT 1 FROM player_beasts WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?) LIMIT 1",(user_id,now)) as c:
+        expired=await c.fetchone()
+    if not expired:return
+    await db.execute("UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?)",(user_id,now))
+    await db.commit()
 
 async def revive_beast(beast_row_id: int):
     """Clear KO timer and restore HP to full."""
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute("SELECT max_hp FROM player_beasts WHERE id = ?", (beast_row_id,)) as c:
             row = await c.fetchone()
@@ -545,6 +593,17 @@ def ko_time_remaining(beast_row: dict) -> str:
 
 async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool = False, grant_key=None):
     """Grant a beast atomically; each trainer can claim a starter only once."""
+    async with connect(DB_PATH) as db:
+        await db.execute('BEGIN IMMEDIATE')
+        new_id = await grant_beast(db, user_id, beast_data, starter=starter, grant_key=grant_key)
+        await db.commit()
+    if new_id is not None:
+        from utils.events import acquired_beast
+        await acquired_beast(user_id, new_id, beast_data, beast_data.get('caught_from', 'hatch'))
+    return new_id
+
+async def grant_beast(db, user_id, beast_data, *, starter=False, grant_key=None):
+    """Insert within an existing transaction; caller emits acquisition after commit."""
     from utils.dispositions import roll_disposition, apply_disposition
 
     disposition = beast_data.get("disposition")  # allow override (e.g. starters pass None)
@@ -553,61 +612,59 @@ async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool =
 
     # Apply disposition modifier to stats before storing
     final_stats = apply_disposition(beast_data["base_stats"], disposition)
+    level = beast_data.get('level', 1)
+    if not isinstance(level, int) or level < 1:
+        raise ValueError('A granted companion needs a positive whole level.')
+    growth = calc_stat_growth({'rarity': beast_data['rarity']}, level - 1)
+    final_stats = {stat: value + growth[stat] for stat, value in final_stats.items()}
 
-    async with aiosqlite.connect(DB_PATH) as db:
-        # Serialize number allocation and starter claims across separate views.
-        await db.execute("BEGIN IMMEDIATE")
-        if grant_key:
-            async with db.execute("SELECT beast_row_id FROM gameplay_grants WHERE grant_key=? AND user_id=?",(grant_key,user_id)) as cursor:
-                previous=await cursor.fetchone()
-            if previous:return previous[0]
-        if starter:
-            async with db.execute(
-                "SELECT starter_claimed, EXISTS(SELECT 1 FROM player_beasts WHERE user_id = ?) "
-                "FROM players WHERE user_id = ?", (user_id, user_id)
-            ) as cursor:
-                account = await cursor.fetchone()
-                if account is None:
-                    raise ValueError("Create a trainer before claiming a starter.")
-                if account[0] or account[1]:
-                    await db.rollback()
-                    return None
-        # Assign next sequential player_number for this user
+    if grant_key:
+        async with db.execute("SELECT beast_row_id FROM gameplay_grants WHERE grant_key=? AND user_id=?",(grant_key,user_id)) as cursor:
+            previous=await cursor.fetchone()
+        if previous:return previous[0]
+    if starter:
         async with db.execute(
-            "SELECT COALESCE(MAX(player_number), 0) + 1 FROM player_beasts WHERE user_id = ?",
-            (user_id,)
-        ) as c:
-            player_number = (await c.fetchone())[0]
+            "SELECT starter_claimed, EXISTS(SELECT 1 FROM player_beasts WHERE user_id = ?) "
+            "FROM players WHERE user_id = ?", (user_id, user_id)
+        ) as cursor:
+            account = await cursor.fetchone()
+            if account is None:
+                raise ValueError("Create a trainer before claiming a starter.")
+        if account[0] or account[1]:
+            return None
+    # Assign next sequential player_number for this user
+    async with db.execute(
+        "SELECT COALESCE(MAX(player_number), 0) + 1 FROM player_beasts WHERE user_id = ?",
+        (user_id,)
+    ) as c:
+        player_number = (await c.fetchone())[0]
 
-        beast_insert = await db.execute("""
-            INSERT INTO player_beasts
-            (user_id, beast_id, level, hp, max_hp, attack, defense, speed, mana, max_mana,
-             rarity, disposition, caught_from, player_number, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            user_id, beast_data["id"], 1,
-            final_stats["hp"], final_stats["hp"],
-            final_stats["attack"], final_stats["defense"],
-            final_stats["speed"],
-            final_stats["mana"], final_stats["mana"],
-            beast_data["rarity"],
-            disposition,
-            beast_data.get("caught_from", "hatch"),
-            player_number,
-            int(starter),
-        ))
-        new_id=beast_insert.lastrowid
-        if starter:
-            await db.execute("UPDATE players SET starter_claimed = 1 WHERE user_id = ?", (user_id,))
-        if grant_key:
-            await db.execute("INSERT INTO gameplay_grants VALUES(?,?,?)",(grant_key,user_id,new_id))
-        await db.commit()
-    from utils.events import acquired_beast
-    await acquired_beast(user_id,new_id,beast_data,beast_data.get("caught_from","hatch"))
+    beast_insert = await db.execute("""
+        INSERT INTO player_beasts
+        (user_id, beast_id, level, hp, max_hp, attack, defense, speed, mana, max_mana,
+         rarity, disposition, caught_from, player_number, is_active)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        user_id, beast_data["id"], level,
+        final_stats["hp"], final_stats["hp"],
+        final_stats["attack"], final_stats["defense"],
+        final_stats["speed"],
+        final_stats["mana"], final_stats["mana"],
+        beast_data["rarity"],
+        disposition,
+        beast_data.get("caught_from", "hatch"),
+        player_number,
+        int(starter),
+    ))
+    new_id=beast_insert.lastrowid
+    if starter:
+        await db.execute("UPDATE players SET starter_claimed = 1 WHERE user_id = ?", (user_id,))
+    if grant_key:
+        await db.execute("INSERT INTO gameplay_grants VALUES(?,?,?)",(grant_key,user_id,new_id))
     return new_id
 
 async def get_inventory(user_id: int):
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT * FROM player_inventory WHERE user_id = ?", (user_id,)
@@ -617,7 +674,7 @@ async def get_inventory(user_id: int):
 
 async def add_item(user_id: int, item_id: str, quantity: int = 1):
     if quantity < 1: raise ValueError("Quantity must be positive.")
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         await db.execute("BEGIN IMMEDIATE")
         async with db.execute(
             "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
@@ -638,7 +695,7 @@ async def add_item(user_id: int, item_id: str, quantity: int = 1):
 
 async def remove_item(user_id: int, item_id: str, quantity: int = 1) -> bool:
     if quantity < 1: return False
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         await db.execute("BEGIN IMMEDIATE")
         async with db.execute(
             "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
@@ -658,23 +715,22 @@ async def remove_item(user_id: int, item_id: str, quantity: int = 1) -> bool:
         return True
 
 def load_beasts():
-    with (PROJECT_ROOT / "data" / "beasts.json").open(encoding="utf-8") as f:
-        beasts = json.load(f)["beasts"]
-    for beast_id, beast in beasts.items():
-        beast["image_url"] = beast_image_url(beast_id)
+    from utils.catalog import load_catalog
+    beasts=load_catalog('beasts.json')['beasts']
+    for key,beast in beasts.items():beast['image_url']=beast_image_url(key)
     return beasts
 
 def load_items():
-    with (PROJECT_ROOT / "data" / "items.json").open(encoding="utf-8") as f:
-        return json.load(f)["items"]
+    from utils.catalog import load_catalog
+    return load_catalog('items.json')['items']
 
 def load_perks():
-    with (PROJECT_ROOT / "data" / "perks.json").open(encoding="utf-8") as f:
-        return json.load(f)
+    from utils.catalog import load_catalog
+    return load_catalog('perks.json')
 
-def get_beast_data(beast_id: str):
-    beasts = load_beasts()
-    return beasts.get(beast_id)
+def get_beast_data(beast_id):
+    from utils.catalog import beast_definition
+    return beast_definition(beast_id)
 
 def calc_exp_for_level(level: int) -> int:
     """Compatibility name for the shared companion EXP curve."""
@@ -782,7 +838,7 @@ async def renumber_beasts(user_id: int) -> None:
         "legendary": 4, "divine": 5, "altered_divine": 6,
         "corrupted": 7, "ancient": 8, "dev": 9,
     }
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         async with db.execute(
             "SELECT id, rarity FROM player_beasts WHERE user_id = ? ORDER BY id ASC",
             (user_id,)
@@ -800,9 +856,9 @@ async def renumber_beasts(user_id: int) -> None:
 
 async def get_beast_by_player_number(user_id: int, player_number: int) -> dict | None:
     """Resolve a player_number to a player_beasts row. Falls back to global id for old beasts."""
-    await recover_beasts(user_id)
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
+        await recover_beasts(user_id,db)
         # Try player_number first
         async with db.execute(
             "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",
@@ -813,7 +869,7 @@ async def get_beast_by_player_number(user_id: int, player_number: int) -> dict |
             return dict(row)
         # Fallback: old beasts without player_number — match by global id
         async with db.execute(
-            "SELECT * FROM player_beasts WHERE user_id = ? AND id = ?",
+            "SELECT * FROM player_beasts WHERE user_id = ? AND id = ? AND player_number IS NULL",
             (user_id, player_number)
         ) as c:
             row = await c.fetchone()
@@ -839,7 +895,7 @@ async def increment_catch_count(beast_id: str, rarity: str) -> tuple[int, bool]:
     Returns (new_count, is_milestone).
     """
     thresholds = MILESTONE_THRESHOLDS.get(rarity, [1, 10, 100])
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         await db.execute(
             "INSERT INTO global_catch_counts (beast_id, catch_count) VALUES (?, 1) "
             "ON CONFLICT(beast_id) DO UPDATE SET catch_count = catch_count + 1",
@@ -855,13 +911,18 @@ async def increment_catch_count(beast_id: str, rarity: str) -> tuple[int, bool]:
     return count, is_milestone
 
 async def get_catch_count(beast_id,rarity):
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         async with db.execute("SELECT catch_count FROM global_catch_counts WHERE beast_id=?",(beast_id,)) as c:
             row=await c.fetchone()
     count=row[0] if row else 0
     return count,count in MILESTONE_THRESHOLDS.get(rarity,[1,10,100])
 
 async def credit_gold(user_id,amount):
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with connect(DB_PATH) as db:
         await db.execute("UPDATE players SET gold=gold+?,total_gold_earned=total_gold_earned+? WHERE user_id=?",(amount,max(0,amount),user_id))
         await db.commit()
+
+def connect(database=None,**kwargs):
+    """Use a finite busy timeout consistently across all short-lived connections."""
+    kwargs.setdefault('timeout',15)
+    return aiosqlite.connect(DB_PATH if database is None else database,**kwargs)

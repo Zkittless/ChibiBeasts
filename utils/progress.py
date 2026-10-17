@@ -1,3 +1,4 @@
+from utils import db as storage
 # ── ChibiBeasts Progress Tracking ───────────────────────────────────────────
 # Shared helpers for Achievements and Daily Quests. Other cogs call
 # `track_event(...)` after a meaningful gameplay action (catch, hatch, win a
@@ -14,7 +15,6 @@ import discord
 import random
 from datetime import datetime, timezone
 
-DB_PATH = "db/chibibeast.db"
 
 
 # ── Achievement Definitions ─────────────────────────────────────────────────
@@ -167,7 +167,7 @@ async def check_achievements(user_id: int) -> list[str]:
     from utils.db import load_beasts
 
     newly_unlocked = []
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute("BEGIN IMMEDIATE")
 
@@ -293,7 +293,7 @@ async def unlock_simple_achievement(user_id: int, achievement_id: str) -> bool:
     """For event-based achievements that aren't derivable from a stat snapshot
     (first_steps, first_explore, first_trade, first_raid_win). Call directly
     from the triggering cog. Returns True if newly granted."""
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute("BEGIN IMMEDIATE")
         granted = await grant_achievement(db, user_id, achievement_id)
         await db.commit()
@@ -375,167 +375,50 @@ def _daily_quest_set(user_id: int, date_str: str) -> list[dict]:
     return rng.sample(QUEST_POOL, k=min(QUESTS_PER_DAY, len(QUEST_POOL)))
 
 
-async def get_daily_quests(user_id: int) -> list[dict]:
-    """Return today's quest set for a user with current progress, creating
-    rows on first access."""
-    date_str = _today_str()
-    quests = await eligible_daily_set(user_id, date_str)
+async def get_daily_quests(user_id):
+    date_str=_today_str();quests=await eligible_daily_set(user_id,date_str)
+    async with storage.connect() as db:
+        db.row_factory=aiosqlite.Row
+        async with db.execute('SELECT quest_id,progress,completed FROM daily_quests WHERE user_id=? AND date=?',(user_id,date_str)) as c:rows={r['quest_id']:r for r in await c.fetchall()}
+        missing=[q for q in quests if q['id'] not in rows]
+        if missing:
+            await db.executemany('INSERT OR IGNORE INTO daily_quests(user_id,quest_id,progress,completed,date) VALUES(?,?,0,0,?)',[(user_id,q['id'],date_str) for q in missing]);await db.commit()
+        return [{**q,'progress':rows[q['id']]['progress'] if q['id'] in rows else 0,'completed':bool(rows[q['id']]['completed']) if q['id'] in rows else False} for q in quests]
 
-    async with aiosqlite.connect(DB_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        result = []
-        for q in quests:
-            async with db.execute(
-                "SELECT * FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
-                (user_id, q["id"], date_str)
-            ) as c:
-                row = await c.fetchone()
-            if not row:
-                await db.execute(
-                    "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, ?, 0, 0, ?)",
-                    (user_id, q["id"], date_str)
-                )
-                progress, completed = 0, 0
-            else:
-                progress, completed = row["progress"], row["completed"]
-            result.append({**q, "progress": progress, "completed": bool(completed)})
+
+async def _track_daily_event(user_id,event,amount=1):
+    from utils.rewards import shards,player_exp
+    date_str=_today_str();quests=await eligible_daily_set(user_id,date_str)
+    matching=[q for q in quests if q['event']==event]
+    if not matching:return []
+    completed=[];exp_gain=0;leveled=False
+    async with storage.connect() as db:
+        db.row_factory=aiosqlite.Row
+        await db.execute('BEGIN IMMEDIATE')
+        async with db.execute('SELECT quest_id,progress,completed FROM daily_quests WHERE user_id=? AND date=?',(user_id,date_str)) as c:rows={r['quest_id']:dict(r) for r in await c.fetchall()}
+        for quest in matching:
+            row=rows.get(quest['id'],{})
+            if row.get('completed'):continue
+            progress=min(quest['target'],row.get('progress',0)+amount);done=progress>=quest['target']
+            await db.execute('INSERT INTO daily_quests(user_id,quest_id,progress,completed,date) VALUES(?,?,?,?,?) ON CONFLICT(user_id,quest_id,date) DO UPDATE SET progress=excluded.progress,completed=excluded.completed',(user_id,quest['id'],progress,int(done),date_str))
+            rows[quest['id']]={'progress':progress,'completed':done}
+            if done:
+                await db.execute('UPDATE players SET gold=gold+? WHERE user_id=?',(quest['reward_gold'],user_id))
+                if quest.get('reward_shards'):await shards(db,user_id,quest['reward_shards'])
+                exp_gain+=quest.get('reward_exp',0);completed.append(quest)
+        if completed and all(rows.get(q['id'],{}).get('completed') for q in quests):
+            bonus=await db.execute("INSERT OR IGNORE INTO daily_quests(user_id,quest_id,progress,completed,date) VALUES(?,'all_quests_bonus',1,1,?)",(user_id,date_str))
+            if bonus.rowcount:
+                await shards(db,user_id,5)
+                await db.execute('UPDATE players SET gold=gold+500 WHERE user_id=?',(user_id,))
+                await db.execute('UPDATE guilds SET guild_tokens=guild_tokens+5 WHERE id IN (SELECT guild_id FROM guild_members WHERE user_id=?)',(user_id,))
+                completed.append({'id':'all_quests_bonus','name':'Daily Champion','emoji':'🔮','desc':'Complete all 4 daily quests','target':4,'reward_gold':500,'reward_exp':0,'reward_shards':5,'event':None})
+        if exp_gain:level,_,leveled=await player_exp(db,user_id,exp_gain)
         await db.commit()
-        return result
-
-
-async def _track_daily_event(user_id: int, event: str, amount: int = 1) -> list[dict]:
-    """
-    Call this after a gameplay event relevant to quests (e.g. event="battle_win").
-    Advances progress on any of today's quests matching that event type, marks
-    them completed + pays out reward the moment they cross target.
-    Returns a list of quest dicts that were JUST completed by this call.
-    """
-    date_str = _today_str()
-    quests = await eligible_daily_set(user_id, date_str)
-    matching = [q for q in quests if q["event"] == event]
-    if not matching:
-        return []
-
-    just_completed = []
-    async with aiosqlite.connect(DB_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        await db.execute("BEGIN IMMEDIATE")
-        for q in matching:
-            async with db.execute(
-                "SELECT * FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
-                (user_id, q["id"], date_str)
-            ) as c:
-                row = await c.fetchone()
-
-            if row and row["completed"]:
-                continue
-
-            current_progress = row["progress"] if row else 0
-            new_progress = min(q["target"], current_progress + amount)
-            is_complete = new_progress >= q["target"]
-
-            if row:
-                await db.execute(
-                    "UPDATE daily_quests SET progress = ?, completed = ? WHERE user_id = ? AND quest_id = ? AND date = ?",
-                    (new_progress, int(is_complete), user_id, q["id"], date_str)
-                )
-            else:
-                await db.execute(
-                    "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, ?, ?, ?, ?)",
-                    (user_id, q["id"], new_progress, int(is_complete), date_str)
-                )
-
-            if is_complete and not (row and row["completed"]):
-                await db.execute(
-                    "UPDATE players SET gold = gold + ? WHERE user_id = ?",
-                    (q["reward_gold"], user_id)
-                )
-                # Shard reward if quest has one
-                if q.get("reward_shards", 0) > 0:
-                    from utils.rewards import shards
-                    await shards(db,user_id,q["reward_shards"])
-                just_completed.append(q)
-
-        await db.commit()
-
-    # ── Apply EXP with level-up handling for all just-completed quests ────
-    # Done outside the DB block so we can use award_player_exp cleanly.
-    if just_completed:
-        total_exp = sum(q["reward_exp"] for q in just_completed if q.get("reward_exp"))
-        if total_exp > 0:
-            try:
-                from cogs.battle import award_player_exp
-                await award_player_exp(user_id, total_exp)
-            except Exception:
-                # Fallback: raw write if import fails (e.g. circular import at startup)
-                import aiosqlite as _aio
-                async with _aio.connect(DB_PATH) as _db:
-                    await _db.execute(
-                        "UPDATE players SET exp = exp + ? WHERE user_id = ?",
-                        (total_exp, user_id)
-                    )
-                    await _db.commit()
-
-    # ── All-quests-complete shard bonus ────────────────────────────────────
-    # If the player just completed the final quest of their daily set,
-    # grant +1 Celestial Shard. Targets the 3-4 day casual sweet spot:
-    # with 2 base shards/day + 1 bonus on active days, a player who does
-    # their dailies consistently earns ~3 shards/day, reaching the core
-    # weekly shop items (Reroll 15 + Loom Fragment 10×2 = 35) in 4-5 days.
-    if just_completed:
-        date_str = _today_str()
-        quests = await eligible_daily_set(user_id, date_str)
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            await db.execute("BEGIN IMMEDIATE")
-            completed_count = 0
-            for q in quests:
-                async with db.execute(
-                    "SELECT completed FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
-                    (user_id, q["id"], date_str)
-                ) as c:
-                    row = await c.fetchone()
-                if row and row["completed"]:
-                    completed_count += 1
-            if completed_count >= QUESTS_PER_DAY:
-                # Only grant the bonus once — check if we've already given it today
-                async with db.execute(
-                    "SELECT 1 FROM daily_quests WHERE user_id = ? AND quest_id = 'all_quests_bonus' AND date = ?",
-                    (user_id, date_str)
-                ) as c:
-                    already_granted = await c.fetchone()
-                if not already_granted:
-                    from utils.rewards import shards
-                    await shards(db,user_id,5)
-                    await db.execute("UPDATE players SET gold=gold+500 WHERE user_id=?",(user_id,))
-                    # Award guild tokens if the player is in a guild
-                    async with db.execute(
-                        "SELECT guild_id FROM guild_members WHERE user_id = ?", (user_id,)
-                    ) as gc:
-                        gm = await gc.fetchone()
-                    if gm and gm["guild_id"]:
-                        await db.execute(
-                            "UPDATE guilds SET guild_tokens = guild_tokens + 5 WHERE id = ?",
-                            (gm["guild_id"],)
-                        )
-                    await db.execute(
-                        "INSERT INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?, 'all_quests_bonus', 1, 1, ?)",
-                        (user_id, date_str)
-                    )
-                    await db.commit()
-                    just_completed.append({
-                        "id": "all_quests_bonus",
-                        "name": "Daily Champion",
-                        "emoji": "🔮",
-                        "desc": "Complete all 4 daily quests",
-                        "target": 4,
-                        "reward_gold": 500,
-                        "reward_exp": 0,
-                        "reward_shards": 5,
-                        "event": None
-                    })
-
-    return just_completed
+    if leveled:
+        from utils.story import advance_quest_step
+        await advance_quest_step(user_id,'level_up',level=level)
+    return completed
 
 
 def build_quest_completion_embed(completed_quests: list[dict]) -> discord.Embed | None:
@@ -586,7 +469,7 @@ async def record_bestiary_sighting(guild_id: int, beast_id: str, user_id: int) -
     Record that `beast_id` has been caught/hatched in this server. Returns
     True if this is the FIRST time anyone in the server has caught it.
     """
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         async with db.execute(
             "SELECT 1 FROM bestiary WHERE guild_id = ? AND beast_id = ?", (guild_id, beast_id)
         ) as c:
@@ -602,7 +485,7 @@ async def record_bestiary_sighting(guild_id: int, beast_id: str, user_id: int) -
     # Notify questline tracker with new bestiary count.
     # Delayed import avoids circular dependency (progress ↔ questline).
     # Errors are logged rather than silently swallowed so genuine bugs surface.
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         async with db.execute(
             "SELECT COUNT(*) FROM bestiary WHERE guild_id = ?", (guild_id,)
         ) as c:
@@ -625,7 +508,7 @@ async def record_bestiary_sighting(guild_id: int, beast_id: str, user_id: int) -
 
 async def get_bestiary_progress(guild_id: int) -> dict:
     """Returns {beast_id: {"first_caught_by": user_id, "first_caught_at": ts}} for this server."""
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT beast_id, first_caught_by, first_caught_at FROM bestiary WHERE guild_id = ?",
@@ -636,18 +519,26 @@ async def get_bestiary_progress(guild_id: int) -> dict:
 
 async def eligible_daily_set(user_id,date_str):
     import json
-    async with aiosqlite.connect(DB_PATH) as db:
-        await db.execute("BEGIN IMMEDIATE")
-        async with db.execute("SELECT quest_ids FROM daily_sets WHERE user_id=? AND date=?",(user_id,date_str)) as c:stored=await c.fetchone()
-        if stored:
-            ids=json.loads(stored[0]);by_id={q["id"]:q for q in QUEST_POOL};return [by_id[key] for key in ids if key in by_id]
-        async with db.execute("SELECT level FROM players WHERE user_id=?",(user_id,)) as c:p=await c.fetchone()
-        async with db.execute("SELECT 1 FROM guild_members WHERE user_id=?",(user_id,)) as c:guild=await c.fetchone()
-        async with db.execute("SELECT COUNT(*) FROM player_beasts WHERE user_id=?",(user_id,)) as c:count=(await c.fetchone())[0]
-        pool=[q for q in QUEST_POOL if (q["event"] not in {"raid_attack","raid_damage"} or (p and p[0]>=10 and guild and count>=3)) and (q["event"]!="guild_action" or guild)]
-        selected=random.Random(f"{user_id}:{date_str}").sample(pool,k=min(QUESTS_PER_DAY,len(pool)))
-        await db.execute("INSERT INTO daily_sets VALUES(?,?,?)",(user_id,date_str,json.dumps([q["id"] for q in selected])))
-        await db.commit();return selected
+    def decode(row):
+        by_id={q['id']:q for q in QUEST_POOL}
+        return [by_id[key] for key in json.loads(row[0]) if key in by_id]
+    async with storage.connect() as db:
+        query="SELECT quest_ids FROM daily_sets WHERE user_id=? AND date=?"
+        async with db.execute(query,(user_id,date_str)) as c:stored=await c.fetchone()
+        if stored:return decode(stored)
+        await db.execute('BEGIN IMMEDIATE')
+        async with db.execute(query,(user_id,date_str)) as c:stored=await c.fetchone()
+        if stored:return decode(stored)
+        async with db.execute('SELECT level FROM players WHERE user_id=?',(user_id,)) as c:p=await c.fetchone()
+        async with db.execute('SELECT g.level FROM guild_members m JOIN guilds g ON g.id=m.guild_id WHERE m.user_id=?',(user_id,)) as c:guild=await c.fetchone()
+        async with db.execute('SELECT COUNT(*) FROM player_beasts WHERE user_id=?',(user_id,)) as c:count=(await c.fetchone())[0]
+        async with db.execute("SELECT 1 FROM player_inventory WHERE user_id=? AND item_id IN ('epoch_shard','firstborn_ember','void_prism') AND quantity>0 LIMIT 1",(user_id,)) as c:summon=await c.fetchone()
+        can_raid=bool(p and p[0]>=10 and count>=3 and ((guild and guild[0]>=5) or summon))
+        pool=[q for q in QUEST_POOL if (q['event'] not in {'raid_attack','raid_damage'} or can_raid) and (q['event']!='guild_action' or guild)]
+        selected=random.Random(f'{user_id}:{date_str}').sample(pool,k=min(QUESTS_PER_DAY,len(pool)))
+        await db.execute('INSERT INTO daily_sets VALUES(?,?,?)',(user_id,date_str,json.dumps([q['id'] for q in selected])))
+        await db.commit()
+        return selected
 
 async def track_quest_event(user_id,event,amount=1,**context):
     from utils.events import record_event

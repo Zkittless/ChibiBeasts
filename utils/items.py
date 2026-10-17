@@ -14,10 +14,17 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
     if item['type'] in {'evolution', 'unlock', 'summon', 'blueprint'} or effect.get('evolution_item'):
         command = '/ancient' if item['type'] == 'summon' else '/build' if item['type'] == 'blueprint' else '/evolve'
         raise ValueError(f"Use {command} to spend {item['name']} on an eligible target. It has not been consumed.")
-    async with combat.state_lock:
+    async with combat.lock_states([user_id]):
         live = combat.active_states.get(user_id)
-        updated = copy.deepcopy(live) if live else None
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        if live and live.get('closed'):
+            raise ValueError('Your battle is settling. Try again in a moment.')
+        from utils.duels import active_fighters
+        if user_id in active_fighters and live is None:
+            raise ValueError('Your battle or transfer is preparing. Try again in a moment.')
+        party = combat.active_parties.get(user_id, [live] if live else [])
+        updated_party = [copy.deepcopy(state) for state in party]
+        updated = next((state for state in updated_party if live and state['id'] == live['id']), None)
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute('BEGIN IMMEDIATE')
             async with db.execute('SELECT * FROM player_inventory WHERE user_id=? AND item_id=? AND quantity>0', (user_id, item_id)) as c:
@@ -27,14 +34,17 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             if beast_number is not None:
                 async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND player_number=?', (user_id, beast_number)) as c:
                     row = await c.fetchone()
+            elif live:
+                async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND id=?', (user_id, live['id'])) as c:
+                    row = await c.fetchone()
             else:
                 async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND is_active=1', (user_id,)) as c:
                     row = await c.fetchone()
             beast = dict(row) if row else None
             async with db.execute('SELECT * FROM players WHERE user_id=?', (user_id,)) as c:
                 player = dict(await c.fetchone())
-            if updated and beast and (updated['id'] != beast['id']):
-                updated = None
+            if beast:
+                updated = next((state for state in updated_party if state['id'] == beast['id']), None)
             target = updated or beast
             no_beast = {'choose_element', 'clear_title', 'reduce_incubation_percent', 'reduce_incubation_hours', 'reset_explore', 'reset_challenge', 'encounter_boost', 'raid_damage_boost', 'catch_boost_charges', 'guaranteed_rare_charges', 'guild_title', 'revive_party'}
             if not beast and (not no_beast.intersection(effect)):
@@ -66,9 +76,8 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             if effect.get('revive_party'):
                 await db.execute('UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND (raid_slot IS NOT NULL OR is_active=1)', (user_id,))
                 messages.append('Your active companion and raid party are fully recovered.')
-                if updated:
-                    updated['hp'] = updated['max_hp']
-                    updated['status'] = None
+                for member in updated_party:
+                    member.update(hp=member['max_hp'], status=None, status_turns=0, ko_recorded=False)
             elif effect.get('revive'):
                 from utils.db import is_knocked_out
                 if not beast or not (is_knocked_out(beast) or beast['hp'] <= 0):
@@ -77,7 +86,7 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
                 await db.execute('UPDATE player_beasts SET hp=?,knocked_out_until=NULL WHERE id=?', (hp, beast['id']))
                 messages.append(f'Revived with {hp} HP.')
                 if updated:
-                    updated['hp'] = hp
+                    updated.update(hp=hp, status=None, status_turns=0, ko_recorded=False)
             elif effect.get('heal_percent'):
                 if storage.is_knocked_out(beast) or target['hp'] <= 0:
                     raise ValueError('A knocked-out companion needs a revive before ordinary healing.')
@@ -163,8 +172,8 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             await db.execute('UPDATE player_inventory SET quantity=quantity-1 WHERE id=? AND quantity>0', (inv['id'],))
             await db.execute('DELETE FROM player_inventory WHERE id=? AND quantity<=0', (inv['id'],))
             await db.commit()
-        if updated and live is not None:
-            live.update(updated)
+        for original, changed in zip(party, updated_party):
+            original.update(changed)
     from utils.progress import track_quest_event
     await track_quest_event(user_id, 'use_item')
     return '\n'.join(messages)

@@ -2,7 +2,6 @@
 import json
 import aiosqlite
 from utils import db as storage
-from utils.artwork import PROJECT_ROOT
 RELATIONSHIP_LEVELS = {'stranger': ('Stranger', '⚪'), 'known': ('Known', '🟢'), 'trusted': ('Trusted', '🔵'), 'companion': ('Companion', '🌸')}
 
 def relationship_order(level):
@@ -13,10 +12,12 @@ def relationship_display(level):
     return f'{emoji} {label}'
 
 def load_questline():
-    return json.loads((PROJECT_ROOT / 'data/questline.json').read_text(encoding='utf-8'))['questline']
+    from utils.catalog import load_catalog
+    return load_catalog('questline.json')['questline']
 
 def load_npcs():
-    return json.loads((PROJECT_ROOT / 'data/npcs.json').read_text(encoding='utf-8'))['npcs']
+    from utils.catalog import load_catalog
+    return load_catalog('npcs.json')['npcs']
 
 def state_from_row(user_id, row):
     if not row:
@@ -32,11 +33,11 @@ async def write_state(db, state):
     await db.execute('INSERT INTO player_questline(user_id,current_chapter,completed_chapters,step_progress,collected_relics,npc_relationships)\n        VALUES(?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET current_chapter=excluded.current_chapter,\n        completed_chapters=excluded.completed_chapters,step_progress=excluded.step_progress,\n        collected_relics=excluded.collected_relics,npc_relationships=excluded.npc_relationships,last_updated=CURRENT_TIMESTAMP', (state['user_id'], state['current_chapter'], *[json.dumps(state[k]) for k in ('completed_chapters', 'step_progress', 'collected_relics', 'npc_relationships')]))
 
 async def get_quest_state(user_id):
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         return await read_state(db, user_id)
 
 async def save_quest_state(state):
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         await write_state(db, state)
         await db.commit()
@@ -132,7 +133,7 @@ def apply_event(state, chapter, event, amount=1, **ctx):
         p[key] = min(target, current + add)
 
 async def advance_quest_step(user_id, event_type, **kwargs):
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         state = await read_state(db, user_id)
         chapter = load_questline()['chapters'].get(state['current_chapter'])
@@ -186,7 +187,7 @@ async def reconcile(db, state, chapter, guild_id=0):
 
 async def journal(user_id, guild_id=0):
     chapters = load_questline()['chapters']
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         state = await read_state(db, user_id)
         remaining = [key for key in chapters if key not in state['completed_chapters']]
@@ -218,7 +219,7 @@ async def claim_chapter(user_id, chapter_id, guild_id=0, choice=None):
     from utils.progress import grant_achievement
     chapters = load_questline()['chapters']
     chapter = chapters[chapter_id]
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         state = await read_state(db, user_id)
         if state['current_chapter'] != chapter_id or chapter_id in state['completed_chapters']:

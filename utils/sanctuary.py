@@ -1,3 +1,4 @@
+from utils import db as storage
 # ── ChibiBeasts Sanctuary Runtime Effects ───────────────────────────────────
 # Any cog can call get_sanctuary(guild_id) to check which upgrades are built,
 # then use the helper functions below to apply effects at runtime.
@@ -5,12 +6,11 @@
 
 import aiosqlite
 
-DB_PATH = "db/chibibeast.db"
 
 
 async def get_sanctuary(guild_id: int) -> dict:
     """Return the sanctuary row for a guild, or all-zero defaults."""
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT * FROM guild_sanctuary WHERE guild_id = ?", (guild_id,)
@@ -23,7 +23,7 @@ async def get_sanctuary(guild_id: int) -> dict:
 
 async def get_user_sanctuary(user_id: int) -> dict:
     """Return the sanctuary for the guild a user belongs to, or defaults."""
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT gs.* FROM guild_members gm "
@@ -61,7 +61,7 @@ async def apply_happiness_passive(user_id: int):
     sanctuary = await get_user_sanctuary(user_id)
     if not sanctuary.get("fairy_garden"):
         return 0
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute(
             "UPDATE player_beasts SET happiness = MIN(100, happiness + 1) "
             "WHERE user_id = ? AND is_active = 0 AND happiness < 100",

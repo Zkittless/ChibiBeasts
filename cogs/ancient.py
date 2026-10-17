@@ -15,7 +15,7 @@ class Ancient(commands.Cog):
         self.bot = bot
 
     async def summon_item_autocomplete(self, interaction, current):
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             async with db.execute('SELECT item_id,quantity FROM player_inventory WHERE user_id=? AND quantity>0', (interaction.user.id,)) as c:
                 owned = dict(await c.fetchall())
         return [app_commands.Choice(name=f"{id.replace('_', ' ').title()} ×{owned[id]}", value=id) for id in SUMMON_ITEMS if owned.get(id) and current.lower() in id.replace('_', ' ').lower()]

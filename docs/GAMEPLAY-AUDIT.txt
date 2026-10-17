@@ -1,0 +1,155 @@
+CHIBIBEASTS — GAMEPLAY AND PERFORMANCE AUDIT
+Completed 2026-10-16 America/Chicago
+Branch: audit/gameplay-performance
+Baseline: 9abfd25a0c98265336c143b1d79c8c6fa3b3de6e
+
+The merged main tree matched the prior revamp. This pass fixes reproducible
+gameplay bugs and measured slow paths. The game remains a Discord RPG with
+the same campaign, roster, art and starter awakenings.
+
+WHAT CHANGED FOR PLAYERS
+
+1. Battles reserve their trainers before reading companions, spending queued
+   buffs or claiming a challenge cooldown. Overlapping requests cannot prepare
+   two battles. Fresh preparation checks ownership, species, health and stats.
+   Failed saves and cancelled duels release reservations and live states.
+   Final message edits cannot prevent completed combat from returning its result.
+   Different battles no longer share a global item/turn lock.
+
+2. Trade accepts the collection numbers shown in /collection. Offers without
+   a requested companion explicitly say they are gifts. Acceptance rechecks both
+   companions and the gold balance in one transaction, with a persistent offer
+   claim preventing replay. Both sides enforce the Altered Divine restriction.
+   Market purchases use the exact current listing, price and expiry. A stale
+   button cannot buy a relisted companion under old terms or charge two buyers.
+
+3. Equipped armor follows traded/sold companions, along with bound runes.
+   Transfers and releases preserve other collection numbers. Invalid party-slot
+   assignments preserve the existing slot. Listed companions must be delisted
+   before activation, party assignment or evolution. Release confirmation checks
+   ownership again and returns armor/runes instead of orphaning them.
+
+4. Wild catches retain the encounter level and its stat growth. They previously
+   always entered the collection at level 1. The starter info panel now shows
+   bond and happiness requirements before declaring an awakening ready. Profile
+   cooldown displays include the equipped time perk.
+
+5. Raid joins cannot finish after the lobby closes; the channel is reserved
+   before eligibility awaits. Initial-send failures refund paid sessions and
+   release trainers. Repeated rapid inputs share one pending display refresh
+   (1.5-second interval); the combat state updates immediately.
+
+6. Raid patterns give at least six seconds to react and cannot overwrite an
+   unresolved pattern when another HP threshold is crossed. Each trainer can
+   Weave once per pattern. The number required adjusts for surviving trainers.
+   Tending cleanses blight before healing. Basic boss hits use the shared typed
+   damage calculation, including weaken and blind. Actions after defeat are
+   rejected while the result settles.
+
+7. A raid victory saves a settlement journal before payout and Discord output.
+   Gold, shards, materials, player/beast EXP and catches are committed with the
+   contributor's reward claim. Interrupted victories resume after restart,
+   including later contributors. A deleted message cannot prevent payout.
+   Paid sessions interrupted before victory are refunded once.
+
+8. Items target the companion currently fighting after a raid swap. Explicit
+   companion numbers can target a live bench member. Party revives restore the
+   live bench as well as database rows and allow later knockouts to be recorded.
+
+9. Daily progress is fetched together. Matching quest progress, EXP and reward
+   claims commit together; concurrent final events award Daily Champion once.
+   Stored daily sets and already-recorded keyed events can be read without
+   taking a writer transaction. Inaccessible raid tasks remain excluded.
+
+PERFORMANCE EVIDENCE
+
+Local Python 3.12, Windows, synthetic SQLite data with 50,000 companions.
+These are warm local medians, not end-to-end Discord response times. The same
+benchmark script and sample sizes were used before and after; normal machine
+and filesystem variation still applies. No player data was used.
+
+Operation                        Before ms  After ms    Speedup
+One creature definition              1.454     0.017      85.5x
+Celestial Loom encounter             6.091     0.015     406.1x
+Collection: 10 of 50,000            12.137     2.306       5.3x
+Collection number lookup            11.379     2.035       5.6x
+Battle win progression event        34.303    21.221       1.6x
+
+Collection and numbered lookup use one connection instead of two. A healthy
+collection read no longer performs an UPDATE or commit. The numbered query plan
+changed from SCAN player_beasts to an indexed SEARCH. Battle-win events average
+6.2 connections before and 5.0 after.
+
+Static catalogs are cached, with private copies returned to callers so one
+fight cannot corrupt later definitions. Encounter pools cache eligible IDs.
+The database has indexes for ownership, numbers, party slots, recovery, gear,
+inventory, guild membership, listing expiry and battle/ranked history. All
+commands share one configured database path and a finite busy timeout. WAL
+allows readers to coexist with a writer; transactions remain short-lived.
+
+VALIDATION
+
+92 automated tests passed; zero failures, errors or skips.
+Compilation passed. pip check: No broken requirements found.
+All 16 Discord extensions load in the offline extension tests.
+
+The existing tests still cover all ten campaign chapters, all three finale
+choices, starter investment preservation, item effects, crafting, unlocks,
+ranked seasons, raid catch guarantees and onboarding migrations. This audit
+adds 37 regressions covering concurrent inputs, stale state and failure paths.
+
+Seeded simulation: 1,290 fights across all 86 creatures at levels 1, 15 and 30,
+against five opponents. HP and mana stayed within bounds. Of these,
+1,279 finished with a knockout and 11 reached the 20-round judge; the mean
+was 3.13 rounds. These pairings vary in rarity and are a rule/termination check,
+not a competitive balance rating or a forecast of player win rates.
+
+All six raid bosses completed in solo and three-trainer seeded scenarios
+(12 scenarios), with response patterns and bench swaps exercised. Raid time
+advances synthetically; this does not test human reaction speed or network lag.
+
+DEPENDENCIES AND CI
+
+Tested direct runtime packages: discord.py 2.7.1, aiosqlite 0.22.1,
+python-dotenv 1.2.4. Their current project release pages were checked. The local
+interpreter was Python 3.12.10; the deployed interpreter was not inspected.
+requirements.txt now declares compatible tested ranges. requirements-lock.txt
+pins the runtime dependency graph. CI installs that lock, runs pip check,
+compilation and tests, and uses checkout/setup-python v7 with pip caching.
+GitHub Actions execution must be observed after publication; it was not run
+on a remote runner during this local pass.
+
+Primary release references checked on 2026-10-16:
+https://pypi.org/project/discord.py/
+https://pypi.org/project/aiosqlite/
+https://pypi.org/project/python-dotenv/
+https://github.com/actions/checkout/releases
+https://github.com/actions/setup-python/releases
+
+PRACTICAL LIMITS AND DEPLOYMENT
+
+No Discord login, production deployment or player-database migration was run.
+One running bot instance per database is the supported model; battle/lobby
+reservations remain in memory. SQLite WAL is appropriate for a persistent local
+volume. Keep its WAL/SHM files with the database while running; use SQLite's
+backup API or stop the bot before taking a file copy. Startup adds indexes and
+journal tables and preserves accounts/collections; repeated startup is tested.
+
+Human play remains useful for checking server permissions, command sync,
+mobile button layouts, real message timing, raid response clarity, economy
+pacing and perceived difficulty. The synthetic checks do not establish that
+every possible interaction or deployment condition is fault-free.
+
+REPRODUCE
+
+python -m pip install -r requirements-lock.txt
+python -m pip check
+python -m compileall -q bot.py cogs utils scripts tests
+python -m unittest discover -s tests -v
+python scripts/benchmark_gameplay.py --output performance.json
+python scripts/simulate_gameplay.py --output simulation.json
+
+Saved evidence: gameplay-audit-validation.json, performance-before.json,
+performance-after.json and gameplay-simulation.json in this directory.
+The earlier ChibiBeasts-revamp.zip remains an art/story snapshot; the repository
+contains this audit's current gameplay changes.

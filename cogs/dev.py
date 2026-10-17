@@ -22,7 +22,6 @@ from utils.db import (
 )
 from utils.theme import COLORS, RARITY_EMOJI
 
-DB_PATH = "db/chibibeast.db"
 
 
 def dev_only():
@@ -109,7 +108,7 @@ class Dev(commands.Cog):
                     f"✦ Material `{material_id}` not found. Check `/recipes` for valid IDs.", ephemeral=True
                 )
         await get_or_create_player(member.id, str(member))
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             async with db.execute(
                 "SELECT id, quantity FROM player_materials WHERE user_id = ? AND material_id = ?",
                 (member.id, material_id)
@@ -197,7 +196,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def give_guild_tokens(self, interaction: discord.Interaction, member: discord.Member, amount: int):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT gm.guild_id, g.name, g.guild_tokens FROM guild_members gm "
@@ -227,7 +226,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def set_guild_tokens(self, interaction: discord.Interaction, member: discord.Member, amount: int):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT gm.guild_id, g.name FROM guild_members gm "
@@ -255,7 +254,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def reset_sanctuary(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT gm.guild_id, g.name FROM guild_members gm "
@@ -288,7 +287,7 @@ class Dev(commands.Cog):
         from utils.db import add_beast_to_player
         from utils.theme import RARITY_LABEL, TYPE_EMOJI
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             if egg_id:
                 async with db.execute(
@@ -371,7 +370,7 @@ class Dev(commands.Cog):
                     item.disabled = True
                 await btn_interaction.response.edit_message(view=self)
 
-                async with aiosqlite.connect(DB_PATH) as db:
+                async with storage.connect() as db:
                     uid = member.id
                     # If player was a guild leader, clean up the guild entirely
                     # (or transfer if other members exist)
@@ -477,7 +476,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def reset_progress(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute("DELETE FROM daily_quests WHERE user_id = ?", (member.id,))
             await db.execute(
                 "UPDATE players SET explore_last_at = 0, incense_active_until = 0 WHERE user_id = ?",
@@ -496,7 +495,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def info(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT * FROM players WHERE user_id = ?", (member.id,)) as c:
                 player = await c.fetchone()
@@ -557,7 +556,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def reset_shard_shop(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute("UPDATE players SET shard_shop_week = NULL WHERE user_id = ?", (member.id,))
             await db.commit()
         await interaction.followup.send(
@@ -582,8 +581,8 @@ class Dev(commands.Cog):
         beast_data = get_beast_data(beast_row["beast_id"]) or {}
         old_level = beast_row["level"]
 
-        from utils.db import calc_stat_growth, DB_PATH
-        async with aiosqlite.connect(DB_PATH) as db:
+        from utils.db import calc_stat_growth
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             if level > old_level:
                 # Level up — apply growth
@@ -617,7 +616,7 @@ class Dev(commands.Cog):
     @dev_only()
     async def renumber_all(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             async with db.execute("SELECT DISTINCT user_id FROM player_beasts") as c:
                 user_ids = [r[0] for r in await c.fetchall()]
         from utils.db import renumber_beasts as _renumber
@@ -635,7 +634,7 @@ class Dev(commands.Cog):
     async def reset_cooldowns(self, interaction: discord.Interaction, member: discord.Member = None):
         await interaction.response.defer(ephemeral=True)
         target = member or interaction.user
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute(
                 "UPDATE players SET explore_last_at = 0, challenge_last_at = 0 WHERE user_id = ?",
                 (target.id,)
@@ -654,7 +653,7 @@ class Dev(commands.Cog):
         await interaction.response.defer(ephemeral=True)
         target = member or interaction.user
         charges = max(0, min(3, charges))
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute(
                 "UPDATE players SET ultimate_charges = ? WHERE user_id = ?",
                 (charges, target.id)

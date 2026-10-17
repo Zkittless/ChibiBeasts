@@ -22,7 +22,7 @@ async def purchase_shard(user_id, sid):
     from cogs.utilities import SHARD_SHOP
     item = SHARD_SHOP[sid]
     week = datetime.now(timezone.utc).strftime('%G-W%V')
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute('SELECT celestial_shards,shard_shop_week FROM players WHERE user_id=?', (user_id,)) as c:
@@ -46,7 +46,7 @@ async def purchase_shard(user_id, sid):
 
 async def purchase_guild(user_id, item_id):
     cost, required, _ = GUILD_ITEMS[item_id]
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute('SELECT g.level FROM guild_members m JOIN guilds g ON g.id=m.guild_id WHERE m.user_id=?', (user_id,)) as c:

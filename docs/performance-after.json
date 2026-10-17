@@ -1,0 +1,35 @@
+{
+  "measured_at_utc": "2026-10-17T00:13:21.889787+00:00",
+  "environment": "Local Python 3.12; synthetic SQLite database with 50,000 companions. Timings exclude Discord/network latency.",
+  "catalog_lookup": {
+    "median_ms": 0.017,
+    "p95_ms": 0.017,
+    "samples": 300
+  },
+  "loom_encounter": {
+    "median_ms": 0.015,
+    "p95_ms": 0.018,
+    "samples": 100
+  },
+  "collection_10_of_50000": {
+    "median_ms": 2.306,
+    "p95_ms": 3.152,
+    "samples": 20,
+    "connections_per_action": 1.0
+  },
+  "beast_number_of_50000": {
+    "median_ms": 2.035,
+    "p95_ms": 2.395,
+    "samples": 20,
+    "connections_per_action": 1.0
+  },
+  "battle_win_event": {
+    "median_ms": 21.221,
+    "p95_ms": 36.056,
+    "samples": 20,
+    "connections_per_action": 5.0
+  },
+  "lookup_query_plan": [
+    "SEARCH player_beasts USING INDEX ix_beasts_owner_number (user_id=? AND player_number=?)"
+  ]
+}

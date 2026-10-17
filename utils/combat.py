@@ -1,9 +1,27 @@
 """Shared combat rules for wild battles, spars, PvP, ranked and raid attacks."""
 import random
 import asyncio
+from contextlib import AsyncExitStack, asynccontextmanager
+from weakref import WeakValueDictionary
 from utils.type_chart import get_type_multiplier
 active_states = {}
-state_lock = asyncio.Lock()
+active_parties = {}
+_state_locks = WeakValueDictionary()
+
+@asynccontextmanager
+async def lock_states(users):
+    """Serialize a party's items and turns without blocking unrelated battles."""
+    locks = []
+    for uid in sorted({uid for uid in users if uid is not None}):
+        lock = _state_locks.get(uid)
+        if lock is None:
+            lock = asyncio.Lock()
+            _state_locks[uid] = lock
+        locks.append(lock)
+    async with AsyncExitStack() as stack:
+        for lock in locks:
+            await stack.enter_async_context(lock)
+        yield
 STATUS_EFFECTS = {'poison': {'emoji': '☠️', 'verb': 'is poisoned'}, 'burn': {'emoji': '🔥', 'verb': 'is burning'}, 'freeze': {'emoji': '❄️', 'verb': 'is frozen', 'skip_turns': 1}, 'sleep': {'emoji': '💤', 'verb': 'is asleep', 'skip_turns': 2}, 'paralyze': {'emoji': '⚡', 'verb': 'is paralyzed'}, 'slow': {'emoji': '🕸️', 'verb': 'is slowed'}, 'blind': {'emoji': '👁️', 'verb': 'is blinded'}, 'weaken': {'emoji': '🔻', 'verb': 'is weakened'}, 'blight': {'emoji': '💜', 'verb': 'is blighted'}}
 
 def fraction(number):

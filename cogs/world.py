@@ -1,3 +1,4 @@
+from utils import db as storage
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -18,17 +19,16 @@ from utils.progress import (
 )
 from utils.sanctuary import get_user_sanctuary, apply_craft_discount
 
-DB_PATH = "db/chibibeast.db"
 
 # ── Data loaders ──────────────────────────────────────────────────────────────
 def load_materials():
-    with open("data/materials.json", encoding="utf-8") as f:
-        return json.load(f)["materials"]
+    from utils.catalog import load_catalog
+    return load_catalog('materials.json')['materials']
 
 def load_equipment():
-    with open("data/equipment.json", encoding="utf-8") as f:
-        d = json.load(f)
-        return d["equipment"], d["runes"]
+    from utils.catalog import load_catalog
+    data=load_catalog('equipment.json')
+    return data['equipment'],data['runes']
 
 # ── Egg definitions ───────────────────────────────────────────────────────────
 EGGS = {
@@ -259,7 +259,7 @@ class World(commands.Cog):
     # ── /incubate ──────────────────────────────────────────────────────────
     async def incubate_autocomplete(self, interaction: discord.Interaction, current: str):
         """Show only incubation eggs the player actually has in inventory."""
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
@@ -296,7 +296,7 @@ class World(commands.Cog):
                 ))
 
         # Check inventory
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
             async with db.execute(
@@ -386,7 +386,7 @@ class World(commands.Cog):
     @app_commands.command(name="eggs", description="View your incubating eggs and tend status 🥚")
     async def eggs(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY ready_at ASC",
@@ -457,7 +457,7 @@ class World(commands.Cog):
         await get_or_create_player(interaction.user.id, str(interaction.user))
         now = datetime.now(timezone.utc)
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             if egg_id:
                 async with db.execute(
@@ -622,7 +622,7 @@ class World(commands.Cog):
     @app_commands.command(name="sanctuary", description="View and upgrade your guild's Sanctuary 🏰")
     async def sanctuary(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT gm.rank, gm.guild_id, g.name, g.level, g.guild_tokens "
@@ -731,7 +731,7 @@ class World(commands.Cog):
                 description="✦ Unknown upgrade.", color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
             async with db.execute(
@@ -808,7 +808,7 @@ class World(commands.Cog):
         # Also include items with recipes (evolution items etc)
         from utils.db import load_items as _li
         craftable_items = {k: v for k, v in _li().items() if v.get("recipe")}
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT material_id, quantity FROM player_materials WHERE user_id = ?",
@@ -855,7 +855,7 @@ class World(commands.Cog):
         # Check material holdings
         materials = load_materials()
         recipe = item.get("recipe", {})
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
             async with db.execute(
@@ -1090,7 +1090,7 @@ class World(commands.Cog):
     async def materials_cmd(self, interaction: discord.Interaction):
         await interaction.response.defer()
         all_mats = load_materials()
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT material_id, quantity FROM player_materials WHERE user_id = ? ORDER BY quantity DESC",

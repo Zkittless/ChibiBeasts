@@ -10,7 +10,7 @@ BOND_REQUIRED = 30
 async def equip_perk(user_id,perk_id):
     definitions=storage.load_perks()['perks']
     if perk_id not in definitions:raise ValueError('Unknown perk.')
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute('SELECT level FROM players WHERE user_id=?',(user_id,)) as c:player=await c.fetchone()
         async with db.execute('SELECT equipped FROM player_perks WHERE user_id=? AND perk_id=?',(user_id,perk_id)) as c:owned=await c.fetchone()
@@ -39,7 +39,7 @@ async def grant_material(user_id, material_id, amount=1):
     materials = json.loads((PROJECT_ROOT / 'data/materials.json').read_text(encoding='utf-8'))['materials']
     if material_id not in materials:
         raise ValueError(f'Unknown material: {material_id}')
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         await add_stack(db, 'player_materials', user_id, material_id, amount)
         await db.commit()
@@ -59,7 +59,7 @@ async def grant_loot(user_id, item_id, amount=1):
     await storage.add_item(user_id, item_id, amount)
 
 async def bond_with(user_id, beast_row_id=None, points=1):
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         if beast_row_id is None:
             await db.execute('UPDATE player_beasts SET bond=MIN(100,bond+?) WHERE user_id=? AND is_active=1', (points, user_id))
         else:
@@ -77,11 +77,13 @@ def evolved_stats(row, before, after):
     return {key: new_base[key] + new_growth[key] + max(0, row[col] - old_base[key] - old_growth[key]) for key, col in names.items()}
 
 async def evolve_beast(user_id, player_number):
-    from utils.duels import active_fighters
-    if user_id in active_fighters:
-        raise ValueError('Finish your battle before evolving a companion.')
+    from utils.duels import reserve_fighters
+    with reserve_fighters([user_id]):
+        return await _evolve_beast(user_id, player_number)
+
+async def _evolve_beast(user_id, player_number):
     beasts = storage.load_beasts()
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND player_number=?', (user_id, player_number)) as c:
@@ -89,6 +91,9 @@ async def evolve_beast(user_id, player_number):
         if not row:
             raise ValueError('That beast is not in your collection.')
         row = dict(row)
+        async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (row['id'],)) as c:
+            if await c.fetchone():
+                raise ValueError('Delist this companion before evolving it.')
         before = beasts[row['beast_id']]
         evo = before.get('evolution')
         if storage.is_knocked_out(row):

@@ -47,6 +47,8 @@ Guild `/raid` and `/ancient` share a cooperative system with a lobby, three comp
 
 Every active contributor receives rewards, including support players. Forging materials have real drop routes. Successful rescues build a guaranteed companion catch after eight Corrupted clears or twelve Ancient clears of that species, with a chance to meet the companion sooner. Interrupted paid raids are refunded once on restart. Fainted companions recover after their timer or can be revived.
 
+Raid patterns allow at least six seconds to respond. Each trainer can Weave once per pattern; the requirement adjusts when only one trainer has healthy companions left. Display updates combine rapid inputs, while combat resolves immediately. Victory payouts are saved before result messages and resume after an interrupted settlement. Items follow the companion currently fighting after a swap; party revives also restore the live bench.
+
 Ranked matches use gear and chosen moves. Five placements establish a rank; 28-day seasons archive qualified standings, award 5–50 shards, and reset ratings. Repeat-opponent limits reduce farming.
 
 ## Shops, crafting and care
@@ -58,17 +60,22 @@ Ranked matches use gear and chosen moves. Five placements establish a rank; 28-d
 - All seven guild shop items work. `/build` spends an owned Blueprint on an eligible upgrade before charging guild tokens.
 - Twelve perks unlock through normal levels, catches, battles, exploration, raids and campaign progress. `/perks` lists owned perks; `/perk_equip` chooses a build. Astral Resonance's weekly `/perk_use` skips six hours from an egg.
 - A Fairy Garden adds five happiness to benched companions when `/daily` is claimed, offsetting their daily decay. Other Sanctuary bonuses affect crafting, training, exploration, EXP, raids and market capacity.
+- `/trade` uses the collection numbers shown to players. Omitting a requested companion makes the offer a gift. Market purchases and trades check current ownership, gold, party assignments and listing terms in one transaction. Equipped armor and runes travel with the companion. Releasing a companion returns its gear; transfers and releases preserve the numbers of other companions.
 
 ## Run and deploy
 
 ```sh
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-lock.txt
 python bot.py
 ```
 
 Set `DISCORD_TOKEN` in the environment or `.env`. `OWNER_ID` controls owner tools; `GUILD_ID` scopes developer commands to the home server. See `env.example`. `BEAST_IMAGE_BASE_URL` can point at a preview branch or public sprite directory; the default image host uses this repository's `main` branch. Deploy code, sprite files and `data/artwork.json` together.
 
 Back up the existing SQLite database before upgrading. Schema migrations preserve accounts and collections; they run during startup. On Railway, keep `db/` on the persistent volume. This update does not require deleting the database. Use owner-only `!sync` to refresh slash commands if needed.
+
+All commands use the database configured in `utils.db.DB_PATH`, resolved from the project directory. SQLite uses WAL and indexed lookups. Keep SQLite's `-wal` and `-shm` files on the same volume while the bot runs; use SQLite's backup API or stop the bot before copying a database backup. The bot expects one running instance per database, since battle and lobby reservations live in memory.
+
+`requirements-lock.txt` records the tested Python 3.12 runtime packages; `requirements.txt` declares compatible direct-dependency ranges. CI installs the lock, checks dependencies, compiles the code and runs the regressions. Static game catalogs are cached until restart. Developers editing JSON during a session can call `utils.catalog.clear_catalog_cache()`.
 
 ## Source layout
 
@@ -77,6 +84,7 @@ Back up the existing SQLite database before upgrading. Schema migrations preserv
 - `utils/events.py`, `utils/story.py`, `utils/progress.py`: canonical events, campaign and milestones.
 - `utils/gameplay.py`, `utils/items.py`, `utils/shops.py`, `utils/equipment.py`, `utils/rewards.py`: validated grants, consumption, purchases and progression.
 - `utils/habitats.py`, `utils/hatching.py`: destination pools and hatch modifiers.
+- `utils/catalog.py`, `utils/transfers.py`: cached definitions and transactional ownership changes.
 - `data/`: roster, artwork manifest, recipes, items, perks, NPCs and story.
 - `tests/`: temporary-database regressions and Discord extension loading without login.
 
@@ -85,6 +93,9 @@ Back up the existing SQLite database before upgrading. Schema migrations preserv
 ```sh
 python -m compileall -q bot.py cogs utils scripts tests
 python -m unittest discover -s tests -v
+python -m pip check
+python scripts/benchmark_gameplay.py --output performance.json
+python scripts/simulate_gameplay.py --output simulation.json
 python scripts/finalize_artwork.py
 python scripts/build_revamp_preview.py
 python scripts/build_art_gallery.py --output chibibeasts-gallery-full.html --standalone
@@ -92,4 +103,6 @@ python scripts/build_art_gallery.py --output chibibeasts-gallery-full.html --sta
 
 Checks cover all ten chapters and all three endings, preserved evolution investments, concurrent claims and consumption, real item effects, armor and evasion, all creature and gear rules, crafting, perk unlocks, dated ranked seasons, raid catch guarantees, support rewards and interrupted-raid refunds. They do not connect to Discord. A live server smoke test remains necessary for permissions, slash-command sync and multi-player interaction timing.
 
-The [paginated gallery](chibibeasts-gallery.html) and [full gallery](chibibeasts-gallery-full.html) show the current roster. The [original design preview](chibibeasts-preview.html) and `docs/art-exploration/` preserve the earlier art discussion. `ChibiBeasts-revamp.zip` contains the current bot source, data, art and tests, excluding secrets, player databases, caches and nested archives.
+The gameplay audit adds tests for overlapping battles, stale market offers, transfers with gear, interrupted payouts, raid display batching, response windows, live bench revives and daily reward races. The [audit report](docs/GAMEPLAY-AUDIT.txt), [validation results](docs/gameplay-audit-validation.json), [before](docs/performance-before.json)/[after](docs/performance-after.json) benchmarks and [seeded simulations](docs/gameplay-simulation.json) contain the measured evidence. Benchmarks use synthetic data and exclude Discord latency.
+
+The [paginated gallery](chibibeasts-gallery.html) and [full gallery](chibibeasts-gallery-full.html) show the current roster. The [original design preview](chibibeasts-preview.html) and `docs/art-exploration/` preserve the earlier art discussion. `ChibiBeasts-revamp.zip` is the earlier art-and-story revamp snapshot. Use the repository for current gameplay code and tests.

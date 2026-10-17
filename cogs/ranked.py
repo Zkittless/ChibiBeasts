@@ -28,7 +28,7 @@ from utils.rewards import shards
 
 async def ensure_season(now=None):
     season = current_season(now)
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
         async with db.execute("SELECT value FROM game_meta WHERE key='ranked_season'") as c:
@@ -52,7 +52,7 @@ async def ensure_season(now=None):
     return season
 
 async def can_rate_pair(a, b):
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         async with db.execute("SELECT COUNT(*),MAX(played_at) FROM ranked_matches WHERE ((winner_id=? AND loser_id=?) OR (winner_id=? AND loser_id=?)) AND date(played_at)=date('now')", (a, b, b, a)) as c:
             count, last = await c.fetchone()
     if count >= 5:
@@ -62,7 +62,7 @@ async def can_rate_pair(a, b):
 
 async def record_result(match_id, winner_id, loser_id):
     season = await ensure_season()
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
         cur = await db.execute('INSERT OR IGNORE INTO ranked_matches(match_id,season,winner_id,loser_id) VALUES(?,?,?,?)', (match_id, season, winner_id, loser_id))
@@ -158,7 +158,7 @@ class Ranked(commands.Cog):
     async def ranked_leaderboard(self, interaction: discord.Interaction):
         await interaction.response.defer()
         season = await ensure_season()
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             async with db.execute('SELECT username,pvp_rating,pvp_rank,pvp_wins,pvp_losses FROM players WHERE pvp_wins+pvp_losses>=5 ORDER BY pvp_rating DESC LIMIT 15') as c:
                 rows = await c.fetchall()
         text = '\n'.join((f'{i + 1}. **{name}** · {rating} RP · {rank} · {wins}W/{losses}L' for i, (name, rating, rank, wins, losses) in enumerate(rows))) or 'Five placements put you on the board. Try /ranked.'
