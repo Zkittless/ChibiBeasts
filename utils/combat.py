@@ -58,6 +58,8 @@ def build_state(data, row, perks=(), gear=(), buffs=None):
     for item in gear:
         apply_gear(state, item.get('effect', {}))
     buffs = buffs or {}
+    state['item_defense_boost_percent'] = buffs.get('next_defense_boost',0)
+    state['item_speed_boost_percent'] = buffs.get('next_speed_boost',0)
     state['defense'] = int(state['defense'] * (1 + buffs.get('next_defense_boost', 0) / 100))
     state['speed'] = int(state['speed'] * (1 + buffs.get('next_speed_boost', 0) / 100))
     state['damage_multiplier'] = buffs.get('damage_multiplier', 1.0) * (1 + row.get('damage_bonus', 0) / 100)

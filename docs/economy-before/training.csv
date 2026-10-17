@@ -1,0 +1,10 @@
+rarity,gold_per_session,stat_gain,gold_per_point,hp_gain
+common,50,1,50.0,1
+uncommon,150,1,150.0,1
+rare,400,2,200.0,2
+epic,1000,2,500.0,2
+legendary,3000,3,1000.0,3
+divine,8000,3,2666.7,3
+altered_divine,15000,4,3750.0,4
+corrupted,15000,4,3750.0,4
+ancient,20000,5,4000.0,5

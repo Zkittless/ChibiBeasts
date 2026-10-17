@@ -4,7 +4,42 @@ from datetime import datetime, timezone
 import aiosqlite
 from utils import db as storage
 from utils.gameplay import add_stack
-GUILD_ITEMS = {'raid_totem': (20, 1, "Boost your next raid's damage by 20%."), 'beastkeeper_seal': (15, 1, 'Boost your next three wild encounters.'), 'guild_elixir': (10, 1, 'Restore 50% HP.'), 'ancient_compass': (35, 5, 'Find Rare or higher on your next exploration.'), 'guild_crest': (50, 5, 'Unlock the Guild Heart title.'), 'loom_fragment': (80, 10, "Move an egg's tending and hatch schedule six hours closer."), 'sanctuary_blueprint': (150, 15, 'Pay for one eligible Sanctuary upgrade instead of tokens.')}
+GUILD_ITEMS = {'raid_totem': (20, 1, "Boost your next raid's damage by 20%."), 'beastkeeper_seal': (15, 1, 'Boost your next three wild encounters.'), 'guild_elixir': (5, 1, 'Restore 50% HP.'), 'ancient_compass': (15, 5, 'Find Rare or higher on your next eligible exploration.'), 'guild_crest': (50, 5, 'Unlock the Guild Heart title.'), 'loom_fragment': (30, 5, "Move an egg's tending and hatch schedule six hours closer."), 'sanctuary_blueprint': (60, 10, 'Pay for one eligible Sanctuary upgrade instead of tokens.')}
+
+
+def gold_catalog():
+    from cogs.hatch import HATCH_EGGS
+    from cogs.world import EGGS
+    from utils.economy_balance import INCUBATION_PRICES
+    offers = {key:{**item,'id':key,'price':item['price']} for key,item in HATCH_EGGS.items()}
+    offers.update({key:{**item,'id':key,'price':INCUBATION_PRICES[item['rarity']]} for key,item in EGGS.items() if key!='world_tree_seed'})
+    offers.update({key:{**item,'id':key} for key,item in storage.load_items().items() if item.get('price',0)>0})
+    return offers
+
+
+async def purchase_gold(user_id, item_id, quantity=1):
+    from utils.economy_balance import shop_level
+    from utils.rewards import has_perk
+    if isinstance(quantity,bool) or not isinstance(quantity,int) or not 1<=quantity<=100:
+        raise ValueError('Choose a quantity from 1 to 100.')
+    item = gold_catalog().get(item_id)
+    if not item or item['price']<=0:
+        raise ValueError('That item is not for sale in the gold shop.')
+    async with storage.connect() as db:
+        db.row_factory = aiosqlite.Row
+        await db.execute('BEGIN IMMEDIATE')
+        async with db.execute('SELECT gold,level FROM players WHERE user_id=?',(user_id,)) as c:
+            player = await c.fetchone()
+        if not player or player['level']<shop_level(item):
+            raise ValueError(f"Reach trainer level {shop_level(item)} to buy {item['name']}.")
+        unit = max(1,int(item['price']*.95)) if await has_perk(db,user_id,'whimsy_merchant') else item['price']
+        total = unit*quantity
+        paid = await db.execute('UPDATE players SET gold=gold-? WHERE user_id=? AND gold>=?',(total,user_id,total))
+        if not paid.rowcount:
+            raise ValueError(f"Need {total:,} gold; you have {player['gold']:,}.")
+        await add_stack(db,'player_inventory',user_id,item_id,quantity)
+        await db.commit()
+    return {'item':item,'total':total,'remaining':player['gold']-total}
 
 async def shard_effect(db, user_id, sid, item):
     kind = item['type']
@@ -25,10 +60,12 @@ async def purchase_shard(user_id, sid):
     async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
-        async with db.execute('SELECT celestial_shards,shard_shop_week FROM players WHERE user_id=?', (user_id,)) as c:
+        async with db.execute('SELECT celestial_shards,shard_shop_week,level FROM players WHERE user_id=?', (user_id,)) as c:
             player = await c.fetchone()
         if not player or player['celestial_shards'] < item['cost']:
             raise ValueError(f"You need {item['cost']} Celestial Shards.")
+        if player['level'] < item.get('min_level',1):
+            raise ValueError(f"Reach trainer level {item['min_level']} to buy this item.")
         try:
             limits = json.loads(player['shard_shop_week'] or '{}')
         except json.JSONDecodeError:

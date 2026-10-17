@@ -44,12 +44,12 @@ def apply_explore_encounter_bonus(rarity_weights,sanctuary):
 
 def apply_craft_discount(recipe: dict, sanctuary: dict) -> dict:
     """
-    Gnome Forge: 10% reduction in material quantities (min 1).
+    Gnome Forge: save one per ingredient stack, with at least one still required.
     Returns modified recipe dict.
     """
     if not sanctuary.get("gnome_forge"):
         return recipe
-    return {mat: max(1, int(qty * 0.90)) for mat, qty in recipe.items()}
+    return {mat: max(1, qty - 1) for mat, qty in recipe.items()}
 
 
 async def apply_happiness_passive(user_id: int):

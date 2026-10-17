@@ -138,11 +138,12 @@ SHARD_SHOP = {
         "cost": 25,
         "weekly_limit": 1,
         "type": "explore_boost",
+        "min_level": 10,
     },
     "loom_fragment": {
         "name": "🧵 Loom Fragment",
         "desc": "Reduces the incubation time of your oldest egg by 6 hours.",
-        "cost": 15,
+        "cost": 5,
         "weekly_limit": 2,
         "type": "incubation_skip",
     },
@@ -150,9 +151,10 @@ SHARD_SHOP = {
     "prism_key": {
         "name": "🔑 Prism Key",
         "desc": "Gives one Celestial Loom exploration a 30% divine rate. Used before a Divine Compass charge.",
-        "cost": 30,
+        "cost": 15,
         "weekly_limit": 1,
         "type": "key",
+        "min_level": 10,
     },
     "beast_rename_token": {
         "name": "✏️ Rename Token",
@@ -175,22 +177,25 @@ SHARD_SHOP = {
         "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
+        "min_level": 10,
         "grant_item_id": "epoch_shard",
     },
     "firstborn_ember": {
         "name": "🔥 Firstborn Ember",
         "desc": "Calls Ancient Genesis to the altar. The flame that started everything, still burning. Also drops from Corrupted Dragon.",
-        "cost": 80,
+        "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
+        "min_level": 10,
         "grant_item_id": "firstborn_ember",
     },
     "void_prism": {
         "name": "🌑 Void Prism",
         "desc": "Calls Ancient Abyss to the altar. Absorbs all light. The silence around it is wrong. Also drops from Corrupted Leviathan.",
-        "cost": 100,
+        "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
+        "min_level": 10,
         "grant_item_id": "void_prism",
     },
 }
@@ -462,10 +467,7 @@ class Utilities(commands.Cog):
                 color=COLORS["error"]
             ), ephemeral=True)
 
-        MATERIAL_PRICES = {
-            "common": 20, "uncommon": 60, "rare": 150, "epic": 400,
-            "legendary": 1000, "altered_divine": 3000
-        }
+        from utils.economy_balance import MATERIAL_SELL_VALUES as MATERIAL_PRICES, item_sell_price
 
         async def do_sell(modal_interaction: discord.Interaction, quantity: int):
             await modal_interaction.response.defer(ephemeral=True)
@@ -486,7 +488,7 @@ class Utilities(commands.Cog):
                     return await modal_interaction.followup.send(
                         f"✦ You only have `{fresh['quantity'] if fresh else 0}` now.", ephemeral=True
                     )
-                base_price = MATERIAL_PRICES.get(item.get("rarity","common"), 20) if is_material else max(5, int(item.get("price",0)*0.35))
+                base_price = MATERIAL_PRICES.get(item.get("rarity","common"), 20) if is_material else item_sell_price(item)
                 if has_merchant:
                     base_price = int(base_price * 1.20)
                 total = base_price * quantity
@@ -533,8 +535,7 @@ class Utilities(commands.Cog):
             ))
 
         # Confirm with a button
-        REFUND = {"common": 50, "uncommon": 150, "rare": 500, "epic": 1200,
-                  "legendary": 3000, "divine": 8000, "altered_divine": 20000}
+        from utils.economy_balance import RELEASE_VALUES as REFUND
         refund = REFUND.get(rarity, 50)
 
         class ConfirmView(discord.ui.View):
@@ -636,7 +637,8 @@ class Utilities(commands.Cog):
             await db.execute("BEGIN IMMEDIATE")
             claim=await db.execute("INSERT OR IGNORE INTO daily_quests(user_id,quest_id,progress,completed,date) VALUES(?,'daily_claim',1,1,?)",(uid,today))
             if not claim.rowcount:return await interaction.followup.send("Today's reward has already been claimed. Resets at midnight UTC.")
-            gold=100+player["level"]*15
+            from utils.economy_balance import gold_reward_level
+            gold=100+gold_reward_level(player["level"])*15
             actual_shards=await shards(db,uid,2)
             await db.execute("UPDATE players SET gold=gold+? WHERE user_id=?",(gold,uid))
             if sanctuary.get("fairy_garden"):
@@ -750,6 +752,7 @@ class Utilities(commands.Cog):
         categories={"Adventure":"/explore — choose a habitat, every 30 minutes\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/questline · /npc · /meet · /lore", "Companions":"/collection · /beastinfo · /setactive · /nickname\n/bond · /play · /train · /evolve\n/codex · /bestiary · /typeinfo", "Eggs and items":"/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — timed eggs\n/inventory · /use [beast_number]", "Builds and trade":"/materials · /recipes · /craft · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade", "Guilds and endgame":"/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard", "Progress":"/daily · /dailies · /achievements · /profile\n/title · /history · /stats · /leaderboard · /party"}
         for label,value in categories.items():embed.add_field(name=label,value=value,inline=False)
         embed.add_field(name="Combat basics",value="Attack restores mana. Attack, skill and guard each earn one ultimate charge; an ultimate spends three charges and 50 mana. Raids start at zero charges. Prepared raids aim for 5–8 minutes: equip gear, tend allies, swap wounded companions and answer Weave patterns. Speed shortens action recovery; bosses resist repeated stuns.",inline=False)
+        embed.add_field(name="Building your kit",value="Every /explore brings back one material, even if the creature escapes. /recipes shows crafting levels, effects, material sources and your Forge discount. Raids and /contribute earn personal Guild Tickets for /guild_shop; the guild's shared tokens fund /build and raid entry.",inline=False)
         embed.add_field(name="Available destinations",value=" · ".join(b["name"] for b in BIOMES.values() if player["level"]>=b["min_level"]),inline=False)
         await interaction.followup.send(embed=embed)
 

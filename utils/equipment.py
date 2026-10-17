@@ -9,6 +9,33 @@ def definitions():
     data=load_catalog('equipment.json')
     return {**data['equipment'],**data['runes']}
 
+
+def effect_summary(item):
+    labels = {'attack':'ATK','defense':'DEF','speed':'SPD','hp_flat':'HP',
+              'attack_percent':'ATK','defense_percent':'DEF','speed_percent':'SPD','hp_percent':'max HP',
+              'crit_chance':'crit chance','water_attack_percent':'water-type ATK',
+              'water_resist_percent':'water damage resistance','reflect_damage_percent':'damage reflected',
+              'evasion_percent':'evasion','damage_reduction_flat_percent':'damage reduction',
+              'lifesteal_percent':'lifesteal','hp_regen_percent_per_round':'max HP restored each action',
+              'mana_regen_on_hit':'MP restored on hit','burn_on_hit_chance':'burn chance on hit',
+              'stun_on_hit_chance':'freeze chance on hit','blight_on_hit_chance':'blight chance on hit',
+              'petrify_on_crit_chance':'freeze chance on crit','thorns_poison_on_hit_chance':'poison chance when struck',
+              'speed_debuff_on_battle_start_chance':'slow chance at battle start'}
+    special = {'burn_immunity':'Burn immunity','crit_immunity':'Crit immunity',
+               'attack_double_below_25hp':'Double ATK at 25% HP or lower',
+               'time_rewind_on_fatal_once':'Once per battle: survive a fatal hit at 30% HP',
+               'death_explosion_fire':'On KO: explosion for 30% of your maximum HP'}
+    flat = {'attack','defense','speed','hp_flat','mana_regen_on_hit'}
+    parts=[]
+    for key,value in item.get('effect',{}).items():
+        if key in special:
+            if value:parts.append(special[key])
+        elif key in labels:
+            parts.append(f"{value:+g}{'' if key in flat else '%'} {labels[key]}")
+        else:
+            raise ValueError(f'Unlabelled gear effect: {key}')
+    return ' · '.join(parts)
+
 @exclusive_player
 async def equip(user_id, number, gear_id):
     gear = definitions()[gear_id]

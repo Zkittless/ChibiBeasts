@@ -1,0 +1,22 @@
+material,rarity,sell_gold,used_by_recipes,woods_per_explore,ember_per_explore,glacial_per_explore,trenches_per_explore,loom_per_explore,best_biome,mean_attempts_per_unit
+pixie_silk,common,20,6,0.15774,0,0,0,0,woods,6.3
+gnome_iron_ore,common,20,8,0.13121,0.00928,0,0,0,woods,7.6
+enchanted_bark,common,20,5,0.16069,0,0,0,0,woods,6.2
+harpy_down,uncommon,60,5,0,0,0.20985,0,0,glacial,4.8
+kelpie_scale,uncommon,60,3,0,0,0,0.16703,0,trenches,6.0
+hellhound_ember,uncommon,60,6,0,0.1274,0,0,0,ember,7.8
+unicorn_hair,rare,150,3,0.04661,0,0.16267,0,0.19616,loom,5.1
+manticore_stinger,rare,150,2,0.01835,0.0214,0,0.11985,0,trenches,8.3
+basilisk_eye,rare,150,3,0,0.02417,0,0.04229,0.1282,loom,7.8
+phoenix_ash,epic,400,3,0,0.11497,0,0,0,ember,8.7
+thunderbird_talon,epic,400,2,0,0,0.19343,0,0,glacial,5.2
+sphinx_papyrus,epic,400,1,0.00299,0,0,0,0.18054,loom,5.5
+dragon_scale,legendary,1000,3,0,0.10997,0,0,0,ember,9.1
+kraken_ink,legendary,1000,3,0,0,0,0.12598,0,trenches,7.9
+fenrir_fur,legendary,1000,0,0,0.00397,0.16267,0.00476,0,glacial,6.1
+tear_of_the_creator,altered_divine,3000,3,0,0,0,0,0,ancient raid,
+blighted_world_core,altered_divine,3000,1,0,0,0,0,0,ancient raid,
+chronos_gear,altered_divine,3000,2,0,0,0,0,0,ancient raid,
+void_essence,rare,150,1,0,0.09584,0,0.26488,0,trenches,3.8
+spirit_crystal,rare,150,1,0.14766,0,0,0,0.21544,loom,4.6
+sunforge_residue,uncommon,60,1,0.07095,0.22216,0,0,0,ember,4.5

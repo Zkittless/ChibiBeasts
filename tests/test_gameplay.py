@@ -351,7 +351,7 @@ class ItemsAndWorld(DatabaseCase):
 
     async def test_shard_purchases_have_real_effects_and_enforce_the_weekly_limit(self):
         from utils.shops import purchase_shard
-        await storage.update_player(42, celestial_shards=200)
+        await storage.update_player(42, celestial_shards=200, level=10)
         results = await asyncio.gather(purchase_shard(42, 'divine_compass'), purchase_shard(42, 'divine_compass'), return_exceptions=True)
         self.assertEqual(sum((isinstance(result, ValueError) for result in results)), 1)
         player = await storage.get_player(42)

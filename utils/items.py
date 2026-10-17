@@ -118,7 +118,7 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             if effect.get('exp') or effect.get('instant_levels'):
                 if live:
                     raise ValueError('Finish your battle before giving growth items.')
-                exp = beast['exp'] + effect.get('exp', 0) + effect.get('exp_per_level', 0) * player['level']
+                exp = beast['exp'] + effect.get('exp', 0) + effect.get('exp_per_level', 0) * min(player['level'],effect.get('exp_level_cap',player['level']))
                 level = beast['level'] + effect.get('instant_levels', 0)
                 while exp >= storage.get_beast_exp_for_level(beast, level):
                     exp -= storage.get_beast_exp_for_level(beast, level)
@@ -126,12 +126,17 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
                 await storage.apply_beast_levelup(db, beast, level, exp)
                 messages.append(f'Beast level {level}; EXP {exp}.')
             if effect.get('stat_boost'):
+                from utils.economy_balance import STAT_TREAT_LIMIT
+                if live:
+                    raise ValueError('Finish your battle before giving permanent stat treats.')
+                if beast['stat_treats_used'] >= STAT_TREAT_LIMIT:
+                    raise ValueError(f'This companion has reached its {STAT_TREAT_LIMIT}-treat limit.')
                 stat = random.choice(['attack', 'defense', 'speed'])
                 amount = effect['stat_boost']
-                await db.execute(f'UPDATE player_beasts SET {stat}={stat}+? WHERE id=?', (amount, beast['id']))
+                await db.execute(f'UPDATE player_beasts SET {stat}={stat}+?,stat_treats_used=stat_treats_used+1 WHERE id=?', (amount, beast['id']))
                 if updated:
                     updated[stat] += amount
-                messages.append(f'Permanent {stat}: +{amount}.')
+                messages.append(f'Permanent {stat}: +{amount}. Treats: {beast["stat_treats_used"]+1}/{STAT_TREAT_LIMIT}.')
             if effect.get('status_ward'):
                 if updated:
                     updated['status'] = None
@@ -151,8 +156,13 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             for key, stat, column in [('defense_boost_percent', 'defense', 'next_defense_boost'), ('speed_boost_percent', 'speed', 'next_speed_boost')]:
                 if effect.get(key):
                     if updated:
-                        updated[stat] += int(updated[stat] * effect[key] / 100)
+                        if updated.get('item_'+key,0):
+                            raise ValueError(f'A {stat} item is already active for this battle.')
+                        updated[stat] += int(updated.get('base_'+stat,updated[stat]) * effect[key] / 100)
+                        updated['item_'+key] = effect[key]
                     else:
+                        if player[column]:
+                            raise ValueError(f'A {stat} item is already queued for your next battle.')
                         await db.execute(f'UPDATE players SET {column}=MAX({column},?) WHERE user_id=?', (effect[key], user_id))
                     messages.append(f"+{effect[key]}% {stat} in {('this' if updated else 'your next')} battle.")
             if effect.get('reset_explore') or effect.get('reset_challenge'):

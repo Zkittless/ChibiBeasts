@@ -1,0 +1,8 @@
+trainer_level,carrot_price,exp_per_carrot,companion_next_level_exp
+1,40,35,15
+5,40,75,88
+10,40,125,188
+15,40,175,294
+30,40,325,632
+50,40,525,1109
+100,40,1025,2377

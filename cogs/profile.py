@@ -53,7 +53,7 @@ class Profile(commands.Cog):
                 f"✨ **EXP:** {exp_bar(player['exp'], exp_needed)}\n"
                 f"💰 **Gold:** `{player['gold']:,}`\n"
                 f"💎 **Celestial Shards:** `{player['celestial_shards']}` — *spend at `/shop`*\n"
-                f"🎟️ **Guild Tokens:** `{player['guild_tokens']}`"
+                f"🎫 **Guild Tickets:** `{player['guild_tickets']}`"
             ),
             inline=False
         )
@@ -748,32 +748,19 @@ class Shop(commands.Cog):
             merchant=await has_perk(db,uid,"whimsy_merchant")
 
         # ── purchase helper ────────────────────────────────────────────────
-        async def _buy(bi, item_id, price, name, next_step, qty=1):
+        async def _buy(bi, item_id, _price, _name, next_step, qty=1):
             await bi.response.defer(ephemeral=True)
-            total = price * qty
-            async with storage.connect() as db:
-                db.row_factory = aiosqlite.Row
-                await db.execute("BEGIN IMMEDIATE")
-                from utils.rewards import has_perk
-                unit_price=max(1,int(price*.95)) if await has_perk(db,bi.user.id,"whimsy_merchant") else price
-                total=unit_price*qty
-                async with db.execute("SELECT gold FROM players WHERE user_id=?", (bi.user.id,)) as c:
-                    pr = await c.fetchone()
-                if not pr or pr["gold"] < total:
-                    return await bi.followup.send(f"✦ Need `{total:,}g`, you have `{pr['gold'] if pr else 0:,}g`.", ephemeral=True)
-                cur = await db.execute("UPDATE players SET gold=gold-? WHERE user_id=? AND gold>=?", (total, bi.user.id, total))
-                if cur.rowcount == 0:
-                    return await bi.followup.send("✦ Purchase failed — try again.", ephemeral=True)
-                async with db.execute("SELECT id,quantity FROM player_inventory WHERE user_id=? AND item_id=?", (bi.user.id, item_id)) as c:
-                    inv = await c.fetchone()
-                if inv:
-                    await db.execute("UPDATE player_inventory SET quantity=quantity+? WHERE id=?", (qty, inv["id"]))
-                else:
-                    await db.execute("INSERT INTO player_inventory (user_id,item_id,quantity) VALUES (?,?,?)", (bi.user.id, item_id, qty))
-                await db.commit()
-                new_gold = pr["gold"] - total
+            from utils.shops import purchase_gold
+            try:
+                result = await purchase_gold(bi.user.id,item_id,qty)
+            except ValueError as error:
+                return await bi.followup.send(str(error),ephemeral=True)
+            total = result['total']
+            item = result['item']
+            if item.get('type') in {'evolution','unlock'}:
+                next_step = 'Use /evolve with an eligible companion.'
             qs = f"`{qty}x` " if qty > 1 else ""
-            await bi.followup.send(f"✅ Purchased {qs}**{name}**!\n`{total:,}g` spent · Balance: `{new_gold:,}g`\n{next_step}", ephemeral=True)
+            await bi.followup.send(f"Purchased {qs}**{item['name']}**!\n`{total:,}g` spent - Balance: `{result['remaining']:,}g`\n{next_step}",ephemeral=True)
             from utils.progress import track_quest_event, notify_quest_completions
             completed = await track_quest_event(bi.user.id, "spend_gold", amount=total)
             if completed and bi.channel:
@@ -782,16 +769,16 @@ class Shop(commands.Cog):
         # ── section data builders ──────────────────────────────────────────
         def get_instant_eggs():
             """Returns list of (id, name, price, pool_str)."""
-            from cogs.hatch import HATCH_EGGS, _BASE_EGG_POOLS
-            PRICES = {"common_egg":200,"rare_egg":1500,"celestial_egg":8000,"abyssal_egg":25000}
+            from cogs.hatch import HATCH_EGGS, _BASE_EGG_POOLS, get_egg_pool
+            PRICES = {key:item["price"] for key,item in HATCH_EGGS.items()}
             NAMES  = {"common_egg":"🥚 Common Egg","rare_egg":"🥚✨ Rare Egg",
                       "celestial_egg":"🌌🥚 Celestial Egg","abyssal_egg":"🌊💎 Abyssal Egg"}
             out = []
             for eid in PRICES:
-                pool = {k:v for k,v in _BASE_EGG_POOLS.get(eid,{}).items() if k!="altered_chance"}
-                pool_str = " · ".join(f"{RARITY_EMOJI.get(r,'⚪')} {int(v*100)}%"
-                    for r,v in sorted(pool.items(), key=lambda x: RARITY_ORDER.index(x[0]) if x[0] in RARITY_ORDER else 99))
+                pool = get_egg_pool(eid)
                 alt = _BASE_EGG_POOLS.get(eid,{}).get("altered_chance",0)
+                pool_str = "Base odds: " + " · ".join(f"{RARITY_EMOJI.get(r,'⚪')} {v*(1-alt)*100:.1f}%"
+                    for r,v in sorted(pool.items(), key=lambda x: RARITY_ORDER.index(x[0]) if x[0] in RARITY_ORDER else 99))
                 if alt: pool_str += f" · ⚠️ Altered {int(alt*100)}%"
                 out.append((eid, NAMES[eid], PRICES[eid], pool_str))
             return out
@@ -799,11 +786,10 @@ class Shop(commands.Cog):
         def get_incub_eggs():
             """Returns list of (id, egg_dict, price) sorted by rarity."""
             from cogs.world import EGGS, EGG_PRICES
-            RARITY_PRICE = {"common":300,"uncommon":1200,"rare":4000,"epic":12000,"legendary":50000,"divine":0}
             out = []
             for eid, egg in EGGS.items():
                 if eid=="world_tree_seed":continue
-                price = RARITY_PRICE.get(egg.get("rarity","common"), 300)
+                price = EGG_PRICES[egg["rarity"]]
                 out.append((eid, egg, price))
             out.sort(key=lambda x: RARITY_ORDER.index(x[1].get("rarity","common")) if x[1].get("rarity","common") in RARITY_ORDER else 99)
             return out
@@ -829,16 +815,18 @@ class Shop(commands.Cog):
             return emb
 
         def build_instant_embed(page, items):
+            from cogs.hatch import HATCH_EGGS
             gold = player["gold"]
             per  = 3
             total = max(1,(len(items)+per-1)//per)
             page  = max(1,min(page,total))
             emb = make_embed("⚡ Instant Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nHatch immediately with `/hatch` — no waiting.\n\u200b")
             for eid, name, price, pool_str in items[(page-1)*per:page*per]:
-                emb.add_field(name=f"{name} — `{price:,}g`", value=pool_str, inline=False)
+                emb.add_field(name=f"{name} — `{price:,}g`", value=pool_str+f"\nTrainer Lv.{HATCH_EGGS[eid].get('min_level',1)}", inline=False)
             return emb, page, total
 
         def build_incub_embed(page, items):
+            from utils.economy_balance import shop_level
             gold = player["gold"]
             per  = 3
             total = max(1,(len(items)+per-1)//per)
@@ -850,7 +838,7 @@ class Shop(commands.Cog):
                 hours = egg.get("incubation_hours",1)
                 price_str = f"`{price:,}g`" if price > 0 else "`Free`"
                 emb.add_field(name=f"{emoji} {egg['name']} — {price_str}",
-                    value=f"{r} {egg.get('rarity','?').title()} · ⏱️ {hours}h incubation\n{egg.get('flavor','')[:80]}", inline=False)
+                    value=f"{r} {egg.get('rarity','?').title()} · ⏱️ {hours}h incubation - Trainer Lv.{shop_level(egg)}\n{egg.get('flavor','')[:80]}", inline=False)
             return emb, page, total
 
         def build_potions_embed(page, items, label, color):
@@ -861,7 +849,7 @@ class Shop(commands.Cog):
             emb = make_embed(label, f"💰 `{gold:,}g` · Page {page}/{total}\nUse with `/use <item name>`.\n\u200b", color)
             for item in items[(page-1)*per:page*per]:
                 r = RARITY_EMOJI.get(item["rarity"],"⚪")
-                emb.add_field(name=f"{r} {item['name']} — `{item['price']:,}g`", value=item["description"], inline=False)
+                emb.add_field(name=f"{r} {item['name']} — `{item['price']:,}g`", value=item["description"]+f"\nTrainer Lv.{item.get('min_level',1)}", inline=False)
             return emb, page, total
 
         def build_shard_embed(page, regular, summons, week_data, shards):
@@ -880,7 +868,7 @@ class Shop(commands.Cog):
                 lim = f" · {item['weekly_limit']}/week" if item["weekly_limit"] else ""
                 done = week_data.get(sid,0) >= item["weekly_limit"] > 0
                 status = " ✅" if done else ""
-                emb.add_field(name=f"{item['name']} — `{item['cost']} 🔮`{lim}{status}", value=item["desc"], inline=False)
+                emb.add_field(name=f"{item['name']} — `{item['cost']} 🔮`{lim}{status}", value=item["desc"]+f"\nTrainer Lv.{item.get('min_level',1)}", inline=False)
             return emb, page, total, reg_pages
 
         # ── main view ──────────────────────────────────────────────────────

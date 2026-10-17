@@ -66,6 +66,14 @@ Ranked matches use gear and chosen moves. Five placements establish a rank; 28-d
 - A Fairy Garden adds five happiness to benched companions when `/daily` is claimed, offsetting their daily decay. Other Sanctuary bonuses affect crafting, training, exploration, EXP, raids and market capacity.
 - `/trade` uses the collection numbers shown to players. Omitting a requested companion makes the offer a gift. Market purchases and trades check current ownership, gold, party assignments and listing terms in one transaction. Equipped armor and runes travel with the companion. Releasing a companion returns its gear; transfers and releases preserve the numbers of other companions.
 
+Every completed `/explore` now brings back one crafting material, including quiet trips and escaped creatures. Basic armor/runes need about **8–11 explorations** in the seeded acquisition model. `/recipes` shows actual effects, crafting levels, exact habitat/raid routes and your current Forge discount. Equipment remains craftable; old unused rune price tags have been removed. Fenrir Fur now helps forge the Abyssal Shroud.
+
+Gold purchases and crafting follow a level ladder. Instant eggs unlock at trainer levels **1/3/10/15**; Common through Divine incubation eggs unlock at **1/3/5/10/15/25**. Legendary incubation eggs cost **24,000g**, and the three guaranteed-Divine eggs cost **80,000g**. The World-Tree Seed comes from the campaign. Egg bonuses stay within an instant egg's offered tiers, with Glimmering Fortune retaining its rare Divine upgrade.
+
+Raids and `/contribute` award personal **Guild Tickets** for `/guild_shop`; the guild's shared tokens pay for upgrades and raid entry. Existing personal raid tokens convert to tickets once at startup. Guild EXP requirements use 250 × current guild level, making level-five raid access roughly seven days for three daily contributors, or two to three days for ten, before missed days or membership changes.
+
+Training costs 50–1,000g by rarity; new HP sessions grant three times the normal point gain. Phoenix Elixirs cost 750g, Luna Nectar 150g, and Star-Candy 1,500g. Each companion has 30 tracked Star-Candy uses; evolution preserves the counter. Carrots cost 150g and grant 25 + 5 × trainer level EXP, scaling through trainer level 30. Repeated temporary potions do not stack. Repeatable exploration/challenge/daily gold scales through level 50, while EXP and levels continue to progress. Loom Catalysts move an egg's schedule two hours closer for 800g.
+
 ## Run and deploy
 
 ```sh
@@ -104,6 +112,7 @@ python scripts/benchmark_gameplay.py --output performance.json
 python scripts/simulate_gameplay.py --output simulation.json
 python scripts/audit_combat_balance.py --output balance-results
 python scripts/audit_combat_balance.py --output balance-results --holdout-only
+python scripts/audit_economy.py --output economy-results
 python scripts/finalize_artwork.py
 python scripts/build_revamp_preview.py
 python scripts/build_art_gallery.py --output chibibeasts-gallery-full.html --standalone
@@ -114,5 +123,7 @@ Checks cover all ten chapters and all three endings, preserved evolution investm
 The gameplay audit adds tests for overlapping battles, stale market offers, transfers with gear, interrupted payouts, raid display batching, response windows, live bench revives and daily reward races. The [audit report](docs/GAMEPLAY-AUDIT.txt), [validation results](docs/gameplay-audit-validation.json), [before](docs/performance-before.json)/[after](docs/performance-after.json) benchmarks and [seeded simulations](docs/gameplay-simulation.json) contain the measured evidence. Benchmarks use synthetic data and exclude Discord latency.
 
 The later [combat balance audit](docs/COMBAT-BALANCE-AUDIT.txt) covers all 86 creatures, 430 stat profiles, 9,736 same-rarity fights and 11,340 raid trials. See the [roster overview](docs/balance-after/roster-overview.csv), [full stat sheet](docs/balance-after/creature-stats.csv), [fresh-seed results](docs/balance-after/holdout-summary.json) and [114-test validation](docs/combat-balance-validation.json). The prepared reference cohort's median was 6:04, with its 10th–90th percentile at 5:14–7:35; these are synthetic scenarios, not live player timings. Earlier gameplay reports describe their original revision's results.
+
+The [economy audit](docs/ECONOMY-AUDIT.txt) reviews **52 shop offers, 29 recipes and all 21 materials**. Its [shop budgets](docs/economy-after/shop-affordability.csv), [crafting acquisition trials](docs/economy-after/recipes.csv), [reward values](docs/economy-after/raid-rewards.csv), [summary](docs/economy-after/summary.json) and [validation](docs/economy-validation.json) record the evidence. Income and acquisition times are explicit models, not live player telemetry. Existing inventory, companions and earned stats are preserved; the new treat counter starts at zero for legacy companions because historical treat counts were not recorded.
 
 The [paginated gallery](chibibeasts-gallery.html) and [full gallery](chibibeasts-gallery-full.html) show the current roster. The [original design preview](chibibeasts-preview.html) and `docs/art-exploration/` preserve the earlier art discussion. `ChibiBeasts-revamp.zip` is the earlier art-and-story revamp snapshot. Use the repository for current gameplay code and tests.

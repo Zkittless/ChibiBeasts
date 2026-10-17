@@ -18,18 +18,7 @@ from utils.db import (
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI
 
 # ── Gold cost per training session by rarity ───────────────────────────────
-TRAIN_COST = {
-    "common":        50,
-    "uncommon":      150,
-    "rare":          400,
-    "epic":          1000,
-    "legendary":     3000,
-    "divine":        8000,
-    "altered_divine":15000,
-    "corrupted":     15000,
-    "ancient":       20000,
-    "dev":           0,
-}
+from utils.economy_balance import TRAIN_COSTS as TRAIN_COST, TRAIN_HP_MULTIPLIER
 
 # Stat gain per session
 TRAIN_GAIN = {
@@ -216,6 +205,8 @@ class Economy(commands.Cog):
             sessions_done = row.get(col, 0) or 0
             cost          = TRAIN_COST.get(rarity, 50)
             gain          = TRAIN_GAIN.get(rarity, 1)
+            if stat == 'hp':
+                gain *= TRAIN_HP_MULTIPLIER
 
             RARITY_CAPS = {
                 "common": 20, "uncommon": 20, "rare": 20,
