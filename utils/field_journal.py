@@ -18,6 +18,13 @@ MANA = '#96bfe9'
 SURFACE = '#102b2c'
 _fonts = threading.local()
 DISPLAY_FONT = Path(__file__).resolve().parents[1] / 'data' / 'fonts' / 'Cinzel.ttf'
+# Discord renders these decorations with its emoji fonts; Pillow's bundled
+# body font cannot. Keep their meaning in words in the image, while leaving
+# the engine's original log untouched for Discord's native text fallback.
+_JOURNAL_SYMBOLS = str.maketrans({
+    **dict.fromkeys('☠🔥❄💤⚡🕸👁🔻💜✨🛡⏳💨🌿\ufe0e\ufe0f', ''),
+    '⭐': 'CRIT ', '→': 'for', '—': '-',
+})
 
 
 @dataclass(frozen=True)
@@ -40,7 +47,12 @@ def font(size, display=False):
 
 
 def clean(value):
-    return ' '.join(''.join(c for c in str(value) if c.isprintable()).replace('**', '').replace('`', '').split())
+    return ' '.join(''.join(c for c in str(value) if c.isprintable() or c.isspace()).replace('**', '').replace('`', '').split())
+
+
+def journal_text(value):
+    """Readable combat text without unsupported decorative emoji or arrows."""
+    return clean(str(value).translate(_JOURNAL_SYMBOLS))
 
 
 def text(draw, value, box, *, size=18, minimum=10, fill=INK, display=False,
@@ -204,9 +216,9 @@ def journal(image, top, title, lines=()):
     panel(image, (10, top + 4, 630, top + 66))
     draw = ImageDraw.Draw(image)
     text(draw, 'BATTLE JOURNAL', (20, top + 11, 190, top + 24), size=11, fill=GOLD)
-    content = [clean(line) for line in lines if clean(line)]
+    content = [line for value in lines if (line := journal_text(value))]
     if not content:
-        content = [title]
+        content = [journal_text(title)]
     if len(content) == 1:
         text(draw, content[0], (20, top + 31, 620, top + 55), size=17)
     else:
