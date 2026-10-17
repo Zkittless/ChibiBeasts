@@ -100,13 +100,11 @@ def _catch_milestone_line(beast_name: str, rarity: str, count: int, is_milestone
 # Design philosophy:
 #   Instant eggs  = convenient, immediate, slightly worse odds
 #   Incubation    = patient, time-gated, meaningfully better odds per tier
-#   Top incubation = exclusive beasts unavailable anywhere else
+#   Top incubation = curated collections and a higher guaranteed rarity floor
 #
-# Divine rarity targets (avg eggs needed for a divine):
-#   Celestial (8k, instant):  5% →  avg 20 eggs  (~88 days at Lv10)  — jackpot feel
-#   Abyssal (25k, instant):  25% →  avg 4 eggs   (~55 days at Lv10)  — endgame grind
-#   Epic incubation (12k):   25% →  beats Celestial if patient
-#   Top incubation (50k, 48h): 40% + exclusive beasts — worth the wait AND gold
+# Incubation prices/unlocks live in utils.economy_balance. Instant eggs favor
+# convenience; Epic incubators favor broad collection, Legendary eggs offer
+# curated Legendary/Divine pools, and Divine eggs guarantee a focused collection.
 
 _BASE_EGG_POOLS = {
     # Common: fast and cheap — no rare access, just common/uncommon
@@ -115,25 +113,25 @@ _BASE_EGG_POOLS = {
     "rare_egg":      {"uncommon": 0.35, "rare": 0.50, "epic": 0.15},
     # Celestial: high-tier — legendary access but divine is rare (5%)
     "celestial_egg": {"epic": 0.50, "legendary": 0.45, "divine": 0.05},
-    # Abyssal: endgame — decent divine (25%) but incubation still beats it if patient
-    "abyssal_egg":   {"legendary": 0.70, "divine": 0.25, "altered_chance": 0.01},
+    # Abyssal: 74% Legendary, 25% Divine, 1% Altered Divine before Fortune.
+    "abyssal_egg":   {"legendary": 0.74, "divine": 0.25, "altered_chance": 0.01},
 }
 
 HATCH_EGGS = {
     "common_egg": {
-        "name": "🥚 Common Egg", "price": 200,
+        "name": "🥚 Common Egg", "price": 200, "min_level": 1,
         "flavor": "A small, warm egg. Something common and wonderful is inside.",
     },
     "rare_egg": {
-        "name": "🥚✨ Rare Egg", "price": 1500,
+        "name": "🥚✨ Rare Egg", "price": 1500, "min_level": 3,
         "flavor": "The shell vibrates faintly. Something with opinions is in there.",
     },
     "celestial_egg": {
-        "name": "🌌🥚 Celestial Egg", "price": 8000,
+        "name": "🌌🥚 Celestial Egg", "price": 8000, "min_level": 10,
         "flavor": "The Loom wove this one slowly. Whatever is inside has been waiting.",
     },
     "abyssal_egg": {
-        "name": "🌊💎 Abyssal Egg", "price": 25000,
+        "name": "🌊💎 Abyssal Egg", "price": 25000, "min_level": 15,
         "flavor": "It comes from somewhere deeper than deep. The weight of it is strange.",
     },
 }
@@ -142,6 +140,8 @@ HATCH_EGGS = {
 def get_egg_pool(egg_type: str, perks=None, sanctuary=None) -> dict:
     pool={k:v for k,v in _BASE_EGG_POOLS.get(egg_type,{"common":1.0}).items() if k!="altered_chance"}
     def promote(target,amount):
+        # Bonuses improve tiers this egg already offers; a cheap egg stays cheap.
+        if target not in pool:return
         rank=RARITY_ORDER.index(target)
         donors=[k for k in pool if RARITY_ORDER.index(k)<rank]
         available=sum(pool[k] for k in donors)
@@ -193,6 +193,8 @@ def roll_with_altered(egg_type: str) -> tuple[str, bool]:
     # Strip non-rarity keys and roll normally
     pool = {k: v for k, v in _BASE_EGG_POOLS.get(egg_type, {"common": 1.0}).items()
             if k != "altered_chance"}
+    total=sum(pool.values())
+    pool={k:v/total for k,v in pool.items()}
     return roll_rarity(pool), False
 
 # ── Collection completion helper ─────────────────────────────────────────────
@@ -688,6 +690,7 @@ class Hatch(commands.Cog):
             available_biomes = [BIOMES[0]]  # always have at least Whispering Woods
 
         biome = next(b for b in BIOMES if b["name"]==DESTINATIONS[destination]["name"])
+        biome["min_level"] = DESTINATIONS[destination]["min_level"]
         location = biome["name"]
         lore_line = random.choice(biome["lore"])
         biome_weights = DESTINATIONS[destination]["weights"]
@@ -775,14 +778,18 @@ class Hatch(commands.Cog):
         outcome = random.random()
 
         if outcome < 0.05:
-            # Nothing found
+            # Scavenging still supplies a material on a quiet exploration.
+            from utils.habitats import material_pool
+            from utils.gameplay import grant_material
+            mat_drop = random.choice(material_pool({'id':'','type':''},destination))
+            await grant_material(interaction.user.id,mat_drop)
             gold_found = random.randint(10, 50)
             await credit_gold(interaction.user.id, gold_found)
             await msg.edit(embed=discord.Embed(
                 title=f"🗺️ {location}",
                 description=(
                     f"*{biome['nothing_found']}*\n\n"
-                    f"You did find **{gold_found} gold** on your way back though! 💰"
+                    f"You found **{gold_found} gold** and **{mat_drop.replace('_',' ').title()}** on your way back! 💰"
                 ),
                 color=COLORS["info"]
             ))
@@ -823,18 +830,16 @@ class Hatch(commands.Cog):
 
         from utils.habitats import pick_encounter
         if player.get("divine_compass_charges",0)>0 and not player.get("prism_keys",0) and destination=="loom":
-            rates["divine"]=.20
+            from utils.habitats import set_rarity_chance
+            rates=set_rarity_chance(rates,destination,"divine",.20)
             async with storage.connect() as db:
                 await db.execute("UPDATE players SET divine_compass_charges=divine_compass_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
         if player.get("prism_keys",0)>0 and destination=="loom":
-            rates["divine"]=.30
+            from utils.habitats import set_rarity_chance
+            rates=set_rarity_chance(rates,destination,"divine",.30)
             async with storage.connect() as db:
                 await db.execute("UPDATE players SET prism_keys=prism_keys-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
-        # Set exact divine odds, preserving the relative weights of other rarities.
-        if destination=="loom" and (player.get("divine_compass_charges",0)>0 or player.get("prism_keys",0)>0):
-            target=rates["divine"];other=sum(v for k,v in rates.items() if k!="divine")
-            rates={k:(target if k=="divine" else v/other*(1-target)) for k,v in rates.items()}
-        if player.get("ancient_compass_charges",0)>0:
+        if player.get("ancient_compass_charges",0)>0 and any(rates.get(r,0)>0 for r in ("common","uncommon")):
             rates={k:v for k,v in rates.items() if k not in {"common","uncommon"}}
             async with storage.connect() as db:
                 await db.execute("UPDATE players SET ancient_compass_charges=ancient_compass_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
@@ -849,6 +854,12 @@ class Hatch(commands.Cog):
                 description="✦ Something went wrong. Try exploring again!",
                 color=COLORS["error"]
             ))
+
+        # Every completed exploration yields one material, even if the beast escapes.
+        from utils.habitats import material_pool
+        from utils.gameplay import grant_material
+        mat_drop = random.choice(material_pool(beast,destination))
+        await grant_material(interaction.user.id,mat_drop)
 
         # ── Encounter type ─────────────────────────────────────────────────────
         # Pixie Pocket perk: +5% affinity chance
@@ -893,7 +904,9 @@ class Hatch(commands.Cog):
         async def apply_catch_rewards(caught_via_battle: bool = False) -> tuple:
             """Apply all post-catch rewards. Returns (gold_bonus, explore_exp, mat_drop, leveled_up, new_level)."""
             beast_row_id = await add_beast_to_player(interaction.user.id, {**beast, "caught_from": "discover"})
-            gold_bonus = random.randint(player_level * 3, player_level * 8)
+            from utils.economy_balance import gold_reward_level
+            gold_level=gold_reward_level(player_level)
+            gold_bonus = random.randint(gold_level * 3, gold_level * 8)
             if pixie_pocket:
                 gold_bonus = int(gold_bonus * 1.10)
             if caught_via_battle:
@@ -908,16 +921,12 @@ class Hatch(commands.Cog):
             explore_exp = random.randint(player_level * 12, player_level * 20)
             if caught_via_battle:
                 explore_exp = int(explore_exp * 1.3)
-            from utils.sanctuary import apply_exp_bonus as _aeb
-            explore_exp = _aeb(explore_exp, user_sanctuary)
             await credit_gold(interaction.user.id, gold_bonus)
             from cogs.battle import award_player_exp as _award_exp
             _p_lvl, _, _p_leveled = await _award_exp(interaction.user.id, explore_exp, interaction)
+            if user_sanctuary.get('arcane_library'):
+                explore_exp=round(explore_exp*1.15)
 
-            from utils.habitats import material_pool
-            from utils.gameplay import grant_material
-            mat_drop=random.choice(material_pool(beast,destination))
-            await grant_material(interaction.user.id,mat_drop)
 
             return gold_bonus, explore_exp, mat_drop, _p_leveled, _p_lvl, beast_row_id
 
@@ -1021,13 +1030,15 @@ class Hatch(commands.Cog):
                     await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                     await _udb.commit()
                 # Give consolation gold even on loss
-                consolation = random.randint(player_level * 2, player_level * 5)
+                from utils.economy_balance import gold_reward_level
+                gold_level=gold_reward_level(player_level)
+                consolation = random.randint(gold_level * 2, gold_level * 5)
                 await credit_gold(interaction.user.id, consolation)
                 escaped_embed = discord.Embed(
                     title=f"💨 {beast['name']} escaped!",
                     description=(
                         f"*{beast['name']} slipped away — but the fight wasn't for nothing.*\n\n"
-                        f"You found **{consolation} gold** nearby. Keep exploring."
+                        f"You found **{consolation} gold** and **{mat_drop.replace('_',' ').title()}**. Your scavenged material is safe."
                     ),
                     color=COLORS["info"]
                 )

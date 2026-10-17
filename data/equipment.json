@@ -8,7 +8,7 @@
       "description": "A vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings.",
       "lore": "Worn by Fairy scouts. Gives your beast the confident stride of something that belongs in the forest.",
       "recipe": {
-        "pixie_silk": 3,
+        "pixie_silk": 2,
         "enchanted_bark": 1
       },
       "effect": {
@@ -23,7 +23,7 @@
       "description": "Slightly oversized clunky iron armor with a tiny round shield. Sturdy little knight energy.",
       "lore": "Built by Goblins trying to impersonate knights. Somehow works better than it looks.",
       "recipe": {
-        "gnome_iron_ore": 4
+        "gnome_iron_ore": 3
       },
       "effect": {
         "defense_percent": 10,
@@ -148,7 +148,7 @@
       "lore": "The Kraken wove this from its own ink. It's an art piece. A very dangerous art piece.",
       "recipe": {
         "kraken_ink": 3,
-        "harpy_down": 2
+        "fenrir_fur": 2
       },
       "effect": {
         "evasion_percent": 15,
@@ -198,14 +198,14 @@
         "hp_percent": 8
       },
       "recipe": {
-        "enchanted_bark": 3,
-        "pixie_silk": 2
+        "enchanted_bark": 2,
+        "pixie_silk": 1
       }
     },
     "emberstone_vest": {
       "id": "emberstone_vest",
       "name": "Emberstone Vest",
-      "rarity": "common",
+      "rarity": "uncommon",
       "slot": "armor",
       "description": "Gnome-iron plates set in hellhound ember resin. Reflects a fraction of what hits it.",
       "lore": "Anything that spends enough time near Hellhounds picks up their habits. One of those habits is making things that touch you regret it.",
@@ -258,13 +258,12 @@
       "slot": "rune",
       "description": "A cute glowing bow. Small but sincere.",
       "lore": "Fairies tie these on things they like. Your beast is now a thing a Fairy liked.",
-      "price": 200,
       "effect": {
         "speed": 5,
         "speed_percent": 3
       },
       "recipe": {
-        "pixie_silk": 5
+        "pixie_silk": 2
       }
     },
     "gnome_forged_buckler": {
@@ -274,7 +273,6 @@
       "slot": "rune",
       "description": "A tiny sturdy shield. Boosts defense reliably.",
       "lore": "Gnomes make ten of these for every one they sell. Quality control is taken seriously.",
-      "price": 800,
       "effect": {
         "defense": 8,
         "defense_percent": 3
@@ -291,7 +289,6 @@
       "slot": "rune",
       "description": "A sharp glowing claw accessory. Increases critical hit chance.",
       "lore": "The Wyvern that dropped this was going fast. So were you.",
-      "price": 2500,
       "effect": {
         "attack": 5,
         "crit_chance": 8
@@ -308,7 +305,6 @@
       "slot": "rune",
       "description": "A single primary feather from a Thunderbird. Channels residual storm energy — each hit you land restores 8 mana.",
       "lore": "These crackle constantly. Storing them near electronics is not recommended.",
-      "price": 8000,
       "effect": {
         "mana_regen_on_hit": 8
       },
@@ -324,7 +320,6 @@
       "slot": "rune",
       "description": "If the equipped beast faints, it deals a massive fire explosion to the enemy.",
       "lore": "The Phoenix put something of itself in here. It's not quite gone. Use it wisely.",
-      "price": 25000,
       "effect": {
         "lifesteal_percent": 8,
         "death_explosion_fire": true
@@ -342,16 +337,15 @@
       "slot": "rune",
       "description": "A tiny glowing ring. Heals for 18% of damage dealt and grants 5% maximum HP.",
       "lore": "The snake eating its own tail figured something out. This is the leftover.",
-      "price": 0,
-      "drop_only": true,
+      "drop_only": false,
       "effect": {
         "lifesteal_percent": 18,
         "hp_percent": 5
       },
       "recipe": {
-        "chronos_gear": 1,
-        "tear_of_the_creator": 1,
-        "kraken_ink": 2
+        "chronos_gear": 3,
+        "tear_of_the_creator": 2,
+        "kraken_ink": 4
       }
     },
     "iron_dust_chip": {
@@ -366,7 +360,7 @@
         "attack_percent": 3
       },
       "recipe": {
-        "gnome_iron_ore": 4
+        "gnome_iron_ore": 3
       }
     },
     "bark_sigil": {
@@ -381,7 +375,7 @@
         "hp_percent": 3
       },
       "recipe": {
-        "enchanted_bark": 4
+        "enchanted_bark": 3
       }
     },
     "ember_spark": {

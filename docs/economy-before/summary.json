@@ -1,0 +1,124 @@
+{
+  "generated_at_utc": "2026-10-17T01:32:30.128119+00:00",
+  "revision": "ba51b60a11553e29aa5487953822ca91daa3f64f",
+  "shop_offers": 52,
+  "craftable_items": 29,
+  "materials": 21,
+  "free_shop_offers": [
+    "genesis_matrix",
+    "constellation_spool",
+    "singularity_core"
+  ],
+  "positive_expected_egg_resale": [
+    {
+      "egg": "common_egg",
+      "price": "200",
+      "expected_release_gold": 225.75,
+      "expected_net_gold": 25.75,
+      "stardust": "True",
+      "observatory": "False",
+      "fortune": "False"
+    },
+    {
+      "egg": "common_egg",
+      "price": "200",
+      "expected_release_gold": 229.64,
+      "expected_net_gold": 29.64,
+      "stardust": "True",
+      "observatory": "False",
+      "fortune": "True"
+    },
+    {
+      "egg": "common_egg",
+      "price": "200",
+      "expected_release_gold": 302.45,
+      "expected_net_gold": 102.45,
+      "stardust": "True",
+      "observatory": "True",
+      "fortune": "False"
+    },
+    {
+      "egg": "common_egg",
+      "price": "200",
+      "expected_release_gold": 306.3,
+      "expected_net_gold": 106.3,
+      "stardust": "True",
+      "observatory": "True",
+      "fortune": "True"
+    },
+    {
+      "egg": "common_egg",
+      "price": "190",
+      "expected_release_gold": 225.75,
+      "expected_net_gold": 35.75,
+      "stardust": "True",
+      "observatory": "False",
+      "fortune": "False"
+    },
+    {
+      "egg": "common_egg",
+      "price": "190",
+      "expected_release_gold": 229.64,
+      "expected_net_gold": 39.64,
+      "stardust": "True",
+      "observatory": "False",
+      "fortune": "True"
+    },
+    {
+      "egg": "common_egg",
+      "price": "190",
+      "expected_release_gold": 302.45,
+      "expected_net_gold": 112.45,
+      "stardust": "True",
+      "observatory": "True",
+      "fortune": "False"
+    },
+    {
+      "egg": "common_egg",
+      "price": "190",
+      "expected_release_gold": 306.3,
+      "expected_net_gold": 116.3,
+      "stardust": "True",
+      "observatory": "True",
+      "fortune": "True"
+    },
+    {
+      "egg": "genesis_matrix",
+      "price": "0",
+      "expected_release_gold": "8000.0",
+      "expected_net_gold": "8000.0",
+      "stardust": "False",
+      "observatory": "False",
+      "fortune": "False"
+    },
+    {
+      "egg": "constellation_spool",
+      "price": "0",
+      "expected_release_gold": "8000.0",
+      "expected_net_gold": "8000.0",
+      "stardust": "False",
+      "observatory": "False",
+      "fortune": "False"
+    },
+    {
+      "egg": "singularity_core",
+      "price": "0",
+      "expected_release_gold": "8000.0",
+      "expected_net_gold": "8000.0",
+      "stardust": "False",
+      "observatory": "False",
+      "fortune": "False"
+    }
+  ],
+  "unreachable_recipes": [],
+  "common_recipe_mean_explorations": {
+    "sprite_silk_attire": 20.4,
+    "gnome_iron_plating": 30.7,
+    "mossbark_wrapping": 20.6,
+    "emberstone_vest": 35.1,
+    "pixie_ribbon": 31.6,
+    "iron_dust_chip": 29.9,
+    "bark_sigil": 23.6
+  },
+  "scope": "Offline catalog/production-rule checks. Crafting uses 200 seeded adaptive-foraging trials per recipe with 75% modeled encounter victories, base 30-minute cooldown, no perks or consumables. Earliest source levels are route availability, not forecasts of account readiness. Income scenarios are explicit planning assumptions, not live telemetry; they exclude selling catches, raid loot sales, one-time story/achievement/milestone rewards, fees and spending."
+}

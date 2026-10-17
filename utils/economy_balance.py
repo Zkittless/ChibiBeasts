@@ -1,0 +1,55 @@
+"""Shared progression gates and currency budgets, independent of Discord views."""
+INCUBATION_PRICES = {'common':300, 'uncommon':1200, 'rare':4000, 'epic':12000, 'legendary':24000, 'divine':80000}
+INCUBATION_LEVELS = {'common':1, 'uncommon':3, 'rare':5, 'epic':10, 'legendary':15, 'divine':25}
+CRAFT_LEVELS = {'common':1, 'uncommon':3, 'rare':5, 'epic':8, 'legendary':10, 'divine':15, 'altered_divine':15}
+RELEASE_VALUES = {'common':50, 'uncommon':150, 'rare':500, 'epic':1200, 'legendary':3000, 'divine':8000, 'altered_divine':20000}
+MATERIAL_SELL_VALUES = {'common':20, 'uncommon':40, 'rare':80, 'epic':180, 'legendary':400, 'altered_divine':800}
+TRAIN_COSTS = {'common':50, 'uncommon':90, 'rare':150, 'epic':250, 'legendary':400,
+               'divine':600, 'altered_divine':800, 'corrupted':900, 'ancient':1000, 'dev':0}
+TRAIN_HP_MULTIPLIER = 3
+STAT_TREAT_LIMIT = 30
+GUARANTEED_EXPLORE_MATERIAL = True
+GUILD_EXP_PER_LEVEL = 250
+
+
+def shop_level(item):
+    if 'incubation_hours' in item:
+        return INCUBATION_LEVELS[item['rarity']]
+    return item.get('min_level',1)
+
+
+def recipe_level(item):
+    return item.get('min_level', CRAFT_LEVELS.get(item['rarity'],1))
+
+
+def gold_reward_level(level):
+    """Veteran levels still progress; repeatable gold scales through level 50."""
+    return max(1,min(50,level))
+
+
+def item_sell_price(item, merchant=False):
+    base = item.get('resale_price', max(5,int(item.get('price',0)*.35)))
+    return int(base*1.2) if merchant else base
+
+
+def material_sources(material_id):
+    from utils.habitats import BIOMES, REGIONAL_MATERIALS, SPECIES_MATERIALS
+    from utils import db as storage
+    routes = [b['name'] for key,b in BIOMES.items() if material_id in REGIONAL_MATERIALS[key]]
+    species = [storage.get_beast_data(key)['name'] for key,mid in SPECIES_MATERIALS.items() if mid==material_id]
+    if material_id=='void_essence':
+        routes.append('shadow encounters')
+    if material_id=='spirit_crystal':
+        routes.append('arcane encounters')
+    if material_id=='sunforge_residue':
+        routes.append('fire/earth encounters')
+    raids = {'dragon_scale':'Corrupted Dragon', 'sunforge_residue':'Corrupted Dragon',
+             'kraken_ink':'Corrupted Leviathan','fenrir_fur':'Corrupted Fenrir',
+             'chronos_gear':'Ancient Chronos','tear_of_the_creator':'any Ancient',
+             'blighted_world_core':'Ancient Genesis/Abyss'}
+    text = 'Explore: '+', '.join(routes) if routes else ''
+    if species:
+        text += ('; ' if text else '')+'extra weight with '+', '.join(species)
+    if material_id in raids:
+        text += ('; ' if text else '')+'Guaranteed: '+raids[material_id]
+    return text

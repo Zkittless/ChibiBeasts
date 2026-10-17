@@ -30,13 +30,35 @@ def pick_encounter(weights,biome=None,element=None):
     rarity=random.choices(choices,weights=[weights[r] for r in choices])[0]
     return get_beast_data(random.choice(pools[rarity]))
 
+
+def set_rarity_chance(weights, biome, rarity, chance):
+    """Exact advertised odds after excluding tiers with no eligible inhabitants."""
+    available = {r:w for r,w in weights.items() if w>0 and encounter_pool(r,biome)}
+    other = sum(w for r,w in available.items() if r!=rarity)
+    if rarity not in available or not other:
+        return available
+    return {r:chance if r==rarity else w/other*(1-chance) for r,w in available.items()}
+
+
+def challenge_weights(weights, rarity):
+    tiers=('common','uncommon','rare','epic','legendary','divine')
+    rank=tiers.index(rarity) if rarity in tiers else len(tiers)-1
+    biased={r:w*(3 if tiers.index(r)==rank else 1.5 if abs(tiers.index(r)-rank)==1 else 1) for r,w in weights.items()}
+    total=sum(biased.values())
+    return {r:w/total for r,w in biased.items()}
+
+SPECIES_MATERIALS = {'fairy':'pixie_silk','pixie':'pixie_silk','goblin':'gnome_iron_ore','slime':'enchanted_bark','dryad':'enchanted_bark','harpy':'harpy_down','kelpie':'kelpie_scale','hellhound':'hellhound_ember','unicorn':'unicorn_hair','manticore':'manticore_stinger','basilisk':'basilisk_eye','phoenix':'phoenix_ash','thunderbird':'thunderbird_talon','sphinx':'sphinx_papyrus','dragon':'dragon_scale','kraken':'kraken_ink','fenrir':'fenrir_fur'}
+REGIONAL_MATERIALS = {'woods':['pixie_silk','enchanted_bark','gnome_iron_ore','kelpie_scale','spirit_crystal'], 'ember':['gnome_iron_ore','hellhound_ember','sunforge_residue','phoenix_ash','dragon_scale'], 'glacial':['enchanted_bark','harpy_down','unicorn_hair','fenrir_fur','thunderbird_talon'], 'trenches':['kelpie_scale','kraken_ink','manticore_stinger','void_essence'], 'loom':['spirit_crystal','sphinx_papyrus','basilisk_eye','unicorn_hair']}
+
+
 def material_pool(beast, biome):
     """Named resources follow species and habitat; rare forging resources are reachable."""
-    species = {'fairy': 'pixie_silk', 'pixie': 'pixie_silk', 'goblin': 'gnome_iron_ore', 'slime': 'enchanted_bark', 'dryad': 'enchanted_bark', 'harpy': 'harpy_down', 'kelpie': 'kelpie_scale', 'hellhound': 'hellhound_ember', 'unicorn': 'unicorn_hair', 'manticore': 'manticore_stinger', 'basilisk': 'basilisk_eye', 'phoenix': 'phoenix_ash', 'thunderbird': 'thunderbird_talon', 'sphinx': 'sphinx_papyrus', 'dragon': 'dragon_scale', 'kraken': 'kraken_ink', 'fenrir': 'fenrir_fur'}
-    regional = {'woods': ['pixie_silk', 'enchanted_bark', 'gnome_iron_ore', 'spirit_crystal'], 'ember': ['hellhound_ember', 'sunforge_residue', 'phoenix_ash', 'dragon_scale'], 'glacial': ['harpy_down', 'unicorn_hair', 'fenrir_fur', 'thunderbird_talon'], 'trenches': ['kelpie_scale', 'kraken_ink', 'manticore_stinger', 'void_essence'], 'loom': ['spirit_crystal', 'sphinx_papyrus', 'basilisk_eye', 'unicorn_hair']}
-    result = list(regional[biome_key(biome)])
-    if beast['id'] in species:
-        result.extend([species[beast['id']]] * 3)
+    from utils.catalog import load_catalog
+    materials = load_catalog('materials.json')['materials']
+    weights = {'common':4,'uncommon':3,'rare':2,'epic':1,'legendary':1}
+    result = [mid for mid in REGIONAL_MATERIALS[biome_key(biome)] for _ in range(weights[materials[mid]['rarity']])]
+    if beast['id'] in SPECIES_MATERIALS:
+        result.extend([SPECIES_MATERIALS[beast['id']]] * 3)
     if beast['type'] == 'shadow':
         result.extend(['void_essence'] * 2)
     if beast['type'] == 'arcane':

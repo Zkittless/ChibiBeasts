@@ -288,6 +288,7 @@ async def _run_migrations():
         "ALTER TABLE guilds ADD COLUMN total_contributions INTEGER DEFAULT 0",
         "ALTER TABLE player_beasts ADD COLUMN bond INTEGER NOT NULL DEFAULT 0",
         "ALTER TABLE player_beasts ADD COLUMN damage_bonus INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE player_beasts ADD COLUMN stat_treats_used INTEGER NOT NULL DEFAULT 0",
         "ALTER TABLE players ADD COLUMN divine_compass_charges INTEGER NOT NULL DEFAULT 0",
         "ALTER TABLE players ADD COLUMN prism_keys INTEGER NOT NULL DEFAULT 0",
         "ALTER TABLE players ADD COLUMN astral_type TEXT DEFAULT NULL",
@@ -380,6 +381,10 @@ async def _run_migrations():
         """)
         from utils.balance_migrations import apply_base_stat_balance
         await apply_base_stat_balance(db)
+        # Recover the old personal raid currency into the spendable Guild Tickets.
+        claim = await db.execute("INSERT OR IGNORE INTO game_meta(key,value) VALUES('economy-tickets-2026-10','applied')")
+        if claim.rowcount:
+            await db.execute('UPDATE players SET guild_tickets=COALESCE(guild_tickets,0)+MAX(0,COALESCE(guild_tokens,0)),guild_tokens=0')
         # Preserve onboarding history for accounts created before this column.
         await db.execute("""
             UPDATE players SET starter_claimed = 1

@@ -562,7 +562,7 @@ class RaidSession:
                     await db.execute('UPDATE raid_catch_progress SET clears=0 WHERE user_id=? AND beast_id=?', (uid, boss_id))
                 await db.execute('INSERT INTO raid_rewards(raid_id,user_id,caught) VALUES(?,?,?)', (self.id, uid, int(caught)))
                 await shards(db, uid, round((8 if ancient else 3) * scale))
-                await db.execute('UPDATE players SET gold=gold+?,guild_tokens=guild_tokens+? WHERE user_id=?', (round((500 if ancient else 300) * scale), round(10 * scale), uid))
+                await db.execute('UPDATE players SET gold=gold+?,guild_tickets=guild_tickets+? WHERE user_id=?', (round((500 if ancient else 300) * scale), round(10 * scale), uid))
                 for mid, amount in materials.items():
                     await add_stack(db, 'player_materials', uid, mid, round(amount * scale))
                 known_materials = load_catalog('materials.json')['materials']

@@ -1,0 +1,11 @@
+level,all_repeatable_bonuses,explore_biome,challenge_biome,optimistic_expected_gross_gold,reset_price,expected_net_gold
+1,False,woods,woods,455.25,3500,-3044.75
+1,True,woods,woods,659.29,3325,-2665.71
+10,False,loom,loom,2142.94,3500,-1357.06
+10,True,loom,loom,2455.69,3325,-869.31
+30,False,loom,loom,2502.71,3500,-997.29
+30,True,loom,loom,2827.12,3325,-497.88
+50,False,loom,loom,2862.47,3500,-637.53
+50,True,loom,loom,3198.55,3325,-126.45
+100,False,loom,loom,2862.47,3500,-637.53
+100,True,loom,loom,3198.55,3325,-126.45

@@ -6,6 +6,7 @@ import aiosqlite
 import random
 import asyncio
 from utils.artwork import beast_image_url
+from utils.economy_balance import GUILD_EXP_PER_LEVEL
 from utils.db import get_or_create_player, get_player, update_player, get_beast_data, get_active_beast, knockout_beast, revive_beast, is_knocked_out, ko_time_remaining
 from utils.theme import COLORS, RARITY_EMOJI, hp_bar, SPARKLE
 from utils.progress import (
@@ -15,9 +16,9 @@ from cogs.questline import advance_quest_step
 
 GUILD_LEVEL_PERKS = {
     1:  {"max_members": 10,  "unlocks": "Guild created!"},
-    5:  {"max_members": 20,  "unlocks": "Corrupted Raids"},
-    10: {"max_members": 30,  "unlocks": "Loom Fragments in the Guild Shop"},
-    15: {"max_members": 40,  "unlocks": "Sanctuary Blueprints in the Guild Shop"},
+    5:  {"max_members": 20,  "unlocks": "Corrupted Raids, compasses and Loom Fragments"},
+    10: {"max_members": 30,  "unlocks": "Sanctuary Blueprints in the Guild Shop"},
+    15: {"max_members": 40,  "unlocks": "Room for 40 guild companions"},
     20: {"max_members": 50,  "unlocks": "Room for 50 guild companions"},
     25: {"max_members": 50,  "unlocks": "A home established in the Loom"},
 }
@@ -321,7 +322,7 @@ class Guilds(commands.Cog):
 
         next_level = guild["level"] + 1
         next_level_info = GUILD_LEVEL_PERKS.get(next_level, {})
-        exp_needed = guild["level"] * 500
+        exp_needed = guild["level"] * GUILD_EXP_PER_LEVEL
 
         embed = discord.Embed(
             title=f"🏰 {guild['name']}",
@@ -717,6 +718,7 @@ class Guilds(commands.Cog):
         uid = interaction.user.id
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
+            await db.execute('BEGIN IMMEDIATE')
             async with db.execute("SELECT guild_id FROM guild_members WHERE user_id = ?", (uid,)) as c:
                 member_row = await c.fetchone()
             if not member_row:
@@ -743,7 +745,7 @@ class Guilds(commands.Cog):
                 guild = dict(await c.fetchone())
             new_guild_exp = guild["exp"] + guild_exp_gain
             new_guild_level = guild["level"]
-            EXP_PER_LEVEL = 500
+            EXP_PER_LEVEL = GUILD_EXP_PER_LEVEL
             leveled_up = False
             while new_guild_exp >= new_guild_level * EXP_PER_LEVEL:
                 new_guild_exp -= new_guild_level * EXP_PER_LEVEL

@@ -1,0 +1,53 @@
+id,name,shop,currency,cost,level,limit
+common_egg,🥚 Common Egg,gold/instant,gold,200,1,0
+rare_egg,🥚✨ Rare Egg,gold/instant,gold,1500,1,0
+celestial_egg,🌌🥚 Celestial Egg,gold/instant,gold,8000,1,0
+abyssal_egg,🌊💎 Abyssal Egg,gold/instant,gold,25000,1,0
+sprout_pod,Sprout Pod,gold/incubation,gold,300,1,0
+pebble_shell,Pebble Shell,gold/incubation,gold,300,1,0
+soot_hatchling,Soot Hatchling,gold/incubation,gold,300,1,0
+dewdrop_bulb,Dewdrop Bulb,gold/incubation,gold,1200,1,0
+gale_nest,Gale Nest,gold/incubation,gold,1200,1,0
+cavern_core,Cavern Core,gold/incubation,gold,1200,1,0
+prism_sphere,Prism Sphere,gold/incubation,gold,4000,1,0
+glow_spore,Glow-Spore Cluster,gold/incubation,gold,4000,1,0
+eclipse_pebble,Eclipse Pebble,gold/incubation,gold,4000,1,0
+volcanic_core,Volcanic Core,gold/incubation,gold,12000,1,0
+nimbus_cloud,Nimbus Cloud,gold/incubation,gold,12000,1,0
+monolith_relic,Monolith Relic,gold/incubation,gold,12000,1,0
+abyssal_trench_orb,Abyssal Trench Orb,gold/incubation,gold,50000,1,0
+dragon_hoard_scale,Dragon-Hoard Scale,gold/incubation,gold,50000,1,0
+glacial_monolith,Glacial Monolith,gold/incubation,gold,50000,1,0
+genesis_matrix,Genesis Matrix,gold/incubation,gold,0,1,0
+constellation_spool,Constellation Spool,gold/incubation,gold,0,1,0
+singularity_core,Singularity Core,gold/incubation,gold,0,1,0
+pixie_dust_potion,Pixie Dust Potion,gold/items,gold,50,1,0
+brambleberries,Brambleberries,gold/items,gold,80,1,0
+gnome_grown_carrots,Gnome-Grown Carrots,gold/items,gold,40,1,0
+aether_tonic,Aether Tonic,gold/items,gold,150,1,0
+luna_nectar,Luna Nectar,gold/items,gold,500,1,0
+star_candy_shards,Star-Candy Shards,gold/items,gold,3000,1,0
+spellbound_incense,Spellbound Incense,gold/items,gold,500,1,0
+phoenix_elixir,Phoenix Elixir,gold/items,gold,2000,1,0
+chrono_biscuit,Chrono-Biscuit,gold/items,gold,1500,1,0
+ambrosia_tart,Ambrosia Tart,gold/items,gold,10000,1,0
+genesis_fruit,Genesis Fruit,gold/items,gold,75000,1,0
+ironbark_salve,Ironbark Salve,gold/items,gold,180,1,0
+quicksilver_tonic,Quicksilver Tonic,gold/items,gold,450,1,0
+loom_catalyst,Loom Catalyst,gold/items,gold,800,1,0
+astral_reroll,🌌 Astral Reroll,shards,shards,15,1,1
+divine_compass,🧭 Divine Compass,shards,shards,25,1,1
+loom_fragment,🧵 Loom Fragment,shards,shards,15,1,2
+prism_key,🔑 Prism Key,shards,shards,30,1,1
+beast_rename_token,✏️ Rename Token,shards,shards,10,1,0
+trainer_title_reset,🏷️ Title Reset,shards,shards,5,1,0
+epoch_shard,⏳ Epoch Shard,shards,shards,60,1,1
+firstborn_ember,🔥 Firstborn Ember,shards,shards,80,1,1
+void_prism,🌑 Void Prism,shards,shards,100,1,1
+raid_totem,Raid Totem,guild,tickets,20,1,0
+beastkeeper_seal,Beastkeeper Seal,guild,tickets,15,1,0
+guild_elixir,Guild Elixir,guild,tickets,10,1,0
+ancient_compass,Ancient Compass,guild,tickets,35,5,0
+guild_crest,Guild Crest,guild,tickets,50,5,0
+loom_fragment,Loom Fragment,guild,tickets,80,10,0
+sanctuary_blueprint,Sanctuary Blueprint,guild,tickets,150,15,0

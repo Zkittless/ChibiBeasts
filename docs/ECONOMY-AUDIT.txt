@@ -1,0 +1,296 @@
+CHIBIBEASTS - STORE, CRAFTING AND PROGRESSION AUDIT
+Completed 2026-10-16 America/Chicago (evidence timestamps use UTC)
+Branch: audit/economy-progression
+Baseline: ba51b60a11553e29aa5487953822ca91daa3f64f
+
+OUTCOME
+
+Reviewed all 52 offers across gold, shard and guild shops, all
+29 crafting recipes (16 armor, 10 runes, 3 evolution catalysts),
+and all 21 materials. Every recipe has a reachable source. All materials
+now have at least one crafting use. No gold offers are free. No tested egg
+bonus combination has positive expected release resale. The optimistic
+repeatable cooldown-reset loop also loses gold at every modeled level.
+
+Basic gear now takes about 8-11 explorations on average, with no Guild Forge,
+instead of 20-35 in the original model. The six level-one basics average
+1.1-1.4 days at eight explorations per day, or roughly 2.1-2.8 at four.
+This is a seeded resource model, not measured player retention or live timing.
+
+WHY THE OLD ECONOMY NEEDED CHANGES
+
+1. Three guaranteed-Divine incubators were sold for zero gold. Their prices
+   are now 80,000g with a trainer-level-25 purchase gate. Legendary incubation
+   cost 50,000g despite Epic incubators offering much cheaper broad Divine
+   chances. Legendary now costs 24,000g, keeping a stronger rarity floor and
+   curated pools as its reasons to buy. Divine offers a guaranteed focused
+   collection. The campaign's World-Tree Seed remains outside the shop.
+
+2. Stardust/Observatory modifiers could put expensive rarity outcomes into
+   200g Common Eggs. There were 11 profitable
+   combinations in the original ledger. Bonuses now improve only rarity tiers
+   already offered by an instant egg. Glimmering Fortune keeps its 0.05%
+   Divine pre-roll. All 64 instant-egg modifier combinations plus 18 incubators
+   have negative expected release profit. Fortune occurs before the Altered
+   roll; the baseline analytic ledger was corrected for that ordering.
+
+3. Basic crafting depended on winning/catching an encounter, then receiving
+   the right material. Losing could prevent the upgrades needed to win later.
+   Every completed exploration now grants one resource, including quiet trips
+   and escapes. Regional weights favor basic resources, with extra weight
+   from matching species/elements. Woods ponds can supply Kelpie Scales.
+   Several basic recipes need fewer units, while higher tiers retain their
+   larger ingredient and raid requirements. There is no flat material shop.
+
+4. Raids awarded personal guild_tokens, but /guild_shop spent guild_tickets.
+   New raid rewards pay spendable Guild Tickets. A revision-keyed migration
+   converts saved personal tokens into tickets once and clears that legacy
+   balance. The shared guild bank is separate and is not converted.
+
+5. Guild EXP needed 500 x current level; it now needs 250 x current level.
+   At 115 average EXP per daily contribution, level five requires about 22
+   total contributions: 7.25 days for three contributors or 2.17 for ten.
+   These are means for a fixed roster contributing daily, not guarantees.
+   Contribution claims now run in a writer transaction, so overlapping calls
+   cannot bypass the 24-hour timer or award the same day's rewards twice.
+
+6. Training scaled from 50g to 20,000g per session for small stat changes.
+   Costs now range from 50g to 1,000g; new HP sessions grant three times the
+   normal point gain. Existing sessions, counters and earned stats are kept.
+   Training still has per-stat lifetime caps, and rarer companions retain
+   larger point gains. No inventory or companion reset is required.
+
+7. Carrots cost 40g while their EXP scaled indefinitely with trainer level.
+   They now cost 150g and give 25 + 5 x trainer level, capped at trainer 30
+   (175 EXP). At trainer 50 the old 525 EXP per carrot has become 175.
+   Battles remain the normal free growth route; food helps a chosen companion
+   catch up. Star-Candy costs 1,500g, with 30 tracked uses per companion.
+   The limit and gains survive evolution. Legacy bonuses stay; old treat
+   counts were never recorded, so legacy counters start at zero.
+
+8. Temporary defense/speed items could multiply current stats repeatedly in
+   one fight. One item of each type can now be queued/applied per battle.
+   A duplicate attempt preserves the item, including when the first boost
+   was queued before entering combat. Permanent stat treats require finishing
+   the current fight. Ambrosia retains its existing 25% damage cap.
+
+9. Selling a 75,000g Genesis Fruit returned 26,250g. Ancient materials sold
+   for 3,000g each. Together they dwarfed normal rewards and most useful sinks.
+   Genesis Fruit's NPC resale is now 1,500g, Ambrosia 500g, Star-Candy 250g.
+   Material resale by rarity is 20/40/80/180/400/800g. The merchant's sale
+   bonus still applies. Loot remains more valuable for use/forging than
+   liquidation; bosses remain a rewarding way to earn resources.
+
+   Example, level-10 Ancient Genesis, selling every guaranteed/random drop:
+   Before expected gross: 18,253.33g
+   After expected gross:  3,403.33g
+   Direct gold is still 500g and base shards still 8. The difference comes
+   from NPC sale values, not deleting drops. The old ledger's personal token
+   column explicitly records legacy tokens, which were not Guild Tickets.
+
+10. Repeatable exploration, challenge and daily gold scale through level 50.
+    EXP/levels still progress, and one-time level milestones remain. Chrono-
+    Biscuits now cost 3,500g. Even an optimistic loop that wins and releases
+    every creature, selects the best habitats/rarity bias, and receives the
+    most valuable possible regional material has negative expected profit.
+    Its best case is -126.45g per reset after merchant discount. Lucky
+    individual outcomes can profit; this is an expected-value check. Finite
+    compass/seal charges and daily/story rewards are excluded from a
+    repeatable loop because using them consumes another limited resource.
+
+11. A gold Loom Catalyst could halve 96 remaining hours for 800g, overshadowing
+    the six-hour shard/ticket skips. It now moves the schedule two hours closer
+    for 800g. A six-hour Loom Fragment costs 5 shards (two per week), or
+    30 Guild Tickets at guild level five. Boosts still move tending and hatch
+    deadlines together, and the existing free weekly perk skip remains.
+
+12. Prism Keys cost 15 shards instead of 30. Their 30% Divine odds and the
+    Divine Compass's 20% odds now exclude empty rarity pools before setting
+    the percentage. An Ancient Compass waits if a habitat is already entirely
+    Rare or higher. All three Ancient summons cost 60 shards, one of each per
+    week, at trainer level 10. These same-tier bosses no longer have arbitrary
+    60/80/100 pricing. Corrupted raid drops remain an alternate summon route.
+
+13. Recipes now show real effects, crafting levels, actual discounted costs
+    and specific material sources. Forge saves one per ingredient stack,
+    minimum one; the old 10% claim was misleading for tiny integer recipes.
+    Store checkout reads the loaded catalog and fresh wallet/level/perks,
+    rather than trusting a price captured by an old message. Autocomplete
+    agrees with crafting gates and Forge costs. Rune prices that were never
+    actually offered in the shop were removed; all ten runes are craftable.
+
+14. Fenrir Fur had no recipe use. Abyssal Shroud now needs three Kraken Ink
+    and two Fenrir Fur. Ouroboros Ring needs three Chronos Gear, two Creator
+    Tears and four Kraken Ink, rather than a one-Ancient-clear shortcut.
+    Its level-10 guaranteed route is two Chronos plus two Corrupted Leviathan
+    clears; higher raid tiers or Forge can reduce this. Gear effects retain
+    their existing combat roles. The prior 5-8 minute raid budget is retained.
+
+15. Exploration applied Arcane Library twice. It now receives the advertised
+    15% trainer EXP bonus once. Advanced companion rarities were treated as
+    Common for challenge encounter bias; they now use the top standard tier.
+    This improves encounter progression without adding gold beyond the cap.
+
+PRICE AND UNLOCK LADDER
+
+Type                         Gold         Trainer level
+Common instant                 200              1
+Rare instant                 1,500              3
+Celestial instant            8,000             10
+Abyssal instant             25,000             15
+Common incubation              300              1
+Uncommon incubation          1,200              3
+Rare incubation              4,000              5
+Epic incubation             12,000             10
+Legendary incubation        24,000             15
+Divine incubation           80,000             25
+
+Crafting levels: Common 1, Uncommon 3, Rare 5, Epic 8, Legendary 10,
+Divine/Altered Divine 15. These gate new purchases/crafts, not using an egg
+already owned. Existing inventory is retained, including previously bought
+eggs; this pass does not retroactively reclaim past free purchases.
+
+Other changes: Phoenix Elixir 2,000->750g; Luna Nectar 500->150g; Star-Candy
+3,000->1,500g. Basic 20% healing (50g), happiness treats (80g), Aether Tonic
+(150g), Ironbark Salve (180g), Quicksilver Tonic (450g), Incense (500g),
+Ambrosia (10,000g) and Genesis Fruit (75,000g) retain their gold prices.
+Ambrosia purchases unlock at 10; Genesis Fruit at 15; Star-Candy at 5.
+Genesis Fruit also drops from Ancient raids; its cash price is a fallback,
+not a compulsory saving target.
+
+Guild Tickets / minimum guild level:
+Guild Elixir 5/1; Beastkeeper Seal 15/1; Raid Totem 20/1;
+Ancient Compass 15/5; Guild Crest 50/5; Loom Fragment 30/5;
+Sanctuary Blueprint 60/10. Base raids award 10 tickets, rising to 20 at level
+50, and contributions award 5-10 daily. Blueprints retain upgrade prerequisites
+and officer authority. Raid entry still needs the guild's shared bank tokens.
+
+TRAINING COSTS
+
+Rarity             Old g   New g ATK/DEF/SPD  New HP
+common                50      50       1       3
+uncommon             150      90       1       3
+rare                 400     150       2       6
+epic               1,000     250       2       6
+legendary          3,000     400       3       9
+divine             8,000     600       3       9
+altered_divine    15,000     800       4      12
+corrupted         15,000     900       4      12
+ancient           20,000   1,000       5      15
+
+Costs are per session, before the Training Grounds discount. Existing level
+growth and training session caps are retained. This is the new-session rule;
+historical HP training is not reconstructed or overwritten.
+
+CRAFTING ACQUISITION EVIDENCE
+
+Mean explorations, no Forge; P90 is the new 90th percentile:
+Item                         Before   After     P90  Days @8
+sprite_silk_attire          20.4     9.7      16     1.21
+gnome_iron_plating          30.7    11.1      18     1.39
+mossbark_wrapping           20.6     8.4      14     1.05
+pixie_ribbon                31.6     8.9      17     1.12
+iron_dust_chip              29.9    10.5      16     1.32
+bark_sigil                  23.6     8.5      14     1.06
+
+Each of 29 recipes was modeled with and without Forge, 200 fixed seeds per
+case: 11,600 acquisition trials before and 11,600 after. The foraging policy
+chooses a destination for the slowest missing ingredient. It assumes all
+destinations are available; the six level-one basics have their material
+sources in Woods. The first common kit therefore does not require raiding.
+
+Baseline: 5% quiet trips; otherwise affinity or 75% modeled encounter wins
+before a material could drop. Current: exactly one material per completed
+exploration. Rare materials retain randomness. Recipe CSVs include P90,
+minimum source/craft levels, ingredients, material sale opportunity cost,
+mandatory Ancient clears, and alternate guaranteed raid plans. These are
+fresh-inventory, one-recipe estimates. Carryover resources and higher-tier
+raid rewards can speed subsequent crafts; failed raids can delay them.
+
+For example, Dragon-Lord Aegis takes about 55 explorations if forged entirely
+from exploration, or two level-10 Corrupted Dragon clears plus two Iron Ore.
+Abyssal Shroud's guaranteed route is two Leviathan and one Fenrir clear.
+Chronos Plate needs two Chronos clears plus two Papyrus. These are ingredient
+routes after the player can win those raids, not promises of immediate wins.
+
+INCOME AND ATTAINABILITY BUDGETS
+
+Level Profile       Gold/day Explore-sale option
+   10 casual        1,238       406
+   10 active        2,188       811
+   10 raider        2,788       811
+   25 casual        2,092       406
+   25 active        3,670       811
+   25 raider        4,495       811
+   50 casual        3,514       406
+   50 active        6,141       811
+   50 raider        7,341       811
+
+Casual: 4 explores, 2 challenges, 1 spar, two modeled quests worth 400g.
+Active: 8 explores, 4 challenges, 3 spars, three modeled quests worth 600g.
+Raider: Active plus two Corrupted clears. Combat win assumption is 75%.
+Levels are held fixed and companion level equals trainer level. These are
+planning scenarios, not simulated new-account timelines or measured play.
+
+Gold includes /daily and direct rewards. The separate optional sale column
+uses the most valuable available exploration destination. It is not added
+to the base income because selling ingredients delays crafting. Income
+excludes creature release, raid loot sales, one-time milestones, story and
+achievement rewards, market activity, spending and most perks. Spar access,
+quest completion and real win rates vary between accounts.
+
+At level 15, the active budget is about 2,682g/day before spending, so a
+24,000g Legendary incubator is roughly nine saving days, instead of nineteen
+at the old price. A 75,000g Fruit would be about 28 days under that narrow
+budget; its raid drop is the practical alternate path. At level 25, 80,000g
+is roughly 22 active saving days, before other sources or purchases. Endgame
+guarantees remain goals, while basic gear and recovery items are earlier wins.
+
+The base active shard budget (daily plus three spars at 75% wins) is 4.25/day,
+before quests/story/raids/perks. A 60-shard summon is about fourteen such
+saving days; sharing hosts and Corrupted summon drops shorten the route.
+Weekly stock limits are separate from earning time. Guild Ticket purchase
+tables show both contribution-only days and equivalent base raid clears.
+
+VALIDATION, SAVE DATA AND REPRODUCTION
+
+141 tests passed; 0 failures, 0 errors,
+0 skips. Compilation passed: True.
+Dependency check: No broken requirements found..
+
+The 27 new regressions cover actual store callbacks and fresh prices, concurrent
+purchases/contributions, all 29 crafting grants, source availability, egg and
+reset resale bounds, correct Compass odds, useless-charge preservation,
+temporary item limits, capped growth food, treat limits/evolution, one-time
+currency migration, spendable raid payout/replay, exactly one exploration
+material on quiet/win/loss, one Library bonus, recipe UI and autocomplete.
+Existing combat, campaign, trading, ranked and concurrency tests also pass.
+Tests use disposable SQLite databases and mocked Discord interactions.
+
+Deploy code and JSON together and restart the bot. Startup adds the treat
+counter and converts legacy personal tokens once. Existing items, companions,
+earned stats, guild-bank balances, levels, equipment and story progress remain.
+The server's live database and Discord account were not used. No production
+migration, remote CI run, push or deployment was performed for this pass.
+
+python -m compileall -q bot.py cogs utils scripts tests
+python -m unittest discover -s tests -v
+python -m pip check
+python scripts/audit_economy.py --output economy-results
+
+Saved evidence:
+- economy-before/: original catalog/value and 11,600 crafting-trial results;
+  raid/guild ledgers were reconstructed from the baseline commit. The original
+  trial results remain; the baseline hatch pre-roll arithmetic is corrected.
+- economy-after/: all 52 offers and saving budgets, all recipes and acquisition
+  trials, all 21 materials, egg values, growth/training, guild progression,
+  raid liquidation values and optimistic cooldown-reset bounds.
+- economy-validation.json: full test/compile/dependency results.
+- economy-after/summary.json: coverage, exceptions and canonical source hashes.
+
+The after summary records the base commit plus source hashes for the audited
+working tree; the commit containing this report supplies the actual changes.
+These offline checks establish routes and resource/value consistency. Human
+playtesting and live telemetry are still needed for perceived grind, drop
+variance, player market prices, retention, and long-term inflation. No model
+can establish a single earning time for every player's build or schedule.

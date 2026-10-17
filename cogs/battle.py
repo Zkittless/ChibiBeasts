@@ -416,19 +416,8 @@ class Battle(commands.Cog):
             await db.commit()
 
         pool_weights = dict(BIOMES[biome]["weights"])
-        # Bias rarity pool toward player's active beast rarity — prevents trivial dead zones
-        _RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine"]
-        _player_rarity = active_row.get("rarity", "common")
-        _player_tier = _RARITY_ORDER.index(_player_rarity) if _player_rarity in _RARITY_ORDER else 0
-        _biased_weights = {}
-        for _r, _w in pool_weights.items():
-            _r_tier = _RARITY_ORDER.index(_r) if _r in _RARITY_ORDER else 0
-            _tier_diff = abs(_player_tier - _r_tier)
-            # Closer to player rarity = 3x weight, 1 tier away = 1.5x, 2+ tiers = unchanged
-            _bias = 3.0 if _tier_diff == 0 else (1.5 if _tier_diff == 1 else 1.0)
-            _biased_weights[_r] = _w * _bias
-        _total = sum(_biased_weights.values())
-        _biased_weights = {k: v / _total for k, v in _biased_weights.items()}
+        from utils.habitats import challenge_weights
+        _biased_weights=challenge_weights(pool_weights,active_row.get('rarity','common'))
 
         from utils.habitats import pick_encounter
         wild_beast_data=pick_encounter(_biased_weights,biome)
@@ -471,7 +460,9 @@ class Battle(commands.Cog):
                 # Timeout win: reduced rewards, no catch chance.
                 # The enemy beast wasn't defeated — just outlasted on HP.
                 # Full rewards here would make stall tactics profitable.
-                consolation_gold = random.randint(active_row["level"] * 2, active_row["level"] * 4)
+                from utils.economy_balance import gold_reward_level
+                gold_level=gold_reward_level(active_row["level"])
+                consolation_gold = random.randint(gold_level * 2, gold_level * 4)
                 await credit_gold(interaction.user.id, consolation_gold)
                 _lvl, _, _leveled = await award_player_exp(interaction.user.id, random.randint(active_row["level"] * 8, active_row["level"] * 12))
                 embed.add_field(
@@ -486,7 +477,9 @@ class Battle(commands.Cog):
                 )
                 return
 
-            gold_gain = random.randint(active_row["level"] * 8, active_row["level"] * 15)
+            from utils.economy_balance import gold_reward_level
+            gold_level=gold_reward_level(active_row["level"])
+            gold_gain = random.randint(gold_level * 8, gold_level * 15)
             # Beast EXP scales with enemy level and rarity — harder fights reward more
             _RARITY_EXP_MULT = {"common":1,"uncommon":1.5,"rare":2.5,"epic":4,"legendary":6,"divine":10}
             _exp_mult = _RARITY_EXP_MULT.get(rarity, 1)

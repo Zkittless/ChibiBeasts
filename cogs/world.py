@@ -84,9 +84,9 @@ EGGS = {
                       "pool": {"epic": 0.30, "legendary": 0.40, "divine": 0.30},
                       "flavor": "An ancient stone tablet egg carved with glowing golden hieroglyphics.",
                       "lore": "Atlas is vaguely familiar with these. It won't say how."},
-    # Legendary eggs — exclusive beast pools + 40% divine
+    # Legendary eggs — curated pools: 60% Legendary, 38% Divine, 2% Altered.
     # Abyssal instant (25k, no wait): legendary 70% / divine 25% — open pool
-    # These (50k, 48h): legendary 60% / divine 40% — EXCLUSIVE beasts + better divine
+    # These (24k, 48h) trade incubation time for better odds and a focused pool.
     "abyssal_trench_orb":  {"name": "Abyssal Trench Orb", "rarity": "legendary", "emoji": "🌊", "incubation_hours": 48,
                             "pool": {"legendary": 0.60, "divine": 0.38, "altered_chance": 0.02},
                             "legendary_pool": ["kraken", "leviathan", "charybdis", "jormungandr"],
@@ -131,9 +131,7 @@ EGGS = {
                             "lore": "The Mythological Pillars remember a time before this was an egg. They don't discuss it."},
 }
 
-EGG_PRICES = {
-    "common": 300, "uncommon": 1200, "rare": 4000, "epic": 12000, "legendary": 50000, "divine": 0
-}
+from utils.economy_balance import INCUBATION_PRICES as EGG_PRICES
 
 # ── Sanctuary upgrade definitions ─────────────────────────────────────────────
 SANCTUARY_UPGRADES = {
@@ -152,7 +150,7 @@ SANCTUARY_UPGRADES = {
         "name": "⚒️ Gnome Forge",
         "tier": 2,
         "cost_tokens": 150,
-        "description": "Reduces crafting material costs for all guild members by 10%.",
+        "description": "Saves one material from each recipe stack of two or more; every ingredient still needs at least one.",
         "lore": "The Gnomes insisted on designing the logo themselves. Nobody is allowed to comment on the logo.",
         "db_column": "gnome_forge",
         "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/gnome_forge.png",
@@ -173,7 +171,7 @@ SANCTUARY_UPGRADES = {
         "name": "🔭 Celestial Observatory",
         "tier": 3,
         "cost_tokens": 300,
-        "description": "Grants all guild members +2% encounter rate for Epic and Legendary beasts in explores.",
+        "description": "Improves Epic and Legendary exploration odds and eligible instant-egg tiers. Egg bonuses stay within that egg's offered rarities.",
         "lore": "From here you can see the Celestial Loom directly, if you're patient and the night is clear.",
         "db_column": "celestial_observatory",
         "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/celestial_observatory.png",
@@ -224,6 +222,8 @@ def roll_egg_rarity(egg_id: str) -> str:
         return "altered_divine"
     # Roll normal pool (excluding altered_chance key)
     normal_pool = {k: v for k, v in pool.items() if k != "altered_chance"}
+    total = sum(normal_pool.values())
+    normal_pool = {k:v/total for k,v in normal_pool.items()}
     roll = random.random()
     cumulative = 0.0
     for rarity, chance in normal_pool.items():
@@ -816,13 +816,17 @@ class World(commands.Cog):
             ) as c:
                 mats = {r["material_id"]: r["quantity"] for r in await c.fetchall()}
         choices = []
+        from utils.economy_balance import recipe_level
+        trainer = await storage.get_player(interaction.user.id)
+        sanctuary = await get_user_sanctuary(interaction.user.id)
         for item_id, item in {**equipment, **runes, **craftable_items}.items():
             if current.lower() not in item["name"].lower():
                 continue
-            recipe = item.get("recipe", {})
-            can_craft = all(mats.get(mid, 0) >= qty for mid, qty in recipe.items())
-            prefix = "✅ " if can_craft else ""
-            choices.append(app_commands.Choice(name=f"{prefix}{item['name']}", value=item_id))
+            recipe = apply_craft_discount(item.get("recipe", {}),sanctuary)
+            level_ready = trainer and trainer['level'] >= recipe_level(item)
+            can_craft = level_ready and all(mats.get(mid, 0) >= qty for mid, qty in recipe.items())
+            prefix = "✅ " if can_craft else "🔒 " if not level_ready else ""
+            choices.append(app_commands.Choice(name=f"{prefix}{item['name']} · Lv.{recipe_level(item)}"[:100], value=item_id))
         return choices[:25]
 
     @app_commands.command(name="craft", description="Craft equipment, runes, or evolution items ⚒️")
@@ -858,6 +862,11 @@ class World(commands.Cog):
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
+            from utils.economy_balance import recipe_level
+            async with db.execute('SELECT level FROM players WHERE user_id=?',(interaction.user.id,)) as cursor:
+                trainer = await cursor.fetchone()
+            if not trainer or trainer['level'] < recipe_level(item):
+                return await interaction.followup.send(f"Reach trainer level {recipe_level(item)} to craft {item['name']}.")
             async with db.execute(
                 "SELECT material_id, quantity FROM player_materials WHERE user_id = ?",
                 (interaction.user.id,)
@@ -932,7 +941,7 @@ class World(commands.Cog):
                 title=f"⚒️ Crafted: {item['name']}!",
                 description=(
                     f"*{item['description']}*\n\n"
-                    f"_{item['lore']}_\n\n"
+                    f"_{item.get('lore','')}_\n\n"
                     + ("*Gnome Forge discount applied!* " if forge_discount else "")
                     + f"\nUse `/equip {item['name']} <beast_id>` to put it on a beast."
                 ),
@@ -945,6 +954,9 @@ class World(commands.Cog):
     async def recipes(self, interaction: discord.Interaction):
         await interaction.response.defer()
         uid = interaction.user.id
+        from utils.economy_balance import recipe_level, material_sources
+        from utils.equipment import effect_summary
+        sanctuary = await get_user_sanctuary(uid)
 
         RECIPE_TABS = [
             ("armor",     "⚔️", "Armor"),
@@ -960,15 +972,16 @@ class World(commands.Cog):
             mats = load_materials()
 
             def recipe_str(recipe):
+                recipe = apply_craft_discount(recipe,sanctuary)
                 return "\n".join(f"  • {q}× {mats.get(m,{}).get('name',m)}" for m,q in recipe.items()) or "*No recipe*"
 
             if section == "armor":
                 embed = discord.Embed(title="⚔️ Armor Recipes",
-                    description="*Craft with `/craft <name>`. Materials from `/explore`.*\n\u200b",
+                    description="*Craft with `/craft <name>`. Every `/explore` supplies a material; Ancient resources come from raids.*\n\u200b",
                     color=COLORS["epic"])
                 for iid, item in sorted(equipment.items(), key=lambda x: RARITY_ORDER.index(x[1]["rarity"]) if x[1]["rarity"] in RARITY_ORDER else 99):
                     r = RARITY_EMOJI.get(item["rarity"],"⚪")
-                    embed.add_field(name=f"{r} {item['name']}", value=recipe_str(item.get("recipe",{})), inline=True)
+                    embed.add_field(name=f"{r} {item['name']} · Lv.{recipe_level(item)}", value=effect_summary(item)+'\n'+recipe_str(item.get("recipe",{})), inline=True)
                 embed.set_footer(text="ChibiBeasts 🐾")
                 return embed, None
 
@@ -977,10 +990,9 @@ class World(commands.Cog):
                     description="*Runes slot into any beast as a bonus effect.*\n\u200b",
                     color=COLORS["rare"])
                 for iid, item in sorted(runes.items(), key=lambda x: RARITY_ORDER.index(x[1]["rarity"]) if x[1]["rarity"] in RARITY_ORDER else 99):
-                    eff = item.get("effect",{})
-                    eff_str = " · ".join(f"+{v} {k.replace('_',' ')}" for k,v in eff.items() if isinstance(v,(int,float))) or "Special"
+                    eff_str = effect_summary(item)
                     r = RARITY_EMOJI.get(item["rarity"],"⚪")
-                    embed.add_field(name=f"{r} {item['name']}", value=f"*{eff_str}*\n{recipe_str(item.get('recipe',{}))}", inline=True)
+                    embed.add_field(name=f"{r} {item['name']} · Lv.{recipe_level(item)}", value=f"*{eff_str}*\n{recipe_str(item.get('recipe',{}))}", inline=True)
                 embed.set_footer(text="ChibiBeasts 🐾")
                 return embed, None
 
@@ -1000,20 +1012,12 @@ class World(commands.Cog):
                             beast_hint = f"\n*{b['name']} → {tgt.get('name','?')}*"
                             break
                     r = RARITY_EMOJI.get(item.get("rarity","epic"),"⚪")
-                    embed.add_field(name=f"{r} {item['name']}", value=f"{recipe_str(item.get('recipe',{}))}{beast_hint}", inline=True)
+                    embed.add_field(name=f"{r} {item['name']} · Lv.{recipe_level(item)}", value=f"{recipe_str(item.get('recipe',{}))}{beast_hint}", inline=True)
                 embed.add_field(name="📦 Abyssal Scale", value="*Drop: Corrupted Leviathan*\n*Hydra → Radiant Hydra*", inline=True)
                 embed.set_footer(text="ChibiBeasts 🐾")
                 return embed, None
 
             else:  # sources
-                MAT_SOURCES = {
-                    "common":         "🗺️ `/explore` — any **Common** beast",
-                    "uncommon":       "🗺️ `/explore` — any **Uncommon** beast",
-                    "rare":           "🗺️ `/explore` — **Trenches/shadow** for Void Essence; **Woods/Loom/arcane** for Spirit Crystal.",
-                    "epic":           "🗺️ `/explore` — Phoenix, Thunderbird and Sphinx habitats. Sunforge Residue: **Ember Wastes**, fire/earth creatures.",
-                    "legendary":      "🗺️ `/explore` — any **Legendary** beast",
-                    "altered_divine": "🏛️ `/ancient` victories award forging materials to every contributor.",
-                }
                 by_rarity = {}
                 for mid, mat in mats.items():
                     by_rarity.setdefault(mat.get("rarity","common"), []).append(mat["name"])
@@ -1023,13 +1027,13 @@ class World(commands.Cog):
 
                 def build_source_page(page):
                     emb = discord.Embed(title="🪨 Material Sources",
-                        description=f"*Page {page}/{total_pages} · Materials drop from `/explore` catches.*\n\u200b",
+                        description=f"*Page {page}/{total_pages} · Every `/explore` grants one material, even after an escape.*\n\u200b",
                         color=COLORS["info"])
                     for rarity in all_rarities[(page-1)*per_page:page*per_page]:
-                        mats_str = " · ".join(f"`{m}`" for m in by_rarity[rarity])
-                        source = MAT_SOURCES.get(rarity,"")
+                        ids = [mid for mid,mat in mats.items() if mat['rarity']==rarity]
+                        mats_str = '\n'.join(f"**{mats[mid]['name']}** — {material_sources(mid)}" for mid in ids)
                         emb.add_field(name=f"{RARITY_EMOJI.get(rarity,'⚪')} {RARITY_LABEL.get(rarity,rarity.title())}",
-                            value=f"{source}\n{mats_str}", inline=False)
+                            value=mats_str, inline=False)
                     emb.set_footer(text="ChibiBeasts 🐾")
                     return emb
 

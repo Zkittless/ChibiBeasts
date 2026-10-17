@@ -82,7 +82,7 @@
       "name": "Stardust Touch",
       "rarity": "rare",
       "slot_cost": 1,
-      "description": "Moves up to 10 percentage points of lower-tier encounter and instant-hatch odds into Rare, then Epic. Never downgrades a high-tier pool.",
+      "description": "Moves up to 10 percentage points into Rare, then Epic encounters and instant hatches. Hatch bonuses improve only tiers already offered by that egg; they never downgrade a pool.",
       "flavor": "A faint, glowing cosmic shimmer permanently rests on your fingertips.",
       "effect": {
         "rare_encounter_bonus": 10,
