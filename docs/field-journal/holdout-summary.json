@@ -1,0 +1,115 @@
+{
+  "generated_at_utc": "2026-10-17T20:13:18.255977+00:00",
+  "prepared_parties": {
+    "runs": 576,
+    "win_rate": 0.9896,
+    "median_seconds": 363.7,
+    "p10_seconds": 314.4,
+    "p90_seconds": 455.1
+  },
+  "by_level": {
+    "10": {
+      "runs": 144,
+      "win_rate": 1.0,
+      "median_seconds": 381.5,
+      "p10_seconds": 317.5,
+      "p90_seconds": 479.9
+    },
+    "15": {
+      "runs": 144,
+      "win_rate": 0.9583,
+      "median_seconds": 384.9,
+      "p10_seconds": 304.8,
+      "p90_seconds": 477.6
+    },
+    "30": {
+      "runs": 144,
+      "win_rate": 1.0,
+      "median_seconds": 364.8,
+      "p10_seconds": 335.5,
+      "p90_seconds": 455.1
+    },
+    "50": {
+      "runs": 144,
+      "win_rate": 1.0,
+      "median_seconds": 348.4,
+      "p10_seconds": 288.0,
+      "p90_seconds": 387.1
+    }
+  },
+  "by_boss": {
+    "corrupted_leviathan": {
+      "runs": 96,
+      "win_rate": 1.0,
+      "median_seconds": 429.0,
+      "p10_seconds": 321.4,
+      "p90_seconds": 480.0
+    },
+    "corrupted_fenrir": {
+      "runs": 96,
+      "win_rate": 1.0,
+      "median_seconds": 424.3,
+      "p10_seconds": 327.8,
+      "p90_seconds": 470.7
+    },
+    "corrupted_dragon": {
+      "runs": 96,
+      "win_rate": 0.9896,
+      "median_seconds": 357.3,
+      "p10_seconds": 288.9,
+      "p90_seconds": 397.7
+    },
+    "ancient_chronos": {
+      "runs": 96,
+      "win_rate": 0.9583,
+      "median_seconds": 376.7,
+      "p10_seconds": 319.2,
+      "p90_seconds": 422.0
+    },
+    "ancient_genesis": {
+      "runs": 96,
+      "win_rate": 0.9896,
+      "median_seconds": 343.5,
+      "p10_seconds": 314.4,
+      "p90_seconds": 415.0
+    },
+    "ancient_abyss": {
+      "runs": 96,
+      "win_rate": 1.0,
+      "median_seconds": 353.2,
+      "p10_seconds": 317.5,
+      "p90_seconds": 421.1
+    }
+  },
+  "behavior": {
+    "cadence_4_patterns_True": {
+      "runs": 24,
+      "win_rate": 1.0,
+      "median_seconds": 372.2,
+      "p10_seconds": 343.5,
+      "p90_seconds": 455.1
+    },
+    "cadence_4_patterns_False": {
+      "runs": 24,
+      "win_rate": 1.0,
+      "median_seconds": 369.8,
+      "p10_seconds": 343.5,
+      "p90_seconds": 439.6
+    },
+    "cadence_8_patterns_True": {
+      "runs": 24,
+      "win_rate": 0.0,
+      "median_seconds": null,
+      "p10_seconds": null,
+      "p90_seconds": null
+    },
+    "cadence_8_patterns_False": {
+      "runs": 24,
+      "win_rate": 0.0,
+      "median_seconds": null,
+      "p10_seconds": null,
+      "p90_seconds": null
+    }
+  },
+  "scope": "Fresh seeds 20\u201325, prepared mixed reference parties, same production resolvers. Behavior trials: level 30, three trainers, seeds 20\u201323. Winning times exclude losses/timeouts. Synthetic model, not human playtesting."
+}

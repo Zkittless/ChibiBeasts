@@ -32,7 +32,7 @@ def sample(kind):
     log = []
     damage = combat.resolve_move(*pair, move, kind == 'ultimate', log)
     after = art.snapshot(pair)
-    action = art.Action(0, move, 'attack' if kind in {'ultimate', 'knockout'} else kind, damage, kind == 'ultimate')
+    action = art.Action(0, move, 'attack' if kind in {'ultimate', 'knockout'} else kind, damage, kind == 'ultimate', tuple(log[-2:]))
     return before, after, action, log
 
 
@@ -85,16 +85,17 @@ def main():
 
     pair = states('prismite', 'barkley')
     saved = art.snapshot(pair)
-    sheet = Image.new('RGB', (960, len(art.REALMS) * 478), '#171e32')
+    row_height = art.TOTAL_HEIGHT + 30
+    sheet = Image.new('RGB', (960, len(art.REALMS) * row_height), '#102b2c')
     draw = ImageDraw.Draw(sheet)
     for i, (realm, name) in enumerate(art.REALMS.items()):
         still = art.frame(saved, saved, realm)
         (args.output / f'{realm}.png').write_bytes(art.render(saved, saved, realm).data)
-        draw.text((12, i * 478 + 5), name, font=art.font(16), fill='#edf0fc')
-        sheet.paste(still, (0, i * 478 + 28))
-        sheet.paste(still.resize((320, 224), Image.Resampling.NEAREST), (640, i * 478 + 28))
+        draw.text((12, i * row_height + 5), name, font=art.font(16), fill='#edf0fc')
+        sheet.paste(still, (0, i * row_height + 28))
+        sheet.paste(still.resize((320, art.TOTAL_HEIGHT // 2), Image.Resampling.NEAREST), (640, i * row_height + 28))
     sheet.save(args.output / 'realms-desktop-mobile.png')
-    report = {'size': [640, 448], 'roster_portraits': len(storage.load_beasts()),
+    report = {'size': [art.WIDTH, art.TOTAL_HEIGHT], 'roster_portraits': len(storage.load_beasts()),
               'realms': list(art.REALMS), 'clips': clips,
               'performance': asyncio.run(benchmark(cases))}
     (args.output / 'validation.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')

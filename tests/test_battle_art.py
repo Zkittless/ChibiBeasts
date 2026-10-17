@@ -83,7 +83,7 @@ class BattleImages(unittest.TestCase):
             self.assertGreater(gif.n_frames, 15)
             self.assertNotIn('loop', gif.info)
             self.assertEqual(sum(f.info['duration'] for f in ImageSequence.Iterator(gif)), action.milliseconds)
-            self.assertEqual(gif.size, (640, 448))
+            self.assertEqual(gif.size, (640, art.TOTAL_HEIGHT))
         self.assertLess(len(clip.data), art.MAX_BYTES)
 
     def test_heal_guard_ultimate_and_knockout_render_distinct_motion(self):
@@ -112,9 +112,12 @@ class BattleImages(unittest.TestCase):
                 self.assertLess(len(clip.data), art.MAX_BYTES)
         # The still retains a collapsed KO, rather than standing it up again.
         final = art.frame(after, after, 'loom')
-        self.assertIsNone(ImageChops.difference(final.crop((390, 190, 570, 300)), art.background('loom').convert('RGB').crop((390, 190 - art.HUD, 570, 300 - art.HUD))).getbbox())
+        empty = art.field_background('loom', art.TOTAL_HEIGHT).convert('RGB')
+        # The upright portrait's former head area is empty after a knockout.
+        head = (390, art.HUD + 45, 570, art.HUD + 120)
+        self.assertIsNone(ImageChops.difference(final.crop(head), empty.crop(head)).getbbox())
         followup = art.frame(after, after, 'loom', art.Action(0, 'End-of-turn effects', 'status'), .1)
-        self.assertIsNone(ImageChops.difference(final.crop((390, 190, 570, 440)), followup.crop((390, 190, 570, 440))).getbbox())
+        self.assertIsNone(ImageChops.difference(final.crop((390, art.HUD, 570, art.HUD + art.HEIGHT)), followup.crop((390, art.HUD, 570, art.HUD + art.HEIGHT))).getbbox())
 
     def test_long_unicode_names_and_missing_species_have_safe_stills(self):
         states = fighters()
@@ -122,7 +125,7 @@ class BattleImages(unittest.TestCase):
         saved = art.snapshot(states)
         image = art.render(saved, saved, 'glacial')
         with Image.open(io.BytesIO(image.data)) as png:
-            self.assertEqual(png.size, (640, 448))
+            self.assertEqual(png.size, (640, art.TOTAL_HEIGHT))
 
 
 class BoundedRendering(unittest.IsolatedAsyncioTestCase):
@@ -353,7 +356,7 @@ class AnimatedDuels(DatabaseCase):
             if kwargs.get('embed'):
                 capture(kwargs)
 
-        async def rendering(before, after, realm, action=None):
+        async def rendering(before, after, realm, action=None, **kwargs):
             return art.Artwork(b'image', 'gif' if action else 'png', 1.4 if action else 0)
 
         fake = interaction()

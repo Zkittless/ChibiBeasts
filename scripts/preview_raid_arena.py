@@ -89,7 +89,8 @@ def main():
     random.seed(20261017)
     report, cases = {}, []
     bosses = [boss for group in RAID_BOSSES.values() for boss in group]
-    contact = Image.new('RGB', (960, len(bosses) * 626), '#171e32')
+    row_height = art.TOTAL_HEIGHT + 30
+    contact = Image.new('RGB', (960, len(bosses) * row_height), '#102b2c')
     draw = ImageDraw.Draw(contact)
     for i, boss in enumerate(bosses):
         for count in (4, 10):
@@ -99,11 +100,11 @@ def main():
             (args.output / f"{boss['id']}-{count}.png").write_bytes(still.data)
             with Image.open(io.BytesIO(still.data)) as image:
                 if count == 4:
-                    draw.text((6, i * 626 + 5), boss['name'] + ' / 4 trainers (left), 10 at 320 px (right)',
+                    draw.text((6, i * row_height + 5), boss['name'] + ' / 4 trainers (left), 10 at 320 px (right)',
                               font=battle_art.font(16), fill='#edf1ff')
-                    contact.paste(image, (0, i * 626 + 30))
+                    contact.paste(image, (0, i * row_height + 30))
                 else:
-                    contact.paste(image.resize((320, 298), Image.Resampling.NEAREST), (640, i * 626 + 30))
+                    contact.paste(image.resize((320, art.TOTAL_HEIGHT // 2), Image.Resampling.NEAREST), (640, i * row_height + 30))
             before, after, events = clash(raid)
             if count == 10:
                 cases.append((before, after, events))
@@ -117,7 +118,7 @@ def main():
                 (args.output / f'team-clash-{count}.gif').write_bytes(clip.data)
                 art.frame(before, after, events, .6).save(args.output / f'team-clash-{count}-impact.png')
     contact.save(args.output / 'realms-mobile.png')
-    report = {'size': [art.WIDTH, art.HUD + art.HEIGHT], 'scenes': report,
+    report = {'size': [art.WIDTH, art.TOTAL_HEIGHT], 'scenes': report,
               'performance': asyncio.run(benchmark(cases))}
     (args.output / 'validation.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(report, indent=2))

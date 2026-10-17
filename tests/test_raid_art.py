@@ -61,7 +61,7 @@ class ArenaImages(unittest.TestCase):
         first = art.frame(before, after, events, 0)
         windup = art.frame(before, after, events, .2)
         hit = art.frame(before, after, events, .8)
-        health = (10, 54, 632, 90)
+        health = art.BOSS_HEALTH
         self.assertIsNone(ImageChops.difference(first.crop(health), windup.crop(health)).getbbox())
         self.assertIsNotNone(ImageChops.difference(first.crop(health), hit.crop(health)).getbbox())
         self.assertIsNotNone(ImageChops.difference(first, windup).getbbox())
@@ -70,7 +70,7 @@ class ArenaImages(unittest.TestCase):
         self.assertLess(len(clip.data), 2_000_000)
         with Image.open(io.BytesIO(clip.data)) as gif:
             self.assertGreater(gif.n_frames, 12)
-            self.assertEqual(gif.size, (640, 596))
+            self.assertEqual(gif.size, (640, art.TOTAL_HEIGHT))
             self.assertNotIn('loop', gif.info)
             self.assertEqual(sum(frame.info['duration'] for frame in ImageSequence.Iterator(gif)), 1200)
 
@@ -78,8 +78,8 @@ class ArenaImages(unittest.TestCase):
         raid = make_raid(RAID_BOSSES['corrupted'][2])
         before, after, events = clash(raid)
         warning = replace(after, pending=True, warning='Vent the flame', weaves=1)
-        self.assertIsNone(ImageChops.difference(art.frame(before, warning, events, 0).crop((0, 95, 640, 132)),
-                                              art.frame(before, warning, events, .8).crop((0, 95, 640, 132))).getbbox())
+        self.assertIsNone(ImageChops.difference(art.frame(before, warning, events, 0).crop(art.WARNING),
+                                              art.frame(before, warning, events, .8).crop(art.WARNING)).getbbox())
         final = replace(after, boss=replace(after.boss, hp=0), pending=False, outcome='victory')
         still = art.frame(final, final)
         subsequent = art.frame(final, final, (art.Event(99, None, 'status'),), .2)

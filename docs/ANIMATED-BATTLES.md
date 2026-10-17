@@ -1,5 +1,9 @@
 # Animated battlefields
 
+The current [Field Journal UI](FIELD-JOURNAL-UI.md) adds framed portraits,
+fitted in-bar numbers, separate ultimate charge slots and a lower battle log.
+Its review clips supersede the earlier visual samples linked below.
+
 `/explore`, `/challenge`, `/sparr`, `/battle`, and `/ranked` show both companions
 on one pixel-art battlefield. The HP/MP/ultimate strip sits above the scene so
 it cannot cover either creature on a narrow phone screen. Nicknames select the

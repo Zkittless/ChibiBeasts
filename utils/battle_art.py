@@ -12,14 +12,17 @@ import io
 import logging
 import math
 import threading
+from copy import deepcopy
 from uuid import uuid4
 
 import discord
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 from utils.artwork import PROJECT_ROOT, card_artwork_path
+from utils import field_journal as ui
 
-WIDTH, HUD, HEIGHT = 640, 88, 360
+WIDTH, HUD, HEIGHT, JOURNAL = 640, 208, 248, 72
+TOTAL_HEIGHT = HUD + HEIGHT + JOURNAL
 REALMS = {
     'woods': 'The Whispering Woods', 'ember': 'The Ember Wastes',
     'glacial': 'The Glacial Hollows', 'trenches': 'The Sunken Abyssal Trenches',
@@ -86,6 +89,7 @@ class Action:
     kind: str = 'attack'
     damage: int = 0
     ultimate: bool = False
+    journal: tuple[str, ...] = ()
 
     @property
     def milliseconds(self):
@@ -102,7 +106,12 @@ class Artwork:
 @lru_cache(maxsize=5)
 def background(realm):
     with Image.open(ASSETS / f'{realm}.png') as source:
-        return source.convert('RGBA').resize((WIDTH, HEIGHT), Image.Resampling.NEAREST)
+        return source.convert('RGBA').resize((WIDTH, 360), Image.Resampling.NEAREST)
+
+
+@lru_cache(maxsize=10)
+def field_background(realm, height):
+    return ui.backdrop(background(realm), (WIDTH, height))
 
 
 @lru_cache(maxsize=96)
@@ -157,38 +166,25 @@ def interpolate(before, after, t):
     return round(before + (after - before) * transition(t))
 
 
-def frame(before, after, realm, action=None, t=1):
-    """HUD above the scene keeps both silhouettes clear at phone widths."""
-    image = Image.new('RGBA', (WIDTH, HEIGHT + HUD), '#171e32')
-    image.alpha_composite(background(realm), (0, HUD))
+def frame(before, after, realm, action=None, t=1, journal=()):
+    """Field Journal portraits above the action; the real log stays below it."""
+    image = field_background(realm, TOTAL_HEIGHT).copy()
+    complete = any(fighter.hp <= 0 for fighter in after)
+    title = 'BATTLE COMPLETE' if complete and (not action or t >= .6 or any(f.hp <= 0 for f in before)) else 'ULTIMATE' if action and action.ultimate else 'IN BATTLE' if action else 'YOUR TURN'
+    ui.heading(image, title, REALMS[realm])
     draw = ImageDraw.Draw(image)
     for i, (old, new) in enumerate(zip(before, after)):
-        x = 12 + i * 320
         visible = new if t >= .48 else old
         hp = interpolate(old.hp, new.hp, t)
         mp = interpolate(old.mana, new.mana, t)
-        draw.rounded_rectangle((x - 4, 5, x + 300, HUD - 7), radius=8, fill='#222c44')
-        label(draw, (x + 4, 10), f'{new.name}  Lv.{new.level}', 16, width=285)
-        label(draw, (x + 4, 31), f'{hp:,} / {new.max_hp:,} HP', 13, '#dfe6f6', 220)
-        label(draw, (x + 230, 31), f'{visible.charges}/3 ULT', 12, '#d2bcff')
-        draw.rectangle((x + 4, 49, x + 288, 56), fill='#101729')
-        if old.hp > hp and t < .9:
-            draw.rectangle((x + 4, 49, x + 4 + round(284 * old.hp / old.max_hp), 56), fill='#d6ad78')
-        if hp:
-            draw.rectangle((x + 4, 49, x + 4 + round(284 * min(1, hp / new.max_hp)), 56), fill='#8ee0ac' if hp / new.max_hp > .3 else '#f2ae91')
-        draw.rectangle((x + 4, 60, x + 118, 63), fill='#101729')
-        if mp:
-            draw.rectangle((x + 4, 60, x + 4 + round(114 * min(1, mp / new.max_mana)), 63), fill='#8eb9ee')
-        status = 'KO' if not visible.hp else visible.status or ('guarded' if visible.guard else 'shielded' if visible.shield else 'ready')
-        label(draw, (x + 4, 67), f'{mp}/{new.max_mana} MP', 12, '#adc3e3')
-        label(draw, (x + 140, 65), status.upper(), 12, '#d5c1f9', 148)
+        ui.fighter_panel(image, new, sprite(new.species), 10 + i * 320, hp, mp, visible)
 
     actor = action.actor if action else 0
     hit = .48 <= t <= .78
     color = TYPE_COLORS.get(before[actor].element, '#dac5ff')
     positions = []
     for i, (old, new) in enumerate(zip(before, after)):
-        x, feet = (162 if i == 0 else 478), HUD + 307
+        x, feet = (162 if i == 0 else 478), HUD + 218
         direction = 1 if i == 0 else -1
         sx = sy = 1
         if action and i == actor:
@@ -272,26 +268,29 @@ def frame(before, after, realm, action=None, t=1):
             if action.kind in {'attack', 'skill'} and not action.damage and after[1 - actor].hp == before[1 - actor].hp:
                 blocked = before[1 - actor].shield > after[1 - actor].shield
                 label(draw, (dx - 33, dy - 80), 'BLOCKED' if blocked else '0 DAMAGE', 16, '#e0d5f9')
-        # The move name is a quiet caption in the empty upper battlefield.
-        caption = action.name + (' / ULTIMATE' if action.ultimate else '')
-        caption_width = min(570, round(draw.textlength(caption, font=font(15))))
-        x = (WIDTH - caption_width) // 2
-        draw.rounded_rectangle((x - 10, HUD + 12, x + caption_width + 10, HUD + 38), radius=7, fill='#192135')
-        label(draw, (x, HUD + 16), caption, 15, '#e8ddfa', 570)
+    if action:
+        caption = f'{after[actor].name} / {action.name}'
+        entries = action.journal or journal
+        # The move name precedes impact; damage/status results appear with it.
+        lines = entries[-2:] if t >= .48 and entries else (caption,)
+    else:
+        caption = 'Battle complete.' if complete else 'Choose a move.'
+        lines = journal[-2:] if journal else (caption,)
+    ui.journal(image, HUD + HEIGHT, caption, lines)
     return image.convert('RGB')
 
 
-def render(before, after, realm, action=None):
+def render(before, after, realm, action=None, journal=()):
     output = io.BytesIO()
     if action is None:
-        frame(after, after, realm).save(output, 'PNG', optimize=True)
+        frame(after, after, realm, journal=journal).save(output, 'PNG', optimize=True)
         return Artwork(output.getvalue(), 'png')
     count = 30 if action.ultimate else 22
-    frames = [frame(before, after, realm, action, i / (count - 1)) for i in range(count)]
+    frames = [frame(before, after, realm, action, i / (count - 1), journal) for i in range(count)]
     # One shared palette prevents background shimmer between GIF frames.
-    sample = Image.new('RGB', (WIDTH, (HEIGHT + HUD) * 3))
+    sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
     for i, source in enumerate((frames[0], frames[count // 2], frames[-1])):
-        sample.paste(source, (0, i * (HEIGHT + HUD)))
+        sample.paste(source, (0, i * TOTAL_HEIGHT))
     palette = sample.quantize(colors=256)
     frames = [f.quantize(palette=palette, dither=Image.Dither.NONE) for f in frames]
     durations = [action.milliseconds // (count * 10) * 10] * count
@@ -306,8 +305,8 @@ def render(before, after, realm, action=None):
     return Artwork(data, 'gif', action.milliseconds / 1000)
 
 
-async def render_async(before, after, realm, action=None):
-    return await render_job(render, before, after, realm, action)
+async def render_async(before, after, realm, action=None, *, journal=()):
+    return await render_job(render, before, after, realm, action, journal)
 
 
 async def render_job(renderer, *args):
@@ -345,11 +344,14 @@ class BattlePresentation:
         self.realm = realm
         self.sleep = sleep
         self.enabled = True
+        self.journal = ()
 
     async def art(self, before, after, action=None):
         if not self.enabled:
             return None
-        result = await render_async(before, after, self.realm, action)
+        if action and action.journal:
+            self.journal = action.journal[-2:]
+        result = await render_async(before, after, self.realm, action, journal=self.journal)
         if result is None:
             # Do not retry a busy/failed renderer on every move of this match.
             self.enabled = False
@@ -358,7 +360,7 @@ class BattlePresentation:
     async def publish(self, interaction, message, embed, view, before, after, action=None):
         artwork = await self.art(before, after, action)
         footer = 'Playing action' if action else 'Battle complete' if view and view._closed else 'Choose a move / 45 seconds'
-        embed.set_footer(text=REALMS[self.realm] + ' / ' + footer)
+        embed.set_footer(text=footer)
         file = None
         buffer = None
         try:
@@ -368,12 +370,20 @@ class BattlePresentation:
                 buffer = io.BytesIO(artwork.data)
                 file = discord.File(buffer, filename=filename,
                                     description=f'{REALMS[self.realm]}: {before[0].name} versus {before[1].name}'[:1024])
+            visual_embed = deepcopy(embed)
+            if artwork:
+                for index in reversed(range(len(visual_embed.fields))):
+                    if visual_embed.fields[index].name == 'Last actions':
+                        visual_embed.remove_field(index)
+                if action or view and view._closed:
+                    visual_embed.description = None
             async def deliver(with_art):
+                shown = visual_embed if with_art else embed
                 async with asyncio.timeout(IO_TIMEOUT):
                     if message:
-                        await message.edit(embed=embed, view=view, attachments=[file] if with_art else [])
+                        await message.edit(embed=shown, view=view, attachments=[file] if with_art else [])
                         return message
-                    return await interaction.channel.send(embed=embed, view=view, **({'file': file} if with_art else {}))
+                    return await interaction.channel.send(embed=shown, view=view, **({'file': file} if with_art else {}))
 
             try:
                 message = await deliver(bool(file))

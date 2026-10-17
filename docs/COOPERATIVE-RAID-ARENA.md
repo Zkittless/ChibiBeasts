@@ -1,5 +1,9 @@
 # Cooperative raid arena
 
+The current [Field Journal UI](FIELD-JOURNAL-UI.md) applies the approved fantasy
+frames, fitted health values and a lower journal to this arena. Its review
+clips show the current presentation; the samples below record the first arena.
+
 Guild `/raid` and `/ancient` now place the boss above a circle of active
 companions in one shared pixel-art scene. All one to ten trainer layouts are
 supported. Numbered positions match the native trainer panel, which retains
