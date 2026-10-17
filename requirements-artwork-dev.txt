@@ -1,3 +1,2 @@
 -r requirements-lock.txt
-Pillow==13.0.0
 playwright==1.64.0

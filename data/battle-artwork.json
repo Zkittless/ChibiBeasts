@@ -1,0 +1,40 @@
+{
+  "mode": "built-in image_gen",
+  "purpose": "Approved ChibiBeasts battle realm backgrounds",
+  "dimensions": [
+    640,
+    360
+  ],
+  "realms": {
+    "woods": {
+      "file": "battle_realms/woods.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-quality pixel-art RPG battle background for ChibiBeasts, environment only. Primary request: The Whispering Woods, a quiet enchanted forest clearing with deep teal tree silhouettes, moss, broad fern shapes, a few warm gold fireflies and soft green light filtering through distant trunks. Style: restrained authentic 8-bit/early 16-bit game pixel art, deliberately chunky crisp square pixels, small 320x180 logical pixel grid, limited harmonious palette, clean readable shapes; no painterly brushwork, no smooth gradients, no photorealism. Composition: wide landscape 16:9 side-view battle stage; clear level ground across the lower quarter; leave two large open character positions at 28% and 72% width, and a calm upper strip for game HUD that will be added separately. Trees and foliage form the distant backdrop, not a busy foreground. Mood: cozy, mysterious, understated; tasteful rather than elaborate. Constraints: background only, no creatures, no people, no text, no numbers, no UI, no framing border, no watermark. Keep this a usable game battlefield, with strong separation between flat walkable ground and layered distant woodland. Generate a wide landscape image.",
+      "source_sha256": "d83d422335195af79e60f61fadcc9d2e0e3c5ac11ff052a93d408a6024f45576",
+      "sha256": "c960338163f4cc3270a33023cd9f4f482dc12fc58c229495f4d0b0a0f2bec60d"
+    },
+    "ember": {
+      "file": "battle_realms/ember.png",
+      "prompt": "Use case: stylized-concept. Asset type: environment-only battle background for ChibiBeasts. Wide 16:9 side-view RPG battle stage, level walkable ground across the bottom quarter, two open character positions at 28% and 72% width, calm space at the top for separate HUD. Strict authentic chunky pixel art, 320x180 logical grid, crisp square pixels, restrained early-16-bit palette, clean silhouettes and layered distant scenery. Polished game art with readable open space, not elaborate painterly art. No characters, creatures, people, text, numbers, UI, borders or watermark. The Ember Wastes: warm russet volcanic badlands at dusk, jagged distant obsidian peaks, dim lava fissures behind the flat charcoal-rock battle floor, a sparse drifting ember or two, burnt sienna atmosphere. Keep the floor uncluttered and the glow restrained.",
+      "source_sha256": "446254f6c5668289a0c067897d76e75504f1794a8682d210798690517cb6461d",
+      "sha256": "fd6860af17116f6912088ac313d54d42e12ac4247d15e7f2374dc6822ad239e9"
+    },
+    "glacial": {
+      "file": "battle_realms/glacial.png",
+      "prompt": "Use case: stylized-concept. Asset type: environment-only battle background for ChibiBeasts. Wide 16:9 side-view RPG battle stage, level walkable ground across the bottom quarter, two open character positions at 28% and 72% width, calm space at the top for separate HUD. Strict authentic chunky pixel art, 320x180 logical grid, crisp square pixels, restrained early-16-bit palette, clean silhouettes and layered distant scenery. Polished game art with readable open space, not elaborate painterly art. No characters, creatures, people, text, numbers, UI, borders or watermark. The Glacial Hollows: a quiet ice cavern opening toward pale blue snowy mountains, angular cyan crystals and dark blue stone framing the distance, packed snow over the flat battle floor, a few soft snow flecks, still silver winter light.",
+      "source_sha256": "b761792a948f41888c1e764fedd47093dc28aa452eca6723161fb67d5c1c4db2",
+      "sha256": "a6a250335bf025bc760ef18ba1f238af39173d1c5908a8d03d08121d62ab33d0"
+    },
+    "trenches": {
+      "file": "battle_realms/trenches.png",
+      "prompt": "Use case: stylized-concept. Asset type: environment-only battle background for ChibiBeasts. Wide 16:9 side-view RPG battle stage, level walkable ground across the bottom quarter, two open character positions at 28% and 72% width, calm space at the top for separate HUD. Strict authentic chunky pixel art, 320x180 logical grid, crisp square pixels, restrained early-16-bit palette, clean silhouettes and layered distant scenery. Polished game art with readable open space, not elaborate painterly art. No characters, creatures, people, text, numbers, UI, borders or watermark. The Sunken Abyssal Trenches: a magical underwater cavern, immense blue-green depths, distant submerged stone arches, restrained bioluminescent coral and shafts of turquoise light through water, a flat pale-sand battle floor in the foreground, no fish.",
+      "source_sha256": "80d3bb41d76d0753db2f452ec7ea14b87c99f397dc39e8c56726bf56848f0faa",
+      "sha256": "bb0f9a1b90ed2e7cb6e36bef25951fa11d5eb90f33141c991459f8a2675a126b"
+    },
+    "loom": {
+      "file": "battle_realms/loom.png",
+      "prompt": "Use case: stylized-concept. Asset type: environment-only battle background for ChibiBeasts. Wide 16:9 side-view RPG battle stage, level walkable ground across the bottom quarter, two open character positions at 28% and 72% width, calm space at the top for separate HUD. Strict authentic chunky pixel art, 320x180 logical grid, crisp square pixels, restrained early-16-bit palette, clean silhouettes and layered distant scenery. Polished game art with readable open space, not elaborate painterly art. No characters, creatures, people, text, numbers, UI, borders or watermark. The Celestial Loom: a dreamlike suspended stone battle platform among deep indigo stars, distant arch-like threads of warm starlight weaving through purple nebula clouds, small luminous constellations, a clear broad flat foreground of muted blue stone, restrained mystical gold accents, no enormous central object obscuring the fighters.",
+      "source_sha256": "eff8eebee3d9e7673367059523eddf1e7fd266ddf936263e5ae2f7473d8a2139",
+      "sha256": "8b561c2fa4106c0d9a626b23dd5afba92b3ae92f41c6e65b4fc4a7c5164e23c3"
+    }
+  }
+}

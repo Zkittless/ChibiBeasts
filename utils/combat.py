@@ -50,6 +50,8 @@ def heal(state, amount):
 
 def build_state(data, row, perks=(), gear=(), buffs=None):
     state = {'id': row.get('id'), 'rarity': data['rarity'], 'name': row.get('nickname') or data['name'], 'level': row.get('level', 1), **{k: row[k] for k in ('hp', 'max_hp', 'attack', 'defense', 'speed', 'mana', 'max_mana')}, 'moves': data['moves'], 'move_effects': data.get('move_effects', {}), 'ultimate': data['ultimate'], 'beast_type': data['type'], 'image_url': data.get('image_url', ''), 'status': None, 'status_turns': 0, 'ultimate_charges': (buffs or {}).get('ultimate_charges', 0), 'divine_passive': data.get('divine_passive') or {}, 'perks': {p['perk_id'] for p in perks if p.get('equipped')}, 'action_count': 0, 'dp_crit_charges': 0}
+    # Keep the species separate from the collection row ID and nickname.
+    state['beast_id'] = data['id']
     happiness = row.get('happiness', 100)
     mult = 0.9 + min(70, max(0, happiness - 30)) / 70 * 0.2
     bond = 1 + min(100, row.get('bond', 0)) * 0.001 if data.get('starter_family') else 1

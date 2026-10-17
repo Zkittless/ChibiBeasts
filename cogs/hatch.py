@@ -1057,6 +1057,7 @@ class Hatch(commands.Cog):
                 enemy_state=enemy_state,
                 enemy_personality="aggressive",
                 battle_title=f"Wild {beast['name']}",
+                realm=destination,
                 on_win=on_explore_win,
                 on_loss=on_explore_loss,
             )
