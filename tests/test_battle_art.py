@@ -110,7 +110,7 @@ class BattleImages(unittest.TestCase):
                     gif.seek(0)
                     self.assertIsNotNone(ImageChops.difference(last, gif.convert('RGB')).getbbox())
                 self.assertLess(len(clip.data), art.MAX_BYTES)
-        # The still retains a collapsed KO, rather than standing it up again.
+        # The final still keeps the defeated companion offstage.
         final = art.frame(after, after, 'loom')
         empty = art.field_background('loom', art.TOTAL_HEIGHT).convert('RGB')
         # The upright portrait's former head area is empty after a knockout.

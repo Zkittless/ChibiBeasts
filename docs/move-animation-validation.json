@@ -1,0 +1,191 @@
+{
+  "manifest_sha256": "b562b67bbe7abf4190fa47b5addec1aaec3428fda9fdd7d1c52704780587d95e",
+  "roster": 86,
+  "move_entries": 344,
+  "unique_moves": 334,
+  "roster_gifs": {
+    "rendered": 344,
+    "all_one_shot": true,
+    "all_under_2000000_bytes": true,
+    "largest_bytes": 1240788,
+    "largest_examples": [
+      {
+        "species": "ancient_chronos",
+        "move": "Beginning of Time",
+        "bytes": 1240788,
+        "frames": 40,
+        "milliseconds": 4050,
+        "one_shot": true
+      },
+      {
+        "species": "rootwarden",
+        "move": "The Forest Holds",
+        "bytes": 1229309,
+        "frames": 40,
+        "milliseconds": 4050,
+        "one_shot": true
+      },
+      {
+        "species": "void_chronos",
+        "move": "Temporal Collapse",
+        "bytes": 1137816,
+        "frames": 28,
+        "milliseconds": 2650,
+        "one_shot": true
+      },
+      {
+        "species": "timestitch",
+        "move": "A Stitch in Time",
+        "bytes": 1106426,
+        "frames": 28,
+        "milliseconds": 2650,
+        "one_shot": true
+      },
+      {
+        "species": "paradox",
+        "move": "Infinite Loop",
+        "bytes": 1096210,
+        "frames": 28,
+        "milliseconds": 2650,
+        "one_shot": true
+      }
+    ]
+  },
+  "representative_clips": {
+    "tick-bite": {
+      "bytes": 794411,
+      "frames": 24,
+      "milliseconds": 1650,
+      "one_shot": true
+    },
+    "thread-snap": {
+      "bytes": 724520,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    "rewind-nibble": {
+      "bytes": 503640,
+      "frames": 24,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    "borrowed-moment": {
+      "bytes": 1047345,
+      "frames": 28,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    "galaxy-splash": {
+      "bytes": 709417,
+      "frames": 24,
+      "milliseconds": 1650,
+      "one_shot": true
+    },
+    "glitter-bounce": {
+      "bytes": 461226,
+      "frames": 23,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    "unmovable-root": {
+      "bytes": 1063030,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    "fire-breath": {
+      "bytes": 602458,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    "ice-shell": {
+      "bytes": 794685,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    "wind-shriek": {
+      "bytes": 682121,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    "retreat-wisp": {
+      "bytes": 861228,
+      "frames": 34,
+      "milliseconds": 3050,
+      "one_shot": true
+    },
+    "retreat-barkley": {
+      "bytes": 877458,
+      "frames": 34,
+      "milliseconds": 3050,
+      "one_shot": true
+    },
+    "corrupted_leviathan": {
+      "bytes": 1429737,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "corrupted_fenrir": {
+      "bytes": 1543763,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "corrupted_dragon": {
+      "bytes": 1272886,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "raid-boss-retreat": {
+      "bytes": 1400705,
+      "frames": 31,
+      "milliseconds": 3000,
+      "one_shot": true
+    },
+    "ancient_chronos": {
+      "bytes": 1580819,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_genesis": {
+      "bytes": 1569836,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_abyss": {
+      "bytes": 1510790,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    }
+  },
+  "performance": {
+    "render_max_ms": 654.91,
+    "render_median_ms": 429.97,
+    "event_loop_p95_ms": 7.27,
+    "event_loop_max_ms": 16.68,
+    "samples": 19,
+    "scope": "Local synthetic rendering; excludes Discord upload/client playback."
+  },
+  "additional_stress": {
+    "bosses": 6,
+    "ten_simultaneous_ultimates_per_boss": true,
+    "ten_trainer_wipe_per_boss": true,
+    "all_under_2000000_bytes": true,
+    "largest_bytes": 1615924
+  },
+  "focused_regressions": {
+    "tests": 57,
+    "result": "passed"
+  },
+  "data_source": "Packaged art, actual move specs, level-scaled states, seeded combat outcomes.",
+  "scope": "Offline rendering and synthetic Discord I/O. No live Discord server was used."
+}

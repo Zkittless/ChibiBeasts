@@ -1,5 +1,9 @@
 # Animated battlefields
 
+The [move animation overhaul](MOVE-ANIMATIONS.md) now supplies explicit profiles
+for the full move roster and whole-body retreats. Its timings and frame limits
+supersede the original renderer measurements below.
+
 The current [Field Journal UI](FIELD-JOURNAL-UI.md) adds framed portraits,
 fitted in-bar numbers, separate ultimate charge slots and a lower battle log.
 Its review clips supersede the earlier visual samples linked below.
@@ -9,15 +13,16 @@ on one pixel-art battlefield. The HP/MP/ultimate strip sits above the scene so
 it cannot cover either creature on a narrow phone screen. Nicknames select the
 same canonical species portrait; all 86 packaged creatures are supported.
 
-Each real action plays a short one-shot GIF: wind-up, lunge or typed projectile,
+Each real action plays a short one-shot GIF with its assigned move effects,
 impact, recoil, and resource changes. Guard grows a barrier, healing raises
-sparkles, ultimates charge before striking, and a defeated creature stays
-collapsed. Reflected damage, lifesteal, revival, status ticks, skipped turns,
+sparkles, ultimates charge before striking, and a defeated creature retreats
+offstage. Reflected damage, lifesteal, revival, status ticks, skipped turns,
 and bonus strikes use snapshots of the shared combat engine's actual results.
 The renderer does not roll attacks or calculate a second version of damage.
 
-An attack/skill takes 1.4 seconds, guard/healing/status effects 1.2 seconds,
-and an ultimate 1.9 seconds, plus a 0.2-second playback allowance. Playback starts
+An attack takes 1.65 seconds, a skill 1.95, guard/healing 2.1, a status tick 1.1,
+and an ultimate 2.65 seconds. New knockouts add 1.4 seconds for retreat, followed
+by the existing 0.2-second playback allowance. Playback starts
 after Discord accepts the attachment. The next prompt opens afterward, with a
 fresh 45-second decision window. The same registered move view acknowledges
 stale/duplicate clicks throughout rendering, upload, playback, and cleanup.
@@ -47,7 +52,7 @@ Two bounded rendering workers operate outside the asyncio event loop. Slots
 are acquired before submission; cancellation or timeout does not release a
 slot until its actual thread finishes. There is no unbounded render queue.
 Backgrounds and cropped portraits are cached; FreeType fonts are confined to
-their rendering thread. Clips have at most 30 source frames and a 2 MB limit.
+their rendering thread. Clips have at most 44 source frames and a 2 MB limit.
 Every upload replaces the previous attachment with a uniquely named file;
 streams close after both successful and failed uploads.
 

@@ -14,7 +14,7 @@ import re
 from uuid import uuid4
 
 import discord
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw
 
 from utils import battle_art as art
 from utils import field_journal as ui
@@ -65,6 +65,9 @@ class Event:
     kind: str
     damage: int = 0
     target: int | None = None
+    move: str = ''
+    species: str = ''
+    slot: int | None = None
 
 
 def capture(session, warning, outcome=''):
@@ -183,180 +186,43 @@ def events_by_member(events):
     for event in events[-MAX_EVENTS:]:
         if event.uid is None:
             continue
-        group = result.setdefault(event.uid, {'kinds': set(), 'damage': 0, 'targets': set()})
+        group = result.setdefault(event.uid, {'kinds': set(), 'damage': 0, 'targets': set(), 'event': event})
         group['kinds'].add(event.kind)
         group['damage'] += max(0, event.damage)
+        group['event'] = event
         if event.target is not None:
             group['targets'].add(event.target)
     return result
 
 
 def frame(before, after, events=(), t=1):
-    image = art.field_background(after.realm, TOTAL_HEIGHT).copy()
-    image.alpha_composite(stage(after.realm), (0, HUD))
-    draw = ImageDraw.Draw(image)
-    animated = bool(events)
-    impact = art.transition(t) if animated else 1
-    hp = round(before.boss.hp + (after.boss.hp - before.boss.hp) * impact)
-    ui.heading(image, 'VICTORY' if after.outcome == 'victory' else 'RAID COMPLETE' if after.outcome else 'RAID BATTLE', art.REALMS[after.realm])
-    ui.panel(image, (10, 66, 630, 151))
-    ui.portrait(image, boss_portrait(after.boss.species), (18, 75, 78, 135))
-    ui.text(draw, after.boss.name, (88, 73, 474, 96), size=21, display=True)
-    ui.text(draw, f'Lv.{after.boss.level} / {len(after.members)} trainers / {after.remaining // 60}:{after.remaining % 60:02}', (476, 74, 620, 95), size=12, minimum=10, align='right')
-    ui.resource_bar(image, BOSS_HEALTH, hp, after.boss.max_hp, 'HP', ui.HEALTH, markers=(.75, .45, .2))
-    warning = after.warning if after.pending else 'The weave settles' if after.outcome == 'victory' else 'The party steps back' if after.outcome else 'The weave is steady'
-    warning_box = (WARNING[0], WARNING[1], 482 if after.pending else WARNING[2], WARNING[3])
-    ui.text(draw, warning, warning_box, size=14, fill='#f2d39a' if after.pending else ui.MUTED)
-    if after.pending:
-        ui.text(draw, f'Weave {after.weaves}/{after.required}', (490, 132, 620, 148), size=14, fill='#f2d39a', align='right')
-    groups = events_by_member(events)
-    old = {member.uid: member for member in before.members}
-    boss_hit = any(event.kind == 'boss' for event in events)
-    boss_scale = 1 + (.08 * math.sin(t * math.pi) if boss_hit and animated else 0)
-    knocked_out = after.boss.hp <= 0 and (not animated or t >= .6 or before.boss.hp <= 0)
-    if knocked_out:
-        boss_scale = .35 if not animated or before.boss.hp <= 0 else 1 - .65 * art.ease((t - .6) / .4)
-    portrait = boss_portrait(after.boss.species)
-    if portrait:
-        if boss_scale != 1:
-            portrait = portrait.resize((max(1, round(portrait.width * boss_scale)), max(1, round(portrait.height * boss_scale))), Image.Resampling.NEAREST)
-        if knocked_out:
-            portrait = portrait.copy()
-            portrait.putalpha(portrait.getchannel('A').point(lambda a: round(a * .4)))
-        draw.ellipse((250, HUD + 252, 390, HUD + 267), fill='#101729')
-        image.alpha_composite(portrait, (320 - portrait.width // 2, HUD + 259 - portrait.height))
-    else:
-        draw.ellipse((230, HUD + 90, 410, HUD + 259), fill='#82679e')
-    if after.pending:
-        draw = ImageDraw.Draw(image)
-        draw.ellipse((235, HUD + 242, 405, HUD + 276), outline='#e4c68f', width=3)
-
-    places = placements(len(after.members))
-    floating = []
-    for index, (member, place) in enumerate(zip(after.members, places)):
-        prior = old.get(member.uid, member)
-        fighter = member.fighter
-        kinds = groups.get(member.uid, {}).get('kinds', set())
-        x, feet, scale_x, scale_y, alpha = place.x, place.feet, 1, 1, 1
-        if animated and kinds.intersection({'attack', 'ultimate', 'skill'}):
-            travel = art.ease((t - .15) / .33) if t < .48 else 1 - art.ease((t - .48) / .3)
-            if 'skill' in kinds and not kinds.intersection({'attack', 'ultimate'}):
-                travel *= .12
-            x += (320 - x) * .48 * travel
-            feet -= 92 * travel + math.sin(math.pi * max(0, travel)) * 16
-            if t < .22:
-                scale_x, scale_y = 1.08, .92
-        if 'guard' in kinds and animated and t < .6:
-            scale_x, scale_y = 1.07, .91
-        changed_slot = prior.slot != member.slot or prior.fighter.species != fighter.species
-        species = fighter.species
-        if animated and changed_slot:
-            if t < .48:
-                species = prior.fighter.species
-                alpha = 1 - art.ease(t / .48)
-                x -= 32 * art.ease(t / .48)
-            else:
-                alpha = art.ease((t - .48) / .4)
-                x += 32 * (1 - art.ease((t - .48) / .4))
-        active = fighter if not animated or t >= .48 else prior.fighter
-        if active.hp <= 0:
-            scale_y *= .35 + .65 * (1 - art.ease((t - .48) / .35)) if animated and prior.fighter.hp > 0 else .35
-            alpha *= .45
-        elif animated and prior.fighter.hp <= 0 and not changed_slot:
-            scale_y *= .35 + .65 * art.ease((t - .48) / .35)
-        portrait = fitted(species, place.size)
-        if x > 320:
-            portrait = ImageOps.mirror(portrait)
-        if scale_x != 1 or scale_y != 1:
-            portrait = portrait.resize((max(1, round(portrait.width * scale_x)), max(1, round(portrait.height * scale_y))), Image.Resampling.NEAREST)
-        if alpha != 1:
-            portrait = portrait.copy()
-            portrait.putalpha(portrait.getchannel('A').point(lambda a: round(a * alpha)))
-        draw = ImageDraw.Draw(image)
-        draw.ellipse((place.x - place.size * .31, HUD + place.feet - 3,
-                      place.x + place.size * .31, HUD + place.feet + 9), fill='#172132')
-        image.alpha_composite(portrait, (round(x - portrait.width / 2), round(HUD + feet - portrait.height)))
-        draw = ImageDraw.Draw(image)
-        if active.hp > 0 and (active.guard or active.shield):
-            draw.ellipse((x - place.size * .49, HUD + feet - place.size * 1.04,
-                          x + place.size * .49, HUD + feet + place.size * .1), outline='#d6baff' if active.guard else '#a5d7ef', width=3)
-        if not changed_slot:
-            delta = fighter.hp - prior.fighter.hp
-            if animated and t >= .48 and delta:
-                floating.append((place.x, HUD + place.feet - place.size - 18 - round((t - .48) * 30),
-                                 f'{delta:+,}', '#b8fac5' if delta > 0 else '#ffe0bd'))
-                if delta > 0:
-                    for n in range(5):
-                        px, py = place.x - 32 + n * 16, HUD + place.feet - 50 - round((t * 60 + n * 13) % 65)
-                        draw.line((px - 3, py, px + 3, py), fill='#b8fac5', width=2)
-                        draw.line((px, py - 3, px, py + 3), fill='#b8fac5', width=2)
-        if animated:
-            color = art.TYPE_COLORS.get(fighter.element, '#e4c5ff')
-            if kinds.intersection({'attack', 'ultimate', 'skill'}) and .13 < t < .52:
-                progress = art.ease((t - .13) / .39)
-                px = round(place.x + (320 - place.x) * progress)
-                py = HUD + round(place.feet - 70 + (157 - (place.feet - 70)) * progress - math.sin(progress * math.pi) * 24)
-                draw.line((px - round((320 - place.x) * .15), py + 14, px, py), fill=color, width=7 if 'ultimate' in kinds else 4)
-                draw.regular_polygon((px, py, 9 if 'ultimate' in kinds else 5), 4, fill='#fff3d5')
-            if 'ultimate' in kinds and t < .4:
-                radius = 26 + t * 65
-                draw.ellipse((place.x - radius, HUD + place.feet - 66 - radius,
-                              place.x + radius, HUD + place.feet - 66 + radius), outline=color, width=3)
-            if 'weave' in kinds and t < .9:
-                draw.line((place.x, HUD + place.feet - 50, 320, HUD + 310, 320, HUD + 250), fill='#e8d393', width=3)
-            if .48 <= t <= .86 and groups.get(member.uid, {}).get('damage'):
-                dx = (index % 3 - 1) * 55
-                radius = 18 + (t - .48) * 80
-                for n in range(6):
-                    angle = n * math.pi / 3
-                    draw.line((320 + dx + math.cos(angle) * 8, HUD + 160 + math.sin(angle) * 8,
-                               320 + dx + math.cos(angle) * radius, HUD + 160 + math.sin(angle) * radius), fill=color, width=3)
-
-    draw = ImageDraw.Draw(image)
-    total_damage = sum(group['damage'] for group in groups.values())
-    if animated and .48 <= t <= .86 and total_damage:
-        # One combined number stays legible when all ten trainers strike.
-        floating.append((320, HUD + 97 - round((t - .48) * 60), f'-{total_damage:,}', '#fff0d0'))
-    if animated and boss_hit and .18 < t < 1:
-        radius = 30 + art.ease(t) * 280
-        center = HUD + 263 + art.ease(t) * 74
-        draw.ellipse((320 - radius, center - radius * .4, 320 + radius, center + radius * .4), outline='#efb19a', width=4)
-    # Markers are the final arena layer; front companions cannot hide the rear
-    # trainers' numbers. Their positions are stable throughout each action.
-    for index, box in enumerate(marker_boxes(after)):
-        left, top, right, bottom = box
-        draw.rectangle((left, HUD + top, right, HUD + bottom), fill='#1a243a')
-        text = str(index + 1)
-        width = draw.textlength(text, font=art.font(28))
-        art.label(draw, ((left + right - width) / 2, HUD + top + 1), text, 28)
-    for x, y, text, color in floating:
-        width = draw.textlength(text, font=art.font(20))
-        art.label(draw, (x - width / 2, y - 10), text, 20, color)
-    detail = 'The party acts together.' if animated and t < .48 and before.boss.hp > 0 else after.last_event or warning
-    ui.journal(image, HUD + HEIGHT, warning, (detail,))
-    return image.convert('RGB')
+    from utils.raid_scene import draw_frame
+    return draw_frame(before, after, events, t)
 
 
 def render(before, after, events=()):
     before = before or after
+    from utils.raid_scene import departure_events, duration
+    events = departure_events(before, after, events)
     stream = io.BytesIO()
     if not events:
         frame(after, after).save(stream, 'PNG', optimize=True)
         return art.Artwork(stream.getvalue(), 'png')
-    frames = [frame(before, after, events, i / 17) for i in range(18)]
+    milliseconds = duration(before, after, events)
+    count = 36 if milliseconds > CLIP_SECONDS * 1000 else 18
+    frames = [frame(before, after, events, i / (count-1)) for i in range(count)]
     sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
-    for i, source in enumerate((frames[0], frames[9], frames[-1])):
+    for i, source in enumerate((frames[0], frames[count//2], frames[-1])):
         sample.paste(source, (0, i * TOTAL_HEIGHT))
     palette = sample.quantize(colors=256)
     frames = [source.quantize(palette=palette, dither=Image.Dither.NONE) for source in frames]
-    durations = [60] * 18
-    durations[-1] += 1200 - sum(durations)
+    durations = art.frame_durations(milliseconds, count)
     frames[0].save(stream, 'GIF', save_all=True, append_images=frames[1:],
                    duration=durations, disposal=1, optimize=False)
     data = stream.getvalue()
     if len(data) > art.MAX_BYTES:
         raise ValueError('Raid clip exceeded its 2 MB attachment budget')
-    return art.Artwork(data, 'gif', CLIP_SECONDS)
+    return art.Artwork(data, 'gif', milliseconds/1000)
 
 
 class RaidPresentation:

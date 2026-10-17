@@ -306,10 +306,10 @@ class RaidSession:
         embed.set_footer(text='Weave answers patterns · Tend heals · Speed controls action recovery · Bosses resist repeated stuns')
         return embed
 
-    def _record_art(self, uid, kind, damage=0, target=None):
+    def _record_art(self, uid, kind, damage=0, target=None, *, move='', species='', slot=None):
         if self.presentation is not None and self.presentation.enabled:
             self._art_sequence += 1
-            self._art_events.append(Event(self._art_sequence, uid, kind, damage, target))
+            self._art_events.append(Event(self._art_sequence, uid, kind, damage, target, move, species, slot))
 
     async def _capture_art(self, outcome=''):
         async with self.lock, combat.lock_states(self.users):
@@ -537,7 +537,8 @@ class RaidSession:
                 combat.resolve_hit(self.enemy, state, damage, log)
             self.last_event = f"{self.boss['name']} sweeps across the party. Guard, tend an ally, or swap a wounded companion."
         combat.end_turn(self.enemy, self.state(alive[0]), [])
-        self._record_art(None, 'boss')
+        harmless = ready_pattern and solved and kind in {'cleanse', 'rift', 'ember', 'stars'}
+        self._record_art(None, 'boss', move='' if harmless else self.enemy['moves'][0], species=self.enemy['beast_id'])
 
     async def record_knockouts(self):
         knocked_out = [state for uid in self.users for state in self.party[uid]
@@ -594,6 +595,9 @@ class RaidSession:
         damage = 0
         target_uid = None
         animation_kind = kind
+        animation_move = ''
+        source_species = state['beast_id']
+        source_slot = self.slots[uid]
         if kind == 'swap':
             count = len(self.party[uid])
             options = [(self.slots[uid] + offset) % count for offset in range(1, count)
@@ -635,6 +639,7 @@ class RaidSession:
             if combat.move_spec(state, move, ult).get('heal_percent'):
                 animation_kind = 'heal'
             if combat.begin_turn(state, self.enemy, log):
+                animation_move = move
                 old_hp = state['hp']
                 old = self.enemy['hp']
                 if self.totems[uid]:
@@ -653,6 +658,8 @@ class RaidSession:
                 self.damage[uid] += damage
                 if kind == 'guard' and self.pending:
                     self.support[uid] += max(1, int(state['max_hp'] * 0.04))
+            else:
+                animation_kind = 'status'
             self.last_event = ' · '.join(log[-2:])[-500:]
         self.last[key] = self.clock()
         pct = self.enemy['hp'] / self.enemy['max_hp']
@@ -666,7 +673,8 @@ class RaidSession:
             self._art_urgent.set()
             self.last_event = MECHANICS[self.boss['id']][1]
         defeated = self.enemy['hp'] <= 0
-        self._record_art(uid, animation_kind, damage, target_uid)
+        self._record_art(uid, animation_kind, damage, target_uid,
+                         move=animation_move, species=source_species, slot=source_slot)
         return damage, defeated
 
     async def finish(self, victory):
