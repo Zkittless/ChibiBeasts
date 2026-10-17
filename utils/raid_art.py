@@ -4,20 +4,26 @@ Presentation never computes damage, advances combat, or waits in a player's
 action callback. All raids and duels share battle_art's two bounded workers.
 """
 from dataclasses import dataclass
+from copy import deepcopy
 import asyncio
 from functools import lru_cache
 import io
 import logging
 import math
+import re
 from uuid import uuid4
 
 import discord
 from PIL import Image, ImageDraw, ImageOps
 
 from utils import battle_art as art
+from utils import field_journal as ui
 from utils.artwork import card_artwork_path
 
-WIDTH, HEIGHT, HUD = 640, 464, 132
+WIDTH, HEIGHT, HUD, JOURNAL = 640, 464, 156, 72
+TOTAL_HEIGHT = HUD + HEIGHT + JOURNAL
+BOSS_HEALTH = (88, 102, 620, 126)
+WARNING = (88, 132, 620, 148)
 CLIP_SECONDS = 1.2
 MAX_EVENTS = 32
 REALMS = {'corrupted_leviathan': 'trenches', 'corrupted_fenrir': 'glacial',
@@ -49,6 +55,7 @@ class Scene:
     weaves: int
     required: int
     outcome: str = ''
+    last_event: str = ''
 
 
 @dataclass(frozen=True)
@@ -64,11 +71,13 @@ def capture(session, warning, outcome=''):
     """Caller holds the session/state locks; there is no I/O here."""
     members = tuple(Member(uid, session.slots[uid], art.snapshot([session.state(uid)])[0])
                     for uid in session.users)
+    positions = {str(uid): str(index + 1) for index, uid in enumerate(session.users)}
+    event = re.sub(r'<@!?(\d+)>', lambda match: 'Trainer ' + positions.get(match[1], '?'), session.last_event)
     return Scene(art.snapshot([session.enemy])[0], members,
                  REALMS.get(session.boss['id'], 'loom'),
                  max(0, min(600, math.ceil(600 - (session.clock() - session.started)))),
                  session.phase, bool(session.pending), warning,
-                 session.weaves, session.weave_required(), outcome)
+                 session.weaves, session.weave_required(), outcome, event)
 
 
 @dataclass(frozen=True)
@@ -183,27 +192,23 @@ def events_by_member(events):
 
 
 def frame(before, after, events=(), t=1):
-    image = Image.new('RGBA', (WIDTH, HUD + HEIGHT), '#171e32')
+    image = art.field_background(after.realm, TOTAL_HEIGHT).copy()
     image.alpha_composite(stage(after.realm), (0, HUD))
     draw = ImageDraw.Draw(image)
     animated = bool(events)
     impact = art.transition(t) if animated else 1
     hp = round(before.boss.hp + (after.boss.hp - before.boss.hp) * impact)
-    draw.rounded_rectangle((8, 5, 632, HUD - 4), radius=8, fill='#222c44')
-    art.label(draw, (17, 11), after.boss.name, 18, width=490)
-    art.label(draw, (568, 12), f'{after.remaining // 60}:{after.remaining % 60:02}', 16)
-    art.label(draw, (17, 36), f'Lv.{after.boss.level} / {art.REALMS[after.realm]} / {len(after.members)} trainers', 12, '#c2cce0', 604)
-    art.label(draw, (17, 57), f'{hp:,} / {after.boss.max_hp:,} HP', 14)
-    draw.rectangle((17, 79, 622, 86), fill='#101729')
-    if hp < before.boss.hp and animated and t < .9:
-        draw.rectangle((17, 79, 17 + round(605 * before.boss.hp / after.boss.max_hp), 86), fill='#d6ad78')
-    if hp:
-        draw.rectangle((17, 79, 17 + round(605 * min(1, hp / after.boss.max_hp)), 86), fill='#8ee0ac')
-    for fraction in (.75, .45, .2):
-        x = 17 + round(605 * fraction)
-        draw.line((x, 79, x, 86), fill='#222c44', width=2)
-    warning = (after.warning + f' / Weave {after.weaves}/{after.required}') if after.pending else 'Victory / the weave settles' if after.outcome == 'victory' else 'The party steps back' if after.outcome else 'The weave is steady'
-    art.label(draw, (17, 102), warning, 14, '#f2d39a' if after.pending else '#d4dced', 605)
+    ui.heading(image, 'VICTORY' if after.outcome == 'victory' else 'RAID COMPLETE' if after.outcome else 'RAID BATTLE', art.REALMS[after.realm])
+    ui.panel(image, (10, 66, 630, 151))
+    ui.portrait(image, boss_portrait(after.boss.species), (18, 75, 78, 135))
+    ui.text(draw, after.boss.name, (88, 73, 474, 96), size=21, display=True)
+    ui.text(draw, f'Lv.{after.boss.level} / {len(after.members)} trainers / {after.remaining // 60}:{after.remaining % 60:02}', (476, 74, 620, 95), size=12, minimum=10, align='right')
+    ui.resource_bar(image, BOSS_HEALTH, hp, after.boss.max_hp, 'HP', ui.HEALTH, markers=(.75, .45, .2))
+    warning = after.warning if after.pending else 'The weave settles' if after.outcome == 'victory' else 'The party steps back' if after.outcome else 'The weave is steady'
+    warning_box = (WARNING[0], WARNING[1], 482 if after.pending else WARNING[2], WARNING[3])
+    ui.text(draw, warning, warning_box, size=14, fill='#f2d39a' if after.pending else ui.MUTED)
+    if after.pending:
+        ui.text(draw, f'Weave {after.weaves}/{after.required}', (490, 132, 620, 148), size=14, fill='#f2d39a', align='right')
     groups = events_by_member(events)
     old = {member.uid: member for member in before.members}
     boss_hit = any(event.kind == 'boss' for event in events)
@@ -327,6 +332,8 @@ def frame(before, after, events=(), t=1):
     for x, y, text, color in floating:
         width = draw.textlength(text, font=art.font(20))
         art.label(draw, (x - width / 2, y - 10), text, 20, color)
+    detail = 'The party acts together.' if animated and t < .48 and before.boss.hp > 0 else after.last_event or warning
+    ui.journal(image, HUD + HEIGHT, warning, (detail,))
     return image.convert('RGB')
 
 
@@ -337,9 +344,9 @@ def render(before, after, events=()):
         frame(after, after).save(stream, 'PNG', optimize=True)
         return art.Artwork(stream.getvalue(), 'png')
     frames = [frame(before, after, events, i / 17) for i in range(18)]
-    sample = Image.new('RGB', (WIDTH, (HUD + HEIGHT) * 3))
+    sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
     for i, source in enumerate((frames[0], frames[9], frames[-1])):
-        sample.paste(source, (0, i * (HUD + HEIGHT)))
+        sample.paste(source, (0, i * TOTAL_HEIGHT))
     palette = sample.quantize(colors=256)
     frames = [source.quantize(palette=palette, dither=Image.Dither.NONE) for source in frames]
     durations = [60] * 18
@@ -385,12 +392,24 @@ class RaidPresentation:
             else:
                 embed.set_image(url=None)
 
+            visual_embed = deepcopy(embed)
+            if artwork:
+                # The scene owns HP/time and the journal. Keep native pattern
+                # warnings and party resources; they remain useful live controls.
+                description = embed.description or ''
+                marker = description.find('⚠️')
+                visual_embed.description = description[marker:] if marker >= 0 and view is not None else None
+                if view is None:
+                    visual_embed.clear_fields()
+                    visual_embed.set_footer(text=None)
+
             async def deliver(with_file, retain=False):
+                shown = visual_embed if with_file else embed
                 if message:
                     kwargs = {} if retain else {'attachments': [file] if with_file else []}
-                    await message.edit(embed=embed, view=view, **kwargs)
+                    await message.edit(embed=shown, view=view, **kwargs)
                     return message
-                return await channel.send(embed=embed, view=view, **({'file': file} if with_file else {}))
+                return await channel.send(embed=shown, view=view, **({'file': file} if with_file else {}))
 
             try:
                 result = await deliver(bool(file), keep and not file)

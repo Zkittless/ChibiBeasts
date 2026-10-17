@@ -174,8 +174,9 @@ async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_
     if is_knocked_out(player_beast_row):raise ValueError("Your companion is recovering. Use /use Phoenix Elixir or choose another beast.")
     state=await prepare_state(interaction.user.id,player_beast_row,player_beast_data,player_perks)
     winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView,reserved=True,realm=realm)
-    embed=discord.Embed(title=f"⚔️ {battle_title} — {'Victory' if winner==0 else 'Draw' if winner is None else 'Lesson learned'}",description="\n".join(f"**{s['name']}** — {hp_bar(s['hp'],s['max_hp'])}" for s in states),color=COLORS["success"] if winner==0 else COLORS["info"])
-    embed.add_field(name="Battle log",value="\n".join(log[-5:])[-1000:] or "The companions watched each other.",inline=False)
+    # The closing battlefield already contains final HP and its journal. This
+    # follow-up carries the outcome, rewards and story instead of repeating it.
+    embed=discord.Embed(title=f"⚔️ {battle_title} — {'Victory' if winner==0 else 'Draw' if winner is None else 'Lesson learned'}",color=COLORS["success"] if winner==0 else COLORS["info"])
     if timed_out:embed.add_field(name="Time limit",value="The match ended on time. Reduced rewards; wild creatures are not caught on a time-limit win.",inline=False)
     if winner==0:await on_win(embed,*states,timed_out)
     else:await on_loss(embed,*states)
@@ -322,7 +323,6 @@ async def _start_battle(interaction,battle_id,pending,ids):
         completed=await track_quest_event(winner_id,"pvp_win",event_key=f"pvp:{battle_id}",beast_row_id=rows[winner]["id"])
         await notify_quest_completions(interaction.channel,completed)
     embed=discord.Embed(title="⚔️ Battle complete",description=(f"<@{winner_id}> and **{states[winner]['name']}** win." if winner_id else "Both companions finish together. A draw."),color=COLORS["epic"])
-    embed.add_field(name="Last actions",value="\n".join(log[-5:])[-1000:] or "A quiet meeting.",inline=False)
     await interaction.channel.send(embed=embed)
     return winner_id
 

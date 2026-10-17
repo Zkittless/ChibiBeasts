@@ -267,7 +267,7 @@ async def _duel(interaction, states, users, title, personality, view_class, real
                     changed = before != snapshot(states)
                 if changed or not can_act:
                     effect_name = 'Turn effects' if can_act else f"{before[index].status or 'Recovery'} — turn skipped"
-                    await animate(before, Action(index, effect_name, 'status'), round_number)
+                    await animate(before, Action(index, effect_name, 'status', journal=tuple(log[-2:])), round_number)
                 if can_act:
                     uid = users[index]
                     if uid is None:
@@ -321,6 +321,7 @@ async def _duel(interaction, states, users, title, personality, view_class, real
                         before = snapshot(states)
                         damage = combat.resolve_move(state, opp, name, ult, log)
                         after = snapshot(states)
+                        primary_log = tuple(log[-2:])
                         extra = None
                         # Preserve the original atomic primary+bonus resolution;
                         # playback adds no new item-use window between the rolls.
@@ -335,17 +336,17 @@ async def _duel(interaction, states, users, title, personality, view_class, real
                         kind = 'heal'
                     else:
                         kind = 'skill' if name != state['moves'][0] else 'attack'
-                    await animate(before, Action(index, name, kind, damage, ult), round_number, after)
+                    await animate(before, Action(index, name, kind, damage, ult, primary_log), round_number, after)
                     if extra is not None:
                         extra_before, extra_after, extra_damage = extra
-                        await animate(extra_before, Action(index, state['moves'][0] + ' (bonus)', damage=extra_damage), round_number, extra_after)
+                        await animate(extra_before, Action(index, state['moves'][0] + ' (bonus)', damage=extra_damage, journal=tuple(log[-2:])), round_number, extra_after)
                 async with combat.lock_states(users):
                     before = snapshot(states)
                     combat.end_turn(state, opp, log)
                     close_defeated()
                     changed = before != snapshot(states)
                 if changed:
-                    await animate(before, Action(index, 'End-of-turn effects', 'status'), round_number)
+                    await animate(before, Action(index, 'End-of-turn effects', 'status', journal=tuple(log[-2:])), round_number)
             if winner is not None or min((s['hp'] for s in states)) <= 0:
                 break
         if winner is None:

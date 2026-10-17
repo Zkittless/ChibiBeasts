@@ -1,0 +1,235 @@
+{
+  "status": "passed",
+  "numeric_ink": [
+    {
+      "case": 0,
+      "fighter": 0,
+      "kind": "HP",
+      "value": "87 / 105",
+      "font_size": 24,
+      "content": [
+        125,
+        112,
+        294,
+        134
+      ],
+      "ink": [
+        165,
+        113,
+        254,
+        133
+      ]
+    },
+    {
+      "case": 0,
+      "fighter": 0,
+      "kind": "MP",
+      "value": "55 / 75",
+      "font_size": 24,
+      "content": [
+        125,
+        146,
+        294,
+        168
+      ],
+      "ink": [
+        172,
+        147,
+        247,
+        167
+      ]
+    },
+    {
+      "case": 0,
+      "fighter": 1,
+      "kind": "HP",
+      "value": "89 / 89",
+      "font_size": 24,
+      "content": [
+        445,
+        112,
+        614,
+        134
+      ],
+      "ink": [
+        492,
+        113,
+        567,
+        133
+      ]
+    },
+    {
+      "case": 0,
+      "fighter": 1,
+      "kind": "MP",
+      "value": "47 / 72",
+      "font_size": 24,
+      "content": [
+        445,
+        146,
+        614,
+        168
+      ],
+      "ink": [
+        492,
+        147,
+        567,
+        167
+      ]
+    },
+    {
+      "case": 1,
+      "fighter": 0,
+      "kind": "HP",
+      "value": "1,234,567 / 9,876,543",
+      "font_size": 16,
+      "content": [
+        125,
+        112,
+        294,
+        134
+      ],
+      "ink": [
+        132,
+        115,
+        287,
+        131
+      ]
+    },
+    {
+      "case": 1,
+      "fighter": 0,
+      "kind": "MP",
+      "value": "9,876 / 12,345",
+      "font_size": 24,
+      "content": [
+        125,
+        146,
+        294,
+        168
+      ],
+      "ink": [
+        132,
+        146,
+        287,
+        168
+      ]
+    },
+    {
+      "case": 1,
+      "fighter": 1,
+      "kind": "HP",
+      "value": "9,999,999 / 9,999,999",
+      "font_size": 16,
+      "content": [
+        445,
+        112,
+        614,
+        134
+      ],
+      "ink": [
+        452,
+        115,
+        607,
+        131
+      ]
+    },
+    {
+      "case": 1,
+      "fighter": 1,
+      "kind": "MP",
+      "value": "1 / 1",
+      "font_size": 24,
+      "content": [
+        445,
+        146,
+        614,
+        168
+      ],
+      "ink": [
+        506,
+        147,
+        553,
+        167
+      ]
+    },
+    {
+      "case": 2,
+      "fighter": 0,
+      "kind": "HP",
+      "value": "0 / 105",
+      "font_size": 24,
+      "content": [
+        125,
+        112,
+        294,
+        134
+      ],
+      "ink": [
+        172,
+        113,
+        247,
+        133
+      ]
+    },
+    {
+      "case": 2,
+      "fighter": 0,
+      "kind": "MP",
+      "value": "0 / 75",
+      "font_size": 24,
+      "content": [
+        125,
+        146,
+        294,
+        168
+      ],
+      "ink": [
+        179,
+        147,
+        240,
+        167
+      ]
+    },
+    {
+      "case": 2,
+      "fighter": 1,
+      "kind": "HP",
+      "value": "0 / 89",
+      "font_size": 24,
+      "content": [
+        445,
+        112,
+        614,
+        134
+      ],
+      "ink": [
+        499,
+        113,
+        560,
+        133
+      ]
+    },
+    {
+      "case": 2,
+      "fighter": 1,
+      "kind": "MP",
+      "value": "0 / 72",
+      "font_size": 24,
+      "content": [
+        445,
+        146,
+        614,
+        168
+      ],
+      "ink": [
+        499,
+        147,
+        560,
+        167
+      ]
+    }
+  ],
+  "minimum_ult_label_gap_px": 19,
+  "scope": "Actual production renderer at 640 px; mobile still at 320 px. No Discord login."
+}
