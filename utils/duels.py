@@ -1,19 +1,26 @@
 """Interactive duel runner. Every duel mode uses the same states and rules."""
 from contextlib import contextmanager, nullcontext
 from functools import wraps
+import asyncio
+import logging
 import aiosqlite
 import discord
 from utils import db as storage
 from utils import combat
 from utils.theme import hp_bar, COLORS
 active_fighters = set()
+DUEL_IO_TIMEOUT = 15
+
+
+class FighterBusyError(ValueError):
+    """An expected refusal to overlap a battle or collection transfer."""
 
 @contextmanager
 def reserve_fighters(users):
     """Reserve before the first await, including preparation and settlement."""
     ids = {uid for uid in users if uid is not None}
     if ids.intersection(active_fighters):
-        raise ValueError('A trainer is already in a battle or transfer. Finish it first.')
+        raise FighterBusyError('A trainer is already in a battle or transfer. Finish it first. In a duel, an inactive turn closes after 45 seconds.')
     active_fighters.update(ids)
     try:
         yield
@@ -60,6 +67,7 @@ class MoveView(discord.ui.View):
     def __init__(self, moves, ultimate, current_player_id, battle_state):
         super().__init__(timeout=45)
         self.chosen_move = None
+        self.error = None
         self.current_player_id = current_player_id
         self.message = None
         for i, name in enumerate(moves[:3]):
@@ -78,23 +86,35 @@ class MoveView(discord.ui.View):
         async def callback(interaction):
             if interaction.user.id != self.current_player_id:
                 return await interaction.response.send_message("It is your fellow trainer's turn.", ephemeral=True)
-            if self.chosen_move is not None:
-                return
+            # Acknowledge before waking the runner. Only the runner edits the
+            # battle message: a delayed callback edit could replace a NEW turn
+            # with this turn's disabled buttons and unregister its controls.
+            await interaction.response.defer()
+            if self.chosen_move is not None or self.is_finished():
+                return await interaction.followup.send('That turn has ended. Use the current move prompt.', ephemeral=True)
             self.chosen_move = (name, is_ultimate)
             for child in self.children:
                 child.disabled = True
             self.stop()
-            await interaction.response.edit_message(view=self)
         return callback
 
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
-        if self.message:
-            try:
-                await self.message.edit(view=self)
-            except discord.HTTPException:
-                pass
+        self.stop()
+
+    async def on_error(self, interaction, error, item):
+        logging.getLogger('chibibeasts.battle').error('Move input failed for trainer %s', self.current_player_id, exc_info=error)
+        self.error = error
+        self.stop()
+        try:
+            message = 'The battle input failed. This match will close; please try again.'
+            if interaction.response.is_done():
+                await interaction.followup.send(message, ephemeral=True)
+            else:
+                await interaction.response.send_message(message, ephemeral=True)
+        except discord.HTTPException:
+            pass
 
 def ai_move(state, opp, personality):
     if state['hp'] < state['max_hp'] * 0.55 and combat.can_use(state, state['moves'][1]) and combat.move_spec(state, state['moves'][1]).get('heal_percent'):
@@ -150,12 +170,22 @@ async def _duel(interaction, states, users, title, personality, view_class):
                         if state.get('image_url'):
                             embed.set_thumbnail(url=state['image_url'])
                         view = view_class(state['moves'], state['ultimate'], uid, state)
-                        if message:
-                            await message.edit(embed=embed, view=view)
-                        else:
-                            message = await interaction.channel.send(embed=embed, view=view)
+                        async with asyncio.timeout(DUEL_IO_TIMEOUT):
+                            if message:
+                                await message.edit(embed=embed, view=view)
+                            else:
+                                message = await interaction.channel.send(embed=embed, view=view)
                         view.message = message
-                        await view.wait()
+                        # View timers depend on Discord registering the view.
+                        # Keep an independent deadline so lost registration or
+                        # repeated unrelated clicks cannot hold a trainer forever.
+                        try:
+                            async with asyncio.timeout(view.timeout or 45):
+                                await view.wait()
+                        except TimeoutError:
+                            view.stop()
+                        if view.error is not None:
+                            raise view.error
                         if view.chosen_move is None:
                             timed_out = True
                             winner = 1 - index
@@ -181,17 +211,12 @@ async def _duel(interaction, states, users, title, personality, view_class):
                 timed_out = True
                 ratios = [s['hp'] / s['max_hp'] for s in states]
                 winner = None if abs(ratios[0] - ratios[1]) < 1e-06 else int(ratios[1] > ratios[0])
-        if message:
-            try:
-                await message.edit(view=None)
-            except discord.HTTPException:
-                pass
         return (winner, states, log, timed_out)
     finally:
         if view is not None:
             view.stop()
-        async with combat.lock_states(users):
-            try:
+        try:
+            async with combat.lock_states(users):
                 for state in states:
                     state['closed'] = True
                 async with storage.connect() as db:
@@ -199,9 +224,15 @@ async def _duel(interaction, states, users, title, personality, view_class):
                         if uid is not None:
                             await db.execute('UPDATE players SET ultimate_charges=? WHERE user_id=?', (state['ultimate_charges'], uid))
                     await db.commit()
-            finally:
-                for uid in ids:
-                    combat.active_states.pop(uid, None)
+        finally:
+            for uid in ids:
+                combat.active_states.pop(uid, None)
+            if message:
+                try:
+                    async with asyncio.timeout(DUEL_IO_TIMEOUT):
+                        await message.edit(view=None)
+                except (discord.HTTPException, TimeoutError):
+                    logging.getLogger('chibibeasts.battle').warning('Could not remove closed battle controls', exc_info=True)
 
 async def beast_exp(user_id, row_id, amount):
     async with storage.connect() as db:

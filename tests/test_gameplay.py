@@ -17,7 +17,9 @@ from utils.items import use_item
 from utils.rewards import shards
 
 def interaction(uid=42):
-    return SimpleNamespace(user=SimpleNamespace(id=uid, display_name='Trainer'), guild=None, response=SimpleNamespace(defer=AsyncMock(), send_message=AsyncMock()), followup=SimpleNamespace(send=AsyncMock()), channel=SimpleNamespace(send=AsyncMock()))
+    response = SimpleNamespace(defer=AsyncMock(), send_message=AsyncMock(), edit_message=AsyncMock())
+    response.is_done = lambda: bool(response.defer.await_count or response.send_message.await_count or response.edit_message.await_count)
+    return SimpleNamespace(user=SimpleNamespace(id=uid, display_name='Trainer'), guild=None, response=response, followup=SimpleNamespace(send=AsyncMock()), channel=SimpleNamespace(send=AsyncMock(), get_partial_message=lambda _: SimpleNamespace(edit=AsyncMock())), edit_original_response=AsyncMock())
 
 class DatabaseCase(unittest.IsolatedAsyncioTestCase):
 

@@ -3,6 +3,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 import aiosqlite
+import asyncio
+import json
+import logging
+from datetime import datetime, timezone
 from utils.db import (
     get_or_create_player, get_player, update_player,
     get_player_beasts, get_active_beast, get_inventory,
@@ -761,6 +765,7 @@ class Shop(commands.Cog):
                 next_step = 'Use /evolve with an eligible companion.'
             qs = f"`{qty}x` " if qty > 1 else ""
             await bi.followup.send(f"Purchased {qs}**{item['name']}**!\n`{total:,}g` spent - Balance: `{result['remaining']:,}g`\n{next_step}",ephemeral=True)
+            await view.refresh(bi, acknowledged=True)
             from utils.progress import track_quest_event, notify_quest_completions
             completed = await track_quest_event(bi.user.id, "spend_gold", amount=total)
             if completed and bi.channel:
@@ -811,7 +816,7 @@ class Shop(commands.Cog):
         # ── embed builders ─────────────────────────────────────────────────
         def make_embed(title, description, color="legendary"):
             emb = discord.Embed(title=f"🏪 {title}", description=description, color=COLORS.get(color, COLORS["legendary"]))
-            emb.set_footer(text="ChibiBeasts 🐾"+(" · Whimsy Merchant: 5% off gold prices at checkout" if merchant else ""))
+            emb.set_footer(text="ChibiBeasts 🐾 · Closes after 3 minutes of inactivity"+(" · Whimsy Merchant: 5% off gold prices at checkout" if merchant else ""))
             return emb
 
         def build_instant_embed(page, items):
@@ -878,8 +883,69 @@ class Shop(commands.Cog):
                 self_v.section  = section
                 self_v.page     = 1
                 self_v.week_data = {}
+                self_v.message = None
+                self_v._render_lock = asyncio.Lock()
+                self_v._section_select = None
+                self_v._pagination = None
+                self_v._read_week_data()
                 self_v._load_section_data()
                 self_v._rebuild()
+
+            def _read_week_data(self_v):
+                try:
+                    limits = json.loads(player.get('shard_shop_week') or '{}')
+                except (TypeError, json.JSONDecodeError):
+                    limits = {}
+                week = datetime.now(timezone.utc).strftime('%G-W%V')
+                self_v.week_data = limits if isinstance(limits, dict) and limits.get('week') == week else {}
+
+            async def refresh(self_v, bi, *, section=None, delta=0, acknowledged=False):
+                if bi.user.id != uid:
+                    return await bi.response.send_message("✦ This isn't your shop!", ephemeral=True)
+                # Acknowledge before SQLite or another render can make us wait.
+                if not acknowledged:
+                    await bi.response.defer()
+                # Serialise the entire edit, including HTTP. Otherwise Discord
+                # can display one page while the view registers another page's
+                # controls when two tab responses complete out of order.
+                async with self_v._render_lock:
+                    if self_v.is_finished():
+                        return await bi.followup.send('This shop has closed. Use /shop to reopen it.', ephemeral=True)
+                    fresh = await get_player(uid)
+                    if fresh:
+                        player.update(fresh)
+                    self_v._read_week_data()
+                    if section is not None:
+                        self_v.section = section
+                        self_v.page = 1
+                    self_v.page += delta
+                    self_v._rebuild()
+                    async with asyncio.timeout(15):
+                        await bi.edit_original_response(embed=self_v._current_embed(), view=self_v)
+
+            async def on_error(self_v, bi, error, item):
+                logging.getLogger('chibibeasts.shop').error(
+                    'Shop callback failed: trainer=%s section=%s page=%s control=%s',
+                    uid, self_v.section, self_v.page, getattr(item, 'custom_id', None), exc_info=error,
+                )
+                message = 'The shop request failed. Check /inventory for any completed purchase, then use /shop to reopen.'
+                try:
+                    if bi.response.is_done():
+                        await bi.followup.send(message, ephemeral=True)
+                    else:
+                        await bi.response.send_message(message, ephemeral=True)
+                except discord.HTTPException:
+                    pass
+
+            async def on_timeout(self_v):
+                async with self_v._render_lock:
+                    for child in self_v.children:
+                        child.disabled = True
+                    if self_v.message:
+                        try:
+                            await self_v.message.edit(content='Shop closed after 3 minutes of inactivity. Use /shop to reopen.', view=self_v)
+                        except discord.HTTPException:
+                            pass
 
             def _load_section_data(self_v):
                 self_v._instant_items  = get_instant_eggs()
@@ -891,7 +957,7 @@ class Shop(commands.Cog):
             def _rebuild(self_v):
                 self_v.clear_items()
                 # Row 0: section select
-                select = discord.ui.Select(
+                select = self_v._section_select or discord.ui.Select(
                     placeholder="📂 Switch section…",
                     options=[
                         discord.SelectOption(label="⚡ Instant Eggs",     value="instant",    description="Hatch immediately — no waiting",      default=self_v.section=="instant"),
@@ -903,13 +969,11 @@ class Shop(commands.Cog):
                     ],
                     row=0
                 )
+                self_v._section_select = select
+                for option in select.options:
+                    option.default = option.value == self_v.section
                 async def _on_select(bi):
-                    if bi.user.id != uid:
-                        return await bi.response.send_message("✦ This isn't your shop!", ephemeral=True)
-                    self_v.section = bi.data["values"][0]
-                    self_v.page    = 1
-                    self_v._rebuild()
-                    await bi.response.edit_message(embed=self_v._current_embed(), view=self_v)
+                    await self_v.refresh(bi, section=bi.data['values'][0])
                 select.callback = _on_select
                 self_v.add_item(select)
                 # Rows 1-3: buy buttons; Row 4: pagination
@@ -1022,29 +1086,35 @@ class Shop(commands.Cog):
                                 result,remaining,limits=await purchase_shard(uid,_sid)
                                 self_v.week_data=limits
                                 await bi.followup.send(f"{result}\nRemaining: {remaining} Celestial Shards.",ephemeral=True)
+                                await self_v.refresh(bi, acknowledged=True)
                             except ValueError as error:await bi.followup.send(str(error),ephemeral=True)
                         btn.callback=_cb
                         self_v.add_item(btn)
                     self_v._add_pagination(total, s)
 
             def _add_pagination(self_v, total, s):
-                if total <= 1: return
-                prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, disabled=self_v.page<=1, row=4)
-                pg   = discord.ui.Button(label=f"{self_v.page}/{total}", style=discord.ButtonStyle.secondary, disabled=True, row=4)
-                nxt  = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, disabled=self_v.page>=total, row=4)
-                async def _prev(bi, _v=self_v, _s=s):
-                    if bi.user.id!=uid: return await bi.response.send_message("✦ Not your shop!",ephemeral=True)
-                    _v.page -= 1; _v._rebuild()
-                    await bi.response.edit_message(embed=_v._current_embed(), view=_v)
-                async def _nxt(bi, _v=self_v, _s=s):
-                    if bi.user.id!=uid: return await bi.response.send_message("✦ Not your shop!",ephemeral=True)
-                    _v.page += 1; _v._rebuild()
-                    await bi.response.edit_message(embed=_v._current_embed(), view=_v)
-                prev.callback=_prev; nxt.callback=_nxt
+                if self_v._pagination is None:
+                    prev = discord.ui.Button(label="◀", style=discord.ButtonStyle.secondary, row=4)
+                    pg = discord.ui.Button(style=discord.ButtonStyle.secondary, disabled=True, row=4)
+                    nxt = discord.ui.Button(label="▶", style=discord.ButtonStyle.secondary, row=4)
+                    async def _prev(bi):
+                        await self_v.refresh(bi, delta=-1)
+                    async def _nxt(bi):
+                        await self_v.refresh(bi, delta=1)
+                    prev.callback = _prev
+                    nxt.callback = _nxt
+                    self_v._pagination = (prev, pg, nxt)
+                prev, pg, nxt = self_v._pagination
+                prev.disabled = self_v.page <= 1
+                pg.label = f'{self_v.page}/{total}'
+                nxt.disabled = self_v.page >= total
                 self_v.add_item(prev); self_v.add_item(pg); self_v.add_item(nxt)
 
         view = ShopView("instant")
-        await interaction.followup.send(embed=view._current_embed(), view=view)
+        message = await interaction.followup.send(embed=view._current_embed(), view=view, wait=True)
+        # Use the bot's channel message handle for expiry edits, even after the
+        # original slash-command webhook token has expired during active browsing.
+        view.message = interaction.channel.get_partial_message(message.id) if interaction.channel else message
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Profile(bot))

@@ -693,12 +693,21 @@ class Battle(commands.Cog):
             "the_archivist":"*'The outcome is noted. Several of the other versions of this conversation went the same way. You'll figure it out.'*",
         }
 
+        async def settle_spar_gold(amount):
+            # Mark the daily attempt as paid in the SAME transaction. If a
+            # later notification fails, retrying must not award the gold again.
+            async with storage.connect() as db:
+                await db.execute('BEGIN IMMEDIATE')
+                await db.execute('UPDATE players SET gold=gold+?,total_gold_earned=total_gold_earned+? WHERE user_id=?', (amount, amount, interaction.user.id))
+                await db.execute('UPDATE daily_quests SET progress=2 WHERE user_id=? AND quest_id=? AND date=?', (interaction.user.id, spar_key, today))
+                await db.commit()
+
         async def on_win(embed, p_state, e_state, timed_out=False):
             if timed_out:
                 # Timeout on a spar: small gold reward, no shard, no relationship upgrade.
                 # The NPC wasn't actually bested — just outlasted.
                 partial_gold = random.randint(30, 80)
-                await credit_gold(interaction.user.id, partial_gold)
+                await settle_spar_gold(partial_gold)
                 _lvl, _, _leveled = await award_player_exp(interaction.user.id, random.randint(active_row["level"] * 8, active_row["level"] * 12))
                 NPC_TIMEOUT_LINES = {
                     "maren":         "*'A draw,'* says Maren. *'Barkley doesn't mind. Come back when you can end it properly.'*",
@@ -722,20 +731,19 @@ class Battle(commands.Cog):
             # All writes for a spar win in one connection — the old code opened
             # a connection here then called save_quest_state() inside it, which
             # opens another connection, causing "database is locked" errors.
-            from cogs.questline import get_quest_state, RELATIONSHIP_LEVELS
-            import json as _json
-            qs = await get_quest_state(interaction.user.id)
-            current_rel = qs["npc_relationships"].get(npc_name, "stranger")
-            levels = list(RELATIONSHIP_LEVELS.keys())
-            rel_advanced = False
-            next_rel = current_rel
-            if levels.index(current_rel) < len(levels) - 1:
-                next_rel = levels[levels.index(current_rel) + 1]
-                qs["npc_relationships"][npc_name] = next_rel
-                rel_advanced = True
-
+            from utils.story import RELATIONSHIP_LEVELS, relationship_order
             async with storage.connect() as db:
                 await db.execute("BEGIN IMMEDIATE")
+                # Read and advance inside the reward transaction. Preserve
+                # other NPCs and any story progress made during the spar.
+                async with db.execute("SELECT npc_relationships FROM player_questline WHERE user_id=?", (interaction.user.id,)) as c:
+                    latest = await c.fetchone()
+                rels = json.loads(latest[0] or "{}") if latest else {}
+                current_rel = rels.get(npc_name, "stranger")
+                levels = list(RELATIONSHIP_LEVELS)
+                next_rel = levels[min(relationship_order(current_rel) + 1, len(levels) - 1)]
+                rel_advanced = next_rel != current_rel
+                rels[npc_name] = next_rel
                 from utils.rewards import shards
                 await shards(db,interaction.user.id,1)
                 # Gold and charge share the reward transaction.
@@ -745,11 +753,6 @@ class Battle(commands.Cog):
                 )
                 # Relationship advancement written directly — same connection
                 if rel_advanced:
-                    async with db.execute("SELECT npc_relationships FROM player_questline WHERE user_id=?",(interaction.user.id,)) as c:latest=await c.fetchone()
-                    latest_rels=json.loads(latest[0] or "{}") if latest else {}
-                    from utils.story import relationship_order
-                    for key,value in latest_rels.items():
-                        if relationship_order(value)>relationship_order(rels.get(key,"stranger")):rels[key]=value
                     await db.execute(
                         """INSERT INTO player_questline
                                (user_id, npc_relationships, last_updated)
@@ -757,8 +760,9 @@ class Battle(commands.Cog):
                            ON CONFLICT(user_id) DO UPDATE SET
                                npc_relationships = excluded.npc_relationships,
                                last_updated      = excluded.last_updated""",
-                        (interaction.user.id, _json.dumps(qs["npc_relationships"]))
+                        (interaction.user.id, json.dumps(rels))
                     )
+                await db.execute('UPDATE daily_quests SET progress=2 WHERE user_id=? AND quest_id=? AND date=?', (interaction.user.id, spar_key, today))
                 await db.commit()
 
             # Player EXP (outside the DB block — uses update_player which opens its own conn)
@@ -786,7 +790,7 @@ class Battle(commands.Cog):
 
         async def on_loss(embed, p_state, e_state):
             loss_exp = random.randint(active_row["level"] * 5, active_row["level"] * 8)
-            await credit_gold(interaction.user.id, 50)
+            await settle_spar_gold(50)
             await award_player_exp(interaction.user.id, loss_exp)
             async with storage.connect() as _udb:
                 await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
@@ -829,12 +833,12 @@ class Battle(commands.Cog):
                 on_loss=on_loss,
                 reserved=True,
             )
-        except Exception:
-            # Release the slot so a failed spar never burns the player's daily
-            # attempt. The global handler in bot.py still reports the error.
+        except BaseException:
+            # Release an unpaid slot on errors AND cancellation. Paid attempts
+            # remain claimed even when a later message or quest callback fails.
             async with storage.connect() as db:
                 await db.execute(
-                    "DELETE FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
+                    "DELETE FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ? AND progress=1",
                     (interaction.user.id, spar_key, today)
                 )
                 await db.commit()
