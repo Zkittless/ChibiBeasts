@@ -158,7 +158,7 @@ class SparInteractions(DatabaseCase):
 
         async def display(**kwargs):
             visible['view'] = kwargs.get('view')
-            if len(views) > 1 and kwargs.get('view') is views[1]:
+            if views and kwargs.get('view') is views[0] and views[0].turn_id > 1:
                 next_ready.set()
 
         message = SimpleNamespace(edit=AsyncMock(side_effect=display))
@@ -183,7 +183,8 @@ class SparInteractions(DatabaseCase):
             await asyncio.wait_for(next_ready.wait(), 1)
             release.set()
             await callback
-            self.assertIs(visible['view'], views[1])
+            self.assertIs(visible['view'], views[0])
+            self.assertEqual(len(views), 1)
             click.response.defer.assert_awaited_once()
         finally:
             release.set()
@@ -212,6 +213,7 @@ class SparInteractions(DatabaseCase):
     async def test_duplicate_and_stale_move_inputs_are_acknowledged_once_per_click(self):
         state = (await self.states())[0]
         view = MoveView(state['moves'], state['ultimate'], 42, state)
+        view.open_turn()
         clicks = [component(), component()]
         await asyncio.gather(*(view.children[i].callback(click) for i, click in enumerate(clicks)))
         self.assertEqual(view.chosen_move, (state['moves'][0], False))
@@ -219,7 +221,8 @@ class SparInteractions(DatabaseCase):
             click.response.defer.assert_awaited_once()
             click.response.edit_message.assert_not_awaited()
         self.assertEqual(sum(click.followup.send.await_count for click in clicks), 1)
-        self.assertTrue(view.is_finished())
+        self.assertFalse(view.is_finished())
+        view.stop()
 
     async def test_stalled_discord_send_releases_reservation(self):
         states = await self.states()

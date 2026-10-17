@@ -65,48 +65,92 @@ async def prepare_state(user_id, row, data, perks, *, consume=True):
 class MoveView(discord.ui.View):
 
     def __init__(self, moves, ultimate, current_player_id, battle_state):
-        super().__init__(timeout=45)
+        # The runner owns the 45-second turn deadline. Keep this view registered
+        # across turns, HTTP redraws and final cleanup so every visible button
+        # still reaches a handler, even when the next prompt is in flight.
+        super().__init__(timeout=None)
+        self._input_ready = asyncio.Event()
+        self._accepting = False
+        self._closed = False
+        self.turn_id = 0
+        self.message = None
+        for i in range(3):
+            button = discord.ui.Button(style=discord.ButtonStyle.primary, row=0)
+            button.callback = self.make_callback(i)
+            self.add_item(button)
+        button = discord.ui.Button(style=discord.ButtonStyle.danger, row=1)
+        button.callback = self.make_callback(0, True)
+        self.add_item(button)
+        self.prepare_turn(moves, ultimate, current_player_id, battle_state)
+
+    def prepare_turn(self, moves, ultimate, current_player_id, battle_state):
+        self._accepting = False
+        self._input_ready.clear()
         self.chosen_move = None
         self.error = None
+        self.turn_id += 1
         self.current_player_id = current_player_id
-        self.message = None
-        for i, name in enumerate(moves[:3]):
+        self.moves = tuple(moves[:3])
+        self.ultimate = ultimate
+        for i, button in enumerate(self.children[:3]):
+            name = self.moves[i] if i < len(self.moves) else 'Unavailable'
             spec = combat.move_spec(battle_state, name)
-            label = f"{name} · {spec.get('mana_cost', 0)} MP"
-            button = discord.ui.Button(label=label[:80], style=discord.ButtonStyle.primary, disabled=not combat.can_use(battle_state, name), row=0)
-            button.callback = self.make_callback(name)
-            self.add_item(button)
+            button.label = f"{name} · {spec.get('mana_cost', 0)} MP"[:80]
+            button.disabled = i >= len(self.moves) or not combat.can_use(battle_state, name)
         charges = battle_state.get('ultimate_charges', 0)
-        button = discord.ui.Button(label=f'⚡ {ultimate} · {charges}/3 · 50 MP'[:80], style=discord.ButtonStyle.danger, disabled=not combat.can_use(battle_state, ultimate, True), row=1)
-        button.callback = self.make_callback(ultimate, True)
-        self.add_item(button)
+        self.children[3].label = f'⚡ {ultimate} · {charges}/3 · 50 MP'[:80]
+        self.children[3].disabled = not combat.can_use(battle_state, ultimate, True)
 
-    def make_callback(self, name, is_ultimate=False):
+    def open_turn(self):
+        self._accepting = not self._closed and not self.is_finished()
+
+    def close_input(self):
+        self._closed = True
+        self._accepting = False
+        self._input_ready.set()
+        for child in self.children:
+            child.disabled = True
+
+    async def wait(self):
+        await self._input_ready.wait()
+        return self.chosen_move is None
+
+    def stop(self):
+        self.close_input()
+        super().stop()
+
+    def make_callback(self, index, is_ultimate=False):
 
         async def callback(interaction):
             if interaction.user.id != self.current_player_id:
                 return await interaction.response.send_message("It is your fellow trainer's turn.", ephemeral=True)
-            # Acknowledge before waking the runner. Only the runner edits the
-            # battle message: a delayed callback edit could replace a NEW turn
-            # with this turn's disabled buttons and unregister its controls.
+            turn_id, accepting = self.turn_id, self._accepting
             await interaction.response.defer()
-            if self.chosen_move is not None or self.is_finished():
-                return await interaction.followup.send('That turn has ended. Use the current move prompt.', ephemeral=True)
+            if self._closed or self.is_finished():
+                return await interaction.followup.send('This battle has ended.', ephemeral=True)
+            if not accepting or not self._accepting or turn_id != self.turn_id:
+                return await interaction.followup.send('Your move is being resolved. Wait for the next move prompt.', ephemeral=True)
+            name = self.ultimate if is_ultimate else self.moves[index]
             self.chosen_move = (name, is_ultimate)
+            self._accepting = False
             for child in self.children:
                 child.disabled = True
-            self.stop()
+            # Wake the runner without stopping/unregistering the UI. A stopped
+            # view drops subsequent gateway clicks before our callback can ack.
+            self._input_ready.set()
         return callback
 
     async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-        self.stop()
+        self.close_input()
 
     async def on_error(self, interaction, error, item):
-        logging.getLogger('chibibeasts.battle').error('Move input failed for trainer %s', self.current_player_id, exc_info=error)
+        logging.getLogger('chibibeasts.battle').error(
+            'Move input failed: trainer=%s message=%s turn=%s control=%s',
+            self.current_player_id, getattr(self.message, 'id', None), self.turn_id,
+            getattr(item, 'custom_id', None), exc_info=error,
+        )
         self.error = error
-        self.stop()
+        self.close_input()
         try:
             message = 'The battle input failed. This match will close; please try again.'
             if interaction.response.is_done():
@@ -169,21 +213,24 @@ async def _duel(interaction, states, users, title, personality, view_class):
                             embed.set_image(url=opp['image_url'])
                         if state.get('image_url'):
                             embed.set_thumbnail(url=state['image_url'])
-                        view = view_class(state['moves'], state['ultimate'], uid, state)
+                        if view is None:
+                            view = view_class(state['moves'], state['ultimate'], uid, state)
+                        else:
+                            view.prepare_turn(state['moves'], state['ultimate'], uid, state)
                         async with asyncio.timeout(DUEL_IO_TIMEOUT):
                             if message:
                                 await message.edit(embed=embed, view=view)
                             else:
                                 message = await interaction.channel.send(embed=embed, view=view)
                         view.message = message
-                        # View timers depend on Discord registering the view.
-                        # Keep an independent deadline so lost registration or
-                        # repeated unrelated clicks cannot hold a trainer forever.
+                        view.open_turn()
+                        # Limit this prompt independently of the long-lived UI;
+                        # unrelated clicks cannot extend the decision deadline.
                         try:
                             async with asyncio.timeout(view.timeout or 45):
                                 await view.wait()
                         except TimeoutError:
-                            view.stop()
+                            view.close_input()
                         if view.error is not None:
                             raise view.error
                         if view.chosen_move is None:
@@ -214,7 +261,7 @@ async def _duel(interaction, states, users, title, personality, view_class):
         return (winner, states, log, timed_out)
     finally:
         if view is not None:
-            view.stop()
+            view.close_input()
         try:
             async with combat.lock_states(users):
                 for state in states:
@@ -227,12 +274,19 @@ async def _duel(interaction, states, users, title, personality, view_class):
         finally:
             for uid in ids:
                 combat.active_states.pop(uid, None)
-            if message:
-                try:
+            try:
+                if message:
                     async with asyncio.timeout(DUEL_IO_TIMEOUT):
                         await message.edit(view=None)
-                except (discord.HTTPException, TimeoutError):
-                    logging.getLogger('chibibeasts.battle').warning('Could not remove closed battle controls', exc_info=True)
+            except discord.NotFound:
+                # A trainer/moderator may have removed the panel. Cleanup is
+                # already complete locally; this is not another battle failure.
+                logging.getLogger('chibibeasts.battle').info('Battle message %s was already removed at cleanup', getattr(message, 'id', None))
+            except (discord.HTTPException, TimeoutError):
+                logging.getLogger('chibibeasts.battle').warning('Could not remove closed battle controls', exc_info=True)
+            finally:
+                if view is not None:
+                    view.stop()
 
 async def beast_exp(user_id, row_id, amount):
     async with storage.connect() as db:
