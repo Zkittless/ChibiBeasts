@@ -4,7 +4,9 @@ import random
 import time
 import json
 import logging
+import math
 from contextlib import AsyncExitStack, suppress
+from collections import deque
 import aiosqlite
 import discord
 from utils import db as storage, combat
@@ -12,6 +14,7 @@ from utils.duels import prepare_state, active_fighters
 from utils.gameplay import add_stack
 from utils.theme import COLORS, hp_bar
 from utils.raid_balance import BOSS_INTERVAL
+from utils.raid_art import RaidPresentation, Event, MAX_EVENTS, capture
 active_raids = {}
 open_lobbies = set()
 RAID_IO_TIMEOUT = 15
@@ -176,6 +179,10 @@ class RaidSession:
         self._refresh_task = None
         self._refresh_revision = 0
         self._render_lock = asyncio.Lock()
+        self.presentation = RaidPresentation()
+        self._art_events = deque(maxlen=MAX_EVENTS)
+        self._art_sequence = 0
+        self._art_urgent = asyncio.Event()
         self._finish_task = None
         self._finished = asyncio.Event()
         self._display_error = None
@@ -277,15 +284,16 @@ class RaidSession:
 
     def embed(self):
         hp = self.enemy['hp']
-        description = f"{hp_bar(hp, self.enemy['max_hp'])}\n\n{self.last_event}"
+        remaining = max(0, min(600, math.ceil(600 - (self.clock() - self.started))))
+        description = f"{hp_bar(hp, self.enemy['max_hp'])}\n{remaining // 60}:{remaining % 60:02} remaining · {len(self.users)}/10 trainers\n\n{self.last_event}"
         if self.pending:
             description += f"\n\n⚠️ **{MECHANICS[self.boss['id']][0]}** — {MECHANICS[self.boss['id']][1]}\nWeave: {self.weaves}/{self.weave_required()}"
         embed = discord.Embed(title=f"⚔️ {self.boss['name']} · Lv.{self.enemy.get('level', 1)}", description=description, color=COLORS['legendary'])
         lines = []
-        for uid in self.users:
+        for position, uid in enumerate(self.users, 1):
             state = self.state(uid)
             name = discord.utils.escape_markdown(state['name'])
-            lines.append(f"<@{uid}> · **{name}**\n{state['hp']}/{state['max_hp']} HP · {state['mana']}/{state['max_mana']} MP · ⚡ {state.get('ultimate_charges', 0)}/3 · {self.action_cooldown(uid):.1f}s actions · {self.damage[uid]} damage / {self.support[uid]} support")
+            lines.append(f"**{position:02}** <@{uid}> · **{name}**\n{state['hp']}/{state['max_hp']} HP · {state['mana']}/{state['max_mana']} MP · ⚡ {state.get('ultimate_charges', 0)}/3 · {self.action_cooldown(uid):.1f}s actions · {self.damage[uid]} damage / {self.support[uid]} support")
         chunk = ''
         for line in lines:
             if len(chunk) + len(line) + 2 > 1024:
@@ -298,6 +306,85 @@ class RaidSession:
         embed.set_footer(text='Weave answers patterns · Tend heals · Speed controls action recovery · Bosses resist repeated stuns')
         return embed
 
+    def _record_art(self, uid, kind, damage=0, target=None):
+        if self.presentation is not None and self.presentation.enabled:
+            self._art_sequence += 1
+            self._art_events.append(Event(self._art_sequence, uid, kind, damage, target))
+
+    async def _capture_art(self, outcome=''):
+        async with self.lock, combat.lock_states(self.users):
+            return (capture(self, MECHANICS[self.boss['id']][0], outcome),
+                    tuple(self._art_events), self._art_sequence, self.embed())
+
+    async def _mark_warning_visible(self, phase):
+        async with self.lock:
+            if self.pending and self.phase == phase and self._pattern_needs_publish:
+                self.pattern_started = self.clock()
+                self._pattern_needs_publish = False
+
+    async def _prepare_art(self, scene, events, *, final=False):
+        if final:
+            return await self.presentation.prepare(scene, events)
+        rendering = asyncio.create_task(self.presentation.prepare(scene, events))
+        urgent = asyncio.create_task(self._art_urgent.wait())
+        try:
+            done, _ = await asyncio.wait((rendering, urgent), return_when=asyncio.FIRST_COMPLETED)
+            if urgent in done:
+                return None
+            return await rendering
+        finally:
+            for task in (rendering, urgent):
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(rendering, urgent, return_exceptions=True)
+
+    async def _publish_panel(self, *, initial=False, outcome='', final=False):
+        """Caller owns _render_lock. Never hold combat locks during media/I/O."""
+        if self.presentation is None:
+            async with asyncio.timeout(RAID_IO_TIMEOUT):
+                if initial:
+                    self.message = await self.channel.send(embed=self.embed(), view=self.view)
+                else:
+                    await self.message.edit(embed=self.embed(), view=None if final else self.view)
+            return True
+        scene, events, sequence, embed = await self._capture_art(outcome)
+        view = None if final else self.view
+        if scene.pending and self._pattern_needs_publish and not initial and not final:
+            # Native warning first. Retain the last attachment so controls do not
+            # jump while a renderer is busy, then refresh the arena separately.
+            async with asyncio.timeout(RAID_IO_TIMEOUT):
+                self.message = await self.presentation.publish(self.channel, self.message, embed,
+                                                               view, keep=True)
+            await self._mark_warning_visible(scene.phase)
+        artwork = await self._prepare_art(scene, events, final=final or initial)
+        if not final and not initial:
+            async with self.lock:
+                if self.closed or self.enemy['hp'] <= 0:
+                    return False
+                if self._art_urgent.is_set() or (self.phase, bool(self.pending)) != (scene.phase, scene.pending):
+                    return False
+        async with asyncio.timeout(RAID_IO_TIMEOUT):
+            self.message = await self.presentation.publish(self.channel, self.message, embed, view,
+                                                           artwork=artwork, keep=artwork is None and self.presentation.enabled and not final)
+        if initial and self.presentation.previous is None:
+            self.presentation.previous = scene
+        if artwork and self.presentation.filename:
+            self.presentation.accepted(scene, sequence)
+            while self._art_events and self._art_events[0].sequence <= sequence:
+                self._art_events.popleft()
+        elif not self.presentation.enabled:
+            self._art_events.clear()
+        await self._mark_warning_visible(scene.phase)
+        if final and artwork and artwork.seconds and self.presentation.filename:
+            # Rewards are already saved and controls removed. Only the closing
+            # scene waits for playback; active player callbacks never wait.
+            await self.presentation.sleep(artwork.seconds + .2)
+            still = await self.presentation.prepare(scene)
+            if still:
+                async with asyncio.timeout(RAID_IO_TIMEOUT):
+                    self.message = await self.presentation.publish(self.channel, self.message, embed, None, artwork=still)
+        return True
+
     async def refresh(self):
         if not self.closed and self.message:
             self._refresh_revision += 1
@@ -306,25 +393,29 @@ class RaidSession:
 
     async def _flush_refresh(self):
         while not self.closed and self.message:
-            await asyncio.sleep(self.refresh_interval)
+            if self.refresh_interval:
+                with suppress(TimeoutError):
+                    async with asyncio.timeout(self.refresh_interval):
+                        await self._art_urgent.wait()
+            else:
+                await asyncio.sleep(0)
+            self._art_urgent.clear()
             async with self._render_lock:
                 if self.closed or not self.message:
                     return
                 revision, phase = self._refresh_revision, self.phase
                 try:
-                    async with asyncio.timeout(RAID_IO_TIMEOUT):
-                        await self.message.edit(embed=self.embed(), view=self.view)
-                    if self.pending and self.phase == phase and self._pattern_needs_publish:
-                        # The full response window starts when the warning is visible.
-                        self.pattern_started = self.clock()
-                        self._pattern_needs_publish = False
+                    published = await self._publish_panel()
+                    if self.presentation is None:
+                        await self._mark_warning_visible(phase)
                 except (discord.NotFound, discord.Forbidden, TimeoutError):
                     self._display_error = ValueError('The raid panel is unavailable. This raid has closed; check /profile before starting another.')
                     self._finished.set()
                     return
                 except discord.HTTPException:
                     logging.getLogger(__name__).warning('Raid display update failed', exc_info=True)
-                if revision == self._refresh_revision:
+                    published = True
+                if published and revision == self._refresh_revision:
                     return
 
     async def _stop_refresh(self):
@@ -338,8 +429,8 @@ class RaidSession:
         self.view = RaidView(self)
         self.started = self.clock()
         try:
-            async with asyncio.timeout(RAID_IO_TIMEOUT):
-                self.message = await self.channel.send(embed=self.embed(), view=self.view)
+            async with self._render_lock:
+                await self._publish_panel(initial=True)
             while not self.closed and self.clock() - self.started < 600:
                 try:
                     async with asyncio.timeout(min(BOSS_INTERVAL, max(0, 600 - (self.clock() - self.started)))):
@@ -409,6 +500,7 @@ class RaidSession:
         if not combat.begin_turn(self.enemy, self.state(alive[0]), log):
             combat.end_turn(self.enemy, self.state(alive[0]), log)
             self.last_event = ' · '.join(log[-2:]) or 'The creature pauses.'
+            self._record_art(None, 'status')
             return
         ready_pattern = self.pending and not self._pattern_needs_publish and self.clock() - self.pattern_started >= self.pattern_grace
         if ready_pattern:
@@ -436,6 +528,7 @@ class RaidSession:
             self.pending = None
             self.weaves = 0
             self.weavers.clear()
+            self._art_urgent.set()
         else:
             for uid in alive:
                 state = self.state(uid)
@@ -444,6 +537,7 @@ class RaidSession:
                 combat.resolve_hit(self.enemy, state, damage, log)
             self.last_event = f"{self.boss['name']} sweeps across the party. Guard, tend an ally, or swap a wounded companion."
         combat.end_turn(self.enemy, self.state(alive[0]), [])
+        self._record_art(None, 'boss')
 
     async def record_knockouts(self):
         knocked_out = [state for uid in self.users for state in self.party[uid]
@@ -498,6 +592,8 @@ class RaidSession:
             raise RaidCooldownError(f'Your companion is ready for that action in {max(.1, remaining):.1f}s.')
         log = []
         damage = 0
+        target_uid = None
+        animation_kind = kind
         if kind == 'swap':
             count = len(self.party[uid])
             options = [(self.slots[uid] + offset) % count for offset in range(1, count)
@@ -523,6 +619,7 @@ class RaidSession:
             if state['mana'] < 15:
                 raise ValueError('Tending an ally needs 15 mana.')
             other, target = min(targets, key=lambda pair: pair[1]['hp'] / pair[1]['max_hp'])
+            target_uid = other
             state['mana'] -= 15
             target['status'] = None
             target['status_turns'] = 0
@@ -535,6 +632,8 @@ class RaidSession:
             move = state['ultimate'] if ult else state['moves'][index]
             if not combat.can_use(state, move, ult):
                 raise ValueError('Not enough mana or ultimate charge. Attack or guard to build resources.')
+            if combat.move_spec(state, move, ult).get('heal_percent'):
+                animation_kind = 'heal'
             if combat.begin_turn(state, self.enemy, log):
                 old_hp = state['hp']
                 old = self.enemy['hp']
@@ -564,8 +663,10 @@ class RaidSession:
             self.weavers.clear()
             self.pattern_started = self.clock()
             self._pattern_needs_publish = bool(self.message)
+            self._art_urgent.set()
             self.last_event = MECHANICS[self.boss['id']][1]
         defeated = self.enemy['hp'] <= 0
+        self._record_art(uid, animation_kind, damage, target_uid)
         return damage, defeated
 
     async def finish(self, victory):
@@ -625,7 +726,7 @@ class RaidSession:
                 async with self._render_lock:
                     if self.message:
                         try:
-                            await self.message.edit(embed=self.embed(), view=None)
+                            await self._publish_panel(final=True, outcome='victory' if victory else 'defeat')
                         except discord.NotFound:
                             logging.getLogger(__name__).info('Raid panel %s was already removed; rewards are saved', getattr(self.message, 'id', None))
                         except discord.HTTPException:

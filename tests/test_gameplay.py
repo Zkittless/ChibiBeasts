@@ -33,6 +33,10 @@ class DatabaseCase(unittest.IsolatedAsyncioTestCase):
             presentation = patch('utils.duels.BattlePresentation', return_value=None)
             presentation.start()
             self.patches.append(presentation)
+        if not getattr(self, 'raid_art_enabled', False):
+            presentation = patch('utils.raids.RaidPresentation', return_value=None)
+            presentation.start()
+            self.patches.append(presentation)
         for module_name in ('utils.db', 'utils.progress', 'cogs.battle', 'cogs.world', 'cogs.ranked', 'cogs.utilities', 'utils.sanctuary'):
             module = importlib.import_module(module_name)
             if hasattr(module, 'DB_PATH'):

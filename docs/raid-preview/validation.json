@@ -1,0 +1,88 @@
+{
+  "size": [
+    640,
+    596
+  ],
+  "scenes": {
+    "corrupted_leviathan-4": {
+      "bytes": 585502,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "corrupted_leviathan-10": {
+      "bytes": 890404,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "corrupted_fenrir-4": {
+      "bytes": 631408,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "corrupted_fenrir-10": {
+      "bytes": 950299,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "corrupted_dragon-4": {
+      "bytes": 498687,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "corrupted_dragon-10": {
+      "bytes": 767791,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_chronos-4": {
+      "bytes": 669301,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_chronos-10": {
+      "bytes": 997138,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_genesis-4": {
+      "bytes": 662995,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_genesis-10": {
+      "bytes": 968248,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_abyss-4": {
+      "bytes": 638347,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    "ancient_abyss-10": {
+      "bytes": 957431,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    }
+  },
+  "performance": {
+    "samples": 6,
+    "render_median_ms": 245.96,
+    "render_max_ms": 280.99,
+    "event_loop_delay_p95_ms": 8.22,
+    "event_loop_delay_max_ms": 12.36,
+    "scope": "Synthetic local rendering, excludes Discord upload and client playback latency."
+  }
+}
