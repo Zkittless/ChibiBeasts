@@ -1,0 +1,95 @@
+ChibiBeasts: sparring stalls and shop interactions
+Branch: fix/interaction-stalls
+Based on: origin/main 7a66bc7 (merged economy audit)
+
+What the supplied error establishes
+
+The /sparr traceback is an overlap rejection from reserve_fighters: the trainer
+was already reserved by a battle or collection transfer. It cannot, by itself,
+identify why the original interaction stopped. A second /sparr must not clear
+that reservation while the original match is still running.
+
+The following faults were reproduced locally against the merged production
+code. They explain ways the reported symptoms can occur. There was no access
+to live Railway logs, Discord sessions or the deployed player database, so the
+exact order of events in that incident could not be established.
+
+1. Spar move callbacks could overwrite the next turn
+
+   A move callback stopped its view before awaiting an edit that disabled its
+   buttons. Stopping the view immediately woke the duel runner, which could
+   publish the NEXT move view while the previous callback's edit was still in
+   flight. The late edit could then replace the current buttons with disabled
+   controls from the previous turn. The timeout callback was another message
+   writer and could similarly race with the runner's cleanup.
+
+   Fix: acknowledge move inputs first; only the duel runner edits the battle
+   message. Duplicate/stale inputs receive feedback. A separate turn deadline
+   bounds the wait even when Discord view registration is lost. Battle message
+   sends/edits have a 15-second deadline, and final cleanup stops the view and
+   releases live state even on errors. Input callback errors now stop the match,
+   propagate to the command's cleanup, and log a useful traceback.
+
+2. Shop tab edits could publish mismatched controls
+
+   Each tab/page callback rebuilt the same view and generated a new menu and
+   buttons before awaiting its HTTP response. Concurrent callbacks could finish
+   in reverse order: Discord displayed one page's component IDs while the view
+   registered another page's handlers. Removing the old select also detached
+   queued menu interactions. This can leave visible controls with no handler,
+   producing an interaction failure without an app-command traceback.
+
+   Fix: acknowledge navigation before waiting for database reads or another
+   update. Serialize each complete rebuild AND HTTP edit under a per-shop lock.
+   Preserve the menu and navigation objects/IDs between pages. Refresh balances
+   and weekly shard limits from the database, including after purchases. Render
+   HTTP calls have a 15-second deadline. Component failures now log trainer,
+   section, page and control context and send user feedback.
+
+   The separate three-minute idle expiry now visibly disables the shop and
+   explains how to reopen it. Expiry edits use the bot's channel message handle
+   rather than relying on the original slash-command token during a long active
+   shopping session.
+
+3. Spar victories with existing NPC relationships could crash
+
+   The reward callback referenced an undefined variable, rels, when merging a
+   nonempty relationship map. The regression test reproduced that NameError.
+
+   Fix: read the latest relationship map inside the reward transaction, advance
+   the challenged NPC, and preserve the other NPCs and concurrent story progress.
+   A paid attempt is marked in that same transaction. Unpaid attempts are
+   released on failures or cancellation; an error after payment cannot make the
+   same spar's gold/shards claimable again. No schema migration is required.
+
+The expected battle/transfer overlap rejection now has its own error type and
+receives normal user feedback without being logged as an unhandled command
+failure. Real command and component exceptions still retain their tracebacks.
+
+Validation
+
+- The initial seven reproductions failed against the original code, including
+  reversed shop edits, delayed move edits and the relationship NameError.
+- All 13 new regression tests pass. They also exercise Discord.py's real view
+  dispatcher across tab changes, repeated browsing of every tab/page, fresh
+  balances/limits, duplicate inputs, lost view timers, stalled message sends,
+  callback errors, cancellation and post-payment failures.
+- Full suite: 154 tests passed in 84.391 seconds; no failures or errors.
+- Python compilation and git diff --check passed.
+
+Reproduce from the repository root with Python 3.12 and requirements installed:
+
+  python -m unittest tests.test_interactions -v
+  python -m unittest discover -s tests -v
+  python -m compileall -q bot.py cogs utils tests
+
+Deployment follow-up
+
+The fix is local until this branch is pushed, merged and Railway redeploys it.
+A new bot process clears old in-memory battle reservations. Open a fresh /shop
+after deployment because pre-restart views do not survive the restart. No
+production data was edited during this investigation.
+
+Suggested smoke checks after deployment: switch shop tabs and pages quickly,
+buy one item and check the displayed balance, finish a spar with an NPC who
+already knows the trainer, and confirm an idle duel turn closes after 45 seconds.

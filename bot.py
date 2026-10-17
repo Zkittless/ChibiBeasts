@@ -73,12 +73,16 @@ async def on_app_command_error(interaction: discord.Interaction, error: discord.
     import logging
     log = logging.getLogger("chibibeasts.commands")
     cause = getattr(error, "original", error)
-    log.error(
-        "Unhandled error in /%s: %s",
-        interaction.command.name if interaction.command else "unknown",
-        cause,
-        exc_info=cause,
-    )
+    from utils.duels import FighterBusyError
+    if isinstance(cause, FighterBusyError):
+        log.info('Battle/transfer already in progress: %s', interaction.user.id)
+    else:
+        log.error(
+            "Unhandled error in /%s: %s",
+            interaction.command.name if interaction.command else "unknown",
+            cause,
+            exc_info=cause,
+        )
 
     if isinstance(cause, ValueError):
         message = str(cause)
