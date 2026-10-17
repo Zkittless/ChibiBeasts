@@ -33,6 +33,15 @@ Bonus strikes capture their own result after the primary move. Raid entries
 come from the shared session's actual event, with trainer numbers matching the
 arena markers. Long entries are fitted inside the journal.
 
+The image journal removes decorative combat emoji that its body font cannot
+draw. Damage arrows become "for" and critical-hit stars become "CRIT", keeping
+damage, effectiveness, healing and status descriptions readable. The original
+engine logs remain available to the native Discord text fallback.
+
+- [Corrected status and damage journal](field-journal/journal-symbols.png)
+- [Corrected journal on a phone](field-journal/journal-symbols-320.png)
+- [Journal detail](field-journal/journal-detail.png)
+
 Visual panels omit duplicate native action logs. Closing duel panels omit
 their repeated HP/MP summary; PvE reward messages no longer repeat final HP or
 dump a second battle log. Trainer battle result messages also omit the extra

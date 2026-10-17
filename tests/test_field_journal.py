@@ -8,7 +8,7 @@ from PIL import Image, ImageChops
 
 from cogs.battle import build_pve_beast_state
 from tests import test_gameplay as fixtures
-from utils import battle_art, db as storage, field_journal as ui, raid_art
+from utils import battle_art, combat, db as storage, field_journal as ui, raid_art
 
 
 def contains(outer, inner):
@@ -16,6 +16,50 @@ def contains(outer, inner):
 
 
 class FieldJournalImages(unittest.TestCase):
+    def test_reported_status_and_damage_render_as_readable_words(self):
+        original = ('🔻 Twine is weakened.', 'Twine uses Borrowed Moment → 67 damage.')
+        expected = ('Twine is weakened.', 'Twine uses Borrowed Moment for 67 damage.')
+        self.assertEqual(tuple(map(ui.journal_text, original)), expected)
+        actual, reference = (Image.new('RGB', (640, 72)) for _ in range(2))
+        ui.journal(actual, 0, 'Choose a move', original)
+        ui.journal(reference, 0, 'Choose a move', expected)
+        self.assertIsNone(ImageChops.difference(actual, reference).getbbox())
+        self.assertIn('→', original[1])  # Native fallback still owns the original log.
+
+    def test_every_engine_status_retains_its_description_without_missing_glyphs(self):
+        missing = bytes(ui.font(14).getmask('\U0010ffff'))
+        for status, effect in combat.STATUS_EFFECTS.items():
+            with self.subTest(status=status):
+                target = build_pve_beast_state(storage.get_beast_data('twine'), 6)
+                log = []
+                self.assertTrue(combat.apply_status(target, status, log=log))
+                value = ui.journal_text(log[-1])
+                self.assertEqual(value, f"Twine {effect['verb']}.")
+                for char in value:
+                    self.assertNotEqual(bytes(ui.font(14).getmask(char)), missing, char)
+
+    def test_critical_hit_keeps_damage_and_effectiveness_in_words(self):
+        attacker, defender = [build_pve_beast_state(storage.get_beast_data(key), 6) for key in ('twine', 'wisp')]
+        log = []
+        with patch.object(combat, 'calc_damage', return_value=(27, True, 2, 0)):
+            combat.resolve_move(attacker, defender, attacker['moves'][0], False, log)
+        original = tuple(log)
+        expected = f"CRIT Twine uses {attacker['moves'][0]} for 27 damage · effective."
+        self.assertEqual(ui.journal_text(log[-1]), expected)
+        self.assertEqual(tuple(log), original)
+
+    def test_raid_journal_normalizes_the_same_engine_events(self):
+        from dataclasses import replace
+        from scripts.preview_raid_arena import capture, make_raid
+        from cogs.guilds import RAID_BOSSES
+
+        scene = capture(make_raid(RAID_BOSSES['corrupted'][2], 2))
+        raw = '⭐ Twine uses Tick Bite → 27 damage. · 🛡️ Wisp begins with 5 shield.'
+        safe = 'CRIT Twine uses Tick Bite for 27 damage. · Wisp begins with 5 shield.'
+        actual = raid_art.frame(scene, replace(scene, last_event=raw))
+        reference = raid_art.frame(scene, replace(scene, last_event=safe))
+        self.assertIsNone(ImageChops.difference(actual, reference).getbbox())
+
     def test_hp_and_mana_ink_fits_every_species_at_early_and_late_levels(self):
         image = Image.new('RGBA', (640, 528))
         for species in storage.load_beasts():

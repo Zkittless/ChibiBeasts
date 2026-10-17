@@ -25,6 +25,14 @@ def main():
     image = art.frame(saved, saved, 'woods')
     image.save(args.output / 'duel.png')
     image.resize((320, art.TOTAL_HEIGHT // 2), Image.Resampling.NEAREST).save(args.output / 'duel-320.png')
+    after = (replace(saved[0], status='weaken'), replace(saved[1], hp=saved[1].hp - 67))
+    action = art.Action(0, 'Borrowed Moment', damage=67, journal=(
+        '🔻 Twine is weakened.', 'Twine uses Borrowed Moment → 67 damage.',
+    ))
+    corrected = art.frame(saved, after, 'woods', action, 1)
+    corrected.save(args.output / 'journal-symbols.png')
+    corrected.resize((320, art.TOTAL_HEIGHT // 2), Image.Resampling.NEAREST).save(args.output / 'journal-symbols-320.png')
+    corrected.crop((0, art.HUD + art.HEIGHT, 640, art.TOTAL_HEIGHT)).save(args.output / 'journal-detail.png')
     sheet = Image.new('RGB', (640, art.HUD * 3))
     cases = [saved,
              (replace(saved[0], hp=1234567, max_hp=9876543, mana=9876, max_mana=12345),
