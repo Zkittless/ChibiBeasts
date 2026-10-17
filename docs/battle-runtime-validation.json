@@ -1,0 +1,54 @@
+{
+  "audited_at": "2026-10-17",
+  "base_commit": "d9d77b6",
+  "branch": "fix/raid-battle-runtime",
+  "environment": "Local Python 3.12 with disposable SQLite databases and simulated Discord I/O; no live bot login.",
+  "full_suite": {
+    "command": "python -m unittest discover -s tests -v",
+    "tests": 189,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 139.146,
+    "new_runtime_tests": 20
+  },
+  "final_runtime_and_balance_followup": {
+    "command": "python -m unittest tests.test_battle_runtime tests.test_combat_balance -v",
+    "tests": 42,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 18.067,
+    "note": "Rerun after changing the simulator to handle a typed cooldown error instead of matching English text."
+  },
+  "compileall": {
+    "command": "python -m compileall -q bot.py cogs utils scripts tests",
+    "exit_code": 0
+  },
+  "dependency_check": {
+    "command": "python -m pip check",
+    "exit_code": 0,
+    "result": "No broken requirements found."
+  },
+  "raid_holdout": {
+    "command": "python scripts/audit_combat_balance.py --output docs/battle-runtime-balance --holdout-only",
+    "prepared_scenarios": 576,
+    "behavior_scenarios": 96,
+    "win_rate": 0.9896,
+    "winning_median_seconds": 363.7,
+    "winning_p10_seconds": 314.4,
+    "winning_p90_seconds": 455.1,
+    "summary_matches_previous_holdout_except_timestamp": true
+  },
+  "benchmark": {
+    "command": "python scripts/benchmark_battle_runtime.py --output docs/battle-runtime-after.json",
+    "before": "battle-runtime-before.json",
+    "after": "battle-runtime-after.json",
+    "workload": "10 trainers / 30 companions, 6 ten-player bursts per action type after warmup, one 30-companion knockout volley; excludes Discord and network latency."
+  },
+  "compatibility": {
+    "runtime_dependencies_changed": false,
+    "schema_migration_required": false,
+    "combat_formula_changes": false,
+    "production_database_accessed": false,
+    "live_discord_tested": false
+  }
+}

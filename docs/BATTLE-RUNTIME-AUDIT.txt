@@ -1,0 +1,145 @@
+Battle and raid runtime audit — 2026-10-17
+Base: d9d77b6 (main, including the artwork PR)
+
+The damage engine is already inexpensive. The actionable problems were in
+concurrent raid lifecycle handling, database connection churn, display delivery,
+and a few controls. Fixes preserve the existing combat formulas, boss budgets,
+rewards, action intervals and 5–8 minute prepared-party raid target.
+
+Reviewed paths
+
+utils/combat.py and utils/duels.py: shared turn order, statuses, damage, equipment,
+passives, bonus actions, resources, input dispatch, deadlines and cleanup.
+cogs/battle.py, cogs/ranked.py and the exploration battle caller in cogs/hatch.py:
+PvE, NPC spars, trainer challenges, ranked results and reward callbacks.
+utils/raids.py, utils/raid_balance.py, guild/Ancient entry points, utils/items.py,
+and relevant database/event helpers: lobbies, paid launch, concurrent actions,
+swaps, patterns, items, knockouts, settlement and restart recovery.
+
+Fixed issues
+
+1. Premature release during victory settlement.
+   The raid runner could notice closed=True, exit, and remove active fighter
+   reservations while a separate winning callback was still paying rewards.
+   A single retained, shielded settlement task now owns the result. The runner
+   awaits it before releasing trainers, including when a callback is cancelled.
+   Cancellation after the final hit also completes the win instead of refunding
+   an already-defeated raid. Victory is durably recorded before waiting for
+   resolved damage events; raid_complete follows those events in order.
+
+2. Wrong result at the deadline.
+   The loop's deadline exit always called finish(False), even if the boss had
+   just reached zero HP. It now checks the boss's final HP before settlement.
+
+3. Lost display updates during slow HTTP edits.
+   The old batching task ignored refresh requests while its edit was in flight.
+   Revision tracking now publishes the newest state in a subsequent batched
+   edit. Edits remain serialized and inputs still resolve immediately.
+
+4. Invisible pattern response time.
+   The six-second grace period used to start before the warning reached Discord.
+   In live sessions it now starts after a successful warning edit. Simulation
+   sessions without a message retain their deterministic clock behavior.
+
+5. Stalled or missing raid panels.
+   Lobby publication, raid publication, display edits and final result delivery
+   have finite HTTP deadlines. An unavailable live panel wakes the runner and
+   closes the session; interrupted active entry payments are refunded once.
+   Recorded victories settle instead. Deleting a final panel no longer skips
+   the result announcement, and expected deletion is logged without a traceback.
+   Lobby and raid callback failures now provide player feedback and context logs.
+
+6. Knockout connection churn and failed-save handling.
+   A full party wipe opened 60 connections: one rarity lookup and one update for
+   each of 30 companions. States already contain rarity. A batched database
+   helper now writes the volley in one transaction. In-memory knockout flags
+   are marked only after the commit succeeds, so a failed save remains retryable.
+   Existing recovery timers and the single-companion helper remain compatible.
+
+7. Repeated participation checks and unordered snapshots.
+   Successful raid participation is remembered per trainer for this session;
+   later actions skip the redundant event lookup. Damage progress still records
+   every hit. Per-trainer progress locks preserve event order, and HP/contribution
+   snapshots save with the serialized combat action before callbacks fan out.
+
+8. Unreachable third companion.
+   Swap always selected the lowest other healthy slot, cycling 0 -> 1 -> 0 while
+   both survived. It now cycles 0 -> 1 -> 2 -> 0 and skips fainted companions.
+
+9. Incomplete raid panel and cooldown feedback.
+   Ten trainers could overflow the single 1,024-character field and disappear
+   from the panel. Companions now span complete fields. Each trainer's line shows
+   current/max mana and ultimate charges as well as HP and recovery speed.
+   Rejected early clicks show remaining recovery time; the first action has no
+   synthetic cooldown when the monotonic clock starts at zero. Unknown action
+   names are rejected before they alter the state.
+
+10. Slow trainer-challenge acceptance and lobby deadline drift.
+    Accept now acknowledges before database work, uses the shared runner's fresh
+    validation, and reports expected busy/recovery errors directly. Duplicate
+    validation reads were removed. Raid lobbies also enforce an absolute
+    60-second gathering window; clicks cannot keep resetting it indefinitely.
+    The balance simulator catches a typed cooldown refusal instead of parsing
+    the old English error message, so improved player text cannot break the audit.
+
+Measured performance
+
+See battle-runtime-before.json and battle-runtime-after.json. The repeatable
+benchmark uses a disposable SQLite WAL database with 10 trainers/30 companions,
+real action/progress functions, six bursts of ten actions after warmup, and one
+30-companion knockout batch. These are local measurements, not Railway latency.
+Connection counts are deterministic; elapsed times vary with the host.
+
+Before: attack bursts used 6 connections/action; guards used 2; a wipe used 60.
+After:  attack bursts use 5 connections/action; guards use 1; a wipe uses 1.
+
+Measured local times, milliseconds (before -> after):
+  Ten-player attack burst, median: 470.6 -> 403.1
+  Ten-player guard burst, median:   87.6 ->  40.7
+  Thirty knockouts, one volley:   377.2 ->   9.1
+These sample reductions are approximately 14%, 53% and 98% respectively.
+
+Resolved-hit CPU samples cover all 86 species (2,580 attacks). Their sub-0.01 ms
+sample p95 does not justify replacing the shared damage engine. No runtime
+dependency or schema migration is added.
+
+Pacing and validation
+
+The prepared-party holdout was rerun using production resolvers. All summary
+results match the previous audited holdout after excluding its generation time:
+576 scenarios, 98.96% wins, winning median 363.7 seconds (6:04), and winning
+10th–90th percentile 314.4–455.1 seconds (5:14–7:35). There are also 96 behavior
+trials. Slow eight-second input cohorts still fail in this model; the duration
+figures describe prepared parties with the stated input behavior, not every build.
+CSV inputs/results and the full summary are in battle-runtime-balance/.
+
+New regressions in tests/test_battle_runtime.py cover cancellation, in-flight
+progress, settlement ownership, deadline outcomes, slow edits, published warning
+windows, lost panels, HTTP stalls, all three swaps, ten trainers, database retry,
+participation totals, lobby timing, and battle acknowledgment/error handling.
+The full 189-test suite passed. A final 42-test runtime/balance run passed after
+the simulator's typed-error update. Compilation and pip check also passed.
+See battle-runtime-validation.json for commands, timing and test totals.
+
+Dependency/API review
+
+The lock already uses current stable discord.py 2.7.1 and aiosqlite 0.22.1,
+checked against their official package pages on 2026-10-17:
+https://pypi.org/project/discord.py/
+https://pypi.org/project/aiosqlite/
+Python 3.12 supports the timeout and retained/shielded task APIs used here:
+https://docs.python.org/3.12/library/asyncio-task.html
+Discord's interaction acknowledgment requirements and View lifecycle:
+https://discordpy.readthedocs.io/en/stable/interactions/api.html
+
+Reproduce from the repository root
+
+python -m unittest discover -s tests -v
+python -m compileall -q bot.py cogs utils scripts tests
+python -m pip check
+python scripts/benchmark_battle_runtime.py --output runtime-performance.json
+python scripts/audit_combat_balance.py --output runtime-balance --holdout-only
+
+The benchmark creates temporary data and never opens the production database.
+The review used simulated Discord I/O and existing real-dispatch regression tests;
+it did not log into a live bot or measure real multi-player network latency.

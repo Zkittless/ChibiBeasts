@@ -495,7 +495,7 @@ class RaidTiming(DatabaseCase):
         raid.damage = {42: 50, 77: 25}
         error = discord.NotFound(SimpleNamespace(status=404, reason='Missing'), 'Synthetic deleted message')
         raid.message = SimpleNamespace(edit=AsyncMock(side_effect=error))
-        with self.assertLogs('utils.raids', level='WARNING'):
+        with self.assertLogs('utils.raids', level='INFO'):
             await raid.finish(True)
         self.assertEqual(len(await self.rows('SELECT * FROM raid_rewards')), 2)
         self.assertEqual((await self.rows('SELECT status FROM raids'))[0]['status'], 'completed')

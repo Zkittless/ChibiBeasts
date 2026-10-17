@@ -251,40 +251,21 @@ class BattleView(discord.ui.View):
         if self.handled:
             return await interaction.response.send_message('This challenge is already closed.', ephemeral=True)
         self.handled = True
-
-        # The challenge may have expired or been cleared (e.g. bot restart wiped
-        # the in-memory record). Fail loudly instead of doing nothing.
-        if self.battle_id not in pending_battles:
-            self.stop()
-            self._disable_all()
-            return await interaction.response.edit_message(
-                embed=discord.Embed(
-                    description="⌛ This challenge is no longer active. Use `/battle` to start a new one.",
-                    color=COLORS["info"],
-                ),
-                view=self,
-            )
-
-        # Re-validate both trainers still have an active beast — either side
-        # could have released or swapped theirs during the wait.
-        challenger_beast = await get_active_beast(self.challenger_id)
-        opponent_beast = await get_active_beast(self.opponent_id)
-        if not challenger_beast or not opponent_beast:
-            self.stop()
-            pending_battles.pop(self.battle_id, None)
-            self._disable_all()
-            return await interaction.response.edit_message(
-                embed=discord.Embed(
-                    description="✦ One of the trainers no longer has an active beast. Challenge cancelled.",
-                    color=COLORS["error"],
-                ),
-                view=self,
-            )
-
+        await interaction.response.defer()
         self.stop()
         self._disable_all()
-        await interaction.response.edit_message(view=self)
-        await start_battle(interaction, self.battle_id)
+        try:
+            async with asyncio.timeout(DUEL_IO_TIMEOUT):
+                await interaction.edit_original_response(view=self)
+            if self.battle_id not in pending_battles:
+                return await interaction.followup.send('This challenge is no longer active. Use /battle to start a new one.', ephemeral=True)
+            # start_battle reserves both trainers before reading fresh companions.
+            # Avoid duplicate lookups here and report expected busy/recovery errors.
+            await start_battle(interaction, self.battle_id)
+        except ValueError as error:
+            await interaction.followup.send(str(error), ephemeral=True)
+        finally:
+            pending_battles.pop(self.battle_id, None)
 
     @discord.ui.button(label="Decline", style=discord.ButtonStyle.danger, emoji="❌")
     async def decline(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -301,7 +282,7 @@ class BattleView(discord.ui.View):
             view=self
         )
 
-from utils.duels import MoveView
+from utils.duels import MoveView, DUEL_IO_TIMEOUT
 
 
 async def start_battle(interaction,battle_id):

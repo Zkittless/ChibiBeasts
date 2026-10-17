@@ -55,6 +55,8 @@ Gold, shards, tokens, guaranteed materials and EXP scale with raid level, reachi
 
 Raid patterns allow at least six seconds to respond. Each trainer can Weave once per pattern; the requirement adjusts when only one trainer has healthy companions left. Display updates combine rapid inputs, while combat resolves immediately. Victory payouts are saved before result messages and resume after an interrupted settlement. Items follow the companion currently fighting after a swap; party revives also restore the live bench.
 
+The [battle runtime audit](docs/BATTLE-RUNTIME-AUDIT.txt) covers concurrent settlement, slow Discord updates, knockout batching and battle acceptance. Raid warnings grant their full response window after publication, Swap cycles through all three healthy companions, and the panel shows every trainer's mana and ultimate charges. [Before](docs/battle-runtime-before.json)/[after](docs/battle-runtime-after.json) benchmarks and the [replayed raid holdout](docs/battle-runtime-balance/holdout-summary.json) contain the measured evidence.
+
 Ranked matches use gear and chosen moves. Five placements establish a rank; 28-day seasons archive qualified standings, award 5–50 shards, and reset ratings. Repeat-opponent limits reduce farming.
 
 ## Shops, crafting and care
