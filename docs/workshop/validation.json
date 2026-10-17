@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "cases": 6,
+  "largest_component_count": 26,
+  "largest_text_count": 655,
+  "scope": "Production LayoutView payloads and local example inventory; no live Discord login."
+}

@@ -1,0 +1,1353 @@
+[
+  {
+    "case": "workshop",
+    "characters": 339,
+    "components": 17,
+    "payload": [
+      {
+        "type": 17,
+        "accent_color": 13219980,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://header.png"
+                },
+                "spoiler": false,
+                "description": "The Workshop in the Whispering Woods, with Twine."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Trainer Lv.12 · 29 recipes"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Armor",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:armor"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Runes",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:runes"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Evolution",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:evolution"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:recipe",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a recipe",
+                "options": [
+                  {
+                    "label": "Ready · Sprite-Silk Attire",
+                    "value": "sprite_silk_attire",
+                    "default": true,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Gnome-Iron Plating",
+                    "value": "gnome_iron_plating",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Mossbark Wrapping",
+                    "value": "mossbark_wrapping",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Kelpie-Scale Mail",
+                    "value": "kelpie_scale_mail",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Cinder-Guard Vest",
+                    "value": "cinder_guard_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Ready · Emberstone Vest",
+                    "value": "emberstone_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Thornweave Cloak",
+                    "value": "thornweave_cloak",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Deepwater Hide",
+                    "value": "deepwater_hide",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Unicorn-Healer Vestments",
+                    "value": "unicorn_healer_vestments",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Basilisk Gaze Pauldrons",
+                    "value": "basilisk_gaze_pauldrons",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Phoenix-Born Shroud",
+                    "value": "phoenix_born_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Thunderbird Storm-Mail",
+                    "value": "thunderbird_storm_mail",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Dragon-Lord Aegis",
+                    "value": "dragon_lord_aegis",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "The Abyssal Shroud",
+                    "value": "abyssal_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "Locked · Chronos Paradox Plate",
+                    "value": "chronos_paradox_plate",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  },
+                  {
+                    "label": "Locked · Blight-Weaver Regalia",
+                    "value": "blight_weaver_regalia",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Sprite-Silk Attire\nCommon · Trainer Lv.1 · 0 unequipped\n**+8% SPD**\nA vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings.\n**Ready to craft**"
+          },
+          {
+            "type": 10,
+            "content": "**Materials for one** · Standard recipe\nPixie Silk — **4 owned / 2 needed**\nEnchanted Bark — **2 owned / 1 needed**\nEnough materials for 2."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Craft 1",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:craft"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": true,
+                "label": "Equip",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:use"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Materials",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:materials"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Sources",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:sources"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:refresh"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case": "materials",
+    "characters": 551,
+    "components": 18,
+    "payload": [
+      {
+        "type": 17,
+        "accent_color": 13219980,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://header.png"
+                },
+                "spoiler": false,
+                "description": "The Workshop in the Whispering Woods, with Twine."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Trainer Lv.12 · 29 recipes"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Armor",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:armor"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Runes",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:runes"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Evolution",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:evolution"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:recipe",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a recipe",
+                "options": [
+                  {
+                    "label": "Ready · Sprite-Silk Attire",
+                    "value": "sprite_silk_attire",
+                    "default": true,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Gnome-Iron Plating",
+                    "value": "gnome_iron_plating",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Mossbark Wrapping",
+                    "value": "mossbark_wrapping",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Kelpie-Scale Mail",
+                    "value": "kelpie_scale_mail",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Cinder-Guard Vest",
+                    "value": "cinder_guard_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Ready · Emberstone Vest",
+                    "value": "emberstone_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Thornweave Cloak",
+                    "value": "thornweave_cloak",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Deepwater Hide",
+                    "value": "deepwater_hide",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Unicorn-Healer Vestments",
+                    "value": "unicorn_healer_vestments",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Basilisk Gaze Pauldrons",
+                    "value": "basilisk_gaze_pauldrons",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Phoenix-Born Shroud",
+                    "value": "phoenix_born_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Thunderbird Storm-Mail",
+                    "value": "thunderbird_storm_mail",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Dragon-Lord Aegis",
+                    "value": "dragon_lord_aegis",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "The Abyssal Shroud",
+                    "value": "abyssal_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "Locked · Chronos Paradox Plate",
+                    "value": "chronos_paradox_plate",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  },
+                  {
+                    "label": "Locked · Blight-Weaver Regalia",
+                    "value": "blight_weaver_regalia",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Sprite-Silk Attire\nCommon · Trainer Lv.1 · 0 unequipped\n**+8% SPD**\nA vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings.\n**Ready to craft**"
+          },
+          {
+            "type": 10,
+            "content": "**Materials for one** · Standard recipe\nPixie Silk — **4 owned / 2 needed**\nEnchanted Bark — **2 owned / 1 needed**\nEnough materials for 2."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Craft 1",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:craft"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": true,
+                "label": "Equip",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:use"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Materials",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:materials"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Sources",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:sources"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:refresh"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Your materials**\n**Enchanted Bark** · 2\n**Gnome-Iron Ore** · 3\n**Harpy Down** · 1\n**Hellhound Ember** · 2\n**Kelpie Scale** · 1\n**Pixie Silk** · 4\n**Spirit Crystal** · 3\n**Unicorn Hair** · 1\n**Void Essence** · 2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case": "sources",
+    "characters": 544,
+    "components": 18,
+    "payload": [
+      {
+        "type": 17,
+        "accent_color": 13219980,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://header.png"
+                },
+                "spoiler": false,
+                "description": "The Workshop in the Whispering Woods, with Twine."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Trainer Lv.12 · 29 recipes"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Armor",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:armor"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Runes",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:runes"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Evolution",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:evolution"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:recipe",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a recipe",
+                "options": [
+                  {
+                    "label": "Ready · Sprite-Silk Attire",
+                    "value": "sprite_silk_attire",
+                    "default": true,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Gnome-Iron Plating",
+                    "value": "gnome_iron_plating",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Mossbark Wrapping",
+                    "value": "mossbark_wrapping",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Kelpie-Scale Mail",
+                    "value": "kelpie_scale_mail",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Cinder-Guard Vest",
+                    "value": "cinder_guard_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Ready · Emberstone Vest",
+                    "value": "emberstone_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Thornweave Cloak",
+                    "value": "thornweave_cloak",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Deepwater Hide",
+                    "value": "deepwater_hide",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Unicorn-Healer Vestments",
+                    "value": "unicorn_healer_vestments",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Basilisk Gaze Pauldrons",
+                    "value": "basilisk_gaze_pauldrons",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Phoenix-Born Shroud",
+                    "value": "phoenix_born_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Thunderbird Storm-Mail",
+                    "value": "thunderbird_storm_mail",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Dragon-Lord Aegis",
+                    "value": "dragon_lord_aegis",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "The Abyssal Shroud",
+                    "value": "abyssal_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "Locked · Chronos Paradox Plate",
+                    "value": "chronos_paradox_plate",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  },
+                  {
+                    "label": "Locked · Blight-Weaver Regalia",
+                    "value": "blight_weaver_regalia",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Sprite-Silk Attire\nCommon · Trainer Lv.1 · 0 unequipped\n**+8% SPD**\nA vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings.\n**Ready to craft**"
+          },
+          {
+            "type": 10,
+            "content": "**Materials for one** · Standard recipe\nPixie Silk — **4 owned / 2 needed**\nEnchanted Bark — **2 owned / 1 needed**\nEnough materials for 2."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Craft 1",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:craft"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": true,
+                "label": "Equip",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:use"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Materials",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:materials"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Sources",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:sources"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:refresh"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Where to gather**\n**Pixie Silk**\nExplore: 🌲 The Whispering Woods; extra weight with Fairy, Pixie\n**Enchanted Bark**\nExplore: 🌲 The Whispering Woods, ❄️ The Glacial Hollows; extra weight with Slime, Dryad"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case": "crafted",
+    "characters": 388,
+    "components": 18,
+    "payload": [
+      {
+        "type": 17,
+        "accent_color": 13219980,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://header.png"
+                },
+                "spoiler": false,
+                "description": "The Workshop in the Whispering Woods, with Twine."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Trainer Lv.12 · 29 recipes"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Armor",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:armor"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Runes",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:runes"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Evolution",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:evolution"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:recipe",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a recipe",
+                "options": [
+                  {
+                    "label": "Ready · Sprite-Silk Attire",
+                    "value": "sprite_silk_attire",
+                    "default": true,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Gnome-Iron Plating",
+                    "value": "gnome_iron_plating",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Mossbark Wrapping",
+                    "value": "mossbark_wrapping",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Kelpie-Scale Mail",
+                    "value": "kelpie_scale_mail",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Cinder-Guard Vest",
+                    "value": "cinder_guard_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Ready · Emberstone Vest",
+                    "value": "emberstone_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Thornweave Cloak",
+                    "value": "thornweave_cloak",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Deepwater Hide",
+                    "value": "deepwater_hide",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Unicorn-Healer Vestments",
+                    "value": "unicorn_healer_vestments",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Basilisk Gaze Pauldrons",
+                    "value": "basilisk_gaze_pauldrons",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Phoenix-Born Shroud",
+                    "value": "phoenix_born_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Thunderbird Storm-Mail",
+                    "value": "thunderbird_storm_mail",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Dragon-Lord Aegis",
+                    "value": "dragon_lord_aegis",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "The Abyssal Shroud",
+                    "value": "abyssal_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "Locked · Chronos Paradox Plate",
+                    "value": "chronos_paradox_plate",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  },
+                  {
+                    "label": "Locked · Blight-Weaver Regalia",
+                    "value": "blight_weaver_regalia",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Sprite-Silk Attire\nCommon · Trainer Lv.1 · 1 unequipped\n**+8% SPD**\nA vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings.\n**Ready to craft**"
+          },
+          {
+            "type": 10,
+            "content": "**Materials for one** · Standard recipe\nPixie Silk — **2 owned / 2 needed**\nEnchanted Bark — **1 owned / 1 needed**\nEnough materials for 1."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Craft 1",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:craft"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Equip",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:use"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Materials",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:materials"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Sources",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:sources"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:refresh"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Crafted 1 **Sprite-Silk Attire**. Ready to equip."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case": "replace-armor",
+    "characters": 548,
+    "components": 26,
+    "payload": [
+      {
+        "type": 17,
+        "accent_color": 13219980,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://header.png"
+                },
+                "spoiler": false,
+                "description": "The Workshop in the Whispering Woods, with Twine."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Trainer Lv.12 · 29 recipes"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Armor",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:armor"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Runes",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:runes"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Evolution",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:evolution"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:recipe",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a recipe",
+                "options": [
+                  {
+                    "label": "Ready · Sprite-Silk Attire",
+                    "value": "sprite_silk_attire",
+                    "default": true,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Ready · Gnome-Iron Plating",
+                    "value": "gnome_iron_plating",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Mossbark Wrapping",
+                    "value": "mossbark_wrapping",
+                    "default": false,
+                    "description": "Trainer Lv.1 · Common"
+                  },
+                  {
+                    "label": "Kelpie-Scale Mail",
+                    "value": "kelpie_scale_mail",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Cinder-Guard Vest",
+                    "value": "cinder_guard_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Ready · Emberstone Vest",
+                    "value": "emberstone_vest",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Thornweave Cloak",
+                    "value": "thornweave_cloak",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Deepwater Hide",
+                    "value": "deepwater_hide",
+                    "default": false,
+                    "description": "Trainer Lv.3 · Uncommon"
+                  },
+                  {
+                    "label": "Unicorn-Healer Vestments",
+                    "value": "unicorn_healer_vestments",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Basilisk Gaze Pauldrons",
+                    "value": "basilisk_gaze_pauldrons",
+                    "default": false,
+                    "description": "Trainer Lv.5 · Rare"
+                  },
+                  {
+                    "label": "Phoenix-Born Shroud",
+                    "value": "phoenix_born_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Thunderbird Storm-Mail",
+                    "value": "thunderbird_storm_mail",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Dragon-Lord Aegis",
+                    "value": "dragon_lord_aegis",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "The Abyssal Shroud",
+                    "value": "abyssal_shroud",
+                    "default": false,
+                    "description": "Trainer Lv.10 · Legendary"
+                  },
+                  {
+                    "label": "Locked · Chronos Paradox Plate",
+                    "value": "chronos_paradox_plate",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  },
+                  {
+                    "label": "Locked · Blight-Weaver Regalia",
+                    "value": "blight_weaver_regalia",
+                    "default": false,
+                    "description": "Trainer Lv.15 · Altered Divine"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Sprite-Silk Attire\nCommon · Trainer Lv.1 · 1 unequipped\n**+8% SPD**\nA vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings.\n**Ready to craft**"
+          },
+          {
+            "type": 10,
+            "content": "**Materials for one** · Standard recipe\nPixie Silk — **2 owned / 2 needed**\nEnchanted Bark — **1 owned / 1 needed**\nEnough materials for 1."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Craft 1",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:craft"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Equip",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:use"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Materials",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:materials"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Sources",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:sources"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:refresh"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Crafted 1 **Sprite-Silk Attire**. Ready to equip."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:target",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a companion",
+                "options": [
+                  {
+                    "label": "#1 · Twine · Lv.18",
+                    "value": "1",
+                    "default": false
+                  },
+                  {
+                    "label": "#2 · Prismite · Lv.16",
+                    "value": "2",
+                    "default": true
+                  },
+                  {
+                    "label": "#3 · Imp · Lv.22",
+                    "value": "3",
+                    "default": false
+                  },
+                  {
+                    "label": "#4 · Goblin · Lv.28",
+                    "value": "4",
+                    "default": false
+                  },
+                  {
+                    "label": "#5 · Kitsune · Lv.32",
+                    "value": "5",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### #2 · Prismite · Lv.16\n**Current armor:** Gnome-Iron Plating\n+10% DEF · -3% SPD\nThe replaced piece returns to your bag.\n**New:** Sprite-Silk Attire · +8% SPD"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "spoiler": false,
+              "media": {
+                "url": "attachment://prismite.png"
+              },
+              "description": "Prismite"
+            }
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Replace & return old",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:confirm"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Back",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:back"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case": "evolution",
+    "characters": 655,
+    "components": 24,
+    "payload": [
+      {
+        "type": 17,
+        "accent_color": 13219980,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://header.png"
+                },
+                "spoiler": false,
+                "description": "The Workshop in the Whispering Woods, with Twine."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Trainer Lv.12 · 29 recipes"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Armor",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:armor"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Runes",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:runes"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Evolution",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:section:evolution"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:recipe",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a recipe",
+                "options": [
+                  {
+                    "label": "Forge Ember",
+                    "value": "forge_ember",
+                    "default": true,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Void Shard",
+                    "value": "void_shard",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  },
+                  {
+                    "label": "Spirit Lantern",
+                    "value": "spirit_lantern",
+                    "default": false,
+                    "description": "Trainer Lv.8 · Epic"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Forge Ember\nEpic · Trainer Lv.8 · 1 in bag\n**Radiant evolution catalyst**\nA coal that hasn't stopped burning since the Sunforge last fired. It doesn't burn things — it clarifies them.\n**Missing materials**"
+          },
+          {
+            "type": 10,
+            "content": "**Materials for one** · Standard recipe\nHellhound Ember — **0 owned / 3 needed**\nSunforge Residue — **0 owned / 5 needed**\nDragon Scale — **0 owned / 1 needed**\nStill need 3 Hellhound Ember, 5 Sunforge Residue, 1 Dragon Scale."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": true,
+                "label": "Craft 1",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:craft"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Evolve",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:use"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Materials",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:materials"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Sources",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:sources"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:refresh"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Crafted 1 **Forge Ember**. Ready to evolve."
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "### #4 · Goblin · Lv.28\n**Next form: Radiant Goblin**\nRequires companion Lv.25. Uses 1 Forge Ember.\nEarned stats, bond and equipped gear carry forward."
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "spoiler": false,
+              "media": {
+                "url": "attachment://goblin.png"
+              },
+              "description": "Goblin"
+            }
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Confirm evolution",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:confirm"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Back",
+                "custom_id": "workshop:341e43f27a7e4b8db025659e9d0ffacc:back"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
