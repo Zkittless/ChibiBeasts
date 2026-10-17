@@ -220,23 +220,21 @@ class EconomyTransactions(DatabaseCase):
             after=sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
             self.assertEqual(after-before,1,outcome)
 
-    async def test_recipe_book_explains_effects_and_respects_discord_limits(self):
+    async def test_workshop_explains_effects_and_respects_discord_limits(self):
+        import discord
         from cogs.world import World
         it=interaction()
-        await World.recipes.callback(World(None),it)
-        embed=it.followup.send.call_args.kwargs['embed']
-        self.assertLessEqual(len(embed),6000)
-        self.assertTrue(all(len(field.value)<=1024 for field in embed.fields))
-        self.assertIn('SPD',embed.fields[0].value)
+        await World.craft.callback(World(None),it)
         view=it.followup.send.call_args.kwargs['view']
-        for section in ('runes','evolution','sources'):
+        self.addCleanup(view.stop)
+        self.assertTrue(any('SPD' in child.content for child in view.walk_children() if isinstance(child,discord.ui.TextDisplay)))
+        for section in ('runes','evolution'):
             bi=interaction()
-            bi.data={'values':[section]}
-            bi.edit_original_response=AsyncMock()
-            await view.children[0].callback(bi)
-            embed=bi.edit_original_response.call_args.kwargs['embed']
-            self.assertLessEqual(len(embed),6000,section)
-            self.assertTrue(all(len(field.value)<=1024 for field in embed.fields),section)
+            await view.handle(bi,'section:'+section)
+            self.assertLessEqual(view.content_length(),4000,section)
+            self.assertLessEqual(sum(1 for _ in view.walk_children()),40,section)
+        await view.handle(interaction(),'sources')
+        self.assertTrue(any('Where to gather' in child.content for child in view.walk_children() if isinstance(child,discord.ui.TextDisplay)))
 
     async def test_crafting_autocomplete_uses_actual_unlocks_and_forge_costs(self):
         from cogs.world import World

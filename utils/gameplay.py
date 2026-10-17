@@ -34,6 +34,26 @@ async def add_stack(db, table, user_id, key, quantity=1):
     else:
         await db.execute(f'INSERT INTO {table} (user_id,{column},quantity) VALUES (?,?,?)', (user_id, key, quantity))
 
+
+async def consume_stack(db, table, user_id, key, quantity=1):
+    """Consume an exact amount, including legacy split stacks, inside a writer transaction."""
+    if table not in {'player_inventory', 'player_materials'} or isinstance(quantity, bool) or not isinstance(quantity, int) or quantity <= 0:
+        raise ValueError('Invalid item consumption')
+    column = 'item_id' if table == 'player_inventory' else 'material_id'
+    async with db.execute(f'SELECT id,quantity FROM {table} WHERE user_id=? AND {column}=? AND quantity>0 ORDER BY id', (user_id, key)) as cursor:
+        rows = await cursor.fetchall()
+    if sum(row[1] for row in rows) < quantity:
+        return False
+    remaining = quantity
+    for row_id, held in rows:
+        paid = min(remaining, held)
+        await db.execute(f'UPDATE {table} SET quantity=quantity-? WHERE id=?', (paid, row_id))
+        await db.execute(f'DELETE FROM {table} WHERE id=? AND quantity<=0', (row_id,))
+        remaining -= paid
+        if not remaining:
+            break
+    return True
+
 async def grant_material(user_id, material_id, amount=1):
     from utils.artwork import PROJECT_ROOT
     materials = json.loads((PROJECT_ROOT / 'data/materials.json').read_text(encoding='utf-8'))['materials']
@@ -76,12 +96,13 @@ def evolved_stats(row, before, after):
     names = {'hp': 'max_hp', 'attack': 'attack', 'defense': 'defense', 'speed': 'speed', 'mana': 'max_mana'}
     return {key: new_base[key] + new_growth[key] + max(0, row[col] - old_base[key] - old_growth[key]) for key, col in names.items()}
 
-async def evolve_beast(user_id, player_number):
+async def evolve_beast(user_id, player_number, *, expected_row_id=None, expected_species=None, required_item=None):
     from utils.duels import reserve_fighters
     with reserve_fighters([user_id]):
-        return await _evolve_beast(user_id, player_number)
+        return await _evolve_beast(user_id, player_number, expected_row_id=expected_row_id,
+                                   expected_species=expected_species, required_item=required_item)
 
-async def _evolve_beast(user_id, player_number):
+async def _evolve_beast(user_id, player_number, *, expected_row_id=None, expected_species=None, required_item=None):
     beasts = storage.load_beasts()
     async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
@@ -91,6 +112,9 @@ async def _evolve_beast(user_id, player_number):
         if not row:
             raise ValueError('That beast is not in your collection.')
         row = dict(row)
+        if (expected_row_id is not None and row['id'] != expected_row_id or
+                expected_species is not None and row['beast_id'] != expected_species):
+            raise ValueError('That companion changed. Review its evolution again.')
         async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (row['id'],)) as c:
             if await c.fetchone():
                 raise ValueError('Delist this companion before evolving it.')
@@ -100,6 +124,8 @@ async def _evolve_beast(user_id, player_number):
             raise ValueError('Let your companion recover before evolving.')
         if not evo:
             raise ValueError(f"{before['name']} has no further evolution.")
+        if required_item is not None and evo.get('method') != required_item:
+            raise ValueError('The selected catalyst does not match this companion’s next form.')
         if row['level'] < evo['level_required']:
             raise ValueError(f"Reach beast level {evo['level_required']} first.")
         if evo.get('form') == 'bond':
@@ -109,12 +135,11 @@ async def _evolve_beast(user_id, player_number):
                 raise ValueError('Your companion needs at least 70 happiness to awaken.')
         else:
             method = evo['method']
-            cursor = await db.execute('UPDATE player_inventory SET quantity=quantity-1 WHERE user_id=? AND item_id=? AND quantity>0', (user_id, method))
-            if not cursor.rowcount and evo.get('form') == 'radiant':
-                cursor = await db.execute("UPDATE player_inventory SET quantity=quantity-1 WHERE user_id=? AND item_id='sunforge_core' AND quantity>0", (user_id,))
-            if not cursor.rowcount:
-                raise ValueError(f"You need {method.replace('_', ' ').title()}. Check /recipes or /ancient.")
-            await db.execute('DELETE FROM player_inventory WHERE user_id=? AND quantity<=0', (user_id,))
+            consumed = await consume_stack(db, 'player_inventory', user_id, method)
+            if not consumed and evo.get('form') == 'radiant' and required_item is None:
+                consumed = await consume_stack(db, 'player_inventory', user_id, 'sunforge_core')
+            if not consumed:
+                raise ValueError(f"You need {method.replace('_', ' ').title()}. Check /craft or /ancient.")
         after = beasts[evo['evolves_to']]
         stats = evolved_stats(row, before, after)
         await db.execute('UPDATE player_beasts SET beast_id=?,rarity=?,hp=?,max_hp=?,attack=?,defense=?,speed=?,mana=?,max_mana=? WHERE id=?', (after['id'], after['rarity'], stats['hp'], stats['hp'], stats['attack'], stats['defense'], stats['speed'], stats['mana'], stats['mana'], row['id']))

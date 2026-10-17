@@ -105,7 +105,7 @@ class Dev(commands.Cog):
                 material_id = mat["id"]
             else:
                 return await interaction.followup.send(
-                    f"✦ Material `{material_id}` not found. Check `/recipes` for valid IDs.", ephemeral=True
+                    f"✦ Material `{material_id}` not found. Check `/craft` for materials and recipes.", ephemeral=True
                 )
         await get_or_create_player(member.id, str(member))
         async with storage.connect() as db:
