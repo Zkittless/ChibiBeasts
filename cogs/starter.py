@@ -1,25 +1,27 @@
 # ── ChibiBeasts Starter Selection ───────────────────────────────────────────
 # The /start command runs a cinematic multi-stage onboarding experience.
 # Stage 1: World introduction — what is ChibiBeasts and why does it matter
-# Stage 2: The four Architects — lore-grounded starter presentation
-# Stage 3: Beast selection — four buttons, each reveals a different world
+# Stage 2: Meet all four companions in the illustrated overview
+# Stage 3: Browse portraits and moves, then explicitly choose a starter
 # Stage 4: Confirmation cinematic — the Architect responds to the choice
 # Stage 5: Welcome — starter kit + clear "what to do first" guide
 
 import discord
 from discord import app_commands
 from discord.ext import commands
-import aiosqlite
 import asyncio
+import logging
+from utils.artwork import card_artwork_attachment, card_artwork_url
+from utils.beast_cards import STARTER_ORDER, STARTER_ROLES, starter_overview_embed, starter_preview_embed
 from utils.db import (
     get_or_create_player, get_player,
     add_beast_to_player, get_player_beasts, load_beasts
 )
-from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI
+from utils.theme import COLORS
 from utils.progress import unlock_simple_achievement, record_bestiary_sighting
 
 
-STARTER_IDS = {"prismite", "twine", "gloop", "barkley"}
+STARTER_IDS = set(STARTER_ORDER)
 
 # ── Per-starter cinematic data ───────────────────────────────────────────────
 STARTER_CINEMATICS = {
@@ -108,6 +110,57 @@ class StarterView(discord.ui.View):
         self.trainer_name = trainer_name
         self.starters     = starters
         self.chosen       = False
+        self.selected_id = None
+        self.details_mode = False
+        self.message = None
+        self._published_art = None
+        self.lock = asyncio.Lock()
+        self.browse.options = [discord.SelectOption(label='Meet all four', value='overview', default=True)] + [
+            discord.SelectOption(label=starters[key]['name'], value=key, description=STARTER_ROLES[key][0])
+            for key in STARTER_ORDER if key in starters
+        ]
+        self._update_controls()
+
+    def current_embed(self):
+        if self.selected_id is None:
+            return starter_overview_embed()
+        return starter_preview_embed(self.starters[self.selected_id], details=self.details_mode)
+
+    def _update_controls(self):
+        selected = self.selected_id
+        for option in self.browse.options:
+            option.default = option.value == (selected or 'overview')
+        self.browse.disabled = self.chosen
+        self.details.disabled = self.chosen or selected is None
+        self.details.label = 'Portrait' if self.details_mode else 'Moves & stats'
+        self.choose.disabled = self.chosen or selected is None
+        self.choose.label = f"Choose {self.starters[selected]['name']}" if selected else 'Choose a companion'
+
+    async def _redraw(self, interaction):
+        self._update_controls()
+        async with asyncio.timeout(15):
+            if self._published_art != self.selected_id:
+                with card_artwork_attachment(self.selected_id) as artwork:
+                    await interaction.edit_original_response(embed=self.current_embed(), view=self, attachments=[artwork])
+                self._published_art = self.selected_id
+            else:
+                await interaction.edit_original_response(embed=self.current_embed(), view=self)
+
+    async def show(self, interaction, *, selected=None, toggle=False):
+        if interaction.user.id != self.trainer_id:
+            return await interaction.response.send_message("This journey belongs to another trainer. Use /start for yours.", ephemeral=True)
+        await interaction.response.defer()
+        async with self.lock:
+            if self.chosen or self.is_finished():
+                return await interaction.followup.send('This selection has closed. Use /start to see your next step.', ephemeral=True)
+            if toggle:
+                self.details_mode = not self.details_mode if self.selected_id else False
+            else:
+                if selected is not None and selected not in self.starters:
+                    return await interaction.followup.send('That companion is not available.', ephemeral=True)
+                self.selected_id = selected
+                self.details_mode = False
+            await self._redraw(interaction)
 
     async def _confirm(self, interaction: discord.Interaction, chosen_id: str):
         if interaction.user.id != self.trainer_id:
@@ -118,23 +171,27 @@ class StarterView(discord.ui.View):
             return await interaction.response.send_message(
                 "✦ You've already chosen your starter!", ephemeral=True
             )
-        self.chosen = True
-        for item in self.children:
-            item.disabled = True
-        await interaction.response.edit_message(view=self)
-
-        starter  = self.starters[chosen_id]
+        await interaction.response.defer()
+        async with self.lock:
+            if self.chosen or self.is_finished():
+                return await interaction.followup.send('This selection has closed. Use /profile to see your companion.', ephemeral=True)
+            if chosen_id is None:
+                return await interaction.followup.send('Meet a companion first, then press Choose.', ephemeral=True)
+            if chosen_id != self.selected_id or chosen_id != self._published_art:
+                return await interaction.followup.send('Your selection changed. Review the portrait and press Choose again.', ephemeral=True)
+            starter = self.starters[chosen_id]
+            beast_row_id = await add_beast_to_player(self.trainer_id, {**starter, 'caught_from': 'starter'}, starter=True)
+            self.chosen = True
+            self._update_controls()
+            if beast_row_id is None:
+                await interaction.edit_original_response(view=self)
+                self.stop()
+                return await interaction.followup.send("✦ You've already chosen your starter. Use `/profile` to see your companion.", ephemeral=True)
+            embed = self.cog.build_starter_embed(starter)
+            embed.set_image(url=card_artwork_url(chosen_id))
+            await interaction.edit_original_response(embed=embed, view=self)
+            self.stop()
         cinematic = STARTER_CINEMATICS[chosen_id]
-
-        # ── Grant starter to player ────────────────────────────────────────
-        beast_row_id = await add_beast_to_player(
-            self.trainer_id, {**starter, "caught_from": "starter"}, starter=True
-        )
-        if beast_row_id is None:
-            return await interaction.followup.send(
-                "✦ You've already chosen your starter. Use `/profile` to see your companion.",
-                ephemeral=True,
-            )
 
         # ── Stage 1: Architect cinematic ───────────────────────────────────
         scene_embed = discord.Embed(
@@ -142,14 +199,7 @@ class StarterView(discord.ui.View):
             description="\n".join(cinematic["scene_lines"]),
             color=COLORS.get(cinematic["color"], COLORS["legendary"])
         )
-        if starter.get("image_url"):
-            scene_embed.set_image(url=starter["image_url"])
         scene_embed.set_footer(text="ChibiBeasts 🐾  •  The Loom is still weaving.")
-        await interaction.followup.send(embed=scene_embed)
-
-        # ── Stage 2: Beast reveal ──────────────────────────────────────────
-        beast_embed = self.cog.build_starter_embed(starter)
-        await interaction.followup.send(embed=beast_embed)
 
         # ── Stage 3: Welcome + what to do next ────────────────────────────
         steps_str = "\n".join(
@@ -168,7 +218,7 @@ class StarterView(discord.ui.View):
         welcome_embed.set_footer(
             text="ChibiBeasts 🐾  •  Collect, raise, battle. The Loom is watching."
         )
-        await interaction.followup.send(embed=welcome_embed)
+        await interaction.followup.send(embeds=[scene_embed, welcome_embed])
 
         # ── Achievements + bestiary ────────────────────────────────────────
         await unlock_simple_achievement(self.trainer_id, "first_steps")
@@ -177,21 +227,41 @@ class StarterView(discord.ui.View):
                 interaction.guild.id, starter["id"], self.trainer_id
             )
 
-    @discord.ui.button(label="Prismite 🔷", style=discord.ButtonStyle.primary, row=0)
-    async def pick_prismite(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self._confirm(interaction, "prismite")
+    @discord.ui.select(placeholder='Meet a starter…', options=[discord.SelectOption(label='Meet all four', value='overview')], row=0)
+    async def browse(self, interaction, select):
+        value = interaction.data['values'][0]
+        await self.show(interaction, selected=None if value == 'overview' else value)
 
-    @discord.ui.button(label="Twine 🧵", style=discord.ButtonStyle.primary, row=0)
-    async def pick_twine(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self._confirm(interaction, "twine")
+    @discord.ui.button(label='Moves & stats', style=discord.ButtonStyle.secondary, row=1, disabled=True)
+    async def details(self, interaction, button):
+        await self.show(interaction, toggle=True)
 
-    @discord.ui.button(label="Gloop 🫧", style=discord.ButtonStyle.primary, row=0)
-    async def pick_gloop(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self._confirm(interaction, "gloop")
+    @discord.ui.button(label='Choose a companion', style=discord.ButtonStyle.success, row=1, disabled=True)
+    async def choose(self, interaction, button):
+        # Capture the portrait actually published when the button was pressed.
+        # A concurrent selection change must not claim a different companion.
+        await self._confirm(interaction, self._published_art)
 
-    @discord.ui.button(label="Barkley 🌿", style=discord.ButtonStyle.primary, row=0)
-    async def pick_barkley(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self._confirm(interaction, "barkley")
+    async def on_timeout(self):
+        async with self.lock:
+            for item in self.children:
+                item.disabled = True
+            if self.message:
+                try:
+                    await self.message.edit(content='Your companions will wait. Use /start to reopen their portraits.', view=self)
+                except discord.HTTPException:
+                    pass
+
+    async def on_error(self, interaction, error, item):
+        logging.getLogger('chibibeasts.starter').error('Starter browser failed: trainer=%s companion=%s', self.trainer_id, self.selected_id, exc_info=error)
+        message = 'The companion browser could not finish that request. Use /start to reopen it, or /profile if you already chose.'
+        try:
+            if interaction.response.is_done():
+                await interaction.followup.send(message, ephemeral=True)
+            else:
+                await interaction.response.send_message(message, ephemeral=True)
+        except discord.HTTPException:
+            pass
 
 
 class Starter(commands.Cog):
@@ -199,45 +269,12 @@ class Starter(commands.Cog):
         self.bot = bot
 
     def build_starter_embed(self, beast: dict) -> discord.Embed:
-        type_emoji   = TYPE_EMOJI.get(beast.get("type", ""), "❓")
-        rarity_emoji = RARITY_EMOJI.get(beast["rarity"], "⚪")
-        color        = COLORS.get(beast["rarity"], COLORS["info"])
-
-        embed = discord.Embed(
-            title=f"🎁 {beast['name']} chose you back.",
-            description=(
-                f"### {rarity_emoji} **{beast['name']}** — *{beast['title']}*\n\n"
-                f"*{beast['description']}*"
-            ),
-            color=color
-        )
-        embed.add_field(name=f"{type_emoji} Type",  value=beast["type"].capitalize(),                    inline=True)
-        embed.add_field(name="✨ Rarity",            value=RARITY_LABEL.get(beast["rarity"], beast["rarity"]), inline=True)
-        embed.add_field(name="🏛️ House",            value=beast.get("starter_house", "Unknown"),        inline=True)
-
-        stats = beast["base_stats"]
-        embed.add_field(
-            name="📊 Base Stats",
-            value=(
-                f"❤️ HP: `{stats['hp']}` | ⚔️ ATK: `{stats['attack']}`\n"
-                f"🛡️ DEF: `{stats['defense']}` | 💨 SPD: `{stats['speed']}`\n"
-                f"💠 MANA: `{stats['mana']}`"
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name="⚡ Moves",
-            value="\n".join(f"• {m}" for m in beast["moves"]) + f"\n🌟 **Ultimate:** {beast['ultimate']}",
-            inline=False
-        )
-        flavor = beast.get("starter_flavor", "")
-        if flavor:
-            embed.add_field(name="💬 Personality", value=f"*{flavor}*", inline=False)
-
+        embed = starter_preview_embed(beast)
+        embed.title = f"{beast['name']} chose you back."
+        embed.description = f"*{beast['title']}*\n\n{STARTER_CINEMATICS[beast['id']]['confirmation']}"
         if beast.get("image_url"):
             embed.set_image(url=beast["image_url"])
-
-        embed.set_footer(text="ChibiBeasts 🐾  •  Use /beastinfo to inspect anytime")
+        embed.set_footer(text="ChibiBeasts · Your companion is ready · /beastinfo for stats and moves")
         return embed
 
     @app_commands.command(name="start", description="Begin your ChibiBeasts journey! 🐾")
@@ -261,52 +298,10 @@ class Starter(commands.Cog):
         all_beasts = load_beasts()
         starters   = {sid: all_beasts[sid] for sid in STARTER_IDS if sid in all_beasts}
 
-        # ── Stage 1: World intro ───────────────────────────────────────────
-        intro_embed = discord.Embed(
-            title="🌟 The Loom Wove Four Threads",
-            description=(
-                "*Before there were beasts, before there were trainers, before there was even a "
-                "world to stand on — there was only the Loom.*\n\n"
-                "*The Loom was not a place. It was the act of weaving itself: an endless process "
-                "spinning raw possibility into shape.*\n\n"
-                "*Then, in a single instant, the Loom wove four threads tighter than any others — "
-                "and they woke up.*\n\n"
-                "These four became the **Architects**: vast, curious ideas that each wanted one small "
-                "companion to carry their question out into the world.\n\n"
-                "**Today, that companion is you.**\n\n"
-                "*Each starter comes from a different Architect. Your choice shapes not just your "
-                "stats — but the kind of story you're walking into.*\n\n"
-                "**Who will you bring with you?**"
-            ),
-            color=COLORS["divine"]
-        )
-
-        # Add each starter as a field
-        HOUSE_EMOJI = {"prismite": "🔷", "twine": "🧵", "gloop": "🫧", "barkley": "🌿"}
-        ORDER       = ["prismite", "twine", "gloop", "barkley"]
-        for sid in ORDER:
-            if sid not in starters:
-                continue
-            b      = starters[sid]
-            emoji  = HOUSE_EMOJI.get(sid, "⚪")
-            cin    = STARTER_CINEMATICS[sid]
-            s      = b["base_stats"]
-            intro_embed.add_field(
-                name=f"{emoji} **{b['name']}** — *{cin['architect_desc'].title()}*",
-                value=(
-                    f"*{b.get('starter_flavor', b['description'])}*\n"
-                    f"❤️`{s['hp']}` ⚔️`{s['attack']}` 🛡️`{s['defense']}` "
-                    f"💨`{s['speed']}` 💠`{s['mana']}`"
-                ),
-                inline=False
-            )
-
-        intro_embed.set_footer(
-            text="ChibiBeasts 🐾  •  The Loom is still weaving. Your thread starts now."
-        )
-
         view = StarterView(self, interaction.user.id, interaction.user.display_name, starters)
-        await interaction.followup.send(embed=intro_embed, view=view)
+        with card_artwork_attachment() as artwork:
+            message = await interaction.followup.send(embed=starter_overview_embed(), view=view, file=artwork, wait=True)
+        view.message = interaction.channel.get_partial_message(message.id) if interaction.channel else message
 
 
 async def setup(bot: commands.Bot):

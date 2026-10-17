@@ -1,0 +1,86 @@
+ChibiBeasts: illustrated codex and starter selection
+Branch: feature/artwork-command-layouts
+Base: main dfa103f
+
+Player experience
+
+/codex opens a portrait card with the creature's description, type and rarity.
+Moves & stats contains the five base stats, all three moves, mana costs,
+ultimate requirements and any Divine passive. Lore contains the type lore,
+collection, starter background and available next-form information. The artwork
+remains visible as a thumbnail while reading the detailed tabs.
+
+/start opens a labeled, two-by-two lineup of Prismite, Twine, Gloop and Barkley.
+The selector previews one companion at a time; Moves & stats lets the player
+compare their abilities. Browsing does not claim a starter. Choose is enabled
+after a portrait has been shown and identifies the selected companion by name.
+The existing atomic starter grant remains the authority for a successful claim.
+The confirmation portrait stays in the original message. The Architect scene
+and welcome/first steps follow together, without repeating the full illustration.
+
+Artwork delivery
+
+- Original sprites are unchanged. All 86 codex portraits are derived from the
+  shipped artwork using nearest-neighbor sizing and a consistent 768x448 canvas.
+- The four-companion lineup is 768x640. Its labels sit on dark chips so they
+  remain readable in both Discord themes.
+- The generated set is 11.41 MB total. Each individual image is below 1 MB.
+- Files are attached directly and referenced by attachment:// URLs. There is no
+  runtime image generation, resize, download or new runtime Python dependency.
+- data/card-artwork.json records output hashes and source sprite hashes.
+- Discord channel permissions need Attach Files and Embed Links. Railway needs
+  no additional environment variable, volume or database migration.
+
+Interactions
+
+The same component objects/IDs remain registered while browsing. Inputs defer
+before database/network waits, and each view serializes the complete message
+edit. Switching starter portraits replaces the attachment rather than appending
+images; opening details reuses the current one. A confirmation captures the
+portrait actually published when clicked, so a concurrent portrait change cannot
+claim the wrong companion. Other trainers cannot operate the selection.
+Expired views visibly disable their controls and explain how to reopen them.
+
+Preview and validation
+
+The offline preview was created and shown before pushing this branch/opening its
+PR. It uses the production embed builders and serialized component layouts.
+Open docs/artwork-preview.html from the checkout to browse all 86 codex entries,
+all four starters, the confirmation state, desktop/mobile widths and both themes.
+This is a Discord-style layout preview; actual client spacing may vary. It does
+not log into Discord, create a trainer or claim a companion.
+
+Screenshots in docs/artwork-preview/:
+  desktop.png, starter-overview.png, starter-twine.png, starter-confirmed.png,
+  codex-twine.png, codex-battle.png, mobile.png and mobile-light.png.
+
+Browser checks passed with no script errors, missing images or horizontal
+overflow at a 390px mobile viewport. All four starter previews/details and the
+confirmation control were exercised. Screenshots were visually inspected.
+
+Nine new regression tests cover roster/asset integrity, Discord embed limits,
+artwork on every codex tab, real select/button dispatch across repeated changes,
+previewing without a grant, correct single starter claims, stale pickers,
+concurrent selection/confirmation, and ownership checks.
+
+Full suite: 169 tests passed in 134.743 seconds, with no failures or errors.
+Compilation and git diff --check passed. Automated command tests use disposable
+SQLite databases and simulated Discord HTTP; no live player data was changed.
+
+Developer reproduction
+
+  python -m unittest discover -s tests -v
+  python scripts/build_artwork_preview.py
+
+Only rebuilding artwork or taking new browser screenshots needs the separate
+development packages:
+
+  python -m pip install -r requirements-artwork-dev.txt
+  python scripts/build_card_artwork.py
+  python scripts/build_artwork_preview.py --capture
+
+The browser capture uses an installed Chrome in headless mode. The already-built
+preview and screenshots do not need these development packages.
+
+Discord attachment/embed protocol reference:
+https://github.com/discord/discord-api-docs/blob/main/developers/reference.mdx#using-attachments-within-embeds

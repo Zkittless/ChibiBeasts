@@ -1145,60 +1145,12 @@ class World(commands.Cog):
                     color=COLORS["error"]
                 ))
 
-        rarity = beast["rarity"]
-        type_name = beast.get("type", "")
-        type_emoji = TYPE_EMOJI.get(type_name, "❓")
-        rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
-        color = COLORS.get(rarity, COLORS["info"])
-
-        embed = discord.Embed(
-            title=f"{rarity_emoji} {beast['name']} — *{beast['title']}*",
-            description=beast["description"],
-            color=color
-        )
-        embed.add_field(name=f"{type_emoji} Type", value=type_name.capitalize(), inline=True)
-        embed.add_field(name="✨ Rarity", value=RARITY_LABEL.get(rarity, rarity), inline=True)
-        if beast.get("collection"):
-            embed.add_field(name="📚 Collection", value=beast["collection"], inline=True)
-
-        stats = beast["base_stats"]
-        embed.add_field(
-            name="📊 Base Stats",
-            value=(
-                f"❤️ HP: `{stats['hp']}` | ⚔️ ATK: `{stats['attack']}`\n"
-                f"🛡️ DEF: `{stats['defense']}` | 💨 SPD: `{stats['speed']}`\n"
-                f"💠 MANA: `{stats['mana']}`"
-            ),
-            inline=False
-        )
-        embed.add_field(
-            name="⚡ Moves",
-            value="\n".join(f"• {m}" for m in beast["moves"]) + f"\n🌟 **Ultimate:** {beast['ultimate']}",
-            inline=False
-        )
-
-        # Type lore
-        if type_name in TYPE_LORE:
-            embed.add_field(name=f"{type_emoji} Type Lore", value=f"*{TYPE_LORE[type_name]}*", inline=False)
-
-        # Divine passive
-        if beast.get("divine_passive"):
-            dp = beast["divine_passive"]
-            embed.add_field(
-                name=f"✨ Divine Passive: **{dp['passive_name']}**",
-                value=f"*{dp['passive_desc']}*",
-                inline=False
-            )
-
-        if beast.get("starter"):
-            embed.add_field(
-                name="🏛️ Starter Beast",
-                value=f"*{beast.get('starter_house')} — {beast.get('starter_flavor','')}*",
-                inline=False
-            )
-
-        embed.set_footer(text="ChibiBeasts 🐾  •  /bestiary to see what your server has discovered")
-        await interaction.followup.send(embed=embed)
+        from utils.artwork import card_artwork_attachment
+        from utils.beast_cards import CodexView, codex_embed
+        view = CodexView(interaction.user.id, beast)
+        with card_artwork_attachment(beast_id) as artwork:
+            message = await interaction.followup.send(embed=codex_embed(beast), view=view, file=artwork, wait=True)
+        view.message = interaction.channel.get_partial_message(message.id) if interaction.channel else message
 
     # ── /typeinfo ─────────────────────────────────────────────────────────
     @app_commands.command(name="typeinfo", description="Look up type matchups and weaknesses 🔥💧")

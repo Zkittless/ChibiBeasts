@@ -6,6 +6,8 @@ A Discord creature RPG about collecting companions, caring for them, and helping
 
 Begin with `/start`, then `/guide`. Choose a companion, explore a destination, and use `/questline` from trainer level 3. `/play`, battles and training build bonds. `/dailies` shows four daily quests; `/daily` claims a separate daily reward.
 
+`/start` shows all four starter portraits and lets you browse each companion's play style, moves and base stats before pressing **Choose**. `/codex` opens an illustrated overview, with separate **Moves & stats** and **Lore** tabs. Artwork is packaged with the bot and attached directly to Discord messages; enable **Attach Files** and **Embed Links** in the bot's channel permissions. See the [interactive layout preview](docs/artwork-preview.html), [desktop screenshot](docs/artwork-preview/desktop.png), and [implementation notes](docs/ARTWORK-CARDS.txt).
+
 | Destination | Trainer level | Main inhabitants |
 |---|---:|---|
 | Whispering Woods | 1 | Nature, earth, arcane, light |
