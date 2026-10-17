@@ -306,7 +306,7 @@
       "name": "Thunderbird Feather",
       "rarity": "epic",
       "slot": "rune",
-      "description": "A single primary feather from a Thunderbird. Channels residual storm energy \u2014 each hit you land restores 8 mana.",
+      "description": "A single primary feather from a Thunderbird. Channels residual storm energy — each hit you land restores 8 mana.",
       "lore": "These crackle constantly. Storing them near electronics is not recommended.",
       "price": 8000,
       "effect": {
@@ -340,7 +340,7 @@
       "name": "Ouroboros Ring",
       "rarity": "divine",
       "slot": "rune",
-      "description": "A tiny glowing ring. The equipped beast heals for 15% of all damage it deals.",
+      "description": "A tiny glowing ring. Heals for 18% of damage dealt and grants 5% maximum HP.",
       "lore": "The snake eating its own tail figured something out. This is the leftover.",
       "price": 0,
       "drop_only": true,

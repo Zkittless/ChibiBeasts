@@ -45,7 +45,7 @@ def duel_sweep():
                             move, ultimate = ai_move(state, enemy, 'optimal')
                             combat.resolve_move(state, enemy, move, ultimate, log)
                             if state['hp'] > 0 and enemy['hp'] > 0 and combat.bonus_action(state):
-                                combat.resolve_move(state, enemy, state['moves'][0], False, log)
+                                combat.resolve_move(state, enemy, state['moves'][0], False, log, grant_charge=False)
                         combat.end_turn(state, enemy, log)
                         for checked in states:
                             assert_state(checked)

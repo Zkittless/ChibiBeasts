@@ -11,6 +11,7 @@ from utils import db as storage, combat
 from utils.duels import prepare_state, active_fighters
 from utils.gameplay import add_stack
 from utils.theme import COLORS, hp_bar
+from utils.raid_balance import BOSS_INTERVAL
 active_raids = {}
 open_lobbies = set()
 MECHANICS = {'corrupted_leviathan': ('Cleanse the current', 'Tainted water is gathering. Use Weave to cleanse it before the next surge.', 'cleanse'), 'corrupted_fenrir': ('Close the rift', 'A rift marks the next strike. Weave it shut or guard against the echo.', 'rift'), 'corrupted_dragon': ('Vent the flame', 'Null-flame is rising. Guard shelters you; Weave vents part of the pressure.', 'flame'), 'ancient_chronos': ('Anchor this moment', 'Chronos is recording an echo of your attacks. Guard before the echo returns; Weave weakens it.', 'echo'), 'ancient_genesis': ('Share the ember', 'An ember is seeking a place to rest. Weave together to turn the coming burst into a shield.', 'ember'), 'ancient_abyss': ('Place a guiding star', "The light is thinning. Weave guiding stars to restore everyone's attack strength.", 'stars')}
@@ -96,7 +97,7 @@ async def open_raid(interaction, boss, *, guild_id=None, summon_item=None):
     open_lobbies.add(channel.id)
     try:
         await lobby.eligible(uid)
-        message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nUp to ten trainers. Set three healthy companions with /raidparty.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins.", color=COLORS['legendary']), view=lobby)
+        message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nUp to ten trainers. Set three healthy companions with /raidparty. Aim for a prepared party and a 5–8 minute fight; bring healing and answer the patterns.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins.", color=COLORS['legendary']), view=lobby)
         await lobby.wait()
         lobby.closed = True
         if lobby.cancelled:
@@ -180,8 +181,7 @@ class RaidSession:
                 self.party[uid] = []
                 for index, row in enumerate(rows[uid]):
                     state = await prepare_state(uid, row, storage.get_beast_data(row['beast_id']), perks, consume=index == 0)
-                    state['mana'] = min(25 + (20 if 'genesis_spark' in state['perks'] else 0), state['max_mana'])
-                    state['ultimate_charges'] = 3
+                    state['ultimate_charges'] = 0
                     if sanctuary.get('raid_altar'):
                         state['damage_multiplier'] *= 1.1
                         state['damage_reduction_flat_percent'] = state.get('damage_reduction_flat_percent', 0) + 5
@@ -195,20 +195,12 @@ class RaidSession:
                     await db.commit()
                 combat.active_states[uid] = self.state(uid)
                 combat.active_parties[uid] = self.party[uid]
-            data = storage.get_beast_data(self.boss['id'])
-            avg_def = sum((self.state(uid)['defense'] for uid in self.users)) / len(self.users)
-            defense = max(20, int(avg_def * 0.55))
-            dps = sum((self.state(uid)['attack'] * 100 / (100 + defense) for uid in self.users))
-            hp = max(500, int(dps * (35 if self.guild_id else 45) / len(self.users) ** 0.2))
-            avg_hp = sum((self.state(uid)['max_hp'] for uid in self.users)) / len(self.users)
-            row = {'hp': hp, 'max_hp': hp, 'attack': int(avg_hp * 0.22), 'defense': defense, 'speed': 1, 'mana': 100, 'max_mana': 100, 'happiness': 70}
-            self.enemy = combat.build_state(data, row)
-            self.enemy['divine_passive'] = {}
+            self.build_enemy()
             for uid in self.users:
                 combat.start_battle(self.state(uid), self.enemy, [])
             active_raids[self.id] = self
             async with storage.connect() as db:
-                await db.execute('UPDATE raids SET max_hp=?,current_hp=? WHERE id=?', (hp, hp, self.id))
+                await db.execute('UPDATE raids SET max_hp=?,current_hp=? WHERE id=?', (self.enemy['max_hp'], self.enemy['hp'], self.id))
                 await db.commit()
         except BaseException:
             active_raids.pop(self.id, None)
@@ -220,19 +212,36 @@ class RaidSession:
                 await refund_raid(self.id)
             raise
 
+    def build_enemy(self):
+        from utils.raid_balance import budget
+        data = storage.get_beast_data(self.boss['id'])
+        row = budget(self.boss['id'], self.party)
+        self.reference_speed = row['reference_speed']
+        self.raid_level = row['level']
+        row['max_hp'] = row['hp']
+        self.enemy = combat.build_state(data, row)
+        self.enemy['divine_passive'] = {}
+        self.enemy['raid_boss'] = True
+        self.enemy['reference_attack'] = row['reference_attack']
+
+    def action_cooldown(self, uid):
+        from utils.raid_balance import action_interval
+        state = self.state(uid)
+        return action_interval(state, getattr(self, 'reference_speed', state['speed']))
+
     def embed(self):
         hp = self.enemy['hp']
         description = f"{hp_bar(hp, self.enemy['max_hp'])}\n\n{self.last_event}"
         if self.pending:
             description += f"\n\n⚠️ **{MECHANICS[self.boss['id']][0]}** — {MECHANICS[self.boss['id']][1]}\nWeave: {self.weaves}/{self.weave_required()}"
-        embed = discord.Embed(title=f"⚔️ {self.boss['name']}", description=description, color=COLORS['legendary'])
+        embed = discord.Embed(title=f"⚔️ {self.boss['name']} · Lv.{self.enemy.get('level', 1)}", description=description, color=COLORS['legendary'])
         lines = []
         for uid in self.users:
             state = self.state(uid)
-            lines.append(f"<@{uid}> · {state['name']} · {state['hp']}/{state['max_hp']} HP · {state['mana']} MP · {self.damage[uid]} damage / {self.support[uid]} support")
+            lines.append(f"<@{uid}> · {state['name']} · {state['hp']}/{state['max_hp']} HP · {state['mana']} MP · {self.action_cooldown(uid):.1f}s actions · {self.damage[uid]} damage / {self.support[uid]} support")
         embed.add_field(name='Companions', value='\n'.join(lines)[:1024], inline=False)
         embed.set_image(url=self.boss['image_url'])
-        embed.set_footer(text='Attack / skill / guard / ultimate · Weave responds to the boss · Tend helps an ally · Swap preserves your bench')
+        embed.set_footer(text='Weave answers patterns · Tend heals · Speed controls action recovery · Bosses resist repeated stuns')
         return embed
 
     async def refresh(self):
@@ -261,7 +270,7 @@ class RaidSession:
         try:
             self.message = await self.channel.send(embed=self.embed(), view=self.view)
             while not self.closed and self.clock() - self.started < 600:
-                await asyncio.sleep(8)
+                await asyncio.sleep(BOSS_INTERVAL)
                 async with self.lock, combat.lock_states(self.users):
                     if self.closed:
                         break
@@ -292,6 +301,10 @@ class RaidSession:
                 self.view.stop()
 
     async def boss_turn(self):
+        self.resolve_boss_turn()
+        await self.record_knockouts()
+
+    def resolve_boss_turn(self):
         alive = [uid for uid in self.users if self.state(uid)['hp'] > 0]
         if not alive:
             return
@@ -316,9 +329,9 @@ class RaidSession:
                         state['status_turns'] = 0
                         combat.heal(state, int(state['max_hp'] * 0.1))
                 else:
-                    base = int(state['max_hp'] * (0.12 if solved else 0.22) * 100 / (100 + state['defense']) * 1.5)
+                    base = int(self.enemy['attack'] * (0.65 if solved else 1.8) * 100 / (100 + state['defense']))
                     if kind == 'echo':
-                        base += int(self.damage.get(uid, 0) * 0.01)
+                        base += min(int(self.damage.get(uid, 0) * 0.01), int(state['max_hp'] * .12))
                     combat.resolve_hit(self.enemy, state, base, log)
                     if not solved and kind in {'cleanse', 'flame', 'rift'}:
                         combat.apply_status(state, {'cleanse': 'poison', 'flame': 'burn', 'rift': 'slow'}[kind], self.enemy, log)
@@ -327,12 +340,15 @@ class RaidSession:
             self.weaves = 0
             self.weavers.clear()
         else:
-            uid = random.choice(alive)
-            state = self.state(uid)
-            log = []
-            damage, _, _, _ = combat.calc_damage(self.enemy, state, self.enemy['moves'][0])
-            combat.resolve_hit(self.enemy, state, damage, log)
-            self.last_event = f"{self.boss['name']} meets {state['name']}: " + (' · '.join(log[-1:]) if log else f'{damage} pressure.')
+            for uid in alive:
+                state = self.state(uid)
+                log = []
+                damage, _, _, _ = combat.calc_damage(self.enemy, state, self.enemy['moves'][0])
+                combat.resolve_hit(self.enemy, state, damage, log)
+            self.last_event = f"{self.boss['name']} sweeps across the party. Guard, tend an ally, or swap a wounded companion."
+        combat.end_turn(self.enemy, self.state(alive[0]), [])
+
+    async def record_knockouts(self):
         for uid in self.users:
             for state in self.party[uid]:
                 if state['hp'] <= 0 and (not state.get('ko_recorded')):
@@ -342,93 +358,13 @@ class RaidSession:
                             row = await c.fetchone()
                     if row:
                         await storage.knockout_beast(state['id'], row[0])
-        combat.end_turn(self.enemy, self.state(alive[0]), [])
 
     async def action(self, uid, kind):
         if uid not in self.party:
             raise ValueError('Join the lobby before the raid begins.')
         async with self.lock, combat.lock_states(self.users):
-            if self.closed or (hasattr(self, 'enemy') and self.enemy['hp'] <= 0):
-                raise ValueError('This raid is complete.')
-            state = self.state(uid)
-            if state['hp'] <= 0 and kind != 'swap':
-                raise ValueError('Swap to a healthy bench companion.')
-            cooldown = 8 if kind in {'weave', 'tend'} else 2
-            if self.clock() - self.last.get((uid, kind if kind in {'weave', 'tend'} else 'action'), 0) < cooldown:
-                raise ValueError('Give your companion a moment before that action.')
-            key = (uid, kind if kind in {'weave', 'tend'} else 'action')
-            log = []
-            damage = 0
-            if kind == 'swap':
-                options = [i for i, s in enumerate(self.party[uid]) if i != self.slots[uid] and s['hp'] > 0]
-                if not options:
-                    raise ValueError('No healthy companion remains on the bench.')
-                self.slots[uid] = options[0]
-                combat.active_states[uid] = self.state(uid)
-                self.last_event = f"<@{uid}> brings in {self.state(uid)['name']}."
-            elif kind == 'weave':
-                if not self.pending:
-                    raise ValueError('The weave is steady. Watch for the next announced pattern.')
-                if uid in self.weavers:
-                    raise ValueError('You have already helped with this pattern. Another trainer can complete the weave.')
-                self.weavers.add(uid)
-                self.weaves += 1
-                self.support[uid] += max(1, int(state['max_hp'] * 0.1))
-                self.last_event = f"<@{uid}> helps {MECHANICS[self.boss['id']][0].lower()}."
-            elif kind == 'tend':
-                targets = [(other, self.state(other)) for other in self.users if 0 < self.state(other)['hp'] < self.state(other)['max_hp']]
-                if not targets:
-                    raise ValueError('Everyone standing is healthy; keep the supplies.')
-                if state['mana'] < 15:
-                    raise ValueError('Tending an ally needs 15 mana.')
-                other, target = min(targets, key=lambda pair: pair[1]['hp'] / pair[1]['max_hp'])
-                state['mana'] -= 15
-                target['status'] = None
-                target['status_turns'] = 0
-                restored = combat.heal(target, max(1, int(target['max_hp'] * 0.18)))
-                self.support[uid] += restored
-                self.last_event = f"<@{uid}> tends <@{other}>'s {target['name']}: +{restored} HP."
-            else:
-                index = {'attack': 0, 'skill': 1, 'guard': 2}.get(kind, 0)
-                ult = kind == 'ultimate'
-                move = state['ultimate'] if ult else state['moves'][index]
-                if not combat.can_use(state, move, ult):
-                    raise ValueError('Not enough mana or ultimate charge. Attack or guard to build resources.')
-                if combat.begin_turn(state, self.enemy, log):
-                    old_hp = state['hp']
-                    old = self.enemy['hp']
-                    if self.totems[uid]:
-                        state['damage_multiplier'] *= 1.2
-                    combat.resolve_move(state, self.enemy, move, ult, log)
-                    if state['hp'] > 0 and self.enemy['hp'] > 0 and combat.bonus_action(state):
-                        combat.resolve_move(state, self.enemy, state['moves'][0], False, log)
-                    if self.totems[uid]:
-                        state['damage_multiplier'] /= 1.2
-                    self.support[uid] += max(0, state['hp'] - old_hp)
-                    if self.pending and MECHANICS[self.boss['id']][2] == 'stars' and (self.weaves < self.weave_required()):
-                        loss = int((old - self.enemy['hp']) * 0.3)
-                        self.enemy['hp'] += loss
-                    damage = max(0, old - self.enemy['hp'])
-                    self.damage[uid] += damage
-                    if not ult:
-                        state['ultimate_charges'] = min(3, state.get('ultimate_charges', 0) + 1)
-                    if kind == 'guard' and self.pending:
-                        self.support[uid] += max(1, int(state['max_hp'] * 0.04))
-                    combat.end_turn(state, self.enemy, log)
-                self.last_event = ' · '.join(log[-2:])[-500:]
-            self.last[key] = self.clock()
-            pct = self.enemy['hp'] / self.enemy['max_hp']
-            if not self.pending and self.enemy['hp'] > 0 and self.phase < 3 and pct < (0.75, 0.45, 0.2)[self.phase]:
-                self.phase += 1
-                self.pending = True
-                self.weaves = 0
-                self.weavers.clear()
-                self.pattern_started = self.clock()
-                self.last_event = MECHANICS[self.boss['id']][1]
-            defeated = self.enemy['hp'] <= 0
-            if state['hp'] <= 0 and (not state.get('ko_recorded')):
-                state['ko_recorded'] = True
-                await storage.knockout_beast(state['id'], state['rarity'])
+            damage, defeated = self.resolve_action(uid, kind)
+            await self.record_knockouts()
         from utils.progress import track_quest_event
         if kind not in {'swap'}:
             await track_quest_event(uid, 'raid_attack', event_key=f'raid-join:{self.id}:{uid}')
@@ -442,6 +378,88 @@ class RaidSession:
             await self.finish(True)
         else:
             await self.refresh()
+
+    def resolve_action(self, uid, kind):
+        """Resolve one validated input; caller owns locks and persistence."""
+        if uid not in self.party:
+            raise ValueError('Join the lobby before the raid begins.')
+        if self.closed or (hasattr(self, 'enemy') and self.enemy['hp'] <= 0):
+            raise ValueError('This raid is complete.')
+        state = self.state(uid)
+        if state['hp'] <= 0 and kind != 'swap':
+            raise ValueError('Swap to a healthy bench companion.')
+        cooldown = 8 if kind in {'weave', 'tend'} else self.action_cooldown(uid)
+        if self.clock() - self.last.get((uid, kind if kind in {'weave', 'tend'} else 'action'), 0) < cooldown:
+            raise ValueError('Give your companion a moment before that action.')
+        key = (uid, kind if kind in {'weave', 'tend'} else 'action')
+        log = []
+        damage = 0
+        if kind == 'swap':
+            options = [i for i, s in enumerate(self.party[uid]) if i != self.slots[uid] and s['hp'] > 0]
+            if not options:
+                raise ValueError('No healthy companion remains on the bench.')
+            self.slots[uid] = options[0]
+            combat.active_states[uid] = self.state(uid)
+            self.last_event = f"<@{uid}> brings in {self.state(uid)['name']}."
+        elif kind == 'weave':
+            if not self.pending:
+                raise ValueError('The weave is steady. Watch for the next announced pattern.')
+            if uid in self.weavers:
+                raise ValueError('You have already helped with this pattern. Another trainer can complete the weave.')
+            self.weavers.add(uid)
+            self.weaves += 1
+            self.support[uid] += max(1, int(state['max_hp'] * 0.1))
+            self.last_event = f"<@{uid}> helps {MECHANICS[self.boss['id']][0].lower()}."
+        elif kind == 'tend':
+            targets = [(other, self.state(other)) for other in self.users if 0 < self.state(other)['hp'] < self.state(other)['max_hp']]
+            if not targets:
+                raise ValueError('Everyone standing is healthy; keep the supplies.')
+            if state['mana'] < 15:
+                raise ValueError('Tending an ally needs 15 mana.')
+            other, target = min(targets, key=lambda pair: pair[1]['hp'] / pair[1]['max_hp'])
+            state['mana'] -= 15
+            target['status'] = None
+            target['status_turns'] = 0
+            restored = combat.heal(target, max(1, int(target['max_hp'] * 0.18)))
+            self.support[uid] += restored
+            self.last_event = f"<@{uid}> tends <@{other}>'s {target['name']}: +{restored} HP."
+        else:
+            index = {'attack': 0, 'skill': 1, 'guard': 2}.get(kind, 0)
+            ult = kind == 'ultimate'
+            move = state['ultimate'] if ult else state['moves'][index]
+            if not combat.can_use(state, move, ult):
+                raise ValueError('Not enough mana or ultimate charge. Attack or guard to build resources.')
+            if combat.begin_turn(state, self.enemy, log):
+                old_hp = state['hp']
+                old = self.enemy['hp']
+                if self.totems[uid]:
+                    state['damage_multiplier'] *= 1.2
+                combat.resolve_move(state, self.enemy, move, ult, log)
+                if state['hp'] > 0 and self.enemy['hp'] > 0 and combat.bonus_action(state):
+                    combat.resolve_move(state, self.enemy, state['moves'][0], False, log, grant_charge=False)
+                if self.totems[uid]:
+                    state['damage_multiplier'] /= 1.2
+                combat.end_turn(state, self.enemy, log)
+                self.support[uid] += max(0, state['hp'] - old_hp)
+                if self.pending and MECHANICS[self.boss['id']][2] == 'stars' and (self.weaves < self.weave_required()):
+                    loss = int((old - self.enemy['hp']) * 0.3)
+                    self.enemy['hp'] += loss
+                damage = max(0, old - self.enemy['hp'])
+                self.damage[uid] += damage
+                if kind == 'guard' and self.pending:
+                    self.support[uid] += max(1, int(state['max_hp'] * 0.04))
+            self.last_event = ' · '.join(log[-2:])[-500:]
+        self.last[key] = self.clock()
+        pct = self.enemy['hp'] / self.enemy['max_hp']
+        if not self.pending and self.enemy['hp'] > 0 and self.phase < 3 and pct < (0.75, 0.45, 0.2)[self.phase]:
+            self.phase += 1
+            self.pending = True
+            self.weaves = 0
+            self.weavers.clear()
+            self.pattern_started = self.clock()
+            self.last_event = MECHANICS[self.boss['id']][1]
+        defeated = self.enemy['hp'] <= 0
+        return damage, defeated
 
     async def finish(self, victory):
         async with self.lock, combat.lock_states(self.users):
@@ -458,6 +476,7 @@ class RaidSession:
                 'server_id': getattr(getattr(self.channel, 'guild', None), 'id', None),
                 'party': {str(uid): [{'id': state['id'], 'hp': state['hp']} for state in self.party[uid]] for uid in self.users},
                 'damage': self.damage, 'support': self.support,
+                'raid_level': getattr(self, 'raid_level', 10),
             }
             async with storage.connect() as db:
                 await db.execute('BEGIN IMMEDIATE')
@@ -516,6 +535,8 @@ class RaidSession:
         from utils.rewards import shards, player_exp
         from utils.duels import beast_exp_in_transaction
         from utils.catalog import load_catalog
+        from utils.raid_balance import reward_scale
+        scale = reward_scale(getattr(self, 'raid_level', 10))
         ancient = not self.guild_id
         limit = 12 if ancient else 8
         boss_id = self.boss['id']
@@ -540,21 +561,21 @@ class RaidSession:
                 if caught:
                     await db.execute('UPDATE raid_catch_progress SET clears=0 WHERE user_id=? AND beast_id=?', (uid, boss_id))
                 await db.execute('INSERT INTO raid_rewards(raid_id,user_id,caught) VALUES(?,?,?)', (self.id, uid, int(caught)))
-                await shards(db, uid, 8 if ancient else 3)
-                await db.execute('UPDATE players SET gold=gold+?,guild_tokens=guild_tokens+10 WHERE user_id=?', (500 if ancient else 300, uid))
+                await shards(db, uid, round((8 if ancient else 3) * scale))
+                await db.execute('UPDATE players SET gold=gold+?,guild_tokens=guild_tokens+? WHERE user_id=?', (round((500 if ancient else 300) * scale), round(10 * scale), uid))
                 for mid, amount in materials.items():
-                    await add_stack(db, 'player_materials', uid, mid, amount)
+                    await add_stack(db, 'player_materials', uid, mid, round(amount * scale))
                 known_materials = load_catalog('materials.json')['materials']
                 loot = random.choice(self.boss['loot_table'])
                 await add_stack(db, 'player_materials' if loot in known_materials else 'player_inventory', uid, loot)
-                exp_gain = 250 if ancient else 150
+                exp_gain = round((250 if ancient else 150) * scale)
                 async with db.execute('SELECT 1 FROM guild_members m JOIN guild_sanctuary s ON s.guild_id=m.guild_id WHERE m.user_id=? AND s.arcane_library=1', (uid,)) as c:
                     if await c.fetchone():
                         exp_gain = round(exp_gain * 1.15)
                 level, _, leveled = await player_exp(db, uid, exp_gain)
                 levels = []
                 for state in self.party.get(uid, []):
-                    _, beast_leveled = await beast_exp_in_transaction(db, uid, state['id'], 80)
+                    _, beast_leveled = await beast_exp_in_transaction(db, uid, state['id'], round(80 * scale))
                     if beast_leveled:
                         levels.append(state['id'])
                 await db.execute('INSERT INTO raid_reward_details VALUES(?,?,?,?)', (self.id, uid, level if leveled else None, json.dumps(levels)))
@@ -622,6 +643,7 @@ async def recover_raids():
         payload = json.loads(serialized)
         session = RaidSession(None, payload['boss'], payload['users'], payload['guild_id'])
         session.id = raid_id
+        session.raid_level = payload.get('raid_level', 10)
         session.party = {int(uid): party for uid, party in payload['party'].items()}
         session.damage = {int(uid): amount for uid, amount in payload['damage'].items()}
         session.support = {int(uid): amount for uid, amount in payload['support'].items()}

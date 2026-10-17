@@ -103,7 +103,8 @@ def ai_move(state, opp, personality):
         return (state['ultimate'], True)
     if opp.get('focus', 1) > 1 and not state.get('guard') and personality in {'defensive', 'patient', 'optimal'}:
         return (state['moves'][2], False)
-    if not opp.get('status') and combat.can_use(state, state['moves'][1]) and combat.move_spec(state, state['moves'][1]).get('status'):
+    condition = combat.move_spec(state, state['moves'][1]).get('status')
+    if condition and combat.can_receive_status(opp, condition) and combat.can_use(state, state['moves'][1]):
         return (state['moves'][1], False)
     return (state['moves'][0], False)
 
@@ -119,8 +120,6 @@ async def _duel(interaction, states, users, title, personality, view_class):
     for uid, state in zip(users, states):
         if uid is not None:
             combat.active_states[uid] = state
-        else:
-            state['ultimate_charges'] = 3
     log = []
     message = None
     view = None
@@ -140,8 +139,6 @@ async def _duel(interaction, states, users, title, personality, view_class):
                 if can_act:
                     uid = users[index]
                     if uid is None:
-                        if state['mana'] >= 50:
-                            state['ultimate_charges'] = 3
                         name, ult = ai_move(state, opp, personality)
                     else:
                         embed = discord.Embed(title=f'⚔️ {title} · Round {round_number}', description='\n\n'.join((f"**{s['name']}** Lv.{s.get('level', 1)}\n{hp_bar(s['hp'], s['max_hp'])}\n{s['mana']}/{s['max_mana']} MP · {s.get('status') or 'ready'}" for s in states)), color=COLORS['epic'])
@@ -168,7 +165,7 @@ async def _duel(interaction, states, users, title, personality, view_class):
                     async with combat.lock_states(users):
                         combat.resolve_move(state, opp, name, ult, log)
                         if state['hp'] > 0 and opp['hp'] > 0 and combat.bonus_action(state):
-                            combat.resolve_move(state, opp, state['moves'][0], False, log)
+                            combat.resolve_move(state, opp, state['moves'][0], False, log, grant_charge=False)
                 async with combat.lock_states(users):
                     combat.end_turn(state, opp, log)
             if winner is not None or min((s['hp'] for s in states)) <= 0:
