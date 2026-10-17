@@ -45,7 +45,7 @@ Story spoilers and the shared terminology are documented in [the lore bible](dat
 
 Wild battles, NPC spars, `/battle` and `/ranked` use the same interactive combat runner. Every beast has three different move roles: a reliable attack that restores mana, a typed skill or healing skill, and a guard that prepares a stronger strike. Attacks, skills and guards each earn one ultimate charge; an ultimate spends three charges and 50 mana. Automatic bonus strikes earn no extra charge. Wild opponents build charges under the same rules. Armor, evasion, shields, passives, bonds, gear and equipped perks affect the actual hit before HP is removed. Items affect the live battle state.
 
-Duels show both companions on a matching realm battlefield in the [Field Journal UI](docs/FIELD-JOURNAL-UI.md), with framed portraits, fitted HP/MP values, separated ultimate charges and a lower battle journal. Attacks, skills, healing, guards and ultimates visibly animate before the next move prompt opens. All 86 portraits and five backgrounds ship with the bot. See the [actual attack clip](docs/field-journal/attack.gif), [number spacing](docs/field-journal/number-spacing.png), and [runtime notes](docs/ANIMATED-BATTLES.md). Discord's GIF autoplay setting controls client playback; text fallback and a final still remain available. Reward/result messages omit the redundant post-fight battle logs and HP summaries.
+Duels show both companions on a matching realm battlefield in the [Field Journal UI](docs/FIELD-JOURNAL-UI.md), with framed portraits, fitted HP/MP values, separated ultimate charges and a lower battle journal. The [move animation overhaul](docs/MOVE-ANIMATIONS.md) assigns effects to all 334 distinct move names: threads snap, clockwork rewinds, roots rise, fire breath forms a cone, and healing follows each companion's theme. Defeated creatures turn and retreat offstage. All 86 portraits and five backgrounds ship with the bot. See [number spacing](docs/field-journal/number-spacing.png) and [runtime notes](docs/ANIMATED-BATTLES.md). Discord's GIF autoplay setting controls client playback; text fallback and a final still remain available. Reward/result messages omit the redundant post-fight battle logs and HP summaries.
 
 Guild `/raid` and `/ancient` share a cooperative system with a lobby, three companions per trainer, swapping, tending allies, guarding and boss-specific Weave responses. Guild raids require a level-five guild, 50 guild tokens, and a leader or officer to host. Trainers need level 10 and three healthy assigned companions. Ancient raids spend their summon item when the lobby starts.
 
@@ -122,6 +122,7 @@ python scripts/audit_combat_balance.py --output balance-results
 python scripts/audit_combat_balance.py --output balance-results --holdout-only
 python scripts/preview_raid_arena.py --output raid-preview-output
 python scripts/preview_field_journal.py --output field-journal-output
+python scripts/preview_move_animations.py --output battle-overhaul-output --audit-roster
 python scripts/audit_economy.py --output economy-results
 python scripts/finalize_artwork.py
 python scripts/build_revamp_preview.py

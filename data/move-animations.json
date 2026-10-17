@@ -1,0 +1,2586 @@
+{
+  "version": 1,
+  "description": "Explicit presentation-only profiles. Support families follow actual move effects; combat remains authoritative.",
+  "beasts": {
+    "fairy": {
+      "Pixie Dust": {
+        "family": "bolt",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Leaf Dart": {
+        "family": "heal",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Glitter Blind": {
+        "family": "guard",
+        "palette": "galaxy",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Fairy Ring": {
+        "family": "orbit",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "pixie": {
+      "Hex Bolt": {
+        "family": "bolt",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Trickster Flash": {
+        "family": "gaze",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Mana Sap": {
+        "family": "guard",
+        "palette": "arcane",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Grand Illusion": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "goblin": {
+      "Club Smash": {
+        "family": "headbutt",
+        "palette": "earth",
+        "motion": "headbutt",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Dirt Toss": {
+        "family": "splash",
+        "palette": "earth",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Scavenge": {
+        "family": "guard",
+        "palette": "earth",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Goblin Rampage": {
+        "family": "dash",
+        "palette": "earth",
+        "motion": "dash",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "imp": {
+      "Shadow Scratch": {
+        "family": "slash",
+        "palette": "shadow",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Smoke Bomb": {
+        "family": "swarm",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "bat"
+      },
+      "Taunt": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Nightmare Swarm": {
+        "family": "swarm",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "bat"
+      }
+    },
+    "slime": {
+      "Goo Splash": {
+        "family": "splash",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Absorb": {
+        "family": "heal",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Sticky Trap": {
+        "family": "shelter",
+        "palette": "nature",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Tidal Blob": {
+        "family": "wave",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "kitsune_1": {
+      "Fox Fire": {
+        "family": "flame",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Illusion Step": {
+        "family": "gaze",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Spirit Tail": {
+        "family": "guard",
+        "palette": "arcane",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Foxfire Veil": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "dryad": {
+      "Vine Whip": {
+        "family": "whip",
+        "palette": "wood",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Nature's Embrace": {
+        "family": "heal",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Root Bind": {
+        "family": "shelter",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Ancient Grove": {
+        "family": "roots",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "hellhound": {
+      "Ember Bite": {
+        "family": "bite",
+        "palette": "fire",
+        "motion": "bite",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Hellfire Dash": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Intimidate": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Inferno Howl": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "harpy": {
+      "Talon Strike": {
+        "family": "slash",
+        "palette": "wind",
+        "motion": "slash",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Wind Shriek": {
+        "family": "wind",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Gale Dive": {
+        "family": "wind_guard",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Tempest Screech": {
+        "family": "wind",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "unicorn": {
+      "Horn Pierce": {
+        "family": "slash",
+        "palette": "light",
+        "motion": "slash",
+        "variant": 3,
+        "motif": "lance"
+      },
+      "Purify": {
+        "family": "heal",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Sacred Light": {
+        "family": "guard",
+        "palette": "light",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Radiant Charge": {
+        "family": "dash",
+        "palette": "light",
+        "motion": "dash",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "pegasus": {
+      "Cloud Dash": {
+        "family": "dash",
+        "palette": "wind",
+        "motion": "dash",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Thunder Hooves": {
+        "family": "lightning",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Aerial Slam": {
+        "family": "wind_guard",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Storm Gallop": {
+        "family": "dash",
+        "palette": "wind",
+        "motion": "dash",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "griffin": {
+      "Eagle Dive": {
+        "family": "dash",
+        "palette": "wind",
+        "motion": "dash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Lion Pounce": {
+        "family": "headbutt",
+        "palette": "wind",
+        "motion": "headbutt",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Feather Blade": {
+        "family": "guard",
+        "palette": "wind",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Royal Tempest": {
+        "family": "wind",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "basilisk": {
+      "Petrify Gaze": {
+        "family": "gaze",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Venom Fang": {
+        "family": "bite",
+        "palette": "venom",
+        "motion": "bite",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Stone Scale": {
+        "family": "shelter",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Full Petrification": {
+        "family": "gaze",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "cerberus": {
+      "Triple Bite": {
+        "family": "bite",
+        "palette": "shadow",
+        "motion": "bite",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Hellfire Breath": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Soul Howl": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Gates of Tartarus": {
+        "family": "rift",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "wyvern": {
+      "Venom Stinger": {
+        "family": "slash",
+        "palette": "venom",
+        "motion": "slash",
+        "variant": 1,
+        "motif": "lance"
+      },
+      "Fire Breath": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Wing Slash": {
+        "family": "wind_guard",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Toxic Inferno": {
+        "family": "flame",
+        "palette": "venom",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "phoenix": {
+      "Flame Surge": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Ash Rebirth": {
+        "family": "orbit",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Solar Flare": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Eternal Pyre": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "thunderbird": {
+      "Lightning Strike": {
+        "family": "lightning",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Thunder Clap": {
+        "family": "lightning",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Storm Surge": {
+        "family": "guard",
+        "palette": "wind",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Apocalypse Storm": {
+        "family": "lightning",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "sphinx": {
+      "Riddle Curse": {
+        "family": "gaze",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Arcane Swipe": {
+        "family": "slash",
+        "palette": "arcane",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Mind Shatter": {
+        "family": "guard",
+        "palette": "arcane",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Eternal Enigma": {
+        "family": "rift",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "yeti": {
+      "Blizzard Fist": {
+        "family": "headbutt",
+        "palette": "ice",
+        "motion": "headbutt",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Frost Roar": {
+        "family": "wind",
+        "palette": "ice",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Avalanche": {
+        "family": "guard",
+        "palette": "ice",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Permafrost Slam": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "minotaur": {
+      "Axe Cleave": {
+        "family": "slash",
+        "palette": "earth",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Bull Rush": {
+        "family": "dash",
+        "palette": "earth",
+        "motion": "dash",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Ground Shatter": {
+        "family": "shelter",
+        "palette": "earth",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Maze of Fury": {
+        "family": "orbit",
+        "palette": "earth",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "kitsune_9": {
+      "Nine-Tail Storm": {
+        "family": "swarm",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Grand Illusion": {
+        "family": "gaze",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Soul Fox Fire": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Fox God's Wrath": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "dragon": {
+      "Dragon Breath": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Tail Sweep": {
+        "family": "slash",
+        "palette": "fire",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Scale Barrier": {
+        "family": "shelter",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "World Ender": {
+        "family": "orbit",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "nova"
+      }
+    },
+    "kraken": {
+      "Tentacle Crush": {
+        "family": "headbutt",
+        "palette": "water",
+        "motion": "headbutt",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Ink Cloud": {
+        "family": "swarm",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "bat"
+      },
+      "Tidal Wave": {
+        "family": "guard",
+        "palette": "water",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "The Great Drowning": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "hydra": {
+      "Multi-Head Strike": {
+        "family": "headbutt",
+        "palette": "water",
+        "motion": "headbutt",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Regen Scale": {
+        "family": "heal",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Venom Torrent": {
+        "family": "guard",
+        "palette": "venom",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Infinite Heads": {
+        "family": "swarm",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "fang"
+      }
+    },
+    "fenrir": {
+      "Void Fang": {
+        "family": "bite",
+        "palette": "shadow",
+        "motion": "bite",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Chain Break": {
+        "family": "slash",
+        "palette": "shadow",
+        "motion": "slash",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Shadow Howl": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Ragnarok Bite": {
+        "family": "bite",
+        "palette": "shadow",
+        "motion": "bite",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "charybdis": {
+      "Whirlpool": {
+        "family": "wave",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Depth Pull": {
+        "family": "bolt",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Current Crush": {
+        "family": "guard",
+        "palette": "wind",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "The Great Vortex": {
+        "family": "wave",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "leviathan": {
+      "Ocean Crush": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Abyssal Roar": {
+        "family": "wind",
+        "palette": "water",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Tidal Crush": {
+        "family": "guard",
+        "palette": "water",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Sea of Chaos": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "singularity": {
+      "Event Horizon": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Galaxy Absorb": {
+        "family": "drain",
+        "palette": "galaxy",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Dark Matter Pulse": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Big Bang": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "nova"
+      }
+    },
+    "astraea": {
+      "Constellation Bind": {
+        "family": "thread",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Star Thread": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Cosmic Loom": {
+        "family": "guard",
+        "palette": "thread",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Weave of Eternity": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "chronos": {
+      "Time Rewind": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Epoch Shift": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Temporal Lock": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "End of Time": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "aetherius": {
+      "Void Song": {
+        "family": "wind",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Aether Crush": {
+        "family": "headbutt",
+        "palette": "cosmic",
+        "motion": "headbutt",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Dark Tide": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Consuming Void": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "genesis": {
+      "Origin Flame": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Creation Burst": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "First Light": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Genesis Explosion": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "nova"
+      }
+    },
+    "terminus": {
+      "Final Verdict": {
+        "family": "gaze",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "End Gaze": {
+        "family": "gaze",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Silence": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Last Twilight": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "nova"
+      }
+    },
+    "paradox": {
+      "Mirror Reality": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Contradiction": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Impossible Truth": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Infinite Loop": {
+        "family": "time",
+        "palette": "cosmic",
+        "motion": "time",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "horizon": {
+      "Rift Tear": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Dimensional Claw": {
+        "family": "slash",
+        "palette": "cosmic",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Edge of Reality": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Beyond the Horizon": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "karma": {
+      "Fate Thread": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Karmic Return": {
+        "family": "bolt",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Destiny Weave": {
+        "family": "guard",
+        "palette": "thread",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "What Goes Around": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "zodiac": {
+      "Star Map": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Constellation Beam": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Astral Antler": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Zodiac Alignment": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "abyss": {
+      "Dark Matter Cloak": {
+        "family": "bolt",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Void Pounce": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Singularity Roar": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Into the Abyss": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "nebula": {
+      "Nebula Coil": {
+        "family": "whip",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Star Birth": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Cosmic Breath": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Stellar Nursery": {
+        "family": "orbit",
+        "palette": "galaxy",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "supernova": {
+      "Stellar Roar": {
+        "family": "wind",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Nova Burst": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Gamma Ray": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Final Explosion": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "nova"
+      }
+    },
+    "nirvana": {
+      "Lotus Bloom": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "flower"
+      },
+      "Enlightened Strike": {
+        "family": "headbutt",
+        "palette": "cosmic",
+        "motion": "headbutt",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Peaceful Aura": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "State of Nirvana": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "flower"
+      }
+    },
+    "asgard": {
+      "Bifrost Dash": {
+        "family": "dash",
+        "palette": "arcane",
+        "motion": "dash",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Thunder Fang": {
+        "family": "lightning",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Realm Walk": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Yggdrasil's Rage": {
+        "family": "roots",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "atlas": {
+      "World Shell": {
+        "family": "stomp",
+        "palette": "cosmic",
+        "motion": "stomp",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Seismic Stomp": {
+        "family": "stomp",
+        "palette": "cosmic",
+        "motion": "stomp",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Continental Crush": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Weight of the World": {
+        "family": "stomp",
+        "palette": "cosmic",
+        "motion": "stomp",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "prismite": {
+      "Facet Strike": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Halo Glint": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Refract": {
+        "family": "illusion",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Perfect Geometry": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "twine": {
+      "Tick Bite": {
+        "family": "bite",
+        "palette": "clock",
+        "motion": "bite",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Thread Snap": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Rewind Nibble": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Borrowed Moment": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "gloop": {
+      "Galaxy Splash": {
+        "family": "splash",
+        "palette": "galaxy",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Glitter Bounce": {
+        "family": "heal",
+        "palette": "galaxy",
+        "motion": "bounce",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Shapeshift Slap": {
+        "family": "illusion",
+        "palette": "galaxy",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Starlit Tide": {
+        "family": "wave",
+        "palette": "galaxy",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "barkley": {
+      "Mossy Headbutt": {
+        "family": "headbutt",
+        "palette": "wood",
+        "motion": "headbutt",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Bark Armor": {
+        "family": "heal",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Stubborn Stomp": {
+        "family": "shelter",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Unmovable Root": {
+        "family": "roots",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "centry": {
+      "Hoof Stomp": {
+        "family": "stomp",
+        "palette": "earth",
+        "motion": "stomp",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Arrow Rain": {
+        "family": "swarm",
+        "palette": "earth",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "arrow"
+      },
+      "Charge": {
+        "family": "guard",
+        "palette": "earth",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Stampede": {
+        "family": "dash",
+        "palette": "earth",
+        "motion": "dash",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "wisp": {
+      "Glow Pulse": {
+        "family": "bolt",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Fade": {
+        "family": "heal",
+        "palette": "light",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Flicker Strike": {
+        "family": "guard",
+        "palette": "light",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Blinding Flash": {
+        "family": "orbit",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "mudpup": {
+      "Mud Sling": {
+        "family": "splash",
+        "palette": "earth",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Belly Flop": {
+        "family": "headbutt",
+        "palette": "earth",
+        "motion": "dash",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Burrow": {
+        "family": "guard",
+        "palette": "earth",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Landslide": {
+        "family": "stomp",
+        "palette": "earth",
+        "motion": "stomp",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "strix": {
+      "Silent Wing": {
+        "family": "bolt",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Eye Curse": {
+        "family": "gaze",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Screech": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Night Omens": {
+        "family": "orbit",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "kelpie": {
+      "Current Pull": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "River Rush": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Drown": {
+        "family": "guard",
+        "palette": "water",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Undertow": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "manticore": {
+      "Pounce": {
+        "family": "headbutt",
+        "palette": "earth",
+        "motion": "headbutt",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Venom Sting": {
+        "family": "slash",
+        "palette": "venom",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "lance"
+      },
+      "Wing Slash": {
+        "family": "wind_guard",
+        "palette": "earth",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Barrage": {
+        "family": "swarm",
+        "palette": "earth",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "arrow"
+      }
+    },
+    "will_o_wisp": {
+      "Phantom Light": {
+        "family": "orbit",
+        "palette": "shadow",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Confusion Pulse": {
+        "family": "gaze",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Lure": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "False Horizon": {
+        "family": "rift",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "rukh": {
+      "Gale Talon": {
+        "family": "wind",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Wind Wall": {
+        "family": "wind",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Updraft": {
+        "family": "wind_guard",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Shadow of Wings": {
+        "family": "swarm",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "feather"
+      }
+    },
+    "glacius": {
+      "Frost Bite": {
+        "family": "bite",
+        "palette": "ice",
+        "motion": "bite",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Ice Shell": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Glacial Slam": {
+        "family": "shelter",
+        "palette": "ice",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Permafrost": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "behemoth": {
+      "Tremor": {
+        "family": "stomp",
+        "palette": "earth",
+        "motion": "stomp",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Stone Wall": {
+        "family": "stomp",
+        "palette": "earth",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Stampede": {
+        "family": "guard",
+        "palette": "earth",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Continental Shift": {
+        "family": "stomp",
+        "palette": "earth",
+        "motion": "stomp",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "wendigo": {
+      "Frost Shriek": {
+        "family": "wind",
+        "palette": "ice",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Bone Chill": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Hunger Strike": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Eternal Winter": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "jormungandr": {
+      "World Coil": {
+        "family": "whip",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Venom Tide": {
+        "family": "wave",
+        "palette": "venom",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Abyss Pull": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Ouroboros": {
+        "family": "orbit",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "simurgh": {
+      "Solar Wing": {
+        "family": "bolt",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Wisdom Strike": {
+        "family": "headbutt",
+        "palette": "wind",
+        "motion": "headbutt",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Radiance": {
+        "family": "guard",
+        "palette": "wind",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "End of an Age": {
+        "family": "orbit",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "void_chronos": {
+      "Time Fracture": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Void Epoch": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Temporal Lock": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Temporal Collapse": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "fractured_genesis": {
+      "Null Creation": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Reality Shard": {
+        "family": "splash",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "First Light": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Genesis Implosion": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "nova"
+      }
+    },
+    "abyssal_nebula": {
+      "Event Horizon": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Star Death": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Void Pounce": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Cosmic Annihilation": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "nova"
+      }
+    },
+    "corrupted_leviathan": {
+      "Void Tide": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Corrupted Surge": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Tainted Coil": {
+        "family": "guard",
+        "palette": "water",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Abyssal Corruption": {
+        "family": "wave",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "corrupted_fenrir": {
+      "Void Howl": {
+        "family": "wind",
+        "palette": "shadow",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Rift Fang": {
+        "family": "bite",
+        "palette": "shadow",
+        "motion": "bite",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Dark Chain": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Reality Tear": {
+        "family": "rift",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "corrupted_dragon": {
+      "Void Flame": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Corrupted Roar": {
+        "family": "wind",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Dark Talon": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Extinction Breath": {
+        "family": "flame",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "ancient_chronos": {
+      "Time Collapse": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Ancient Epoch": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Primordial Lock": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Beginning of Time": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "ancient_genesis": {
+      "First Creation": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Origin Burst": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Primordial Flame": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Big Bang": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "nova"
+      }
+    },
+    "ancient_abyss": {
+      "Primordial Void": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Pre-Existence": {
+        "family": "bolt",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Ancient Dark": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Heat Death": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "ouroboros": {
+      "Runtime Error": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Overflow": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Cascade Failure": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Hard Reset": {
+        "family": "rift",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "ascended_slime": {
+      "Void Absorption": {
+        "family": "rift",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Primordial Surge": {
+        "family": "heal",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Null Compress": {
+        "family": "guard",
+        "palette": "nature",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Singularity Collapse": {
+        "family": "orbit",
+        "palette": "nature",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "ascended_unicorn": {
+      "Sacred Mending": {
+        "family": "bolt",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Luminal Strike": {
+        "family": "heal",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Absolution": {
+        "family": "guard",
+        "palette": "light",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Graceful Annihilation": {
+        "family": "orbit",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "nova"
+      }
+    },
+    "ascended_pegasus": {
+      "Boundary Breach": {
+        "family": "bolt",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Rift Gallop": {
+        "family": "rift",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Pressure Wave": {
+        "family": "wind_guard",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Dimensional Sprint": {
+        "family": "rift",
+        "palette": "wind",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "ascended_phoenix": {
+      "Pyre Eternal": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Ash Unending": {
+        "family": "bolt",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Solar Immolation": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "The Last Sunrise": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "radiant_goblin": {
+      "Forge Slam": {
+        "family": "headbutt",
+        "palette": "earth",
+        "motion": "headbutt",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Molten Dirt": {
+        "family": "splash",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Scorch Scavenge": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Forge Rampage": {
+        "family": "dash",
+        "palette": "earth",
+        "motion": "dash",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "radiant_imp": {
+      "Void Scratch": {
+        "family": "slash",
+        "palette": "shadow",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Smoke Cloak": {
+        "family": "swarm",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "bat"
+      },
+      "Haunting Taunt": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Shadow Swarm": {
+        "family": "swarm",
+        "palette": "shadow",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "bat"
+      }
+    },
+    "radiant_hydra": {
+      "Eternal Strike": {
+        "family": "headbutt",
+        "palette": "water",
+        "motion": "headbutt",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Void Scale Regen": {
+        "family": "heal",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Venom of Ages": {
+        "family": "guard",
+        "palette": "venom",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Heads Without End": {
+        "family": "swarm",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "fang"
+      }
+    },
+    "radiant_kitsune": {
+      "Nine-Tail Strike": {
+        "family": "swarm",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Radiant Illusion": {
+        "family": "gaze",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Fox Fire Ascendant": {
+        "family": "guard",
+        "palette": "fire",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Sovereign Veil": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "frost_sprite": {
+      "Frost Nip": {
+        "family": "bite",
+        "palette": "ice",
+        "motion": "bite",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Cold Shoulder": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Rime Veil": {
+        "family": "illusion",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Winter's Breath": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      }
+    },
+    "permafrost": {
+      "Glacier Press": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Frost Shell": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Permafrost Wall": {
+        "family": "shelter",
+        "palette": "ice",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Absolute Zero": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "abyssal_eel": {
+      "Abyssal Surge": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Deep Current": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Voltage Coil": {
+        "family": "guard",
+        "palette": "water",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Trench Discharge": {
+        "family": "lightning",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "loom_fragment": {
+      "Warp Thread": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Loom Pulse": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Unraveling": {
+        "family": "guard",
+        "palette": "cosmic",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "The Sundering Echo": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "prismara": {
+      "Facet Lance": {
+        "family": "slash",
+        "palette": "arcane",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "lance"
+      },
+      "Halo Glint": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Prism Shelter": {
+        "family": "shelter",
+        "palette": "arcane",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "The Gentle Geometry": {
+        "family": "orbit",
+        "palette": "arcane",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark"
+      }
+    },
+    "timestitch": {
+      "Pendulum Kick": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Thread Snare": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Borrowed Moment": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "A Stitch in Time": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 2,
+        "motif": "spark"
+      }
+    },
+    "nebuloom": {
+      "Comet Splash": {
+        "family": "splash",
+        "palette": "galaxy",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Star Nursery": {
+        "family": "heal",
+        "palette": "galaxy",
+        "motion": "bounce",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Soft Landing": {
+        "family": "shelter",
+        "palette": "nature",
+        "motion": "brace",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "A Sky of Our Own": {
+        "family": "orbit",
+        "palette": "galaxy",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "rootwarden": {
+      "Root Hammer": {
+        "family": "roots",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Moss Mend": {
+        "family": "heal",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Sheltering Bough": {
+        "family": "shelter",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "The Forest Holds": {
+        "family": "roots",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      }
+    }
+  }
+}

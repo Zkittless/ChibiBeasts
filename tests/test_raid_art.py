@@ -74,7 +74,7 @@ class ArenaImages(unittest.TestCase):
             self.assertNotIn('loop', gif.info)
             self.assertEqual(sum(frame.info['duration'] for frame in ImageSequence.Iterator(gif)), 1200)
 
-    def test_warning_is_visible_from_first_frame_and_knockout_stays_collapsed(self):
+    def test_warning_is_visible_from_first_frame_and_defeated_boss_stays_offstage(self):
         raid = make_raid(RAID_BOSSES['corrupted'][2])
         before, after, events = clash(raid)
         warning = replace(after, pending=True, warning='Vent the flame', weaves=1)
@@ -317,7 +317,7 @@ class RaidPresentationRuntime(DatabaseCase):
         self.assertEqual(raid.message.edit.await_count, 1)
         raid.presentation.sleep.assert_not_awaited()
 
-    async def test_final_clip_follows_saved_rewards_then_a_static_knockout(self):
+    async def test_final_clip_follows_saved_rewards_then_a_static_departed_scene(self):
         raid = await self.raid(users=(42,), paid=True)
         raid.damage[42] = 50
         raid.enemy['hp'] = 0

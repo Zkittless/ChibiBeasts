@@ -1,5 +1,8 @@
 # Cooperative raid arena
 
+The [move animation overhaul](MOVE-ANIMATIONS.md) adds explicit move profiles,
+recorded move/species/slot metadata and whole-body retreats to this arena.
+
 The current [Field Journal UI](FIELD-JOURNAL-UI.md) applies the approved fantasy
 frames, fitted health values and a lower journal to this arena. Its review
 clips show the current presentation; the samples below record the first arena.
@@ -24,16 +27,18 @@ the same combat and presentation features remain available there.
 | Ancient Chronos, Ancient Genesis, Ancient Abyss | Celestial Loom |
 
 The renderer reuses the packaged creature portraits and approved realm art.
-Swapping changes the actual companion artwork. Attacks lunge and send typed
+Swapping changes the actual companion artwork. Attacks use their assigned move
 effects, ultimates charge before impact, guards show barriers, healing raises
 particles, Weave sends threads toward the boss, and boss sweeps cross the party.
-Defeated creatures collapse and remain down until revived or swapped.
+Defeated creatures retreat offstage until revived or replaced by a healthy swap.
 
 Multiple trainers share a short 18-frame, 1.2-second one-shot GIF instead of
 waiting through individual clips. Health changes at impact reflect immutable
 snapshots from the real combat engine. Combined damage has one legible number;
 individual totals remain in the trainer panel. Artwork never rolls damage,
 consumes combat randomness or advances the encounter.
+New knockouts and a closing party withdrawal use a 36-frame, 3-second clip
+with a separate departure segment; active callbacks still do not await it.
 
 ## Responsiveness and failure handling
 
@@ -58,7 +63,8 @@ upload retries the text panel with the same controls. Attachment names are
 unique and their streams close on success, rejection and cancellation.
 
 Victory settlement is saved before final artwork. The closing clip removes
-controls, then a PNG holds the final scene after a 1.4-second allowance. A
+controls, then a PNG holds the departed scene after that clip's duration and
+the 0.2-second playback allowance. A
 deleted panel, failed final render or canceled caller cannot undo or duplicate
 earned rewards. Existing restart recovery, entry refunds and reservations
 remain in place.

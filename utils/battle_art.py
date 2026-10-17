@@ -10,13 +10,12 @@ from dataclasses import dataclass
 from functools import lru_cache
 import io
 import logging
-import math
 import threading
 from copy import deepcopy
 from uuid import uuid4
 
 import discord
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageFont
 
 from utils.artwork import PROJECT_ROOT, card_artwork_path
 from utils import field_journal as ui
@@ -93,7 +92,9 @@ class Action:
 
     @property
     def milliseconds(self):
-        return 1900 if self.ultimate else 1200 if self.kind in {'guard', 'heal', 'status'} else 1400
+        if self.ultimate:
+            return 2650
+        return {'status': 1100, 'guard': 2100, 'heal': 2100, 'skill': 1950}.get(self.kind, 1650)
 
 
 @dataclass(frozen=True)
@@ -145,13 +146,14 @@ def font(size):
     return _fonts.sizes[size]
 
 
-def label(draw, xy, text, size=14, fill='#edf0fc', width=None):
+def label(draw, xy, text, size=14, fill='#edf0fc', width=None, *, outline=False):
     text = ''.join(c for c in str(text) if c.isprintable())
     face = font(size)
     if width:
         while text and draw.textlength(text, font=face) > width:
             text = text[:-2] + '~' if len(text) > 1 else ''
-    draw.text(xy, text, fill=fill, font=face)
+    draw.text(xy, text, fill=fill, font=face,
+              stroke_width=1 if outline else 0, stroke_fill='#071c24')
 
 
 def ease(value):
@@ -167,117 +169,13 @@ def interpolate(before, after, t):
 
 
 def frame(before, after, realm, action=None, t=1, journal=()):
-    """Field Journal portraits above the action; the real log stays below it."""
-    image = field_background(realm, TOTAL_HEIGHT).copy()
-    complete = any(fighter.hp <= 0 for fighter in after)
-    title = 'BATTLE COMPLETE' if complete and (not action or t >= .6 or any(f.hp <= 0 for f in before)) else 'ULTIMATE' if action and action.ultimate else 'IN BATTLE' if action else 'YOUR TURN'
-    ui.heading(image, title, REALMS[realm])
-    draw = ImageDraw.Draw(image)
-    for i, (old, new) in enumerate(zip(before, after)):
-        visible = new if t >= .48 else old
-        hp = interpolate(old.hp, new.hp, t)
-        mp = interpolate(old.mana, new.mana, t)
-        ui.fighter_panel(image, new, sprite(new.species), 10 + i * 320, hp, mp, visible)
+    from utils.battle_scene import draw_frame
+    return draw_frame(before, after, realm, action, t, journal)
 
-    actor = action.actor if action else 0
-    hit = .48 <= t <= .78
-    color = TYPE_COLORS.get(before[actor].element, '#dac5ff')
-    positions = []
-    for i, (old, new) in enumerate(zip(before, after)):
-        x, feet = (162 if i == 0 else 478), HUD + 218
-        direction = 1 if i == 0 else -1
-        sx = sy = 1
-        if action and i == actor:
-            if action.kind in {'attack', 'skill'} or action.ultimate:
-                travel = ease((t - .2) / .28) if t < .48 else 1 - ease((t - .48) / .3)
-                if action.kind != 'skill' or action.ultimate:
-                    x += round(direction * 150 * max(0, travel))
-                    feet -= round(math.sin(math.pi * max(0, travel)) * 24)
-                if .06 < t < .24:
-                    sy, sx = .9, 1.06
-            elif action.kind == 'guard' and .1 < t < .8:
-                sy, sx = .9, 1.06
-            elif action.kind == 'heal':
-                feet -= round(max(0, math.sin(t * math.pi)) * 12)
-        elif action and hit and (new.hp < old.hp or action.damage):
-            x -= round(direction * math.sin((t - .48) / .3 * math.pi) * 16)
-        was_knocked_out = old.hp <= 0
-        knockout = new.hp <= 0 and (was_knocked_out or not action or t >= .6)
-        if knockout:
-            sy *= .32 + .68 * (1 - ease((t - .6) / .3)) if action and not was_knocked_out else .32
-        art = sprite(new.species)
-        if art is None:
-            # A missing individual portrait must not break a live battle.
-            draw.ellipse((x - 35, feet - 75, x + 35, feet), fill='#b7a8dc', outline='#ede6ff', width=3)
-            label(draw, (x - 7, feet - 52), '?', 25, '#242139')
-        else:
-            art = ImageOps.mirror(art) if i else art
-            if sx != 1 or sy != 1:
-                art = art.resize((max(1, round(art.width * sx)), max(1, round(art.height * sy))), Image.Resampling.NEAREST)
-            if knockout:
-                art = art.copy()
-                art.putalpha(art.getchannel('A').point(lambda a: round(a * .6)))
-            shadow = Image.new('RGBA', image.size)
-            ImageDraw.Draw(shadow).ellipse((x - 62, feet - 8, x + 62, feet + 10), fill=(10, 20, 28, 95))
-            image.alpha_composite(shadow)
-            image.alpha_composite(art, (x - art.width // 2, feet - art.height))
-        positions.append((x, feet - 90))
-        casting_guard = action and action.kind == 'guard' and i == actor and .15 <= t < .48
-        if (new if t >= .48 else old).guard or casting_guard:
-            overlay = Image.new('RGBA', image.size)
-            shield_draw = ImageDraw.Draw(overlay)
-            grow = .25 + .75 * ease((t - .15) / .33) if casting_guard else 1
-            shield_draw.rounded_rectangle((x - round(91 * grow), feet - 91 - round(96 * grow),
-                                           x + round(91 * grow), feet - 91 + round(96 * grow)),
-                                          radius=round(52 * grow), fill=(165, 147, 247, 28),
-                                          outline=(202, 185, 255, 185), width=3)
-            image.alpha_composite(overlay)
-    draw = ImageDraw.Draw(image)
-    if action:
-        ax, ay = positions[actor]
-        dx, dy = positions[1 - actor]
-        if action.ultimate and .05 < t < .48:
-            radius = round(24 + 75 * t)
-            draw.ellipse((ax - radius, ay - radius, ax + radius, ay + radius), outline=color, width=3)
-        if (action.kind == 'skill' or action.ultimate) and .22 < t < .55:
-            p = ease((t - .22) / .3)
-            px, py = round(ax + (dx - ax) * p), round(ay - 35 * math.sin(math.pi * p))
-            draw.line((px - (26 if actor == 0 else -26), py, px, py), fill=color, width=7 if action.ultimate else 4)
-            draw.regular_polygon((px, py, 11 if action.ultimate else 7), 4, fill='#fff4d4')
-        if hit and (action.damage or after[1 - actor].hp < before[1 - actor].hp):
-            radius = round(18 + (t - .48) * 95)
-            for ray in range(8):
-                angle = ray * math.pi / 4
-                draw.line((dx + math.cos(angle) * 9, dy + math.sin(angle) * 9,
-                           dx + math.cos(angle) * radius, dy + math.sin(angle) * radius), fill=color, width=4)
-            draw.rectangle((dx - 4, dy - 4, dx + 4, dy + 4), fill='#fff4d4')
-        if t >= .48:
-            for i, (old, new) in enumerate(zip(before, after)):
-                x, y = positions[i]
-                delta = new.hp - old.hp
-                if delta:
-                    label(draw, (x - 30, y - 75 - round((t - .48) * 50)), f'{delta:+,}', 23, '#b5fac5' if delta > 0 else '#fff0ce')
-                if new.revived and not old.revived:
-                    label(draw, (x - 40, y - 105), 'REVIVED', 14, '#ffdf9e')
-                if delta > 0 or (action.kind == 'heal' and i == actor):
-                    for n in range(7):
-                        px = x - 58 + n * 18
-                        py = y + 55 - round(((t * 90 + n * 17) % 90))
-                        draw.line((px - 3, py, px + 3, py), fill='#b5fac5', width=2)
-                        draw.line((px, py - 3, px, py + 3), fill='#b5fac5', width=2)
-            if action.kind in {'attack', 'skill'} and not action.damage and after[1 - actor].hp == before[1 - actor].hp:
-                blocked = before[1 - actor].shield > after[1 - actor].shield
-                label(draw, (dx - 33, dy - 80), 'BLOCKED' if blocked else '0 DAMAGE', 16, '#e0d5f9')
-    if action:
-        caption = f'{after[actor].name} / {action.name}'
-        entries = action.journal or journal
-        # The move name precedes impact; damage/status results appear with it.
-        lines = entries[-2:] if t >= .48 and entries else (caption,)
-    else:
-        caption = 'Battle complete.' if complete else 'Choose a move.'
-        lines = journal[-2:] if journal else (caption,)
-    ui.journal(image, HUD + HEIGHT, caption, lines)
-    return image.convert('RGB')
+
+def frame_durations(milliseconds, count):
+    """Evenly distribute GIF's 10 ms ticks; no large final-frame remainder."""
+    return [round((i+1)*milliseconds/(count*10))*10-round(i*milliseconds/(count*10))*10 for i in range(count)]
 
 
 def render(before, after, realm, action=None, journal=()):
@@ -285,7 +183,9 @@ def render(before, after, realm, action=None, journal=()):
     if action is None:
         frame(after, after, realm, journal=journal).save(output, 'PNG', optimize=True)
         return Artwork(output.getvalue(), 'png')
-    count = 30 if action.ultimate else 22
+    from utils.battle_scene import duration
+    milliseconds = duration(before, after, action)
+    count = (30 if action.ultimate else 24) + (14 if milliseconds > action.milliseconds else 0)
     frames = [frame(before, after, realm, action, i / (count - 1), journal) for i in range(count)]
     # One shared palette prevents background shimmer between GIF frames.
     sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
@@ -293,8 +193,7 @@ def render(before, after, realm, action=None, journal=()):
         sample.paste(source, (0, i * TOTAL_HEIGHT))
     palette = sample.quantize(colors=256)
     frames = [f.quantize(palette=palette, dither=Image.Dither.NONE) for f in frames]
-    durations = [action.milliseconds // (count * 10) * 10] * count
-    durations[-1] += action.milliseconds - sum(durations)
+    durations = frame_durations(milliseconds, count)
     # No loop extension: play once and hold the real final state. Disposal=1
     # permits delta compression; all frames were composed on an opaque scene.
     frames[0].save(output, 'GIF', save_all=True, append_images=frames[1:],
@@ -302,7 +201,7 @@ def render(before, after, realm, action=None, journal=()):
     data = output.getvalue()
     if len(data) > MAX_BYTES:
         raise ValueError('Battle animation exceeded its attachment budget')
-    return Artwork(data, 'gif', action.milliseconds / 1000)
+    return Artwork(data, 'gif', milliseconds / 1000)
 
 
 async def render_async(before, after, realm, action=None, *, journal=()):
