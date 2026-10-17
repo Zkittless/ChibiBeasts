@@ -2,6 +2,10 @@ ChibiBeasts: sparring stalls and shop interactions
 Branch: fix/interaction-stalls
 Based on: origin/main 7a66bc7 (merged economy audit)
 
+Follow-up: docs/EXPLORE-INTERACTIONS-FIX.txt documents a remaining turn-routing
+gap and the replacement battle-view lifecycle. This file records the earlier
+investigation and its validation at that time.
+
 What the supplied error establishes
 
 The /sparr traceback is an overlap rejection from reserve_fighters: the trainer

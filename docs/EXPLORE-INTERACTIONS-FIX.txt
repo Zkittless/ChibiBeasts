@@ -1,0 +1,99 @@
+ChibiBeasts: remaining exploration battle interaction failure
+Branch: fix/explore-interactions
+Base: origin/main 1048d1d (merged interaction fix)
+
+Reported case
+
+After several moves in an /explore battle, Discord reported that ChibiBeasts
+did not respond. The trainer was using Twine and Rewind Nibble. The trainer
+then deleted the battle message and supplied this cleanup error:
+
+  discord.errors.NotFound: 404, code 10008, Unknown Message
+
+The deletion explains that cleanup error. It does not explain why the move
+interaction had failed before the deletion. No live Railway database or Discord
+session was accessed during this investigation.
+
+Remaining defect reproduced
+
+The earlier fix acknowledged a chosen move and stopped its MoveView. In
+Discord.py, stopping a view unregisters its component handlers. The duel runner
+then built and published another view for the next turn.
+
+While that HTTP edit was pending, the client still displayed the previous
+buttons, but those buttons had no registered handler. A click in this window
+was discarded by Discord.py before our callback could acknowledge it. Discord
+requires an initial acknowledgement within three seconds, so acknowledging at
+the beginning of the callback cannot help when the callback is never reached.
+
+The previous callback tests bypassed this part of the gateway dispatcher. The
+new reproduction uses Discord.py's actual ViewStore, holds the redraw request
+open, and clicks the visible button through that router. It failed against the
+merged code because the acknowledgement event was never set.
+
+Twine's Rewind Nibble resolves correctly: it applies the guard, restores mana,
+sets the next attack's focus and grants one charge. Its combat rules were not
+the failure in this reproduction.
+
+Implemented change
+
+- Use one MoveView with the same button IDs for the entire duel. Update move
+  labels, mana availability, ultimate charges and the current trainer in place.
+- Signal a selected move through a separate event. Do not unregister the view
+  to wake the duel runner.
+- Keep handlers alive during redraws and final cleanup. Clicks during a redraw
+  receive feedback to wait for the next prompt; closing matches report that the
+  battle has ended. Neither path consumes another move.
+- Capture the turn generation before awaiting the acknowledgement. A slow
+  acknowledgement from an old turn cannot select a move in the next turn.
+- Open input only after the updated prompt has been published. Preserve the
+  independent 45-second decision deadline and bounded message I/O.
+- Stop the view after cleanup, including failure/cancellation paths, releasing
+  its handlers and the trainer reservation.
+- Treat an already-deleted message as expected cleanup rather than warning
+  with another traceback. Other HTTP failures still produce warnings.
+- Include message, trainer, turn and control identifiers in input-error logs.
+
+Validation
+
+All six new dispatcher regressions pass:
+
+1. Rewind Nibble and clicks while a redraw is blocked, followed by more moves.
+2. Correct owner and different creature moves as one panel changes PvP turns.
+3. A delayed acknowledgement from an old turn cannot consume the next turn.
+4. A duplicate click during final cleanup is acknowledged without another move.
+5. A full /explore command completes two Rewind Nibbles and a final attack,
+   catches exactly one Slime, grants exactly one material, and records victory.
+6. Deleting the message before cleanup produces no failure traceback and still
+   releases the live battle state.
+
+The new tests use the real Discord.py button router, production battle logic
+and disposable SQLite databases. Discord HTTP transport is simulated, including
+the delayed redraw and the supplied 404. This is not a live Discord playtest.
+
+Full suite: 160 tests passed in 87.272 seconds, with no failures or errors.
+Python compilation and git diff --check passed. Runtime: Python 3.12.10,
+Discord.py 2.7.1. No database migration or new environment variable is needed.
+
+Reproduce from the repository root:
+
+  python -m unittest tests.test_battle_dispatch -v
+  python -m unittest discover -s tests -v
+  python -m compileall -q bot.py cogs utils tests
+
+Rollout
+
+This branch needs pushing, merging and Railway deployment to affect the bot.
+Start a fresh battle after the new process starts; old in-memory battle sessions
+and their controls do not survive a restart.
+
+Protocol/library references
+
+Discord's interaction acknowledgement deadline:
+https://github.com/discord/discord-api-docs/blob/main/developers/interactions/receiving-and-responding.mdx
+
+Discord.py View.stop semantics and component lifecycle:
+https://discordpy.readthedocs.io/en/stable/interactions/api.html#discord.ui.View.stop
+
+Discord error code 10008:
+https://github.com/discord/discord-api-docs/blob/main/developers/topics/opcodes-and-status-codes.mdx
