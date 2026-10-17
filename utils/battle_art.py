@@ -307,6 +307,11 @@ def render(before, after, realm, action=None):
 
 
 async def render_async(before, after, realm, action=None):
+    return await render_job(render, before, after, realm, action)
+
+
+async def render_job(renderer, *args):
+    """Share one bounded worker budget across duel and cooperative raid art."""
     # Acquire BEFORE submit. Canceled/timed-out renders retain their worker slot
     # until their actual thread finishes, preventing an unbounded executor queue.
     if not _slots.acquire(blocking=False):
@@ -314,7 +319,7 @@ async def render_async(before, after, realm, action=None):
 
     def work():
         try:
-            return render(before, after, realm, action)
+            return renderer(*args)
         finally:
             _slots.release()
 

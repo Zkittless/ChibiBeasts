@@ -49,6 +49,8 @@ Duels show both companions on a matching realm battlefield, with HP/MP bars abov
 
 Guild `/raid` and `/ancient` share a cooperative system with a lobby, three companions per trainer, swapping, tending allies, guarding and boss-specific Weave responses. Guild raids require a level-five guild, 50 guild tokens, and a leader or officer to host. Trainers need level 10 and three healthy assigned companions. Ancient raids spend their summon item when the lobby starts.
 
+Both raid types show a large boss and every trainer's active companion in a shared pixel-art arena. Up to ten companions animate together against the matching realm, with numbered positions matching the trainer panel. Attacks, ultimates, barriers, healing, swaps, Weave threads and boss sweeps use real combat results. Each trainer keeps independent live controls during clips. See the [four-trainer clip](docs/raid-preview/team-clash-4.gif), [ten-trainer clip](docs/raid-preview/team-clash-10.gif), and [raid arena notes](docs/COOPERATIVE-RAID-ARENA.md).
+
 Prepared parties aim for **5–8 minute raids**, within the ten-minute limit. Boss budgets use party size and the median trainer's highest companion level, rounded down into five-level bands from 10 to 50. Gear and training improve your chances without increasing the boss's stats. Speed gives 3.5–6.5 second action recovery; Weave and Tend each have their own eight-second cooldown. Boss volleys pressure every standing trainer. Repeated freeze/sleep cannot lock a boss down, and percentage-HP effects have attack-based caps against bosses. Raids start at zero ultimate charges and up to 40% mana, plus equipped perk bonuses.
 
 Every active contributor receives rewards, including support players. Forging materials have real drop routes. Successful rescues build a guaranteed companion catch after eight Corrupted clears or twelve Ancient clears of that species, with a chance to meet the companion sooner. Interrupted paid raids are refunded once on restart. Fainted companions recover after their timer or can be revived.
@@ -118,6 +120,7 @@ python scripts/benchmark_gameplay.py --output performance.json
 python scripts/simulate_gameplay.py --output simulation.json
 python scripts/audit_combat_balance.py --output balance-results
 python scripts/audit_combat_balance.py --output balance-results --holdout-only
+python scripts/preview_raid_arena.py --output raid-preview-output
 python scripts/audit_economy.py --output economy-results
 python scripts/finalize_artwork.py
 python scripts/build_revamp_preview.py

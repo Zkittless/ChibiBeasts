@@ -25,7 +25,8 @@ catalogued home, including Sable's Ember Wastes and Cael's Celestial Loom.
 Trainer and ranked battles use the host companion's element: fire -> Ember,
 ice/wind -> Glacial, water/shadow -> Trenches, cosmic/arcane/light -> Loom,
 and nature/earth/other -> Woods. Combat formulas and rewards are unchanged.
-Cooperative raids retain their existing real-time panel and 5–8 minute balance.
+Cooperative raids use a [shared arena](COOPERATIVE-RAID-ARENA.md) with concurrent
+action clips, independent trainer controls, and the same 5–8 minute balance.
 
 The five approved backgrounds are packaged in `data/battle_realms/` (about
 426 KiB combined). [Artwork provenance](../data/battle-artwork.json) records
