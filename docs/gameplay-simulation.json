@@ -1,0 +1,123 @@
+{
+  "measured_at_utc": "2026-10-17T00:13:24.131513+00:00",
+  "scope": "Offline seeded simulations; no human timing or Discord API calls. Raid action cooldowns are advanced synthetically.",
+  "duels": {
+    "fights": 1290,
+    "creatures": 86,
+    "levels": [
+      1,
+      15,
+      30
+    ],
+    "opponents": [
+      "slime",
+      "fairy",
+      "hellhound",
+      "kelpie",
+      "chronos"
+    ],
+    "outcomes": {
+      "knockout": 1279,
+      "judged_at_20_rounds": 11
+    },
+    "mean_rounds": 3.13
+  },
+  "raids": [
+    {
+      "boss": "corrupted_leviathan",
+      "trainers": 1,
+      "ticks": 37,
+      "result": "completed",
+      "weave_responses": 3,
+      "swaps": 1
+    },
+    {
+      "boss": "corrupted_leviathan",
+      "trainers": 3,
+      "ticks": 25,
+      "result": "completed",
+      "weave_responses": 7,
+      "swaps": 0
+    },
+    {
+      "boss": "corrupted_fenrir",
+      "trainers": 1,
+      "ticks": 16,
+      "result": "completed",
+      "weave_responses": 3,
+      "swaps": 0
+    },
+    {
+      "boss": "corrupted_fenrir",
+      "trainers": 3,
+      "ticks": 12,
+      "result": "completed",
+      "weave_responses": 6,
+      "swaps": 0
+    },
+    {
+      "boss": "corrupted_dragon",
+      "trainers": 1,
+      "ticks": 34,
+      "result": "completed",
+      "weave_responses": 3,
+      "swaps": 1
+    },
+    {
+      "boss": "corrupted_dragon",
+      "trainers": 3,
+      "ticks": 24,
+      "result": "completed",
+      "weave_responses": 7,
+      "swaps": 0
+    },
+    {
+      "boss": "ancient_chronos",
+      "trainers": 1,
+      "ticks": 41,
+      "result": "completed",
+      "weave_responses": 3,
+      "swaps": 2
+    },
+    {
+      "boss": "ancient_chronos",
+      "trainers": 3,
+      "ticks": 32,
+      "result": "completed",
+      "weave_responses": 8,
+      "swaps": 0
+    },
+    {
+      "boss": "ancient_genesis",
+      "trainers": 1,
+      "ticks": 40,
+      "result": "completed",
+      "weave_responses": 3,
+      "swaps": 1
+    },
+    {
+      "boss": "ancient_genesis",
+      "trainers": 3,
+      "ticks": 29,
+      "result": "completed",
+      "weave_responses": 8,
+      "swaps": 0
+    },
+    {
+      "boss": "ancient_abyss",
+      "trainers": 1,
+      "ticks": 41,
+      "result": "completed",
+      "weave_responses": 3,
+      "swaps": 1
+    },
+    {
+      "boss": "ancient_abyss",
+      "trainers": 3,
+      "ticks": 31,
+      "result": "completed",
+      "weave_responses": 7,
+      "swaps": 0
+    }
+  ]
+}

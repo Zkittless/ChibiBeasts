@@ -1,3 +1,4 @@
+from utils import db as storage
 """
 economy.py — Beast Market, Appraisal, and Training
 Commands: /market, /list, /delist, /appraise, /train
@@ -12,7 +13,7 @@ from datetime import datetime, timezone, timedelta
 from utils.progress import unlock_simple_achievement
 from utils.db import (
     get_or_create_player, get_player, update_player,
-    get_beast_data, get_player_beasts, DB_PATH
+    get_beast_data, get_player_beasts
 )
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI
 
@@ -110,7 +111,7 @@ class Economy(commands.Cog):
     @app_commands.describe(beast_id="Your beast number from /collection")
     async def appraise(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT pb.*, pe.equipment_id FROM player_beasts pb "
@@ -175,11 +176,16 @@ class Economy(commands.Cog):
     ])
     async def train(self, interaction: discord.Interaction, beast_id: int, stat: str):
         await interaction.response.defer()
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
-        from utils.duels import active_fighters
-        if interaction.user.id in active_fighters:return await interaction.followup.send("Finish your battle before training.")
+        from utils.duels import reserve_fighters
+        with reserve_fighters([interaction.user.id]):
+            return await self._train(interaction, beast_id, stat)
 
-        async with aiosqlite.connect(DB_PATH) as db:
+    async def _train(self, interaction, beast_id, stat):
+        if stat not in {'attack', 'defense', 'speed', 'hp'}:
+            raise ValueError('Choose attack, defense, speed or hp.')
+        player = await get_or_create_player(interaction.user.id, str(interaction.user))
+
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
             async with db.execute("SELECT gold FROM players WHERE user_id=?",(interaction.user.id,)) as c:player["gold"]=(await c.fetchone())[0]
@@ -287,7 +293,7 @@ class Economy(commands.Cog):
         }
         _cap = _rarity_caps.get(rarity, 20)
         _new_sessions = sessions_done + 1
-        async with aiosqlite.connect(DB_PATH) as _tdb:
+        async with storage.connect() as _tdb:
             _tdb.row_factory = aiosqlite.Row
             async with _tdb.execute(
                 "SELECT train_atk, train_def, train_spd, train_hp FROM player_beasts WHERE id = ?",
@@ -318,58 +324,17 @@ class Economy(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect(DB_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",
-                (interaction.user.id, beast_id)
-            ) as c:
-                row = await c.fetchone()
-
-            if not row:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ No beast found with number `#{beast_id}`.",
-                    color=COLORS["error"]
-                ))
-            row = dict(row)
-
-            # Check not active beast
-            if row.get("is_active"):
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ Can't list your active beast. Use `/setactive` to switch first.",
-                    color=COLORS["error"]
-                ))
-
-            # Check not in raid party
-            if row.get("raid_slot"):
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ Can't list a beast in your raid party. Use `/raidparty` to remove it first.",
-                    color=COLORS["error"]
-                ))
-
-            # Check already listed
-            async with db.execute(
-                "SELECT id FROM beast_market WHERE beast_row_id = ?", (row["id"],)
-            ) as c:
-                if await c.fetchone():
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description="✦ This beast is already on the market. Use `/delist #{beast_id}` first.",
-                        color=COLORS["error"]
-                    ))
-
-            expires = (datetime.now(timezone.utc) + timedelta(days=MARKET_DURATION_DAYS)).isoformat()
-            await db.execute(
-                "INSERT INTO beast_market (seller_id, beast_row_id, ask_price, expires_at) VALUES (?, ?, ?, ?)",
-                (interaction.user.id, row["id"], price, expires)
-            )
-            await db.commit()
+        from utils.transfers import create_listing
+        try:
+            row = await create_listing(interaction.user.id, beast_id, price, days=MARKET_DURATION_DAYS)
+        except ValueError as error:
+            return await interaction.followup.send(str(error), ephemeral=True)
 
         bd      = get_beast_data(row["beast_id"]) or {}
         name    = row.get("nickname") or bd.get("name", "?")
         r_emoji = RARITY_EMOJI.get(row["rarity"], "⚪")
         appraised = appraise_beast(row)
 
-        await unlock_simple_achievement(interaction.user.id, "first_market_sale")
         embed = discord.Embed(
             title="📋 Listed on the Market",
             description=(
@@ -388,7 +353,7 @@ class Economy(commands.Cog):
     async def delist_beast(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT bm.id, pb.beast_id, pb.nickname, pb.rarity, pb.player_number "
@@ -408,8 +373,6 @@ class Economy(commands.Cog):
 
             await db.execute("DELETE FROM beast_market WHERE id = ?", (listing["id"],))
             await db.commit()
-        from utils.db import renumber_beasts as _renumber
-        await _renumber(interaction.user.id)
 
         bd   = get_beast_data(listing["beast_id"]) or {}
         name = listing.get("nickname") or bd.get("name", "?")
@@ -435,13 +398,16 @@ class Economy(commands.Cog):
         await interaction.response.defer()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
         uid    = interaction.user.id
-        now    = datetime.now(timezone.utc).isoformat()
 
         async def fetch_listings(flt):
-            async with aiosqlite.connect(DB_PATH) as db:
+            async with storage.connect() as db:
                 db.row_factory = aiosqlite.Row
-                await db.execute("DELETE FROM beast_market WHERE expires_at < ?", (now,))
-                await db.commit()
+                fresh_now = datetime.now(timezone.utc).isoformat()
+                async with db.execute("SELECT 1 FROM beast_market WHERE expires_at<=? LIMIT 1", (fresh_now,)) as c:
+                    expired = await c.fetchone()
+                if expired:
+                    await db.execute("DELETE FROM beast_market WHERE expires_at<=?", (fresh_now,))
+                    await db.commit()
                 if flt == "mine":
                     sql = (
                         "SELECT bm.*, pb.beast_id, pb.nickname, pb.rarity, pb.level, pb.player_number, "
@@ -568,36 +534,17 @@ class Economy(commands.Cog):
                             if bi.user.id != uid:
                                 return await bi.response.send_message("✦ This isn't your market!", ephemeral=True)
                             await bi.response.defer(ephemeral=True)
-                            async with aiosqlite.connect(DB_PATH) as _db:
-                                _db.row_factory = aiosqlite.Row
-                                async with _db.execute(
-                                    "SELECT id FROM beast_market WHERE beast_row_id = ? AND seller_id = ?",
-                                    (lst["beast_row_id"], lst["seller_id"])
-                                ) as _c:
-                                    still_listed = await _c.fetchone()
-                                if not still_listed:
-                                    return await bi.followup.send("✦ This beast has already been sold.", ephemeral=True)
-                                async with _db.execute("SELECT gold FROM players WHERE user_id = ?", (uid,)) as _c:
-                                    _pr = await _c.fetchone()
-                                if not _pr or _pr["gold"] < lst["ask_price"]:
-                                    return await bi.followup.send(f"✦ Not enough gold. Need `{lst['ask_price']:,}g`.", ephemeral=True)
-                                await _db.execute("UPDATE players SET gold = gold - ? WHERE user_id = ?", (lst["ask_price"], uid))
-                                await _db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?", (lst["ask_price"], lst["seller_id"]))
-                                await _db.execute("UPDATE player_beasts SET user_id = ?, is_active = 0, raid_slot = NULL WHERE id = ?", (uid, lst["beast_row_id"]))
-                                await _db.execute("DELETE FROM beast_market WHERE beast_row_id = ?", (lst["beast_row_id"],))
-                                async with _db.execute("SELECT COALESCE(MAX(player_number),0)+1 FROM player_beasts WHERE user_id = ?", (uid,)) as _c:
-                                    new_num = (await _c.fetchone())[0]
-                                await _db.execute("UPDATE player_beasts SET player_number = ? WHERE id = ?", (new_num, lst["beast_row_id"]))
-                                await _db.commit()
-                            from utils.db import renumber_beasts as _renumber
-                            await _renumber(uid)                      # buyer
-                            await _renumber(lst["seller_id"])         # seller
-                            bdd = get_beast_data(lst["beast_id"]) or {}
-                            nm  = lst.get("nickname") or bdd.get("name","?")
-                            re  = RARITY_EMOJI.get(lst.get("rarity","common"),"⚪")
-                            await unlock_simple_achievement(uid, "first_market_buy")
-                            spent = lst['ask_price']
-                            new_bal = _pr['gold'] - spent
+                            from utils.transfers import purchase_market
+                            try:
+                                purchase = await purchase_market(uid, lst['id'], lst['ask_price'])
+                            except ValueError as error:
+                                return await bi.followup.send(str(error), ephemeral=True)
+                            bdd = get_beast_data(purchase['beast_id']) or {}
+                            nm = purchase.get('nickname') or bdd.get('name', '?')
+                            re = RARITY_EMOJI.get(purchase['rarity'], '⚪')
+                            spent = purchase['price']
+                            new_bal = purchase['balance']
+                            new_num = purchase['player_number']
                             await bi.followup.send(embed=discord.Embed(
                                 title=f"✅ Purchased: {re} {nm}",
                                 description=(

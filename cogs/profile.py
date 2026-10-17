@@ -88,8 +88,12 @@ class Profile(commands.Cog):
                     inline=False
                 )
         import time as _t
+        from utils.rewards import cooldown
+        async with storage.connect() as db:
+            explore_cd = await cooldown(db, target.id, 1800)
+            challenge_cd = await cooldown(db, target.id, 1200)
         explore_last = player.get("explore_last_at", 0) or 0
-        explore_ready_in = max(0, 1800 - (_t.time() - explore_last))
+        explore_ready_in = max(0, explore_cd - (_t.time() - explore_last))
         if explore_ready_in > 0:
             em, es = divmod(int(explore_ready_in), 60)
             explore_status = f"⏳ Explore ready in `{em}m {es}s`"
@@ -97,7 +101,7 @@ class Profile(commands.Cog):
             explore_status = "✅ Explore ready!"
 
         challenge_last = player.get("challenge_last_at", 0) or 0
-        challenge_ready_in = max(0, 1200 - (_t.time() - challenge_last))
+        challenge_ready_in = max(0, challenge_cd - (_t.time() - challenge_last))
         if challenge_ready_in > 0:
             cm, cs = divmod(int(challenge_ready_in), 60)
             challenge_status = f"\n⚔️ Challenge ready in `{cm}m {cs}s`"
@@ -116,7 +120,7 @@ class Profile(commands.Cog):
         sanctuary_status = ""
         if interaction.guild:
             try:
-                async with aiosqlite.connect(storage.DB_PATH) as _sdb:
+                async with storage.connect() as _sdb:
                     _sdb.row_factory = aiosqlite.Row
                     async with _sdb.execute("SELECT * FROM guild_sanctuary WHERE guild_id = ?", (interaction.guild.id,)) as _sc:
                         _sanc = await _sc.fetchone()
@@ -428,7 +432,13 @@ class Profile(commands.Cog):
                 elif method_id == "abyssal_scale":
                     recipe_str = "\n*Drop: Corrupted Leviathan raid*"
                 can_evolve = row["level"] >= lvl_req
+                if form == 'bond':
+                    can_evolve = can_evolve and row.get('bond', 0) >= 30 and row['happiness'] >= 70
+                    method_name = 'No item needed — a bond awakening'
+                    recipe_str = f"\nBond: {row.get('bond', 0)}/30 · Happiness: {row['happiness']}/70 · `/bond` shows your progress."
                 lvl_note = f"Lv.{lvl_req} required" if not can_evolve else f"✅ Lv.{lvl_req} — **ready to evolve!**"
+                if form == 'bond' and row['level'] >= lvl_req and not can_evolve:
+                    lvl_note = f"Lv.{lvl_req} reached; build bond and happiness"
                 embed.add_field(
                     name=f"{form_label} → {tgt_r} {tgt_name}",
                     value=f"**Item:** {method_name} · {lvl_note}{recipe_str}\n*Use `/evolve #{num}` when ready.*",
@@ -450,7 +460,7 @@ class Profile(commands.Cog):
                 )
             if beast_data.get("image_url"):
                 embed.set_image(url=beast_data["image_url"])
-            embed.set_footer(text=f"Beast #{num} of {len(all_beasts)} | Caught via: {row['caught_from']}")
+            embed.set_footer(text=f"Beast #{num} · {len(all_beasts)} companions | Caught via: {row['caught_from']}")
             return embed
 
         # Navigation buttons
@@ -458,7 +468,7 @@ class Profile(commands.Cog):
 
         class GoToModal(discord.ui.Modal, title="Go to Beast #"):
             number = discord.ui.TextInput(
-                label=f"Beast number (1 – {len(all_beasts)})",
+                label="Beast number shown in your collection",
                 placeholder=f"e.g. 5",
                 min_length=1, max_length=5, required=True
             )
@@ -476,7 +486,7 @@ class Profile(commands.Cog):
                 idx = next((i for i, b in enumerate(all_beasts) if b.get("player_number") == target_num), None)
                 # Fallback: find by position
                 if idx is None:
-                    idx = next((i for i, b in enumerate(all_beasts) if b["id"] == target_num), None)
+                    idx = next((i for i, b in enumerate(all_beasts) if b.get("player_number") is None and b["id"] == target_num), None)
                 if idx is None or idx < 0 or idx >= len(all_beasts):
                     return await modal_interaction.response.send_message(
                         f"✦ Beast `#{target_num}` not found in your collection.", ephemeral=True
@@ -526,27 +536,10 @@ class Profile(commands.Cog):
     @app_commands.describe(beast_number="Your beast number from /collection")
     async def setactive(self, interaction: discord.Interaction, beast_number: int):
         await interaction.response.defer()
-        async with aiosqlite.connect(storage.DB_PATH) as db:
-            async with db.execute(
-                "SELECT id FROM player_beasts WHERE player_number = ? AND user_id = ?",
-                (beast_number, interaction.user.id)
-            ) as cursor:
-                exists = await cursor.fetchone()
-            if not exists:
-                # Fallback: try matching old global id
-                async with db.execute(
-                    "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
-                    (beast_number, interaction.user.id)
-                ) as cursor:
-                    exists = await cursor.fetchone()
-            if not exists:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ Beast `#{beast_number}` not found in your collection!", color=COLORS["error"]
-                ))
-            row_id = exists[0]
-            await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (interaction.user.id,))
-            await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (row_id,))
-            await db.commit()
+        try:
+            await storage.set_active_companion(interaction.user.id, beast_number)
+        except ValueError as error:
+            return await interaction.followup.send(str(error), ephemeral=True)
         await interaction.followup.send(embed=discord.Embed(
             description=f"✦ Beast `#{beast_number}` is now your active beast! ⚔️",
             color=COLORS["success"]
@@ -559,7 +552,7 @@ class Profile(commands.Cog):
             return await interaction.response.send_message(embed=discord.Embed(
                 description="✦ Nickname must be 20 characters or less!", color=COLORS["error"]
             ), ephemeral=True)
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             async with db.execute(
                 "SELECT id FROM player_beasts WHERE player_number = ? AND user_id = ?",
                 (beast_number, interaction.user.id)
@@ -567,7 +560,7 @@ class Profile(commands.Cog):
                 exists = await c.fetchone()
             if not exists:
                 async with db.execute(
-                    "SELECT id FROM player_beasts WHERE id = ? AND user_id = ?",
+                    "SELECT id FROM player_beasts WHERE id = ? AND user_id = ? AND player_number IS NULL",
                     (beast_number, interaction.user.id)
                 ) as c:
                     exists = await c.fetchone()
@@ -750,7 +743,7 @@ class Shop(commands.Cog):
         player   = await get_or_create_player(interaction.user.id, str(interaction.user))
         uid      = interaction.user.id
         RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine","altered_divine"]
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             from utils.rewards import has_perk
             merchant=await has_perk(db,uid,"whimsy_merchant")
 
@@ -758,7 +751,7 @@ class Shop(commands.Cog):
         async def _buy(bi, item_id, price, name, next_step, qty=1):
             await bi.response.defer(ephemeral=True)
             total = price * qty
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 db.row_factory = aiosqlite.Row
                 await db.execute("BEGIN IMMEDIATE")
                 from utils.rewards import has_perk

@@ -9,7 +9,6 @@ from utils.progress import (
     ACHIEVEMENTS, get_daily_quests, check_achievements, get_bestiary_progress
 )
 
-DB_PATH = "db/chibibeast.db"
 TIER_ORDER = ["bronze", "silver", "gold", "platinum"]
 RARITY_ORDER = ["common", "uncommon", "rare", "epic", "legendary", "divine", "altered_divine", "corrupted", "ancient", "dev"]
 
@@ -66,7 +65,7 @@ class Progression(commands.Cog):
         # Re-check stat-based achievements live so the list is always current
         await check_achievements(target.id)
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT achievement_id, earned_at FROM achievements WHERE user_id = ?", (target.id,)
@@ -90,7 +89,7 @@ class Progression(commands.Cog):
         await track_quest_event(interaction.user.id,"bestiary_check")
 
         # Load global catch counts
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT beast_id, catch_count FROM global_catch_counts") as c:
                 catch_counts = {r["beast_id"]: r["catch_count"] for r in await c.fetchall()}

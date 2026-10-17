@@ -34,11 +34,13 @@ class DatabaseCase(unittest.IsolatedAsyncioTestCase):
         await storage.init_db()
         await storage.get_or_create_player(42, 'Trainer')
         combat.active_states.clear()
+        combat.active_parties.clear()
         from utils.duels import active_fighters
         active_fighters.clear()
 
     async def asyncTearDown(self):
         combat.active_states.clear()
+        combat.active_parties.clear()
         from utils.duels import active_fighters
         active_fighters.clear()
         for p in reversed(self.patches):

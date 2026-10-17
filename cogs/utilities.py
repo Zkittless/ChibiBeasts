@@ -112,16 +112,15 @@ EVOLUTION_FORM_LABELS = {
     "ascended": ("✨ Ascended Form",   "The Genesis Fruit has chosen."),
 }
 
-DB_PATH = "db/chibibeast.db"
 
 def load_equipment():
-    with open("data/equipment.json", encoding="utf-8") as f:
-        d = json.load(f)
-    return d["equipment"], d["runes"]
+    from utils.catalog import load_catalog
+    data=load_catalog('equipment.json')
+    return data['equipment'],data['runes']
 
 def load_materials():
-    with open("data/materials.json", encoding="utf-8") as f:
-        return json.load(f)["materials"]
+    from utils.catalog import load_catalog
+    return load_catalog('materials.json')['materials']
 
 # ── Shard Shop inventory ───────────────────────────────────────────────────────
 SHARD_SHOP = {
@@ -206,7 +205,7 @@ class Utilities(commands.Cog):
         """Show equipment and runes from the player's inventory."""
         equipment, runes = load_equipment()
         all_gear = {**equipment, **runes}
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
@@ -226,7 +225,7 @@ class Utilities(commands.Cog):
         equipment, runes = load_equipment()
         all_gear = {**equipment, **runes}
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",
@@ -389,7 +388,7 @@ class Utilities(commands.Cog):
         with open("data/materials.json", encoding="utf-8") as f:
             import json as _j
             mats_data = _j.load(f)["materials"]
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
@@ -418,8 +417,7 @@ class Utilities(commands.Cog):
     async def sell(self, interaction: discord.Interaction, item_name: str):
         from utils.modals import QuantityModal
 
-        with open("data/items.json", encoding="utf-8") as f:
-            items_data = json.load(f)["items"]
+        items_data = storage.load_items()
         materials = load_materials()
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
@@ -450,7 +448,7 @@ class Utilities(commands.Cog):
 
         table = "player_materials" if is_material else "player_inventory"
         key_column="material_id" if is_material else "item_id"
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 f"SELECT id, quantity FROM {table} WHERE user_id = ? AND {key_column} = ?",
@@ -471,7 +469,7 @@ class Utilities(commands.Cog):
 
         async def do_sell(modal_interaction: discord.Interaction, quantity: int):
             await modal_interaction.response.defer(ephemeral=True)
-            async with aiosqlite.connect(DB_PATH) as db:
+            async with storage.connect() as db:
                 db.row_factory = aiosqlite.Row
                 await db.execute("BEGIN IMMEDIATE")
                 async with db.execute(
@@ -556,6 +554,8 @@ class Utilities(commands.Cog):
 
             @discord.ui.button(label="Keep", style=discord.ButtonStyle.secondary, emoji="💙")
             async def cancel(self, inv: discord.Interaction, btn: discord.ui.Button):
+                if inv.user.id != interaction.user.id:
+                    return await inv.response.send_message('Not your choice!', ephemeral=True)
                 self.stop()
                 for item in self.children:
                     item.disabled = True
@@ -570,7 +570,7 @@ class Utilities(commands.Cog):
             description=(
                 f"*{beast_data.get('description', '')}*\n\n"
                 f"{RARITY_EMOJI.get(rarity, '⚪')} **{RARITY_LABEL.get(rarity, rarity)}**\n\n"
-                f"You'll receive **{refund:,} gold** as a parting gift.\n"
+                f"You'll receive **{refund:,} gold** as a parting gift. Equipped armor and runes return to your inventory.\n"
                 f"*This cannot be undone.*"
             ),
             color=COLORS.get(rarity, COLORS["info"])
@@ -580,13 +580,11 @@ class Utilities(commands.Cog):
         if not view.confirmed:
             return
 
-        async with aiosqlite.connect(DB_PATH) as db:
-            await db.execute("DELETE FROM player_beasts WHERE id = ?", (actual_id,))
-            await db.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?",
-                             (refund, interaction.user.id))
-            await db.commit()
-        from utils.db import renumber_beasts as _renumber
-        await _renumber(interaction.user.id)
+        from utils.transfers import release_companion
+        try:
+            refund = await release_companion(interaction.user.id, actual_id, expected_species=beast_row['beast_id'])
+        except ValueError as error:
+            return await interaction.followup.send(str(error), ephemeral=True)
 
         # Lore-flavored release message
         RELEASE_LINES = {
@@ -634,7 +632,7 @@ class Utilities(commands.Cog):
         today=datetime.now(timezone.utc).strftime("%Y-%m-%d")
         sanctuary=await get_user_sanctuary(uid)
         from utils.rewards import shards
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute("BEGIN IMMEDIATE")
             claim=await db.execute("INSERT OR IGNORE INTO daily_quests(user_id,quest_id,progress,completed,date) VALUES(?,'daily_claim',1,1,?)",(uid,today))
             if not claim.rowcount:return await interaction.followup.send("Today's reward has already been claimed. Resets at midnight UTC.")
@@ -654,7 +652,7 @@ class Utilities(commands.Cog):
         await interaction.response.defer()
         guild_id = interaction.guild.id if interaction.guild else 0
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
 
             # Total trainers
@@ -761,7 +759,7 @@ class Utilities(commands.Cog):
         await interaction.response.defer()
         from cogs.hatch import COLLECTION_REWARDS
         from utils.story import load_questline
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             async with db.execute("SELECT achievement_id FROM achievements WHERE user_id=?",(interaction.user.id,)) as c:earned={r[0] for r in await c.fetchall()}
             async with db.execute("SELECT choice FROM story_choices WHERE user_id=? AND chapter_id='chapter_10'",(interaction.user.id,)) as c:choice=await c.fetchone()
             titles=[r["title"] for collection,r in COLLECTION_REWARDS.items() if "collection_"+collection.lower().replace(" ","_") in earned]
@@ -781,7 +779,7 @@ class Utilities(commands.Cog):
         import random as _r
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
 
@@ -921,7 +919,7 @@ class Utilities(commands.Cog):
         uid = interaction.user.id
         category = "battles"  # default; overridden by select
 
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
 
             if category == "battles":
@@ -1085,7 +1083,7 @@ class Utilities(commands.Cog):
                     await bi.response.defer()
                     new_cat = bi.data["values"][0]
                     # Rebuild embed for new category
-                    async with aiosqlite.connect(DB_PATH) as _db:
+                    async with storage.connect() as _db:
                         _db.row_factory = aiosqlite.Row
                         new_emb = await _fetch_history_embed(_db, bi.user.id, new_cat)
                     new_emb.set_footer(text="ChibiBeasts 🐾")

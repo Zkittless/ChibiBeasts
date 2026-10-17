@@ -264,7 +264,7 @@ class Guilds(commands.Cog):
         name=name.strip()
         if not 2<=len(name)<=40:return await interaction.followup.send("Choose a guild name of 2–40 characters.")
         try:
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 await db.execute("BEGIN IMMEDIATE")
                 async with db.execute("SELECT 1 FROM guild_members WHERE user_id=? UNION SELECT 1 FROM guilds WHERE leader_id=?",(interaction.user.id,interaction.user.id)) as c:member=await c.fetchone()
                 if member:raise ValueError("Leave your current guild before founding another.")
@@ -295,7 +295,7 @@ class Guilds(commands.Cog):
     @app_commands.command(name="guild", description="View your guild info 🏰")
     async def guild(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT guild_id FROM guild_members WHERE user_id = ?", (interaction.user.id,)
@@ -309,7 +309,7 @@ class Guilds(commands.Cog):
             ))
 
         guild_id = member_row["guild_id"]
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT * FROM guilds WHERE id = ?", (guild_id,)) as c:
                 guild = dict(await c.fetchone())
@@ -356,7 +356,7 @@ class Guilds(commands.Cog):
     @app_commands.describe(member="Player to invite")
     async def guild_invite(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer()
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT guild_id, rank FROM guild_members WHERE user_id = ?", (interaction.user.id,)
@@ -369,7 +369,7 @@ class Guilds(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT * FROM guilds WHERE id = ?", (inviter["guild_id"],)) as c:
                 guild = dict(await c.fetchone())
@@ -437,7 +437,7 @@ class Guilds(commands.Cog):
                     return await inv_interaction.response.send_message("This isn't for you!", ephemeral=True)
                 self.accepted = True
                 self.stop()
-                async with aiosqlite.connect(storage.DB_PATH) as db:
+                async with storage.connect() as db:
                     await db.execute(
                         "INSERT INTO guild_members (guild_id, user_id) VALUES (?, ?)",
                         (inviter["guild_id"], member.id)
@@ -485,7 +485,7 @@ class Guilds(commands.Cog):
         await interaction.response.defer(ephemeral=True)
         uid = interaction.user.id
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             # Verify caller is leader
             async with db.execute(
@@ -535,7 +535,7 @@ class Guilds(commands.Cog):
     async def guild_leave(self, interaction: discord.Interaction):
         await interaction.response.defer()
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT gm.rank, gm.guild_id, g.name, g.leader_id, g.member_count FROM guild_members gm JOIN guilds g ON gm.guild_id = g.id WHERE gm.user_id = ?",
@@ -545,7 +545,7 @@ class Guilds(commands.Cog):
 
         if not member_row:
             # Check if players.guild_id is orphaned (membership row was deleted but player row wasn't cleaned)
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 db.row_factory = aiosqlite.Row
                 async with db.execute(
                     "SELECT guild_id FROM players WHERE user_id = ? AND guild_id IS NOT NULL",
@@ -583,7 +583,7 @@ class Guilds(commands.Cog):
                         self.stop()
                         for item in self.children: item.disabled = True
                         await inv.response.edit_message(view=self)
-                        async with aiosqlite.connect(storage.DB_PATH) as db:
+                        async with storage.connect() as db:
                             await db.execute("DELETE FROM guild_members WHERE guild_id = ?", (guild_id,))
                             await db.execute("DELETE FROM guilds WHERE id = ?", (guild_id,))
                             await db.execute("UPDATE players SET guild_id = NULL, guild_tokens = 0 WHERE user_id = ?", (interaction.user.id,))
@@ -611,7 +611,7 @@ class Guilds(commands.Cog):
                 ), view=DisbandView())
             else:
                 # Other members exist — must promote an officer or member first
-                async with aiosqlite.connect(storage.DB_PATH) as db:
+                async with storage.connect() as db:
                     db.row_factory = aiosqlite.Row
                     async with db.execute(
                         "SELECT user_id, rank FROM guild_members WHERE guild_id = ? AND user_id != ? ORDER BY CASE rank WHEN 'officer' THEN 0 ELSE 1 END LIMIT 1",
@@ -640,7 +640,7 @@ class Guilds(commands.Cog):
                         self.stop()
                         for item in self.children: item.disabled = True
                         await inv.response.edit_message(view=self)
-                        async with aiosqlite.connect(storage.DB_PATH) as db:
+                        async with storage.connect() as db:
                             await db.execute("UPDATE guilds SET leader_id = ? WHERE id = ?", (new_leader_id, guild_id))
                             await db.execute("UPDATE guild_members SET rank = 'leader' WHERE guild_id = ? AND user_id = ?", (guild_id, new_leader_id))
                             await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
@@ -685,7 +685,7 @@ class Guilds(commands.Cog):
                 self.stop()
                 for item in self.children: item.disabled = True
                 await inv.response.edit_message(view=self)
-                async with aiosqlite.connect(storage.DB_PATH) as db:
+                async with storage.connect() as db:
                     await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
                     await db.execute("UPDATE guilds SET member_count = member_count - 1 WHERE id = ?", (guild_id,))
                     await db.execute("UPDATE players SET guild_id = NULL WHERE user_id = ?", (interaction.user.id,))
@@ -715,7 +715,7 @@ class Guilds(commands.Cog):
         await interaction.response.defer()
         import time as _t, random as _r
         uid = interaction.user.id
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute("SELECT guild_id FROM guild_members WHERE user_id = ?", (uid,)) as c:
                 member_row = await c.fetchone()
@@ -816,7 +816,7 @@ class Guilds(commands.Cog):
     @app_commands.command(name="raid",description="Gather your guild to help a Corrupted beast ⚔️")
     async def raid(self,interaction:discord.Interaction):
         await interaction.response.defer()
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory=aiosqlite.Row
             async with db.execute("SELECT m.rank,g.* FROM guild_members m JOIN guilds g ON g.id=m.guild_id WHERE m.user_id=?",(interaction.user.id,)) as c:guild=await c.fetchone()
         if not guild or guild["rank"] not in {"leader","officer"}:return await interaction.followup.send("A guild leader or officer opens the raid.")

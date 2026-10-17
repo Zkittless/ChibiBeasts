@@ -216,7 +216,7 @@ async def check_collection_completion(interaction, beast: dict, all_beasts: dict
 
     # Check if player now owns ALL beasts in this collection
     import aiosqlite
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         async with db.execute(
             "SELECT DISTINCT beast_id FROM player_beasts WHERE user_id = ?",
@@ -302,7 +302,7 @@ class HatchView(discord.ui.View):
         if interaction.user.id != self.player_id:
             return await interaction.response.send_message("This isn't your hatch!", ephemeral=True)
         import aiosqlite
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (self.player_id,))
             await db.execute(
                 "UPDATE player_beasts SET is_active = 1 WHERE id = (SELECT id FROM player_beasts WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1)",
@@ -387,7 +387,7 @@ class Hatch(commands.Cog):
         egg_def = HATCH_EGGS[egg_type]
 
         # Check inventory
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
@@ -411,7 +411,7 @@ class Hatch(commands.Cog):
                 await modal_interaction.response.defer()
 
             # Deduct all at once atomically
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 db.row_factory = aiosqlite.Row
                 await db.execute("BEGIN IMMEDIATE")
                 async with db.execute(
@@ -433,7 +433,7 @@ class Hatch(commands.Cog):
                     )
                 await db.commit()
 
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 db.row_factory = aiosqlite.Row
                 async with db.execute(
                     "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -474,7 +474,7 @@ class Hatch(commands.Cog):
             # Auto-set active if first ever beast
             all_owned = await get_player_beasts(modal_interaction.user.id)
             if len(all_owned) == len(hatched):
-                async with aiosqlite.connect(storage.DB_PATH) as db:
+                async with storage.connect() as db:
                     await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (hatched[0][2],))
                     await db.commit()
 
@@ -570,7 +570,7 @@ class Hatch(commands.Cog):
         now = time.time()
         cooldown = EXPLORE_COOLDOWN
 
-        async with aiosqlite.connect(storage.DB_PATH) as _cddb:
+        async with storage.connect() as _cddb:
             _cddb.row_factory = aiosqlite.Row
             async with _cddb.execute(
                 "SELECT explore_last_at FROM players WHERE user_id = ?", (interaction.user.id,)
@@ -598,7 +598,7 @@ class Hatch(commands.Cog):
             ))
 
         # Update last explore time in DB
-        async with aiosqlite.connect(storage.DB_PATH) as _upddb:
+        async with storage.connect() as _upddb:
             claimed=await _upddb.execute(
                 "UPDATE players SET explore_last_at = ? WHERE user_id = ? AND COALESCE(explore_last_at,0)<=?",
                 (now, interaction.user.id,now-cooldown)
@@ -726,7 +726,7 @@ class Hatch(commands.Cog):
 
         # First-time biome discovery check
         BIOME_DISCOVERY_KEY = f"biome_discovered_{biome['name'].replace(' ','_').replace('🌌','').replace('❄️','').replace('🌊','').replace('🔥','').replace('🌲','').strip()}"
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT 1 FROM achievements WHERE user_id = ? AND achievement_id = ?",
@@ -803,7 +803,7 @@ class Hatch(commands.Cog):
         rates = apply_explore_encounter_bonus(rates, user_sanctuary)
 
         # Spellbound Incense boost (persisted in DB)
-        async with aiosqlite.connect(storage.DB_PATH) as _idb:
+        async with storage.connect() as _idb:
             _idb.row_factory = aiosqlite.Row
             async with _idb.execute(
                 "SELECT incense_charges FROM players WHERE user_id = ?", (interaction.user.id,)
@@ -814,7 +814,7 @@ class Hatch(commands.Cog):
             from utils.hatching import promote_rates
             rates=promote_rates(rates,{"uncommon":.08,"rare":.05,"epic":.03})
             # Consume one charge
-            async with aiosqlite.connect(storage.DB_PATH) as _cdb:
+            async with storage.connect() as _cdb:
                 await _cdb.execute(
                     "UPDATE players SET incense_charges = MAX(0, incense_charges - 1) WHERE user_id = ?",
                     (interaction.user.id,)
@@ -824,11 +824,11 @@ class Hatch(commands.Cog):
         from utils.habitats import pick_encounter
         if player.get("divine_compass_charges",0)>0 and not player.get("prism_keys",0) and destination=="loom":
             rates["divine"]=.20
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 await db.execute("UPDATE players SET divine_compass_charges=divine_compass_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
         if player.get("prism_keys",0)>0 and destination=="loom":
             rates["divine"]=.30
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 await db.execute("UPDATE players SET prism_keys=prism_keys-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
         # Set exact divine odds, preserving the relative weights of other rarities.
         if destination=="loom" and (player.get("divine_compass_charges",0)>0 or player.get("prism_keys",0)>0):
@@ -836,7 +836,7 @@ class Hatch(commands.Cog):
             rates={k:(target if k=="divine" else v/other*(1-target)) for k,v in rates.items()}
         if player.get("ancient_compass_charges",0)>0:
             rates={k:v for k,v in rates.items() if k not in {"common","uncommon"}}
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 await db.execute("UPDATE players SET ancient_compass_charges=ancient_compass_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
         beast=pick_encounter(rates,destination)
         qs=await get_quest_state(interaction.user.id)
@@ -859,7 +859,7 @@ class Hatch(commands.Cog):
         base_affinity = 0.15 * beast["catch_rate"]
         affinity_chance = min(0.40, base_affinity + (0.05 if pixie_pocket else 0) + (.15 if player.get("catch_boost_charges",0)>0 else 0))
         if player.get("catch_boost_charges",0)>0:
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 await db.execute("UPDATE players SET catch_boost_charges=catch_boost_charges-1 WHERE user_id=?",(interaction.user.id,));await db.commit()
         takes_liking = random.random() < affinity_chance
 
@@ -899,7 +899,7 @@ class Hatch(commands.Cog):
             if caught_via_battle:
                 gold_bonus = int(gold_bonus * 1.25)  # battle bonus
 
-            async with aiosqlite.connect(storage.DB_PATH) as _bcdb:
+            async with storage.connect() as _bcdb:
                 async with _bcdb.execute("SELECT COUNT(*) FROM player_beasts WHERE user_id = ?", (interaction.user.id,)) as _bcc:
                     _bc_count = (await _bcc.fetchone())[0]
             from cogs.questline import advance_quest_step as _aqbc
@@ -1010,14 +1010,14 @@ class Hatch(commands.Cog):
                 nonlocal battle_won
                 if not timed_out:
                     battle_won = True
-                async with aiosqlite.connect(storage.DB_PATH) as _udb:
+                async with storage.connect() as _udb:
                     await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                     await _udb.commit()
 
             async def on_explore_loss(embed, p_state, e_state):
                 nonlocal battle_won
                 battle_won = False
-                async with aiosqlite.connect(storage.DB_PATH) as _udb:
+                async with storage.connect() as _udb:
                     await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                     await _udb.commit()
                 # Give consolation gold even on loss

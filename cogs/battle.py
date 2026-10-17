@@ -7,7 +7,6 @@ import random
 import asyncio
 import aiosqlite
 
-DB_PATH = "db/chibibeast.db"
 import json
 from utils.db import (
     get_or_create_player, get_player, update_player,
@@ -149,7 +148,7 @@ async def notify_level_up(
 
 async def award_player_exp(user_id: int, exp_gain: int, interaction=None):
     from utils.rewards import player_exp
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute("BEGIN IMMEDIATE")
         async with db.execute("SELECT level FROM players WHERE user_id=?",(user_id,)) as c:old=await c.fetchone()
         async with db.execute("SELECT 1 FROM guild_members m JOIN guild_sanctuary s ON s.guild_id=m.guild_id WHERE m.user_id=? AND s.arcane_library=1",(user_id,)) as c:
@@ -163,20 +162,25 @@ async def award_player_exp(user_id: int, exp_gain: int, interaction=None):
     return result
 
 
-async def run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss):
+async def run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,reserved=False):
+    from utils.duels import reserve_fighters
+    from contextlib import nullcontext
+    with nullcontext() if reserved else reserve_fighters([interaction.user.id]):
+        return await _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss)
+
+async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss):
     from utils.duels import prepare_state,duel,beast_exp,active_fighters
-    if interaction.user.id in active_fighters:raise ValueError("Finish your current battle first.")
     from utils.db import is_knocked_out
     if is_knocked_out(player_beast_row):raise ValueError("Your companion is recovering. Use /use Phoenix Elixir or choose another beast.")
     state=await prepare_state(interaction.user.id,player_beast_row,player_beast_data,player_perks)
-    winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView)
+    winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView,reserved=True)
     embed=discord.Embed(title=f"⚔️ {battle_title} — {'Victory' if winner==0 else 'Draw' if winner is None else 'Lesson learned'}",description="\n".join(f"**{s['name']}** — {hp_bar(s['hp'],s['max_hp'])}" for s in states),color=COLORS["success"] if winner==0 else COLORS["info"])
     embed.add_field(name="Battle log",value="\n".join(log[-5:])[-1000:] or "The companions watched each other.",inline=False)
     if timed_out:embed.add_field(name="Time limit",value="The match ended on time. Reduced rewards; wild creatures are not caught on a time-limit win.",inline=False)
     if winner==0:await on_win(embed,*states,timed_out)
     else:await on_loss(embed,*states)
     kind="sparr" if battle_title.startswith("Spar") else "pve"
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         cursor=await db.execute("INSERT INTO battles(challenger_id,winner_id,challenger_beast,status,battle_type) VALUES(?,?,?,'completed',?)",(interaction.user.id,interaction.user.id if winner==0 else None,player_beast_row["id"],kind))
         battle_id=cursor.lastrowid
         if winner!=0:await db.execute("UPDATE players SET losses=losses+1 WHERE user_id=?",(interaction.user.id,))
@@ -201,6 +205,7 @@ class BattleView(discord.ui.View):
         self.challenger_id = challenger_id
         self.opponent_id = opponent_id
         self.message: discord.Message | None = None  # set by the /battle command
+        self.handled = False
 
     def _disable_all(self):
         for item in self.children:
@@ -209,6 +214,7 @@ class BattleView(discord.ui.View):
     async def on_timeout(self):
         # Without this, an expired challenge silently leaves clickable-looking
         # buttons that do nothing. Now it visibly closes the challenge.
+        self.handled = True
         pending_battles.pop(self.battle_id, None)
         self._disable_all()
         if self.message:
@@ -241,6 +247,10 @@ class BattleView(discord.ui.View):
     async def accept(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.opponent_id:
             return await interaction.response.send_message("This challenge isn't for you!", ephemeral=True)
+
+        if self.handled:
+            return await interaction.response.send_message('This challenge is already closed.', ephemeral=True)
+        self.handled = True
 
         # The challenge may have expired or been cleared (e.g. bot restart wiped
         # the in-memory record). Fail loudly instead of doing nothing.
@@ -280,6 +290,9 @@ class BattleView(discord.ui.View):
     async def decline(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.opponent_id:
             return await interaction.response.send_message("This challenge isn't for you!", ephemeral=True)
+        if self.handled:
+            return await interaction.response.send_message('This challenge is already closed.', ephemeral=True)
+        self.handled = True
         self.stop()
         pending_battles.pop(self.battle_id, None)
         self._disable_all()
@@ -294,27 +307,28 @@ from utils.duels import MoveView
 async def start_battle(interaction,battle_id):
     pending=pending_battles.pop(battle_id,None)
     if not pending:return None
+    from utils.duels import reserve_fighters
+    ids=[pending["challenger_id"],pending["opponent_id"]]
+    with reserve_fighters(ids):
+        return await _start_battle(interaction,battle_id,pending,ids)
+
+async def _start_battle(interaction,battle_id,pending,ids):
     from utils.duels import prepare_state,duel,beast_exp
     from utils.db import credit_gold
-    ids=[pending["challenger_id"],pending["opponent_id"]]
-    from utils.duels import active_fighters
-    if any(uid in active_fighters for uid in ids):raise ValueError("A trainer is already battling.")
     from utils.db import is_knocked_out
-    for uid in ids:
-        candidate=await get_active_beast(uid)
-        if not candidate or is_knocked_out(candidate):raise ValueError("Both trainers need a healthy active companion.")
     states=[];rows=[]
-    for uid in ids:
-        row=await get_active_beast(uid)
-        if not row:raise ValueError("Both trainers need an active companion.")
+    candidates=[await get_active_beast(uid) for uid in ids]
+    if any(not row or is_knocked_out(row) for row in candidates):
+        raise ValueError("Both trainers need a healthy active companion.")
+    for uid,row in zip(ids,candidates):
         data=get_beast_data(row["beast_id"]);rows.append(row)
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory=aiosqlite.Row
             async with db.execute("SELECT * FROM player_perks WHERE user_id=? AND equipped=1",(uid,)) as c:perks=[dict(r) for r in await c.fetchall()]
         states.append(await prepare_state(uid,row,data,perks))
-    winner,states,log,timed_out=await duel(interaction,states,ids,"Ranked" if pending.get("ranked") else "Trainer battle",view_class=MoveView)
+    winner,states,log,timed_out=await duel(interaction,states,ids,"Ranked" if pending.get("ranked") else "Trainer battle",view_class=MoveView,reserved=True)
     winner_id=ids[winner] if winner is not None else None
-    async with aiosqlite.connect(DB_PATH) as db:
+    async with storage.connect() as db:
         await db.execute("INSERT INTO battles(challenger_id,opponent_id,winner_id,challenger_beast,opponent_beast,status,battle_type) VALUES(?,?,?,?,?,'completed',?)",(*ids,winner_id,rows[0]["id"],rows[1]["id"],"ranked" if pending.get("ranked") else "pvp"))
         for uid in ids:await db.execute("UPDATE players SET ultimate_charges=MIN(3,ultimate_charges+1) WHERE user_id=?",(uid,))
         if winner_id:await db.execute("UPDATE players SET losses=losses+1 WHERE user_id=?",(ids[1-winner],))
@@ -347,6 +361,11 @@ class Battle(commands.Cog):
     ])
     async def challenge(self, interaction: discord.Interaction, biome: str = "woods"):
         await interaction.response.defer()
+        from utils.duels import reserve_fighters
+        with reserve_fighters([interaction.user.id]):
+            return await self._challenge(interaction, biome)
+
+    async def _challenge(self, interaction, biome):
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
         active_row = await get_active_beast(interaction.user.id)
         if not active_row:
@@ -375,7 +394,7 @@ class Battle(commands.Cog):
         import time as _t
         _now = _t.time()
         _cd_last = player.get("challenge_last_at", 0) or 0
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             from utils.rewards import cooldown
             challenge_cooldown=await cooldown(db,interaction.user.id,1200)
         _remaining = challenge_cooldown - (_now - _cd_last)
@@ -391,12 +410,11 @@ class Battle(commands.Cog):
             return await interaction.followup.send(f"Reach trainer level {BIOMES[biome]['min_level']} first.")
         from utils.db import is_knocked_out
         if is_knocked_out(active_row):return await interaction.followup.send("Your companion is recovering. Select another or use a Phoenix Elixir.")
-        async with aiosqlite.connect(DB_PATH) as db:
+        async with storage.connect() as db:
             cur=await db.execute("UPDATE players SET challenge_last_at=? WHERE user_id=? AND challenge_last_at<=?",(_now,interaction.user.id,_now-challenge_cooldown))
             if not cur.rowcount:return await interaction.followup.send("A challenge is already underway. Try again after the cooldown.")
             await db.commit()
 
-        all_beasts = load_beasts()
         pool_weights = dict(BIOMES[biome]["weights"])
         # Bias rarity pool toward player's active beast rarity — prevents trivial dead zones
         _RARITY_ORDER = ["common","uncommon","rare","epic","legendary","divine"]
@@ -411,7 +429,6 @@ class Battle(commands.Cog):
             _biased_weights[_r] = _w * _bias
         _total = sum(_biased_weights.values())
         _biased_weights = {k: v / _total for k, v in _biased_weights.items()}
-        rarity = random.choices(list(_biased_weights), weights=list(_biased_weights.values()))[0]
 
         from utils.habitats import pick_encounter
         wild_beast_data=pick_encounter(_biased_weights,biome)
@@ -424,7 +441,7 @@ class Battle(commands.Cog):
         enemy_state = build_pve_beast_state(wild_beast_data, wild_level)
 
         active_beast_data = get_beast_data(active_row["beast_id"]) or {}
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -485,7 +502,7 @@ class Battle(commands.Cog):
             _p_lvl, _, _p_leveled = await award_player_exp(interaction.user.id, player_exp_gain)
 
             if player.get("catch_boost_charges",0)>0:
-                async with aiosqlite.connect(DB_PATH) as db:
+                async with storage.connect() as db:
                     await db.execute("UPDATE players SET catch_boost_charges=MAX(0,catch_boost_charges-1) WHERE user_id=?",(interaction.user.id,));await db.commit()
             # Catch chance
             CATCH_RATES = {"common": 0.50, "uncommon": 0.35, "rare": 0.20,
@@ -502,9 +519,7 @@ class Battle(commands.Cog):
 
             if caught:
                 from utils.db import add_beast_to_player
-                from utils.dispositions import roll_disposition
                 from utils.progress import record_bestiary_sighting
-                disposition = roll_disposition(wild_beast_data.get("rarity", "common"))
                 await add_beast_to_player(interaction.user.id, {
                     **wild_beast_data, "caught_from": "wild_battle", "level": wild_level
                 })
@@ -516,7 +531,7 @@ class Battle(commands.Cog):
 
             embed.add_field(name="🎁 Rewards", value=reward_text, inline=False)
             # Duel completion records the canonical win event.
-            async with aiosqlite.connect(DB_PATH) as _udb:
+            async with storage.connect() as _udb:
                 await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                 await _udb.commit()
             unlocked = await check_achievements(interaction.user.id)
@@ -524,7 +539,7 @@ class Battle(commands.Cog):
                 await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
         async def on_loss(embed, p_state, e_state):
-            async with aiosqlite.connect(DB_PATH) as _udb:
+            async with storage.connect() as _udb:
                 await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                 await _udb.commit()
             consolation_gold = random.randint(10, 25)
@@ -551,6 +566,7 @@ class Battle(commands.Cog):
             battle_title=f"Wild {wild_beast_data['name']}",
             on_win=on_win,
             on_loss=on_loss,
+            reserved=True,
         )
 
     # ── /sparr ────────────────────────────────────────────────────────────
@@ -565,6 +581,11 @@ class Battle(commands.Cog):
     ])
     async def sparr(self, interaction: discord.Interaction, npc_name: str):
         await interaction.response.defer()
+        from utils.duels import reserve_fighters
+        with reserve_fighters([interaction.user.id]):
+            return await self._sparr(interaction, npc_name)
+
+    async def _sparr(self, interaction, npc_name):
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
         active_row = await get_active_beast(interaction.user.id)
         if not active_row:
@@ -573,7 +594,8 @@ class Battle(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        npcs = json.load(open("data/npcs.json", encoding="utf-8"))["npcs"]
+        from utils.catalog import load_catalog
+        npcs = load_catalog("npcs.json")["npcs"]
         npc  = npcs.get(npc_name)
         if not npc:
             return await interaction.followup.send(embed=discord.Embed(
@@ -599,7 +621,7 @@ class Battle(commands.Cog):
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         spar_key = f"sparr_{npc_name}"
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT 1 FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
@@ -638,7 +660,7 @@ class Battle(commands.Cog):
         enemy_state = build_pve_beast_state(companion_data, npc_level)
         active_beast_data = get_beast_data(active_row["beast_id"]) or {}
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -719,7 +741,7 @@ class Battle(commands.Cog):
                 qs["npc_relationships"][npc_name] = next_rel
                 rel_advanced = True
 
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 await db.execute("BEGIN IMMEDIATE")
                 from utils.rewards import shards
                 await shards(db,interaction.user.id,1)
@@ -773,7 +795,7 @@ class Battle(commands.Cog):
             loss_exp = random.randint(active_row["level"] * 5, active_row["level"] * 8)
             await credit_gold(interaction.user.id, 50)
             await award_player_exp(interaction.user.id, loss_exp)
-            async with aiosqlite.connect(storage.DB_PATH) as _udb:
+            async with storage.connect() as _udb:
                 await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                 await _udb.commit()
             embed.add_field(
@@ -787,7 +809,7 @@ class Battle(commands.Cog):
         # this NPC was already recorded today — which closes the race where
         # two near-simultaneous /sparr calls both passed the read check above
         # before either had finished.
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             cur = await db.execute(
                 "INSERT OR IGNORE INTO daily_quests (user_id, quest_id, progress, completed, date) VALUES (?,?,1,1,?)",
                 (interaction.user.id, spar_key, today)
@@ -812,11 +834,12 @@ class Battle(commands.Cog):
                 battle_title=f"Spar with {npc['name']}",
                 on_win=on_win,
                 on_loss=on_loss,
+                reserved=True,
             )
         except Exception:
             # Release the slot so a failed spar never burns the player's daily
             # attempt. The global handler in bot.py still reports the error.
-            async with aiosqlite.connect(storage.DB_PATH) as db:
+            async with storage.connect() as db:
                 await db.execute(
                     "DELETE FROM daily_quests WHERE user_id = ? AND quest_id = ? AND date = ?",
                     (interaction.user.id, spar_key, today)

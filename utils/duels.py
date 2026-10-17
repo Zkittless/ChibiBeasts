@@ -1,21 +1,49 @@
 """Interactive duel runner. Every duel mode uses the same states and rules."""
-import asyncio
-import json
+from contextlib import contextmanager, nullcontext
+from functools import wraps
 import aiosqlite
 import discord
 from utils import db as storage
 from utils import combat
-from utils.artwork import PROJECT_ROOT
 from utils.theme import hp_bar, COLORS
 active_fighters = set()
 
+@contextmanager
+def reserve_fighters(users):
+    """Reserve before the first await, including preparation and settlement."""
+    ids = {uid for uid in users if uid is not None}
+    if ids.intersection(active_fighters):
+        raise ValueError('A trainer is already in a battle or transfer. Finish it first.')
+    active_fighters.update(ids)
+    try:
+        yield
+    finally:
+        active_fighters.difference_update(ids)
+
+def exclusive_player(function):
+    """Keep a short collection mutation from overlapping battle preparation."""
+    @wraps(function)
+    async def protected(user_id, *args, **kwargs):
+        async with combat.lock_states([user_id]):
+            with reserve_fighters([user_id]):
+                return await function(user_id, *args, **kwargs)
+    return protected
+
 async def prepare_state(user_id, row, data, perks, *, consume=True):
-    equipment = json.loads((PROJECT_ROOT / 'data/equipment.json').read_text(encoding='utf-8'))
+    from utils.catalog import load_catalog
+    equipment=load_catalog('equipment.json')
     gear = {**equipment['equipment'], **equipment['runes']}
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         if consume:
             await db.execute('BEGIN IMMEDIATE')
+        async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND id=?', (user_id, row['id'])) as c:
+            fresh = await c.fetchone()
+        if not fresh or fresh['beast_id'] != data['id']:
+            raise ValueError('Your companion changed while the battle was preparing. Try again.')
+        row = dict(fresh)
+        if storage.is_knocked_out(row) or row['hp'] <= 0:
+            raise ValueError('Your companion needs recovery before it can battle.')
         async with db.execute('SELECT * FROM players WHERE user_id=?', (user_id,)) as c:
             player = dict(await c.fetchone())
         async with db.execute('SELECT equipment_id FROM player_equipment WHERE user_id=? AND beast_row_id=?', (user_id, row['id'])) as c:
@@ -73,20 +101,21 @@ def ai_move(state, opp, personality):
         return (state['moves'][1], False)
     if combat.can_use(state, state['ultimate'], True) and (not opp.get('guard') or personality == 'chaotic'):
         return (state['ultimate'], True)
-    if opp.get('focus', 1) > 1 and personality in {'defensive', 'patient', 'optimal'}:
+    if opp.get('focus', 1) > 1 and not state.get('guard') and personality in {'defensive', 'patient', 'optimal'}:
         return (state['moves'][2], False)
     if not opp.get('status') and combat.can_use(state, state['moves'][1]) and combat.move_spec(state, state['moves'][1]).get('status'):
         return (state['moves'][1], False)
     return (state['moves'][0], False)
 
-async def duel(interaction, states, users, title, personality='wild', view_class=MoveView):
+async def duel(interaction, states, users, title, personality='wild', view_class=MoveView, *, reserved=False):
+    with nullcontext() if reserved else reserve_fighters(users):
+        return await _duel(interaction, states, users, title, personality, view_class)
+
+async def _duel(interaction, states, users, title, personality, view_class):
     ids = [u for u in users if u is not None]
-    if any((uid in active_fighters for uid in ids)):
-        raise ValueError('A trainer is already in a battle. Finish it first.')
     for state in states:
         if state['hp'] <= 0:
             raise ValueError('Your beast needs recovery before it can battle.')
-    active_fighters.update(ids)
     for uid, state in zip(users, states):
         if uid is not None:
             combat.active_states[uid] = state
@@ -94,17 +123,21 @@ async def duel(interaction, states, users, title, personality='wild', view_class
             state['ultimate_charges'] = 3
     log = []
     message = None
+    view = None
     timed_out = False
     winner = None
     try:
-        combat.start_battle(*states, log)
+        async with combat.lock_states(users):
+            combat.start_battle(*states, log)
         for round_number in range(1, 21):
             order = sorted(range(2), key=lambda i: combat.effective_speed(states[i]), reverse=True)
             for index in order:
                 state, opp = (states[index], states[1 - index])
                 if min((s['hp'] for s in states)) <= 0:
                     break
-                if combat.begin_turn(state, opp, log):
+                async with combat.lock_states(users):
+                    can_act = combat.begin_turn(state, opp, log)
+                if can_act:
                     uid = users[index]
                     if uid is None:
                         if state['mana'] >= 50:
@@ -132,11 +165,12 @@ async def duel(interaction, states, users, title, personality='wild', view_class
                             log.append(f"{state['name']}'s trainer did not choose a move in time.")
                             break
                         name, ult = view.chosen_move
-                    async with combat.state_lock:
+                    async with combat.lock_states(users):
                         combat.resolve_move(state, opp, name, ult, log)
                         if state['hp'] > 0 and opp['hp'] > 0 and combat.bonus_action(state):
                             combat.resolve_move(state, opp, state['moves'][0], False, log)
-                combat.end_turn(state, opp, log)
+                async with combat.lock_states(users):
+                    combat.end_turn(state, opp, log)
             if winner is not None or min((s['hp'] for s in states)) <= 0:
                 break
         if winner is None:
@@ -151,41 +185,54 @@ async def duel(interaction, states, users, title, personality='wild', view_class
                 ratios = [s['hp'] / s['max_hp'] for s in states]
                 winner = None if abs(ratios[0] - ratios[1]) < 1e-06 else int(ratios[1] > ratios[0])
         if message:
-            await message.edit(view=None)
+            try:
+                await message.edit(view=None)
+            except discord.HTTPException:
+                pass
         return (winner, states, log, timed_out)
     finally:
-        async with aiosqlite.connect(storage.DB_PATH) as db:
-            for uid, state in zip(users, states):
-                if uid is not None:
-                    await db.execute('UPDATE players SET ultimate_charges=? WHERE user_id=?', (state['ultimate_charges'], uid))
-            await db.commit()
-        for uid in ids:
-            active_fighters.discard(uid)
-            combat.active_states.pop(uid, None)
+        if view is not None:
+            view.stop()
+        async with combat.lock_states(users):
+            try:
+                for state in states:
+                    state['closed'] = True
+                async with storage.connect() as db:
+                    for uid, state in zip(users, states):
+                        if uid is not None:
+                            await db.execute('UPDATE players SET ultimate_charges=? WHERE user_id=?', (state['ultimate_charges'], uid))
+                    await db.commit()
+            finally:
+                for uid in ids:
+                    combat.active_states.pop(uid, None)
 
 async def beast_exp(user_id, row_id, amount):
-    async with aiosqlite.connect(storage.DB_PATH) as db:
+    async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
-        from utils.rewards import has_perk
-        if await has_perk(db, user_id, 'fable_scholar'):
-            amount = round(amount * 1.1)
-        async with db.execute('SELECT 1 FROM guild_members m JOIN guild_sanctuary s ON s.guild_id=m.guild_id WHERE m.user_id=? AND s.arcane_library=1', (user_id,)) as c:
-            if await c.fetchone():
-                amount = round(amount * 1.15)
-        async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND id=?', (user_id, row_id)) as c:
-            row = await c.fetchone()
-        if not row:
-            return
-        row = dict(row)
-        level = row['level']
-        exp = row['exp'] + amount
-        while exp >= storage.get_beast_exp_for_level(row, level):
-            exp -= storage.get_beast_exp_for_level(row, level)
-            level += 1
-        await storage.apply_beast_levelup(db, row, level, exp)
+        level, leveled = await beast_exp_in_transaction(db, user_id, row_id, amount)
         await db.commit()
-    if level > row['level']:
+    if leveled:
         from utils.progress import track_quest_event
         await track_quest_event(user_id, 'beast_level_up')
     return level
+
+async def beast_exp_in_transaction(db, user_id, row_id, amount):
+    from utils.rewards import has_perk
+    if await has_perk(db, user_id, 'fable_scholar'):
+        amount = round(amount * 1.1)
+    async with db.execute('SELECT 1 FROM guild_members m JOIN guild_sanctuary s ON s.guild_id=m.guild_id WHERE m.user_id=? AND s.arcane_library=1', (user_id,)) as c:
+        if await c.fetchone():
+            amount = round(amount * 1.15)
+    async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND id=?', (user_id, row_id)) as c:
+        row = await c.fetchone()
+    if not row:
+        return (None, False)
+    row = dict(row)
+    level = row['level']
+    exp = row['exp'] + amount
+    while exp >= storage.get_beast_exp_for_level(row, level):
+        exp -= storage.get_beast_exp_for_level(row, level)
+        level += 1
+    await storage.apply_beast_levelup(db, row, level, exp)
+    return (level, level > row["level"])

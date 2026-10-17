@@ -20,8 +20,8 @@ class Trading(commands.Cog):
     @app_commands.command(name="trade", description="Offer a beast trade to another trainer 🤝")
     @app_commands.describe(
         member="Trainer to trade with",
-        your_beast_id="Your beast ID to offer",
-        their_beast_id="Their beast ID you want (optional)",
+        your_beast_id="Your collection number to offer",
+        their_beast_id="Their collection number you want (omit to give a gift)",
         gold_offer="Gold to include in the offer"
     )
     async def trade(
@@ -33,15 +33,18 @@ class Trading(commands.Cog):
     ):
         await interaction.response.defer()
 
+        if gold_offer < 0:
+            return await interaction.followup.send('Gold offered cannot be negative.', ephemeral=True)
+
         if member.id == interaction.user.id:
             return await interaction.followup.send(embed=discord.Embed(
                 description="✦ You can't trade with yourself!", color=COLORS["error"]
             ))
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
-                "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
+                "SELECT * FROM player_beasts WHERE player_number = ? AND user_id = ?",
                 (your_beast_id, interaction.user.id)
             ) as c:
                 your_beast = await c.fetchone()
@@ -54,7 +57,7 @@ class Trading(commands.Cog):
             your_beast = dict(your_beast)
 
             # Can't trade altered divines
-            if your_beast.get("is_altered_divine"):
+            if your_beast.get("is_altered_divine") or your_beast["rarity"] == "altered_divine":
                 return await interaction.followup.send(embed=discord.Embed(
                     description="✦ **Altered Divine** beasts are soulbound and cannot be traded!",
                     color=COLORS["error"]
@@ -63,7 +66,7 @@ class Trading(commands.Cog):
             their_beast = None
             if their_beast_id:
                 async with db.execute(
-                    "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
+                    "SELECT * FROM player_beasts WHERE player_number = ? AND user_id = ?",
                     (their_beast_id, member.id)
                 ) as c:
                     their_beast = await c.fetchone()
@@ -73,10 +76,18 @@ class Trading(commands.Cog):
                     ))
                 their_beast = dict(their_beast)
 
+            from utils.transfers import _transferable
+            try:
+                await _transferable(db, interaction.user.id, your_beast['id'])
+                if their_beast:
+                    await _transferable(db, member.id, their_beast['id'])
+            except ValueError as error:
+                return await interaction.followup.send(str(error), ephemeral=True)
+
         player = await get_player(interaction.user.id)
-        if gold_offer > 0 and player["gold"] < gold_offer:
+        if not player or (gold_offer > 0 and player["gold"] < gold_offer):
             return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ You don't have enough gold! You have `{player['gold']:,}`.", color=COLORS["error"]
+                description=f"✦ You don't have enough gold! You have `{(player or {}).get('gold', 0):,}`.", color=COLORS["error"]
             ))
 
         your_beast_data = get_beast_data(your_beast["beast_id"])
@@ -93,20 +104,22 @@ class Trading(commands.Cog):
             their_name = their_beast.get("nickname") or their_beast_data["name"]
             desc += f"**Wants:** {RARITY_EMOJI.get(their_beast['rarity'],'⚪')} {their_name} (Lv.{their_beast['level']})\n"
         else:
-            desc += "**Wants:** Any beast in return\n"
+            desc += "**Wants:** Nothing in return — this is a gift\n"
 
-        desc += f"\n*{member.mention}, do you accept?*"
+        desc += f"\nEquipped armor and bound runes travel with each companion.\n*{member.mention}, do you accept?*"
 
         class TradeView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=120)
                 self.message: discord.Message | None = None
+                self.handled = False
 
             def _disable_all(self):
                 for item in self.children:
                     item.disabled = True
 
             async def on_timeout(self):
+                self.handled = True
                 self._disable_all()
                 if self.message:
                     try:
@@ -136,87 +149,23 @@ class Trading(commands.Cog):
             async def accept(self, inv_interaction: discord.Interaction, button: discord.ui.Button):
                 if inv_interaction.user.id != member.id:
                     return await inv_interaction.response.send_message("This trade isn't for you!", ephemeral=True)
+                if self.handled:
+                    return await inv_interaction.response.send_message('This offer is already closed.', ephemeral=True)
+                self.handled = True
                 self.stop()
                 for item in self.children:
                     item.disabled = True
                 await inv_interaction.response.edit_message(view=self)
 
-                # Re-validate everything fresh, inside one connection, right before
-                # committing — prevents double-spend / double-click / stale-state exploits
-                # where gold or beasts moved in the time between the offer and the accept.
-                async with aiosqlite.connect(storage.DB_PATH) as db:
-                    db.row_factory = aiosqlite.Row
-
-                    # Re-check the offered beast is still owned by the sender and untraded
-                    async with db.execute(
-                        "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
-                        (your_beast_id, interaction.user.id)
-                    ) as c:
-                        fresh_your_beast = await c.fetchone()
-                    if not fresh_your_beast:
-                        return await inv_interaction.followup.send(embed=discord.Embed(
-                            description="✦ This trade is no longer valid — the offered beast has moved!",
-                            color=COLORS["error"]
-                        ))
-
-                    # Re-check the requested beast (if any) is still owned by the receiver
-                    if their_beast_id:
-                        async with db.execute(
-                            "SELECT * FROM player_beasts WHERE id = ? AND user_id = ?",
-                            (their_beast_id, member.id)
-                        ) as c:
-                            fresh_their_beast = await c.fetchone()
-                        if not fresh_their_beast:
-                            return await inv_interaction.followup.send(embed=discord.Embed(
-                                description="✦ This trade is no longer valid — the requested beast has moved!",
-                                color=COLORS["error"]
-                            ))
-
-                    # Re-check sender's gold balance fresh, right before spending it
-                    if gold_offer > 0:
-                        async with db.execute(
-                            "SELECT gold FROM players WHERE user_id = ?", (interaction.user.id,)
-                        ) as c:
-                            sender_row = await c.fetchone()
-                        if not sender_row or sender_row["gold"] < gold_offer:
-                            return await inv_interaction.followup.send(embed=discord.Embed(
-                                description=f"✦ Trade failed — **{interaction.user.display_name}** no longer has enough gold!",
-                                color=COLORS["error"]
-                            ))
-
-                    # All checks passed — perform the transfer atomically
-                    await db.execute(
-                        "UPDATE player_beasts SET user_id = ?, is_active = 0 WHERE id = ? AND user_id = ?",
-                        (member.id, your_beast_id, interaction.user.id)
+                from utils.transfers import complete_trade
+                try:
+                    result = await complete_trade(
+                        interaction.user.id, member.id, your_beast['id'],
+                        their_beast['id'] if their_beast else None, gold_offer,
+                        offer_key=f'trade-offer:{interaction.id}',
                     )
-                    if their_beast_id:
-                        await db.execute(
-                            "UPDATE player_beasts SET user_id = ?, is_active = 0 WHERE id = ? AND user_id = ?",
-                            (interaction.user.id, their_beast_id, member.id)
-                        )
-                    if gold_offer > 0:
-                        await db.execute(
-                            "UPDATE players SET gold = gold - ? WHERE user_id = ? AND gold >= ?",
-                            (gold_offer, interaction.user.id, gold_offer)
-                        )
-                        await db.execute(
-                            "UPDATE players SET gold = gold + ? WHERE user_id = ?",
-                            (gold_offer, member.id)
-                        )
-                    # Record completed trade for /history
-                    await db.execute(
-                        """INSERT INTO trades
-                           (sender_id, receiver_id, sender_beast_id, receiver_beast_id, gold_offered, status)
-                           VALUES (?, ?, ?, ?, ?, 'completed')""",
-                        (interaction.user.id, member.id,
-                         your_beast_id, their_beast_id,
-                         gold_offer)
-                    )
-                    await db.commit()
-
-                from utils.db import renumber_beasts as _renumber
-                await _renumber(interaction.user.id)
-                await _renumber(member.id)
+                except ValueError as error:
+                    return await inv_interaction.followup.send(str(error), ephemeral=True)
 
                 await inv_interaction.followup.send(embed=discord.Embed(
                     title="🤝 Trade Complete!",
@@ -225,8 +174,8 @@ class Trading(commands.Cog):
                 ))
 
                 # ── Progress tracking: quests + achievements for both traders ──
-                sender_quests = await track_quest_event(interaction.user.id, "trade")
-                receiver_quests = await track_quest_event(member.id, "trade")
+                sender_quests = await track_quest_event(interaction.user.id, "trade", event_key=f"trade:{result['id']}:sender")
+                receiver_quests = await track_quest_event(member.id, "trade", event_key=f"trade:{result['id']}:recipient")
                 sender_unlocked = await unlock_simple_achievement(interaction.user.id, "first_trade")
                 receiver_unlocked = await unlock_simple_achievement(member.id, "first_trade")
                 # Trading changes beast counts for both parties, which can also
@@ -245,6 +194,9 @@ class Trading(commands.Cog):
             async def decline(self, inv_interaction: discord.Interaction, button: discord.ui.Button):
                 if inv_interaction.user.id != member.id:
                     return await inv_interaction.response.send_message("This isn't for you!", ephemeral=True)
+                if self.handled:
+                    return await inv_interaction.response.send_message('This offer is already closed.', ephemeral=True)
+                self.handled = True
                 self.stop()
                 for item in self.children:
                     item.disabled = True
@@ -272,7 +224,7 @@ class Perks(commands.Cog):
         perks_data = load_perks()
         all_perks = perks_data["perks"]
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT * FROM player_perks WHERE user_id = ?", (interaction.user.id,)
@@ -318,7 +270,7 @@ class Perks(commands.Cog):
         """Show perks the player owns but hasn't equipped yet."""
         perks_data = load_perks()
         all_perks = perks_data["perks"]
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT perk_id, equipped FROM player_perks WHERE user_id = ?",
@@ -370,7 +322,7 @@ class Perks(commands.Cog):
         """Show only currently equipped perks."""
         perks_data = load_perks()
         all_perks = perks_data["perks"]
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(
                 "SELECT perk_id FROM player_perks WHERE user_id = ? AND equipped = 1",
@@ -406,7 +358,7 @@ class Perks(commands.Cog):
                     description=f"✦ Perk `{perk_name}` not found!", color=COLORS["error"]
                 ))
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute(
                 "UPDATE player_perks SET equipped = 0 WHERE user_id = ? AND perk_id = ?",
                 (interaction.user.id, perk_id)
@@ -433,7 +385,7 @@ class Leaderboard(commands.Cog):
     async def leaderboard(self, interaction: discord.Interaction, category: str = "level"):
         await interaction.response.defer()
 
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             if category == "level":
                 query = "SELECT username, level, exp FROM players ORDER BY level DESC, exp DESC LIMIT 10"
@@ -487,7 +439,7 @@ class PerkUse(commands.Cog):
         from datetime import datetime,timezone
         import json
         if "astral" not in perk_name.lower():return await interaction.followup.send("Astral Resonance is the perk with a weekly active ability.",ephemeral=True)
-        async with aiosqlite.connect(storage.DB_PATH) as db:
+        async with storage.connect() as db:
             await db.execute("BEGIN IMMEDIATE")
             if not await has_perk(db,interaction.user.id,"astral_resonance"):return await interaction.followup.send("Equip Astral Resonance first.",ephemeral=True)
             async with db.execute("SELECT shard_shop_week FROM players WHERE user_id=?",(interaction.user.id,)) as c:row=await c.fetchone()
