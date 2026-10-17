@@ -25,7 +25,15 @@ async def lock_states(users):
 STATUS_EFFECTS = {'poison': {'emoji': '☠️', 'verb': 'is poisoned'}, 'burn': {'emoji': '🔥', 'verb': 'is burning'}, 'freeze': {'emoji': '❄️', 'verb': 'is frozen', 'skip_turns': 1}, 'sleep': {'emoji': '💤', 'verb': 'is asleep', 'skip_turns': 2}, 'paralyze': {'emoji': '⚡', 'verb': 'is paralyzed'}, 'slow': {'emoji': '🕸️', 'verb': 'is slowed'}, 'blind': {'emoji': '👁️', 'verb': 'is blinded'}, 'weaken': {'emoji': '🔻', 'verb': 'is weakened'}, 'blight': {'emoji': '💜', 'verb': 'is blighted'}}
 
 def fraction(number):
-    return number / 100 if number > 1 else number
+    """Catalog percentage fields consistently use percentage points."""
+    return number / 100
+
+def percent_damage(target, percent, source, boss_cap):
+    damage = target['max_hp'] * fraction(percent)
+    if target.get('raid_boss'):
+        attack = (source or {}).get('attack', target.get('reference_attack', 1))
+        damage = min(damage, attack * (source or {}).get('damage_multiplier', 1) * boss_cap)
+    return max(1, int(damage))
 
 def passive(state):
     return (state.get('divine_passive') or {}).get('passive_effect', {})
@@ -59,6 +67,7 @@ def build_state(data, row, perks=(), gear=(), buffs=None):
         state['mana'] = min(state['max_mana'], state['mana'] + 20)
     state['base_speed'] = state['speed']
     state['base_attack'] = state['attack']
+    state['base_defense'] = state['defense']
     state['shield'] = int(state['max_hp'] * passive(state).get('shield_percent', 0) / 100)
     return state
 
@@ -90,6 +99,10 @@ def apply_status(target, status, source=None, log=None):
         return False
     if status == 'burn' and target.get('burn_immunity'):
         return False
+    if target.get('raid_boss') and status in {'freeze', 'sleep'}:
+        if target.get('control_guard', 0) > 0:
+            log.append(f"{target['name']} steadies itself and resists another interruption.")
+            return False
     if target.pop('status_ward', False):
         log.append(f"✨ {target['name']}'s Aether ward stops {status}.")
         return False
@@ -99,10 +112,30 @@ def apply_status(target, status, source=None, log=None):
         return apply_status(source, status, None, log)
     target['status'] = status
     target['status_turns'] = {'freeze': 1, 'sleep': 2}.get(status, 3)
+    if target.get('raid_boss'):
+        if status in {'freeze', 'sleep'}:
+            target['status_turns'] = 1
+            target['control_guard'] = 3
+        if status in {'burn', 'poison', 'blight'}:
+            target['status_damage'] = percent_damage(target, {'burn': 8, 'poison': 5, 'blight': 6}[status], source, {'burn': .75, 'poison': .5, 'blight': .65}[status])
+            target['status_damage_kind'] = status
     if status=='blind' and source is not None:
         target['status_turns']=passive(source).get('blind_turns',3)
         target['blind_miss_chance']=passive(source).get('blind_miss_chance',.3)
     log.append(f"{STATUS_EFFECTS[status]['emoji']} {target['name']} {STATUS_EFFECTS[status]['verb']}.")
+    return True
+
+def can_receive_status(target, status):
+    """Known immunity checks for move selection; random wards still get a chance."""
+    effect = passive(target)
+    if target['hp'] <= 0 or target.get('status') or effect.get('status_immune') or effect.get('debuff_immune'):
+        return False
+    if status in {'slow', 'paralyze'} and effect.get('immune_to_slow'):
+        return False
+    if status == 'burn' and target.get('burn_immunity'):
+        return False
+    if status in {'freeze', 'sleep'} and target.get('raid_boss') and target.get('control_guard', 0):
+        return False
     return True
 
 def start_battle(a, b, log):
@@ -126,16 +159,24 @@ def effective_speed(state):
 
 def begin_turn(state, opp, log):
     state['action_count'] += 1
+    state['control_guard'] = max(0, state.get('control_guard', 0) - 1)
     effect = passive(state)
     if state.get('gravity_turns', 0) > 0:
         state['gravity_turns'] -= 1
     for stat, key in (('attack', 'attack_stack_percent'), ('speed', 'speed_stack_percent')):
         if effect.get(key):
-            state[stat] += max(1, int(state[stat] * effect[key] / 100))
+            base = state.get('base_' + stat, state[stat])
+            cap = effect.get(stat + '_stack_cap_percent', effect.get('stack_cap_percent', 40))
+            counter = stat + '_stack_bonus'
+            previous = state.get(counter, 0)
+            state[counter] = min(cap, previous + effect[key])
+            increase = int(base * (1 + state[counter]/100)) - int(base * (1 + previous/100))
+            state[stat] = min(int(base * (1 + cap / 100)), state[stat] + increase)
     if effect.get('stat_drain_percent'):
         for stat in ('attack', 'defense', 'speed'):
             if not passive(opp).get('debuff_immune'):
-                opp[stat] = max(1, int(opp[stat] * (1 - effect['stat_drain_percent'])))
+                floor = opp.get('base_' + stat, opp[stat]) * (1 - effect.get('stat_drain_cap_percent', 30) / 100)
+                opp[stat] = max(1, int(floor), int(opp[stat] * (1 - fraction(effect['stat_drain_percent']))))
     regen = effect.get('self_mana_restore_percent', 0)
     state['mana'] = min(state['max_mana'], state['mana'] + int(state['max_mana'] * regen / 100))
     if state.get('hp_regen_percent_per_round'):
@@ -143,6 +184,8 @@ def begin_turn(state, opp, log):
     status = state.get('status')
     if status in {'burn', 'poison', 'blight'}:
         damage = max(1, int(state['max_hp'] * {'burn': 0.08, 'poison': 0.05, 'blight': 0.06}[status]))
+        if state.get('raid_boss'):
+            damage = state.get('status_damage') if state.get('status_damage_kind') == status else percent_damage(state, {'burn': 8, 'poison': 5, 'blight': 6}[status], None, .75)
         take_damage(state, damage, log)
         log.append(f"{state['name']} takes {damage} {status} damage.")
     if state['hp'] <= 0:
@@ -175,8 +218,10 @@ def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
     if effect.get('true_damage') or random.random() < effect.get('defense_pierce_chance', 0):
         defense = 0
     else:
-        defense *= 1 - effect.get('defense_pierce_percent', 0)
+        defense *= 1 - fraction(effect.get('defense_pierce_percent', 0))
     mult = get_type_multiplier(attacker.get('beast_type', ''), defender.get('beast_type', ''))
+    if attacker.get('raid_boss') or defender.get('raid_boss'):
+        mult = 1.5 if mult > 1 else .75 if mult < 1 else 1
     if effect.get('ignore_type_disadvantage') or effect.get('fire_resistance_ignore') or (pid(attacker) == 'boundary_break' and attacker['speed'] >= attacker.get('base_speed', attacker['speed']) * effect.get('resistance_ignore_speed_threshold',200)/100):
         mult = max(1, mult)
     perk_ids = attacker.get('perks', set()) | {p['perk_id'] for p in perks or [] if p.get('equipped')}
@@ -205,7 +250,7 @@ def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
     if attacker.get('attack_double_below_25hp') and attacker['hp'] <= attacker['max_hp'] * 0.25:
         damage *= 2
     if effect.get('void_damage_percent'):
-        damage += defender['max_hp'] * effect['void_damage_percent']
+        damage += percent_damage(defender, effect['void_damage_percent'], attacker, .20)
     return (max(1, int(damage * random.uniform(0.85, 1.15))), crit, mult, charge)
 
 def take_damage(target, damage, log, source=None):
@@ -271,7 +316,7 @@ def resolve_hit(attacker, defender, damage, log, *, allow_evasion=True):
             apply_status(attacker, 'poison', defender, log)
     return actual
 
-def resolve_move(attacker, defender, name, ultimate, log):
+def resolve_move(attacker, defender, name, ultimate, log, *, grant_charge=True):
     spec = move_spec(attacker, name, ultimate)
     if not can_use(attacker, name, ultimate):
         name = attacker['moves'][0]
@@ -280,6 +325,8 @@ def resolve_move(attacker, defender, name, ultimate, log):
     attacker['mana'] -= spec.get('mana_cost', 0)
     if ultimate:
         attacker['ultimate_charges'] = 0
+    elif grant_charge:
+        attacker['ultimate_charges'] = min(3, attacker.get('ultimate_charges', 0) + 1)
     attacker['mana'] = min(attacker['max_mana'], attacker['mana'] + spec.get('mana_restore', 0))
     if spec.get('guard_percent'):
         attacker['guard'] = spec['guard_percent']
@@ -306,7 +353,7 @@ def resolve_move(attacker, defender, name, ultimate, log):
     attacker['focus'] = 1
     attacker['dp_crit_charges'] = max(0, attacker.get('dp_crit_charges', 0) + charge)
     actual = resolve_hit(attacker, defender, damage, log) if damage > 0 else 0
-    log.append(f"{('⭐ ' if crit else '')}{attacker['name']} uses {name} → {actual} damage{(' · effective' if mult >= 2 else ' · resisted' if mult < 1 else '')}.")
+    log.append(f"{('⭐ ' if crit else '')}{attacker['name']} uses {name} → {actual} damage{(' · effective' if mult > 1 else ' · resisted' if mult < 1 else '')}.")
     if not actual:
         return 0
     effect = passive(attacker)
@@ -331,8 +378,8 @@ def resolve_move(attacker, defender, name, ultimate, log):
 
 def end_turn(state, opp, log):
     effect = passive(state)
-    if effect.get('corruption_drain_percent') and opp['hp'] > 1:
-        opp['hp'] = max(1, opp['hp'] - int(opp['max_hp'] * effect['corruption_drain_percent']))
+    if effect.get('corruption_drain_percent') and state['hp'] > 0 and opp['hp'] > 1:
+        opp['hp'] = max(1, opp['hp'] - percent_damage(opp, effect['corruption_drain_percent'], state, .12))
     if effect.get('regen_percent'):
         heal(state, int(state['max_hp'] * effect['regen_percent'] / 100))
     if state.get('status') not in {None, 'freeze', 'sleep'}:
@@ -346,6 +393,6 @@ def bonus_action(state):
         state['mana'] = min(state['max_mana'], state['mana'] + 15)
         return True
     if pid(state) == 'fox_sovereign' and state['action_count'] % effect.get('nine_tail_strike_interval', 3) == 0:
-        state['bonus_power']=effect.get('nine_tail_multiplier',9)
+        state['bonus_power']=effect.get('nine_tail_multiplier',1.5)
         return True
     return random.random() < effect.get('double_turn_chance', 0)

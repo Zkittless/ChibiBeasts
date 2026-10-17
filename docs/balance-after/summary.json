@@ -1,0 +1,75 @@
+{
+  "generated_at_utc": "2026-10-17T00:55:10.720711+00:00",
+  "creatures": 86,
+  "raid_creatures": 85,
+  "developer_only_excluded_from_balance": [
+    "ouroboros"
+  ],
+  "stat_profiles": 430,
+  "peer_fights": 9736,
+  "raid_scenarios": 9180,
+  "build_scenarios": 720,
+  "raid_summary": {
+    "runs": 9180,
+    "win_rate": 0.5355,
+    "median_seconds": 253.3,
+    "p10_seconds": 116.5,
+    "p90_seconds": 504.0
+  },
+  "reference_by_build": {
+    "bare": {
+      "runs": 192,
+      "win_rate": 0.7708,
+      "median_seconds": 409.0,
+      "p10_seconds": 282.1,
+      "p90_seconds": 509.4
+    },
+    "entry": {
+      "runs": 192,
+      "win_rate": 0.8594,
+      "median_seconds": 385.4,
+      "p10_seconds": 272.0,
+      "p90_seconds": 497.7
+    },
+    "prepared": {
+      "runs": 192,
+      "win_rate": 0.9896,
+      "median_seconds": 367.4,
+      "p10_seconds": 315.9,
+      "p90_seconds": 455.1
+    },
+    "sustain": {
+      "runs": 192,
+      "win_rate": 1.0,
+      "median_seconds": 341.6,
+      "p10_seconds": 246.0,
+      "p90_seconds": 455.1
+    }
+  },
+  "raid_by_cadence": {
+    "2": {
+      "runs": 3060,
+      "win_rate": 0.5458,
+      "median_seconds": 244.5,
+      "p10_seconds": 114.5,
+      "p90_seconds": 495.6
+    },
+    "4": {
+      "runs": 3060,
+      "win_rate": 0.5448,
+      "median_seconds": 248.0,
+      "p10_seconds": 104.0,
+      "p90_seconds": 497.7
+    },
+    "6": {
+      "runs": 3060,
+      "win_rate": 0.516,
+      "median_seconds": 270.0,
+      "p10_seconds": 138.0,
+      "p90_seconds": 516.0
+    }
+  },
+  "peer_judge_rate": 0.0212,
+  "wall_seconds": 30.83,
+  "scope": "Production combat/raid resolvers; deterministic synthetic clock. Three companions per trainer; no consumables or training. Each simulated trainer submits one input per cadence, including support. This is a model, not human playtesting."
+}

@@ -30,7 +30,7 @@ def build_pve_beast_state(beast_data,level):
     growth=calc_stat_growth({"rarity":beast_data["rarity"]},max(0,level-1))
     stats={k:v+growth[k] for k,v in beast_data["base_stats"].items()}
     row={**stats,"max_hp":stats["hp"],"max_mana":stats["mana"],"level":level,"happiness":70}
-    return build_state(beast_data,row,buffs={"ultimate_charges":3})
+    return build_state(beast_data,row,buffs={"ultimate_charges":0})
 
 
 # ── Level milestone definitions ──────────────────────────────────────────

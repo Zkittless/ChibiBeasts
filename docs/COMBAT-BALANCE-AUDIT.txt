@@ -1,0 +1,260 @@
+CHIBIBEASTS - COMBAT BALANCE AUDIT
+Completed 2026-10-16 America/Chicago (evidence timestamps are UTC)
+Branch: audit/combat-balance
+Baseline: 680a344a7b25f625a4b835fbd7d4c5031ee10850
+
+OUTCOME
+
+The requested raid target is 5-8 minutes for prepared, active parties. The
+final fresh-seed cohort ran 576 trials across all six bosses, levels
+10/15/30/50, and 1/3/6/10 trainers. It won 570/576 trials
+(99.0%). Winning fights had a 6:04 median and
+5:14-7:35 10th-90th percentile. 510/570 winning fights
+(89.5%) fell within 5-8 minutes. These are synthetic timings;
+they are not measurements of real Discord players.
+
+The pass covers all 86 catalog creatures at five levels (430 stat profiles),
+9,736 same-rarity fights and 11,340 raid trials. The developer-only Ouroboros
+is included in the stat sheet but excluded from competitive/raid conclusions.
+All 85 playable species appear in the broad raid sweep and peer comparisons.
+The complete roster is in balance-after/roster-overview.csv; detailed inputs
+and outputs are in creature-stats.csv, duels.csv and raids.csv.
+
+CONFIRMED PROBLEMS AND CHANGES
+
+1. Gear used to increase raid HP because the boss scaled directly from current
+   party attack. Its attack and defense also followed party HP and defense.
+   This cancelled investment, and sometimes made an upgraded build slower.
+   Budgets now use a fixed reference roster for the raid's level band and
+   trainer count. Gear, training, bond and consumables cannot raise the budget.
+   A regression checks that independence for every playable species.
+
+2. A boss previously attacked one random trainer every eight seconds. Large
+   parties divided that pressure among ten people. Normal volleys now hit
+   every standing trainer. Boss-specific attack/defense/HP profiles preserve
+   different encounters; solved patterns reduce pressure or grant protection.
+   Missed bursts scale from boss attack and defender armor, rather than
+   shrinking into trivial percentages of HP at high defense. Chronos echoes
+   have a 12%-of-target-HP cap on their contribution-based extra damage.
+
+3. The old two-second player recovery made click speed dominate raids. Speed
+   now controls action recovery between 3.5 and 6.5 seconds around a five-second
+   reference. Weave and Tend each retain their own eight-second support timer,
+   so an attack recovery does not block a six-second pattern response.
+   The displayed recovery changes with the active companion and slow effects.
+
+4. Freeze teams could interrupt every boss turn. Freeze/sleep now interrupt a
+   boss for one turn, with resistance preventing another interruption for the
+   following two boss turns. Ordinary duel condition durations are unchanged;
+   freeze skills cost 25 MP instead of 15 to curb their repeated use there.
+
+5. Percentage-of-enemy-HP passives and damage over time ignored normal stat
+   budgets. Corrupted Dragon's old 15% extra HP damage let the level-30,
+   three-trainer, four-second-input stress team finish six bosses in an average
+   12.7 seconds. Void Flame is now 6% in ordinary fights, capped at 20% of
+   attacker ATK per hit against bosses. Corrupted Leviathan remains a 3% drain
+   in ordinary fights, capped at 12% ATK against bosses. Its drain now counts
+   toward raid damage contribution and cannot fire from a defeated actor.
+   Boss burn/poison/blight ticks cap at 75%/50%/65% of the applying actor's ATK,
+   including its damage multiplier when the condition is applied.
+
+6. Several long-fight passives compounded without bounds. Zodiac now adds
+   5% of starting ATK/SPD per action, capped at +40%. Ascended Pegasus adds
+   8% of starting SPD, capped at +100%; reaching double speed really unlocks
+   resistance bypass. Ancient Abyss erosion has an 85% starting-stat floor.
+   Radiant Kitsune's extra strike is 1.5x every third action, replacing 9x.
+   These remain useful identities without exponential damage or stat collapse.
+
+7. Ancient Genesis bypassed every point of armor. It now pierces 35% and heals
+   10% of actual damage. Ancient Chronos's extra-basic chance is 40% instead
+   of 30%. Terminus's status-inflicting ultimate uses 2.2x power instead of
+   1.4x, compared with the normal 2.5x signature. Catalog descriptions match.
+   Percentage fields now consistently use percentage points, including a
+   regression for the intended 30% Null Origin armor pierce. This preserves
+   that passive's original intended calculation; it is not a new 100x buff.
+
+8. Basic/skill/guard actions now rebuild one ultimate charge in the shared
+   resolver. Bonus strikes do not add extra charge; signatures spend all three.
+   NPCs no longer receive free full charge merely for having 50 mana. Wild
+   enemies and raid companions start at zero charges. Raid mana follows the
+   shared up-to-40% starting allowance instead of a hard 25 MP reset; the
+   equipped Genesis Spark perk can add 20 MP. AI avoids known condition
+   immunities rather than repeatedly wasting the same skill into them.
+
+9. Three species had less than the 50 maximum mana needed for a signature at
+   level 1; another three could fall below 50 with a mana-reducing disposition.
+   Barkley, Goblin, Slime, Centry, Mudpup and Manticore now have 55 base mana,
+   sufficient even with the -10% disposition. All 86 species pass the check
+   under every disposition. Hydra and Radiant Hydra's regeneration skills
+   now heal 20% and cleanse for 15 MP, instead of damaging and slowing an enemy.
+   Ouroboros Ring's description now matches its existing 18% lifesteal/5% HP.
+
+10. Starter base budgets were uneven. Changes preserve their different roles:
+    Species       HP        ATK       DEF       SPD       MP
+    Prismite      85->90    35->40    50        45        70
+    Twine         70->85    40->45    30->35    70->80    65
+    Gloop        105->110   30->35    40->45    35        60
+    Barkley      115->110   40->35    55        20        35->55
+    Their four earned awakenings retain distinct forms and passives.
+
+11. Higher-level raids formerly paid the same rewards. Gold, shards, tokens,
+    guaranteed materials, trainer EXP and companion EXP now scale from 1x
+    at level 10 to 2x at level 50. Random bonus loot is still one item;
+    catch odds and eight/twelve-clear guarantees are unchanged. The tier is
+    journaled with victories, so interrupted settlements replay the same
+    payout and cannot pay twice.
+
+RAID BUDGET AND TARGET DEFINITION
+
+Each trainer's highest companion level includes all three bench slots. The
+median across trainers is rounded down to a five-level band and clamped to
+10-50. This is a group difficulty rule: one high-level trainer can help a
+lower-level group. It is not a separate adaptive budget for each participant.
+
+Reference rosters: levels 10-14 Griffin/Basilisk/Wyvern; 15-24 Sphinx/
+Thunderbird/Yeti; 25-39 Dragon/Kraken/Fenrir; 40-50 Atlas/Ascended Phoenix/
+Nebuloom. Reference rarity growth, boss profiles and fixed tier/mana-rotation
+factors set HP, ATK and DEF. HP scales approximately with trainers^0.95 and
+a seven-minute reference damage budget. Actual builds can finish sooner or
+later; there is no artificial minimum fight duration. The ten-minute limit
+remains. Raid type advantage/resistance is 1.5x/0.75x, compared with 2x/0.5x
+in normal duels, so unfavorable raid matchups are less punitive.
+
+Actual live boss budgets at level 30 with three trainers:
+Boss                          HP     ATK     DEF
+corrupted_leviathan      19,791     202     136
+corrupted_fenrir         23,161     223     111
+corrupted_dragon         22,719     210     124
+ancient_chronos          24,458     227     133
+ancient_genesis          24,537     236     124
+ancient_abyss            23,942     221     138
+
+Damage begins with ATK * move power * 100/(100 + effective DEF), then applies
+type, crit, focus, gear, conditions, passives and the 0.85-1.15 damage roll.
+The shared hit resolver applies evasion, guard, shields, reduction and survival.
+Basic attacks restore 10 MP; the standard ultimate uses 2.5x power and 50 MP.
+The stat CSV records all creature inputs and sampled neutral-target damage.
+Unused fixed boss stat stubs were removed from the command definitions; caught
+companion base stats and the live raid boss budget are separate game roles.
+
+Boss/level HP adjustments address the long tails measured in calibration:
+early Corrupted Leviathan/Fenrir, mid-tier Ancient encounters, and level-30
+Leviathan. These depend on fixed reference tiers, never current gear or ATK.
+
+REFERENCE PARTY EVIDENCE
+
+Calibration: two seeds, six bosses, four levels, four party sizes; 192 per
+build. Each trainer brings three different reference companions, with the
+best base-ATK/type matchup first. No training, bond, perks or consumables;
+neutral disposition and happiness 70. One input per four seconds, subject
+to the actual recovery timer. Inputs include support and swaps. This is a
+controlled gear comparison, not a survey of items owned at each level.
+
+Build         Runs     Wins   Median      P10      P90
+bare           192    77.1%     6:49     4:42     8:29
+entry          192    85.9%     6:25     4:32     8:18
+prepared       192    99.0%     6:07     5:16     7:35
+sustain        192   100.0%     5:42     4:06     7:35
+
+bare: no gear. entry: Gnome Iron Plating + Iron Dust Chip.
+prepared: Dragon Lord Aegis + Wyvern Talon.
+sustain: Unicorn Healer Vestments + Ouroboros Ring.
+The stronger items are not assumed to be early-game starter equipment.
+
+Final holdout uses fresh seeds 20-25 after tuning, only the prepared build:
+
+Boss                     Runs     Wins   Median      P10      P90
+corrupted_leviathan        96   100.0%     7:09     5:21     8:00
+corrupted_fenrir           96   100.0%     7:04     5:28     7:51
+corrupted_dragon           96    99.0%     5:57     4:49     6:38
+ancient_chronos            96    95.8%     6:17     5:19     7:02
+ancient_genesis            96    99.0%     5:44     5:14     6:55
+ancient_abyss              96   100.0%     5:53     5:18     7:01
+
+Winning durations exclude knockouts and timeouts; win rates include both.
+The final holdout contains six failed trials, all at level 15. Different
+types, rarity, gear, slower input or uncoordinated support can change results.
+
+Broad stress sweep: all 85 species, levels 10/30, 1/3/10 trainers, 2/4/6-second
+inputs, all six bosses, no gear and three identical companions per trainer.
+The same scenario matrix was run before and after. This deliberately sends
+common companions into high-tier raids and sends earned Ancient companions
+into low-tier raids. Its aggregate winning median is not the pacing target.
+
+Input gap    Old wins Old time  New wins New time
+2 seconds      100.0%     0:50     54.6%     4:04
+4 seconds       99.2%     1:44     54.5%     4:08
+6 seconds       96.2%     2:36     51.6%     4:30
+
+The reduced aggregate win rate is expected in this adversarial matrix:
+commons and weak homogeneous teams no longer clear almost every level-30
+raid, while earned high-rarity teams can still beat lower tiers quickly.
+Full outcomes and remaining boss HP are retained; failures are not dropped.
+
+Behavior trials (24 each, level 30, three prepared trainers): four-second
+inputs won all trials with and without pattern responses. Missing a pattern
+adds pressure but is recoverable for this geared cohort; this pass does not
+establish that Weave is mandatory. Eight-second inputs won none under the
+ten-minute limit. The game expects active play; this is not an idle-raid mode.
+The model submits one support/combat input per cadence, although real support
+buttons have independent recovery and expert players may combine them faster.
+
+DUEL EVIDENCE
+
+Same-rarity round robins include mirrors, levels 1/15/30/50, and initial
+charge 0 or 3 across two deterministic seeds. Optimal AI chooses healing,
+conditions, guards and signatures. These are diagnostics, not ranked ratings:
+the small seed count, fixed move policy and speed tie order affect results.
+Earned Radiant/Ascended forms are allowed to outperform their base peers.
+
+The 20-round judge rate fell from 3.6% to
+2.1%. Level-30 Ancient Chronos went from 0% peer
+wins to 50%; Genesis and Abyss now each show 66.7%. The four base starters'
+level-30 peer wins are 57.7% Prismite, 53.8% Twine, 73.1% Gloop and 61.5%
+Barkley, compared with Barkley's previous 92.3%. This removes obvious extremes
+without forcing every creature into the same role or identical win rate.
+
+SAVE DATA AND VALIDATION
+
+114 automated tests passed; 0 failures,
+0 errors, 0 skips.
+Compilation passed: True. Dependency check passed:
+True (No broken requirements found.).
+Tests use disposable SQLite databases and mocked Discord interactions.
+All 16 command extensions still load offline. The full suite retains story,
+care, progression, evolution, item, trading, ranked and concurrency coverage.
+
+The 22 new regressions cover resource affordability, percentage units, boss
+damage caps, control resistance, bounded passives, AI immunity choices,
+charge building, budget independence, action recovery, ten-trainer pressure,
+pattern pressure at multiple levels, contribution accounting, real starts
+for all six bosses, reward scaling/idempotence and legacy stat preservation.
+
+On restart, one revision-keyed migration applies the old/new base-stat deltas
+to the nine affected species. It respects disposition, preserves level growth,
+training, bond and other earned boosts, and leaves knocked-out companions at
+zero HP. Repeated startup cannot apply the adjustment again. Passive/skill
+changes are read from the deployed catalog. Deploy code and JSON together and
+restart to clear cached definitions. No production database was opened or
+modified during the audit; no Discord login/deployment or remote CI ran.
+
+REPRODUCE AND SAVED EVIDENCE
+
+python -m pip install -r requirements-lock.txt
+python -m compileall -q bot.py cogs utils scripts tests
+python -m unittest discover -s tests -v
+python -m pip check
+python scripts/audit_combat_balance.py --output balance-results
+python scripts/audit_combat_balance.py --output balance-results --holdout-only
+
+balance-before/: original stat, duel, raid and gear-comparison CSVs + summary.
+balance-after/: current equivalent CSVs, 86-row roster overview, calibration
+reference parties, fresh-seed parties/behavior and JSON summaries.
+combat-balance-validation.json: full regression/compile/dependency evidence.
+The earlier GAMEPLAY-AUDIT.txt and its simulations retain their original
+revision's results. Use this report for the new numerical rules.
+
+Human Discord playtesting remains necessary to measure actual reaction times,
+mobile interaction comfort, live network latency, diverse coordinated builds
+and long-term economy pacing. These simulations provide reproducible evidence,
+not a guarantee that every team or encounter finishes within the target.

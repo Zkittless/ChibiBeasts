@@ -378,6 +378,8 @@ async def _run_migrations():
             CREATE INDEX IF NOT EXISTS ix_raid_participants_user ON raid_participants(user_id,raid_id);
             CREATE INDEX IF NOT EXISTS ix_ranked_pair_time ON ranked_matches(winner_id,loser_id,played_at);
         """)
+        from utils.balance_migrations import apply_base_stat_balance
+        await apply_base_stat_balance(db)
         # Preserve onboarding history for accounts created before this column.
         await db.execute("""
             UPDATE players SET starter_claimed = 1

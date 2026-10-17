@@ -412,7 +412,7 @@ class CombatRules(unittest.TestCase):
         defender['mana'] = defender['max_mana'] = 100
         combat.resolve_move(defender, attacker, defender['ultimate'], True, [])
         self.assertEqual(defender['ultimate_charges'], 0)
-        self.assertEqual(attacker['ultimate_charges'], 2)
+        self.assertEqual(attacker['ultimate_charges'], 3)
 
     def test_survival_ward_and_support_passives(self):
         attacker = self.state()
@@ -524,7 +524,7 @@ class RaidsAndRanked(DatabaseCase):
         fake.channel.send = AsyncMock(return_value=SimpleNamespace(edit=AsyncMock()))
         winner, _, _, _ = await duel(fake, [state, enemy], [42, None], 'Test duel', view_class=AutomaticView)
         self.assertEqual(winner, 0)
-        self.assertEqual((await storage.get_player(42))['ultimate_charges'], 2)
+        self.assertEqual((await storage.get_player(42))['ultimate_charges'], 3)
         self.assertNotIn(42, active_fighters)
         self.assertNotIn(42, combat.active_states)
 

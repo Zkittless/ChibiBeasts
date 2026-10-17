@@ -112,7 +112,7 @@
         "attack": 45,
         "defense": 40,
         "speed": 35,
-        "mana": 40
+        "mana": 55
       },
       "moves": [
         "Club Smash",
@@ -224,7 +224,7 @@
         "attack": 30,
         "defense": 55,
         "speed": 25,
-        "mana": 40
+        "mana": 55
       },
       "moves": [
         "Goo Splash",
@@ -982,8 +982,8 @@
         },
         "Frost Roar": {
           "power": 0.65,
-          "mana_cost": 15,
-          "description": "A controlled strike that applies a condition.",
+          "mana_cost": 25,
+          "description": "A controlled strike that freezes the target for one turn.",
           "status": "freeze"
         },
         "Avalanche": {
@@ -1237,10 +1237,11 @@
           "description": "Reliable attack; restore 10 mana."
         },
         "Regen Scale": {
-          "power": 0.65,
+          "power": 0,
           "mana_cost": 15,
-          "description": "A controlled strike that applies a condition.",
-          "status": "slow"
+          "heal_percent": 20,
+          "cleanse": true,
+          "description": "Restore 20% HP and clear status."
         },
         "Venom Torrent": {
           "power": 0,
@@ -1710,11 +1711,11 @@
       "divine_passive": {
         "passive_id": "final_word",
         "passive_name": "Final Word",
-        "passive_desc": "Ultimates deal +40% damage (instead of +80%). But they always apply a status effect.",
+        "passive_desc": "Ultimates use 2.2x power instead of 2.5x and inflict burn, poison or weaken when the target can receive a condition.",
         "passive_trigger": "on_ultimate",
         "passive_effect": {
           "ultimate_status_guaranteed": true,
-          "ultimate_damage_mod": 1.4
+          "ultimate_damage_mod": 2.2
         }
       },
       "divine_trait_slot": false,
@@ -1936,11 +1937,12 @@
       "divine_passive": {
         "passive_id": "constellation_charge",
         "passive_name": "Constellation Charge",
-        "passive_desc": "Attack and speed increase by 5% each turn, cumulatively. The stars align slowly.",
+        "passive_desc": "Attack and speed grow by 5% of their starting values per action, up to a 40% bonus.",
         "passive_trigger": "turn_start",
         "passive_effect": {
           "attack_stack_percent": 5,
-          "speed_stack_percent": 5
+          "speed_stack_percent": 5,
+          "stack_cap_percent": 40
         }
       },
       "divine_trait_slot": false,
@@ -2317,8 +2319,8 @@
       "rarity": "common",
       "type": "arcane",
       "base_stats": {
-        "hp": 85,
-        "attack": 35,
+        "hp": 90,
+        "attack": 40,
         "defense": 50,
         "speed": 45,
         "mana": 70
@@ -2379,10 +2381,10 @@
       "rarity": "common",
       "type": "cosmic",
       "base_stats": {
-        "hp": 70,
-        "attack": 40,
-        "defense": 30,
-        "speed": 70,
+        "hp": 85,
+        "attack": 45,
+        "defense": 35,
+        "speed": 80,
         "mana": 65
       },
       "moves": [
@@ -2441,9 +2443,9 @@
       "rarity": "common",
       "type": "nature",
       "base_stats": {
-        "hp": 105,
-        "attack": 30,
-        "defense": 40,
+        "hp": 110,
+        "attack": 35,
+        "defense": 45,
         "speed": 35,
         "mana": 60
       },
@@ -2504,11 +2506,11 @@
       "rarity": "common",
       "type": "nature",
       "base_stats": {
-        "hp": 115,
-        "attack": 40,
+        "hp": 110,
+        "attack": 35,
         "defense": 55,
         "speed": 20,
-        "mana": 35
+        "mana": 55
       },
       "moves": [
         "Mossy Headbutt",
@@ -2571,7 +2573,7 @@
         "attack": 60,
         "defense": 55,
         "speed": 50,
-        "mana": 50
+        "mana": 55
       },
       "moves": [
         "Hoof Stomp",
@@ -2672,7 +2674,7 @@
         "attack": 45,
         "defense": 40,
         "speed": 40,
-        "mana": 50
+        "mana": 55
       },
       "moves": [
         "Mud Sling",
@@ -2822,7 +2824,7 @@
         "attack": 70,
         "defense": 40,
         "speed": 65,
-        "mana": 50
+        "mana": 55
       },
       "moves": [
         "Pounce",
@@ -2997,8 +2999,8 @@
         },
         "Ice Shell": {
           "power": 0.65,
-          "mana_cost": 15,
-          "description": "A controlled strike that applies a condition.",
+          "mana_cost": 25,
+          "description": "A controlled strike that freezes the target for one turn.",
           "status": "freeze"
         },
         "Glacial Slam": {
@@ -3245,7 +3247,7 @@
         "passive_effect": {
           "double_turn_chance": 0.25,
           "revive_once": true,
-          "revive_hp_percent": 0.25
+          "revive_hp_percent": 25.0
         },
         "passive_trigger": "turn_start"
       },
@@ -3306,7 +3308,7 @@
         "passive_id": "null_origin",
         "passive_desc": "All attacks ignore 30% of the target's defense. Creation unmakes what it touches.",
         "passive_effect": {
-          "defense_pierce_percent": 0.3
+          "defense_pierce_percent": 30.0
         },
         "passive_trigger": "on_attack"
       },
@@ -3427,9 +3429,9 @@
       "divine_passive": {
         "passive_name": "Void Tide",
         "passive_id": "void_tide",
-        "passive_desc": "Each turn, the opponent loses 3% of their max HP to corruption. Cannot be reduced below 1 HP this way.",
+        "passive_desc": "Each action drains 3% of enemy maximum HP without reducing it below 1. Against raid bosses, the drain is capped at 12% of attack.",
         "passive_effect": {
-          "corruption_drain_percent": 0.03
+          "corruption_drain_percent": 3.0
         },
         "passive_trigger": "turn_end"
       },
@@ -3549,9 +3551,9 @@
       "divine_passive": {
         "passive_name": "Void Flame",
         "passive_id": "void_flame",
-        "passive_desc": "Fire attacks deal an additional 15% of the target's max HP as void damage, ignoring defense.",
+        "passive_desc": "Attacks add 6% of the target's maximum HP as void damage. Against raid bosses, the extra damage is capped at 20% of attack.",
         "passive_effect": {
-          "void_damage_percent": 0.15
+          "void_damage_percent": 6
         },
         "passive_trigger": "on_attack"
       },
@@ -3610,10 +3612,10 @@
       "divine_passive": {
         "passive_name": "Primordial Time",
         "passive_id": "primordial_time",
-        "passive_desc": "Acts first every turn regardless of speed. 30% chance to act twice. Cannot be slowed.",
+        "passive_desc": "Acts first regardless of speed, cannot be slowed, and has a 40% chance to make an extra basic strike after an action.",
         "passive_effect": {
           "always_first": true,
-          "double_turn_chance": 0.3,
+          "double_turn_chance": 0.4,
           "immune_to_slow": true
         },
         "passive_trigger": "turn_start"
@@ -3673,10 +3675,10 @@
       "divine_passive": {
         "passive_name": "First Fire",
         "passive_id": "first_fire",
-        "passive_desc": "All attacks deal true damage (ignores defense entirely). Heals 10% of damage dealt.",
+        "passive_desc": "Attacks pierce 35% of defense and heal for 10% of damage dealt. Primordial fire finds the gaps in any armor.",
         "passive_effect": {
-          "true_damage": true,
-          "lifesteal_percent": 0.1
+          "defense_pierce_percent": 35,
+          "lifesteal_percent": 10
         },
         "passive_trigger": "on_attack"
       },
@@ -3735,10 +3737,11 @@
       "divine_passive": {
         "passive_name": "Pre-Existence",
         "passive_id": "pre_existence",
-        "passive_desc": "Immune to all debuffs. Each turn, reduces all opponent stats by 3% (stacks, no cap).",
+        "passive_desc": "Immune to debuffs. Each action erodes enemy attack, defense and speed by 3%, to a minimum of 85% of their starting values.",
         "passive_effect": {
           "debuff_immune": true,
-          "stat_drain_percent": 0.03
+          "stat_drain_percent": 3,
+          "stat_drain_cap_percent": 15
         },
         "passive_trigger": "turn_start"
       },
@@ -3970,10 +3973,11 @@
       "divine_passive": {
         "passive_id": "boundary_break",
         "passive_name": "Boundary Break",
-        "passive_desc": "Speed increases by 8% each turn permanently. Above 200% base speed, attacks ignore type resistance entirely. The storm doesn't care what resists wind.",
+        "passive_desc": "Speed grows by 8% of starting speed per action, up to double speed. At double speed, attacks ignore type resistance.",
         "passive_trigger": "turn_start",
         "passive_effect": {
           "speed_stack_percent": 8,
+          "speed_stack_cap_percent": 100,
           "resistance_ignore_speed_threshold": 200
         }
       },
@@ -4202,10 +4206,11 @@
           "description": "Reliable attack; restore 10 mana."
         },
         "Void Scale Regen": {
-          "power": 0.65,
+          "power": 0,
           "mana_cost": 15,
-          "description": "A controlled strike that applies a condition.",
-          "status": "slow"
+          "heal_percent": 20,
+          "cleanse": true,
+          "description": "Restore 20% HP and clear status."
         },
         "Venom of Ages": {
           "power": 0,
@@ -4241,11 +4246,11 @@
       "divine_passive": {
         "passive_id": "fox_sovereign",
         "passive_name": "Fox Sovereign",
-        "passive_desc": "Each of the nine tails acts independently. Every third turn, all nine strike at once — dealing 9× a single tail's damage as an automatic bonus hit. The tails do not wait for permission.",
+        "passive_desc": "Every third action, its nine tails converge into an extra basic strike at 150% power.",
         "passive_trigger": "turn_start",
         "passive_effect": {
           "nine_tail_strike_interval": 3,
-          "nine_tail_multiplier": 9
+          "nine_tail_multiplier": 1.5
         }
       },
       "evolves_from": "kitsune_1",
@@ -4306,8 +4311,8 @@
         },
         "Cold Shoulder": {
           "power": 0.65,
-          "mana_cost": 15,
-          "description": "A controlled strike that applies a condition.",
+          "mana_cost": 25,
+          "description": "A controlled strike that freezes the target for one turn.",
           "status": "freeze"
         },
         "Rime Veil": {
@@ -4351,8 +4356,8 @@
         },
         "Frost Shell": {
           "power": 0.65,
-          "mana_cost": 15,
-          "description": "A controlled strike that applies a condition.",
+          "mana_cost": 25,
+          "description": "A controlled strike that freezes the target for one turn.",
           "status": "freeze"
         },
         "Permafrost Wall": {

@@ -1,0 +1,431 @@
+creature,name,rarity,element,level,hp,attack,defense,speed,max_mana,start_mana,neutral_target_defense,mean_basic_damage,basic_min,basic_max,skill,skill_power,skill_mana,skill_status,skill_heal_percent,ultimate_power,passive,developer_only
+fairy,Fairy,common,nature,1,80,35,30,55,60,24,65,21.5,18,35,Leaf Dart,0,15,,20,2.5,,False
+fairy,Fairy,common,nature,10,116,44,39,64,78,31,84,25.66,20,40,Leaf Dart,0,15,,20,2.5,,False
+fairy,Fairy,common,nature,15,136,49,44,69,88,35,94,25.52,22,41,Leaf Dart,0,15,,20,2.5,,False
+fairy,Fairy,common,nature,30,196,64,59,85,118,47,124,28.55,24,41,Leaf Dart,0,15,,20,2.5,,False
+fairy,Fairy,common,nature,50,276,85,80,105,158,63,165,33.33,27,49,Leaf Dart,0,15,,20,2.5,,False
+pixie,Pixie,common,arcane,1,75,40,25,60,65,26,65,25.5,21,41,Trickster Flash,0.65,15,blind,0,2.5,,False
+pixie,Pixie,common,arcane,10,111,49,34,69,83,33,84,27.02,22,45,Trickster Flash,0.65,15,blind,0,2.5,,False
+pixie,Pixie,common,arcane,15,131,54,39,75,93,37,94,28.53,23,47,Trickster Flash,0.65,15,blind,0,2.5,,False
+pixie,Pixie,common,arcane,30,191,69,54,90,123,49,124,30.59,26,45,Trickster Flash,0.65,15,blind,0,2.5,,False
+pixie,Pixie,common,arcane,50,271,90,75,110,163,65,165,35.64,29,57,Trickster Flash,0.65,15,blind,0,2.5,,False
+goblin,Goblin,common,earth,1,100,45,40,35,40,20,65,28.31,23,45,Dirt Toss,0.65,15,weaken,0,2.5,,False
+goblin,Goblin,common,earth,10,136,54,49,44,58,23,84,30.75,25,50,Dirt Toss,0.65,15,weaken,0,2.5,,False
+goblin,Goblin,common,earth,15,156,59,54,49,68,27,94,30.66,26,51,Dirt Toss,0.65,15,weaken,0,2.5,,False
+goblin,Goblin,common,earth,30,216,75,69,64,98,39,124,34.52,28,57,Dirt Toss,0.65,15,weaken,0,2.5,,False
+goblin,Goblin,common,earth,50,296,95,90,85,138,55,165,36.58,30,58,Dirt Toss,0.65,15,weaken,0,2.5,,False
+imp,Imp,common,shadow,1,70,50,20,65,55,22,65,30.75,26,49,Smoke Bomb,0.65,15,poison,0,2.5,,False
+imp,Imp,common,shadow,10,106,59,29,75,73,29,84,33.16,27,52,Smoke Bomb,0.65,15,poison,0,2.5,,False
+imp,Imp,common,shadow,15,126,64,34,80,83,33,94,34.42,28,55,Smoke Bomb,0.65,15,poison,0,2.5,,False
+imp,Imp,common,shadow,30,186,80,49,95,113,45,124,37.38,31,60,Smoke Bomb,0.65,15,poison,0,2.5,,False
+imp,Imp,common,shadow,50,266,100,69,115,153,61,165,38.31,32,61,Smoke Bomb,0.65,15,poison,0,2.5,,False
+slime,Slime,common,nature,1,110,30,55,25,40,20,65,18.62,15,30,Absorb,0,15,,20,2.5,,False
+slime,Slime,common,nature,10,146,39,64,34,58,23,84,21,18,30,Absorb,0,15,,20,2.5,,False
+slime,Slime,common,nature,15,166,44,69,39,68,27,94,23.47,19,37,Absorb,0,15,,20,2.5,,False
+slime,Slime,common,nature,30,226,59,85,54,98,39,124,27,22,44,Absorb,0,15,,20,2.5,,False
+slime,Slime,common,nature,50,306,80,105,75,138,55,165,29.92,25,46,Absorb,0,15,,20,2.5,,False
+kitsune_1,Kitsune,uncommon,arcane,1,90,55,40,71,75,30,65,33.81,28,54,Illusion Step,0.65,15,blind,0,2.5,,False
+kitsune_1,Kitsune,uncommon,arcane,10,135,74,49,80,93,37,84,42.53,34,67,Illusion Step,0.65,15,blind,0,2.5,,False
+kitsune_1,Kitsune,uncommon,arcane,15,160,84,54,85,103,41,94,43.92,36,74,Illusion Step,0.65,15,blind,0,2.5,,False
+kitsune_1,Kitsune,uncommon,arcane,30,235,114,69,100,133,53,124,52.42,43,86,Illusion Step,0.65,15,blind,0,2.5,,False
+kitsune_1,Kitsune,uncommon,arcane,50,335,155,90,120,173,69,165,62.78,49,98,Illusion Step,0.65,15,blind,0,2.5,,False
+dryad,Dryad,uncommon,nature,1,105,50,60,40,70,28,65,30.86,25,49,Nature's Embrace,0,15,,20,2.5,,False
+dryad,Dryad,uncommon,nature,10,150,68,69,49,88,35,84,37.56,31,61,Nature's Embrace,0,15,,20,2.5,,False
+dryad,Dryad,uncommon,nature,15,175,79,75,54,98,39,94,42,34,69,Nature's Embrace,0,15,,20,2.5,,False
+dryad,Dryad,uncommon,nature,30,250,109,90,69,128,51,124,50.84,41,81,Nature's Embrace,0,15,,20,2.5,,False
+dryad,Dryad,uncommon,nature,50,350,150,110,90,168,67,165,59.08,48,96,Nature's Embrace,0,15,,20,2.5,,False
+hellhound,Hellhound,uncommon,fire,1,95,65,45,60,55,22,65,40.78,33,64,Hellfire Dash,0.65,15,burn,0,2.5,,False
+hellhound,Hellhound,uncommon,fire,10,140,84,54,69,73,29,84,47.66,38,73,Hellfire Dash,0.65,15,burn,0,2.5,,False
+hellhound,Hellhound,uncommon,fire,15,165,94,59,75,83,33,94,49.95,41,81,Hellfire Dash,0.65,15,burn,0,2.5,,False
+hellhound,Hellhound,uncommon,fire,30,240,124,75,90,113,45,124,56.78,47,88,Hellfire Dash,0.65,15,burn,0,2.5,,False
+hellhound,Hellhound,uncommon,fire,50,340,165,95,110,153,61,165,66.19,53,105,Hellfire Dash,0.65,15,burn,0,2.5,,False
+harpy,Harpy,uncommon,wind,1,85,60,35,76,65,26,65,37.91,31,61,Wind Shriek,0.65,15,blind,0,2.5,,False
+harpy,Harpy,uncommon,wind,10,130,79,44,85,83,33,84,44.98,36,72,Wind Shriek,0.65,15,blind,0,2.5,,False
+harpy,Harpy,uncommon,wind,15,155,89,49,90,93,37,94,49.66,39,75,Wind Shriek,0.65,15,blind,0,2.5,,False
+harpy,Harpy,uncommon,wind,30,230,119,64,105,123,49,124,56.86,45,91,Wind Shriek,0.65,15,blind,0,2.5,,False
+harpy,Harpy,uncommon,wind,50,330,160,85,125,163,65,165,61.39,51,103,Wind Shriek,0.65,15,blind,0,2.5,,False
+unicorn,Unicorn,rare,light,1,110,65,60,76,90,36,65,40.7,33,66,Purify,0,15,,20,2.5,,False
+unicorn,Unicorn,rare,light,10,164,84,79,94,117,46,84,49.23,38,74,Purify,0,15,,20,2.5,,False
+unicorn,Unicorn,rare,light,15,194,94,89,104,132,52,94,48.7,41,77,Purify,0,15,,20,2.5,,False
+unicorn,Unicorn,rare,light,30,284,124,119,134,177,70,124,57.52,47,85,Purify,0,15,,20,2.5,,False
+unicorn,Unicorn,rare,light,50,404,165,160,175,237,94,165,65.2,53,107,Purify,0,15,,20,2.5,,False
+pegasus,Pegasus,rare,wind,1,105,71,55,91,75,30,65,45.62,37,74,Thunder Hooves,0.65,15,blind,0,2.5,,False
+pegasus,Pegasus,rare,wind,10,159,89,74,109,102,40,84,50.58,41,79,Thunder Hooves,0.65,15,blind,0,2.5,,False
+pegasus,Pegasus,rare,wind,15,189,99,84,119,117,46,94,52.06,43,80,Thunder Hooves,0.65,15,blind,0,2.5,,False
+pegasus,Pegasus,rare,wind,30,279,129,114,150,162,64,124,59.84,49,98,Thunder Hooves,0.65,15,blind,0,2.5,,False
+pegasus,Pegasus,rare,wind,50,399,170,155,190,222,88,165,66.98,54,109,Thunder Hooves,0.65,15,blind,0,2.5,,False
+griffin,Griffin,rare,wind,1,120,76,65,71,65,26,65,47.39,39,78,Lion Pounce,0.65,15,blind,0,2.5,,False
+griffin,Griffin,rare,wind,10,174,94,84,89,92,36,84,53.58,43,87,Lion Pounce,0.65,15,blind,0,2.5,,False
+griffin,Griffin,rare,wind,15,204,104,94,99,107,42,94,54.69,45,86,Lion Pounce,0.65,15,blind,0,2.5,,False
+griffin,Griffin,rare,wind,30,294,134,124,129,152,60,124,64.11,50,102,Lion Pounce,0.65,15,blind,0,2.5,,False
+griffin,Griffin,rare,wind,50,414,175,165,170,212,84,165,69.39,56,111,Lion Pounce,0.65,15,blind,0,2.5,,False
+basilisk,Basilisk,rare,shadow,1,130,71,76,40,70,28,65,44.69,36,71,Venom Fang,0.65,15,poison,0,2.5,,False
+basilisk,Basilisk,rare,shadow,10,184,89,94,58,97,38,84,51.55,41,82,Venom Fang,0.65,15,poison,0,2.5,,False
+basilisk,Basilisk,rare,shadow,15,214,99,104,68,112,44,94,52.7,43,86,Venom Fang,0.65,15,poison,0,2.5,,False
+basilisk,Basilisk,rare,shadow,30,304,129,134,99,157,62,124,59.27,48,98,Venom Fang,0.65,15,poison,0,2.5,,False
+basilisk,Basilisk,rare,shadow,50,424,170,175,139,217,86,165,66.58,54,109,Venom Fang,0.65,15,poison,0,2.5,,False
+cerberus,Cerberus,rare,shadow,1,140,81,71,55,60,24,65,50.84,42,78,Hellfire Breath,0.65,15,poison,0,2.5,,False
+cerberus,Cerberus,rare,shadow,10,194,99,89,74,87,34,84,58.08,45,92,Hellfire Breath,0.65,15,poison,0,2.5,,False
+cerberus,Cerberus,rare,shadow,15,224,109,99,84,102,40,94,58.19,47,92,Hellfire Breath,0.65,15,poison,0,2.5,,False
+cerberus,Cerberus,rare,shadow,30,314,139,129,114,147,58,124,64.25,53,100,Hellfire Breath,0.65,15,poison,0,2.5,,False
+cerberus,Cerberus,rare,shadow,50,434,180,170,155,207,82,165,67.48,57,97,Hellfire Breath,0.65,15,poison,0,2.5,,False
+wyvern,Wyvern,rare,fire,1,115,81,60,76,65,26,65,50.48,41,81,Fire Breath,0.65,15,burn,0,2.5,,False
+wyvern,Wyvern,rare,fire,10,169,99,79,94,92,36,84,53.97,45,90,Fire Breath,0.65,15,burn,0,2.5,,False
+wyvern,Wyvern,rare,fire,15,199,109,89,104,107,42,94,57.31,47,95,Fire Breath,0.65,15,burn,0,2.5,,False
+wyvern,Wyvern,rare,fire,30,289,139,119,134,152,60,124,65.3,52,104,Fire Breath,0.65,15,burn,0,2.5,,False
+wyvern,Wyvern,rare,fire,50,409,180,160,175,212,84,165,71.28,58,114,Fire Breath,0.65,15,burn,0,2.5,,False
+phoenix,Phoenix,epic,fire,1,130,91,65,86,95,38,65,59.72,47,92,Ash Rebirth,0.65,15,burn,0,2.5,,False
+phoenix,Phoenix,epic,fire,10,202,118,84,104,131,52,84,68.5,55,109,Ash Rebirth,0.65,15,burn,0,2.5,,False
+phoenix,Phoenix,epic,fire,15,242,133,94,114,151,60,94,71.22,58,114,Ash Rebirth,0.65,15,burn,0,2.5,,False
+phoenix,Phoenix,epic,fire,30,362,179,124,145,211,84,124,83.38,67,136,Ash Rebirth,0.65,15,burn,0,2.5,,False
+phoenix,Phoenix,epic,fire,50,522,240,165,185,291,116,165,94.34,77,150,Ash Rebirth,0.65,15,burn,0,2.5,,False
+thunderbird,Thunderbird,epic,wind,1,125,96,60,91,90,36,65,61.8,49,100,Thunder Clap,0.65,15,blind,0,2.5,,False
+thunderbird,Thunderbird,epic,wind,10,197,123,79,109,126,50,84,68.23,56,112,Thunder Clap,0.65,15,blind,0,2.5,,False
+thunderbird,Thunderbird,epic,wind,15,237,138,89,119,146,58,94,74.77,60,119,Thunder Clap,0.65,15,blind,0,2.5,,False
+thunderbird,Thunderbird,epic,wind,30,357,184,119,150,206,82,124,82.11,69,136,Thunder Clap,0.65,15,blind,0,2.5,,False
+thunderbird,Thunderbird,epic,wind,50,517,245,160,190,286,114,165,98.14,78,153,Thunder Clap,0.65,15,blind,0,2.5,,False
+sphinx,Sphinx,epic,arcane,1,135,86,81,65,110,44,65,54.22,44,87,Arcane Swipe,0.65,15,blind,0,2.5,,False
+sphinx,Sphinx,epic,arcane,10,207,113,99,84,146,58,84,63.5,52,104,Arcane Swipe,0.65,15,blind,0,2.5,,False
+sphinx,Sphinx,epic,arcane,15,247,128,109,94,166,66,94,67.66,56,108,Arcane Swipe,0.65,15,blind,0,2.5,,False
+sphinx,Sphinx,epic,arcane,30,367,174,139,124,226,90,124,80.06,66,119,Arcane Swipe,0.65,15,blind,0,2.5,,False
+sphinx,Sphinx,epic,arcane,50,527,235,180,165,306,122,165,93.58,75,143,Arcane Swipe,0.65,15,blind,0,2.5,,False
+yeti,Yeti,epic,ice,1,160,91,86,45,70,28,65,56.33,46,89,Frost Roar,0.65,15,freeze,0,2.5,,False
+yeti,Yeti,epic,ice,10,232,118,104,63,106,42,84,67.11,54,109,Frost Roar,0.65,15,freeze,0,2.5,,False
+yeti,Yeti,epic,ice,15,272,133,114,74,126,50,94,74.12,58,113,Frost Roar,0.65,15,freeze,0,2.5,,False
+yeti,Yeti,epic,ice,30,392,179,145,104,186,74,124,82.94,67,135,Frost Roar,0.65,15,freeze,0,2.5,,False
+yeti,Yeti,epic,ice,50,552,240,185,145,266,106,165,91.92,77,143,Frost Roar,0.65,15,freeze,0,2.5,,False
+minotaur,Minotaur,epic,earth,1,155,101,81,50,65,26,65,64.8,52,103,Bull Rush,0.65,15,weaken,0,2.5,,False
+minotaur,Minotaur,epic,earth,10,227,128,99,68,101,40,84,75.47,59,119,Bull Rush,0.65,15,weaken,0,2.5,,False
+minotaur,Minotaur,epic,earth,15,267,144,109,79,121,48,94,77.52,63,123,Bull Rush,0.65,15,weaken,0,2.5,,False
+minotaur,Minotaur,epic,earth,30,387,189,139,109,181,72,124,88.09,72,125,Bull Rush,0.65,15,weaken,0,2.5,,False
+minotaur,Minotaur,epic,earth,50,547,250,180,150,261,104,165,99.88,80,162,Bull Rush,0.65,15,weaken,0,2.5,,False
+kitsune_9,Kitsune,epic,arcane,1,140,96,76,101,120,48,65,59.36,49,96,Grand Illusion,0.65,15,blind,0,2.5,,False
+kitsune_9,Kitsune,epic,arcane,10,212,123,94,119,156,62,84,67.8,57,112,Grand Illusion,0.65,15,blind,0,2.5,,False
+kitsune_9,Kitsune,epic,arcane,15,252,138,104,129,176,70,94,75.11,60,121,Grand Illusion,0.65,15,blind,0,2.5,,False
+kitsune_9,Kitsune,epic,arcane,30,372,184,134,160,236,94,124,84.69,69,137,Grand Illusion,0.65,15,blind,0,2.5,,False
+kitsune_9,Kitsune,epic,arcane,50,532,245,175,200,316,126,165,97.73,78,157,Grand Illusion,0.65,15,blind,0,2.5,,False
+dragon,Dragon,legendary,fire,1,180,121,101,81,110,44,65,74.33,62,109,Tail Sweep,0.65,15,burn,0,2.5,,False
+dragon,Dragon,legendary,fire,10,270,158,128,108,155,62,84,89.05,73,140,Tail Sweep,0.65,15,burn,0,2.5,,False
+dragon,Dragon,legendary,fire,15,320,178,144,123,180,72,94,100.14,78,158,Tail Sweep,0.65,15,burn,0,2.5,,False
+dragon,Dragon,legendary,fire,30,470,239,189,169,255,102,124,108.41,91,180,Tail Sweep,0.65,15,burn,0,2.5,,False
+dragon,Dragon,legendary,fire,50,670,320,250,230,355,142,165,128.89,102,206,Tail Sweep,0.65,15,burn,0,2.5,,False
+kraken,Kraken,legendary,water,1,200,116,111,55,100,40,65,75.67,60,120,Ink Cloud,0.65,15,slow,0,2.5,,False
+kraken,Kraken,legendary,water,10,290,153,138,83,145,58,84,86.8,72,138,Ink Cloud,0.65,15,slow,0,2.5,,False
+kraken,Kraken,legendary,water,15,340,173,154,98,170,68,94,91.56,75,144,Ink Cloud,0.65,15,slow,0,2.5,,False
+kraken,Kraken,legendary,water,30,490,234,199,144,245,98,124,109.69,89,168,Ink Cloud,0.65,15,slow,0,2.5,,False
+kraken,Kraken,legendary,water,50,690,315,260,204,345,138,165,126.94,101,199,Ink Cloud,0.65,15,slow,0,2.5,,False
+hydra,Hydra,legendary,water,1,220,111,106,50,95,38,65,68.44,57,102,Regen Scale,0.65,15,slow,0,2.5,,False
+hydra,Hydra,legendary,water,10,310,148,133,78,140,56,84,83.69,68,137,Regen Scale,0.65,15,slow,0,2.5,,False
+hydra,Hydra,legendary,water,15,360,168,149,93,165,66,94,86.94,73,134,Regen Scale,0.65,15,slow,0,2.5,,False
+hydra,Hydra,legendary,water,30,510,229,194,138,240,96,124,104.47,88,167,Regen Scale,0.65,15,slow,0,2.5,,False
+hydra,Hydra,legendary,water,50,710,310,255,199,340,136,165,124.12,99,198,Regen Scale,0.65,15,slow,0,2.5,,False
+fenrir,Fenrir,legendary,shadow,1,190,126,96,91,100,40,65,83.67,65,131,Chain Break,0.65,15,poison,0,2.5,,False
+fenrir,Fenrir,legendary,shadow,10,280,163,123,118,145,58,84,93.11,75,148,Chain Break,0.65,15,poison,0,2.5,,False
+fenrir,Fenrir,legendary,shadow,15,330,183,138,133,170,68,94,101.05,80,162,Chain Break,0.65,15,poison,0,2.5,,False
+fenrir,Fenrir,legendary,shadow,30,480,244,184,179,245,98,124,118.89,93,187,Chain Break,0.65,15,poison,0,2.5,,False
+fenrir,Fenrir,legendary,shadow,50,680,325,245,240,345,138,165,131.83,104,203,Chain Break,0.65,15,poison,0,2.5,,False
+charybdis,Charybdis,legendary,wind,1,185,111,101,71,115,46,65,71.94,57,114,Depth Pull,0.65,15,blind,0,2.5,,False
+charybdis,Charybdis,legendary,wind,10,275,148,128,98,160,64,84,83.08,69,123,Depth Pull,0.65,15,blind,0,2.5,,False
+charybdis,Charybdis,legendary,wind,15,325,168,144,113,185,74,94,89.84,73,145,Depth Pull,0.65,15,blind,0,2.5,,False
+charybdis,Charybdis,legendary,wind,30,475,229,189,159,260,104,124,108.98,87,174,Depth Pull,0.65,15,blind,0,2.5,,False
+charybdis,Charybdis,legendary,wind,50,675,310,250,220,360,144,165,124.61,99,201,Depth Pull,0.65,15,blind,0,2.5,,False
+leviathan,Leviathan,legendary,water,1,210,121,111,60,105,42,65,77.48,62,125,Abyssal Roar,0.65,15,slow,0,2.5,,False
+leviathan,Leviathan,legendary,water,10,300,158,138,88,150,60,84,90.84,74,140,Abyssal Roar,0.65,15,slow,0,2.5,,False
+leviathan,Leviathan,legendary,water,15,350,178,154,103,175,70,94,94.92,78,141,Abyssal Roar,0.65,15,slow,0,2.5,,False
+leviathan,Leviathan,legendary,water,30,500,239,199,149,250,100,124,110.3,90,177,Abyssal Roar,0.65,15,slow,0,2.5,,False
+leviathan,Leviathan,legendary,water,50,700,320,260,209,350,140,165,122.58,102,184,Abyssal Roar,0.65,15,slow,0,2.5,,False
+singularity,Singularity,divine,cosmic,1,250,142,131,101,150,60,65,92.8,74,143,Galaxy Absorb,0.65,15,weaken,0,2.5,gravity_well,False
+singularity,Singularity,divine,cosmic,10,358,187,168,137,204,81,84,102.08,86,161,Galaxy Absorb,0.65,15,weaken,0,2.5,gravity_well,False
+singularity,Singularity,divine,cosmic,15,418,213,188,158,234,93,94,114.36,93,188,Galaxy Absorb,0.65,15,weaken,0,2.5,gravity_well,False
+singularity,Singularity,divine,cosmic,30,598,289,249,219,324,129,124,138.42,110,217,Galaxy Absorb,0.65,15,weaken,0,2.5,gravity_well,False
+singularity,Singularity,divine,cosmic,50,838,390,330,300,444,177,165,151.53,125,241,Galaxy Absorb,0.65,15,weaken,0,2.5,gravity_well,False
+astraea,Astraea,divine,cosmic,1,240,147,121,116,155,62,65,95.19,76,152,Star Thread,0.65,15,weaken,0,2.5,star_weave,False
+astraea,Astraea,divine,cosmic,10,348,192,158,153,209,83,84,108.61,88,171,Star Thread,0.65,15,weaken,0,2.5,star_weave,False
+astraea,Astraea,divine,cosmic,15,408,218,178,173,239,95,94,113.78,95,185,Star Thread,0.65,15,weaken,0,2.5,star_weave,False
+astraea,Astraea,divine,cosmic,30,588,294,239,234,329,131,124,135.75,111,222,Star Thread,0.65,15,weaken,0,2.5,star_weave,False
+astraea,Astraea,divine,cosmic,50,828,395,320,315,449,179,165,159.19,126,250,Star Thread,0.65,15,weaken,0,2.5,star_weave,False
+chronos,Chronos,divine,cosmic,1,245,136,136,131,160,64,65,85.83,70,139,Epoch Shift,0.65,15,weaken,0,2.5,borrowed_time,False
+chronos,Chronos,divine,cosmic,10,353,182,173,168,214,85,84,102.39,84,164,Epoch Shift,0.65,15,weaken,0,2.5,borrowed_time,False
+chronos,Chronos,divine,cosmic,15,413,207,193,188,244,97,94,112.66,91,182,Epoch Shift,0.65,15,weaken,0,2.5,borrowed_time,False
+chronos,Chronos,divine,cosmic,30,593,284,254,249,334,133,124,133.72,107,209,Epoch Shift,0.65,15,weaken,0,2.5,borrowed_time,False
+chronos,Chronos,divine,cosmic,50,833,385,335,330,454,181,165,151.39,124,236,Epoch Shift,0.65,15,weaken,0,2.5,borrowed_time,False
+aetherius,Aetherius,divine,cosmic,1,280,131,147,86,150,60,65,83.41,67,130,Aether Crush,0.65,15,weaken,0,2.5,void_hunger,False
+aetherius,Aetherius,divine,cosmic,10,388,177,183,122,204,81,84,101.67,82,165,Aether Crush,0.65,15,weaken,0,2.5,void_hunger,False
+aetherius,Aetherius,divine,cosmic,15,448,202,203,143,234,93,94,108.73,89,173,Aether Crush,0.65,15,weaken,0,2.5,void_hunger,False
+aetherius,Aetherius,divine,cosmic,30,628,278,264,203,324,129,124,125.86,106,187,Aether Crush,0.65,15,weaken,0,2.5,void_hunger,False
+aetherius,Aetherius,divine,cosmic,50,868,380,345,285,444,177,165,144.94,121,240,Aether Crush,0.65,15,weaken,0,2.5,void_hunger,False
+genesis,Genesis,divine,cosmic,1,255,152,126,111,155,62,65,96.83,78,158,Creation Burst,0.65,15,weaken,0,2.5,first_flame,False
+genesis,Genesis,divine,cosmic,10,363,197,163,148,209,83,84,112.97,93,181,Creation Burst,0.65,15,weaken,0,2.5,first_flame,False
+genesis,Genesis,divine,cosmic,15,423,223,183,168,239,95,94,119.25,98,196,Creation Burst,0.65,15,weaken,0,2.5,first_flame,False
+genesis,Genesis,divine,cosmic,30,603,299,244,229,329,131,124,139.12,113,224,Creation Burst,0.65,15,weaken,0,2.5,first_flame,False
+genesis,Genesis,divine,cosmic,50,843,400,325,310,449,179,165,156.38,128,234,Creation Burst,0.65,15,weaken,0,2.5,first_flame,False
+terminus,Terminus,divine,cosmic,1,245,142,142,106,160,64,65,88.83,73,145,End Gaze,0.65,15,weaken,0,1.4,final_word,False
+terminus,Terminus,divine,cosmic,10,353,187,178,143,214,85,84,109.73,86,173,End Gaze,0.65,15,weaken,0,1.4,final_word,False
+terminus,Terminus,divine,cosmic,15,413,213,198,163,244,97,94,115.66,93,188,End Gaze,0.65,15,weaken,0,1.4,final_word,False
+terminus,Terminus,divine,cosmic,30,593,289,259,224,334,133,124,136.81,110,218,End Gaze,0.65,15,weaken,0,1.4,final_word,False
+terminus,Terminus,divine,cosmic,50,833,390,340,305,454,181,165,149.62,125,242,End Gaze,0.65,15,weaken,0,1.4,final_word,False
+paradox,Paradox,divine,cosmic,1,250,147,131,121,165,66,65,93.77,76,152,Contradiction,0.65,15,weaken,0,2.5,mirror_reality,False
+paradox,Paradox,divine,cosmic,10,358,192,168,158,219,87,84,107.28,88,172,Contradiction,0.65,15,weaken,0,2.5,mirror_reality,False
+paradox,Paradox,divine,cosmic,15,418,218,188,178,249,99,94,113.89,95,184,Contradiction,0.65,15,weaken,0,2.5,mirror_reality,False
+paradox,Paradox,divine,cosmic,30,598,294,249,239,339,135,124,143.45,112,220,Contradiction,0.65,15,weaken,0,2.5,mirror_reality,False
+paradox,Paradox,divine,cosmic,50,838,395,330,320,459,183,165,157.94,129,242,Contradiction,0.65,15,weaken,0,2.5,mirror_reality,False
+horizon,Horizon,divine,cosmic,1,255,142,136,116,150,60,65,89,73,146,Dimensional Claw,0.65,15,weaken,0,2.5,rift_step,False
+horizon,Horizon,divine,cosmic,10,363,187,173,153,204,81,84,104.64,86,167,Dimensional Claw,0.65,15,weaken,0,2.5,rift_step,False
+horizon,Horizon,divine,cosmic,15,423,213,193,173,234,93,94,112.95,93,186,Dimensional Claw,0.65,15,weaken,0,2.5,rift_step,False
+horizon,Horizon,divine,cosmic,30,603,289,254,234,324,129,124,138.78,109,219,Dimensional Claw,0.65,15,weaken,0,2.5,rift_step,False
+horizon,Horizon,divine,cosmic,50,843,390,335,315,444,177,165,156.44,125,251,Dimensional Claw,0.65,15,weaken,0,2.5,rift_step,False
+karma,Karma,divine,cosmic,1,240,136,131,126,160,64,65,85.2,70,137,Karmic Return,0.65,15,weaken,0,2.5,karmic_echo,False
+karma,Karma,divine,cosmic,10,348,182,168,163,214,85,84,104.08,85,168,Karmic Return,0.65,15,weaken,0,2.5,karmic_echo,False
+karma,Karma,divine,cosmic,15,408,207,188,183,244,97,94,112.73,91,182,Karmic Return,0.65,15,weaken,0,2.5,karmic_echo,False
+karma,Karma,divine,cosmic,30,588,284,249,244,334,133,124,135.31,108,218,Karmic Return,0.65,15,weaken,0,2.5,karmic_echo,False
+karma,Karma,divine,cosmic,50,828,385,330,325,454,181,165,148.61,123,213,Karmic Return,0.65,15,weaken,0,2.5,karmic_echo,False
+zodiac,Zodiac,divine,cosmic,1,260,139,139,109,155,62,65,87.59,71,140,Constellation Beam,0.65,15,weaken,0,2.5,constellation_charge,False
+zodiac,Zodiac,divine,cosmic,10,368,185,176,146,209,83,84,103.34,85,168,Constellation Beam,0.65,15,weaken,0,2.5,constellation_charge,False
+zodiac,Zodiac,divine,cosmic,15,428,210,196,166,239,95,94,119,92,185,Constellation Beam,0.65,15,weaken,0,2.5,constellation_charge,False
+zodiac,Zodiac,divine,cosmic,30,608,287,257,227,329,131,124,136.62,109,211,Constellation Beam,0.65,15,weaken,0,2.5,constellation_charge,False
+zodiac,Zodiac,divine,cosmic,50,848,388,338,308,449,179,165,154.48,126,243,Constellation Beam,0.65,15,weaken,0,2.5,constellation_charge,False
+abyss,Abyss,divine,cosmic,1,255,152,126,121,150,60,65,95.34,78,142,Void Pounce,0.65,15,weaken,0,2.5,dark_matter,False
+abyss,Abyss,divine,cosmic,10,363,197,163,158,204,81,84,116.34,91,179,Void Pounce,0.65,15,weaken,0,2.5,dark_matter,False
+abyss,Abyss,divine,cosmic,15,423,223,183,178,234,93,94,119.12,97,188,Void Pounce,0.65,15,weaken,0,2.5,dark_matter,False
+abyss,Abyss,divine,cosmic,30,603,299,244,239,324,129,124,142.16,113,225,Void Pounce,0.65,15,weaken,0,2.5,dark_matter,False
+abyss,Abyss,divine,cosmic,50,843,400,325,320,444,177,165,155.73,128,255,Void Pounce,0.65,15,weaken,0,2.5,dark_matter,False
+nebula,Nebula,divine,cosmic,1,250,142,136,111,160,64,65,90.69,73,140,Star Birth,0.65,15,weaken,0,2.5,stellar_nursery,False
+nebula,Nebula,divine,cosmic,10,358,187,173,148,214,85,84,104.8,86,171,Star Birth,0.65,15,weaken,0,2.5,stellar_nursery,False
+nebula,Nebula,divine,cosmic,15,418,213,193,168,244,97,94,115.7,93,184,Star Birth,0.65,15,weaken,0,2.5,stellar_nursery,False
+nebula,Nebula,divine,cosmic,30,598,289,254,229,334,133,124,135.84,111,211,Star Birth,0.65,15,weaken,0,2.5,stellar_nursery,False
+nebula,Nebula,divine,cosmic,50,838,390,335,310,454,181,165,152.67,126,246,Star Birth,0.65,15,weaken,0,2.5,stellar_nursery,False
+supernova,Supernova,divine,cosmic,1,245,157,121,116,155,62,65,98.2,80,161,Nova Burst,0.65,15,weaken,0,2.5,critical_mass,False
+supernova,Supernova,divine,cosmic,10,353,202,158,153,209,83,84,116.77,93,186,Nova Burst,0.65,15,weaken,0,2.5,critical_mass,False
+supernova,Supernova,divine,cosmic,15,413,228,178,173,239,95,94,120.94,100,190,Nova Burst,0.65,15,weaken,0,2.5,critical_mass,False
+supernova,Supernova,divine,cosmic,30,593,304,239,234,329,131,124,142.36,115,225,Nova Burst,0.65,15,weaken,0,2.5,critical_mass,False
+supernova,Supernova,divine,cosmic,50,833,405,320,315,449,179,165,159.89,130,250,Nova Burst,0.65,15,weaken,0,2.5,critical_mass,False
+nirvana,Nirvana,divine,cosmic,1,240,131,147,106,170,68,65,84.78,68,134,Enlightened Strike,0.65,15,weaken,0,2.5,lotus_veil,False
+nirvana,Nirvana,divine,cosmic,10,348,177,183,143,224,89,84,102.92,81,164,Enlightened Strike,0.65,15,weaken,0,2.5,lotus_veil,False
+nirvana,Nirvana,divine,cosmic,15,408,202,203,163,254,101,94,110.14,89,179,Enlightened Strike,0.65,15,weaken,0,2.5,lotus_veil,False
+nirvana,Nirvana,divine,cosmic,30,588,278,264,224,344,137,124,128.39,105,198,Enlightened Strike,0.65,15,weaken,0,2.5,lotus_veil,False
+nirvana,Nirvana,divine,cosmic,50,828,380,345,305,464,185,165,146.47,121,226,Enlightened Strike,0.65,15,weaken,0,2.5,lotus_veil,False
+asgard,Asgard,divine,cosmic,1,265,147,142,106,145,58,65,90.81,76,144,Thunder Fang,0.65,15,weaken,0,2.5,bifrost_surge,False
+asgard,Asgard,divine,cosmic,10,373,192,178,143,199,79,84,109.98,88,173,Thunder Fang,0.65,15,weaken,0,2.5,bifrost_surge,False
+asgard,Asgard,divine,cosmic,15,433,218,198,163,229,91,94,117.08,96,190,Thunder Fang,0.65,15,weaken,0,2.5,bifrost_surge,False
+asgard,Asgard,divine,cosmic,30,613,294,259,224,319,127,124,133.53,112,211,Thunder Fang,0.65,15,weaken,0,2.5,bifrost_surge,False
+asgard,Asgard,divine,cosmic,50,853,395,340,305,439,175,165,154.17,128,248,Thunder Fang,0.65,15,weaken,0,2.5,bifrost_surge,False
+atlas,Atlas,divine,cosmic,1,300,121,172,60,145,58,65,75.95,62,120,Seismic Stomp,0.65,15,weaken,0,2.5,weight_of_worlds,False
+atlas,Atlas,divine,cosmic,10,408,167,208,97,199,79,84,92.72,77,141,Seismic Stomp,0.65,15,weaken,0,2.5,weight_of_worlds,False
+atlas,Atlas,divine,cosmic,15,468,192,229,117,229,91,94,102.88,84,169,Seismic Stomp,0.65,15,weaken,0,2.5,weight_of_worlds,False
+atlas,Atlas,divine,cosmic,30,648,268,290,178,319,127,124,124.94,101,206,Seismic Stomp,0.65,15,weaken,0,2.5,weight_of_worlds,False
+atlas,Atlas,divine,cosmic,50,888,370,371,259,439,175,165,143.38,119,229,Seismic Stomp,0.65,15,weaken,0,2.5,weight_of_worlds,False
+prismite,Prismite,common,arcane,1,85,35,50,45,70,28,65,22.59,18,34,Halo Glint,0.65,15,blind,0,2.5,,False
+prismite,Prismite,common,arcane,10,121,44,59,54,88,35,84,24.14,20,37,Halo Glint,0.65,15,blind,0,2.5,,False
+prismite,Prismite,common,arcane,15,141,49,64,59,98,39,94,25.8,21,43,Halo Glint,0.65,15,blind,0,2.5,,False
+prismite,Prismite,common,arcane,30,201,64,80,75,128,51,124,29.05,24,47,Halo Glint,0.65,15,blind,0,2.5,,False
+prismite,Prismite,common,arcane,50,281,85,100,95,168,67,165,33.7,27,51,Halo Glint,0.65,15,blind,0,2.5,,False
+twine,Twine,common,cosmic,1,70,40,30,71,65,26,65,24.86,20,40,Thread Snap,0.65,15,weaken,0,2.5,,False
+twine,Twine,common,cosmic,10,106,49,39,80,83,33,84,27.36,22,44,Thread Snap,0.65,15,weaken,0,2.5,,False
+twine,Twine,common,cosmic,15,126,54,44,85,93,37,94,28.86,23,46,Thread Snap,0.65,15,weaken,0,2.5,,False
+twine,Twine,common,cosmic,30,186,69,59,100,123,49,124,31.66,26,53,Thread Snap,0.65,15,weaken,0,2.5,,False
+twine,Twine,common,cosmic,50,266,90,80,120,163,65,165,35.14,29,57,Thread Snap,0.65,15,weaken,0,2.5,,False
+gloop,Gloop,common,nature,1,105,30,40,35,60,24,65,18.38,15,30,Glitter Bounce,0,15,,20,2.5,,False
+gloop,Gloop,common,nature,10,141,39,49,44,78,31,84,21.53,18,35,Glitter Bounce,0,15,,20,2.5,,False
+gloop,Gloop,common,nature,15,161,44,54,49,88,35,94,23.52,19,38,Glitter Bounce,0,15,,20,2.5,,False
+gloop,Gloop,common,nature,30,221,59,69,64,118,47,124,27.14,22,45,Glitter Bounce,0,15,,20,2.5,,False
+gloop,Gloop,common,nature,50,301,80,90,85,158,63,165,31.53,25,51,Glitter Bounce,0,15,,20,2.5,,False
+barkley,Barkley,common,nature,1,115,40,55,20,35,20,65,24.58,20,36,Bark Armor,0,15,,20,2.5,,False
+barkley,Barkley,common,nature,10,151,49,64,29,53,21,84,28.31,22,45,Bark Armor,0,15,,20,2.5,,False
+barkley,Barkley,common,nature,15,171,54,69,34,63,25,94,28.42,24,47,Bark Armor,0,15,,20,2.5,,False
+barkley,Barkley,common,nature,30,231,69,85,49,93,37,124,31.27,26,51,Bark Armor,0,15,,20,2.5,,False
+barkley,Barkley,common,nature,50,311,90,105,69,133,53,165,35.47,28,56,Bark Armor,0,15,,20,2.5,,False
+centry,Centry,uncommon,earth,1,115,60,55,50,50,20,65,38.48,30,62,Arrow Rain,0.65,15,weaken,0,2.5,,False
+centry,Centry,uncommon,earth,10,160,79,64,59,68,27,84,44.16,36,68,Arrow Rain,0.65,15,weaken,0,2.5,,False
+centry,Centry,uncommon,earth,15,185,89,69,64,78,31,94,47.98,39,74,Arrow Rain,0.65,15,weaken,0,2.5,,False
+centry,Centry,uncommon,earth,30,260,119,85,80,108,43,124,55.58,45,85,Arrow Rain,0.65,15,weaken,0,2.5,,False
+centry,Centry,uncommon,earth,50,360,160,105,100,148,59,165,62.92,51,101,Arrow Rain,0.65,15,weaken,0,2.5,,False
+wisp,Wisp,common,light,1,65,40,25,76,60,24,65,26.33,20,41,Fade,0,15,,20,2.5,,False
+wisp,Wisp,common,light,10,101,49,34,85,78,31,84,27.53,22,42,Fade,0,15,,20,2.5,,False
+wisp,Wisp,common,light,15,121,54,39,90,88,35,94,28.09,23,47,Fade,0,15,,20,2.5,,False
+wisp,Wisp,common,light,30,181,69,54,105,118,47,124,31.89,26,52,Fade,0,15,,20,2.5,,False
+wisp,Wisp,common,light,50,261,90,75,125,158,63,165,35.55,29,57,Fade,0,15,,20,2.5,,False
+mudpup,Mudpup,common,earth,1,85,45,40,40,50,20,65,27.75,23,45,Belly Flop,0.65,15,weaken,0,2.5,,False
+mudpup,Mudpup,common,earth,10,121,54,49,49,68,27,84,30.12,25,49,Belly Flop,0.65,15,weaken,0,2.5,,False
+mudpup,Mudpup,common,earth,15,141,59,54,54,78,31,94,30.86,25,51,Belly Flop,0.65,15,weaken,0,2.5,,False
+mudpup,Mudpup,common,earth,30,201,75,69,69,108,43,124,34.14,28,57,Belly Flop,0.65,15,weaken,0,2.5,,False
+mudpup,Mudpup,common,earth,50,281,95,90,90,148,59,165,36.5,30,60,Belly Flop,0.65,15,weaken,0,2.5,,False
+strix,Strix,common,shadow,1,60,50,20,71,65,26,65,31.33,26,51,Eye Curse,0.65,15,poison,0,2.5,,False
+strix,Strix,common,shadow,10,96,59,29,80,83,33,84,33.44,27,52,Eye Curse,0.65,15,poison,0,2.5,,False
+strix,Strix,common,shadow,15,116,64,34,85,93,37,94,33.94,28,54,Eye Curse,0.65,15,poison,0,2.5,,False
+strix,Strix,common,shadow,30,176,80,49,100,123,49,124,36.66,30,56,Eye Curse,0.65,15,poison,0,2.5,,False
+strix,Strix,common,shadow,50,256,100,69,120,163,65,165,40.66,32,64,Eye Curse,0.65,15,poison,0,2.5,,False
+kelpie,Kelpie,uncommon,water,1,95,65,45,71,55,22,65,40.61,33,63,River Rush,0.65,15,slow,0,2.5,,False
+kelpie,Kelpie,uncommon,water,10,140,84,54,80,73,29,84,47.58,39,75,River Rush,0.65,15,slow,0,2.5,,False
+kelpie,Kelpie,uncommon,water,15,165,94,59,85,83,33,94,53.88,41,83,River Rush,0.65,15,slow,0,2.5,,False
+kelpie,Kelpie,uncommon,water,30,240,124,75,100,113,45,124,57.41,47,91,River Rush,0.65,15,slow,0,2.5,,False
+kelpie,Kelpie,uncommon,water,50,340,165,95,120,153,61,165,63.84,53,94,River Rush,0.65,15,slow,0,2.5,,False
+manticore,Manticore,uncommon,earth,1,100,71,40,65,50,20,65,46.11,37,73,Venom Sting,0.65,15,weaken,0,2.5,,False
+manticore,Manticore,uncommon,earth,10,145,89,49,75,68,27,84,49.92,41,82,Venom Sting,0.65,15,weaken,0,2.5,,False
+manticore,Manticore,uncommon,earth,15,170,99,54,80,78,31,94,52.38,43,86,Venom Sting,0.65,15,weaken,0,2.5,,False
+manticore,Manticore,uncommon,earth,30,245,129,69,95,108,43,124,62.69,49,99,Venom Sting,0.65,15,weaken,0,2.5,,False
+manticore,Manticore,uncommon,earth,50,345,170,90,115,148,59,165,64.52,55,92,Venom Sting,0.65,15,weaken,0,2.5,,False
+will_o_wisp,Will-o-Wisp,uncommon,shadow,1,90,60,35,86,60,24,65,37.88,30,60,Confusion Pulse,0.65,15,poison,0,2.5,,False
+will_o_wisp,Will-o-Wisp,uncommon,shadow,10,135,79,44,95,78,31,84,44.47,36,74,Confusion Pulse,0.65,15,poison,0,2.5,,False
+will_o_wisp,Will-o-Wisp,uncommon,shadow,15,160,89,49,100,88,35,94,48.33,39,74,Confusion Pulse,0.65,15,poison,0,2.5,,False
+will_o_wisp,Will-o-Wisp,uncommon,shadow,30,235,119,64,115,118,47,124,54.33,45,88,Confusion Pulse,0.65,15,poison,0,2.5,,False
+will_o_wisp,Will-o-Wisp,uncommon,shadow,50,335,160,85,135,158,63,165,59.75,51,68,Confusion Pulse,0.65,15,poison,0,2.5,,False
+rukh,Rukh,rare,wind,1,130,81,65,81,60,24,65,51.02,41,83,Wind Wall,0.65,15,blind,0,2.5,,False
+rukh,Rukh,rare,wind,10,184,99,84,99,87,34,84,55.17,45,91,Wind Wall,0.65,15,blind,0,2.5,,False
+rukh,Rukh,rare,wind,15,214,109,94,109,102,40,94,57.45,48,83,Wind Wall,0.65,15,blind,0,2.5,,False
+rukh,Rukh,rare,wind,30,304,139,124,139,147,58,124,61.56,52,93,Wind Wall,0.65,15,blind,0,2.5,,False
+rukh,Rukh,rare,wind,50,424,180,165,180,207,82,165,70.59,58,113,Wind Wall,0.65,15,blind,0,2.5,,False
+glacius,Glacius,rare,ice,1,160,76,96,35,55,22,65,46.14,39,73,Ice Shell,0.65,15,freeze,0,2.5,,False
+glacius,Glacius,rare,ice,10,214,94,114,53,82,32,84,51.81,43,83,Ice Shell,0.65,15,freeze,0,2.5,,False
+glacius,Glacius,rare,ice,15,244,104,124,63,97,38,94,56.55,45,91,Ice Shell,0.65,15,freeze,0,2.5,,False
+glacius,Glacius,rare,ice,30,334,134,155,94,142,56,124,60.92,51,88,Ice Shell,0.65,15,freeze,0,2.5,,False
+glacius,Glacius,rare,ice,50,454,175,195,134,202,80,165,68.41,56,112,Ice Shell,0.65,15,freeze,0,2.5,,False
+behemoth,Behemoth,epic,earth,1,220,91,131,25,60,24,65,57.83,48,93,Stone Wall,0.65,15,weaken,0,2.5,,False
+behemoth,Behemoth,epic,earth,10,292,118,150,43,96,38,84,65.42,54,108,Stone Wall,0.65,15,weaken,0,2.5,,False
+behemoth,Behemoth,epic,earth,15,332,133,160,53,116,46,94,72.78,58,116,Stone Wall,0.65,15,weaken,0,2.5,,False
+behemoth,Behemoth,epic,earth,30,452,179,190,84,176,70,124,85.72,69,136,Stone Wall,0.65,15,weaken,0,2.5,,False
+behemoth,Behemoth,epic,earth,50,612,240,231,124,256,102,165,94.14,77,149,Stone Wall,0.65,15,weaken,0,2.5,,False
+wendigo,Wendigo,epic,shadow,1,170,121,76,96,80,32,65,77.09,62,121,Bone Chill,0.65,15,poison,0,2.5,,False
+wendigo,Wendigo,epic,shadow,10,242,149,94,114,116,46,84,83.44,68,136,Bone Chill,0.65,15,poison,0,2.5,,False
+wendigo,Wendigo,epic,shadow,15,282,164,104,124,136,54,94,85.31,72,127,Bone Chill,0.65,15,poison,0,2.5,,False
+wendigo,Wendigo,epic,shadow,30,402,209,134,155,196,78,124,96.52,79,159,Bone Chill,0.65,15,poison,0,2.5,,False
+wendigo,Wendigo,epic,shadow,50,562,270,175,195,276,110,165,109.28,87,173,Bone Chill,0.65,15,poison,0,2.5,,False
+jormungandr,Jormungandr,legendary,shadow,1,205,116,101,71,110,44,65,74.44,60,117,Venom Tide,0.65,15,poison,0,2.5,,False
+jormungandr,Jormungandr,legendary,shadow,10,295,153,128,98,155,62,84,85.94,71,138,Venom Tide,0.65,15,poison,0,2.5,,False
+jormungandr,Jormungandr,legendary,shadow,15,345,173,144,113,180,72,94,94.06,76,139,Venom Tide,0.65,15,poison,0,2.5,,False
+jormungandr,Jormungandr,legendary,shadow,30,495,234,189,159,255,102,124,106.16,89,160,Venom Tide,0.65,15,poison,0,2.5,,False
+jormungandr,Jormungandr,legendary,shadow,50,695,315,250,220,355,142,165,125.34,103,202,Venom Tide,0.65,15,poison,0,2.5,,False
+simurgh,Simurgh,legendary,wind,1,185,106,96,96,125,50,65,66.91,54,108,Wisdom Strike,0.65,15,blind,0,2.5,,False
+simurgh,Simurgh,legendary,wind,10,275,143,123,123,170,68,84,81.77,66,128,Wisdom Strike,0.65,15,blind,0,2.5,,False
+simurgh,Simurgh,legendary,wind,15,325,163,138,138,195,78,94,88.78,72,142,Wisdom Strike,0.65,15,blind,0,2.5,,False
+simurgh,Simurgh,legendary,wind,30,475,224,184,184,270,108,124,108.45,85,169,Wisdom Strike,0.65,15,blind,0,2.5,,False
+simurgh,Simurgh,legendary,wind,50,675,305,245,245,370,148,165,120.8,98,190,Wisdom Strike,0.65,15,blind,0,2.5,,False
+void_chronos,Void Chronos,altered_divine,cosmic,1,306,170,170,164,200,80,65,104.98,87,171,Void Epoch,0.65,15,weaken,0,2.5,fractured_time,False
+void_chronos,Void Chronos,altered_divine,cosmic,10,441,225,216,209,263,105,84,128.25,104,199,Void Epoch,0.65,15,weaken,0,2.5,fractured_time,False
+void_chronos,Void Chronos,altered_divine,cosmic,15,516,255,241,235,298,119,94,137.61,111,224,Void Epoch,0.65,15,weaken,0,2.5,fractured_time,False
+void_chronos,Void Chronos,altered_divine,cosmic,30,741,346,317,311,403,161,124,161.56,133,265,Void Epoch,0.65,15,weaken,0,2.5,fractured_time,False
+void_chronos,Void Chronos,altered_divine,cosmic,50,1041,468,418,412,543,217,165,191.31,152,291,Void Epoch,0.65,15,weaken,0,2.5,fractured_time,False
+fractured_genesis,Fractured Genesis,altered_divine,cosmic,1,318,189,158,138,193,77,65,144.17,110,220,Reality Shard,0.65,15,weaken,0,2.5,null_origin,False
+fractured_genesis,Fractured Genesis,altered_divine,cosmic,10,453,244,203,184,256,102,84,162.44,130,257,Reality Shard,0.65,15,weaken,0,2.5,null_origin,False
+fractured_genesis,Fractured Genesis,altered_divine,cosmic,15,528,274,229,209,291,116,94,168.03,140,278,Reality Shard,0.65,15,weaken,0,2.5,null_origin,False
+fractured_genesis,Fractured Genesis,altered_divine,cosmic,30,753,366,305,286,396,158,124,198.47,167,315,Reality Shard,0.65,15,weaken,0,2.5,null_origin,False
+fractured_genesis,Fractured Genesis,altered_divine,cosmic,50,1053,487,406,387,536,214,165,233.17,192,383,Reality Shard,0.65,15,weaken,0,2.5,null_origin,False
+abyssal_nebula,Abyssal Nebula,altered_divine,cosmic,1,318,189,158,152,187,74,65,119.11,98,187,Star Death,0.65,15,weaken,0,2.5,event_horizon,False
+abyssal_nebula,Abyssal Nebula,altered_divine,cosmic,10,453,244,203,197,250,100,84,139.97,113,228,Star Death,0.65,15,weaken,0,2.5,event_horizon,False
+abyssal_nebula,Abyssal Nebula,altered_divine,cosmic,15,528,274,229,223,285,114,94,148.16,120,231,Star Death,0.65,15,weaken,0,2.5,event_horizon,False
+abyssal_nebula,Abyssal Nebula,altered_divine,cosmic,30,753,366,305,299,390,156,124,175.39,139,275,Star Death,0.65,15,weaken,0,2.5,event_horizon,False
+abyssal_nebula,Abyssal Nebula,altered_divine,cosmic,50,1053,487,406,400,530,212,165,194.98,156,314,Star Death,0.65,15,weaken,0,2.5,event_horizon,False
+corrupted_leviathan,Corrupted Leviathan,corrupted,water,1,273,158,145,79,136,54,65,99.06,81,162,Corrupted Surge,0.65,15,slow,0,2.5,void_tide,False
+corrupted_leviathan,Corrupted Leviathan,corrupted,water,10,435,222,199,133,208,83,84,122.95,103,193,Corrupted Surge,0.65,15,slow,0,2.5,void_tide,False
+corrupted_leviathan,Corrupted Leviathan,corrupted,water,15,525,257,230,164,248,99,94,143.47,113,209,Corrupted Surge,0.65,15,slow,0,2.5,void_tide,False
+corrupted_leviathan,Corrupted Leviathan,corrupted,water,30,795,364,321,255,368,147,124,165.19,138,276,Corrupted Surge,0.65,15,slow,0,2.5,void_tide,False
+corrupted_leviathan,Corrupted Leviathan,corrupted,water,50,1155,506,443,377,528,211,165,200.58,163,317,Corrupted Surge,0.65,15,slow,0,2.5,void_tide,False
+corrupted_fenrir,Corrupted Fenrir,corrupted,shadow,1,247,164,124,118,130,52,65,104.42,86,153,Rift Fang,0.65,15,poison,0,2.5,rift_walker,False
+corrupted_fenrir,Corrupted Fenrir,corrupted,shadow,10,409,228,179,173,202,80,84,128.67,105,206,Rift Fang,0.65,15,poison,0,2.5,rift_walker,False
+corrupted_fenrir,Corrupted Fenrir,corrupted,shadow,15,499,263,209,203,242,96,94,145.95,115,231,Rift Fang,0.65,15,poison,0,2.5,rift_walker,False
+corrupted_fenrir,Corrupted Fenrir,corrupted,shadow,30,769,370,301,295,362,144,124,176.84,141,278,Rift Fang,0.65,15,poison,0,2.5,rift_walker,False
+corrupted_fenrir,Corrupted Fenrir,corrupted,shadow,50,1129,512,422,416,522,208,165,191.66,164,271,Rift Fang,0.65,15,poison,0,2.5,rift_walker,False
+corrupted_dragon,Corrupted Dragon,corrupted,fire,1,234,158,131,105,143,57,65,116.44,97,172,Corrupted Roar,0.65,15,burn,0,2.5,void_flame,False
+corrupted_dragon,Corrupted Dragon,corrupted,fire,10,396,222,186,160,215,86,84,155.17,125,231,Corrupted Roar,0.65,15,burn,0,2.5,void_flame,False
+corrupted_dragon,Corrupted Dragon,corrupted,fire,15,486,257,217,190,255,102,94,169,139,239,Corrupted Roar,0.65,15,burn,0,2.5,void_flame,False
+corrupted_dragon,Corrupted Dragon,corrupted,fire,30,756,364,308,281,375,150,124,212.16,179,319,Corrupted Roar,0.65,15,burn,0,2.5,void_flame,False
+corrupted_dragon,Corrupted Dragon,corrupted,fire,50,1116,506,430,403,535,214,165,266.97,215,395,Corrupted Roar,0.65,15,burn,0,2.5,void_flame,False
+ancient_chronos,Ancient Chronos,ancient,cosmic,1,367,204,204,197,240,96,65,125.22,105,197,Ancient Epoch,0.65,15,weaken,0,2.5,primordial_time,False
+ancient_chronos,Ancient Chronos,ancient,cosmic,10,547,277,268,261,321,128,84,149.97,128,247,Ancient Epoch,0.65,15,weaken,0,2.5,primordial_time,False
+ancient_chronos,Ancient Chronos,ancient,cosmic,15,647,318,304,297,366,146,94,169.72,139,282,Ancient Epoch,0.65,15,weaken,0,2.5,primordial_time,False
+ancient_chronos,Ancient Chronos,ancient,cosmic,30,947,440,410,403,501,200,124,198.73,168,271,Ancient Epoch,0.65,15,weaken,0,2.5,primordial_time,False
+ancient_chronos,Ancient Chronos,ancient,cosmic,50,1347,602,552,545,681,272,165,237.64,193,383,Ancient Epoch,0.65,15,weaken,0,2.5,primordial_time,False
+ancient_genesis,Ancient Genesis,ancient,cosmic,1,382,228,189,167,232,92,65,235.66,196,365,Origin Burst,0.65,15,weaken,0,2.5,first_fire,False
+ancient_genesis,Ancient Genesis,ancient,cosmic,10,562,301,253,231,313,125,84,309.2,257,510,Origin Burst,0.65,15,weaken,0,2.5,first_fire,False
+ancient_genesis,Ancient Genesis,ancient,cosmic,15,662,341,289,266,358,143,94,375.69,292,555,Origin Burst,0.65,15,weaken,0,2.5,first_fire,False
+ancient_genesis,Ancient Genesis,ancient,cosmic,30,962,463,395,373,493,197,124,483.78,394,693,Origin Burst,0.65,15,weaken,0,2.5,first_fire,False
+ancient_genesis,Ancient Genesis,ancient,cosmic,50,1362,625,537,515,673,269,165,639.17,532,1012,Origin Burst,0.65,15,weaken,0,2.5,first_fire,False
+ancient_abyss,Ancient Abyss,ancient,cosmic,1,382,228,189,182,225,90,65,146.88,117,226,Pre-Existence,0.65,15,weaken,0,2.5,pre_existence,False
+ancient_abyss,Ancient Abyss,ancient,cosmic,10,562,301,253,246,306,122,84,171.8,139,278,Pre-Existence,0.65,15,weaken,0,2.5,pre_existence,False
+ancient_abyss,Ancient Abyss,ancient,cosmic,15,662,341,289,281,351,140,94,185.06,149,302,Pre-Existence,0.65,15,weaken,0,2.5,pre_existence,False
+ancient_abyss,Ancient Abyss,ancient,cosmic,30,962,463,395,388,486,194,124,208.52,175,303,Pre-Existence,0.65,15,weaken,0,2.5,pre_existence,False
+ancient_abyss,Ancient Abyss,ancient,cosmic,50,1362,625,537,530,666,266,165,265.33,200,400,Pre-Existence,0.65,15,weaken,0,2.5,pre_existence,False
+ouroboros,Desync the Infinite,dev,cosmic,1,99999,10141,10141,10141,9999,3999,65,7405.69,5276,14952,Overflow,0.65,15,weaken,0,2.5,infinite_loop,True
+ouroboros,Desync the Infinite,dev,cosmic,10,100449,10324,10324,10324,10179,4071,84,6564.3,4806,10616,Overflow,0.65,15,weaken,0,2.5,infinite_loop,True
+ouroboros,Desync the Infinite,dev,cosmic,15,100699,10425,10425,10425,10279,4111,94,6429.14,4596,11617,Overflow,0.65,15,weaken,0,2.5,infinite_loop,True
+ouroboros,Desync the Infinite,dev,cosmic,30,101449,10730,10730,10730,10579,4231,124,6399.27,4075,17755,Overflow,0.65,15,weaken,0,2.5,infinite_loop,True
+ouroboros,Desync the Infinite,dev,cosmic,50,102449,11135,11135,11135,10979,4391,165,5090.94,3578,18790,Overflow,0.65,15,weaken,0,2.5,infinite_loop,True
+ascended_slime,Ascended Slime,divine,nature,1,260,147,172,60,100,40,65,93.62,76,147,Primordial Surge,0,15,,20,2.5,void_absorption,False
+ascended_slime,Ascended Slime,divine,nature,10,368,192,208,97,154,61,84,109.58,89,170,Primordial Surge,0,15,,20,2.5,void_absorption,False
+ascended_slime,Ascended Slime,divine,nature,15,428,218,229,117,184,73,94,117.12,96,187,Primordial Surge,0,15,,20,2.5,void_absorption,False
+ascended_slime,Ascended Slime,divine,nature,30,608,294,290,178,274,109,124,136.14,111,226,Primordial Surge,0,15,,20,2.5,void_absorption,False
+ascended_slime,Ascended Slime,divine,nature,50,848,395,371,259,394,157,165,152.52,127,251,Primordial Surge,0,15,,20,2.5,void_absorption,False
+ascended_unicorn,Ascended Unicorn,divine,light,1,250,142,142,111,130,52,65,90.81,73,141,Luminal Strike,0,15,,20,2.5,sacred_mending,False
+ascended_unicorn,Ascended Unicorn,divine,light,10,358,187,178,148,184,73,84,108.91,87,164,Luminal Strike,0,15,,20,2.5,sacred_mending,False
+ascended_unicorn,Ascended Unicorn,divine,light,15,418,213,198,168,214,85,94,115.88,93,188,Luminal Strike,0,15,,20,2.5,sacred_mending,False
+ascended_unicorn,Ascended Unicorn,divine,light,30,598,289,259,229,304,121,124,131.72,109,196,Luminal Strike,0,15,,20,2.5,sacred_mending,False
+ascended_unicorn,Ascended Unicorn,divine,light,50,838,390,340,310,424,169,165,154.58,125,252,Luminal Strike,0,15,,20,2.5,sacred_mending,False
+ascended_pegasus,Ascended Pegasus,divine,wind,1,235,152,116,162,110,44,65,93.06,78,136,Rift Gallop,0.65,15,blind,0,2.5,boundary_break,False
+ascended_pegasus,Ascended Pegasus,divine,wind,10,343,197,153,198,164,65,84,112.44,91,183,Rift Gallop,0.65,15,blind,0,2.5,boundary_break,False
+ascended_pegasus,Ascended Pegasus,divine,wind,15,403,223,173,219,194,77,94,120.58,98,191,Rift Gallop,0.65,15,blind,0,2.5,boundary_break,False
+ascended_pegasus,Ascended Pegasus,divine,wind,30,583,299,234,279,284,113,124,140.59,114,222,Rift Gallop,0.65,15,blind,0,2.5,boundary_break,False
+ascended_pegasus,Ascended Pegasus,divine,wind,50,823,400,315,361,404,161,165,156.41,129,256,Rift Gallop,0.65,15,blind,0,2.5,boundary_break,False
+ascended_phoenix,Ascended Phoenix,divine,fire,1,265,167,121,121,140,56,65,107.36,86,169,Ash Unending,0.65,15,burn,0,2.5,deathless_flame,False
+ascended_phoenix,Ascended Phoenix,divine,fire,10,373,213,158,158,194,77,84,119.08,98,193,Ash Unending,0.65,15,burn,0,2.5,deathless_flame,False
+ascended_phoenix,Ascended Phoenix,divine,fire,15,433,238,178,178,224,89,94,130.5,106,198,Ash Unending,0.65,15,burn,0,2.5,deathless_flame,False
+ascended_phoenix,Ascended Phoenix,divine,fire,30,613,314,239,239,314,125,124,147.69,119,234,Ash Unending,0.65,15,burn,0,2.5,deathless_flame,False
+ascended_phoenix,Ascended Phoenix,divine,fire,50,853,415,320,320,434,173,165,164.44,135,259,Ash Unending,0.65,15,burn,0,2.5,deathless_flame,False
+radiant_goblin,Radiant Goblin,epic,earth,1,190,131,111,76,80,32,65,82.22,67,134,Molten Dirt,0.65,15,weaken,0,2.5,,False
+radiant_goblin,Radiant Goblin,epic,earth,10,262,159,129,94,116,46,84,90.44,73,146,Molten Dirt,0.65,15,weaken,0,2.5,,False
+radiant_goblin,Radiant Goblin,epic,earth,15,302,174,139,104,136,54,94,93.53,76,148,Molten Dirt,0.65,15,weaken,0,2.5,,False
+radiant_goblin,Radiant Goblin,epic,earth,30,422,220,170,134,196,78,124,101.89,85,160,Molten Dirt,0.65,15,weaken,0,2.5,,False
+radiant_goblin,Radiant Goblin,epic,earth,50,582,280,210,175,276,110,165,110.53,90,175,Molten Dirt,0.65,15,weaken,0,2.5,,False
+radiant_imp,Radiant Imp,rare,shadow,1,130,101,55,121,90,36,65,64.72,52,103,Smoke Cloak,0.65,15,poison,0,2.5,,False
+radiant_imp,Radiant Imp,rare,shadow,10,184,119,74,139,117,46,84,67.25,55,109,Smoke Cloak,0.65,15,poison,0,2.5,,False
+radiant_imp,Radiant Imp,rare,shadow,15,214,129,84,150,132,52,94,71.28,56,111,Smoke Cloak,0.65,15,poison,0,2.5,,False
+radiant_imp,Radiant Imp,rare,shadow,30,304,160,114,180,177,70,124,76.06,60,119,Smoke Cloak,0.65,15,poison,0,2.5,,False
+radiant_imp,Radiant Imp,rare,shadow,50,424,200,155,221,237,94,165,74.84,64,103,Smoke Cloak,0.65,15,poison,0,2.5,,False
+radiant_hydra,Radiant Hydra,divine,water,1,310,147,152,71,100,40,65,90.8,76,151,Void Scale Regen,0.65,15,slow,0,2.5,endless_regen,False
+radiant_hydra,Radiant Hydra,divine,water,10,418,192,188,107,154,61,84,111.83,90,178,Void Scale Regen,0.65,15,slow,0,2.5,endless_regen,False
+radiant_hydra,Radiant Hydra,divine,water,15,478,218,208,127,184,73,94,121,97,192,Void Scale Regen,0.65,15,slow,0,2.5,endless_regen,False
+radiant_hydra,Radiant Hydra,divine,water,30,658,294,269,188,274,109,124,138.97,111,215,Void Scale Regen,0.65,15,slow,0,2.5,endless_regen,False
+radiant_hydra,Radiant Hydra,divine,water,50,898,395,350,269,394,157,165,152.89,127,234,Void Scale Regen,0.65,15,slow,0,2.5,endless_regen,False
+radiant_kitsune,Radiant Kitsune,divine,arcane,1,255,152,131,177,145,58,65,95.92,78,148,Radiant Illusion,0.65,15,blind,0,2.5,fox_sovereign,False
+radiant_kitsune,Radiant Kitsune,divine,arcane,10,363,197,168,214,199,79,84,110.05,91,181,Radiant Illusion,0.65,15,blind,0,2.5,fox_sovereign,False
+radiant_kitsune,Radiant Kitsune,divine,arcane,15,423,223,188,234,229,91,94,121.27,97,184,Radiant Illusion,0.65,15,blind,0,2.5,fox_sovereign,False
+radiant_kitsune,Radiant Kitsune,divine,arcane,30,603,299,249,295,319,127,124,141.64,113,218,Radiant Illusion,0.65,15,blind,0,2.5,fox_sovereign,False
+radiant_kitsune,Radiant Kitsune,divine,arcane,50,843,400,330,376,439,175,165,159.81,129,246,Radiant Illusion,0.65,15,blind,0,2.5,fox_sovereign,False
+frost_sprite,Frost Sprite,common,ice,1,85,40,45,50,60,24,65,25.36,20,41,Cold Shoulder,0.65,15,freeze,0,2.5,,False
+frost_sprite,Frost Sprite,common,ice,10,121,49,54,59,78,31,84,27.52,22,43,Cold Shoulder,0.65,15,freeze,0,2.5,,False
+frost_sprite,Frost Sprite,common,ice,15,141,54,59,64,88,35,94,28.83,23,47,Cold Shoulder,0.65,15,freeze,0,2.5,,False
+frost_sprite,Frost Sprite,common,ice,30,201,69,75,80,118,47,124,31.25,26,52,Cold Shoulder,0.65,15,freeze,0,2.5,,False
+frost_sprite,Frost Sprite,common,ice,50,281,90,95,100,158,63,165,34.33,28,57,Cold Shoulder,0.65,15,freeze,0,2.5,,False
+permafrost,Permafrost,uncommon,ice,1,140,45,96,20,55,22,65,28.22,23,44,Frost Shell,0.65,15,freeze,0,2.5,,False
+permafrost,Permafrost,uncommon,ice,10,185,63,105,29,73,29,84,35.25,29,53,Frost Shell,0.65,15,freeze,0,2.5,,False
+permafrost,Permafrost,uncommon,ice,15,210,74,110,34,83,33,94,39.11,32,64,Frost Shell,0.65,15,freeze,0,2.5,,False
+permafrost,Permafrost,uncommon,ice,30,285,104,125,49,113,45,124,48.2,39,79,Frost Shell,0.65,15,freeze,0,2.5,,False
+permafrost,Permafrost,uncommon,ice,50,385,145,146,69,153,61,165,57.77,46,86,Frost Shell,0.65,15,freeze,0,2.5,,False
+abyssal_eel,Abyssal Eel,epic,water,1,155,111,76,116,110,44,65,69.89,57,115,Deep Current,0.65,15,slow,0,2.5,,False
+abyssal_eel,Abyssal Eel,epic,water,10,227,138,94,134,146,58,84,78.97,64,125,Deep Current,0.65,15,slow,0,2.5,,False
+abyssal_eel,Abyssal Eel,epic,water,15,267,154,104,145,166,66,94,85.34,67,134,Deep Current,0.65,15,slow,0,2.5,,False
+abyssal_eel,Abyssal Eel,epic,water,30,387,199,134,175,226,90,124,91.61,75,144,Deep Current,0.65,15,slow,0,2.5,,False
+abyssal_eel,Abyssal Eel,epic,water,50,547,260,175,216,306,122,165,102.33,84,161,Deep Current,0.65,15,slow,0,2.5,,False
+loom_fragment,Loom Fragment,rare,cosmic,1,130,76,81,86,120,48,65,47.64,39,78,Loom Pulse,0.65,15,weaken,0,2.5,,False
+loom_fragment,Loom Fragment,rare,cosmic,10,184,94,99,104,147,58,84,53.52,43,86,Loom Pulse,0.65,15,weaken,0,2.5,,False
+loom_fragment,Loom Fragment,rare,cosmic,15,214,104,109,114,162,64,94,56.95,46,91,Loom Pulse,0.65,15,weaken,0,2.5,,False
+loom_fragment,Loom Fragment,rare,cosmic,30,304,134,139,145,207,82,124,59.84,51,83,Loom Pulse,0.65,15,weaken,0,2.5,,False
+loom_fragment,Loom Fragment,rare,cosmic,50,424,175,180,185,267,106,165,69.19,56,112,Loom Pulse,0.65,15,weaken,0,2.5,,False
+prismara,Prismara,divine,arcane,1,225,142,147,111,145,58,65,92.34,73,144,Halo Glint,0.65,15,blind,0,2.5,prism_guard,False
+prismara,Prismara,divine,arcane,10,333,187,183,148,199,79,84,106.39,86,163,Halo Glint,0.65,15,blind,0,2.5,prism_guard,False
+prismara,Prismara,divine,arcane,15,393,213,203,168,229,91,94,117.45,94,180,Halo Glint,0.65,15,blind,0,2.5,prism_guard,False
+prismara,Prismara,divine,arcane,30,573,289,264,229,319,127,124,135.41,110,219,Halo Glint,0.65,15,blind,0,2.5,prism_guard,False
+prismara,Prismara,divine,arcane,50,813,390,345,310,439,175,165,152.77,125,236,Halo Glint,0.65,15,blind,0,2.5,prism_guard,False
+timestitch,Timestitch,divine,cosmic,1,205,142,111,167,150,60,65,90.39,73,146,Thread Snare,0.65,15,weaken,0,2.5,stitch_step,False
+timestitch,Timestitch,divine,cosmic,10,313,187,148,203,204,81,84,106.39,87,169,Thread Snare,0.65,15,weaken,0,2.5,stitch_step,False
+timestitch,Timestitch,divine,cosmic,15,373,213,168,224,234,93,94,116.02,93,177,Thread Snare,0.65,15,weaken,0,2.5,stitch_step,False
+timestitch,Timestitch,divine,cosmic,30,553,289,229,285,324,129,124,136.5,110,212,Thread Snare,0.65,15,weaken,0,2.5,stitch_step,False
+timestitch,Timestitch,divine,cosmic,50,793,390,310,366,444,177,165,153.23,125,246,Thread Snare,0.65,15,weaken,0,2.5,stitch_step,False
+nebuloom,Nebuloom,divine,nature,1,270,136,142,101,145,58,65,86.25,70,140,Star Nursery,0,15,,20,2.5,gentle_change,False
+nebuloom,Nebuloom,divine,nature,10,378,182,178,137,199,79,84,102.41,84,168,Star Nursery,0,15,,20,2.5,gentle_change,False
+nebuloom,Nebuloom,divine,nature,15,438,207,198,158,229,91,94,112.92,91,179,Star Nursery,0,15,,20,2.5,gentle_change,False
+nebuloom,Nebuloom,divine,nature,30,618,284,259,219,319,127,124,130.08,108,201,Star Nursery,0,15,,20,2.5,gentle_change,False
+nebuloom,Nebuloom,divine,nature,50,858,385,340,300,439,175,165,154.89,123,241,Star Nursery,0,15,,20,2.5,gentle_change,False
+rootwarden,Rootwarden,divine,nature,1,290,131,167,81,130,52,65,83.48,67,130,Moss Mend,0,15,,20,2.5,living_roots,False
+rootwarden,Rootwarden,divine,nature,10,398,177,203,117,184,73,84,100.28,83,147,Moss Mend,0,15,,20,2.5,living_roots,False
+rootwarden,Rootwarden,divine,nature,15,458,202,224,137,214,85,94,108.94,89,171,Moss Mend,0,15,,20,2.5,living_roots,False
+rootwarden,Rootwarden,divine,nature,30,638,278,285,198,304,121,124,131.28,105,208,Moss Mend,0,15,,20,2.5,living_roots,False
+rootwarden,Rootwarden,divine,nature,50,878,380,366,279,424,169,165,148.22,122,243,Moss Mend,0,15,,20,2.5,living_roots,False

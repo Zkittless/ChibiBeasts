@@ -1,0 +1,87 @@
+creature,name,rarity,element,skill_role,passive,developer_only,level_1_hp,level_1_max_mana,level_30_hp,level_30_attack,level_30_defense,level_30_speed,level_30_neutral_basic,level_30_peer_win_rate,level_30_peer_judge_rate,bare_raid_wins_of_six,bare_raid_median_winning_seconds
+fairy,Fairy,common,nature,heal/cleanse,,False,80,60,196,64,59,85,28.55,0.462,0.154,0,
+pixie,Pixie,common,arcane,condition: blind,,False,75,65,191,69,54,90,30.59,0.385,0,0,
+goblin,Goblin,common,earth,condition: weaken,,False,100,55,216,75,69,64,34.52,0.654,0,0,
+imp,Imp,common,shadow,condition: poison,,False,70,55,186,80,49,95,37.38,0.192,0,0,
+slime,Slime,common,nature,heal/cleanse,,False,110,55,226,59,85,54,27,0.577,0.231,0,
+kitsune_1,Kitsune,uncommon,arcane,condition: blind,,False,90,75,235,114,69,100,52.42,0.556,0,0,
+dryad,Dryad,uncommon,nature,heal/cleanse,,False,105,70,250,109,90,69,50.84,0.556,0,0,
+hellhound,Hellhound,uncommon,fire,condition: burn,,False,95,55,240,124,75,90,56.78,0.444,0,0,
+harpy,Harpy,uncommon,wind,condition: blind,,False,85,65,230,119,64,105,56.86,0.5,0,0,
+unicorn,Unicorn,rare,light,heal/cleanse,,False,110,90,284,124,119,134,57.52,0.15,0,0,
+pegasus,Pegasus,rare,wind,condition: blind,,False,105,75,279,129,114,150,59.84,0.6,0,0,
+griffin,Griffin,rare,wind,condition: blind,,False,120,65,294,134,124,129,64.11,0.3,0,0,
+basilisk,Basilisk,rare,shadow,condition: poison,,False,130,70,304,129,134,99,59.27,0.55,0,0,
+cerberus,Cerberus,rare,shadow,condition: poison,,False,140,60,314,139,129,114,64.25,0.55,0,0,
+wyvern,Wyvern,rare,fire,condition: burn,,False,115,65,289,139,119,134,65.3,0.45,0,0,
+phoenix,Phoenix,epic,fire,condition: burn,,False,130,95,362,179,124,145,83.38,0.25,0,0,
+thunderbird,Thunderbird,epic,wind,condition: blind,,False,125,90,357,184,119,150,82.11,0.3,0,0,
+sphinx,Sphinx,epic,arcane,condition: blind,,False,135,110,367,174,139,124,80.06,0.45,0,0,
+yeti,Yeti,epic,ice,condition: freeze,,False,160,70,392,179,145,104,82.94,0.25,0,0,
+minotaur,Minotaur,epic,earth,condition: weaken,,False,155,65,387,189,139,109,88.09,0.7,0,0,
+kitsune_9,Kitsune,epic,arcane,condition: blind,,False,140,120,372,184,134,160,84.69,0.4,0,0,
+dragon,Dragon,legendary,fire,condition: burn,,False,180,110,470,239,189,169,108.41,0.312,0,3,448.6
+kraken,Kraken,legendary,water,condition: slow,,False,200,100,490,234,199,144,109.69,0.562,0,1,423.6
+hydra,Hydra,legendary,water,heal/cleanse,,False,220,95,510,229,194,138,104.47,0.75,0.062,3,555.2
+fenrir,Fenrir,legendary,shadow,condition: poison,,False,190,100,480,244,184,179,118.89,0.625,0,4,401.7
+charybdis,Charybdis,legendary,wind,condition: blind,,False,185,115,475,229,189,159,108.98,0.438,0,1,476.8
+leviathan,Leviathan,legendary,water,condition: slow,,False,210,105,500,239,199,149,110.3,0.375,0,1,450.3
+singularity,Singularity,divine,cosmic,condition: weaken,gravity_well,False,250,150,598,289,249,219,138.42,0.115,0,5,534.1
+astraea,Astraea,divine,cosmic,condition: weaken,star_weave,False,240,155,588,294,239,234,135.75,0.115,0,6,297.4
+chronos,Chronos,divine,cosmic,condition: weaken,borrowed_time,False,245,160,593,284,254,249,133.72,0.423,0,6,369.2
+aetherius,Aetherius,divine,cosmic,condition: weaken,void_hunger,False,280,150,628,278,264,203,125.86,0.288,0,6,410.3
+genesis,Genesis,divine,cosmic,condition: weaken,first_flame,False,255,155,603,299,244,229,139.12,0.673,0,6,540.7
+terminus,Terminus,divine,cosmic,condition: weaken,final_word,False,245,160,593,289,259,224,136.81,0.25,0,5,548.8
+paradox,Paradox,divine,cosmic,condition: weaken,mirror_reality,False,250,165,598,294,249,239,143.45,0.385,0,6,391.1
+horizon,Horizon,divine,cosmic,condition: weaken,rift_step,False,255,150,603,289,254,234,138.78,0.346,0,6,362.4
+karma,Karma,divine,cosmic,condition: weaken,karmic_echo,False,240,160,588,284,249,244,135.31,0.385,0,6,434.9
+zodiac,Zodiac,divine,cosmic,condition: weaken,constellation_charge,False,260,155,608,287,257,227,136.62,0.558,0,6,308.8
+abyss,Abyss,divine,cosmic,condition: weaken,dark_matter,False,255,150,603,299,244,239,142.16,0.346,0,6,380.0
+nebula,Nebula,divine,cosmic,condition: weaken,stellar_nursery,False,250,160,598,289,254,229,135.84,0.538,0,5,554.2
+supernova,Supernova,divine,cosmic,condition: weaken,critical_mass,False,245,155,593,304,239,234,142.36,0.654,0,6,214.6
+nirvana,Nirvana,divine,cosmic,condition: weaken,lotus_veil,False,240,170,588,278,264,224,128.39,0.231,0,5,553.3
+asgard,Asgard,divine,cosmic,condition: weaken,bifrost_surge,False,265,145,613,294,259,224,133.53,0.538,0,6,468.6
+atlas,Atlas,divine,cosmic,condition: weaken,weight_of_worlds,False,300,145,648,268,290,178,124.94,0.712,0.038,4,543.5
+prismite,Prismite,common,arcane,condition: blind,,False,90,70,206,69,80,75,31.31,0.577,0,0,
+twine,Twine,common,cosmic,condition: weaken,,False,85,65,201,75,64,110,34.41,0.538,0,0,
+gloop,Gloop,common,nature,heal/cleanse,,False,110,60,226,64,75,64,29.45,0.731,0.192,0,
+barkley,Barkley,common,nature,heal/cleanse,,False,110,55,226,64,85,49,29.05,0.615,0.154,0,
+centry,Centry,uncommon,earth,condition: weaken,,False,115,55,260,119,85,80,55.58,0.611,0,0,
+wisp,Wisp,common,light,heal/cleanse,,False,65,60,181,69,54,105,31.89,0.423,0.038,0,
+mudpup,Mudpup,common,earth,condition: weaken,,False,85,55,201,75,69,69,34.14,0.692,0,0,
+strix,Strix,common,shadow,condition: poison,,False,60,65,176,80,49,100,36.66,0.231,0,0,
+kelpie,Kelpie,uncommon,water,condition: slow,,False,95,55,240,124,75,100,57.41,0.556,0,0,
+manticore,Manticore,uncommon,earth,condition: weaken,,False,100,55,245,129,69,95,62.69,0.722,0,0,
+will_o_wisp,Will-o-Wisp,uncommon,shadow,condition: poison,,False,90,60,235,119,64,115,54.33,0.222,0,0,
+rukh,Rukh,rare,wind,condition: blind,,False,130,60,304,139,124,139,61.56,0.75,0,0,
+glacius,Glacius,rare,ice,condition: freeze,,False,160,55,334,134,155,94,60.92,0.7,0,0,
+behemoth,Behemoth,epic,earth,condition: weaken,,False,220,60,452,179,190,84,85.72,0.75,0,0,
+wendigo,Wendigo,epic,shadow,condition: poison,,False,170,80,402,209,134,155,96.52,0.55,0,0,
+jormungandr,Jormungandr,legendary,shadow,condition: poison,,False,205,110,495,234,189,159,106.16,0.5,0,4,449.2
+simurgh,Simurgh,legendary,wind,condition: blind,,False,185,125,475,224,184,184,108.45,0.75,0,1,460.9
+void_chronos,Void Chronos,altered_divine,cosmic,condition: weaken,fractured_time,False,306,200,741,346,317,311,161.56,0.5,0,6,258.8
+fractured_genesis,Fractured Genesis,altered_divine,cosmic,condition: weaken,null_origin,False,318,193,753,366,305,286,198.47,0.667,0,6,193.9
+abyssal_nebula,Abyssal Nebula,altered_divine,cosmic,condition: weaken,event_horizon,False,318,187,753,366,305,299,175.39,0.5,0,6,291.0
+corrupted_leviathan,Corrupted Leviathan,corrupted,water,condition: slow,void_tide,False,273,136,795,364,321,255,165.19,0.667,0,6,259.1
+corrupted_fenrir,Corrupted Fenrir,corrupted,shadow,condition: poison,rift_walker,False,247,130,769,370,301,295,176.84,0.833,0,6,167.0
+corrupted_dragon,Corrupted Dragon,corrupted,fire,condition: burn,void_flame,False,234,143,756,364,308,281,185.33,0.667,0,6,131.2
+ancient_chronos,Ancient Chronos,ancient,cosmic,condition: weaken,primordial_time,False,367,240,947,440,410,403,198.73,0.5,0,6,108.0
+ancient_genesis,Ancient Genesis,ancient,cosmic,condition: weaken,first_fire,False,382,232,962,463,395,373,271.67,0.667,0,6,106.0
+ancient_abyss,Ancient Abyss,ancient,cosmic,condition: weaken,pre_existence,False,382,225,962,463,395,388,208.52,0.667,0,6,122.0
+ouroboros,Desync the Infinite,dev,cosmic,condition: weaken,infinite_loop,True,99999,9999,101449,10730,10730,10730,6399.27,,,,
+ascended_slime,Ascended Slime,divine,nature,heal/cleanse,void_absorption,False,260,100,608,294,290,178,136.14,0.885,0.096,6,307.8
+ascended_unicorn,Ascended Unicorn,divine,light,heal/cleanse,sacred_mending,False,250,130,598,289,259,229,131.72,0.288,0.25,5,509.1
+ascended_pegasus,Ascended Pegasus,divine,wind,condition: blind,boundary_break,False,235,110,583,299,234,279,140.59,0.404,0,6,244.4
+ascended_phoenix,Ascended Phoenix,divine,fire,condition: burn,deathless_flame,False,265,140,613,314,239,239,147.69,0.942,0.019,6,282.1
+radiant_goblin,Radiant Goblin,epic,earth,condition: weaken,,False,190,80,422,220,170,134,101.89,0.85,0,1,485.4
+radiant_imp,Radiant Imp,rare,shadow,condition: poison,,False,130,90,304,160,114,180,76.06,0.95,0,0,
+radiant_hydra,Radiant Hydra,divine,water,heal/cleanse,endless_regen,False,310,100,658,294,269,188,138.97,0.846,0.096,6,439.0
+radiant_kitsune,Radiant Kitsune,divine,arcane,condition: blind,fox_sovereign,False,255,145,603,299,249,295,141.64,0.788,0.038,6,236.0
+frost_sprite,Frost Sprite,common,ice,condition: freeze,,False,85,60,201,69,75,80,31.25,0.769,0,0,
+permafrost,Permafrost,uncommon,ice,condition: freeze,,False,140,55,285,104,125,49,48.2,0.556,0,0,
+abyssal_eel,Abyssal Eel,epic,water,condition: slow,,False,155,110,387,199,134,175,91.61,0.7,0,0,
+loom_fragment,Loom Fragment,rare,cosmic,condition: weaken,,False,130,120,304,134,139,145,59.84,0.45,0,0,
+prismara,Prismara,divine,arcane,condition: blind,prism_guard,False,225,145,573,289,264,229,135.41,0.577,0.038,6,527.2
+timestitch,Timestitch,divine,cosmic,condition: weaken,stitch_step,False,205,150,553,289,229,285,136.5,0.365,0,6,253.0
+nebuloom,Nebuloom,divine,nature,heal/cleanse,gentle_change,False,270,145,618,284,259,219,130.08,0.769,0.154,5,511.3
+rootwarden,Rootwarden,divine,nature,heal/cleanse,living_roots,False,290,130,638,278,285,198,131.28,0.731,0.173,5,409.1
