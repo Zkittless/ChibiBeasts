@@ -20,6 +20,7 @@ from utils.db import (
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, SPARKLE
 from utils.progress import check_achievements, unlock_simple_achievement, notify_unlocks
 from utils.sanctuary import get_user_sanctuary
+from utils.equipment import dormant_label
 
 # ── Evolution Cinematics ────────────────────────────────────────────────────
 EVOLUTION_SCENES = {
@@ -138,11 +139,11 @@ SHARD_SHOP = {
     },
     "divine_compass": {
         "name": "🧭 Divine Compass",
-        "desc": "Boosts the divine encounter rate in the Celestial Loom to 20% for your next 3 explores.",
+        "desc": "Adds 10 percentage points to Divine encounter odds for your next 3 Celestial Loom explores, up to 90%.",
         "cost": 25,
         "weekly_limit": 1,
         "type": "explore_boost",
-        "min_level": 10,
+        "min_level": 30,
     },
     "loom_fragment": {
         "name": "🧵 Loom Fragment",
@@ -154,11 +155,11 @@ SHARD_SHOP = {
     # ── Page 2: Cosmetics & access ───────────────────────────────────────
     "prism_key": {
         "name": "🔑 Prism Key",
-        "desc": "Gives one Celestial Loom exploration a 30% divine rate. Used before a Divine Compass charge.",
+        "desc": "Adds 15 percentage points to Divine odds for one Celestial Loom explore, up to 90%. Used before a Divine Compass charge.",
         "cost": 15,
         "weekly_limit": 1,
         "type": "key",
-        "min_level": 10,
+        "min_level": 30,
     },
     "beast_rename_token": {
         "name": "✏️ Rename Token",
@@ -181,7 +182,7 @@ SHARD_SHOP = {
         "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
-        "min_level": 10,
+        "min_level": 15,
         "grant_item_id": "epoch_shard",
     },
     "firstborn_ember": {
@@ -190,7 +191,7 @@ SHARD_SHOP = {
         "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
-        "min_level": 10,
+        "min_level": 15,
         "grant_item_id": "firstborn_ember",
     },
     "void_prism": {
@@ -199,7 +200,7 @@ SHARD_SHOP = {
         "cost": 60,
         "weekly_limit": 1,
         "type": "grant_item",
-        "min_level": 10,
+        "min_level": 15,
         "grant_item_id": "void_prism",
     },
 }
@@ -233,6 +234,8 @@ class Utilities(commands.Cog):
         await interaction.response.defer()
         equipment, runes = load_equipment()
         all_gear = {**equipment, **runes}
+        trainer = await get_player(interaction.user.id)
+        trainer_level = trainer['level'] if trainer else 1
 
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
@@ -285,7 +288,8 @@ class Utilities(commands.Cog):
                     if isinstance(v, (int,float)) else k.replace('_',' ')
                     for k,v in g.get("effect",{}).items()
                 )
-                embed.add_field(name=f"🔰 {gr} {g.get('name','?')}", value=eff_str or "Special", inline=False)
+                status = dormant_label(g, trainer_level)
+                embed.add_field(name=f"🔰 {gr} {g.get('name','?')}", value=status + '\nEffects are inactive.' if status else eff_str or "Special", inline=False)
         else:
             embed.add_field(name="🔰 Armor", value="*None equipped — use `/equip <armor> #{beast_id}`*", inline=False)
 
@@ -297,7 +301,8 @@ class Utilities(commands.Cog):
                 f"+{v} {k.replace('_',' ')}" if isinstance(v,(int,float)) else k.replace('_',' ')
                 for k,v in g.get("effect",{}).items()
             )
-            embed.add_field(name=f"💎 {gr} {g.get('name','?')}", value=eff_str or "Special", inline=False)
+            status = dormant_label(g, trainer_level)
+            embed.add_field(name=f"💎 {gr} {g.get('name','?')}", value=status + '\nEffects are inactive.' if status else eff_str or "Special", inline=False)
         else:
             embed.add_field(name="💎 Rune", value="*None equipped — use `/equip <rune> #{beast_id}`*", inline=False)
 
@@ -307,13 +312,13 @@ class Utilities(commands.Cog):
 
         if available_armor:
             avail_str = "\n".join(
-                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}"
+                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}" + (f" · {dormant_label(all_gear[g], trainer_level)}" if dormant_label(all_gear[g], trainer_level) else '')
                 for g in available_armor if g in all_gear
             )
             embed.add_field(name="📦 Armor in Inventory", value=avail_str, inline=False)
         if available_runes:
             avail_str = "\n".join(
-                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}"
+                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}" + (f" · {dormant_label(all_gear[g], trainer_level)}" if dormant_label(all_gear[g], trainer_level) else '')
                 for g in available_runes if g in all_gear
             )
             embed.add_field(name="📦 Runes in Inventory", value=avail_str, inline=False)
@@ -881,10 +886,9 @@ class Utilities(commands.Cog):
                 else:
                     await db.execute("INSERT INTO player_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)", (interaction.user.id, found_item[0]))
 
-            from utils.db import apply_beast_levelup,get_beast_exp_for_level
-            new_level=active["level"]
-            while new_exp>=get_beast_exp_for_level(active,new_level):
-                new_exp-=get_beast_exp_for_level(active,new_level);new_level+=1
+            from utils.db import apply_beast_levelup
+            from utils.progression import advance_beast_xp
+            new_level,new_exp=advance_beast_xp(active['level'],active['exp'],EXP_GAIN)
             await apply_beast_levelup(db,active,new_level,new_exp)
             await db.execute("UPDATE player_beasts SET happiness=? WHERE id=?",(new_happiness,active["id"]))
             await db.execute("UPDATE players SET play_last_at = ? WHERE user_id = ?", (_now, interaction.user.id))

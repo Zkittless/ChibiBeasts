@@ -11,16 +11,18 @@ Begin with `/start`, then `/journal`. The [Field Journal](docs/FIELD-JOURNAL.md)
 | Destination | Trainer level | Main inhabitants |
 |---|---:|---|
 | Whispering Woods | 1 | Nature, earth, arcane, light |
-| Ember Wastes | 3 | Fire, earth, shadow |
-| Glacial Hollows | 5 | Ice, wind |
-| Sunken Abyssal Trenches | 8 | Water, shadow |
-| Celestial Loom | 10 | Cosmic, arcane, light |
+| Ember Wastes | 6 | Fire, earth, shadow |
+| Glacial Hollows | 12 | Ice, wind |
+| Sunken Abyssal Trenches | 20 | Water, shadow |
+| Celestial Loom | 30 | Cosmic, arcane, light |
+
+Each region has a deeper destination, giving ten fixed encounter bands from companion levels 1–50. Trainer level grants access; the journal separately shows enemy levels and recommends Woods through companion level 7, then Woods Depths until the first awakening. See [progression rules](docs/PROGRESSION-WORLD.md) for the complete ladder and migration behavior.
 
 Exploration regenerates **one charge every 30 minutes**, banking up to **three**. `/explore` opens the Field Journal and begins a saved expedition in your chosen destination, or resumes your current trip without spending another charge. Remaining charges and the next recharge stay visible while you follow tracks, choose a gathering find, or visit a landmark for bond, study or rest. Trips save after every choice; reopen `/explore` or `/journal` to resume. Return home to bank the trip's single reward bundle. The legacy `expedition` option uses this same flow for either value. `/challenge` retains its 20-minute timer and `/play` its two hours. Equipped time perks reduce the relevant timers. Encounters use regional species pools and exclude starter and evolution-only forms.
 
 ## Starter awakenings
 
-Each starter has its own Divine bond evolution, with a distinct silhouette and new passive:
+Each starter has its own Rare bond evolution, with a distinct silhouette and new passive:
 
 | Companion | Awakening | Form and ability |
 |---|---|---|
@@ -29,7 +31,7 @@ Each starter has its own Divine bond evolution, with a distinct silhouette and n
 | Gloop | **Nebuloom** | Jelly salamander with star fins and a crescent tail; stronger restorative skill |
 | Barkley | **Rootwarden** | Forest drake with leaf wings, antlers and an eggshell chestplate; damage reduction and healing while guarding |
 
-Reach **beast level 15, bond 30, and happiness 70**. Open `/journal` → **Companions** to check progress, review the next form and confirm the awakening. No catalyst is needed. Nickname, disposition, level, EXP, training, earned stat boosts, Ambrosia bonus, gear and party assignments survive evolution. Each bond point adds 0.1% to the starter family's combat attack, defense and speed, up to 10% at 100, including after awakening.
+Reach **companion level 15, trainer level 8, bond 40, and happiness 70**. Open `/journal` → **Companions** to check progress, review the next form and confirm the awakening. No catalyst is needed. Nickname, disposition, level, EXP, training, earned stat boosts, Ambrosia bonus, gear and party assignments survive evolution. Awakening retains ancestral level growth, then gradually catches up to the new rarity through level 50. Each bond point adds 0.1% to the starter family's combat attack, defense and speed, up to 10% at 100, including after awakening.
 
 Radiant and Ascended evolutions retain their own item requirements. Evolution-only forms cannot hatch randomly. The roster contains **86 creatures**, each with a local, versioned PNG. See the [evolution preview](chibibeasts-evolutions.html) and [artwork notes](docs/ARTWORK.md).
 
@@ -49,11 +51,11 @@ Wild battles, NPC spars, `/battle` and `/ranked` use the same interactive combat
 
 Duels show both companions on a matching realm battlefield in the [Field Journal UI](docs/FIELD-JOURNAL-UI.md), with framed portraits, fitted HP/MP values, separated ultimate charges and a lower battle journal. The [move animation overhaul](docs/MOVE-ANIMATIONS.md) assigns effects to all 334 distinct move names: threads snap, clockwork rewinds, roots rise, fire breath forms a cone, and healing follows each companion's theme. Defeated creatures turn and retreat offstage. All 86 portraits and five backgrounds ship with the bot. See [number spacing](docs/field-journal/number-spacing.png) and [runtime notes](docs/ANIMATED-BATTLES.md). Discord's GIF autoplay setting controls client playback; text fallback and a final still remain available. Reward/result messages omit the redundant post-fight battle logs and HP summaries.
 
-Guild `/raid` and `/ancient` share a cooperative system with a lobby, three companions per trainer, swapping, tending allies, guarding and boss-specific Weave responses. Guild raids require a level-five guild, 50 guild tokens, and a leader or officer to host. Trainers need level 10 and three healthy assigned companions. Ancient raids spend their summon item when the lobby starts.
+Guild `/raid` and `/ancient` share a cooperative system with a lobby, three companions per trainer, swapping, tending allies, guarding and boss-specific Weave responses. Guild raids require a level-five guild, 50 guild tokens, and a leader or officer to host. Trainers need level 15 and three healthy assigned companions of at least level 15. Ancient raids spend their summon item when the lobby starts.
 
 Both raid types show a large boss and every trainer's active companion in a shared pixel-art arena. Up to ten companions animate together against the matching realm, with numbered positions matching the trainer panel. Attacks, ultimates, barriers, healing, swaps, Weave threads and boss sweeps use real combat results. Each trainer keeps independent live controls during clips. See the [ten-trainer clip](docs/field-journal/raid-ten.gif) and [raid arena notes](docs/COOPERATIVE-RAID-ARENA.md).
 
-Prepared parties aim for **5–8 minute raids**, within the ten-minute limit. Boss budgets use party size and the median trainer's highest companion level, rounded down into five-level bands from 10 to 50. Gear and training improve your chances without increasing the boss's stats. Speed gives 3.5–6.5 second action recovery; Weave and Tend each have their own eight-second cooldown. Boss volleys pressure every standing trainer. Repeated freeze/sleep cannot lock a boss down, and percentage-HP effects have attack-based caps against bosses. Raids start at zero ultimate charges and up to 40% mana, plus equipped perk bonuses.
+Prepared parties aim for **5–8 minute raids**, within the ten-minute limit. Boss budgets scale continuously with party size and the median trainer's highest companion level, using attainable reference builds through level 50. Gear and training improve your chances without increasing the boss's stats. Speed gives 3.5–6.5 second action recovery; Weave and Tend each have their own eight-second cooldown. Boss volleys pressure every standing trainer. Repeated freeze/sleep cannot lock a boss down, and percentage-HP effects have attack-based caps against bosses. Raids start at zero ultimate charges and up to 40% mana, plus equipped perk bonuses.
 
 Every active contributor receives rewards, including support players. Forging materials have real drop routes. Successful rescues build a guaranteed companion catch after eight Corrupted clears or twelve Ancient clears of that species, with a chance to meet the companion sooner. Interrupted paid raids are refunded once on restart. Fainted companions recover after their timer or can be revived.
 
@@ -63,7 +65,7 @@ Raid patterns allow at least six seconds to respond. Each trainer can Weave once
 
 The [battle runtime audit](docs/BATTLE-RUNTIME-AUDIT.txt) covers concurrent settlement, slow Discord updates, knockout batching and battle acceptance. Raid warnings grant their full response window after publication, Swap cycles through all three healthy companions, and the panel shows every trainer's mana and ultimate charges. [Before](docs/battle-runtime-before.json)/[after](docs/battle-runtime-after.json) benchmarks and the [replayed raid holdout](docs/battle-runtime-balance/holdout-summary.json) contain the measured evidence.
 
-Ranked matches use gear and chosen moves. Five placements establish a rank; 28-day seasons archive qualified standings, award 5–50 shards, and reset ratings. Repeat-opponent limits reduce farming.
+Ranked matches use gear and chosen moves. Five placements establish a rank; 28-day seasons archive qualified standings, award 5–50 shards, and reset ratings. Both PvP modes share a daily limit of 60 companion EXP and 80 trainer EXP per trainer; only the first clean knockout match per opponent per UTC day grants EXP or gold.
 
 ## Shops, crafting and care
 
@@ -78,11 +80,11 @@ Ranked matches use gear and chosen moves. Five placements establish a rank; 28-d
 
 Each completed expedition brings back one crafting material, including trips where a creature escapes. Gathering lets you choose one of the offered resources within the rolled rarity. `/craft` shows actual effects, crafting levels, current habitat/raid routes and your Forge discount. The archived economy audit's acquisition estimates describe the earlier quick-exploration model; they are not forecasts for the saved expedition flow. Equipment remains craftable, and Fenrir Fur helps forge the Abyssal Shroud.
 
-Gold purchases and crafting follow a level ladder. Instant eggs unlock at trainer levels **1/3/10/15**; Common through Divine incubation eggs unlock at **1/3/5/10/15/25**. Legendary incubation eggs cost **24,000g**, and the three guaranteed-Divine eggs cost **80,000g**. The World-Tree Seed comes from the campaign. Egg bonuses stay within an instant egg's offered tiers, with Glimmering Fortune retaining its rare Divine upgrade.
+Gold purchases and crafting follow a level ladder. Instant eggs unlock at trainer levels **1/12/30/40**; Common through Divine incubation eggs and crafting tiers unlock at **1/6/12/20/30/40**. Legendary incubation eggs cost **24,000g**, and the three guaranteed-Divine eggs cost **80,000g**. The World-Tree Seed comes from the campaign. Egg bonuses stay within an instant egg's offered tiers, with Glimmering Fortune retaining its rare Divine upgrade. Owned gear above its trainer gate stays equipped with dormant effects until that gate is reached.
 
 Raids and `/contribute` award personal **Guild Tickets** for `/guild_shop`; the guild's shared tokens pay for upgrades and raid entry. Existing personal raid tokens convert to tickets once at startup. Guild EXP requirements use 250 × current guild level, making level-five raid access roughly seven days for three daily contributors, or two to three days for ten, before missed days or membership changes.
 
-Training costs 50–1,000g by rarity; new HP sessions grant three times the normal point gain. Phoenix Elixirs cost 750g, Luna Nectar 150g, and Star-Candy 1,500g. Each companion has 30 tracked Star-Candy uses; evolution preserves the counter. Carrots cost 150g and grant 25 + 5 × trainer level EXP, scaling through trainer level 30. Repeated temporary potions do not stack. Repeatable exploration/challenge/daily gold scales through level 50, while EXP and levels continue to progress. Loom Catalysts move an egg's schedule two hours closer for 800g.
+Training costs 50–1,000g by rarity, with four sessions and at most 40 training EXP per companion per UTC day; new HP sessions grant three times the normal point gain. Phoenix Elixirs cost 750g, Luna Nectar 150g, and Star-Candy 1,500g. Each companion has 30 tracked Star-Candy uses; evolution preserves the counter. Carrots cost 120g and grant 20 EXP; growth treats share a 60 EXP daily allowance per companion, including Singularity Soda. Trading cannot reset these allowances. Repeated temporary potions do not stack. Companion and trainer progression stop at level 50. Chrono-Biscuits cost 7,500g to prevent profitable repeat-reset loops. Loom Catalysts move an egg's schedule two hours closer for 800g.
 
 ## Run and deploy
 
@@ -95,7 +97,7 @@ Set `DISCORD_TOKEN` in the environment or `.env`. `OWNER_ID` controls owner tool
 
 Back up the existing SQLite database before upgrading. Schema migrations preserve accounts and collections; they run during startup. On Railway, keep `db/` on the persistent volume. This update does not require deleting the database. Use owner-only `!sync` to refresh slash commands if needed.
 
-The combat balance migration applies base-stat differences once to nine affected species, including the four starters. Existing level growth, disposition, training, bonds, equipment and other earned boosts are preserved. Deploy code and catalogs together and restart the bot to load the new rules.
+The progression migration recalculates automatic base stats and level growth once from the frozen legacy baseline. It preserves disposition, training, bonds, identity, owned gear and earned stat extras, while capping legacy levels above 50. HP/MP retain their proportions and knocked-out companions remain knocked out. Deploy code and catalogs together and restart the bot to load the new rules.
 
 All commands use the database configured in `utils.db.DB_PATH`, resolved from the project directory. SQLite uses WAL and indexed lookups. Keep SQLite's `-wal` and `-shm` files on the same volume while the bot runs; use SQLite's backup API or stop the bot before copying a database backup. The bot expects one running instance per database, since battle and lobby reservations live in memory.
 
@@ -126,6 +128,7 @@ python scripts/preview_raid_arena.py --output raid-preview-output
 python scripts/preview_field_journal.py --output field-journal-output
 python scripts/preview_move_animations.py --output battle-overhaul-output --audit-roster
 python scripts/audit_economy.py --output economy-results
+python scripts/audit_progression.py --seeds 80 --policy training
 python scripts/finalize_artwork.py
 python scripts/build_revamp_preview.py
 python scripts/build_art_gallery.py --output chibibeasts-gallery-full.html --standalone

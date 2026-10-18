@@ -39,6 +39,7 @@ def exclusive_player(function):
 
 async def prepare_state(user_id, row, data, perks, *, consume=True):
     from utils.catalog import load_catalog
+    from utils.economy_balance import recipe_level
     equipment=load_catalog('equipment.json')
     gear = {**equipment['equipment'], **equipment['runes']}
     async with storage.connect() as db:
@@ -61,7 +62,11 @@ async def prepare_state(user_id, row, data, perks, *, consume=True):
         if consume:
             await db.execute('UPDATE players SET next_defense_boost=0,next_speed_boost=0,status_ward_charges=MAX(0,status_ward_charges-1) WHERE user_id=?', (user_id,))
             await db.commit()
-    return combat.build_state(data, row, perks, [gear[id] for id in ids if id in gear], player)
+    # Legacy saves retain their bound pieces and appearance. Their effects
+    # remain dormant until the trainer meets the same gate as a new equip.
+    equipped = [gear[id] if player['level'] >= recipe_level(gear[id]) else {**gear[id], 'effect': {}}
+                for id in ids if id in gear]
+    return combat.build_state(data, row, perks, equipped, player)
 
 class MoveView(discord.ui.View):
 
@@ -417,22 +422,20 @@ async def beast_exp(user_id, row_id, amount):
         await track_quest_event(user_id, 'beast_level_up')
     return level
 
-async def beast_exp_in_transaction(db, user_id, row_id, amount):
+async def beast_exp_in_transaction(db, user_id, row_id, amount, *, bonuses=True):
     from utils.rewards import has_perk
-    if await has_perk(db, user_id, 'fable_scholar'):
+    if bonuses and await has_perk(db, user_id, 'fable_scholar'):
         amount = round(amount * 1.1)
-    async with db.execute('SELECT 1 FROM guild_members m JOIN guild_sanctuary s ON s.guild_id=m.guild_id WHERE m.user_id=? AND s.arcane_library=1', (user_id,)) as c:
-        if await c.fetchone():
-            amount = round(amount * 1.15)
+    if bonuses:
+        async with db.execute('SELECT 1 FROM guild_members m JOIN guild_sanctuary s ON s.guild_id=m.guild_id WHERE m.user_id=? AND s.arcane_library=1', (user_id,)) as c:
+            if await c.fetchone():
+                amount = round(amount * 1.15)
     async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND id=?', (user_id, row_id)) as c:
         row = await c.fetchone()
     if not row:
         return (None, False)
     row = dict(row)
-    level = row['level']
-    exp = row['exp'] + amount
-    while exp >= storage.get_beast_exp_for_level(row, level):
-        exp -= storage.get_beast_exp_for_level(row, level)
-        level += 1
+    from utils.progression import advance_beast_xp
+    level, exp = advance_beast_xp(row['level'], row['exp'], amount)
     await storage.apply_beast_levelup(db, row, level, exp)
     return (level, level > row["level"])

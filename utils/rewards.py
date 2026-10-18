@@ -1,5 +1,23 @@
 """Wallet and EXP updates shared by commands; callers own the transaction."""
 from utils import db as storage
+from datetime import datetime, timezone
+from utils.progression import advance_trainer_xp, activity_beast_xp, ACTIVITY_XP
+
+
+async def activity_exp(db, user_id, beast, kind, *, requested=None):
+    """Claim a companion's UTC daily growth budget inside the caller's transaction."""
+    date = datetime.now(timezone.utc).date().isoformat()
+    key = f'activity_xp:{beast["id"]}:{kind}:{date}'
+    # A trade keeps the companion ID: its daily budget travels with it.
+    async with db.execute('SELECT COALESCE(SUM(value),0) FROM player_progress WHERE stat_key=?', (key,)) as cursor:
+        row = await cursor.fetchone()
+    earned = row[0] if row else 0
+    amount = activity_beast_xp(kind, beast['level'], earned)
+    if requested is not None and beast['level'] < 50:
+        amount = min(max(0, int(requested)), max(0, ACTIVITY_XP[kind][1] - earned))
+    if amount:
+        await db.execute('INSERT INTO player_progress(user_id,stat_key,value) VALUES(?,?,?) ON CONFLICT(user_id,stat_key) DO UPDATE SET value=value+excluded.value', (user_id, key, amount))
+    return amount
 
 async def has_perk(db, user_id, perk_id):
     async with db.execute('SELECT 1 FROM player_perks WHERE user_id=? AND perk_id=? AND equipped=1', (user_id, perk_id)) as cursor:
@@ -22,11 +40,7 @@ async def player_exp(db, user_id, amount):
     if not row:
         return (1, 0, False)
     old_level, exp = row
-    level = old_level
-    exp += amount
-    while exp >= storage.calc_player_exp_for_level(level):
-        exp -= storage.calc_player_exp_for_level(level)
-        level += 1
+    level, exp = advance_trainer_xp(old_level, exp, amount)
     await db.execute('UPDATE players SET level=?,exp=? WHERE user_id=?', (level, exp, user_id))
     if level > old_level:
         from cogs.battle import LEVEL_MILESTONES

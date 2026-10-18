@@ -3,6 +3,7 @@ import json
 import aiosqlite
 from utils import db as storage
 RELATIONSHIP_LEVELS = {'stranger': ('Stranger', '⚪'), 'known': ('Known', '🟢'), 'trusted': ('Trusted', '🔵'), 'companion': ('Companion', '🌸')}
+PACING_REVISION = 2
 
 def relationship_order(level):
     return list(RELATIONSHIP_LEVELS).index(level) if level in RELATIONSHIP_LEVELS else 0
@@ -46,23 +47,65 @@ def get_relationship_level(state, npc_id):
     return state['npc_relationships'].get(npc_id, 'stranger')
 
 def check_chapter_unlock(chapter, state, player):
-    if chapter['id'] == 'chapter_1' and player.get('level', 1) < 3:
-        return (False, 'Reach trainer level 3. Try /challenge, /explore and /daily.')
     cond = chapter.get('unlock_condition', '')
     if cond.endswith('_complete') and cond[:-9] not in state['completed_chapters']:
         return (False, 'Finish the previous chapter first.')
+    # Do not strand a chapter opened before the new pacing gates existed.
+    introduced = state['step_progress'].get(chapter['id'], {}).get('_introduced')
+    active = state.get('current_chapter') == chapter['id'] and introduced
+    required = chapter.get('min_trainer_level', 3 if chapter['id'] == 'chapter_1' else 1)
+    if not active and player.get('level', 1) < required:
+        return (False, f'Reach trainer level {required} for the next chapter. Try /challenge, /explore and /daily.')
     return (True, '')
+
+
+async def quest_material_options(db, user_id, biome):
+    """Active story commissions expose their missing supplies through Gather.
+
+    Offering a material only changes the existing choice; it neither grants an
+    extra reward nor consumes any material the trainer already gathered.
+    """
+    if biome != 'ember':
+        return []
+    state = await read_state(db, user_id)
+    chapter = load_questline()['chapters'].get(state['current_chapter'])
+    if not chapter or chapter['id'] in state['completed_chapters']:
+        return []
+    if not state['step_progress'].get(chapter['id'], {}).get('_introduced'):
+        return []
+    required = chapter.get('consume_materials', {})
+    async with db.execute('SELECT material_id,quantity FROM player_materials WHERE user_id=?', (user_id,)) as cursor:
+        owned = dict(await cursor.fetchall())
+    return [mid for mid, count in required.items() if owned.get(mid, 0) < count]
+
+def step_target(chapter, progress, step):
+    """Retain earned raid credit and keep introduced chapters finishable.
+
+    An unfinished legacy second chapter can use one battle instead of its old
+    raid requirement. Its old raid credit still counts, and it gains no new
+    exploration requirement. The old finale keeps its level-fifteen goal.
+    """
+    legacy = progress.get('_introduced') and not progress.get('_pacing_revision')
+    if legacy and chapter['id'] == 'chapter_2':
+        if step['id'] == 'participate_raid':
+            return 1
+        if step['id'] == 'explore_ember_twice':
+            return 0
+    if legacy and chapter['id'] == 'chapter_10' and step['type'] == 'player_level':
+        return 15
+    return step.get('target', 1)
+
 
 def complete(chapter, state):
     p = state['step_progress'].get(chapter['id'], {})
-    return all((p.get(s['id'], 0) >= s.get('target', 1) for s in chapter['steps']))
+    return all((p.get(s['id'], 0) >= step_target(chapter, p, s) for s in chapter['steps']))
 
 def apply_event(state, chapter, event, amount=1, **ctx):
     p = state['step_progress'].setdefault(chapter['id'], {})
     for s in chapter['steps']:
         key = s['id']
         kind = s['type']
-        target = s.get('target', 1)
+        target = step_target(chapter, p, s)
         current = p.get(key, 0)
         if current >= target:
             continue
@@ -160,7 +203,7 @@ async def reconcile(db, state, chapter, guild_id=0):
     for s in chapter['steps']:
         key = s['id']
         kind = s['type']
-        target = s.get('target', 1)
+        target = step_target(chapter, p, s)
         if kind == 'player_level':
             p[key] = min(target, player['level'])
         elif kind == 'beast_count':
@@ -177,8 +220,8 @@ async def reconcile(db, state, chapter, guild_id=0):
             p[key] = int(s['relic_id'] in state['collected_relics'])
         elif kind == 'seed_hatched':
             p[key] = int(seed > 0)
-        elif kind == 'catch_specific_beast' and chapter['id'] in {'chapter_6', 'chapter_8'}:
-            p[key] = int(bool(set(owned) & set(s['target_beasts'])))
+        elif kind == 'catch_specific_beast':
+            p[key] = max(p.get(key, 0), int(bool(set(owned) & set(s['target_beasts']))))
         elif kind == 'raid_complete':
             async with db.execute("SELECT value FROM player_progress WHERE user_id=? AND stat_key='raid_complete'", (uid,)) as c:
                 r = await c.fetchone()
@@ -206,6 +249,8 @@ async def journal(user_id, guild_id=0):
         chapter = chapters[key]
         p = state['step_progress'].setdefault(key, {})
         introduced = bool(p.get('_introduced'))
+        if not introduced:
+            p['_pacing_revision'] = PACING_REVISION
         p['_introduced'] = 1
         await reconcile(db, state, chapter, guild_id)
         if introduced:

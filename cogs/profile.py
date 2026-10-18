@@ -20,6 +20,7 @@ from utils.db import (
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI, hp_bar, exp_bar, fmt_stats, SPARKLE
 from utils.progress import track_quest_event, notify_quest_completions
 from utils.dispositions import disposition_display
+from utils.progression import awakening_requirements, evolution_blockers
 
 class Profile(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -343,6 +344,7 @@ class Profile(commands.Cog):
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
         # Load all player beasts ordered by player_number
+        inventory = {}
         all_beasts = await get_player_beasts(interaction.user.id)
         if not all_beasts:
             return await interaction.followup.send(embed=discord.Embed(
@@ -433,18 +435,24 @@ class Profile(commands.Cog):
                 recipe = method_item.get("recipe")
                 recipe_str = ""
                 if recipe:
+                    from utils.economy_balance import recipe_level
                     recipe_parts = ", ".join(f"{q}× {m.replace('_',' ').title()}" for m, q in recipe.items())
-                    recipe_str = f"\n*Craft: {recipe_parts}*"
+                    recipe_str = f"\n*Craft at trainer level {recipe_level(method_item)}: {recipe_parts}*"
                 elif method_id == "abyssal_scale":
                     recipe_str = "\n*Drop: Corrupted Leviathan raid*"
-                can_evolve = row["level"] >= lvl_req
+                blockers = evolution_blockers(row, player['level'], evo, inventory=inventory,
+                                               knocked_out=is_knocked_out(row))
+                can_evolve = not blockers
                 if form == 'bond':
-                    can_evolve = can_evolve and row.get('bond', 0) >= 30 and row['happiness'] >= 70
+                    required = awakening_requirements(evo)
                     method_name = 'No item needed — a bond awakening'
-                    recipe_str = f"\nBond: {row.get('bond', 0)}/30 · Happiness: {row['happiness']}/70 · `/journal` → Companions shows your progress."
-                lvl_note = f"Lv.{lvl_req} required" if not can_evolve else f"✅ Lv.{lvl_req} — **ready to evolve!**"
-                if form == 'bond' and row['level'] >= lvl_req and not can_evolve:
-                    lvl_note = f"Lv.{lvl_req} reached; build bond and happiness"
+                    recipe_str = (f"\nTrainer: {player['level']}/{required['trainer_level']} · "
+                                  f"Bond: {row.get('bond', 0)}/{required['bond']} · "
+                                  f"Happiness: {row['happiness']}/{required['happiness']} · "
+                                  "`/journal` → Companions shows your progress.")
+                else:
+                    recipe_str += f"\nOwned: {inventory.get(method_id, 0)}"
+                lvl_note = blockers[0] if not can_evolve else f"✅ Lv.{lvl_req} — **ready to evolve!**"
                 embed.add_field(
                     name=f"{form_label} → {tgt_r} {tgt_name}",
                     value=f"**Item:** {method_name} · {lvl_note}{recipe_str}\n*Use `/evolve #{num}` when ready.*",
@@ -507,7 +515,7 @@ class Profile(commands.Cog):
                 self._update()
 
             async def show(self, click, *, delta=0, target_number=None, opening=False):
-                nonlocal all_beasts
+                nonlocal all_beasts, player, inventory
                 if click.user.id != interaction.user.id:
                     return await click.response.send_message("This isn't your collection!", ephemeral=True)
                 if not opening:
@@ -517,6 +525,10 @@ class Profile(commands.Cog):
                         return await click.followup.send('This companion browser has closed. Open /beastinfo again.', ephemeral=True)
                     old_id = all_beasts[self.idx]['id']
                     fresh = await get_player_beasts(interaction.user.id)
+                    player = await get_player(interaction.user.id) or player
+                    inventory = {}
+                    for item in await get_inventory(interaction.user.id):
+                        inventory[item['item_id']] = inventory.get(item['item_id'], 0) + item['quantity']
                     if not fresh:
                         self.stop()
                         return await click.followup.send('Your collection is empty. Open /journal to find your next companion.', ephemeral=True)

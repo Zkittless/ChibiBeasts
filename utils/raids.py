@@ -13,7 +13,8 @@ from utils import db as storage, combat
 from utils.duels import prepare_state, active_fighters
 from utils.gameplay import add_stack
 from utils.theme import COLORS, hp_bar
-from utils.raid_balance import BOSS_INTERVAL
+from utils.raid_balance import (BOSS_INTERVAL, MIN_TRAINER_LEVEL, MIN_COMPANION_LEVEL,
+                                GUILD_ENTRY_TOKENS, GUILD_VICTORY_TOKENS)
 from utils.raid_art import RaidPresentation, Event, MAX_EVENTS, capture
 active_raids = {}
 open_lobbies = set()
@@ -23,9 +24,11 @@ MECHANICS = {'corrupted_leviathan': ('Cleanse the current', 'Tainted water is ga
 
 async def party_rows(uid):
     rows = await storage.get_raid_party(uid)
-    if any(row is None for row in rows):
+    if len(rows) != 3 or any(row is None for row in rows):
         raise ValueError('Set three companions with /raidparty first.')
-    if any((storage.is_knocked_out(r) for r in rows)):
+    if any(row['level'] < MIN_COMPANION_LEVEL for row in rows):
+        raise ValueError(f'Prepare three level {MIN_COMPANION_LEVEL}+ companions with /raidparty first.')
+    if any(storage.is_knocked_out(r) or r['hp'] <= 0 for r in rows):
         raise ValueError('A party companion is recovering. Use Phoenix Elixir or choose another party.')
     return rows
 
@@ -63,8 +66,8 @@ class RaidLobby(RaidControls):
 
     async def eligible(self, uid):
         player = await storage.get_player(uid)
-        if not player or player['level'] < 10:
-            raise ValueError('Reach trainer level 10 before joining a raid.')
+        if not player or player['level'] < MIN_TRAINER_LEVEL:
+            raise ValueError(f'Reach trainer level {MIN_TRAINER_LEVEL} before joining a raid.')
         if uid in active_fighters:
             raise ValueError('Finish your current battle first.')
         if self.guild_id:
@@ -126,7 +129,7 @@ async def open_raid(interaction, boss, *, guild_id=None, summon_item=None):
     try:
         await lobby.eligible(uid)
         async with asyncio.timeout(RAID_IO_TIMEOUT):
-            message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nUp to ten trainers. Set three healthy companions with /raidparty. Aim for a prepared party and a 5–8 minute fight; bring healing and answer the patterns.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins.", color=COLORS['legendary']), view=lobby)
+            message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nTrainer {MIN_TRAINER_LEVEL}+. Up to ten trainers. Set three healthy level {MIN_COMPANION_LEVEL}+ companions with /raidparty. Aim for a prepared party and a 5–8 minute fight; bring healing and answer the patterns.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins." + (f" A victory returns {GUILD_VICTORY_TOKENS} of the {GUILD_ENTRY_TOKENS} guild tokens." if guild_id else ''), color=COLORS['legendary']), view=lobby)
         try:
             # View's idle timeout resets on clicks; the advertised lobby deadline does not.
             async with asyncio.timeout(RAID_LOBBY_SECONDS):
@@ -204,6 +207,12 @@ class RaidSession:
 
     async def start(self, owner, item):
         for uid in self.users:
+            player = await storage.get_player(uid)
+            if not player or player['level'] < MIN_TRAINER_LEVEL:
+                raise ValueError(f'Reach trainer level {MIN_TRAINER_LEVEL} before joining a raid.')
+        # Keep this check and reservation together: another trainer may enter a
+        # battle while the player lookups above yield to the event loop.
+        for uid in self.users:
             if uid in active_fighters:
                 raise ValueError('A trainer has entered another battle; nothing was spent.')
         active_fighters.update(self.users)
@@ -212,7 +221,7 @@ class RaidSession:
             async with storage.connect() as db:
                 await db.execute('BEGIN IMMEDIATE')
                 if self.guild_id:
-                    cur = await db.execute('UPDATE guilds SET guild_tokens=guild_tokens-50 WHERE id=? AND level>=5 AND guild_tokens>=50', (self.guild_id,))
+                    cur = await db.execute('UPDATE guilds SET guild_tokens=guild_tokens-? WHERE id=? AND level>=5 AND guild_tokens>=?', (GUILD_ENTRY_TOKENS, self.guild_id, GUILD_ENTRY_TOKENS))
                     if not cur.rowcount:
                         raise ValueError('The guild needs level 5 and 50 tokens.')
                 else:
@@ -768,7 +777,7 @@ class RaidSession:
             await db.execute('BEGIN IMMEDIATE')
             completed = await db.execute('UPDATE raid_settlements SET completed=1 WHERE raid_id=? AND completed=0', (self.id,))
             if completed.rowcount and self.guild_id:
-                await db.execute('UPDATE guilds SET guild_tokens=guild_tokens+50 WHERE id=?', (self.guild_id,))
+                await db.execute('UPDATE guilds SET guild_tokens=guild_tokens+? WHERE id=?', (GUILD_VICTORY_TOKENS, self.guild_id))
             for uid in self.users:
                 for state in self.party[uid]:
                     if state['hp'] > 0:
@@ -871,7 +880,7 @@ async def refund_raid(raid_id):
         if payment and (not payment[3]):
             uid, guild, item, _ = payment
             if guild:
-                await db.execute('UPDATE guilds SET guild_tokens=guild_tokens+50 WHERE id=?', (guild,))
+                await db.execute('UPDATE guilds SET guild_tokens=guild_tokens+? WHERE id=?', (GUILD_ENTRY_TOKENS, guild))
             elif item:
                 await add_stack(db, 'player_inventory', uid, item)
             await db.execute('UPDATE raid_payments SET refunded=1 WHERE raid_id=?', (raid_id,))

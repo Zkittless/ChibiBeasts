@@ -1,5 +1,6 @@
 from utils import db as storage
 import discord
+from utils.habitats import BIOMES, destination_label
 from discord import app_commands
 from discord.ext import commands
 import random
@@ -121,15 +122,15 @@ HATCH_EGGS = {
         "flavor": "A small, warm egg. Something common and wonderful is inside.",
     },
     "rare_egg": {
-        "name": "🥚✨ Rare Egg", "price": 1500, "min_level": 3,
+        "name": "🥚✨ Rare Egg", "price": 1500, "min_level": 12,
         "flavor": "The shell vibrates faintly. Something with opinions is in there.",
     },
     "celestial_egg": {
-        "name": "🌌🥚 Celestial Egg", "price": 8000, "min_level": 10,
+        "name": "🌌🥚 Celestial Egg", "price": 8000, "min_level": 30,
         "flavor": "The Loom wove this one slowly. Whatever is inside has been waiting.",
     },
     "abyssal_egg": {
-        "name": "🌊💎 Abyssal Egg", "price": 25000, "min_level": 15,
+        "name": "🌊💎 Abyssal Egg", "price": 25000, "min_level": 40,
         "flavor": "It comes from somewhere deeper than deep. The weight of it is strange.",
     },
 }
@@ -375,15 +376,15 @@ class Hatch(commands.Cog):
 
     @app_commands.command(name="hatch", description="Hatch an instant egg from your inventory 🥚")
     @app_commands.describe(egg_type="Type of egg to hatch")
-    @app_commands.choices(egg_type=[
-        app_commands.Choice(name="🥚 Common Egg — common/uncommon",                                          value="common_egg"),
-        app_commands.Choice(name="🥚✨ Rare Egg — uncommon/rare/epic",                                       value="rare_egg"),
-        app_commands.Choice(name=f"🌌🥚 Celestial Egg — {int(_BASE_EGG_POOLS['celestial_egg'].get('divine',0)*100)}% Divine",  value="celestial_egg"),
-        app_commands.Choice(name=f"🌊💎 Abyssal Egg — {int(_BASE_EGG_POOLS['abyssal_egg'].get('divine',0)*100)}% Divine",     value="abyssal_egg"),
-    ])
+    @app_commands.choices(egg_type=[app_commands.Choice(name=f"{egg['name']} · Trainer Lv.{egg['min_level']}", value=key)
+                                  for key, egg in HATCH_EGGS.items()])
     async def hatch(self, interaction: discord.Interaction, egg_type: str = "common_egg"):
-        await get_or_create_player(interaction.user.id, str(interaction.user))
+        player = await get_or_create_player(interaction.user.id, str(interaction.user))
         egg_def = HATCH_EGGS[egg_type]
+        if player['level'] < egg_def['min_level']:
+            return await interaction.response.send_message(embed=discord.Embed(
+                description=f"Reach trainer level {egg_def['min_level']} to hatch {egg_def['name']}. Your eggs stay in your inventory.",
+                color=COLORS['info']), ephemeral=True)
 
         # Check inventory
         async with storage.connect() as db:
@@ -413,6 +414,13 @@ class Hatch(commands.Cog):
             async with storage.connect() as db:
                 db.row_factory = aiosqlite.Row
                 await db.execute("BEGIN IMMEDIATE")
+                async with db.execute('SELECT level FROM players WHERE user_id=?', (modal_interaction.user.id,)) as cursor:
+                    current_player = await cursor.fetchone()
+                required = HATCH_EGGS[egg_type]['min_level']
+                if not current_player or current_player['level'] < required:
+                    return await modal_interaction.followup.send(embed=discord.Embed(
+                        description=f"Reach trainer level {required} to hatch {egg_def['name']}. Your eggs stay in your inventory.",
+                        color=COLORS['info']))
                 async with db.execute(
                     "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
                     (modal_interaction.user.id, egg_type)
@@ -548,7 +556,7 @@ class Hatch(commands.Cog):
 
 
     @app_commands.command(name="explore", description="Begin or resume a choice-based expedition in your Field Journal")
-    @app_commands.choices(destination=[app_commands.Choice(name="Whispering Woods · Lv1",value="woods"),app_commands.Choice(name="Ember Wastes · Lv3",value="ember"),app_commands.Choice(name="Glacial Hollows · Lv5",value="glacial"),app_commands.Choice(name="Sunken Trenches · Lv8",value="trenches"),app_commands.Choice(name="Celestial Loom · Lv10",value="loom")])
+    @app_commands.choices(destination=[app_commands.Choice(name=destination_label(key)[:100], value=key) for key in BIOMES])
     @app_commands.describe(expedition="Compatibility option; every exploration now uses your Field Journal")
     async def explore(self, interaction: discord.Interaction, destination: str = "woods", expedition: bool = True):
         await interaction.response.defer()

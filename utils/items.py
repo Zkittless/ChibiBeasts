@@ -118,13 +118,17 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             if effect.get('exp') or effect.get('instant_levels'):
                 if live:
                     raise ValueError('Finish your battle before giving growth items.')
-                exp = beast['exp'] + effect.get('exp', 0) + effect.get('exp_per_level', 0) * min(player['level'],effect.get('exp_level_cap',player['level']))
-                level = beast['level'] + effect.get('instant_levels', 0)
-                while exp >= storage.get_beast_exp_for_level(beast, level):
-                    exp -= storage.get_beast_exp_for_level(beast, level)
-                    level += 1
+                from utils.rewards import activity_exp
+                from utils.progression import advance_beast_xp, MAX_LEVEL
+                if beast['level'] >= MAX_LEVEL:
+                    raise ValueError('This companion is already at level 50. The item is yours to keep.')
+                requested = effect.get('exp', 0) or 60
+                gained = await activity_exp(db, user_id, beast, 'feed', requested=requested)
+                if not gained:
+                    raise ValueError('This companion has used its 60 growth-treat EXP for today. Try again after midnight UTC; the item is yours to keep.')
+                level, exp = advance_beast_xp(beast['level'], beast['exp'], gained)
                 await storage.apply_beast_levelup(db, beast, level, exp)
-                messages.append(f'Beast level {level}; EXP {exp}.')
+                messages.append(f'Beast level {level}; EXP {exp}. Gained {gained} EXP (60 daily growth-treat EXP limit).')
             if effect.get('stat_boost'):
                 from utils.economy_balance import STAT_TREAT_LIMIT
                 if live:

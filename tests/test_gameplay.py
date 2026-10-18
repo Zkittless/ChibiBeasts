@@ -81,7 +81,7 @@ class Campaign(DatabaseCase):
     async def drive_campaign(self, uid, answer):
         from cogs.world import World
         await storage.get_or_create_player(uid, 'Campaign tester')
-        await storage.update_player(uid, level=30)
+        await storage.update_player(uid, level=50)
         available = [k for k, b in storage.load_beasts().items() if not b.get('evolution_only') and b['rarity'] not in {'ancient', 'corrupted', 'dev'} and (k not in {'prismite', 'twine', 'gloop', 'barkley'})]
         for beast_id in available[:12]:
             await self.beast(beast_id, uid)
@@ -144,7 +144,7 @@ class Campaign(DatabaseCase):
                 await self.drive_campaign(uid, answer)
 
     async def test_legacy_fifth_chapter_resumes_at_six(self):
-        await storage.update_player(42, level=15)
+        await storage.update_player(42, level=32)
         state = await story.get_quest_state(42)
         state.update(current_chapter='chapter_1', completed_chapters=[f'chapter_{i}' for i in range(1, 6)])
         await story.save_quest_state(state)
@@ -166,11 +166,12 @@ class CompanionsAndEvents(DatabaseCase):
         from utils.gameplay import STARTER_FORMS, evolved_stats
         for uid, (before, after) in enumerate(STARTER_FORMS.items(), 42):
             await storage.get_or_create_player(uid, 'Bond tester')
+            await storage.update_player(uid, level=8)
             row_id = await self.beast(before, uid, True)
-            await self.execute("UPDATE player_beasts SET level=15,bond=29,happiness=90,nickname='Old friend',attack=attack+40,train_atk=12,damage_bonus=10,raid_slot=2 WHERE id=?", (row_id,))
+            await self.execute("UPDATE player_beasts SET level=15,bond=39,happiness=90,nickname='Old friend',attack=attack+40,train_atk=12,damage_bonus=10,raid_slot=2 WHERE id=?", (row_id,))
             with self.assertRaises(ValueError):
                 await evolve_beast(uid, 1)
-            await self.execute('UPDATE player_beasts SET bond=30 WHERE id=?', (row_id,))
+            await self.execute('UPDATE player_beasts SET bond=40 WHERE id=?', (row_id,))
             original = (await storage.get_player_beasts(uid))[0]
             expected = evolved_stats(original, storage.get_beast_data(before), storage.get_beast_data(after))
             await self.execute("INSERT INTO player_equipment(user_id,beast_row_id,equipment_id) VALUES(?,?,'bark_armor')", (uid, row_id))
@@ -363,7 +364,7 @@ class ItemsAndWorld(DatabaseCase):
 
     async def test_shard_purchases_have_real_effects_and_enforce_the_weekly_limit(self):
         from utils.shops import purchase_shard
-        await storage.update_player(42, celestial_shards=200, level=10)
+        await storage.update_player(42, celestial_shards=200, level=30)
         results = await asyncio.gather(purchase_shard(42, 'divine_compass'), purchase_shard(42, 'divine_compass'), return_exceptions=True)
         self.assertEqual(sum((isinstance(result, ValueError) for result in results)), 1)
         player = await storage.get_player(42)

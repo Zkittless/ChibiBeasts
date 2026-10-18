@@ -4,26 +4,93 @@ from functools import lru_cache
 from utils.catalog import catalog_revision
 from utils.db import get_beast_data
 from utils.db import load_beasts
-BIOMES = {'woods': {'name': '🌲 The Whispering Woods', 'min_level': 1, 'types': {'nature', 'earth', 'arcane', 'light'}, 'weights': {'common': 0.5, 'uncommon': 0.3, 'rare': 0.15, 'epic': 0.05}}, 'ember': {'name': '🔥 The Ember Wastes', 'min_level': 3, 'types': {'fire', 'earth', 'shadow'}, 'weights': {'common': 0.15, 'uncommon': 0.35, 'rare': 0.3, 'epic': 0.15, 'legendary': 0.05}}, 'glacial': {'name': '❄️ The Glacial Hollows', 'min_level': 5, 'types': {'ice', 'wind'}, 'weights': {'common': 0.15, 'uncommon': 0.3, 'rare': 0.3, 'epic': 0.2, 'legendary': 0.05}}, 'trenches': {'name': '🌊 The Sunken Abyssal Trenches', 'min_level': 8, 'types': {'water', 'shadow'}, 'weights': {'uncommon': 0.3, 'rare': 0.35, 'epic': 0.25, 'legendary': 0.1}}, 'loom': {'name': '🌌 The Celestial Loom', 'min_level': 10, 'types': {'cosmic', 'arcane', 'light'}, 'weights': {'rare': 0.35, 'epic': 0.35, 'legendary': 0.2, 'divine': 0.1}}}
+BIOMES = {}
+for _key, _name, _types, _gate, _deep_gate, _low, _weights, _deep_weights in (
+    ('woods', '🌲 The Whispering Woods', {'nature', 'earth', 'arcane', 'light'}, 1, 3, 1,
+     {'common': .85, 'uncommon': .15}, {'common': .65, 'uncommon': .30, 'rare': .05}),
+    ('ember', '🔥 The Ember Wastes', {'fire', 'earth', 'shadow'}, 6, 9, 11,
+     {'common': .20, 'uncommon': .65, 'rare': .15}, {'uncommon': .25, 'rare': .60, 'epic': .15}),
+    ('glacial', '❄️ The Glacial Hollows', {'ice', 'wind'}, 12, 16, 21,
+     {'rare': .70, 'epic': .30}, {'rare': .35, 'epic': .60, 'legendary': .05}),
+    ('trenches', '🌊 The Sunken Abyssal Trenches', {'water', 'shadow'}, 20, 25, 31,
+     {'epic': .75, 'legendary': .25}, {'epic': .35, 'legendary': .65}),
+    ('loom', '🌌 The Celestial Loom', {'cosmic', 'arcane', 'light'}, 30, 38, 41,
+     {'rare': .05, 'epic': .70, 'divine': .25}, {'epic': .40, 'divine': .60}),
+):
+    BIOMES[_key] = dict(name=_name, min_level=_gate, types=_types,
+                        level_range=(_low, _low + 4), weights=_weights, base=_key)
+    BIOMES[_key + '_deep'] = dict(name=_name + ' · Depths', min_level=_deep_gate, types=_types,
+                                 level_range=(_low + 5, _low + 9), weights=_deep_weights, base=_key)
 
-def biome_key(value):
+BASE_BIOMES = tuple(key for key, value in BIOMES.items() if key == value['base'])
+# The forest edges shelter the low-tier species of colder and wetter regions;
+# the deepest Trenches include volcanic vents where dragons can be found.
+BIOMES['woods']['types'] = BIOMES['woods']['types'] | {'ice'}
+BIOMES['woods_deep']['types'] = BIOMES['woods_deep']['types'] | {'shadow', 'ice', 'wind', 'water'}
+BIOMES['trenches_deep']['types'] = BIOMES['trenches_deep']['types'] | {'fire'}
+
+
+def destination_key(value):
     if value in BIOMES:
         return value
-    return next((k for k, b in BIOMES.items() if b['name'] == value), 'woods')
+    return next((k for k, b in BIOMES.items() if b['name'] == value or
+                 value and str(value).casefold() in b['name'].casefold()), 'woods')
+
+def biome_key(value):
+    """The original five region IDs remain the material, story and art IDs."""
+    return BIOMES[destination_key(value)]['base']
+
+
+def encounter_level(destination, companion_level=None, rng=random):
+    """Roll near a visitor while retaining the region's fixed floor and ceiling."""
+    # Preserve the former encounter_level(destination, rng) diagnostic API.
+    if hasattr(companion_level, 'randint'):
+        rng, companion_level = companion_level, None
+    low, high = BIOMES[destination_key(destination)]['level_range']
+    if companion_level is not None:
+        companion_level = int(companion_level)
+        nearby_low, nearby_high = max(low, companion_level - 1), min(high, companion_level + 1)
+        if nearby_low > nearby_high:
+            return max(low, min(high, companion_level))
+        low, high = nearby_low, nearby_high
+    return rng.randint(low, high)
+
+
+def destination_label(destination):
+    region = BIOMES[destination_key(destination)]
+    low, high = region['level_range']
+    return f"{region['name']} · Trainer {region['min_level']}+ · Companion {low}–{high}"
+
+
+def starter_training_destination(beast, companion_level, trainer_level):
+    """A visible training suggestion; access to other paths remains available."""
+    if not beast.get('starter') or (beast.get('evolution') or {}).get('form') != 'bond':
+        return None
+    return 'woods_deep' if companion_level >= 8 and trainer_level >= BIOMES['woods_deep']['min_level'] else 'woods'
+
+
+def encounter_difficulty(companion, enemy):
+    """Compare actual battle stats, so weak species and strong builds pay less."""
+    def power(state):
+        return (state.get('max_hp', state.get('hp', 1)) + 3 * state.get('attack', 0)
+                + 2 * state.get('defense', 0) + state.get('speed', 0)
+                + .25 * state.get('max_mana', state.get('mana', 0)))
+    ratio = power(enemy) / max(1, power(companion))
+    return 'trivial' if ratio < .40 else 'easy' if ratio < .70 else 'normal' if ratio < 1.30 else 'hard' if ratio < 1.80 else 'boss'
 
 def eligible(beast):
     return not beast.get('starter') and (not beast.get('evolution_only')) and beast.get('wild_encounter', True) and (beast.get('catch_rate', 0) > 0) and (beast['rarity'] not in {'dev', 'ancient', 'corrupted', 'altered_divine'})
 
 def encounter_pool(rarity,biome=None,element=None):
-    return [get_beast_data(key) for key in _pool_ids(rarity,biome_key(biome) if biome else None,element,catalog_revision())]
+    return [get_beast_data(key) for key in _pool_ids(rarity,destination_key(biome) if biome else None,element,catalog_revision())]
 
 @lru_cache(maxsize=128)
 def _pool_ids(rarity,biome,element,revision):
     habitat=BIOMES.get(biome)
-    return tuple(b['id'] for b in load_beasts().values() if b['rarity']==rarity and eligible(b) and (not habitat or b['type'] in habitat['types']) and (not element or b['type']==element))
+    return tuple(b['id'] for b in load_beasts().values() if b['rarity']==rarity and eligible(b) and (not habitat or b['type'] in habitat['types'] and habitat['weights'].get(rarity, 0) > 0) and (not element or b['type']==element))
 
 def pick_encounter(weights,biome=None,element=None):
-    revision=catalog_revision();region=biome_key(biome) if biome else None
+    revision=catalog_revision();region=destination_key(biome) if biome else None
     pools={r:_pool_ids(r,region,element,revision) for r in weights}
     choices=[r for r in weights if pools[r] and weights[r]>0]
     if not choices:return None

@@ -36,10 +36,13 @@ async def get_user_sanctuary(user_id: int) -> dict:
     return dict(row)
 
 
-def apply_explore_encounter_bonus(rarity_weights,sanctuary):
+def apply_explore_encounter_bonus(rarity_weights,sanctuary,*,allowed_rarities=None):
     if not sanctuary.get("celestial_observatory"):return rarity_weights
     from utils.hatching import promote_rates
-    return promote_rates(rarity_weights,{"epic":.02,"legendary":.02})
+    changes = {"epic":.02,"legendary":.02}
+    if allowed_rarities is not None:
+        changes = {rarity: amount for rarity, amount in changes.items() if rarity in allowed_rarities}
+    return promote_rates(rarity_weights,changes)
 
 
 def apply_craft_discount(recipe: dict, sanctuary: dict) -> dict:

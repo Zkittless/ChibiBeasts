@@ -11,7 +11,7 @@ from utils import crafting, db as storage, gear_art
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.economy_balance import material_sources, recipe_level
-from utils.equipment import effect_summary, equip
+from utils.equipment import dormant_label, effect_summary, equip
 from utils.gameplay import evolve_beast
 from utils.sanctuary import apply_craft_discount
 
@@ -125,6 +125,8 @@ class WorkshopView(discord.ui.LayoutView):
         if self.section == 'evolution':
             evo = storage.get_beast_data(row['beast_id'])['evolution']
             return row['level'] >= evo['level_required'] and not storage.is_knocked_out(row)
+        if self.state.level < recipe_level(self.item):
+            return False
         return (row['rune_id'] if self.section == 'runes' else row['armor_id']) != self.selected
 
     def target_text(self, row):
@@ -142,8 +144,11 @@ class WorkshopView(discord.ui.LayoutView):
             old = self.catalog.get(key)
             text += f"**Current {'rune' if self.section == 'runes' else 'armor'}:** {old['name'] if old else 'empty'}"
             if old:
-                text += f"\n{effect_summary(old)}\nThe replaced piece returns to your bag."
+                status = dormant_label(old, self.state.level)
+                text += f"\n{status or effect_summary(old)}\nThe replaced piece returns to your bag."
             text += f"\n**New:** {self.item['name']} · {effect_summary(self.item)}"
+            if dormant_label(self.item, self.state.level):
+                text += '\n' + dormant_label(self.item, self.state.level) + '; reach that level before equipping.'
         if row['listed']:
             text += '\nDelist this companion before changing it.'
         return text
@@ -151,7 +156,7 @@ class WorkshopView(discord.ui.LayoutView):
     def text_parts(self):
         item = self.item
         required = recipe_level(item)
-        status = f'Unlocks at trainer Lv.{required}' if self.state.level < required else 'Ready to craft' if self.available else 'Missing materials'
+        status = (dormant_label(item, self.state.level) if self.section != 'evolution' and self.owned else f'Unlocks at trainer Lv.{required}') if self.state.level < required else 'Ready to craft' if self.available else 'Missing materials'
         effect = 'Radiant evolution catalyst' if self.section == 'evolution' else effect_summary(item)
         stock = f'{self.owned} unequipped' if self.section == 'armor' else f'{self.owned} in bag'
         details = f"### {item['name']}\n{item['rarity'].replace('_', ' ').title()} · Trainer Lv.{required} · {stock}\n**{effect}**\n{item['description']}\n**{status}**"
@@ -195,7 +200,7 @@ class WorkshopView(discord.ui.LayoutView):
         self.container.add_item(discord.ui.TextDisplay(materials))
         self.craft_button.disabled = not self.available or self.state.level < recipe_level(self.item) or self.closed
         self.use_button.label = 'Evolve' if self.section == 'evolution' else 'Equip'
-        self.use_button.disabled = not self.owned or self.closed
+        self.use_button.disabled = not self.owned or self.closed or (self.section != 'evolution' and self.state.level < recipe_level(self.item))
         self.container.add_item(self.actions)
         if self.notice:
             self.container.add_item(discord.ui.TextDisplay(self.notice[:650]))

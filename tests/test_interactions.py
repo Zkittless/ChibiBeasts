@@ -113,7 +113,7 @@ class ShopInteractions(DatabaseCase):
             click.response.defer.assert_awaited_once()
 
     async def test_purchase_refreshes_balance_and_shard_week_limits(self):
-        await storage.update_player(42, level=25, celestial_shards=100)
+        await storage.update_player(42, level=30, celestial_shards=100)
         view, _ = await self.open_shop()
         with patch('utils.progress.track_quest_event', AsyncMock(return_value=[])):
             await view.children[1].callback(component())
@@ -269,6 +269,7 @@ class SparInteractions(DatabaseCase):
     async def test_cancelled_unpaid_spar_releases_its_daily_attempt(self):
         from cogs.battle import Battle
         await self.beast(starter=True)
+        await storage.update_player(42, level=3)
         ready = asyncio.Event()
 
         async def blocked(*args, **kwargs):
@@ -288,6 +289,7 @@ class SparInteractions(DatabaseCase):
     async def test_error_after_reward_commit_cannot_pay_the_same_spar_again(self):
         from cogs.battle import Battle
         await self.beast(starter=True)
+        await storage.update_player(42, level=3)
 
         async def win(*args, **kwargs):
             await kwargs['on_win'](discord.Embed(), {}, {}, False)
@@ -307,6 +309,7 @@ class SparInteractions(DatabaseCase):
         from cogs.battle import Battle
         from utils.story import get_quest_state, save_quest_state
         await self.beast(starter=True)
+        await storage.update_player(42, level=3)
         qs = await get_quest_state(42)
         qs['npc_relationships'] = {'maren': 'known', 'sable': 'trusted'}
         await save_quest_state(qs)

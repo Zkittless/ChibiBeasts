@@ -15,7 +15,8 @@ from utils import db as storage
 from utils.catalog import load_catalog
 from utils.economy_balance import gold_reward_level
 from utils.gameplay import add_stack
-from utils.habitats import BIOMES, REGIONAL_MATERIALS, material_pool, pick_encounter
+from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key, encounter_level, material_pool, pick_encounter
+from utils.progression import encounter_trainer_xp
 CAPACITY = 3
 INTERVAL = 1800
 
@@ -119,14 +120,19 @@ async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0
                         mats = load_catalog('materials.json')['materials']
                         material = rng.choice(material_pool({'id': '', 'type': ''}, realm))
                         tier = mats[material]['rarity']
-                        alternatives = [m for m in REGIONAL_MATERIALS[realm] if mats[m]['rarity'] == tier and m != material]
+                        alternatives = [m for m in REGIONAL_MATERIALS[biome_key(realm)] if mats[m]['rarity'] == tier and m != material]
                         offered = [material] + rng.sample(alternatives, min(2, len(alternatives)))
+                        from utils.story import quest_material_options
+                        story_materials = await quest_material_options(db, user_id, biome_key(realm))
+                        offered.extend(mid for mid in story_materials if mid in mats and mid not in offered)
                         level = player['level']
-                        gold_level = gold_reward_level(level)
+                        destination_level = sum(BIOMES[realm]['level_range']) // 2
+                        gold_level = gold_reward_level(destination_level)
                         async with db.execute("SELECT 1 FROM player_perks WHERE user_id=? AND equipped=1 AND perk_id='pixie_pocket'", (user_id,)) as cursor:
                             pixie = bool(await cursor.fetchone())
                         gold = rng.randint(gold_level * 3, gold_level * 6)
-                        payload = dict(mode='expedition', stage=0, route='', material=material, offered=offered, gold=int(gold * 1.1) if pixie else gold, exp=rng.randint(level * 10, level * 14), encounter='', encounter_result='', caught=False, bond=0, happiness=0, restore=0, notes=[], level=level, grant_id=None, guild_id=guild_id)
+                        reward_exp = encounter_trainer_xp(level, destination_level, effort=.55)
+                        payload = dict(mode='expedition', stage=0, route='', material=material, offered=offered, gold=int(gold * 1.1) if pixie else gold, exp=reward_exp, base_exp=reward_exp, encounter='', encounter_result='', caught=False, bond=0, happiness=0, restore=0, notes=[], level=level, grant_id=None, guild_id=guild_id)
                     trip_id = uuid4().hex
                     await db.execute('INSERT INTO expeditions(id,user_id,realm,status,companion_id,payload,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)', (trip_id, user_id, realm, 'quick' if quick else 'active', companion['id'], json.dumps(payload), now, now))
                     await db.commit()
@@ -157,7 +163,7 @@ async def _encounter(db, user_id, realm, p, rng):
     if p['encounter']:
         return
     from utils.hatching import promote_rates
-    from utils.habitats import set_rarity_chance
+    from utils.habitats import encounter_pool, set_rarity_chance
     from utils.crafting import sanctuary_in_transaction
     from utils.story import read_state
     async with db.execute('SELECT * FROM players WHERE user_id=?', (user_id,)) as c:
@@ -165,20 +171,33 @@ async def _encounter(db, user_id, realm, p, rng):
     async with db.execute('SELECT perk_id FROM player_perks WHERE user_id=? AND equipped=1', (user_id,)) as c:
         perks = {r[0] for r in await c.fetchall()}
     rates = dict(BIOMES[realm]['weights'])
+    allowed = {rarity for rarity in rates if encounter_pool(rarity, realm)}
+
+    def promote_available(weights, bonuses):
+        return promote_rates(weights, {rarity: bonus for rarity, bonus in bonuses.items() if rarity in allowed})
+
     if 'stardust_touch' in perks:
-        rates = promote_rates(rates, {'rare': 0.1, 'epic': 0.1})
+        rates = promote_available(rates, {'rare': 0.1, 'epic': 0.1})
     sanctuary = await sanctuary_in_transaction(db, user_id)
     from utils.sanctuary import apply_explore_encounter_bonus
-    rates = apply_explore_encounter_bonus(rates, sanctuary)
+    rates = apply_explore_encounter_bonus(rates, sanctuary, allowed_rarities=allowed)
+    rates = {rarity: weight for rarity, weight in rates.items() if rarity in allowed}
+    total = sum(rates.values())
+    rates = {rarity: weight / total for rarity, weight in rates.items()} if total else dict(BIOMES[realm]['weights'])
     if player.get('incense_charges', 0) > 0:
-        rates = promote_rates(rates, {'uncommon': 0.08, 'rare': 0.05, 'epic': 0.03})
-        await db.execute('UPDATE players SET incense_charges=incense_charges-1 WHERE user_id=?', (user_id,))
-    if realm == 'loom':
+        promoted = promote_available(rates, {'uncommon': 0.08, 'rare': 0.05, 'epic': 0.03})
+        if promoted != rates:
+            rates = promoted
+            await db.execute('UPDATE players SET incense_charges=incense_charges-1 WHERE user_id=?', (user_id,))
+    if biome_key(realm) == 'loom':
         charge = 'prism_keys' if player.get('prism_keys', 0) > 0 else 'divine_compass_charges' if player.get('divine_compass_charges', 0) > 0 else None
         if charge:
-            rates = set_rarity_chance(rates, realm, 'divine', 0.3 if charge == 'prism_keys' else 0.2)
+            current_chance = rates.get('divine', 0) / max(.001, sum(rates.values()))
+            rates = set_rarity_chance(rates, realm, 'divine', min(.9, current_chance + (.15 if charge == 'prism_keys' else .10)))
             await db.execute(f'UPDATE players SET {charge}={charge}-1 WHERE user_id=?', (user_id,))
-    if player.get('ancient_compass_charges', 0) > 0 and any((rates.get(r, 0) > 0 for r in ('common', 'uncommon'))):
+    if (player.get('ancient_compass_charges', 0) > 0
+            and any(rates.get(r, 0) > 0 for r in ('common', 'uncommon'))
+            and any(rates.get(r, 0) > 0 for r in ('rare', 'epic', 'legendary', 'divine'))):
         rates = {k: v for k, v in rates.items() if k not in {'common', 'uncommon'}}
         await db.execute('UPDATE players SET ancient_compass_charges=ancient_compass_charges-1 WHERE user_id=?', (user_id,))
     beast = pick_encounter(rates, realm)
@@ -186,7 +205,7 @@ async def _encounter(db, user_id, realm, p, rng):
     progress = story['step_progress'].get('chapter_6', {})
     # This trip's explore event is emitted on return, so include it in the
     # existing third-visit story guarantee without counting unfinished trips.
-    if realm == 'loom' and story['current_chapter'] == 'chapter_6' and (progress.get('explore_loom_3', 0) >= 2) and (not progress.get('catch_cosmic_beast', 0)):
+    if biome_key(realm) == 'loom' and story['current_chapter'] == 'chapter_6' and (progress.get('explore_loom_3', 0) >= 2) and (not progress.get('catch_cosmic_beast', 0)):
         beast = storage.get_beast_data('loom_fragment')
     if not beast:
         raise ValueError('No creature could be found here. Your exploration has not advanced.')
@@ -196,6 +215,9 @@ async def _encounter(db, user_id, realm, p, rng):
         await db.execute('UPDATE players SET catch_boost_charges=catch_boost_charges-1 WHERE user_id=?', (user_id,))
     # Roll once when the encounter is discovered, never on a repeated click.
     p['friendly'] = rng.random() < p['affinity']
+    async with db.execute('SELECT level FROM player_beasts WHERE user_id=? AND is_active=1', (user_id,)) as cursor:
+        companion = await cursor.fetchone()
+    p['encounter_level'] = encounter_level(realm, companion[0] if companion else None, rng)
 
 async def choose(user_id, trip_id, version, choice, *, rng=random):
     from utils.duels import reserve_fighters
@@ -244,7 +266,7 @@ async def choose(user_id, trip_id, version, choice, *, rng=random):
                             p.update(restore=5, happiness=3)
                             p['notes'].append('You shared a quiet rest beside the landmark.')
                         elif choice == 'study':
-                            p['exp'] += p['level'] * 2
+                            p['exp'] += max(1, round(p.get('base_exp', p['exp']) * .15))
                             p['notes'].append('You recorded the landmark’s old markings.')
                         elif choice == 'approach':
                             p.update(caught=bool(p['friendly']), encounter_result='befriended' if p['friendly'] else 'escaped')
@@ -277,7 +299,8 @@ async def _settle(db, trip):
         if comp and comp['hp'] > 0 and (not storage.is_knocked_out(dict(comp))):
             await db.execute('UPDATE player_beasts SET hp=MIN(max_hp,hp+MAX(1,CAST(max_hp*?/100 AS INTEGER))) WHERE id=?', (p['restore'], comp['id']))
     if p['caught']:
-        beast = {**storage.get_beast_data(p['encounter']), 'caught_from': 'discover'}
+        beast = {**storage.get_beast_data(p['encounter']), 'caught_from': 'discover',
+                 'level': min(50, p.get('encounter_level', BIOMES[trip['realm']]['level_range'][0]))}
         p['grant_id'] = await storage.grant_beast(db, uid, beast, grant_key='expedition:' + trip['id'])
 
 async def report(trip):
@@ -289,7 +312,7 @@ async def report(trip):
     uid = trip['user_id']
     p = trip['payload']
     key = 'expedition:' + trip['id']
-    await record_event(uid, 'explore', biome=BIOMES[trip['realm']]['name'], event_key=key + ':explore')
+    await record_event(uid, 'explore', biome=BIOMES[biome_key(trip['realm'])]['name'], event_key=key + ':explore')
     await record_event(uid, 'material_collect', material_id=p['material'], event_key=key + ':material')
     from utils.progress import unlock_simple_achievement, record_bestiary_sighting
     await unlock_simple_achievement(uid, 'first_explore')
@@ -325,7 +348,8 @@ async def battle_result(user_id, trip_id, token, won, *, interrupted=False, only
         p['notes'].append('The encounter was interrupted; your gathered supplies are safe.' if interrupted else 'The creature recognised your strength and chose to follow.' if won else 'The creature withdrew. You kept your gathered supplies.')
         if won:
             p['gold'] = int(p['gold'] * 1.25)
-            p['exp'] = int(p['exp'] * 1.3)
+            p['exp'] = encounter_trainer_xp(p['level'], p.get('encounter_level', BIOMES[trip['realm']]['level_range'][0]),
+                                           difficulty=p.get('battle_difficulty', 'normal'))
         await db.execute("UPDATE expeditions SET status='active',version=version+1,payload=?,updated_at=? WHERE id=?", (json.dumps(p), time.time(), trip_id))
         await db.commit()
 
@@ -364,12 +388,20 @@ async def run_battle(interaction, trip):
                     if await cursor.fetchone():
                         raise ValueError('Delist your companion before continuing the encounter.')
 
-            async def win(embed, *args):
-                await battle_result(uid, trip['id'], token, not (len(args) > 2 and args[2]), runner_id=runner_id)
+            async def win(embed, p_state, e_state, timed_out=False):
+                await battle_result(uid, trip['id'], token, not timed_out and e_state.get('hp', 1) <= 0, runner_id=runner_id)
 
             async def loss(embed, *args):
                 await battle_result(uid, trip['id'], token, False, runner_id=runner_id)
-            await run_pve_battle(interaction, row, storage.get_beast_data(row['beast_id']), perks, build_pve_beast_state(beast, max(1, row['level'] + random.randint(-2, 2))), 'aggressive', 'Wild ' + beast['name'], win, loss, reserved=True, realm=latest['realm'])
+            from utils.duels import prepare_state
+            from utils.habitats import encounter_difficulty
+            enemy = build_pve_beast_state(beast, latest['payload'].get('encounter_level', BIOMES[latest['realm']]['level_range'][0]))
+            actor = await prepare_state(uid, row, storage.get_beast_data(row['beast_id']), perks, consume=False)
+            async with storage.connect() as db:
+                latest['payload']['battle_difficulty'] = encounter_difficulty(actor, enemy)
+                await db.execute('UPDATE expeditions SET payload=? WHERE id=?', (json.dumps(latest['payload']), trip['id']))
+                await db.commit()
+            await run_pve_battle(interaction, row, storage.get_beast_data(row['beast_id']), perks, enemy, 'aggressive', 'Wild ' + beast['name'], win, loss, reserved=True, realm=biome_key(latest['realm']))
     finally:
         if claimed:
             await asyncio.shield(battle_result(uid, trip['id'], token, False, interrupted=True, runner_id=runner_id))
