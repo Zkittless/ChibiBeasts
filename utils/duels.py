@@ -54,7 +54,7 @@ async def prepare_state(user_id, row, data, perks, *, consume=True):
             raise ValueError('Your companion needs recovery before it can battle.')
         async with db.execute('SELECT * FROM players WHERE user_id=?', (user_id,)) as c:
             player = dict(await c.fetchone())
-        async with db.execute('SELECT equipment_id FROM player_equipment WHERE user_id=? AND beast_row_id=?', (user_id, row['id'])) as c:
+        async with db.execute('SELECT equipment_id FROM player_equipment WHERE user_id=? AND beast_row_id=? ORDER BY id', (user_id, row['id'])) as c:
             ids = [r[0] for r in await c.fetchall()]
         if row.get('rune_id') and row['rune_id'] not in ids:
             ids.append(row['rune_id'])

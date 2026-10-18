@@ -69,6 +69,7 @@ class Fighter:
     shield: int
     element: str
     revived: bool
+    armor_id: str = ''
 
 
 def snapshot(states):
@@ -77,7 +78,7 @@ def snapshot(states):
         max(0, int(s['hp'])), max(1, int(s['max_hp'])), max(0, int(s['mana'])),
         max(1, int(s['max_mana'])), s.get('ultimate_charges', 0),
         s.get('status') or '', bool(s.get('guard')), s.get('shield', 0),
-        s.get('beast_type', ''), bool(s.get('revive_used')),
+        s.get('beast_type', ''), bool(s.get('revive_used')), s.get('armor_id') or '',
     ) for s in states)
 
 
@@ -115,9 +116,19 @@ def field_background(realm, height):
     return ui.backdrop(background(realm), (WIDTH, height))
 
 
-@lru_cache(maxsize=96)
-def sprite(species):
+@lru_cache(maxsize=256)
+def sprite(species, armor_id=''):
     # Canonical IDs from the packaged manifest; never load a user-supplied path.
+    if armor_id:
+        from utils import armor_art
+        try:
+            if armor_id in armor_art.manifest()['sets']:
+                image = armor_art.portrait(species, armor_id)
+                if image is not None:
+                    image.thumbnail((180, 176), Image.Resampling.NEAREST)
+                return image
+        except (OSError, KeyError, ValueError):
+            logger.warning('Unable to load armor catalog', exc_info=True)
     try:
         path = card_artwork_path(species)
     except KeyError:

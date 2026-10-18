@@ -9,9 +9,9 @@ rest of the flow in the same message.
 - `/craft <item>`: preserve the existing quick craft, then open that recipe with
   its updated materials and stock. A failed quick craft opens the recipe and
   explains what is missing.
-- `/materials`: open the same workshop with the material bag expanded.
+- **Materials**: expand the material bag inside this panel, including when opened from the Field Journal.
 
-Recipe browsing lives in `/craft`; the separate recipes command is removed.
+Recipe browsing lives in the workshop; the separate recipes and material-bag commands are removed.
 
 **Pin recipe** saves the selected recipe as your Field Journal goal. **Field Journal**
 returns to the home panel in the same message. Opening that goal's recipe from

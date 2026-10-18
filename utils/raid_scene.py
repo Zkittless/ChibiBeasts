@@ -68,7 +68,7 @@ def draw_frame(before, after, events=(), t=1):
         prior=old.get(member.uid,member)
         changed=prior.slot!=member.slot or prior.fighter.species!=member.fighter.species
         active=prior.fighter if animated and move_t<.48 else member.fighter
-        source=raid.fitted(active.species,place.size)
+        source=raid.fitted(active.species,place.size,active.armor_id)
         home=fx.Pose(place.x,place.feet,size=place.size,flip=place.x>320,height=source.height)
         pose=home
         group=groups.get(member.uid,{})

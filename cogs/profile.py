@@ -1,4 +1,6 @@
 from utils import db as storage
+from utils import gear_art
+import io
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -152,7 +154,7 @@ class Profile(commands.Cog):
         is_own = target.id == interaction.user.id
         if is_own:
             try:
-                from cogs.questline import get_quest_state as _gqs, load_questline as _lql
+                from utils.story import get_quest_state as _gqs, load_questline as _lql
                 from utils.db import load_npcs as _ln
                 _qstate = await _gqs(interaction.user.id)
                 _curr_ch = _qstate.get("current_chapter", "")
@@ -165,7 +167,7 @@ class Profile(commands.Cog):
                             description=(
                                 f"{_npc.get('emoji','📖')} **{_npc.get('name','your guide')}** is waiting — "
                                 f"*{_ch['name']}* is in progress.\n"
-                                f"Use `/questline` to check your objectives."
+                                f"Open `/journal` → **Story** to check your objectives."
                             ),
                             color=COLORS["legendary"]
                         )
@@ -181,10 +183,10 @@ class Profile(commands.Cog):
                 "**`/explore`** — Visit the Whispering Woods to catch wild beasts.",
                 "**`/shop`** — Buy and hatch a Common Egg for a new companion.",
                 "**`/sparr`** — Spar with an NPC to earn EXP and level up.",
-                "**`/questline`** — Follow the main story for big rewards.",
+                "**`/journal` → Story** — Follow the main story and report back for rewards.",
                 "**`/daily`** — Claim free gold and shards once per day.",
                 "",
-                "*Use `/guide` to browse all commands.*",
+                "*Your `/journal` connects companions, crafting and activities in one place.*",
             ]
             guide = discord.Embed(
                 title="Where to Start",
@@ -272,7 +274,7 @@ class Profile(commands.Cog):
                 tags    = (" ⚔️" if b["is_active"] else "") + (" ⭐" if b.get("is_favorite") else "")
                 val = f"{t_emoji} {bd['type'].capitalize()} · Lv.{b['level']} · `{b['hp']}/{b['max_hp']}HP`{tags}"
                 embed.add_field(name=f"{r_emoji} #{num} {name}", value=val, inline=True)
-            embed.set_footer(text="Use /beastinfo <#> for details · /setactive <#> to switch")
+            embed.set_footer(text="Use /beastinfo <#> for details · /journal → Companions to switch")
             return embed, max(1, (len(filter_beasts(tab)) + per_page - 1) // per_page)
 
         current_tab  = rarity if rarity in TAB_RARITIES else "all"
@@ -439,7 +441,7 @@ class Profile(commands.Cog):
                 if form == 'bond':
                     can_evolve = can_evolve and row.get('bond', 0) >= 30 and row['happiness'] >= 70
                     method_name = 'No item needed — a bond awakening'
-                    recipe_str = f"\nBond: {row.get('bond', 0)}/30 · Happiness: {row['happiness']}/70 · `/bond` shows your progress."
+                    recipe_str = f"\nBond: {row.get('bond', 0)}/30 · Happiness: {row['happiness']}/70 · `/journal` → Companions shows your progress."
                 lvl_note = f"Lv.{lvl_req} required" if not can_evolve else f"✅ Lv.{lvl_req} — **ready to evolve!**"
                 if form == 'bond' and row['level'] >= lvl_req and not can_evolve:
                     lvl_note = f"Lv.{lvl_req} reached; build bond and happiness"
@@ -462,8 +464,6 @@ class Profile(commands.Cog):
                     value=f"*{beast_data.get('starter_house', 'Unknown House')} — {beast_data.get('starter_flavor', '')}*",
                     inline=False
                 )
-            if beast_data.get("image_url"):
-                embed.set_image(url=beast_data["image_url"])
             embed.set_footer(text=f"Beast #{num} · {len(all_beasts)} companions | Caught via: {row['caught_from']}")
             return embed
 
@@ -495,15 +495,75 @@ class Profile(commands.Cog):
                     return await modal_interaction.response.send_message(
                         f"✦ Beast `#{target_num}` not found in your collection.", ephemeral=True
                     )
-                self._view.idx = idx
-                self._view._update()
-                await modal_interaction.response.edit_message(embed=build_embed(all_beasts[idx]), view=self._view)
+                await self._view.show(modal_interaction, target_number=target_num)
 
         class BeastInfoView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=120)
                 self.idx = current_idx
+                self.message = None
+                self.lock = asyncio.Lock()
+                self.art_enabled = True
                 self._update()
+
+            async def show(self, click, *, delta=0, target_number=None, opening=False):
+                nonlocal all_beasts
+                if click.user.id != interaction.user.id:
+                    return await click.response.send_message("This isn't your collection!", ephemeral=True)
+                if not opening:
+                    await click.response.defer()
+                async with self.lock:
+                    if self.is_finished():
+                        return await click.followup.send('This companion browser has closed. Open /beastinfo again.', ephemeral=True)
+                    old_id = all_beasts[self.idx]['id']
+                    fresh = await get_player_beasts(interaction.user.id)
+                    if not fresh:
+                        self.stop()
+                        return await click.followup.send('Your collection is empty. Open /journal to find your next companion.', ephemeral=True)
+                    all_beasts = fresh
+                    self.idx = next((i for i, row in enumerate(fresh) if row['id'] == old_id), min(self.idx, len(fresh)-1))
+                    if target_number is not None:
+                        target = next((i for i, row in enumerate(fresh) if row.get('player_number') == target_number or row.get('player_number') is None and row['id'] == target_number), None)
+                        if target is None:
+                            return await click.followup.send(f'Companion #{target_number} is no longer in your collection.', ephemeral=True)
+                        self.idx = target
+                    else:
+                        self.idx = max(0, min(len(fresh)-1, self.idx+delta))
+                    self._update()
+                    row = fresh[self.idx]
+                    embed = build_embed(row)
+                    armor = (await gear_art.equipped_armor_ids(interaction.user.id)).get(row['id'], '')
+                    expected = gear_art.portrait_filename(row['beast_id'], armor)
+                    previous = {item.filename: item for item in getattr(self.message, 'attachments', [])}
+                    retained = previous.get(expected) if self.art_enabled else None
+                    portrait = await gear_art.render_portrait(row['beast_id'], armor) if self.art_enabled and retained is None else None
+                    buffer = io.BytesIO(portrait.data) if portrait else None
+                    file = discord.File(buffer, filename=portrait.filename) if portrait else None
+                    attachments = [retained] if retained else [file] if file else []
+                    if attachments:
+                        embed.set_image(url=f'attachment://{expected}')
+
+                    async def deliver(with_art):
+                        async with asyncio.timeout(15):
+                            if opening:
+                                return await click.followup.send(embed=embed, view=self, files=[file] if with_art and file else [], wait=True)
+                            return await click.edit_original_response(embed=embed, view=self, attachments=attachments if with_art else [])
+                    try:
+                        try:
+                            result = await deliver(bool(attachments))
+                        except discord.HTTPException as error:
+                            if isinstance(error, discord.NotFound) or not attachments:
+                                raise
+                            logging.getLogger('chibibeasts.gear.art').warning('Companion browser portrait rejected (%s); showing text', error.status)
+                            self.art_enabled = False
+                            embed.set_image(url=None)
+                            result = await deliver(False)
+                        self.message = result or self.message
+                    finally:
+                        if file:
+                            file.close()
+                        if buffer:
+                            buffer.close()
 
             def _update(self):
                 self.prev_btn.disabled = self.idx <= 0
@@ -515,9 +575,7 @@ class Profile(commands.Cog):
             async def prev_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 if btn_interaction.user.id != interaction.user.id:
                     return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
-                self.idx -= 1
-                self._update()
-                await btn_interaction.response.edit_message(embed=build_embed(all_beasts[self.idx]), view=self)
+                await self.show(btn_interaction, delta=-1)
 
             @discord.ui.button(label="Go to #", style=discord.ButtonStyle.secondary, emoji="🔍")
             async def goto_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
@@ -529,25 +587,10 @@ class Profile(commands.Cog):
             async def next_btn(self, btn_interaction: discord.Interaction, button: discord.ui.Button):
                 if btn_interaction.user.id != interaction.user.id:
                     return await btn_interaction.response.send_message("This isn't your collection!", ephemeral=True)
-                self.idx += 1
-                self._update()
-                await btn_interaction.response.edit_message(embed=build_embed(all_beasts[self.idx]), view=self)
+                await self.show(btn_interaction, delta=1)
 
         view = BeastInfoView()
-        await interaction.followup.send(embed=build_embed(beast_row), view=view)
-
-    @app_commands.command(name="setactive", description="Set a beast as your active battle beast ⚔️")
-    @app_commands.describe(beast_number="Your beast number from /collection")
-    async def setactive(self, interaction: discord.Interaction, beast_number: int):
-        await interaction.response.defer()
-        try:
-            await storage.set_active_companion(interaction.user.id, beast_number)
-        except ValueError as error:
-            return await interaction.followup.send(str(error), ephemeral=True)
-        await interaction.followup.send(embed=discord.Embed(
-            description=f"✦ Beast `#{beast_number}` is now your active beast! ⚔️",
-            color=COLORS["success"]
-        ))
+        await view.show(interaction, opening=True)
 
     @app_commands.command(name="nickname", description="Give your beast a nickname 💬")
     @app_commands.describe(beast_number="Your beast number from /collection", name="New nickname (max 20 chars)")

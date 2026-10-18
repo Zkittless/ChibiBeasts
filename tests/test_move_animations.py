@@ -113,6 +113,30 @@ class MoveCatalog(unittest.TestCase):
 
 
 class Retreats(unittest.TestCase):
+    def test_prompt_and_action_titles_only_show_retreat_for_a_new_knockout(self):
+        pair=states();before=art.snapshot(pair)
+        self.assertEqual(battle_scene.timing(before,before,None,1),(1,0))
+        with patch.object(battle_scene.ui,'heading') as heading:
+            art.frame(before,before,'woods')
+            self.assertEqual(heading.call_args.args[1],'YOUR TURN')
+            action=art.Action(0,'Tick Bite',damage=5)
+            pair[1]['hp']-=5;after=art.snapshot(pair)
+            for t in (0,.5,1):
+                self.assertEqual(battle_scene.timing(before,after,action,t)[1],0)
+                art.frame(before,after,'woods',action,t)
+                self.assertEqual(heading.call_args.args[1],'IN BATTLE')
+            art.frame(before,after,'woods',replace(action,ultimate=True),.2)
+            self.assertEqual(heading.call_args.args[1],'ULTIMATE')
+            pair[1]['hp']=0;defeated=art.snapshot(pair)
+            total=battle_scene.duration(after,defeated,action)
+            retreat_t=(action.milliseconds+fx.RETREAT_MS/2)/total
+            art.frame(after,defeated,'woods',action,retreat_t)
+            self.assertEqual(heading.call_args.args[1],'RETREAT')
+            art.frame(defeated,defeated,'woods')
+            self.assertEqual(heading.call_args.args[1],'BATTLE COMPLETE')
+            art.frame(defeated,defeated,'woods',art.Action(0,'End-of-turn effects','status'),.2)
+            self.assertEqual(heading.call_args.args[1],'BATTLE COMPLETE')
+
     def test_ground_and_floating_retreats_keep_aspect_and_leave_both_edges(self):
         source=Image.new('RGBA',(40,80),'#d6b88a')
         for species in ('barkley','wisp','twine'):

@@ -3,6 +3,14 @@ Completed 2026-10-16 America/Chicago (evidence timestamps use UTC)
 Branch: audit/economy-progression
 Baseline: ba51b60a11553e29aa5487953822ca91daa3f64f
 
+HISTORICAL MODEL NOTE (2026-10-18)
+The acquisition, income and reset-loop figures below describe the earlier
+quick-exploration rules at the audit date. Saved Field Journal expeditions now
+use regional material bundles and optional same-rarity gathering choices;
+encounter species do not add material weight. The 8-11 exploration estimate is
+historical, not a forecast for the current expedition flow. See FIELD-JOURNAL.md
+for current charge, choice and reward behavior. The dated evidence is preserved.
+
 OUTCOME
 
 Reviewed all 52 offers across gold, shard and guild shops, all

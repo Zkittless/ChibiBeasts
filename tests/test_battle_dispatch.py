@@ -284,9 +284,24 @@ class BattleDispatch(DatabaseCase):
         fake.user.display_avatar = SimpleNamespace(url='https://example.com/avatar.png')
         fake.followup.send.return_value = loading
         fake.channel.send.side_effect = send
+
+        async def journal_choice(journal, choice):
+            click = component()
+            click.user = fake.user
+            click.channel = fake.channel
+            click.data = {'values': [next(o.value for o in journal.path_select.options if o.value.endswith(':' + choice))]}
+            click.edit_original_response.return_value = loading
+            await journal.handle(click, 'path')
+            click.response.defer.assert_awaited_once()
+
         try:
-            with patch('utils.habitats.pick_encounter', return_value=storage.get_beast_data('slime')), patch('cogs.hatch.random.random', return_value=1), patch('cogs.hatch.random.randint', side_effect=lambda a, b: a):
-                await asyncio.wait_for(Hatch.explore.callback(Hatch(None), fake, 'woods'), 8)
+            with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('slime')), patch('utils.expeditions.random.random', return_value=1), patch('utils.expeditions.random.randint', side_effect=lambda a, b: a):
+                journal = await asyncio.wait_for(Hatch.explore.callback(Hatch(None), fake, 'woods'), 8)
+                self.addCleanup(journal.stop)
+                await journal_choice(journal, 'tracks')
+                await asyncio.wait_for(journal_choice(journal, 'challenge'), 8)
+                self.assertEqual([b['beast_id'] for b in await storage.get_player_beasts(42)].count('slime'), 0)
+                await journal_choice(journal, 'return')
             self.assertEqual(len(prompts), 3)
             self.assertTrue(all(view is prompts[0] for view in prompts))
             self.assertEqual([b['beast_id'] for b in await storage.get_player_beasts(42)].count('slime'), 1)

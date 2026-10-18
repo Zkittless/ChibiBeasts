@@ -49,16 +49,15 @@ class JournalFlow(DatabaseCase):
                 self.assertTrue(1 <= len(item.options) <= 25)
                 self.assertTrue(all(len(option.value) <= 100 for option in item.options))
 
-    async def test_journal_and_guide_open_same_hub_without_spending_a_charge(self):
-        for cog, callback in ((Journal(None), Journal.journal.callback), (Utilities(None), Utilities.help_cmd.callback)):
-            initial = interaction()
-            await callback(cog, initial)
-            initial.response.defer.assert_awaited_once()
-            view = initial.followup.send.call_args.kwargs['view']
-            self.addCleanup(view.stop)
-            self.assertIsInstance(view, JournalView)
-            self.assertIn('Meet your starter', [b.label for b in view.walk_children() if isinstance(b, discord.ui.Button)])
-            self.assert_valid(view)
+    async def test_journal_opens_the_hub_without_spending_a_charge(self):
+        initial = interaction()
+        await Journal.journal.callback(Journal(None), initial)
+        initial.response.defer.assert_awaited_once()
+        view = initial.followup.send.call_args.kwargs['view']
+        self.addCleanup(view.stop)
+        self.assertIsInstance(view, JournalView)
+        self.assertIn('Meet your starter', [b.label for b in view.walk_children() if isinstance(b, discord.ui.Button)])
+        self.assert_valid(view)
         self.assertEqual((await expeditions.energy(42)).charges, 1)
         self.assertEqual(await self.rows('SELECT * FROM expeditions'), [])
 
@@ -89,6 +88,15 @@ class JournalFlow(DatabaseCase):
         self.assertEqual(goal['realm'], 'loom')
         await self.beast('genesis')
         self.assertTrue((await journal_state.snapshot(42)).goal['done'])
+
+    async def test_recipe_gathering_goals_follow_material_regions_instead_of_creature_habitats(self):
+        await storage.update_player(42, level=10)
+        for recipe, expected in (('unicorn_healer_vestments', 'glacial'), ('basilisk_gaze_pauldrons', 'loom')):
+            with self.subTest(recipe=recipe):
+                await journal_state.pin_goal(42, 'recipe', recipe)
+                goal = (await journal_state.snapshot(42)).goal
+                self.assertEqual(goal['realm'], expected)
+                self.assertIn(journal_state.BIOMES[expected]['name'], goal['text'])
 
     async def test_awakening_goal_follows_identity_and_handles_evolution_or_transfer(self):
         row_id = await self.ready()
@@ -288,6 +296,20 @@ class JournalFlow(DatabaseCase):
         self.assert_valid(view)
         await self.click(view, 'awaken', f'{row_id}:twine')
         self.assertIn('changed', view.notice)
+
+    async def test_companions_explains_bond_growth_and_limits_combat_bonus_to_starters(self):
+        await self.ready()
+        view = await self.view('companions')
+        self.assertIn('battle win: +2', self.text(view))
+        self.assertIn('up to 10% at 100 bond', self.text(view))
+        self.assertIn('No item is required', self.text(view))
+        ordinary_id = await self.beast('wisp')
+        view.state = await journal_state.snapshot(42)
+        view.companion_id = ordinary_id
+        view.render()
+        self.assertNotIn('0.1%', self.text(view))
+        self.assertIn('Any companion can build a bond', self.text(view))
+        self.assert_valid(view)
 
     async def test_artwork_failure_falls_back_and_uploaded_files_close(self):
         await self.ready()

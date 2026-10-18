@@ -226,7 +226,7 @@ async def claim_chapter(user_id, chapter_id, guild_id=0, choice=None):
             raise ValueError('That chapter has already been claimed or is not active.')
         player = await reconcile(db, state, chapter, guild_id)
         if not complete(chapter, state):
-            raise ValueError('Finish the objectives first. Check /questline.')
+            raise ValueError('Finish the objectives first. Open /journal → Story.')
         if not set(chapter.get('required_relics', [])) <= set(state['collected_relics']):
             raise ValueError('Bring all four relics first.')
         if chapter.get('choices'):

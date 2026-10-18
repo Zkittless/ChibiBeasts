@@ -492,10 +492,10 @@ async def record_bestiary_sighting(guild_id: int, beast_id: str, user_id: int) -
             count = (await c.fetchone())[0]
 
     try:
-        from cogs.questline import advance_quest_step
+        from utils.story import advance_quest_step
         await advance_quest_step(user_id, "bestiary_update", count=count)
     except ImportError:
-        pass  # questline cog not loaded — safe to skip silently
+        pass  # Story service unavailable; discovery remains recorded.
     except Exception as exc:
         import logging
         logging.getLogger("chibibeasts.progress").warning(

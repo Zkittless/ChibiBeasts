@@ -64,7 +64,7 @@ async def grant_material(user_id, material_id, amount=1):
         await add_stack(db, 'player_materials', user_id, material_id, amount)
         await db.commit()
     from utils.events import record_event
-    from cogs.questline import advance_quest_step
+    from utils.story import advance_quest_step
     await advance_quest_step(user_id, 'material_gained', material_id=material_id, amount=amount)
     await record_event(user_id, 'material_collect', amount=amount)
 

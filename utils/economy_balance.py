@@ -33,23 +33,13 @@ def item_sell_price(item, merchant=False):
 
 
 def material_sources(material_id):
-    from utils.habitats import BIOMES, REGIONAL_MATERIALS, SPECIES_MATERIALS
-    from utils import db as storage
+    from utils.habitats import BIOMES, REGIONAL_MATERIALS
     routes = [b['name'] for key,b in BIOMES.items() if material_id in REGIONAL_MATERIALS[key]]
-    species = [storage.get_beast_data(key)['name'] for key,mid in SPECIES_MATERIALS.items() if mid==material_id]
-    if material_id=='void_essence':
-        routes.append('shadow encounters')
-    if material_id=='spirit_crystal':
-        routes.append('arcane encounters')
-    if material_id=='sunforge_residue':
-        routes.append('fire/earth encounters')
     raids = {'dragon_scale':'Corrupted Dragon', 'sunforge_residue':'Corrupted Dragon',
              'kraken_ink':'Corrupted Leviathan','fenrir_fur':'Corrupted Fenrir',
              'chronos_gear':'Ancient Chronos','tear_of_the_creator':'any Ancient',
              'blighted_world_core':'Ancient Genesis/Abyss'}
     text = 'Explore: '+', '.join(routes) if routes else ''
-    if species:
-        text += ('; ' if text else '')+'extra weight with '+', '.join(species)
     if material_id in raids:
         text += ('; ' if text else '')+'Guaranteed: '+raids[material_id]
     return text

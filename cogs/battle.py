@@ -42,7 +42,7 @@ LEVEL_MILESTONES = {
             "*Somewhere in the Whispering Woods, an old woman named **Maren** has heard about you. "
             "She keeps the First Bestiary — a record of every beast ever caught, "
             "going back before anyone can remember. She wants to meet you.*\n\n"
-            "**Use `/questline` to begin your story.**\n"
+            "**Open `/journal` → Story to begin your story.**\n"
             "*The Loom has been waiting for you to be ready.*"
         ),
         "reward_gold": 500, "reward_shards": 5, "color": "legendary",
@@ -156,7 +156,7 @@ async def award_player_exp(user_id: int, exp_gain: int, interaction=None):
         result=await player_exp(db,user_id,exp_gain)
         await db.commit()
     if result[2]:
-        from cogs.questline import advance_quest_step
+        from utils.story import advance_quest_step
         await advance_quest_step(user_id,"level_up",level=result[0])
         if interaction:await notify_level_up(interaction,old[0],result[0],user_id)
     return result
@@ -351,7 +351,7 @@ class Battle(commands.Cog):
         active_row = await get_active_beast(interaction.user.id)
         if not active_row:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need an active beast to battle! Use `/setactive`.",
+                description="✦ You need an active beast to battle! Open `/journal` → Companions → Make active.",
                 color=COLORS["error"]
             ))
 
@@ -431,9 +431,9 @@ class Battle(commands.Cog):
         )
         if wild_beast_data.get("image_url"):
             _challenge_intro.set_image(url=wild_beast_data["image_url"])
-        if active_beast_data.get("image_url"):
-            _challenge_intro.set_thumbnail(url=active_beast_data["image_url"])
-        await interaction.followup.send(embed=_challenge_intro)
+        from utils import gear_art
+        armor = await gear_art.equipped_armor_ids(interaction.user.id)
+        await gear_art.send_owned_portrait(interaction, _challenge_intro, active_row['beast_id'], armor.get(active_row['id'], ''), thumbnail=True)
 
         # Reward callbacks
         async def on_win(embed, p_state, e_state, timed_out=False):
@@ -565,7 +565,7 @@ class Battle(commands.Cog):
         active_row = await get_active_beast(interaction.user.id)
         if not active_row:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need an active beast! Use `/setactive`.",
+                description="✦ You need an active beast! Open `/journal` → Companions → Make active.",
                 color=COLORS["error"]
             ))
 
@@ -579,7 +579,7 @@ class Battle(commands.Cog):
 
         # Archivist locked until Chapter 5 complete
         if npc_name == "the_archivist":
-            from cogs.questline import get_quest_state
+            from utils.story import get_quest_state
             qs = await get_quest_state(interaction.user.id)
             if "chapter_5" not in qs.get("completed_chapters", []):
                 return await interaction.followup.send(embed=discord.Embed(
@@ -655,9 +655,9 @@ class Battle(commands.Cog):
         )
         if companion_data.get("image_url"):
             _sparr_intro.set_image(url=companion_data["image_url"])
-        if active_beast_data.get("image_url"):
-            _sparr_intro.set_thumbnail(url=active_beast_data["image_url"])
-        await interaction.followup.send(embed=_sparr_intro)
+        from utils import gear_art
+        armor = await gear_art.equipped_armor_ids(interaction.user.id)
+        await gear_art.send_owned_portrait(interaction, _sparr_intro, active_row['beast_id'], armor.get(active_row['id'], ''), thumbnail=True)
 
         # Win/loss dialogue per NPC — pulled from their established voice
         NPC_WIN_LINES = {

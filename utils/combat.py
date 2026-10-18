@@ -52,12 +52,17 @@ def build_state(data, row, perks=(), gear=(), buffs=None):
     state = {'id': row.get('id'), 'rarity': data['rarity'], 'name': row.get('nickname') or data['name'], 'level': row.get('level', 1), **{k: row[k] for k in ('hp', 'max_hp', 'attack', 'defense', 'speed', 'mana', 'max_mana')}, 'moves': data['moves'], 'move_effects': data.get('move_effects', {}), 'ultimate': data['ultimate'], 'beast_type': data['type'], 'image_url': data.get('image_url', ''), 'status': None, 'status_turns': 0, 'ultimate_charges': (buffs or {}).get('ultimate_charges', 0), 'divine_passive': data.get('divine_passive') or {}, 'perks': {p['perk_id'] for p in perks if p.get('equipped')}, 'action_count': 0, 'dp_crit_charges': 0}
     # Keep the species separate from the collection row ID and nickname.
     state['beast_id'] = data['id']
+    # Appearance is captured from the same equipped catalog items as the stat
+    # effects. Renderers never read player rows or query equipment mid-battle.
+    state['armor_id'] = ''
     happiness = row.get('happiness', 100)
     mult = 0.9 + min(70, max(0, happiness - 30)) / 70 * 0.2
     bond = 1 + min(100, row.get('bond', 0)) * 0.001 if data.get('starter_family') else 1
     for stat in ('attack', 'defense', 'speed'):
         state[stat] = max(1, int(state[stat] * mult * bond))
     for item in gear:
+        if item.get('slot') == 'armor' and not state['armor_id']:
+            state['armor_id'] = item.get('id', '')
         apply_gear(state, item.get('effect', {}))
     buffs = buffs or {}
     state['item_defense_boost_percent'] = buffs.get('next_defense_boost',0)

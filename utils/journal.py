@@ -1,14 +1,15 @@
 """A native Discord Field Journal, with acknowledged, revision-checked choices."""
 import asyncio
 from contextlib import ExitStack
+import io
 import logging
 from uuid import uuid4
 
 import aiosqlite
 import discord
 
-from utils import crafting, db as storage, expeditions, journal_state, story
-from utils.artwork import PROJECT_ROOT, card_artwork_path
+from utils import crafting, db as storage, expeditions, gear_art, journal_state, story
+from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 
 logger = logging.getLogger('chibibeasts.journal')
@@ -83,10 +84,12 @@ class JournalView(discord.ui.LayoutView):
     def row(self, *items):
         self.container.add_item(discord.ui.ActionRow(*items))
 
-    def portrait(self, text, species):
+    def portrait(self, text, species, armor_id=''):
         if self.art_enabled:
+            filename = gear_art.portrait_filename(species, armor_id)
+            self.portraits[filename] = (species, armor_id or '')
             self.container.add_item(discord.ui.Section(discord.ui.TextDisplay(text), accessory=discord.ui.Thumbnail(
-                f'attachment://{card_artwork_path(species).name}', description=storage.get_beast_data(species)['name'])))
+                f'attachment://{filename}', description=storage.get_beast_data(species)['name'])))
         else:
             self.text(text)
 
@@ -122,7 +125,7 @@ class JournalView(discord.ui.LayoutView):
         if active:
             beast = storage.get_beast_data(active['beast_id'])
             status = 'Recovering · ' + storage.ko_time_remaining(active) if storage.is_knocked_out(active) else f"HP {active['hp']}/{active['max_hp']}"
-            self.portrait(f"**{safe(active['nickname'] or beast['name'])}** · Lv.{active['level']}\n{status} · Bond {active['bond']}/100 · Happiness {active['happiness']}/100", beast['id'])
+            self.portrait(f"**{safe(active['nickname'] or beast['name'])}** · Lv.{active['level']}\n{status} · Bond {active['bond']}/100 · Happiness {active['happiness']}/100", beast['id'], active['armor_id'])
         else:
             self.text('Choose your first companion to begin exploring.')
             self.row(self.button('Meet your starter', 'launch:start', discord.ButtonStyle.success))
@@ -168,7 +171,10 @@ class JournalView(discord.ui.LayoutView):
             return
         p = trip['payload']
         landmark, flavor = LANDMARKS[trip['realm']]
-        self.text(f"### {REALMS[trip['realm']]['name']}\nStep {p['stage'] + 1}/3 · Supplies saved\n{flavor}")
+        e = self.state.energy
+        recharge = 'Bank full' if not e.next_in else 'Next charge in ' + wait_text(e.next_in)
+        self.text(f"### {REALMS[trip['realm']]['name']}\nStep {p['stage'] + 1}/3 · Supplies saved\n"
+                  f"**Exploration {e.charges}/{expeditions.CAPACITY}** · {recharge}\n{flavor}")
         if trip['status'] == 'battle':
             self.text('**Your encounter is in progress.** Use its battle controls below, then return to this page. You can reopen the journal without losing this trip.')
             if not p.get('battle_started'):
@@ -222,21 +228,26 @@ class JournalView(discord.ui.LayoutView):
         self.row(self.companion_select)
         row = self.selected_companion()
         beast = storage.get_beast_data(row['beast_id'])
-        self.portrait(f"### {safe(row['nickname'] or beast['name'])} · Lv.{row['level']}\n{'Active companion · ' if row['is_active'] else ''}HP {row['hp']}/{row['max_hp']} · MP {row['mana']}/{row['max_mana']}\nBond {row['bond']}/100 · Happiness {row['happiness']}/100\n{beast['description']}", beast['id'])
+        self.portrait(f"### {safe(row['nickname'] or beast['name'])} · Lv.{row['level']}\n{'Active companion · ' if row['is_active'] else ''}HP {row['hp']}/{row['max_hp']} · MP {row['mana']}/{row['max_mana']}\nBond {row['bond']}/100 · Happiness {row['happiness']}/100\n{beast['description']}", beast['id'], row['armor_id'])
         if self.awakening_scene:
             self.text('**A familiar friend**\n' + self.awakening_scene)
         if beast.get('divine_passive'):
             passive = beast['divine_passive']
             self.text(f"**{passive['passive_name']}** · {passive['passive_desc']}")
+        self.text('**Growing your bond**\nPlay together: +3 bond · battle win: +2 · training: +1. Bond stays with this individual companion.')
+        if beast.get('starter_family'):
+            self.text('Every bond point adds 0.1% to combat attack, defense and speed, up to 10% at 100 bond. The bonus continues after awakening.')
+        else:
+            self.text('Any companion can build a bond. The four Architect starters also have unique bond awakenings.')
         self.row(self.button('Make active', 'make_active', discord.ButtonStyle.primary, disabled=bool(row['is_active'] or row['listed'] or storage.is_knocked_out(row))),
                  self.button('Play together', 'launch:play', disabled=not row['is_active']))
         evo = beast.get('evolution') or {}
         if evo.get('form') == 'bond':
             after = storage.get_beast_data(evo['evolves_to'])
-            self.text(f"**Awakening · {after['name']}**\nLv.{row['level']}/{evo['level_required']} · Bond {row['bond']}/30 · Happiness {row['happiness']}/70")
+            self.text(f"**Awakening · {after['name']}**\nLv.{row['level']}/{evo['level_required']} · Bond {row['bond']}/30 · Happiness {row['happiness']}/70\nNo item is required. Review the awakening below when ready.")
             self.row(self.button('Pin awakening', 'pin_awakening'), self.button('Review awakening', 'review_awakening', discord.ButtonStyle.success))
             if self.reviewing:
-                self.portrait(f"**{beast['name']} becomes {after['name']}**\n{after['description']}\nYour earned stats, bond and gear carry forward. No item is required.", after['id'])
+                self.portrait(f"**{beast['name']} becomes {after['name']}**\n{after['description']}\nYour earned stats, bond and gear carry forward. No item is required.", after['id'], row['armor_id'])
                 self.awakening.options = [discord.SelectOption(label=f"Awaken {beast['name']} into {after['name']}"[:100], value=f"{row['id']}:{beast['id']}")]
                 self.awakening.disabled = row['level'] < evo['level_required'] or row['bond'] < 30 or row['happiness'] < 70 or row['listed'] or storage.is_knocked_out(row)
                 self.row(self.awakening)
@@ -315,6 +326,7 @@ class JournalView(discord.ui.LayoutView):
 
     def render(self):
         self._button_serial = 8  # The five navigation and three utility buttons are stable.
+        self.portraits = {}
         self.container.clear_items()
         if self.art_enabled:
             self.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(f'attachment://{self.header.name}', description='Field Journal · ' + REALMS[self.art_realm]['name'])))
@@ -342,25 +354,36 @@ class JournalView(discord.ui.LayoutView):
         return PROJECT_ROOT / 'data' / 'journal' / f'journal-{self.art_realm}.png'
 
     async def publish(self, interaction, *, opening=False):
+        previous = {a.filename: a for a in getattr(self.message, 'attachments', [])}
+        portraits = {}
+        if self.art_enabled:
+            for filename, appearance in self.portraits.items():
+                if filename not in previous:
+                    portrait = await gear_art.render_portrait(*appearance)
+                    if portrait is None:
+                        self.art_enabled = False
+                        self.render()
+                        break
+                    portraits[filename] = portrait
         with ExitStack() as stack:
             attachments, files = [], []
-            previous = {a.filename: a for a in getattr(self.message, 'attachments', [])}
             if self.art_enabled:
                 # Only send artwork actually referenced on this page.
                 paths = {self.header.name: self.header}
-                for item in self.walk_children():
-                    if isinstance(item, discord.ui.Thumbnail):
-                        filename = item.media.url.removeprefix('attachment://')
-                        for species in storage.load_beasts():
-                            path = card_artwork_path(species)
-                            if path.name == filename:
-                                paths[filename] = path
-                                break
                 for name, path in paths.items():
                     if name in previous:
                         attachments.append(previous[name])
                     else:
                         file = discord.File(path)
+                        stack.callback(file.close)
+                        files.append(file)
+                for filename in self.portraits:
+                    if filename in previous:
+                        attachments.append(previous[filename])
+                    else:
+                        buffer = io.BytesIO(portraits[filename].data)
+                        stack.callback(buffer.close)
+                        file = discord.File(buffer, filename=filename)
                         stack.callback(file.close)
                         files.append(file)
             async def deliver(with_art):
@@ -609,7 +632,8 @@ class JournalView(discord.ui.LayoutView):
             pass
 
 
-async def open_journal(interaction, *, bot=None, page='home', realm='woods', notice='', already_deferred=False, replace_message=False):
+async def open_journal(interaction, *, bot=None, page='home', realm='woods', notice='', already_deferred=False, replace_message=False,
+                       begin_expedition=False):
     if not already_deferred:
         await interaction.response.defer()
     await storage.get_or_create_player(interaction.user.id, str(interaction.user))
@@ -623,6 +647,17 @@ async def open_journal(interaction, *, bot=None, page='home', realm='woods', not
     for trip in pending:
         await expeditions.report(trip)
     if pending:
+        state = await journal_state.snapshot(interaction.user.id)
+    if realm not in REALMS:
+        realm = 'woods'
+        notice = 'Choose an available destination from your journal.'
+    elif begin_expedition and not state.trip:
+        try:
+            await expeditions.begin(interaction.user.id, realm, guild_id=getattr(interaction.guild, 'id', 0))
+        except ValueError as error:
+            # Missing charges, recovery, locked realms and a simultaneous
+            # opener all remain visible in the journal instead of a dead end.
+            notice = str(error)
         state = await journal_state.snapshot(interaction.user.id)
     view = JournalView(interaction.user.id, state, bot=bot or getattr(interaction, 'client', None), page=page, realm=realm, notice=notice, guild_id=getattr(interaction.guild, 'id', 0))
     if not view.trip:

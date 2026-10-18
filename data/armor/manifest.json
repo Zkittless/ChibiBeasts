@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "sets": {
+    "sprite_silk_attire": {
+      "name": "Sprite-Silk Attire",
+      "components": {
+        "chest": "components/sprite_silk_attire/chest.png",
+        "shoulder": "components/sprite_silk_attire/shoulder.png",
+        "back": "components/sprite_silk_attire/back.png",
+        "accessory": "components/sprite_silk_attire/accessory.png"
+      },
+      "front_drape": true,
+      "accessory": "clasp"
+    },
+    "gnome_iron_plating": {
+      "name": "Gnome-Iron Plating",
+      "components": {
+        "chest": "components/gnome_iron_plating/chest.png",
+        "shoulder": "components/gnome_iron_plating/shoulder.png",
+        "back": "components/gnome_iron_plating/back.png",
+        "accessory": "components/gnome_iron_plating/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "shield",
+      "variants": {
+        "twine": "variants/gnome_iron_plating/twine.png",
+        "barkley": "variants/gnome_iron_plating/barkley.png",
+        "gloop": "variants/gnome_iron_plating/gloop.png"
+      }
+    },
+    "kelpie_scale_mail": {
+      "name": "Kelpie-Scale Mail",
+      "components": {
+        "chest": "components/kelpie_scale_mail/chest.png",
+        "shoulder": "components/kelpie_scale_mail/shoulder.png",
+        "back": "components/kelpie_scale_mail/back.png",
+        "accessory": "components/kelpie_scale_mail/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "cinder_guard_vest": {
+      "name": "Cinder-Guard Vest",
+      "components": {
+        "chest": "components/cinder_guard_vest/chest.png",
+        "shoulder": "components/cinder_guard_vest/shoulder.png",
+        "back": "components/cinder_guard_vest/back.png",
+        "accessory": "components/cinder_guard_vest/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "dragon_lord_aegis": {
+      "name": "Dragon-Lord Aegis",
+      "components": {
+        "chest": "components/dragon_lord_aegis/chest.png",
+        "shoulder": "components/dragon_lord_aegis/shoulder.png",
+        "back": "components/dragon_lord_aegis/back.png",
+        "accessory": "components/dragon_lord_aegis/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "abyssal_shroud": {
+      "name": "The Abyssal Shroud",
+      "components": {
+        "chest": "components/abyssal_shroud/chest.png",
+        "shoulder": "components/abyssal_shroud/shoulder.png",
+        "back": "components/abyssal_shroud/back.png",
+        "accessory": "components/abyssal_shroud/accessory.png"
+      },
+      "front_drape": true,
+      "accessory": "clasp"
+    },
+    "chronos_paradox_plate": {
+      "name": "Chronos Paradox Plate",
+      "components": {
+        "chest": "components/chronos_paradox_plate/chest.png",
+        "shoulder": "components/chronos_paradox_plate/shoulder.png",
+        "back": "components/chronos_paradox_plate/back.png",
+        "accessory": "components/chronos_paradox_plate/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "blight_weaver_regalia": {
+      "name": "Blight-Weaver Regalia",
+      "components": {
+        "chest": "components/blight_weaver_regalia/chest.png",
+        "shoulder": "components/blight_weaver_regalia/shoulder.png",
+        "back": "components/blight_weaver_regalia/back.png",
+        "accessory": "components/blight_weaver_regalia/accessory.png"
+      },
+      "front_drape": true,
+      "accessory": "clasp"
+    },
+    "unicorn_healer_vestments": {
+      "name": "Unicorn-Healer Vestments",
+      "components": {
+        "chest": "components/unicorn_healer_vestments/chest.png",
+        "shoulder": "components/unicorn_healer_vestments/shoulder.png",
+        "back": "components/unicorn_healer_vestments/back.png",
+        "accessory": "components/unicorn_healer_vestments/accessory.png"
+      },
+      "front_drape": true,
+      "accessory": "clasp"
+    },
+    "basilisk_gaze_pauldrons": {
+      "name": "Basilisk Gaze Pauldrons",
+      "components": {
+        "chest": "components/basilisk_gaze_pauldrons/chest.png",
+        "shoulder": "components/basilisk_gaze_pauldrons/shoulder.png",
+        "back": "components/basilisk_gaze_pauldrons/back.png",
+        "accessory": "components/basilisk_gaze_pauldrons/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "phoenix_born_shroud": {
+      "name": "Phoenix-Born Shroud",
+      "components": {
+        "chest": "components/phoenix_born_shroud/chest.png",
+        "shoulder": "components/phoenix_born_shroud/shoulder.png",
+        "back": "components/phoenix_born_shroud/back.png",
+        "accessory": "components/phoenix_born_shroud/accessory.png"
+      },
+      "front_drape": true,
+      "accessory": "clasp"
+    },
+    "thunderbird_storm_mail": {
+      "name": "Thunderbird Storm-Mail",
+      "components": {
+        "chest": "components/thunderbird_storm_mail/chest.png",
+        "shoulder": "components/thunderbird_storm_mail/shoulder.png",
+        "back": "components/thunderbird_storm_mail/back.png",
+        "accessory": "components/thunderbird_storm_mail/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "mossbark_wrapping": {
+      "name": "Mossbark Wrapping",
+      "components": {
+        "chest": "components/mossbark_wrapping/chest.png",
+        "shoulder": "components/mossbark_wrapping/shoulder.png",
+        "back": "components/mossbark_wrapping/back.png",
+        "accessory": "components/mossbark_wrapping/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "emberstone_vest": {
+      "name": "Emberstone Vest",
+      "components": {
+        "chest": "components/emberstone_vest/chest.png",
+        "shoulder": "components/emberstone_vest/shoulder.png",
+        "back": "components/emberstone_vest/back.png",
+        "accessory": "components/emberstone_vest/accessory.png"
+      },
+      "front_drape": false,
+      "accessory": "clasp"
+    },
+    "thornweave_cloak": {
+      "name": "Thornweave Cloak",
+      "components": {
+        "chest": "components/thornweave_cloak/chest.png",
+        "shoulder": "components/thornweave_cloak/shoulder.png",
+        "back": "components/thornweave_cloak/back.png",
+        "accessory": "components/thornweave_cloak/accessory.png"
+      },
+      "front_drape": true,
+      "accessory": "clasp"
+    },
+    "deepwater_hide": {
+      "name": "Deepwater Hide",
+      "components": {
+        "chest": "components/deepwater_hide/chest.png",
+        "shoulder": "components/deepwater_hide/shoulder.png",
+        "back": "components/deepwater_hide/back.png",
+        "accessory": "components/deepwater_hide/accessory.png"
+      },
+      "front_drape": true,
+      "accessory": "clasp"
+    }
+  },
+  "sha256": {
+    "components/sprite_silk_attire/chest.png": "b42579f28409c533b397c3363f4296677e7c0c5f01c0aac5599affba089b3b99",
+    "components/sprite_silk_attire/shoulder.png": "a66ece5ef73058536227a42a058e4e43174c89d29dbb8209d2998f88bd2fa6cb",
+    "components/sprite_silk_attire/back.png": "741e318ac55d301fdc2e96aae9f2015a70db5a81c4a9b04780a48738fed3f078",
+    "components/sprite_silk_attire/accessory.png": "a7ccb10d016b438a63237afc0e1025607457a9b209e435b72677fb904d3abff7",
+    "components/gnome_iron_plating/chest.png": "a564126fe7e443a2fdb6677e4e2517d6e1ecaf62db467664317acc4142dac581",
+    "components/gnome_iron_plating/shoulder.png": "0d12610b822ae6c23e31317725c08537901930e521773f6b41d525ce0def7ba9",
+    "components/gnome_iron_plating/back.png": "b8045f3fb98d6ddba4c491d0c92e9da6a0d9ab8a3316fd33a71c0ae4ce75a697",
+    "components/gnome_iron_plating/accessory.png": "a24fe79c70f585c5dec3407fa59df5747952996349a6dc5347eb51ac7636ffe9",
+    "components/kelpie_scale_mail/chest.png": "7058540fb619efcb24a154f5087612890cdeee8cdfe0e90dfc859dd821554374",
+    "components/kelpie_scale_mail/shoulder.png": "3f73cd2d4b9529b8da4a08d62bb00b35fb7089d49fee77a62b65a35dc8615f04",
+    "components/kelpie_scale_mail/back.png": "0d8cb9aa0341db55fef299c60d075618b29c112f338aa9f80078279c48e03314",
+    "components/kelpie_scale_mail/accessory.png": "897036e3713030c7a09d1fc77d140e977aa4e44372e506bcf40540ea61030c4d",
+    "components/cinder_guard_vest/chest.png": "607fd30cd51fe9567894a8a4a6e7d1dfa54a7d3b5ffe2d5f3f77785ba35988a9",
+    "components/cinder_guard_vest/shoulder.png": "9ab8fbef100278689d84082636655a3a12996756120c4742bdd4e1dc1813b86a",
+    "components/cinder_guard_vest/back.png": "d067bb7d92b4f9fad65764a3203f58fc1902670e7dd4177b5083087583285685",
+    "components/cinder_guard_vest/accessory.png": "38665e5ae8763ebadc2010a8efb8c8c901660b13e127ef7e416d5d4e94569a63",
+    "components/dragon_lord_aegis/chest.png": "0cd0c8fd12e0084a15107a0c0c8e9152d5d88e713db3bbd2041fdd4cc1fe27bb",
+    "components/dragon_lord_aegis/shoulder.png": "c523af787fd86ae918750f6881584c7144fde5cc384bd1233e18926c8344c931",
+    "components/dragon_lord_aegis/back.png": "cfc09e3e4934ea7e2d69d6e857229cbf43ff607f0b1a7afce144808465ca5723",
+    "components/dragon_lord_aegis/accessory.png": "1540ee9bf14a537086fb5af9e8d7c341a6d1d8ce6031119e7479800397eae71c",
+    "components/abyssal_shroud/chest.png": "abe0754e1c60bca990c96240e0054aa0daf603ab20dcef1a9e669948f9c6342a",
+    "components/abyssal_shroud/shoulder.png": "3ebf0b7b59b853ce93a73d673fceeb6b8f81238c1035990ecc2e69a9b9c148f0",
+    "components/abyssal_shroud/back.png": "5d6bff79feef83cca9da87a861dd723f502d091d43ae3d396138604da482a7fc",
+    "components/abyssal_shroud/accessory.png": "da72d49493203d129f2ada0ca5e3265e089175881bfddfe25d26197de8ca07d5",
+    "components/chronos_paradox_plate/chest.png": "1a866dfe5efd305ce2edea1732e0e356a63cf0349bb8bf6884719723a6d56f7e",
+    "components/chronos_paradox_plate/shoulder.png": "2c818fa3bb06a6bfe97ae94c2e12fb2c57867ac68b05887a6bcc07a9a2e13e15",
+    "components/chronos_paradox_plate/back.png": "98054a151b452b4c1543398b5ed4206fd078bd51db6831624dd3c9bb93b4406a",
+    "components/chronos_paradox_plate/accessory.png": "4cbd77bbff2b46f0431b691ac615b7bb145a37a0ae7e8f3ac528c543b716547a",
+    "components/blight_weaver_regalia/chest.png": "cebf4d0a75d44d75e2b2d8dd8e9d185dfbebf0e20c7b6ff5b4492f9c193622e1",
+    "components/blight_weaver_regalia/shoulder.png": "f1105eb010973f58c366cb510ba435538344a7267c353b285149f097de65ee75",
+    "components/blight_weaver_regalia/back.png": "5354aef834d82988f9996a6cfbb0d292b75b3de92d8a95d0955f25fb4f4fde84",
+    "components/blight_weaver_regalia/accessory.png": "f873db96ab5e11f7d752791f68116152669f0adcff72ec0ba72fb8a345a39255",
+    "components/unicorn_healer_vestments/chest.png": "ef46b53b73124fdb4bf9a2752bc52b34b103f908a7cb785d722dc9c6dcfe3de6",
+    "components/unicorn_healer_vestments/shoulder.png": "ae5a593544c53b28883d9e2bd6140f039f5c3451e9cd3be0b0d0476e7467ede6",
+    "components/unicorn_healer_vestments/back.png": "e53cef58a6d7ce1c956089d32b35e8152a0630ed5c74a53ad39ca3227da032e2",
+    "components/unicorn_healer_vestments/accessory.png": "e7a62f03c90ea6d72f55944710dae0b8331655b6c782dd21788468bda61de278",
+    "components/basilisk_gaze_pauldrons/chest.png": "768128e25e48c0247696af9657806573af881d39f94159e949283cdc3b2115aa",
+    "components/basilisk_gaze_pauldrons/shoulder.png": "4d0a693502b8889864021086d41f550a22e52c8c80f25a16a19983bc8f9c0810",
+    "components/basilisk_gaze_pauldrons/back.png": "bd7f104003a1173f438591be245908c6dbc3926ad602d81e00f258473659ebc5",
+    "components/basilisk_gaze_pauldrons/accessory.png": "d96edd2b96f56d85088d59c4f42a6c0019e0bf1a4fd25b1c6946b18c758ef577",
+    "components/phoenix_born_shroud/chest.png": "ab7ded754716b2895589506363186636f99ac00ed8e3ebf84fe9878c4fcc3e01",
+    "components/phoenix_born_shroud/shoulder.png": "f3b1317cf6d1a80aeec7cf5e0797c5bd616d6d8b67b9bacc9c6c034390533b82",
+    "components/phoenix_born_shroud/back.png": "3ffe963fad93af822646239c97b328f449be79eb3fc15cc6f6eb30bc5bc7f9e2",
+    "components/phoenix_born_shroud/accessory.png": "f897212610066375b0579004c72c4ddf13ec79a3ac35487d9a9451d7eb243843",
+    "components/thunderbird_storm_mail/chest.png": "587693643a97b774173469dbfc7e6af628b4fad61ecf34f2036c5dc317c43212",
+    "components/thunderbird_storm_mail/shoulder.png": "b6b2ebd985e306437cc34a311016a7772dadbcb2d894803dd943ea701d9f1629",
+    "components/thunderbird_storm_mail/back.png": "f251f5db07c53554b6619e884ac6f1bfb20707fea42eae0d25875b1e5ed312ac",
+    "components/thunderbird_storm_mail/accessory.png": "d1dc7104cf029480763a3090116d5b39b7583ff4cbbcf8dac721335d02c7441a",
+    "components/mossbark_wrapping/chest.png": "8fb5e4d54a16831f7a86fd74c26fbdd329c3ebc66e783ef2d80dc1e59305d250",
+    "components/mossbark_wrapping/shoulder.png": "64a0c68dbdb4f8c489b0d5ec5eb3fa383d2c8bebbb757ce4b890befcf1726a9b",
+    "components/mossbark_wrapping/back.png": "7547817db5f8035d13ed3d3c1d87084e2de3d814db45c467166fe95c364962fb",
+    "components/mossbark_wrapping/accessory.png": "f117c8de46120f97364a978b17cd573e97f6124015a19a71a218e184926c9b9c",
+    "components/emberstone_vest/chest.png": "0cb739328edda9ca28b9a6d1d06ed3954b04053e0621d3d4df30a44a69458420",
+    "components/emberstone_vest/shoulder.png": "202b1f3f8cc8e087939980e0ff267267d44b1f821c47eba19af122aa93dcf300",
+    "components/emberstone_vest/back.png": "91c55fc2cc347ab22cb397ed6665a77b147fba7017b6e3019a22e6852356a584",
+    "components/emberstone_vest/accessory.png": "12a57cf7f3a6ad8d8fb4b7ce1f362ea452c0951088032e7f15811c5746fca23c",
+    "components/thornweave_cloak/chest.png": "5e0184fcdbd999319a417a16448f53f121704d07efb40b5e0c51fec52f3241f5",
+    "components/thornweave_cloak/shoulder.png": "bf904be7bef7fa2a8ed500f9246b8c475fd289f3b1f89e5c9d601c42655d1c39",
+    "components/thornweave_cloak/back.png": "953f4a9acd205042c7261bc4dd000432ab7a758036a3f72657054ccd4344b6a0",
+    "components/thornweave_cloak/accessory.png": "bebcda2dbd19cd0c59e2f1de24a2bd511d94f90802fe8de9b4f1f14f8894c281",
+    "components/deepwater_hide/chest.png": "215a72779e5549771d03ef5a9a120f622fefad8747724b8e1b3ff0f1ca29e439",
+    "components/deepwater_hide/shoulder.png": "7ee4b6d9e61770e2951bee3176633e7f1085ecb23920d9acd1d6ec262a0513ca",
+    "components/deepwater_hide/back.png": "a79e54d41a4c03b283fad00f4183aa472d110047f54eb51ed75366938654ab27",
+    "components/deepwater_hide/accessory.png": "dae89bac64ed20973316e61e50c251108fb1a1ef25e56b1fe56aaaef1cecf294",
+    "variants/gnome_iron_plating/twine.png": "3ac40fd8023b6c5c4b19b5663d3fb26514433ce3c1cb9f3d777f592a8d5f8709",
+    "variants/gnome_iron_plating/barkley.png": "2cc9647d12561b40772b270c77beca873dd5327dfdba9651bd314c726f3e704e",
+    "variants/gnome_iron_plating/gloop.png": "9786d347e3a15ec4f0d1a544e530b62817dd4b8a6a7e502a90bf89cdf20d9159"
+  }
+}

@@ -8,7 +8,7 @@ import aiosqlite
 from utils import crafting, db as storage, expeditions, story
 from utils.catalog import load_catalog, catalog_revision
 from utils.economy_balance import material_sources, recipe_level
-from utils.habitats import BIOMES, REGIONAL_MATERIALS, SPECIES_MATERIALS, eligible
+from utils.habitats import BIOMES, REGIONAL_MATERIALS, eligible
 from utils.sanctuary import apply_craft_discount
 
 
@@ -88,8 +88,6 @@ def goal_status(goal, state):
         else:
             first = missing[0]
             regions = [key for key in BIOMES if first in REGIONAL_MATERIALS[key]]
-            # Species drops can supply materials outside the regional list.
-            regions += [key for species, mid in SPECIES_MATERIALS.items() if mid == first for key in habitats(species)]
             unlocked = [key for key in dict.fromkeys(regions) if state.level >= BIOMES[key]['min_level']]
             result['realm'] = min(unlocked, key=lambda k: BIOMES[k]['min_level']) if unlocked else None
             hint = f"Next: gather in {BIOMES[result['realm']]['name']}." if unlocked else material_sources(first)

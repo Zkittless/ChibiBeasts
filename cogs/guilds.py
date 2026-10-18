@@ -12,7 +12,7 @@ from utils.theme import COLORS, RARITY_EMOJI, hp_bar, SPARKLE
 from utils.progress import (
     track_quest_event, check_achievements, unlock_simple_achievement, notify_unlocks, notify_quest_completions
 )
-from cogs.questline import advance_quest_step
+from utils.story import advance_quest_step
 
 GUILD_LEVEL_PERKS = {
     1:  {"max_members": 10,  "unlocks": "Guild created!"},

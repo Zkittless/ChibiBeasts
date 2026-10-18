@@ -56,11 +56,10 @@ class Workshop(DatabaseCase):
         self.assertIn('Ready to equip', view.notice)
         self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
 
-    async def test_material_shortcut_opens_the_same_workshop_bag(self):
-        command = interaction()
-        await World.materials_cmd.callback(World(None), command)
-        view = command.followup.send.call_args.kwargs['view']
-        self.addCleanup(view.stop)
+    async def test_material_button_opens_the_workshop_bag(self):
+        view = await self.view()
+        click = await self.click(view, 'materials')
+        click.response.defer.assert_awaited_once()
         self.assertEqual(view.drawer, 'materials')
         self.assertIn('material bag is empty', self.text(view))
 
