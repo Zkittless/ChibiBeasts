@@ -1,0 +1,164 @@
+"""Fresh journal snapshots and durable goals; UI pages never own inventory."""
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from functools import lru_cache
+
+import aiosqlite
+
+from utils import crafting, db as storage, expeditions, story
+from utils.catalog import load_catalog, catalog_revision
+from utils.economy_balance import material_sources, recipe_level
+from utils.habitats import BIOMES, REGIONAL_MATERIALS, SPECIES_MATERIALS, eligible
+from utils.sanctuary import apply_craft_discount
+
+
+def habitats(species):
+    return list(_habitats(species, catalog_revision()))
+
+
+@lru_cache(maxsize=128)
+def _habitats(species, revision):
+    beast = storage.get_beast_data(species)
+    if not beast or not eligible(beast):
+        return ()
+    return tuple(key for key, realm in BIOMES.items() if realm['weights'].get(beast['rarity'], 0) > 0
+                 and beast['type'] in realm['types'])
+
+
+def hunt_targets():
+    return sorted((b for b in storage.load_beasts().values() if eligible(b) and habitats(b['id'])),
+                  key=lambda b: (min(BIOMES[k]['min_level'] for k in habitats(b['id'])), b['name']))
+
+
+async def pin_goal(user_id, kind, target):
+    target = str(target)
+    expected = ''
+    async with storage.connect() as db:
+        db.row_factory = aiosqlite.Row
+        await db.execute('BEGIN IMMEDIATE')
+        if kind == 'recipe':
+            if target not in crafting.recipes():
+                raise ValueError('Choose a recipe from the workshop.')
+        elif kind == 'creature':
+            if not habitats(target):
+                raise ValueError('Choose a creature that can be found while exploring.')
+        elif kind == 'awakening':
+            async with db.execute('SELECT beast_id FROM player_beasts WHERE id=? AND user_id=?', (target, user_id)) as c:
+                row = await c.fetchone()
+            evo = (storage.get_beast_data(row['beast_id']).get('evolution') or {}) if row else {}
+            if evo.get('form') != 'bond':
+                raise ValueError('Choose a companion with a bond awakening still ahead.')
+            expected = evo['evolves_to']
+        else:
+            raise ValueError('Choose a recipe, awakening or creature goal.')
+        await db.execute('INSERT INTO journal_goals VALUES(?,?,?,?) ON CONFLICT(user_id) '
+                         'DO UPDATE SET kind=excluded.kind,target=excluded.target,expected_species=excluded.expected_species',
+                         (user_id, kind, target, expected))
+        await db.commit()
+
+
+async def clear_goal(user_id):
+    async with storage.connect() as db:
+        await db.execute('DELETE FROM journal_goals WHERE user_id=?', (user_id,))
+        await db.commit()
+
+
+def goal_status(goal, state):
+    """Compute progress from current ownership, recipe costs and level gates."""
+    if not goal:
+        return None
+    kind, target = goal['kind'], goal['target']
+    result = dict(kind=kind, target=target, done=False, action='', realm=None)
+    if kind == 'recipe':
+        item = crafting.recipes().get(target)
+        if not item:
+            return {**result, 'name': 'Recipe unavailable', 'text': 'Choose another goal.'}
+        costs = apply_craft_discount(item['recipe'], state.sanctuary)
+        mats = load_catalog('materials.json')['materials']
+        owned = state.owned.get(target, 0) or any(target in (r['armor_id'], r['rune_id']) for r in state.companions)
+        missing = [mid for mid, n in costs.items() if state.materials.get(mid, 0) < n]
+        result.update(name=item['name'], done=bool(owned), action='workshop')
+        progress = ' · '.join(f"{mats[mid]['name']} {min(state.materials.get(mid, 0), n)}/{n}" for mid, n in costs.items())
+        if owned:
+            result['text'] = 'Crafted! Open the workshop to equip or use it.'
+        elif state.level < recipe_level(item):
+            result['text'] = f"Trainer Lv.{state.level}/{recipe_level(item)} to craft.\n{progress}"
+        elif not missing:
+            result['text'] = 'All materials ready. Craft it in the workshop.'
+        else:
+            first = missing[0]
+            regions = [key for key in BIOMES if first in REGIONAL_MATERIALS[key]]
+            # Species drops can supply materials outside the regional list.
+            regions += [key for species, mid in SPECIES_MATERIALS.items() if mid == first for key in habitats(species)]
+            unlocked = [key for key in dict.fromkeys(regions) if state.level >= BIOMES[key]['min_level']]
+            result['realm'] = min(unlocked, key=lambda k: BIOMES[k]['min_level']) if unlocked else None
+            hint = f"Next: gather in {BIOMES[result['realm']]['name']}." if unlocked else material_sources(first)
+            result['text'] = progress + '\n' + hint
+    elif kind == 'awakening':
+        row = next((r for r in state.companions if str(r['id']) == target), None)
+        result['name'] = 'Bond awakening'
+        if not row:
+            result['text'] = 'This companion has left your collection. Choose another goal.'
+            return result
+        beast = storage.get_beast_data(row['beast_id'])
+        expected = goal['expected_species']
+        descendants = set()
+        while expected and expected not in descendants:
+            descendants.add(expected)
+            expected = (storage.get_beast_data(expected).get('evolution') or {}).get('evolves_to')
+        result.update(name=f"{row['nickname'] or beast['name']} · Awakening", companion=row)
+        if row['beast_id'] in descendants:
+            result.update(done=True, text='Awakening complete. Your shared progress carried into the new form.')
+        elif (beast.get('evolution') or {}).get('form') != 'bond':
+            result['text'] = 'This companion has changed. Choose another goal.'
+        else:
+            evo = beast['evolution']
+            ready = row['level'] >= evo['level_required'] and row['bond'] >= 30 and row['happiness'] >= 70
+            guidance = 'Ready to awaken together.' if ready else 'Play, train and battle together to grow your bond.'
+            if ready and (row['listed'] or storage.is_knocked_out(row)):
+                ready = False
+                guidance = 'Delist this companion before awakening.' if row['listed'] else 'Let this companion recover before awakening.'
+            result.update(action='awaken' if ready else 'companions',
+                          text=f"Companion Lv.{min(row['level'], evo['level_required'])}/{evo['level_required']} · Bond {min(row['bond'], 30)}/30 · Happiness {min(row['happiness'], 70)}/70\n" +
+                          guidance)
+    else:
+        beast = storage.get_beast_data(target)
+        if not beast:
+            return {**result, 'name': 'Creature unavailable', 'text': 'Choose another goal.'}
+        done = any(row['beast_id'] == target for row in state.companions)
+        regions = habitats(target)
+        unlocked = [key for key in regions if state.level >= BIOMES[key]['min_level']]
+        result.update(name=beast['name'], done=done, action='adventure',
+                      realm=unlocked[0] if unlocked else None,
+                      text='Found! This creature is in your collection.' if done else
+                      ('Search ' + ' or '.join(BIOMES[k]['name'] for k in unlocked) + '. Encounters remain random.' if unlocked else
+                       'Reach trainer Lv.' + str(min(BIOMES[k]['min_level'] for k in regions)) + ' to reach its habitat.'))
+    return result
+
+
+@dataclass
+class JournalState:
+    player: dict
+    workshop: crafting.WorkshopState
+    energy: expeditions.Energy
+    trip: dict | None
+    goal: dict | None
+    story: dict
+
+
+async def snapshot(user_id):
+    await storage.get_active_beast(user_id)  # Apply expired recovery timers first.
+    workshop = await crafting.workshop_state(user_id)
+    energy = await expeditions.energy(user_id)
+    trip = await expeditions.current(user_id)
+    async with storage.connect() as db:
+        db.row_factory = aiosqlite.Row
+        async with db.execute('SELECT * FROM players WHERE user_id=?', (user_id,)) as c:
+            player = dict(await c.fetchone())
+        async with db.execute("SELECT 1 FROM daily_quests WHERE user_id=? AND quest_id='daily_claim' AND date=?", (user_id, datetime.now(timezone.utc).strftime('%Y-%m-%d'))) as c:
+            player['_daily_claimed'] = bool(await c.fetchone())
+        async with db.execute('SELECT * FROM journal_goals WHERE user_id=?', (user_id,)) as c:
+            row = await c.fetchone()
+            goal = dict(row) if row else None
+        state = await story.read_state(db, user_id)
+    return JournalState(player, workshop, energy, trip, goal_status(goal, workshop), state)

@@ -1,0 +1,113 @@
+<style>
+#cb-field-journal { color-scheme: light dark; --cj-bg: light-dark(#f2f3f5, #2b2d31); --cj-ink: light-dark(#303238, #dbdee1); --cj-muted: light-dark(#5c6068, #b5bac1); --cj-button: light-dark(#e3e5e8, #41434a); --cj-border: light-dark(#c4c7ce, #4e5058); --cj-select: light-dark(#fff, #1e1f22); font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; }
+#cb-field-journal * { box-sizing: border-box; }
+#cb-field-journal .cj-stage { padding: 14px 0; }
+#cb-field-journal .cj-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: var(--cj-muted); padding: 0 12px 12px; }
+#cb-field-journal .cj-bar select { width: auto; max-width: 100%; }
+#cb-field-journal .cj-card { max-width: 640px; margin: 0 auto; padding: 12px; border: 1px solid var(--cj-border); border-left: 4px solid #b7ad87; border-radius: 8px; background: var(--cj-bg); color: var(--cj-ink); }
+#cb-field-journal .cj-gallery img { width: 100%; display: block; image-rendering: pixelated; border-radius: 4px; }
+#cb-field-journal .cj-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+#cb-field-journal button { border: 0; border-radius: 4px; padding: 8px 12px; background: var(--cj-button); color: var(--cj-ink); font: inherit; font-weight: 500; max-width: 100%; }
+#cb-field-journal button[data-style="1"] { background: #5865f2; color: #fff; }
+#cb-field-journal button[data-style="3"] { background: light-dark(#257944, #278747); color: #fff; }
+#cb-field-journal button:disabled { opacity: .5; }
+#cb-field-journal select { appearance: auto; border: 1px solid var(--cj-border); border-radius: 4px; padding: 10px 8px; background: var(--cj-select); color: var(--cj-ink); font: inherit; width: 100%; min-width: 0; }
+#cb-field-journal .cj-text { margin: 12px 0; overflow-wrap: anywhere; }
+#cb-field-journal .cj-text h3 { font-size: 18px; line-height: 1.4; font-weight: 500; color: var(--cj-ink); margin: 0 0 6px; }
+#cb-field-journal .cj-text strong { font-weight: 500; }
+#cb-field-journal .cj-section { display: grid; grid-template-columns: 1fr 100px; gap: 14px; align-items: start; }
+#cb-field-journal .cj-section img { width: 100%; max-height: 100px; object-fit: contain; image-rendering: pixelated; }
+#cb-field-journal .cj-note { color: var(--cj-muted); padding: 10px 12px 0; min-height: 32px; }
+@media (max-width: 420px) { #cb-field-journal .cj-section { grid-template-columns: 1fr 78px; gap: 8px; } #cb-field-journal button { padding: 8px; } }
+@media (pointer: coarse) { #cb-field-journal button, #cb-field-journal select { min-height: 44px; } #cb-field-journal select { font-size: 16px; } }
+</style>
+<div id="cb-field-journal" aria-label="ChibiBeasts Field Journal preview">
+  <div class="cj-bar"><label for="cj-screen">Preview page</label><select id="cj-screen" class="cursor-interaction" aria-label="Preview page"></select></div>
+  <div class="cj-stage viz-dotted-background"><div class="cj-card" aria-live="polite"></div></div>
+  <div class="cj-note" role="status">Interactive preview · sample trainer · no live purchases</div>
+</div>
+<script>
+(() => {
+  const root = document.getElementById('cb-field-journal');
+  const data = __JOURNAL_DATA__;
+  const art = __ART_DATA__;
+  const names = {home:'Home', adventure:'Destinations', expedition:'Trailhead', encounter:'Wild encounter', gather:'Gathering', landmark:'Landmark', companions:'Companions', goals:'Pinned goals', story:'Story', activities:'Activities', workshop:'Workshop', return:'Return home'};
+  const picker = root.querySelector('#cj-screen');
+  const card = root.querySelector('.cj-card');
+  const note = root.querySelector('.cj-note');
+  let current = 'home';
+  let branch = '';
+  let lastSaved = '';
+  const emitted = new Set();
+  for (const [value,label] of Object.entries(names)) { const option=document.createElement('option'); option.value=value; option.textContent=label; picker.append(option); }
+  function savedPage(state) { return state?.privateContent?.journalPreviewPage || state?.journalPreviewPage; }
+  const stored = savedPage(window.openai?.widgetState);
+  if (stored && data[stored]) current = stored;
+  function persist() {
+    lastSaved = current;
+    emitted.add(current);
+    if (window.openai?.setWidgetState) window.openai.setWidgetState({modelContent:{journalPreviewPage:current}, privateContent:{journalPreviewPage:current}}).catch(()=>{});
+  }
+  function show(page, message='') {
+    if (!data[page]) return;
+    current=page; render();
+    note.textContent=message || 'Interactive preview · sample trainer · no live purchases';
+    persist();
+  }
+  function html(value) {
+    const temp=document.createElement('span'); temp.textContent=String(value); return temp.innerHTML;
+  }
+  function markdown(value) {
+    return html(value).replace(/\\([_~*`])/g,'$1').split('\n').map(line => {
+      if(line.startsWith('### ')) return '<h3>'+line.slice(4)+'</h3>';
+      return line.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')+'<br>';
+    }).join('');
+  }
+  function action(id) { const parts=id.split(':').slice(2); if(/^\d+$/.test(parts[parts.length-1])) parts.pop(); return parts.join(':'); }
+  function buttonAction(key) {
+    if (key.startsWith('page:')) return show(key.slice(5));
+    if (key==='begin') { branch=''; return show('expedition'); }
+    if (key==='journal') return show('home');
+    if (key==='goal_workshop') return show('workshop');
+    if (key==='goal_action') return show('companions');
+    if (key==='goal_realm') return show('adventure');
+    if (key==='pin_recipe') return show('home','Recipe pinned · progress follows you between visits');
+    if (key==='refresh') return render();
+    if (key.startsWith('launch:')) { note.textContent='Opens /'+key.slice(7)+' in Discord.'; return; }
+    note.textContent='This control uses your saved trainer in Discord.';
+  }
+  function selection(key,value) {
+    if (key==='path') {
+      const choice=value.split(':').slice(2).join(':');
+      if (choice==='tracks' || choice==='rustle') return show('encounter');
+      if (choice==='gather') { branch='gather'; return show('gather'); }
+      if (choice==='shrine') { branch='landmark'; return show('landmark'); }
+      if (choice.startsWith('material:')) return show('gather_home');
+      if (['repair','study','rest'].includes(choice)) return show('landmark_home',choice==='repair'?'':'Sample shown: repair together. Rest and study use the same saved route.');
+      if (choice==='observe') return show('trail_home');
+      if (choice==='return' || choice==='return_early') return show(data[branch+'_return']?branch+'_return':'return');
+      note.textContent=choice==='challenge'?'Opens the existing animated wild battle in Discord.':'Approach gives one chance to befriend this creature; the encounter then ends.';
+    } else if (key==='realm') {
+      note.textContent='Destination selected · '+value;
+    } else if (key==='goal_target') {
+      return show('home','The chosen goal is saved to your journal in Discord.');
+    } else {
+      note.textContent='Selection is saved to your trainer in Discord.';
+    }
+  }
+  function component(item,parent) {
+    if(item.type===17) { for(const child of item.components) component(child,parent); return; }
+    if(item.type===12) { const gallery=document.createElement('div'); gallery.className='cj-gallery'; for(const media of item.items) { const image=document.createElement('img'); image.src=art[media.media.url.replace('attachment://','')] || ''; image.alt=media.description || 'Field Journal'; gallery.append(image); } parent.append(gallery); return; }
+    if(item.type===10) { const text=document.createElement('div'); text.className='cj-text'; text.innerHTML=markdown(item.content); parent.append(text); return; }
+    if(item.type===1) { const row=document.createElement('div'); row.className='cj-row'; for(const child of item.components) component(child,row); parent.append(row); return; }
+    if(item.type===2) { const button=document.createElement('button'); button.type='button'; button.className='cursor-interaction'; button.textContent=item.label; button.disabled=!!item.disabled; button.dataset.style=item.style; button.onclick=()=>buttonAction(action(item.custom_id)); parent.append(button); return; }
+    if(item.type===3) { const select=document.createElement('select'); select.className='cursor-interaction'; select.setAttribute('aria-label',item.placeholder||'Choose an option'); select.disabled=!!item.disabled; const placeholder=document.createElement('option'); placeholder.value=''; placeholder.textContent=item.placeholder||'Choose an option'; placeholder.disabled=true; select.append(placeholder); for(const entry of item.options) { const option=document.createElement('option'); option.value=entry.value; option.textContent=entry.label; option.selected=!!entry.default; select.append(option); } if(!item.options.some(o=>o.default)) select.value=''; select.onchange=()=>selection(action(item.custom_id),select.value); parent.append(select); return; }
+    if(item.type===9) { const section=document.createElement('div'); section.className='cj-section'; const text=document.createElement('div'); for(const child of item.components) component(child,text); section.append(text); const image=document.createElement('img'); image.src=art[item.accessory.media.url.replace('attachment://','')]||''; image.alt=item.accessory.description||'Companion portrait'; section.append(image); parent.append(section); }
+  }
+  function render() { card.replaceChildren(); for(const entry of data[current]) component(entry,card); picker.value=names[current]?current:''; }
+  picker.onchange=()=>show(picker.value);
+  window.addEventListener('openai:set_globals',event=>{ const incoming=savedPage(event.detail?.globals?.widgetState); if(incoming && data[incoming] && !emitted.has(incoming) && incoming!==lastSaved && incoming!==current) {current=incoming;render();} });
+  root.journalPreview={getState:()=>({page:current, branch}),show};
+  render(); root.dataset.ready='true';
+})();
+</script>

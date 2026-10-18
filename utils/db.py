@@ -360,6 +360,20 @@ async def _run_migrations():
             CREATE TABLE IF NOT EXISTS raid_reward_details (
                 raid_id INTEGER, user_id INTEGER, player_level INTEGER, beast_levels TEXT,
                 PRIMARY KEY(raid_id,user_id));
+            CREATE TABLE IF NOT EXISTS exploration_energy (
+                user_id INTEGER PRIMARY KEY, charges INTEGER NOT NULL,
+                regenerated_at REAL NOT NULL);
+            CREATE TABLE IF NOT EXISTS expeditions (
+                id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, realm TEXT NOT NULL,
+                status TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0,
+                companion_id INTEGER, payload TEXT NOT NULL,
+                created_at REAL NOT NULL, updated_at REAL NOT NULL, reported INTEGER NOT NULL DEFAULT 0);
+            CREATE UNIQUE INDEX IF NOT EXISTS ix_expedition_active ON expeditions(user_id)
+                WHERE status IN ('active','battle','quick');
+            CREATE INDEX IF NOT EXISTS ix_expedition_history ON expeditions(user_id,updated_at);
+            CREATE TABLE IF NOT EXISTS journal_goals (
+                user_id INTEGER PRIMARY KEY, kind TEXT NOT NULL, target TEXT NOT NULL,
+                expected_species TEXT NOT NULL DEFAULT '');
         """)
         await db.executescript("""
             CREATE INDEX IF NOT EXISTS ix_beasts_owner_number ON player_beasts(user_id,player_number);
@@ -381,6 +395,8 @@ async def _run_migrations():
         """)
         from utils.balance_migrations import apply_base_stat_balance
         await apply_base_stat_balance(db)
+        from utils.expeditions import recover_interrupted
+        await recover_interrupted(db)
         # Recover the old personal raid currency into the spendable Guild Tickets.
         claim = await db.execute("INSERT OR IGNORE INTO game_meta(key,value) VALUES('economy-tickets-2026-10','applied')")
         if claim.rowcount:
@@ -494,7 +510,7 @@ async def clear_raid_slot(user_id: int, slot: int):
             await db.execute('UPDATE player_beasts SET raid_slot=NULL WHERE user_id=? AND raid_slot=?', (user_id, slot))
             await db.commit()
 
-async def set_active_companion(user_id, number):
+async def set_active_companion(user_id, number, *, expected_row_id=None):
     from utils.duels import reserve_fighters
     with reserve_fighters([user_id]):
         async with connect() as db:
@@ -505,6 +521,8 @@ async def set_active_companion(user_id, number):
                 row = await c.fetchone()
             if not row:
                 raise ValueError(f'Companion #{number} is not in your collection.')
+            if expected_row_id is not None and row['id'] != expected_row_id:
+                raise ValueError('That companion changed. Refresh your collection before choosing it.')
             if is_knocked_out(dict(row)) or row['hp'] <= 0:
                 raise ValueError('Let this companion recover before making it active.')
             async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (row['id'],)) as c:

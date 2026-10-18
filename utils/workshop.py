@@ -64,6 +64,7 @@ class WorkshopView(discord.ui.LayoutView):
         self.page_button = discord.ui.Button(label='1/1', disabled=True, custom_id=self.prefix + ':page')
         self.next_button = self.button('Next', 'next')
         self.confirm_row = discord.ui.ActionRow()
+        self.journal_row = discord.ui.ActionRow(self.button('Pin recipe', 'pin_recipe'), self.button('Field Journal', 'journal'))
         self.render()
 
     @property
@@ -239,6 +240,10 @@ class WorkshopView(discord.ui.LayoutView):
             for child in self.walk_children():
                 if isinstance(child, (discord.ui.Button, discord.ui.Select)):
                     child.disabled = True
+        self.container.add_item(self.journal_row)
+        if self.closed:
+            for child in self.journal_row.children:
+                child.disabled = True
         if self.content_length() > 4000:
             raise ValueError('Workshop text exceeds Discord’s message limit.')
 
@@ -296,6 +301,13 @@ class WorkshopView(discord.ui.LayoutView):
                 if input_id and input_id < self.last_input:
                     return await interaction.followup.send('That input came from an older panel. Use the current controls.', ephemeral=True)
                 self.last_input = max(self.last_input, input_id)
+                if action == 'journal':
+                    from utils.journal import open_journal
+                    result = await open_journal(interaction, already_deferred=True, replace_message=True)
+                    if result:
+                        self.closed = True
+                        self.stop()
+                    return
                 expected = self.confirmation
                 self.state = await crafting.workshop_state(self.user_id)
                 self.notice = ''
@@ -358,6 +370,10 @@ class WorkshopView(discord.ui.LayoutView):
                         self.using = False
                     elif action == 'refresh':
                         self.notice = 'Workshop refreshed.'
+                    elif action == 'pin_recipe':
+                        from utils.journal_state import pin_goal
+                        await pin_goal(self.user_id, 'recipe', self.selected)
+                        self.notice = f"**{self.item['name']}** pinned in your Field Journal. Its material progress will follow you between visits."
                     self.state = await crafting.workshop_state(self.user_id)
                     self.remember_target()
                 except ValueError as error:
@@ -400,10 +416,11 @@ class WorkshopView(discord.ui.LayoutView):
             pass
 
 
-async def open_workshop(interaction, *, item_name=None, drawer=''):
+async def open_workshop(interaction, *, item_name=None, drawer='', recipe_id=None, already_deferred=False, replace_message=False):
     """/craft opens the panel; the existing named quick-craft stays compatible."""
-    await interaction.response.defer()
-    selected, notice, result = None, '', None
+    if not already_deferred:
+        await interaction.response.defer()
+    selected, notice, result = recipe_id if recipe_id in crafting.recipes() else None, '', None
     if item_name:
         selected = crafting.resolve_recipe(item_name)
         if selected is None:
@@ -419,8 +436,10 @@ async def open_workshop(interaction, *, item_name=None, drawer=''):
     except ValueError as error:
         return await interaction.followup.send(str(error), ephemeral=True)
     view = WorkshopView(interaction.user.id, state, selected=selected, drawer=drawer, notice=notice)
+    if replace_message:
+        view.message = interaction.message
     try:
-        await view.publish(interaction, opening=True)
+        await view.publish(interaction, opening=not replace_message)
     except BaseException:
         view.stop()
         raise

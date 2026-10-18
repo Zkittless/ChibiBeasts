@@ -740,16 +740,21 @@ class Utilities(commands.Cog):
         await interaction.followup.send(embed=embed)
 
     # ── /guide ────────────────────────────────────────────────────────────
-    @app_commands.command(name="guide", description="Browse all ChibiBeasts commands 📚")
+    @app_commands.command(name="guide", description="Open your Field Journal and find your next adventure")
     async def help_cmd(self,interaction:discord.Interaction):
-        await interaction.response.defer()
+        from utils.journal import open_journal
+        await open_journal(interaction, bot=self.bot)
+
+    async def _command_guide(self, interaction, *, already_deferred=False):
+        if not already_deferred:
+            await interaction.response.defer()
         from utils.habitats import BIOMES
         player=await get_or_create_player(interaction.user.id,str(interaction.user))
         from utils.story import get_quest_state,load_questline
         state=await get_quest_state(interaction.user.id)
         next_ch=next((c for k,c in load_questline()["chapters"].items() if k not in state["completed_chapters"]),None)
         embed=discord.Embed(title="🌱 Your next step",description=("Choose your first companion with /start." if not player.get("starter_claimed") else f"Story: {next_ch['name'] if next_ch else 'The hollow is restored'} · open /questline.\nCompanion: /bond shows your next awakening milestone."),color=COLORS["info"])
-        categories={"Adventure":"/explore — choose a habitat, every 30 minutes\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/questline · /npc · /meet · /lore", "Companions":"/collection · /beastinfo · /setactive · /nickname\n/bond · /play · /train · /evolve\n/codex · /bestiary · /typeinfo", "Eggs and items":"/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — timed eggs\n/inventory · /use [beast_number]", "Builds and trade":"/craft · /materials · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade", "Guilds and endgame":"/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard", "Progress":"/daily · /dailies · /achievements · /profile\n/title · /history · /stats · /leaderboard · /party"}
+        categories={"Adventure":"/explore — quick trip; one charge every 30 minutes, banking up to three\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/questline · /npc · /meet · /lore", "Companions":"/collection · /beastinfo · /setactive · /nickname\n/bond · /play · /train · /evolve\n/codex · /bestiary · /typeinfo", "Eggs and items":"/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — timed eggs\n/inventory · /use [beast_number]", "Builds and trade":"/craft · /materials · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade", "Guilds and endgame":"/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard", "Progress":"/daily · /dailies · /achievements · /profile\n/title · /history · /stats · /leaderboard · /party"}
         for label,value in categories.items():embed.add_field(name=label,value=value,inline=False)
         embed.add_field(name="Combat basics",value="Attack restores mana. Attack, skill and guard each earn one ultimate charge; an ultimate spends three charges and 50 mana. Raids start at zero charges. Prepared raids aim for 5–8 minutes: equip gear, tend allies, swap wounded companions and answer Weave patterns. Speed shortens action recovery; bosses resist repeated stuns.",inline=False)
         embed.add_field(name="Building your kit",value="Every /explore brings back one material, even if the creature escapes. /craft opens the workshop: browse recipes, check costs and sources, craft, then equip or evolve with its buttons. Your Forge discount is included. Raids and /contribute earn personal Guild Tickets for /guild_shop; the guild's shared tokens fund /build and raid entry.",inline=False)
@@ -1356,6 +1361,11 @@ class Utilities(commands.Cog):
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Utilities(bot))
+
+
+async def command_guide(interaction):
+    """The journal's command reference retains the detailed existing guide."""
+    await Utilities(None)._command_guide(interaction, already_deferred=True)
 
 
 async def _handle_shard_item(db,user_id,sid,shop_item):
