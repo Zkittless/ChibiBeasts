@@ -1,4 +1,8 @@
 from utils import db as storage
+from utils import gear_art
+import asyncio
+import io
+import logging
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -245,7 +249,7 @@ class Utilities(commands.Cog):
             beast_row = dict(beast_row)
             # Equipped armor
             async with db.execute(
-                "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id = ?",
+                "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id = ? ORDER BY id",
                 (interaction.user.id, beast_row["id"])
             ) as c:
                 armor_rows = [r["equipment_id"] for r in await c.fetchall()]
@@ -260,6 +264,10 @@ class Utilities(commands.Cog):
         r_emoji  = RARITY_EMOJI.get(beast_row["rarity"], "⚪")
         name     = beast_row.get("nickname") or bd.get("name", "?")
         rune_id  = beast_row.get("rune_id")
+        # Legacy rune rows may share this table; the visual uses the armor slot
+        # only, consistently with combat preparation and the workshop.
+        armor_id = next((gid for gid in armor_rows if all_gear.get(gid, {}).get('slot') == 'armor'), '')
+        rune_id = rune_id or next((gid for gid in armor_rows if all_gear.get(gid, {}).get('slot') == 'rune'), None)
 
         embed = discord.Embed(
             title=f"🛡️ Gear — {r_emoji} {name} `#{beast_id}`",
@@ -268,8 +276,8 @@ class Utilities(commands.Cog):
         )
 
         # Equipped armor
-        if armor_rows:
-            for aid in armor_rows:
+        if armor_id:
+            for aid in (armor_id,):
                 g = all_gear.get(aid, {})
                 gr = RARITY_EMOJI.get(g.get("rarity","common"), "⚪")
                 eff_str = " · ".join(
@@ -294,8 +302,8 @@ class Utilities(commands.Cog):
             embed.add_field(name="💎 Rune", value="*None equipped — use `/equip <rune> #{beast_id}`*", inline=False)
 
         # Available in inventory
-        available_armor = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot","armor") == "armor"]
-        available_runes = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot","rune") == "rune"]
+        available_armor = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot") == "armor"]
+        available_runes = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot") == "rune"]
 
         if available_armor:
             avail_str = "\n".join(
@@ -310,7 +318,7 @@ class Utilities(commands.Cog):
             )
             embed.add_field(name="📦 Runes in Inventory", value=avail_str, inline=False)
 
-        if not available_armor and not available_runes and not armor_rows and not rune_id:
+        if not available_armor and not available_runes and not armor_id and not rune_id:
             embed.add_field(
                 name="🔍 No Gear Available",
                 value="Open `/craft` to browse recipes, check materials and craft gear.",
@@ -318,7 +326,24 @@ class Utilities(commands.Cog):
             )
 
         embed.set_footer(text="✦ /equip <item> <beast_id> to equip · /unequip <beast_id> to remove")
-        await interaction.followup.send(embed=embed)
+        portrait = await gear_art.render_portrait(beast_row['beast_id'], armor_id)
+        if portrait is None:
+            return await interaction.followup.send(embed=embed)
+        with io.BytesIO(portrait.data) as buffer:
+            file = discord.File(buffer, filename=portrait.filename, description=f'{name} equipment appearance.')
+            embed.set_image(url=f'attachment://{portrait.filename}')
+            try:
+                async with asyncio.timeout(15):
+                    await interaction.followup.send(embed=embed, file=file)
+            except discord.HTTPException as error:
+                if isinstance(error, discord.NotFound):
+                    raise
+                logging.getLogger('chibibeasts.gear.art').warning('Equipment portrait rejected (%s); showing gear text', error.status)
+                embed.set_image(url=None)
+                async with asyncio.timeout(15):
+                    await interaction.followup.send(embed=embed)
+            finally:
+                file.close()
 
     @app_commands.command(name="equip", description="Equip armor or a rune to a beast ⚔️")
     @app_commands.describe(
@@ -530,7 +555,7 @@ class Utilities(commands.Cog):
 
         if beast_row.get("is_active"):
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You can't release your active beast. Use `/setactive` to choose another first.",
+                description="✦ You can't release your active beast. Open `/journal` → Companions and make another active first.",
                 color=COLORS["error"]
             ))
 
@@ -613,8 +638,9 @@ class Utilities(commands.Cog):
         scene=after.get("awakening_scene") or EVOLUTION_CINEMATICS.get(after["id"],{}).get("lines")
         if scene:embed.add_field(name="A familiar friend",value="\n\n".join(scene)[:1024],inline=False)
         if after.get("divine_passive"):embed.add_field(name=after["divine_passive"]["passive_name"],value=after["divine_passive"]["passive_desc"],inline=False)
-        embed.set_image(url=after["image_url"])
-        await interaction.followup.send(embed=embed)
+        evolved = await storage.get_beast_by_player_number(interaction.user.id, beast_id)
+        armor = await gear_art.equipped_armor_ids(interaction.user.id)
+        await gear_art.send_owned_portrait(interaction, embed, after['id'], armor.get(evolved['id'], '') if evolved else '')
         if interaction.guild:
             from utils.progress import record_bestiary_sighting
             await record_bestiary_sighting(interaction.guild.id,after["id"],interaction.user.id)
@@ -739,12 +765,6 @@ class Utilities(commands.Cog):
         embed.set_footer(text="ChibiBeasts 🐾  •  /leaderboard for individual rankings")
         await interaction.followup.send(embed=embed)
 
-    # ── /guide ────────────────────────────────────────────────────────────
-    @app_commands.command(name="guide", description="Open your Field Journal and find your next adventure")
-    async def help_cmd(self,interaction:discord.Interaction):
-        from utils.journal import open_journal
-        await open_journal(interaction, bot=self.bot)
-
     async def _command_guide(self, interaction, *, already_deferred=False):
         if not already_deferred:
             await interaction.response.defer()
@@ -753,11 +773,19 @@ class Utilities(commands.Cog):
         from utils.story import get_quest_state,load_questline
         state=await get_quest_state(interaction.user.id)
         next_ch=next((c for k,c in load_questline()["chapters"].items() if k not in state["completed_chapters"]),None)
-        embed=discord.Embed(title="🌱 Your next step",description=("Choose your first companion with /start." if not player.get("starter_claimed") else f"Story: {next_ch['name'] if next_ch else 'The hollow is restored'} · open /questline.\nCompanion: /bond shows your next awakening milestone."),color=COLORS["info"])
-        categories={"Adventure":"/explore — quick trip; one charge every 30 minutes, banking up to three\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/questline · /npc · /meet · /lore", "Companions":"/collection · /beastinfo · /setactive · /nickname\n/bond · /play · /train · /evolve\n/codex · /bestiary · /typeinfo", "Eggs and items":"/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — timed eggs\n/inventory · /use [beast_number]", "Builds and trade":"/craft · /materials · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade", "Guilds and endgame":"/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard", "Progress":"/daily · /dailies · /achievements · /profile\n/title · /history · /stats · /leaderboard · /party"}
+        embed=discord.Embed(title="🌱 Your next step",description=("Choose your first companion with /start." if not player.get("starter_claimed") else f"Story: {next_ch['name'] if next_ch else 'The hollow is restored'} · /journal → Story.\n/journal → Companions shows bonds, active selection and awakening milestones."),color=COLORS["info"])
+        categories={
+            "Your Field Journal": "/journal — Adventure, Companions, Workshop, Story and Activities\nSwitch active companions and review bond awakenings in Companions; open your material bag in Workshop.",
+            "Adventure": "/explore — begin or resume a saved expedition with choices; one charge every 30 minutes, banking up to three\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/npc · /meet · /lore",
+            "Companions": "/collection · /beastinfo · /nickname\n/play · /train · /evolve\n/codex · /bestiary · /typeinfo",
+            "Eggs and items": "/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — timed eggs\n/inventory · /use [beast_number]",
+            "Builds and trade": "/craft · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade",
+            "Guilds and endgame": "/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard",
+            "Progress": "/daily · /dailies · /achievements · /profile\n/title · /history · /stats · /leaderboard · /party",
+        }
         for label,value in categories.items():embed.add_field(name=label,value=value,inline=False)
         embed.add_field(name="Combat basics",value="Attack restores mana. Attack, skill and guard each earn one ultimate charge; an ultimate spends three charges and 50 mana. Raids start at zero charges. Prepared raids aim for 5–8 minutes: equip gear, tend allies, swap wounded companions and answer Weave patterns. Speed shortens action recovery; bosses resist repeated stuns.",inline=False)
-        embed.add_field(name="Building your kit",value="Every /explore brings back one material, even if the creature escapes. /craft opens the workshop: browse recipes, check costs and sources, craft, then equip or evolve with its buttons. Your Forge discount is included. Raids and /contribute earn personal Guild Tickets for /guild_shop; the guild's shared tokens fund /build and raid entry.",inline=False)
+        embed.add_field(name="Building your kit",value="Return home from an expedition to bank one material, even if the creature escapes. /craft or the journal's Workshop opens recipes, costs, sources, materials, crafting and equip/evolve buttons. Your Forge discount is included. Raids and /contribute earn personal Guild Tickets for /guild_shop; the guild's shared tokens fund /build and raid entry.",inline=False)
         embed.add_field(name="Available destinations",value=" · ".join(b["name"] for b in BIOMES.values() if player["level"]>=b["min_level"]),inline=False)
         await interaction.followup.send(embed=embed)
 
@@ -815,7 +843,7 @@ class Utilities(commands.Cog):
 
             if not active:
                 return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ You don't have an active beast! Use `/setactive` first.",
+                    description="✦ You don't have an active beast! Open `/journal` → Companions → Make active first.",
                     color=COLORS["error"]
                 ))
 
@@ -911,10 +939,9 @@ class Utilities(commands.Cog):
             desc += "\n\n*Your beast could use more time together. Try `/shop` for happiness items.*"
 
         embed = discord.Embed(title=f"🐾 Time with {name}", description=desc, color=COLORS["success"])
-        if beast_data.get("image_url"):
-            embed.set_thumbnail(url=beast_data["image_url"])
         embed.set_footer(text="ChibiBeasts 🐾  •  /play again in 2 hours")
-        await interaction.followup.send(embed=embed)
+        armor = await gear_art.equipped_armor_ids(interaction.user.id)
+        await gear_art.send_owned_portrait(interaction, embed, active['beast_id'], armor.get(active['id'], ''), thumbnail=True)
 
         # Track quest event
         from utils.progress import track_quest_event as _tqe, unlock_simple_achievement as _ua

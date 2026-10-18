@@ -97,8 +97,7 @@ FIRST_STEPS = [
     ("🗺️", "/explore", "Explore the Whispering Woods to catch your first wild beast"),
     ("🥚", "/shop",    "Buy a Common Egg and hatch it for a new companion"),
     ("⚔️", "/sparr",   "Spar with an NPC to earn EXP and deepen your bond"),
-    ("📖", "/questline","Begin the main story — follow the thread"),
-    ("📚", "/guide",   "Browse all commands any time"),
+    ("📖", "/journal", "Your hub for story, companions, crafting and daily activities"),
 ]
 
 
@@ -288,7 +287,7 @@ class Starter(commands.Cog):
                 return await interaction.followup.send(embed=discord.Embed(
                     description=(
                         f"✦ You've already started your journey, **{interaction.user.display_name}**!\n"
-                        f"Use `/profile` to see your progress, or `/guide` to browse all commands."
+                        f"Use `/profile` to see your progress, or `/journal` to plan your next adventure."
                     ),
                     color=COLORS["info"]
                 ))

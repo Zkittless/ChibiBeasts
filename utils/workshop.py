@@ -1,13 +1,14 @@
 """The original workshop: recipes, materials and confirmed uses in one message."""
 import asyncio
 from contextlib import ExitStack
+import io
 import logging
 from uuid import uuid4
 
 import discord
 
-from utils import crafting, db as storage
-from utils.artwork import PROJECT_ROOT, card_artwork_path
+from utils import crafting, db as storage, gear_art
+from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.economy_balance import material_sources, recipe_level
 from utils.equipment import effect_summary, equip
@@ -36,6 +37,7 @@ class WorkshopView(discord.ui.LayoutView):
         self.page = 0
         self.confirmation = None
         self.result_species = None
+        self.result_row_id = None
         self.message = None
         self.lock = asyncio.Lock()
         self.mutating = False
@@ -92,6 +94,19 @@ class WorkshopView(discord.ui.LayoutView):
 
     def target(self):
         return next((row for row in self.candidates() if row['id'] == self.target_id), None)
+
+    def appearance(self):
+        """Confirmation shows the proposed armor; a result shows saved gear."""
+        row = self.target() if self.using else next(
+            (row for row in self.state.companions if row['id'] == self.result_row_id), None)
+        species = row['beast_id'] if row else self.result_species if not self.using else None
+        if species is None:
+            return None
+        armor_id = self.selected if self.using and self.section == 'armor' else (row or {}).get('armor_id') or ''
+        return species, armor_id
+
+    def portrait_url(self):
+        return 'attachment://' + gear_art.portrait_filename(*self.appearance())
 
     def button(self, label, action, style=discord.ButtonStyle.secondary):
         button = discord.ui.Button(label=label, style=style, custom_id=self.prefix + ':' + action)
@@ -207,7 +222,7 @@ class WorkshopView(discord.ui.LayoutView):
             if row:
                 text = self.target_text(row)
                 if self.art_enabled:
-                    self.container.add_item(discord.ui.Section(discord.ui.TextDisplay(text), accessory=discord.ui.Thumbnail(f"attachment://{card_artwork_path(row['beast_id']).name}", description=storage.get_beast_data(row['beast_id'])['name'])))
+                    self.container.add_item(discord.ui.Section(discord.ui.TextDisplay(text), accessory=discord.ui.Thumbnail(self.portrait_url(), description=storage.get_beast_data(row['beast_id'])['name'])))
                 else:
                     self.container.add_item(discord.ui.TextDisplay(text))
             else:
@@ -233,7 +248,7 @@ class WorkshopView(discord.ui.LayoutView):
             beast = storage.get_beast_data(self.result_species)
             text = f"### {beast['name']}\n{beast['description']}"
             if self.art_enabled:
-                self.container.add_item(discord.ui.Section(discord.ui.TextDisplay(text), accessory=discord.ui.Thumbnail(f"attachment://{card_artwork_path(beast['id']).name}", description=beast['name'])))
+                self.container.add_item(discord.ui.Section(discord.ui.TextDisplay(text), accessory=discord.ui.Thumbnail(self.portrait_url(), description=beast['name'])))
             else:
                 self.container.add_item(discord.ui.TextDisplay(text))
         if self.closed:
@@ -248,20 +263,34 @@ class WorkshopView(discord.ui.LayoutView):
             raise ValueError('Workshop text exceeds Discord’s message limit.')
 
     async def publish(self, interaction, *, opening=False):
+        portrait = None
+        appearance = self.appearance()
+        previous = {a.filename: a for a in getattr(self.message, 'attachments', [])}
+        if self.art_enabled and appearance and gear_art.portrait_filename(*appearance) not in previous:
+            portrait = await gear_art.render_portrait(*appearance)
+            if portrait is None:
+                self.art_enabled = False
+                self.render()
         with ExitStack() as stack:
             files, attachments = [], []
             if self.art_enabled:
                 paths = [HEADER]
-                target = self.target() if self.using else None
-                species = target['beast_id'] if target else self.result_species
-                if species:
-                    paths.append(card_artwork_path(species))
-                previous = {a.filename: a for a in getattr(self.message, 'attachments', [])}
                 for path in paths:
                     if path.name in previous:
                         attachments.append(previous[path.name])
                     else:
                         file = discord.File(path)
+                        stack.callback(file.close)
+                        files.append(file)
+                if appearance:
+                    filename = gear_art.portrait_filename(*appearance)
+                    if filename in previous:
+                        attachments.append(previous[filename])
+                    else:
+                        buffer = io.BytesIO(portrait.data)
+                        stack.callback(buffer.close)
+                        file = discord.File(buffer, filename=portrait.filename,
+                                            description=f'{storage.get_beast_data(appearance[0])["name"]} equipment appearance.')
                         stack.callback(file.close)
                         files.append(file)
             async def deliver(with_art):
@@ -312,6 +341,7 @@ class WorkshopView(discord.ui.LayoutView):
                 self.state = await crafting.workshop_state(self.user_id)
                 self.notice = ''
                 self.result_species = None
+                self.result_row_id = None
                 try:
                     result = None
                     if action.startswith('section:'):
@@ -356,6 +386,7 @@ class WorkshopView(discord.ui.LayoutView):
                                 expected_species=species, required_item=self.selected)
                             self.notice = f"**{before['name']} became {after['name']}!**"
                             self.result_species = after['id']
+                            self.result_row_id = row_id
                             if interaction.guild:
                                 from utils.progress import record_bestiary_sighting
                                 await record_bestiary_sighting(interaction.guild.id, after['id'], self.user_id)
@@ -365,6 +396,8 @@ class WorkshopView(discord.ui.LayoutView):
                             companion, gear = await equip(self.user_id, number, self.selected, replace=True,
                                 expected_row_id=row_id, expected_species=species, expected_equipment=previous)
                             self.notice = f"**{gear['name']}** equipped to {safe(companion['nickname'] or storage.get_beast_data(species)['name'])}."
+                            self.result_species = species
+                            self.result_row_id = companion['id']
                             if previous:
                                 self.notice += ' Previous gear returned to your bag.'
                         self.using = False

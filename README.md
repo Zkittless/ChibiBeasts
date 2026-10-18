@@ -4,7 +4,7 @@ A Discord creature RPG about collecting companions, caring for them, and helping
 
 ## Play
 
-Begin with `/start`, then `/guide` or `/journal`. The [Field Journal](docs/FIELD-JOURNAL.md) connects adventures, companions, the workshop, story and daily activities with native Discord controls. Pin a recipe, awakening or creature hunt to keep a useful next step on your home page. `/play`, battles and training build bonds. `/dailies` shows four daily quests; `/daily` claims a separate daily reward.
+Begin with `/start`, then `/journal`. The [Field Journal](docs/FIELD-JOURNAL.md) connects adventures, companions, the workshop, story and daily activities with native Discord controls. Pin a recipe, awakening or creature hunt to keep a useful next step on your home page. `/play`, battles and training build bonds. `/dailies` shows four daily quests; `/daily` claims a separate daily reward.
 
 `/start` shows all four starter portraits and lets you browse each companion's play style, moves and base stats before pressing **Choose**. `/codex` opens an illustrated overview, with separate **Moves & stats** and **Lore** tabs. Artwork is packaged with the bot and attached directly to Discord messages; enable **Attach Files** and **Embed Links** in the bot's channel permissions. See the [interactive layout preview](docs/artwork-preview.html), [desktop screenshot](docs/artwork-preview/desktop.png), and [implementation notes](docs/ARTWORK-CARDS.txt).
 
@@ -16,7 +16,7 @@ Begin with `/start`, then `/guide` or `/journal`. The [Field Journal](docs/FIELD
 | Sunken Abyssal Trenches | 8 | Water, shadow |
 | Celestial Loom | 10 | Cosmic, arcane, light |
 
-Exploration regenerates **one charge every 30 minutes**, banking up to **three**. The journal's branching expeditions and the existing quick `/explore` share these charges. Choose a destination in **Adventure**, then follow tracks, choose a gathering find, or visit a landmark for bond, study or rest. Trips save after every choice; reopen `/journal` to resume. Return home to bank the trip's single reward bundle. `/explore expedition:True` opens this flow directly. `/challenge` retains its 20-minute timer and `/play` its two hours. Equipped time perks reduce the relevant timers. Encounters use regional species pools and exclude starter and evolution-only forms.
+Exploration regenerates **one charge every 30 minutes**, banking up to **three**. `/explore` opens the Field Journal and begins a saved expedition in your chosen destination, or resumes your current trip without spending another charge. Remaining charges and the next recharge stay visible while you follow tracks, choose a gathering find, or visit a landmark for bond, study or rest. Trips save after every choice; reopen `/explore` or `/journal` to resume. Return home to bank the trip's single reward bundle. The legacy `expedition` option uses this same flow for either value. `/challenge` retains its 20-minute timer and `/play` its two hours. Equipped time perks reduce the relevant timers. Encounters use regional species pools and exclude starter and evolution-only forms.
 
 ## Starter awakenings
 
@@ -29,7 +29,7 @@ Each starter has its own Divine bond evolution, with a distinct silhouette and n
 | Gloop | **Nebuloom** | Jelly salamander with star fins and a crescent tail; stronger restorative skill |
 | Barkley | **Rootwarden** | Forest drake with leaf wings, antlers and an eggshell chestplate; damage reduction and healing while guarding |
 
-Reach **beast level 15, bond 30, and happiness 70**. Check `/bond`, then use `/evolve <beast number>`. No catalyst is needed. Nickname, disposition, level, EXP, training, earned stat boosts, Ambrosia bonus, gear and party assignments survive evolution. Bond continues to strengthen the starter family after awakening.
+Reach **beast level 15, bond 30, and happiness 70**. Open `/journal` → **Companions** to check progress, review the next form and confirm the awakening. No catalyst is needed. Nickname, disposition, level, EXP, training, earned stat boosts, Ambrosia bonus, gear and party assignments survive evolution. Each bond point adds 0.1% to the starter family's combat attack, defense and speed, up to 10% at 100, including after awakening.
 
 Radiant and Ascended evolutions retain their own item requirements. Evolution-only forms cannot hatch randomly. The roster contains **86 creatures**, each with a local, versioned PNG. See the [evolution preview](chibibeasts-evolutions.html) and [artwork notes](docs/ARTWORK.md).
 
@@ -42,6 +42,8 @@ The story resolves the clasp, Maren and Orren's reunion, the Fraying, and the Wo
 Story spoilers and the shared terminology are documented in [the lore bible](data/LORE.md).
 
 ## Battles and raids
+
+All 16 armor sets have [distinct fitted appearances](docs/ARMOR-APPEARANCES.md) across the 86-creature roster. Equipped looks follow battle motion and raid swaps, and appear in the journal's companion pages, workshop, gear, companion browser, play and evolution screens.
 
 Wild battles, NPC spars, `/battle` and `/ranked` use the same interactive combat runner. Every beast has three different move roles: a reliable attack that restores mana, a typed skill or healing skill, and a guard that prepares a stronger strike. Attacks, skills and guards each earn one ultimate charge; an ultimate spends three charges and 50 mana. Automatic bonus strikes earn no extra charge. Wild opponents build charges under the same rules. Armor, evasion, shields, passives, bonds, gear and equipped perks affect the actual hit before HP is removed. Items affect the live battle state.
 
@@ -68,13 +70,13 @@ Ranked matches use gear and chosen moves. Five placements establish a rank; 28-d
 - `/shop` sells instant eggs, incubation eggs and usable supplies. Whimsy Merchant discounts gold purchases by 5%.
 - Shard purchases grant real inventory items or saved exploration charges. A Prism Key takes priority over the Divine Compass. Incubation skips move both tending and hatching clocks.
 - Astral Reroll attunes a matching instant hatch at its rolled rarity; it remains saved when that rarity has no matching element.
-- `/craft` opens the [workshop](docs/WORKSHOP.md): Armor, Runes and Evolution tabs, recipe selection, material costs and sources, and buttons to craft, equip or evolve in the same panel. `/materials` opens its material bag. `/craft <item>` keeps the quick-craft shortcut and opens that recipe afterward. Confirmed armor/rune replacements return the old piece; other copies remain equipped.
+- `/craft` or the journal's **Workshop** opens the [workshop](docs/WORKSHOP.md): Armor, Runes and Evolution tabs, recipe selection, material costs and sources, and buttons to craft, equip or evolve in the same panel. **Materials** opens its material bag. `/craft <item>` keeps the quick-craft shortcut and opens that recipe afterward. Confirmed armor/rune replacements return the old piece; other copies remain equipped.
 - All seven guild shop items work. `/build` spends an owned Blueprint on an eligible upgrade before charging guild tokens.
 - Twelve perks unlock through normal levels, catches, battles, exploration, raids and campaign progress. `/perks` lists owned perks; `/perk_equip` chooses a build. Astral Resonance's weekly `/perk_use` skips six hours from an egg.
 - A Fairy Garden adds five happiness to benched companions when `/daily` is claimed, offsetting their daily decay. Other Sanctuary bonuses affect crafting, training, exploration, EXP, raids and market capacity.
 - `/trade` uses the collection numbers shown to players. Omitting a requested companion makes the offer a gift. Market purchases and trades check current ownership, gold, party assignments and listing terms in one transaction. Equipped armor and runes travel with the companion. Releasing a companion returns its gear; transfers and releases preserve the numbers of other companions.
 
-Every completed `/explore` now brings back one crafting material, including quiet trips and escaped creatures. Basic armor/runes need about **8–11 explorations** in the seeded acquisition model. `/craft` shows actual effects, crafting levels, exact habitat/raid routes and your current Forge discount. Equipment remains craftable; old unused rune price tags have been removed. Fenrir Fur now helps forge the Abyssal Shroud.
+Each completed expedition brings back one crafting material, including trips where a creature escapes. Gathering lets you choose one of the offered resources within the rolled rarity. `/craft` shows actual effects, crafting levels, current habitat/raid routes and your Forge discount. The archived economy audit's acquisition estimates describe the earlier quick-exploration model; they are not forecasts for the saved expedition flow. Equipment remains craftable, and Fenrir Fur helps forge the Abyssal Shroud.
 
 Gold purchases and crafting follow a level ladder. Instant eggs unlock at trainer levels **1/3/10/15**; Common through Divine incubation eggs unlock at **1/3/5/10/15/25**. Legendary incubation eggs cost **24,000g**, and the three guaranteed-Divine eggs cost **80,000g**. The World-Tree Seed comes from the campaign. Egg bonuses stay within an instant egg's offered tiers, with Glimmering Fortune retaining its rare Divine upgrade.
 
@@ -101,7 +103,7 @@ All commands use the database configured in `utils.db.DB_PATH`, resolved from th
 
 ## Source layout
 
-- `cogs/`: 16 command extensions, including the new `/bond` journal.
+- `cogs/`: command extensions, including the `/journal` entry point for companions, exploration and story.
 - `utils/combat.py`, `utils/duels.py`, `utils/raids.py`: shared battle and raid rules.
 - `utils/events.py`, `utils/story.py`, `utils/progress.py`: canonical events, campaign and milestones.
 - `utils/gameplay.py`, `utils/items.py`, `utils/shops.py`, `utils/equipment.py`, `utils/rewards.py`: validated grants, consumption, purchases and progression.

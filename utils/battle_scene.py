@@ -15,9 +15,11 @@ def duration(before, after, action):
 
 def timing(before, after, action, t):
     if action is None:
-        return 1, 1
+        return 1, 0
     elapsed = fx.clamp(t) * duration(before, after, action)
-    return fx.clamp(elapsed / action.milliseconds), fx.clamp((elapsed-action.milliseconds)/fx.RETREAT_MS)
+    retreating = any(new.hp <= 0 < old.hp for old, new in zip(before, after))
+    return (fx.clamp(elapsed / action.milliseconds),
+            fx.clamp((elapsed-action.milliseconds)/fx.RETREAT_MS) if retreating else 0)
 
 
 def draw_frame(before, after, realm, action=None, t=1, journal=()):
@@ -28,11 +30,11 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
     ui.heading(image, title, art.REALMS[realm])
     for i, (old, new) in enumerate(zip(before, after)):
         visible = new if move_t >= fx.IMPACT else old
-        ui.fighter_panel(image, new, art.sprite(new.species), 10+i*320,
+        ui.fighter_panel(image, new, art.sprite(new.species, new.armor_id), 10+i*320,
                          art.interpolate(old.hp, new.hp, move_t), art.interpolate(old.mana, new.mana, move_t), visible)
     field = image.crop((0, art.HUD, art.WIDTH, art.HUD+art.HEIGHT))
     homes = [fx.Pose(162 if i==0 else 478,218,flip=bool(i),height=source.height if source else 130)
-             for i,fighter in enumerate(after) for source in (art.sprite(fighter.species),)]
+             for i,fighter in enumerate(after) for source in (art.sprite(fighter.species, fighter.armor_id),)]
     poses = list(homes)
     actor = action.actor if action else 0
     animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action else None
@@ -50,7 +52,7 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
                 p=fx.clamp((move_t-.32)/.16-.13*(i+1)) if animation.family=='time' else fx.clamp(1-(move_t-.32)/.3)
                 ghost=replace(homes[actor],x=fx.mix(homes[actor].x,poses[actor].x,p)-(i+1)*12*(1 if actor==0 else -1),
                               feet=fx.mix(homes[actor].feet,poses[actor].feet,p),alpha=(.18-i*.04)*math.sin(move_t*math.pi))
-                fx.paint_sprite(field,art.sprite(before[actor].species),ghost)
+                fx.paint_sprite(field,art.sprite(before[actor].species, before[actor].armor_id),ghost)
     visible_poses=[]
     for i,(old,new) in enumerate(zip(before,after)):
         pose=poses[i]
@@ -72,7 +74,7 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
             layer=fx.Effects(field.size)
             layer.draw.ellipse((pose.x-58,homes[i].feet-6,pose.x+58,homes[i].feet+10),fill=(10,20,28,shadow_alpha))
             field.alpha_composite(layer.image)
-        source=art.sprite(new.species)
+        source=art.sprite(new.species, new.armor_id)
         if source is None:
             draw=ImageDraw.Draw(field)
             draw.ellipse((pose.x-35,pose.feet-75,pose.x+35,pose.feet),fill='#b7a8dc',outline='#ede6ff',width=3)
@@ -100,7 +102,7 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
                 continue
             delta=new.hp-old.hp
             if delta:
-                source=art.sprite(new.species)
+                source=art.sprite(new.species, new.armor_id)
                 height=source.height if source else 130
                 value=f'{delta:+,}'
                 width=draw.textlength(value,font=art.font(23))

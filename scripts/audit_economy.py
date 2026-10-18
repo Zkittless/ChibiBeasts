@@ -1,4 +1,8 @@
-"""Offline economy ledger, loot/value checks and seeded crafting acquisition model."""
+"""Offline economy ledger; exploration simulations retain the historical quick model.
+
+Its acquisition, income and reset-loop estimates are dated audit evidence, not
+forecasts for the saved Field Journal expeditions or their gathering choices.
+"""
 import argparse
 import ast
 from collections import Counter, defaultdict
@@ -65,7 +69,7 @@ def percentile(values, p):
 
 
 def material_distribution(biome, win_rate=.75):
-    """Unconditional per exploration: 5% quiet, then affinity or modeled victory."""
+    """Historical quick model: 5% quiet, then species-weighted encounter loot."""
     weights = BIOMES[biome]['weights']
     pools = {r:encounter_pool(r, biome) for r in weights}
     total = sum(weights[r] for r in weights if pools[r])
@@ -336,7 +340,7 @@ def main(output):
               'unreachable_recipes':[r['item'] for r in recipes if r['unreachable_materials']],
               'profitable_repeatable_reset_loops':[r for r in loops if r['expected_net_gold']>0],
               'common_recipe_mean_explorations':{r['item']:r['mean_explorations'] for r in recipes if r['rarity']=='common' and not r['forge']},
-              'scope':'Offline catalog/production-rule checks. Crafting uses 200 seeded adaptive-foraging trials per recipe, all exploration destinations available, base 30-minute cooldown, no perks or consumables. Baseline materials require affinity/75% modeled encounter victories; current exploration guarantees one material. Earliest source levels are route availability, not forecasts of account readiness. Income scenarios are planning assumptions, not live telemetry; they exclude selling catches, raid loot sales, one-time story/achievement/milestone rewards, fees and spending.'}
+              'scope':'Offline catalog checks with historical quick-exploration simulations. The acquisition, income and reset-loop estimates do not model current saved expeditions or their gathering choices. Crafting uses 200 seeded adaptive-foraging trials per recipe, all exploration destinations available, base 30-minute cooldown, no perks or consumables. The historical baseline requires affinity/75% modeled encounter victories; the later quick rules guarantee one material. Earliest source levels are route availability, not forecasts of account readiness. Income scenarios are planning assumptions, not live telemetry; they exclude selling catches, raid loot sales, one-time story/achievement/milestone rewards, fees and spending.'}
     (output/'summary.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k not in ('positive_expected_egg_resale','source_sha256')},indent=2))
     print(f"Positive expected hatch resale cases: {len(report['positive_expected_egg_resale'])}")

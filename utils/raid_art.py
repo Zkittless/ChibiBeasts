@@ -157,8 +157,8 @@ def boss_portrait(species):
         return None
 
 
-def fitted(species, size):
-    portrait = art.sprite(species)
+def fitted(species, size, armor_id=''):
+    portrait = art.sprite(species, armor_id)
     if portrait is None:
         image = Image.new('RGBA', (size, size))
         draw = ImageDraw.Draw(image)
@@ -173,7 +173,7 @@ def marker_boxes(scene):
     """Stable marker positions, also exposed for phone-size geometry checks."""
     result = []
     for member, place in zip(scene.members, placements(len(scene.members))):
-        height = fitted(member.fighter.species, place.size).height
+        height = fitted(member.fighter.species, place.size, member.fighter.armor_id).height
         center = place.feet - height - 16 if place.rear else place.feet + 16
         result.append((place.x - 19, center - 15, place.x + 19, center + 15))
     return tuple(result)

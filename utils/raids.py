@@ -836,7 +836,7 @@ class RaidSession:
         if details:
             from utils.progress import track_quest_event
             if details['player_level']:
-                from cogs.questline import advance_quest_step
+                from utils.story import advance_quest_step
                 await advance_quest_step(uid, 'level_up', level=details['player_level'])
             if json.loads(details['beast_levels']):
                 await track_quest_event(uid, 'beast_level_up', amount=len(json.loads(details['beast_levels'])), event_key=f'raid-levels:{self.id}:{uid}')

@@ -4,7 +4,7 @@ from utils import db as storage
 
 async def record_event(user_id, event, amount=1, **context):
     from utils.progress import _track_daily_event, check_achievements, unlock_simple_achievement
-    from cogs.questline import advance_quest_step
+    from utils.story import advance_quest_step
     if not isinstance(amount,int) or amount<=0:raise ValueError('Event amount must be a positive integer.')
     key = context.get('event_key')
     async with storage.connect() as db:
@@ -50,7 +50,7 @@ async def record_event(user_id, event, amount=1, **context):
 async def acquired_beast(user_id, row_id, beast, source):
     """Called once after a committed grant; UI paths never increment catches twice."""
     from utils.progress import _track_daily_event
-    from cogs.questline import advance_quest_step
+    from utils.story import advance_quest_step
     async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
         cursor = await db.execute("INSERT OR IGNORE INTO gameplay_events(event_key,user_id,event_type) VALUES(?,?,'acquire')", (f'acquire:{row_id}', user_id))

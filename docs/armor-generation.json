@@ -1,0 +1,198 @@
+{
+  "mode": "built-in image_gen",
+  "purpose": "Production armor component kits. Four isolated generated pieces extracted per kit; crop/nearest-neighbor packaging only.",
+  "sets": {
+    "sprite_silk_attire": {
+      "name": "Sprite-Silk Attire",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for the ChibiBeasts creature RPG. Create ONE sheet for \"Sprite-Silk Attire\". True RGBA transparent background.\nComposition is a strict 2 by 2 grid, four fully separate cutouts, each centered inside its own equal quadrant, with at least 12% empty transparent gutters between quadrants. Top-left: small front-facing chest/belly armor piece, NO head opening or mannequin. Top-right: ONE separate shoulder/side piece. Bottom-left: back/cape component seen behind a creature. Bottom-right: separate signature clasp/accessory. Do not connect the pieces. All pieces must stay well inside their own quadrant; transparent empty space around each piece.\nDesign: a leafy emerald tunic of layered leaf lobes with vivid pink silk stitches and butterfly-like split hems; leaf shoulder, airy leaf cape, a pink thread bow clasp.\nStyle: charming restrained 8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters, dark outline, only 3 to 5 shade levels per material. Draw as though each quadrant has only about 64x64 source pixels and is enlarged with nearest-neighbor. Bold readable silhouettes at a tiny game sprite size. Small cute equipment for chibi animals, rounded lower-body proportions, no human anatomy or adult proportions. Consistent upper-left pixel highlights. Not ornate or over-detailed.\nConstraints: only the four isolated armor components, no character, no face, no animal, no mannequin, no arms, no hands, no text, no labels, no border, no panel backgrounds, no scenery, no ground/shadow, no watermark. Actual transparent alpha, not a checkerboard. No smooth vector curves, gradients, blur, realistic metal, or tiny filigree.",
+      "source_filename": "exec-1e90f8ec-6fce-4bc5-9c9c-624fcf6cc05e.png",
+      "source_sha256": "b405720bf9e169b9f06ee4db6b72e8541bd56cf941b6e4cfbec28db0039cec3f",
+      "packaged_components": {
+        "chest": "components/sprite_silk_attire/chest.png",
+        "shoulder": "components/sprite_silk_attire/shoulder.png",
+        "back": "components/sprite_silk_attire/back.png",
+        "accessory": "components/sprite_silk_attire/accessory.png"
+      }
+    },
+    "gnome_iron_plating": {
+      "name": "Gnome-Iron Plating",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for the ChibiBeasts creature RPG. Create ONE sheet for \"Gnome-Iron Plating\". True RGBA transparent background.\nComposition is a strict 2 by 2 grid, four fully separate cutouts, each centered inside its own equal quadrant, with at least 12% empty transparent gutters between quadrants. Top-left: small front-facing chest/belly armor piece, NO head opening or mannequin. Top-right: ONE separate shoulder/side piece. Bottom-left: back/cape component seen behind a creature. Bottom-right: separate signature clasp/accessory. Do not connect the pieces. All pieces must stay well inside their own quadrant; transparent empty space around each piece.\nDesign: chunky dark gray iron breastplate with pale steel stepped edges, restrained brass rivets and brown leather; rounded shoulder plate, short reinforced back skirt, a tiny round dark iron buckler with brass boss.\nStyle: charming restrained 8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters, dark outline, only 3 to 5 shade levels per material. Draw as though each quadrant has only about 64x64 source pixels and is enlarged with nearest-neighbor. Bold readable silhouettes at a tiny game sprite size. Small cute equipment for chibi animals, rounded lower-body proportions, no human anatomy or adult proportions. Consistent upper-left pixel highlights. Not ornate or over-detailed.\nConstraints: only the four isolated armor components, no character, no face, no animal, no mannequin, no arms, no hands, no text, no labels, no border, no panel backgrounds, no scenery, no ground/shadow, no watermark. Actual transparent alpha, not a checkerboard. No smooth vector curves, gradients, blur, realistic metal, or tiny filigree.",
+      "source_filename": "exec-89a31b4c-3c40-43d8-91c6-466ea2a6bcc9.png",
+      "source_sha256": "10d1b743cc205ff29466b8751633ccd3c32fc16a498006df3f44b4a640f45ad2",
+      "packaged_components": {
+        "chest": "components/gnome_iron_plating/chest.png",
+        "shoulder": "components/gnome_iron_plating/shoulder.png",
+        "back": "components/gnome_iron_plating/back.png",
+        "accessory": "components/gnome_iron_plating/accessory.png"
+      }
+    },
+    "kelpie_scale_mail": {
+      "name": "Kelpie-Scale Mail",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for the ChibiBeasts creature RPG. Create ONE sheet for \"Kelpie-Scale Mail\". True RGBA transparent background.\nComposition is a strict 2 by 2 grid, four fully separate cutouts, each centered inside its own equal quadrant, with at least 12% empty transparent gutters between quadrants. Top-left: small front-facing chest/belly armor piece, NO head opening or mannequin. Top-right: ONE separate shoulder/side piece. Bottom-left: back/cape component seen behind a creature. Bottom-right: separate signature clasp/accessory. Do not connect the pieces. All pieces must stay well inside their own quadrant; transparent empty space around each piece.\nDesign: iridescent turquoise and teal overlapping small fish scales; fin-like shoulder, flowing scaled back panel, a pearl and three discrete pixel bubbles.\nStyle: charming restrained 8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters, dark outline, only 3 to 5 shade levels per material. Draw as though each quadrant has only about 64x64 source pixels and is enlarged with nearest-neighbor. Bold readable silhouettes at a tiny game sprite size. Small cute equipment for chibi animals, rounded lower-body proportions, no human anatomy or adult proportions. Consistent upper-left pixel highlights. Not ornate or over-detailed.\nConstraints: only the four isolated armor components, no character, no face, no animal, no mannequin, no arms, no hands, no text, no labels, no border, no panel backgrounds, no scenery, no ground/shadow, no watermark. Actual transparent alpha, not a checkerboard. No smooth vector curves, gradients, blur, realistic metal, or tiny filigree.",
+      "source_filename": "exec-d69c2165-3c6b-4152-812e-b5cde3337e4c.png",
+      "source_sha256": "bc6143dd31442f802928c83d0d9b2428309ce90e73995b5bb088bdcffe70c6bb",
+      "packaged_components": {
+        "chest": "components/kelpie_scale_mail/chest.png",
+        "shoulder": "components/kelpie_scale_mail/shoulder.png",
+        "back": "components/kelpie_scale_mail/back.png",
+        "accessory": "components/kelpie_scale_mail/accessory.png"
+      }
+    },
+    "cinder_guard_vest": {
+      "name": "Cinder-Guard Vest",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for the ChibiBeasts creature RPG. Create ONE sheet for \"Cinder-Guard Vest\". True RGBA transparent background.\nComposition is a strict 2 by 2 grid, four fully separate cutouts, each centered inside its own equal quadrant, with at least 12% empty transparent gutters between quadrants. Top-left: small front-facing chest/belly armor piece, NO head opening or mannequin. Top-right: ONE separate shoulder/side piece. Bottom-left: back/cape component seen behind a creature. Bottom-right: separate signature clasp/accessory. Do not connect the pieces. All pieces must stay well inside their own quadrant; transparent empty space around each piece.\nDesign: sharp black obsidian-edged breastplate with ONE glowing orange molten central core and lava fissures; angular obsidian shoulder, jagged short back guard, a blazing core clasp.\nStyle: charming restrained 8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters, dark outline, only 3 to 5 shade levels per material. Draw as though each quadrant has only about 64x64 source pixels and is enlarged with nearest-neighbor. Bold readable silhouettes at a tiny game sprite size. Small cute equipment for chibi animals, rounded lower-body proportions, no human anatomy or adult proportions. Consistent upper-left pixel highlights. Not ornate or over-detailed.\nConstraints: only the four isolated armor components, no character, no face, no animal, no mannequin, no arms, no hands, no text, no labels, no border, no panel backgrounds, no scenery, no ground/shadow, no watermark. Actual transparent alpha, not a checkerboard. No smooth vector curves, gradients, blur, realistic metal, or tiny filigree.",
+      "source_filename": "exec-93fad423-e9c9-4ab0-bf45-19c5e2b2068e.png",
+      "source_sha256": "46bdad7f75e301ddc0af529ae7af1ad2f6e766903f8f77671f3964adf4dfbd1e",
+      "packaged_components": {
+        "chest": "components/cinder_guard_vest/chest.png",
+        "shoulder": "components/cinder_guard_vest/shoulder.png",
+        "back": "components/cinder_guard_vest/back.png",
+        "accessory": "components/cinder_guard_vest/accessory.png"
+      }
+    },
+    "dragon_lord_aegis": {
+      "name": "Dragon-Lord Aegis",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet, \"Dragon-Lord Aegis\", true RGBA transparent background.\nStrict2x2 grid, four isolated cutouts centered inside their equal quadrants, at least12% empty transparent gutter. TOP LEFT front chest/belly armor. TOP RIGHT one shoulder/side armor. BOTTOM LEFT back/cape armor. BOTTOM RIGHT signature clasp/accessory. No piece may cross quadrant boundaries.\nDesign: large hard crimson dragon scales with dark maroon edges and warm red highlights, broad protective shell chest; a horn-edged red scale shoulder, overlapping red shell-like back plate, one faceted crimson scale clasp.\nCharming restrained classic8-bit/16-bit RPG pixel art, chunky hard stair-step pixel clusters, dark pixel outline,3\u20135 colors per material, designed as64x64 logical pixels per quadrant enlarged nearest-neighbor. Bold cute tiny-game silhouettes and compact chibi-animal equipment proportions, consistent upper-left highlights.\nOnly the four armor components. No characters, faces, animals, body/mannequin, hands/arms, scenery, text/labels, border, panel colors, background glow or backdrop, ground/shadows, checkerboard or watermark. Keep alpha empty outside pieces; emissive highlights only ON equipment. No smooth gradients, blur, realism or tiny filigree.",
+      "source_filename": "exec-3d947fd9-36fb-41b7-b453-f420d3bfaf6a.png",
+      "source_sha256": "f0464e7b20f8ccba22291a9efcb611fa40dc535527df4cc59af0c01afc2af521",
+      "packaged_components": {
+        "chest": "components/dragon_lord_aegis/chest.png",
+        "shoulder": "components/dragon_lord_aegis/shoulder.png",
+        "back": "components/dragon_lord_aegis/back.png",
+        "accessory": "components/dragon_lord_aegis/accessory.png"
+      }
+    },
+    "abyssal_shroud": {
+      "name": "The Abyssal Shroud",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet, \"The Abyssal Shroud\", true RGBA transparent background.\nStrict2x2 grid, four isolated cutouts centered inside their equal quadrants, at least12% empty transparent gutter. TOP LEFT front chest/belly armor. TOP RIGHT one shoulder/side armor. BOTTOM LEFT back/cape armor. BOTTOM RIGHT signature clasp/accessory. No piece may cross quadrant boundaries.\nDesign: living midnight navy and indigo shadow cloth with torn smoky pixel edges and subtle cyan inner lining; a soft ragged shoulder wrap, a long shredded shadow cloak, a tiny dark crescent clasp.\nCharming restrained classic8-bit/16-bit RPG pixel art, chunky hard stair-step pixel clusters, dark pixel outline,3\u20135 colors per material, designed as64x64 logical pixels per quadrant enlarged nearest-neighbor. Bold cute tiny-game silhouettes and compact chibi-animal equipment proportions, consistent upper-left highlights.\nOnly the four armor components. No characters, faces, animals, body/mannequin, hands/arms, scenery, text/labels, border, panel colors, background glow or backdrop, ground/shadows, checkerboard or watermark. Keep alpha empty outside pieces; emissive highlights only ON equipment. No smooth gradients, blur, realism or tiny filigree.",
+      "source_filename": "exec-b9185f61-f7c5-49ab-97ea-97b9dc622199.png",
+      "source_sha256": "02f018318f3633920298f6c04ce5393611448bb4567779515b6ea262cce913e0",
+      "packaged_components": {
+        "chest": "components/abyssal_shroud/chest.png",
+        "shoulder": "components/abyssal_shroud/shoulder.png",
+        "back": "components/abyssal_shroud/back.png",
+        "accessory": "components/abyssal_shroud/accessory.png"
+      }
+    },
+    "chronos_paradox_plate": {
+      "name": "Chronos Paradox Plate",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet, \"Chronos Paradox Plate\", true RGBA transparent background.\nStrict2x2 grid, four isolated cutouts centered inside their equal quadrants, at least12% empty transparent gutter. TOP LEFT front chest/belly armor. TOP RIGHT one shoulder/side armor. BOTTOM LEFT back/cape armor. BOTTOM RIGHT signature clasp/accessory. No piece may cross quadrant boundaries.\nDesign: separate floating warm golden clockwork plates with round gears and visible deep blue gaps; a golden cog pauldron, floating segmented mechanical back mantle, an ornate small clock face medallion.\nCharming restrained classic8-bit/16-bit RPG pixel art, chunky hard stair-step pixel clusters, dark pixel outline,3\u20135 colors per material, designed as64x64 logical pixels per quadrant enlarged nearest-neighbor. Bold cute tiny-game silhouettes and compact chibi-animal equipment proportions, consistent upper-left highlights.\nOnly the four armor components. No characters, faces, animals, body/mannequin, hands/arms, scenery, text/labels, border, panel colors, background glow or backdrop, ground/shadows, checkerboard or watermark. Keep alpha empty outside pieces; emissive highlights only ON equipment. No smooth gradients, blur, realism or tiny filigree.",
+      "source_filename": "exec-7ef8175a-5715-4d03-a8c0-d98478e6810e.png",
+      "source_sha256": "3cc9753f51125d8b8e97b2dc196340f3b172df85f7877855c23c49c8b2c7f445",
+      "packaged_components": {
+        "chest": "components/chronos_paradox_plate/chest.png",
+        "shoulder": "components/chronos_paradox_plate/shoulder.png",
+        "back": "components/chronos_paradox_plate/back.png",
+        "accessory": "components/chronos_paradox_plate/accessory.png"
+      }
+    },
+    "blight_weaver_regalia": {
+      "name": "Blight-Weaver Regalia",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet, \"Blight-Weaver Regalia\", true RGBA transparent background.\nStrict2x2 grid, four isolated cutouts centered inside their equal quadrants, at least12% empty transparent gutter. TOP LEFT front chest/belly armor. TOP RIGHT one shoulder/side armor. BOTTOM LEFT back/cape armor. BOTTOM RIGHT signature clasp/accessory. No piece may cross quadrant boundaries.\nDesign: branching charcoal-black antler plates with jagged openings and violet nebula inlays; a crooked branching horn shoulder, dark branching thorn-like back mantle, a violet star crack clasp.\nCharming restrained classic8-bit/16-bit RPG pixel art, chunky hard stair-step pixel clusters, dark pixel outline,3\u20135 colors per material, designed as64x64 logical pixels per quadrant enlarged nearest-neighbor. Bold cute tiny-game silhouettes and compact chibi-animal equipment proportions, consistent upper-left highlights.\nOnly the four armor components. No characters, faces, animals, body/mannequin, hands/arms, scenery, text/labels, border, panel colors, background glow or backdrop, ground/shadows, checkerboard or watermark. Keep alpha empty outside pieces; emissive highlights only ON equipment. No smooth gradients, blur, realism or tiny filigree.",
+      "source_filename": "exec-d406a713-5196-4cb3-8707-f219cba38af6.png",
+      "source_sha256": "a841b3768499692533609df01e9737766f11e7920d866fb6cc60bb9d8a8dfeb8",
+      "packaged_components": {
+        "chest": "components/blight_weaver_regalia/chest.png",
+        "shoulder": "components/blight_weaver_regalia/shoulder.png",
+        "back": "components/blight_weaver_regalia/back.png",
+        "accessory": "components/blight_weaver_regalia/accessory.png"
+      }
+    },
+    "unicorn_healer_vestments": {
+      "name": "Unicorn-Healer Vestments",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. Create ONE sheet for \"Unicorn-Healer Vestments\". True transparent RGBA background.\nStrict 2 by 2 grid: four fully separate cutouts centered inside their own equal quadrants, with 12% empty transparent gutters, no touching. TOP LEFT: front chest/belly armor cutout, no head opening/mannequin. TOP RIGHT: ONE separate shoulder/side piece. BOTTOM LEFT: a back/cape component. BOTTOM RIGHT: signature clasp/accessory. All pieces fully inside their quadrants.\nDesign: soft pure-white flowing vestment with elegant silver borders and pale lilac fabric folds; rounded cloth shoulder, a white split healer cape, a silver teardrop brooch.\nCharming restrained 8-bit/16-bit fantasy RPG pixel art, huge hard stair-step pixel clusters and dark pixel outlines, 3 to 5 shades per material. Draw as if each quadrant only64x64 source pixels enlarged nearest-neighbor. Bold tiny-game-size silhouettes, cute round lower-body proportions for chibi creatures. Upper-left highlights. No ornate fine filigree.\nOnly armor pieces: no character, animal, face, mannequin, arms or hands. No text, labels, borders, panel backgrounds, scenery, ground shadows, checkerboard, watermark, vector smoothness, gradients, blur or realistic metal. Preserve actual transparent alpha.",
+      "source_filename": "exec-62a591bc-4c74-4b89-9a80-3fcef7befa7f.png",
+      "source_sha256": "7b45e7cdfad4fa9668675081a1cba0983433bb3bb89e5333bc51a0b91e14a7bb",
+      "packaged_components": {
+        "chest": "components/unicorn_healer_vestments/chest.png",
+        "shoulder": "components/unicorn_healer_vestments/shoulder.png",
+        "back": "components/unicorn_healer_vestments/back.png",
+        "accessory": "components/unicorn_healer_vestments/accessory.png"
+      }
+    },
+    "basilisk_gaze_pauldrons": {
+      "name": "Basilisk Gaze Pauldrons",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. Create ONE sheet for \"Basilisk Gaze Pauldrons\". True transparent RGBA background.\nStrict 2 by 2 grid: four fully separate cutouts centered inside their own equal quadrants, with 12% empty transparent gutters, no touching. TOP LEFT: front chest/belly armor cutout, no head opening/mannequin. TOP RIGHT: ONE separate shoulder/side piece. BOTTOM LEFT: a back/cape component. BOTTOM RIGHT: signature clasp/accessory. All pieces fully inside their quadrants.\nDesign: weathered moss-gray petrified stone harness carved into overlapping serpent forms; a prominent eye-carved stone pauldron with amber slit pupil, stone-scale back drape, an amber eye-carved clasp.\nCharming restrained 8-bit/16-bit fantasy RPG pixel art, huge hard stair-step pixel clusters and dark pixel outlines, 3 to 5 shades per material. Draw as if each quadrant only64x64 source pixels enlarged nearest-neighbor. Bold tiny-game-size silhouettes, cute round lower-body proportions for chibi creatures. Upper-left highlights. No ornate fine filigree.\nOnly armor pieces: no character, animal, face, mannequin, arms or hands. No text, labels, borders, panel backgrounds, scenery, ground shadows, checkerboard, watermark, vector smoothness, gradients, blur or realistic metal. Preserve actual transparent alpha.",
+      "source_filename": "exec-17acc6f5-41df-46ee-831d-ab53b5f78e5d.png",
+      "source_sha256": "eb9fc481e5793e77e4c3f3219431e712e778c22590b176997a1e0f13825e26f4",
+      "packaged_components": {
+        "chest": "components/basilisk_gaze_pauldrons/chest.png",
+        "shoulder": "components/basilisk_gaze_pauldrons/shoulder.png",
+        "back": "components/basilisk_gaze_pauldrons/back.png",
+        "accessory": "components/basilisk_gaze_pauldrons/accessory.png"
+      }
+    },
+    "phoenix_born_shroud": {
+      "name": "Phoenix-Born Shroud",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. Create ONE sheet for \"Phoenix-Born Shroud\". True transparent RGBA background.\nStrict 2 by 2 grid: four fully separate cutouts centered inside their own equal quadrants, with 12% empty transparent gutters, no touching. TOP LEFT: front chest/belly armor cutout, no head opening/mannequin. TOP RIGHT: ONE separate shoulder/side piece. BOTTOM LEFT: a back/cape component. BOTTOM RIGHT: signature clasp/accessory. All pieces fully inside their quadrants.\nDesign: layered orange red and bright gold flame-feathers, feather-scale chest harness; a flame feather shoulder, dramatic feather cape with flame-shaped tips, a small golden phoenix feather clasp.\nCharming restrained 8-bit/16-bit fantasy RPG pixel art, huge hard stair-step pixel clusters and dark pixel outlines, 3 to 5 shades per material. Draw as if each quadrant only64x64 source pixels enlarged nearest-neighbor. Bold tiny-game-size silhouettes, cute round lower-body proportions for chibi creatures. Upper-left highlights. No ornate fine filigree.\nOnly armor pieces: no character, animal, face, mannequin, arms or hands. No text, labels, borders, panel backgrounds, scenery, ground shadows, checkerboard, watermark, vector smoothness, gradients, blur or realistic metal. Preserve actual transparent alpha.",
+      "source_filename": "exec-381c649e-ae70-4b01-afea-fe9e8db3c8f5.png",
+      "source_sha256": "f28b10d5f6b3449ee33245643d2bfad56a9cb48eb902f1e93c677bcd08a8d1a0",
+      "packaged_components": {
+        "chest": "components/phoenix_born_shroud/chest.png",
+        "shoulder": "components/phoenix_born_shroud/shoulder.png",
+        "back": "components/phoenix_born_shroud/back.png",
+        "accessory": "components/phoenix_born_shroud/accessory.png"
+      }
+    },
+    "thunderbird_storm_mail": {
+      "name": "Thunderbird Storm-Mail",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. Create ONE sheet for \"Thunderbird Storm-Mail\". True transparent RGBA background.\nStrict 2 by 2 grid: four fully separate cutouts centered inside their own equal quadrants, with 12% empty transparent gutters, no touching. TOP LEFT: front chest/belly armor cutout, no head opening/mannequin. TOP RIGHT: ONE separate shoulder/side piece. BOTTOM LEFT: a back/cape component. BOTTOM RIGHT: signature clasp/accessory. All pieces fully inside their quadrants.\nDesign: sleek cobalt-blue plates with angular gold lightning trim; a swept lightning-spike shoulder, compact blue feather back mantle, a small forked gold lightning charm.\nCharming restrained 8-bit/16-bit fantasy RPG pixel art, huge hard stair-step pixel clusters and dark pixel outlines, 3 to 5 shades per material. Draw as if each quadrant only64x64 source pixels enlarged nearest-neighbor. Bold tiny-game-size silhouettes, cute round lower-body proportions for chibi creatures. Upper-left highlights. No ornate fine filigree.\nOnly armor pieces: no character, animal, face, mannequin, arms or hands. No text, labels, borders, panel backgrounds, scenery, ground shadows, checkerboard, watermark, vector smoothness, gradients, blur or realistic metal. Preserve actual transparent alpha.",
+      "source_filename": "exec-1b9babe9-eb80-4394-ad0e-77f80f233a98.png",
+      "source_sha256": "96be329197dbeb0af3868a5d2a7b9393c5436a8b578bb13460fd3b61c45b2931",
+      "packaged_components": {
+        "chest": "components/thunderbird_storm_mail/chest.png",
+        "shoulder": "components/thunderbird_storm_mail/shoulder.png",
+        "back": "components/thunderbird_storm_mail/back.png",
+        "accessory": "components/thunderbird_storm_mail/accessory.png"
+      }
+    },
+    "mossbark_wrapping": {
+      "name": "Mossbark Wrapping",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet for \"Mossbark Wrapping\", actual RGBA transparent background.\nComposition: strict2x2 grid of four isolated cutouts with12% empty transparent gutters; center each piece in its own quadrant, no piece crosses a quadrant. TOP LEFT front chest/belly cutout. TOP RIGHT one shoulder/side cutout. BOTTOM LEFT back/cape cutout. BOTTOM RIGHT signature clasp/accessory.\nDesign: overlapping warm brown bark strips tied with pale pixie silk, soft moss tufts and visible wood grain; a bark shoulder wrap, a short coarse bark back wrap, a silk-tied mossy knot.\nCharming classic8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters and dark pixel outlines,3\u20135 shade levels per material; each quadrant as64x64 logical pixels enlarged nearest-neighbor. Cute small rounded equipment proportions for chibi animals, readable silhouettes at tiny game size. Upper-left highlights.\nOnly four pieces of equipment: no creature, face, character, mannequin, body, arms/hands, text/labels, border, panels, scenery, ground/shadow, checkerboard, watermark, backdrop or background glow. Transparent empty alpha outside the armor. No smooth vector curves, gradients, blur, realistic texture or ornate tiny filigree.",
+      "source_filename": "exec-7544e659-a0cd-4b62-b0ab-04405075eb3c.png",
+      "source_sha256": "486eac536c0a46cbbb89a3a01af92bd0f1fca99c87617320074765ff61b3d87f",
+      "packaged_components": {
+        "chest": "components/mossbark_wrapping/chest.png",
+        "shoulder": "components/mossbark_wrapping/shoulder.png",
+        "back": "components/mossbark_wrapping/back.png",
+        "accessory": "components/mossbark_wrapping/accessory.png"
+      }
+    },
+    "emberstone_vest": {
+      "name": "Emberstone Vest",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet for \"Emberstone Vest\", actual RGBA transparent background.\nComposition: strict2x2 grid of four isolated cutouts with12% empty transparent gutters; center each piece in its own quadrant, no piece crosses a quadrant. TOP LEFT front chest/belly cutout. TOP RIGHT one shoulder/side cutout. BOTTOM LEFT back/cape cutout. BOTTOM RIGHT signature clasp/accessory.\nDesign: distinct square soot-gray iron tiles embedded in deep red ember resin with small orange seams, practical quilted rectangular grid; a square layered tile shoulder, a short square-tile back panel, a square emberstone buckle.\nCharming classic8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters and dark pixel outlines,3\u20135 shade levels per material; each quadrant as64x64 logical pixels enlarged nearest-neighbor. Cute small rounded equipment proportions for chibi animals, readable silhouettes at tiny game size. Upper-left highlights.\nOnly four pieces of equipment: no creature, face, character, mannequin, body, arms/hands, text/labels, border, panels, scenery, ground/shadow, checkerboard, watermark, backdrop or background glow. Transparent empty alpha outside the armor. No smooth vector curves, gradients, blur, realistic texture or ornate tiny filigree.",
+      "source_filename": "exec-e2060368-5d67-4650-a605-cbb82b26a387.png",
+      "source_sha256": "e0187250499a85a765b3bcc6be26bb9f181da7c2b674ac59983afc9af3d326df",
+      "packaged_components": {
+        "chest": "components/emberstone_vest/chest.png",
+        "shoulder": "components/emberstone_vest/shoulder.png",
+        "back": "components/emberstone_vest/back.png",
+        "accessory": "components/emberstone_vest/accessory.png"
+      }
+    },
+    "thornweave_cloak": {
+      "name": "Thornweave Cloak",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet for \"Thornweave Cloak\", actual RGBA transparent background.\nComposition: strict2x2 grid of four isolated cutouts with12% empty transparent gutters; center each piece in its own quadrant, no piece crosses a quadrant. TOP LEFT front chest/belly cutout. TOP RIGHT one shoulder/side cutout. BOTTOM LEFT back/cape cutout. BOTTOM RIGHT signature clasp/accessory.\nDesign: woven brown vine and bark cloak cloth studded with curved thorns and gray-white feather fringe; a thorn-wrapped shoulder, broad thorned cloak with feather hem, a crossed thorn clasp.\nCharming classic8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters and dark pixel outlines,3\u20135 shade levels per material; each quadrant as64x64 logical pixels enlarged nearest-neighbor. Cute small rounded equipment proportions for chibi animals, readable silhouettes at tiny game size. Upper-left highlights.\nOnly four pieces of equipment: no creature, face, character, mannequin, body, arms/hands, text/labels, border, panels, scenery, ground/shadow, checkerboard, watermark, backdrop or background glow. Transparent empty alpha outside the armor. No smooth vector curves, gradients, blur, realistic texture or ornate tiny filigree.",
+      "source_filename": "exec-c4a23b84-ee73-4b14-ba39-91fe17fca32b.png",
+      "source_sha256": "f4e32d726f822c717ee10f358ac406c619b14f22a83160e4dfc382354f32505c",
+      "packaged_components": {
+        "chest": "components/thornweave_cloak/chest.png",
+        "shoulder": "components/thornweave_cloak/shoulder.png",
+        "back": "components/thornweave_cloak/back.png",
+        "accessory": "components/thornweave_cloak/accessory.png"
+      }
+    },
+    "deepwater_hide": {
+      "name": "Deepwater Hide",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art armor fitting-kit sprite sheet for ChibiBeasts. ONE sheet for \"Deepwater Hide\", actual RGBA transparent background.\nComposition: strict2x2 grid of four isolated cutouts with12% empty transparent gutters; center each piece in its own quadrant, no piece crosses a quadrant. TOP LEFT front chest/belly cutout. TOP RIGHT one shoulder/side cutout. BOTTOM LEFT back/cape cutout. BOTTOM RIGHT signature clasp/accessory.\nDesign: broad smooth dark teal leather-hide panels with light cream down lining and large visible leather stitches; a padded hide shoulder, broad navy-teal hide cape lined in down, a simple pale bone toggle.\nCharming classic8-bit/16-bit fantasy RPG pixel art. Very chunky hard stair-step pixel clusters and dark pixel outlines,3\u20135 shade levels per material; each quadrant as64x64 logical pixels enlarged nearest-neighbor. Cute small rounded equipment proportions for chibi animals, readable silhouettes at tiny game size. Upper-left highlights.\nOnly four pieces of equipment: no creature, face, character, mannequin, body, arms/hands, text/labels, border, panels, scenery, ground/shadow, checkerboard, watermark, backdrop or background glow. Transparent empty alpha outside the armor. No smooth vector curves, gradients, blur, realistic texture or ornate tiny filigree.",
+      "source_filename": "exec-3ae99f4b-237c-49ce-aa6c-d672ea368dec.png",
+      "source_sha256": "f91d2f9c85c91ce8e0e92da977f319496dc140d596c48c9db4baf4ebb989acff",
+      "packaged_components": {
+        "chest": "components/deepwater_hide/chest.png",
+        "shoulder": "components/deepwater_hide/shoulder.png",
+        "back": "components/deepwater_hide/back.png",
+        "accessory": "components/deepwater_hide/accessory.png"
+      }
+    }
+  }
+}

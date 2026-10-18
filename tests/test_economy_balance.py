@@ -37,15 +37,16 @@ class CatalogBalance(unittest.TestCase):
             self.assertAlmostEqual(sum(pool.values()),1)
 
     def test_every_crafting_material_has_a_real_route_and_positive_recipe(self):
-        from scripts.audit_economy import material_distribution, RECIPES
-        distributions = [material_distribution(b) for b in ('woods','ember','glacial','trenches','loom')]
+        from scripts.audit_economy import RECIPES
+        from utils.habitats import BIOMES, material_pool
+        # Expeditions roll a regional bundle before discovering any creature.
+        gatherable = {mid for biome in BIOMES for mid in material_pool({'id': '', 'type': ''}, biome)}
         raid_only={'chronos_gear','tear_of_the_creator','blighted_world_core'}
         for item in RECIPES.values():
             for mid,qty in item['recipe'].items():
                 self.assertGreater(qty,0)
-                self.assertTrue(mid in raid_only or any(d.get(mid,0)>0 for d in distributions),mid)
+                self.assertTrue(mid in raid_only or mid in gatherable,mid)
                 self.assertTrue(material_sources(mid))
-        self.assertTrue(all(abs(sum(d.values())-1)<1e-8 for d in distributions))
 
     def test_every_gear_effect_is_explained_to_players(self):
         data=load_catalog('equipment.json')
@@ -55,7 +56,15 @@ class CatalogBalance(unittest.TestCase):
                 self.assertTrue(text,key)
                 self.assertNotIn('True',text,key)
 
-    def test_currency_reset_loop_has_no_positive_expected_profit(self):
+    def test_gathering_hints_describe_expedition_regions_without_old_species_bonuses(self):
+        self.assertIn('Whispering Woods', material_sources('pixie_silk'))
+        self.assertNotIn('Fairy', material_sources('pixie_silk'))
+        self.assertIn('Sunken Abyssal Trenches', material_sources('void_essence'))
+        self.assertNotIn('shadow encounters', material_sources('void_essence'))
+        for material in load_catalog('materials.json')['materials']:
+            self.assertNotIn('extra weight', material_sources(material), material)
+
+    def test_historical_currency_reset_model_has_no_positive_expected_profit(self):
         from scripts.audit_economy import reset_loops
         self.assertTrue(all(row['expected_net_gold']<0 for row in reset_loops()))
 
@@ -204,20 +213,28 @@ class EconomyTransactions(DatabaseCase):
         self.assertEqual(crafted,len(RECIPES))
 
     async def test_exploration_grants_exactly_one_material_on_quiet_win_and_loss(self):
-        import cogs.hatch as hatch
+        from cogs.hatch import Hatch
+        from utils import expeditions
         import discord
-        explorer=next(value for value in vars(hatch).values() if isinstance(value,type) and value.__module__==hatch.__name__ and hasattr(value,'explore'))
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
-        async def result(**kwargs):
-            await kwargs['on_win' if outcome=='win' else 'on_loss'](discord.Embed(),{}, {})
+        async def result(*args, **kwargs):
+            await args[7 if outcome == 'win' else 8](discord.Embed(), {}, {})
         for outcome in ('quiet','win','loss'):
             await storage.update_player(42,explore_last_at=0)
             await self.execute('DELETE FROM exploration_energy WHERE user_id=42')
             before=sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
-            rolls=[.01] if outcome=='quiet' else [.5,.99]
-            with patch('cogs.hatch.asyncio.sleep',new=AsyncMock()), patch('cogs.hatch.random.random',side_effect=rolls), patch('utils.habitats.pick_encounter',return_value=storage.get_beast_data('fairy')), patch('cogs.battle.run_pve_battle',side_effect=result), patch('cogs.hatch.notify_unlocks',new=AsyncMock()):
-                await explorer.explore.callback(explorer(None),interaction())
+            view = await Hatch.explore.callback(Hatch(None), interaction())
+            self.addCleanup(view.stop)
+            trip = view.trip
+            if outcome != 'quiet':
+                with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('fairy')):
+                    trip = await expeditions.choose(42, trip['id'], trip['version'], 'tracks')
+                trip = await expeditions.choose(42, trip['id'], trip['version'], 'challenge')
+                with patch('cogs.battle.run_pve_battle', side_effect=result):
+                    trip = await expeditions.run_battle(interaction(), trip)
+            self.assertEqual(sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials')), before)
+            await expeditions.choose(42, trip['id'], trip['version'], 'return_early')
             after=sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
             self.assertEqual(after-before,1,outcome)
 
@@ -275,27 +292,33 @@ class EconomyTransactions(DatabaseCase):
         self.assertEqual((row['beast_id'],row['stat_treats_used']),('prismara',12))
 
     async def test_rare_only_habitat_keeps_the_ancient_compass_charge(self):
-        import cogs.hatch as hatch
-        import discord
-        explorer=next(value for value in vars(hatch).values() if isinstance(value,type) and value.__module__==hatch.__name__ and hasattr(value,'explore'))
+        from cogs.hatch import Hatch
+        from utils import expeditions
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
         await storage.update_player(42,level=10,ancient_compass_charges=1)
-        async def lose(**kwargs):
-            await kwargs['on_loss'](discord.Embed(),{}, {})
-        with patch('cogs.hatch.asyncio.sleep',new=AsyncMock()), patch('cogs.hatch.random.random',side_effect=[.5,.99]), patch('utils.habitats.pick_encounter',return_value=storage.get_beast_data('genesis')), patch('cogs.battle.run_pve_battle',side_effect=lose), patch('cogs.hatch.notify_unlocks',new=AsyncMock()):
-            await explorer.explore.callback(explorer(None),interaction(),'loom')
+        view = await Hatch.explore.callback(Hatch(None), interaction(), 'loom')
+        self.addCleanup(view.stop)
+        trip = view.trip
+        with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('genesis')):
+            await expeditions.choose(42, trip['id'], trip['version'], 'tracks')
         self.assertEqual((await storage.get_player(42))['ancient_compass_charges'],1)
 
     async def test_exploration_library_bonus_is_applied_once(self):
-        import cogs.hatch as hatch
-        explorer=next(value for value in vars(hatch).values() if isinstance(value,type) and value.__module__==hatch.__name__ and hasattr(value,'explore'))
+        from cogs.hatch import Hatch
+        from utils import expeditions, rewards
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
         await self.execute("INSERT INTO guilds(id,name) VALUES(3,'Library')")
         await self.execute('INSERT INTO guild_members(guild_id,user_id) VALUES(3,42)')
         await self.execute('INSERT INTO guild_sanctuary(guild_id,arcane_library) VALUES(3,1)')
-        with patch('cogs.hatch.asyncio.sleep',new=AsyncMock()), patch('cogs.hatch.random.random',side_effect=[.5,0]), patch('utils.habitats.pick_encounter',return_value=storage.get_beast_data('fairy')), patch('cogs.hatch.random.randint',return_value=16), patch('cogs.hatch.notify_unlocks',new=AsyncMock()), patch('cogs.battle.award_player_exp',new=AsyncMock(return_value=(1,0,False))) as award:
-            await explorer.explore.callback(explorer(None),interaction())
-        # The shared award function applies the 15% bonus; it must receive base XP.
-        self.assertEqual(award.call_args.args[1],16)
+        view = await Hatch.explore.callback(Hatch(None), interaction())
+        self.addCleanup(view.stop)
+        trip = view.trip
+        expected = round(trip['payload']['exp'] * 1.15)
+        with patch('utils.rewards.player_exp', wraps=rewards.player_exp) as award:
+            done = await expeditions.choose(42, trip['id'], trip['version'], 'return_early')
+            await expeditions.report({**done, 'reported': 0})
+        self.assertEqual(award.await_count, 1)
+        self.assertEqual(award.call_args.args[2], expected)
+        self.assertEqual(done['payload']['exp_granted'], expected)

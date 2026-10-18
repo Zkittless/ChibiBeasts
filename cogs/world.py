@@ -569,9 +569,9 @@ class World(commands.Cog):
                 embed.set_footer(text="ChibiBeasts 🐾  •  Beast added to your collection!")
                 completed_quests = await track_quest_event(interaction.user.id, "hatch")
                 if row["egg_type"]=="world_tree_seed":
-                    from cogs.questline import advance_quest_step
+                    from utils.story import advance_quest_step
                     await advance_quest_step(interaction.user.id,"seed_hatched")
-                    embed.add_field(name="A root for the hollow",value="Your new companion remembers a place that needs room to grow. Return to /questline.",inline=False)
+                    embed.add_field(name="A root for the hollow",value="Your new companion remembers a place that needs room to grow. Open /journal → Story.",inline=False)
                 await interaction.followup.send(embed=embed)
                 from cogs.hatch import check_collection_completion
                 await check_collection_completion(interaction,beast,load_beasts())
@@ -836,12 +836,6 @@ class World(commands.Cog):
         from utils.workshop import open_workshop
         await open_workshop(interaction, item_name=item_name)
 
-    # ── /materials ────────────────────────────────────────────────────────
-    @app_commands.command(name="materials", description="Open your material bag in the workshop 🪨")
-    async def materials_cmd(self, interaction: discord.Interaction):
-        from utils.workshop import open_workshop
-        await open_workshop(interaction, drawer='materials')
-
     # ── /codex ────────────────────────────────────────────────────────────
     @app_commands.command(name="codex", description="Look up lore and details on any beast 📖")
     @app_commands.describe(beast_name="Beast name to look up")
@@ -1016,7 +1010,7 @@ class World(commands.Cog):
                     "Pillar shaped Barkley to prove that steadiness didn't have to be boring. Barkley "
                     "has never once let anyone down, and never plans to start.\n\n"
                     "Their bonds can grow into **Prismara, Timestitch, Nebuloom and Rootwarden**. "
-                    "Reach beast level 15, bond 30 and happiness 70; use /bond to follow your progress."
+                    "Reach beast level 15, bond 30 and happiness 70; open /journal → Companions to follow your progress."
                 ),
                 "color": COLORS["divine"]
             },

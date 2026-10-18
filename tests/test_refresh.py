@@ -152,21 +152,27 @@ class Extensions(unittest.IsolatedAsyncioTestCase):
             async with bot:
                 for path in sorted((PROJECT_ROOT / "cogs").glob("*.py")):
                     await bot.load_extension(f"cogs.{path.stem}")
-                self.assertEqual(len(bot.extensions), 17)
+                self.assertEqual(len(bot.extensions), 16)
                 self.assertIsNone(bot.tree.get_command("dev"))
                 group = bot.tree.get_command("dev", guild=discord.Object(id=456))
                 self.assertIsNotNone(group)
                 for command in group.walk_commands():
                     self.assertTrue(command.checks, f"/dev {command.name} lacks its owner check")
-                self.assertIsNotNone(bot.tree.get_command("guide"))
+                self.assertIsNotNone(bot.tree.get_command("journal"))
+                for retired in ('guide', 'materials', 'setactive', 'questline', 'bond'):
+                    self.assertIsNone(bot.tree.get_command(retired), f"Retired command /{retired} is still registered")
                 import inspect
                 import re
                 from cogs.utilities import Utilities
-                guide_commands=set(re.findall(r"/([a-z_]+)",inspect.getsource(Utilities.help_cmd.callback) + inspect.getsource(Utilities._command_guide)))
+                guide_commands=set(re.findall(r"/([a-z_]+)",inspect.getsource(Utilities._command_guide)))
                 registered={command.name for command in bot.tree.get_commands()}
                 self.assertFalse(guide_commands-registered,f"Guide references missing commands: {guide_commands-registered}")
+                from utils.journal import JournalView
+                launch_targets=set(re.findall(r"launch:([a-z_]+)",inspect.getsource(JournalView)))
+                self.assertFalse(launch_targets-registered,f"Journal buttons reference missing commands: {launch_targets-registered}")
                 from cogs.starter import FIRST_STEPS, Starter
-                self.assertIn("/guide", [step[1] for step in FIRST_STEPS])
+                self.assertIn("/journal", [step[1] for step in FIRST_STEPS])
+                self.assertFalse({step[1][1:] for step in FIRST_STEPS}-registered)
                 embed = Starter(bot).build_starter_embed(storage.get_beast_data("prismite"))
                 self.assertEqual(embed.image.url, beast_image_url("prismite"))
 

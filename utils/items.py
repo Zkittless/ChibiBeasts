@@ -48,7 +48,7 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             target = updated or beast
             no_beast = {'choose_element', 'clear_title', 'reduce_incubation_percent', 'reduce_incubation_hours', 'reset_explore', 'reset_challenge', 'encounter_boost', 'raid_damage_boost', 'catch_boost_charges', 'guaranteed_rare_charges', 'guild_title', 'revive_party'}
             if not beast and (not no_beast.intersection(effect)):
-                raise ValueError('Select a companion with /setactive first.')
+                raise ValueError('Open /journal → Companions and make a companion active first.')
             messages = []
             if effect.get('choose_element'):
                 if choice not in ELEMENTS:

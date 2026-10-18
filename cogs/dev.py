@@ -5,7 +5,7 @@ Developer commands for ChibiBeasts.
 
 All commands require the user ID in OWNER_ID. They are registered only
 in the home server specified by GUILD_ID, and are disabled if either ID
-is missing. They are intentionally omitted from /guide.
+is missing. They are intentionally omitted from the Field Journal command guide.
 """
 
 import discord
