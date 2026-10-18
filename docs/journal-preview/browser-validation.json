@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "pages": 12,
+  "widths": [
+    320,
+    390,
+    736
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "javascript_errors": [],
+  "checks": [
+    "Native-page navigation",
+    "Trailhead to encounter to observation and return",
+    "Pinned recipe to workshop and back",
+    "Delayed host echoes retain current page",
+    "All sample page images loaded",
+    "No horizontal overflow"
+  ],
+  "scope": "Offline browser rendering of real Discord component payloads; no live Discord delivery."
+}

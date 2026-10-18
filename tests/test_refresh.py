@@ -152,7 +152,7 @@ class Extensions(unittest.IsolatedAsyncioTestCase):
             async with bot:
                 for path in sorted((PROJECT_ROOT / "cogs").glob("*.py")):
                     await bot.load_extension(f"cogs.{path.stem}")
-                self.assertEqual(len(bot.extensions), 16)
+                self.assertEqual(len(bot.extensions), 17)
                 self.assertIsNone(bot.tree.get_command("dev"))
                 group = bot.tree.get_command("dev", guild=discord.Object(id=456))
                 self.assertIsNotNone(group)
@@ -162,7 +162,7 @@ class Extensions(unittest.IsolatedAsyncioTestCase):
                 import inspect
                 import re
                 from cogs.utilities import Utilities
-                guide_commands=set(re.findall(r"/([a-z_]+)",inspect.getsource(Utilities.help_cmd.callback)))
+                guide_commands=set(re.findall(r"/([a-z_]+)",inspect.getsource(Utilities.help_cmd.callback) + inspect.getsource(Utilities._command_guide)))
                 registered={command.name for command in bot.tree.get_commands()}
                 self.assertFalse(guide_commands-registered,f"Guide references missing commands: {guide_commands-registered}")
                 from cogs.starter import FIRST_STEPS, Starter

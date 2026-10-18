@@ -12,6 +12,11 @@ rest of the flow in the same message.
 - `/materials`: open the same workshop with the material bag expanded.
 
 Recipe browsing lives in `/craft`; the separate recipes command is removed.
+
+**Pin recipe** saves the selected recipe as your Field Journal goal. **Field Journal**
+returns to the home panel in the same message. Opening that goal's recipe from
+the journal selects it without crafting; progress includes current inventory,
+equipped pieces, level requirements and the Gnome Forge discount.
 The help menu, equipment prompts and evolution errors use the workshop route.
 
 ## The approved flow

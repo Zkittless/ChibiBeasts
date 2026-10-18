@@ -165,7 +165,6 @@ HATCH_RATES = {
 EGG_PRICES = {k: v["price"] for k, v in HATCH_EGGS.items()}
 EGG_NAMES  = {k: v["name"]  for k, v in HATCH_EGGS.items()}
 
-EXPLORE_COOLDOWN = 1800  # 30 minutes in seconds
 # No longer using in-memory dict — cooldowns now persist via players.explore_last_at
 
 def roll_rarity(rates: dict) -> str:
@@ -552,61 +551,44 @@ class Hatch(commands.Cog):
 
     @app_commands.command(name="explore", description="Explore the world and discover wild ChibiBeasts! 🗺️")
     @app_commands.choices(destination=[app_commands.Choice(name="Whispering Woods · Lv1",value="woods"),app_commands.Choice(name="Ember Wastes · Lv3",value="ember"),app_commands.Choice(name="Glacial Hollows · Lv5",value="glacial"),app_commands.Choice(name="Sunken Trenches · Lv8",value="trenches"),app_commands.Choice(name="Celestial Loom · Lv10",value="loom")])
-    async def explore(self, interaction: discord.Interaction, destination: str = "woods"):
+    @app_commands.describe(expedition="Open a saved, branching expedition in your Field Journal")
+    async def explore(self, interaction: discord.Interaction, destination: str = "woods", expedition: bool = False):
         await interaction.response.defer()
+        await get_or_create_player(interaction.user.id, str(interaction.user))
+        if expedition:
+            from utils.journal import open_journal
+            return await open_journal(interaction, page='adventure', realm=destination, already_deferred=True)
+        from utils import expeditions
+        from utils.duels import reserve_fighters
+        try:
+            trip = await expeditions.begin(interaction.user.id, destination, quick=True)
+        except ValueError as error:
+            return await interaction.followup.send(str(error), ephemeral=True)
+        try:
+            with reserve_fighters([interaction.user.id]):
+                return await self._quick_explore(interaction, destination)
+        finally:
+            await asyncio.shield(expeditions.finish_quick(interaction.user.id, trip['id']))
+
+    async def _quick_explore(self, interaction, destination):
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
 
         from utils.habitats import BIOMES as DESTINATIONS
         from utils.db import get_active_beast
         active_for_explore=await get_active_beast(interaction.user.id)
         from utils.db import is_knocked_out
-        from utils.duels import active_fighters
-        if interaction.user.id in active_fighters:return await interaction.followup.send("Finish your battle before exploring.")
         if active_for_explore and is_knocked_out(active_for_explore):return await interaction.followup.send("Your companion is recovering. Choose a healthy beast or use a revive.")
         if not active_for_explore:
             return await interaction.followup.send("Choose a companion with /start first.")
         if player["level"]<DESTINATIONS[destination]["min_level"]:
             return await interaction.followup.send(f"Reach trainer level {DESTINATIONS[destination]['min_level']} to visit that destination.")
-        # Cooldown check — persisted in DB so it survives bot restarts
-        import time
-        now = time.time()
-        cooldown = EXPLORE_COOLDOWN
-
+        # The public command reserves one shared exploration charge and fighter.
         async with storage.connect() as _cddb:
             _cddb.row_factory = aiosqlite.Row
-            async with _cddb.execute(
-                "SELECT explore_last_at FROM players WHERE user_id = ?", (interaction.user.id,)
-            ) as _cdc:
-                _row = await _cdc.fetchone()
-            last = _row["explore_last_at"] if _row and _row["explore_last_at"] else 0
             async with _cddb.execute(
                 "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1", (interaction.user.id,)
             ) as cursor:
                 perks = [dict(r) for r in await cursor.fetchall()]
-
-        for perk in perks:
-            if perk["perk_id"] == "bramble_walker":
-                cooldown = int(cooldown * 0.90)
-            if perk["perk_id"] == "chronos_hourglass":
-                cooldown = int(cooldown * 0.80)
-
-        remaining = cooldown - (now - last)
-        if remaining > 0:
-            mins = int(remaining // 60)
-            secs = int(remaining % 60)
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ You're still exploring! Rest for **{mins}m {secs}s** before venturing out again.",
-                color=COLORS["error"]
-            ))
-
-        # Update last explore time in DB
-        async with storage.connect() as _upddb:
-            claimed=await _upddb.execute(
-                "UPDATE players SET explore_last_at = ? WHERE user_id = ? AND COALESCE(explore_last_at,0)<=?",
-                (now, interaction.user.id,now-cooldown)
-            )
-            await _upddb.commit()
-            if not claimed.rowcount:return await interaction.followup.send("An exploration is already underway.")
 
         # ── Quest tracking: every explore call counts toward the explore quest ──
         explore_quests_completed = []
@@ -1058,6 +1040,7 @@ class Hatch(commands.Cog):
                 enemy_personality="aggressive",
                 battle_title=f"Wild {beast['name']}",
                 realm=destination,
+                reserved=True,
                 on_win=on_explore_win,
                 on_loss=on_explore_loss,
             )

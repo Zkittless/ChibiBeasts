@@ -4,7 +4,7 @@ A Discord creature RPG about collecting companions, caring for them, and helping
 
 ## Play
 
-Begin with `/start`, then `/guide`. Choose a companion, explore a destination, and use `/questline` from trainer level 3. `/play`, battles and training build bonds. `/dailies` shows four daily quests; `/daily` claims a separate daily reward.
+Begin with `/start`, then `/guide` or `/journal`. The [Field Journal](docs/FIELD-JOURNAL.md) connects adventures, companions, the workshop, story and daily activities with native Discord controls. Pin a recipe, awakening or creature hunt to keep a useful next step on your home page. `/play`, battles and training build bonds. `/dailies` shows four daily quests; `/daily` claims a separate daily reward.
 
 `/start` shows all four starter portraits and lets you browse each companion's play style, moves and base stats before pressing **Choose**. `/codex` opens an illustrated overview, with separate **Moves & stats** and **Lore** tabs. Artwork is packaged with the bot and attached directly to Discord messages; enable **Attach Files** and **Embed Links** in the bot's channel permissions. See the [interactive layout preview](docs/artwork-preview.html), [desktop screenshot](docs/artwork-preview/desktop.png), and [implementation notes](docs/ARTWORK-CARDS.txt).
 
@@ -16,7 +16,7 @@ Begin with `/start`, then `/guide`. Choose a companion, explore a destination, a
 | Sunken Abyssal Trenches | 8 | Water, shadow |
 | Celestial Loom | 10 | Cosmic, arcane, light |
 
-`/explore` has a 30-minute base cooldown; `/challenge` has 20 minutes. `/play` has two hours. Equipped time perks reduce the relevant timers. Encounters use regional species pools and exclude starter and evolution-only forms.
+Exploration regenerates **one charge every 30 minutes**, banking up to **three**. The journal's branching expeditions and the existing quick `/explore` share these charges. Choose a destination in **Adventure**, then follow tracks, choose a gathering find, or visit a landmark for bond, study or rest. Trips save after every choice; reopen `/journal` to resume. Return home to bank the trip's single reward bundle. `/explore expedition:True` opens this flow directly. `/challenge` retains its 20-minute timer and `/play` its two hours. Equipped time perks reduce the relevant timers. Encounters use regional species pools and exclude starter and evolution-only forms.
 
 ## Starter awakenings
 

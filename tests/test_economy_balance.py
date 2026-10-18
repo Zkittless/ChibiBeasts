@@ -213,6 +213,7 @@ class EconomyTransactions(DatabaseCase):
             await kwargs['on_win' if outcome=='win' else 'on_loss'](discord.Embed(),{}, {})
         for outcome in ('quiet','win','loss'):
             await storage.update_player(42,explore_last_at=0)
+            await self.execute('DELETE FROM exploration_energy WHERE user_id=42')
             before=sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
             rolls=[.01] if outcome=='quiet' else [.5,.99]
             with patch('cogs.hatch.asyncio.sleep',new=AsyncMock()), patch('cogs.hatch.random.random',side_effect=rolls), patch('utils.habitats.pick_encounter',return_value=storage.get_beast_data('fairy')), patch('cogs.battle.run_pve_battle',side_effect=result), patch('cogs.hatch.notify_unlocks',new=AsyncMock()):
