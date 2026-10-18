@@ -143,19 +143,22 @@ def demos(output, armor):
     return records
 
 
-def write_index(output, armor, records, failures):
+def write_index(output, armor, records, failures, coverage):
     links = ''.join(f'<a href="#armor-{key}">{html.escape(item["name"])}</a>' for key, item in armor.items())
     sections = ''.join(
         f'<section id="armor-{key}"><h2>{html.escape(item["name"])}</h2>'
         f'<p>{html.escape(item["description"])}</p><a href="{key}.png">'
-        f'<img loading="lazy" src="{key}.png" alt="All 86 creatures wearing {html.escape(item["name"])}"></a></section>'
+        f'<img loading="lazy" src="{key}.png" alt="Registered {html.escape(item["name"])} variants and labeled canonical fallbacks"></a></section>'
         for key, item in armor.items())
     clips = ''.join(
         f'<article><h3>{html.escape(record["file"].removesuffix(".gif").replace("-", " ").title())}</h3>'
         f'<a href="{record["file"]}"><img src="{record["file"]}" alt="Production rendered armor battle animation"></a>'
         f'<p>{record["frames"]} frames · {record["milliseconds"] / 1000:g}s · {record["bytes"]:,} bytes · plays once</p></article>'
         for record in records)
-    status = 'All 1,376 fitted combinations rendered.' if not failures else f'{len(failures)} validation issue(s); see validation.json.'
+    status = (f'{coverage["dedicated_pairs"]:,} of {coverage["expected_pairs"]:,} combinations have dedicated full sprites; '
+              f'{coverage["missing_pairs"]:,} show labeled canonical fallbacks.')
+    if failures:
+        status += f' {len(failures)} validation issue(s); see validation.json.'
     page = f'''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ChibiBeasts fitted armor review</title><style>
 :root{{color-scheme:dark light}}*{{box-sizing:border-box}}body{{margin:0;background:#14252a;color:#eee9d8;font:16px/1.5 system-ui,sans-serif}}
@@ -163,7 +166,7 @@ main{{max-width:1500px;margin:auto;padding:24px}}h1,h2,h3{{line-height:1.2}}p{{m
 a{{color:#c8e5c8}}nav a{{padding:7px 10px;border:1px solid #687363;border-radius:6px;text-decoration:none}}img{{max-width:100%;height:auto;display:block;image-rendering:pixelated;background:#203036}}
 section{{margin-top:38px;scroll-margin:12px}}.clips{{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:24px}}article{{min-width:0}}
 @media(prefers-color-scheme:light){{body{{background:#eeeada;color:#203036}}a{{color:#2c6845}}nav a{{border-color:#81937f}}}}</style>
-<main><h1>Fitted armor review</h1><p>{status} This offline review uses packaged armor artwork, explicit species fitting profiles and the production battle renderer. No player data or Discord messages are changed.</p>
+<main><h1>Armor appearance review</h1><p>{status} This offline review uses registered species-specific full sprites and the production battle renderer. Missing pairs retain canonical artwork. No player data or Discord messages are changed.</p>
 <p><a href="validation.json">Validation and rendering measurements</a> · <a href="body-diversity.png">Body diversity overview</a></p>
 <h2>Battle examples</h2><div class="clips">{clips}</div><h2>All armor and creatures</h2><nav>{links}</nav>{sections}</main></html>'''
     (output / 'index.html').write_text(page, encoding='utf-8')
@@ -172,7 +175,7 @@ section{{margin-top:38px;scroll-margin:12px}}.clips{{display:grid;grid-template-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT.parent / 'output' / 'armor-implementation')
-    parser.add_argument('--skip-demos', action='store_true', help='Only export the 1,376 fitted combinations.')
+    parser.add_argument('--skip-demos', action='store_true', help='Export registered variants and labeled canonical fallbacks without battle clips.')
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
@@ -180,6 +183,8 @@ def main():
     armor = catalog('equipment.json')['equipment']
     beasts = catalog('beasts.json')['beasts']
     profiles = catalog('armor_fits.json')['profiles']
+    coverage = armor_art.coverage()
+    dedicated = set(coverage['dedicated'])
     failures, records, sheets, examples = [], [], [], []
     start = time.perf_counter()
     body_samples = ('goblin', 'barkley', 'phoenix', 'leviathan', 'gloop', 'wisp', 'atlas', 'kraken', 'nirvana', 'loom_fragment')
@@ -188,6 +193,7 @@ def main():
     for armor_id, item in armor.items():
         cells = []
         for species, beast in beasts.items():
+            is_dedicated = (species, armor_id) in dedicated
             source = armor_art.portrait(species, armor_id)
             if source is None:
                 failures.append(f'{species}/{armor_id}: missing portrait')
@@ -199,37 +205,42 @@ def main():
                 failures.append(f'{species}/{armor_id}: empty portrait')
             if image.getchannel('A').getextrema()[0] != 0:
                 failures.append(f'{species}/{armor_id}: no transparent exterior')
-            if fingerprint == base_hashes[species]:
+            if is_dedicated and fingerprint == base_hashes[species]:
                 failures.append(f'{species}/{armor_id}: identical to unequipped portrait')
-            if fingerprint in seen[species]:
+            if is_dedicated and fingerprint in seen[species]:
                 failures.append(f'{species}/{armor_id}: identical to {seen[species][fingerprint]}')
-            seen[species][fingerprint] = armor_id
+            if is_dedicated:
+                seen[species][fingerprint] = armor_id
             records.append({'species': species, 'armor': armor_id, 'body_class': profiles[species]['body_class'],
                             'size': list(image.size), 'visible_bounds': list(bounds) if bounds else None,
-                            'sha256': fingerprint})
-            cell = tile(image, beast['name'], species)
+                            'sha256': fingerprint,
+                            'appearance': 'dedicated' if is_dedicated else 'canonical_fallback'})
+            cell = tile(image, beast['name'], species if is_dedicated else f'{species} / BASE ART')
             cells.append(cell)
             if species in body_samples:
-                examples.append((armor_id, species, tile(image, beast['name'], item['name'])))
+                examples.append((armor_id, species, tile(image, beast['name'], item['name'] if is_dedicated else 'BASE ART / unavailable')))
         target = output / f'{armor_id}.png'
         sheet(cells, title=f'{item["name"]} / all {len(beasts)} creatures').save(target)
         sheets.append(target.name)
-        print(f'{armor_id}: {len(cells)} fitted portraits', flush=True)
+        actual = sum((species, armor_id) in dedicated for species in beasts)
+        print(f'{armor_id}: {actual} dedicated / {len(cells) - actual} canonical fallbacks', flush=True)
     order = {species: index for index, species in enumerate(body_samples)}
     armor_order = {key: index for index, key in enumerate(armor)}
     examples.sort(key=lambda value: (armor_order[value[0]], order[value[1]]))
-    sheet([cell for _, _, cell in examples], title='16 distinct armors across 10 body classes').save(output / 'body-diversity.png')
+    sheet([cell for _, _, cell in examples], title='Registered armor availability across 10 body classes; missing pairs show base art').save(output / 'body-diversity.png')
     clips = [] if args.skip_demos else demos(output, armor)
     failures.extend(f'{record["file"]}: animation exceeds production upload limit' for record in clips if record['bytes'] >= 2_000_000)
     report = {
         'passed': not failures, 'armor_sets': len(armor), 'species': len(beasts),
+        'dedicated_combinations': coverage['dedicated_pairs'],
+        'canonical_fallbacks': coverage['missing_pairs'], 'coverage_complete': coverage['complete'],
         'combinations': len(records), 'body_classes': dict(Counter(profile['body_class'] for profile in profiles.values())),
         'seconds': round(time.perf_counter() - start, 2), 'contact_sheets': sheets,
         'clips': clips, 'failures': failures, 'portraits': records,
         'scope': 'Offline packaged image composition and production battle rendering; excludes Discord transfer/client playback.',
     }
     (output / 'validation.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-    write_index(output, armor, clips, failures)
+    write_index(output, armor, clips, failures, coverage)
     summary = {key: value for key, value in report.items() if key not in {'portraits', 'failures'}}
     summary.update(failure_count=len(failures), failures=failures[:20])
     print(json.dumps(summary, indent=2))

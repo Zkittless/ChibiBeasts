@@ -1,13 +1,14 @@
-"""Packaged armor cutouts fitted to canonical creature portraits.
+"""Species-specific, packaged full-sprite armor appearances.
 
-All fitting happens locally, before the battle renderer moves a sprite. Saved
-combat snapshots choose an appearance; rendering never reads or changes gear.
+Complete dressed sprites are illustrated for each species/armor combination.
+Missing appearances retain the canonical portrait; shared component stretching
+is deliberately unsupported. Rendering never reads or changes player equipment.
 """
 from functools import lru_cache
 import json
 import logging
 
-from PIL import Image, ImageChops, ImageDraw, ImageOps
+from PIL import Image
 
 from utils.artwork import PROJECT_ROOT, card_artwork_path
 
@@ -19,11 +20,6 @@ SIZE = (360, 352)
 @lru_cache(maxsize=1)
 def manifest():
     return json.loads((ASSETS / 'manifest.json').read_text(encoding='utf-8'))
-
-
-@lru_cache(maxsize=1)
-def fits():
-    return json.loads((PROJECT_ROOT / 'data' / 'armor_fits.json').read_text(encoding='utf-8'))['profiles']
 
 
 def _cutout(path):
@@ -44,27 +40,17 @@ def _base(species):
     return image
 
 
-@lru_cache(maxsize=64)
-def _component(armor_id, part):
-    # Both keys must occur in our packaged manifest, never in a supplied path.
-    record = manifest()['sets'][armor_id]
-    return _cutout(ASSETS / record['components'][part])
-
-
-def _box(bounds, size):
-    x, y, width, height = bounds
-    w, h = size
-    left, top = round(x*w), round(y*h)
-    return left, top, max(left+1, round((x+width)*w)), max(top+1, round((y+height)*h))
-
-
-def _place(canvas, source, bounds, *, mirror=False):
-    if source is None:
-        return
-    left, top, right, bottom = _box(bounds, canvas.size)
-    component = ImageOps.mirror(source) if mirror else source
-    component = component.resize((right-left, bottom-top), Image.Resampling.NEAREST)
-    canvas.alpha_composite(component, (left, top))
+def _variant_path(record, species):
+    """Resolve a registered local full sprite without accepting path escapes."""
+    if not isinstance(record, dict) or not isinstance(record.get('variants'), dict):
+        return None
+    relative = record['variants'].get(species)
+    if not isinstance(relative, str) or not relative:
+        return None
+    path = (ASSETS / relative).resolve()
+    if not path.is_relative_to(ASSETS.resolve()):
+        raise ValueError('Armor appearance path is outside packaged assets')
+    return path
 
 
 @lru_cache(maxsize=64)
@@ -73,51 +59,48 @@ def _portrait(species, armor_id):
     if original is None or not armor_id:
         return original
     try:
-        record = manifest()['sets'].get(armor_id)
-        fit = fits().get(species) if record else None
-        if not record or not fit:
+        records = manifest().get('sets', {})
+        if not isinstance(records, dict):
             return original
-        override = record.get('variants', {}).get(species)
-        if override:
-            image = _cutout(ASSETS / override)
-            if image is None:
-                return original
-            image.thumbnail(SIZE, Image.Resampling.NEAREST)
-            return image
-
-        rear = Image.new('RGBA', original.size)
-        front = Image.new('RGBA', original.size)
-        cape = _component(armor_id, 'back')
-        _place(rear, cape, fit['back'])
-        if record.get('front_drape'):
-            _place(front, cape, fit['back'])
-        _place(front, _component(armor_id, 'chest'), fit['chest'])
-        for index, bounds in enumerate(fit['shoulders']):
-            _place(front, _component(armor_id, 'shoulder'), bounds, mirror=bool(index % 2))
-        x, y, w, h = fit['chest']
-        if record.get('accessory') == 'shield':
-            accessory = [max(0, x-w*.35), y+h*.34, w*.64, h*.72]
-        else:
-            accessory = [x+w*.31, y+h*.05, w*.38, h*.36]
-        accessory[2] = min(accessory[2], 1-accessory[0])
-        accessory[3] = min(accessory[3], 1-accessory[1])
-        _place(front, _component(armor_id, 'accessory'), accessory)
-
-        # No rectangular paste edges or floating breastplates beyond a body.
-        body = original.getchannel('A').point(lambda a: 255 if a > 20 else 0)
-        front.putalpha(ImageChops.multiply(front.getchannel('A'), body))
-        result = Image.alpha_composite(rear, original)
-        result = Image.alpha_composite(result, front)
-        protected = Image.new('L', original.size)
-        draw = ImageDraw.Draw(protected)
-        for bounds in fit['protected']:
-            left, top, right, bottom = _box(bounds, original.size)
-            draw.rectangle((left, top, right-1, bottom-1), fill=255)
-        return Image.composite(original, result, protected)
-    except (OSError, KeyError, ValueError):
+        path = _variant_path(records.get(armor_id), species)
+        if path is None:
+            return original
+        image = _cutout(path)
+        if image is None:
+            return original
+        image.thumbnail(SIZE, Image.Resampling.NEAREST)
+        return image
+    except (OSError, KeyError, ValueError, TypeError, AttributeError):
         # A missing optional asset must never break an acknowledged game action.
-        logger.warning('Unable to fit armor %s on %s', armor_id, species, exc_info=True)
+        logger.warning('Unable to load armor %s on %s', armor_id, species, exc_info=True)
         return original
+
+
+def coverage():
+    """Report actual dedicated assets; base fallbacks never count as armor art.
+
+    This diagnostic is intentionally separate from the cached rendering path.
+    It inspects registration and file existence, while packaging/tests verify
+    source hashes and image integrity before release.
+    """
+    from utils.catalog import load_catalog
+    armor_ids = list(load_catalog('equipment.json')['equipment'])
+    species_ids = list(load_catalog('beasts.json')['beasts'])
+    records = manifest().get('sets', {})
+    if not isinstance(records, dict):
+        records = {}
+    dedicated, missing = [], []
+    for species in species_ids:
+        for armor_id in armor_ids:
+            try:
+                path = _variant_path(records.get(armor_id), species)
+                exists = path is not None and path.is_file()
+            except (OSError, ValueError, TypeError):
+                exists = False
+            (dedicated if exists else missing).append((species, armor_id))
+    return {'expected_pairs': len(species_ids) * len(armor_ids),
+            'dedicated_pairs': len(dedicated), 'missing_pairs': len(missing),
+            'complete': not missing, 'dedicated': dedicated, 'missing': missing}
 
 
 def portrait(species, armor_id=''):
@@ -133,7 +116,5 @@ def portrait(species, armor_id=''):
 def clear_cache():
     """Development hook after replacing artwork; production reloads on restart."""
     _portrait.cache_clear()
-    _component.cache_clear()
     _base.cache_clear()
-    fits.cache_clear()
     manifest.cache_clear()
