@@ -1,12 +1,13 @@
 """Shared progression gates and currency budgets, independent of Discord views."""
 INCUBATION_PRICES = {'common':300, 'uncommon':1200, 'rare':4000, 'epic':12000, 'legendary':24000, 'divine':80000}
-INCUBATION_LEVELS = {'common':1, 'uncommon':3, 'rare':5, 'epic':10, 'legendary':15, 'divine':25}
-CRAFT_LEVELS = {'common':1, 'uncommon':3, 'rare':5, 'epic':8, 'legendary':10, 'divine':15, 'altered_divine':15}
+INCUBATION_LEVELS = {'common':1, 'uncommon':6, 'rare':12, 'epic':20, 'legendary':30, 'divine':40}
+CRAFT_LEVELS = {'common':1, 'uncommon':6, 'rare':12, 'epic':20, 'legendary':30, 'divine':40, 'altered_divine':45}
 RELEASE_VALUES = {'common':50, 'uncommon':150, 'rare':500, 'epic':1200, 'legendary':3000, 'divine':8000, 'altered_divine':20000}
 MATERIAL_SELL_VALUES = {'common':20, 'uncommon':40, 'rare':80, 'epic':180, 'legendary':400, 'altered_divine':800}
 TRAIN_COSTS = {'common':50, 'uncommon':90, 'rare':150, 'epic':250, 'legendary':400,
                'divine':600, 'altered_divine':800, 'corrupted':900, 'ancient':1000, 'dev':0}
 TRAIN_HP_MULTIPLIER = 3
+TRAIN_DAILY_LIMIT = 4
 STAT_TREAT_LIMIT = 30
 GUARANTEED_EXPLORE_MATERIAL = True
 GUILD_EXP_PER_LEVEL = 250
@@ -33,8 +34,9 @@ def item_sell_price(item, merchant=False):
 
 
 def material_sources(material_id):
-    from utils.habitats import BIOMES, REGIONAL_MATERIALS
-    routes = [b['name'] for key,b in BIOMES.items() if material_id in REGIONAL_MATERIALS[key]]
+    from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key
+    routes = list(dict.fromkeys(b['name'] for key,b in BIOMES.items()
+                               if material_id in REGIONAL_MATERIALS[biome_key(key)]))
     raids = {'dragon_scale':'Corrupted Dragon', 'sunforge_residue':'Corrupted Dragon',
              'kraken_ink':'Corrupted Leviathan','fenrir_fur':'Corrupted Fenrir',
              'chronos_gear':'Ancient Chronos','tear_of_the_creator':'any Ancient',

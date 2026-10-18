@@ -75,7 +75,7 @@ class ExploreJournalFlow(DatabaseCase):
     async def test_locked_or_empty_bank_keeps_journal_controls_and_spends_nothing(self):
         await self.beast('twine', starter=True)
         _, locked = await self.open('ember')
-        self.assertIn('Reach trainer level 3', self.text(locked))
+        self.assertIn('Reach trainer level 6', self.text(locked))
         self.assertIsNone(await expeditions.current(42))
         self.assertEqual((await expeditions.energy(42)).charges, 1)
         await self.execute('INSERT OR REPLACE INTO exploration_energy VALUES(42,0,?)', (time.time(),))

@@ -18,7 +18,7 @@ from utils.db import (
 from utils.theme import COLORS, RARITY_EMOJI, RARITY_LABEL, TYPE_EMOJI
 
 # ── Gold cost per training session by rarity ───────────────────────────────
-from utils.economy_balance import TRAIN_COSTS as TRAIN_COST, TRAIN_HP_MULTIPLIER
+from utils.economy_balance import TRAIN_COSTS as TRAIN_COST, TRAIN_HP_MULTIPLIER, TRAIN_DAILY_LIMIT
 
 # Stat gain per session
 TRAIN_GAIN = {
@@ -191,6 +191,14 @@ class Economy(commands.Cog):
                 ))
             row = dict(row)
 
+            day = datetime.now(timezone.utc).date().isoformat()
+            daily_key = f'training_sessions:{row["id"]}:{day}'
+            async with db.execute('SELECT COALESCE(SUM(value),0) FROM player_progress WHERE stat_key=?', (daily_key,)) as cursor:
+                daily_row = await cursor.fetchone()
+            if daily_row and daily_row[0] >= TRAIN_DAILY_LIMIT:
+                return await interaction.followup.send(embed=discord.Embed(
+                    description=f'This companion has completed its {TRAIN_DAILY_LIMIT} training sessions today. Training refreshes at midnight UTC.', color=COLORS['info']))
+
             rarity      = row.get("rarity", "common")
             col         = f"train_{stat[:3]}"  # train_atk, train_def, train_spd, train_hp
             if stat == "hp":
@@ -250,6 +258,14 @@ class Economy(commands.Cog):
                 "UPDATE players SET gold = gold - ? WHERE user_id = ?",
                 (cost, interaction.user.id)
             )
+            await db.execute('INSERT INTO player_progress(user_id,stat_key,value) VALUES(?,?,1) ON CONFLICT(user_id,stat_key) DO UPDATE SET value=value+1', (interaction.user.id, daily_key))
+            from utils.rewards import activity_exp
+            from utils.duels import beast_exp_in_transaction
+            training_xp = await activity_exp(db, interaction.user.id, row, 'training')
+            training_leveled = False
+            if training_xp:
+                # Fetching inside beast_exp_in_transaction preserves the just-earned stat.
+                _, training_leveled = await beast_exp_in_transaction(db, interaction.user.id, row['id'], training_xp, bonuses=False)
             await db.commit()
 
         bd     = get_beast_data(row["beast_id"]) or {}
@@ -264,7 +280,8 @@ class Economy(commands.Cog):
                 f"{r_emoji} **{name}** `#{beast_id}`\n\n"
                 f"{stat_emoji} **{stat.title()}** permanently increased by `+{gain}`!\n"
                 f"Cost: `{cost:,}g` · Balance: `{player['gold']-cost:,}g`\n\n"
-                f"Sessions remaining: `{sessions_left}/{TRAIN_CAP}`"
+                f"Sessions remaining: `{sessions_left}/{rarity_cap}` per stat\n"
+                f"Daily sessions: `{(daily_row[0] if daily_row else 0) + 1}/{TRAIN_DAILY_LIMIT}`"
             ),
             color=COLORS.get(rarity, COLORS["success"])
         )
@@ -272,9 +289,9 @@ class Economy(commands.Cog):
             embed.add_field(name="✨ Maxed Out", value=f"*This beast has been trained to the limit in {stat.title()}.*", inline=False)
         embed.set_footer(text=f"Use /appraise #{beast_id} to see how training affects market value")
         from utils.progress import track_quest_event
-        from utils.duels import beast_exp
-        await beast_exp(interaction.user.id,row["id"],10)
         await track_quest_event(interaction.user.id,"train",beast_row_id=row["id"])
+        if training_leveled:
+            await track_quest_event(interaction.user.id, 'beast_level_up')
         await unlock_simple_achievement(interaction.user.id, "first_train")
         # Check if all 4 stats are now maxed on this beast
         _rarity_caps = {

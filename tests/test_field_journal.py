@@ -204,7 +204,7 @@ class RewardSummary(fixtures.DatabaseCase):
             await _run_pve_battle(interaction, row, data, [], enemy, 'wild', 'Explore', win, loss)
         summary = interaction.channel.send.call_args.kwargs['embed']
         self.assertIsNone(summary.description)
-        self.assertEqual([field.name for field in summary.fields], ['Rewards'])
+        self.assertEqual([field.name for field in summary.fields], ['Rewards', 'Companion progress'])
         win.assert_awaited_once()
         loss.assert_not_awaited()
         self.assertEqual(len(await self.rows("SELECT * FROM battles WHERE status='completed'")), 1)

@@ -28,14 +28,27 @@ BUILDS = {
     'bare': [],
     'entry': ['gnome_iron_plating', 'iron_dust_chip'],
     'prepared': ['dragon_lord_aegis', 'wyvern_talon'],
+    'progression': ['dragon_lord_aegis', 'iron_dust_chip'],
+    'midgame': ['unicorn_healer_vestments', 'iron_dust_chip'],
+    'advanced': ['thunderbird_storm_mail', 'iron_dust_chip'],
     'sustain': ['unicorn_healer_vestments', 'ouroboros_ring'],
     'burn': ['cinder_guard_vest', 'ember_spark'],
 }
 
+# Trainer stages follow destination access and the trainer-15 raid floor.
+# In particular, a level-25 party cannot assume trainer-30 Legendary crafts.
+PROGRESSION_STAGES = {
+    15: {'trainer_level': 15, 'build': 'entry'},
+    25: {'trainer_level': 15, 'build': 'midgame'},
+    40: {'trainer_level': 25, 'build': 'advanced'},
+    50: {'trainer_level': 38, 'build': 'progression'},
+}
+
 
 def state_for(key, level, build='bare', *, charges=0):
+    from utils.progression import companion_growth
     data = BEASTS[key]
-    growth = storage.calc_stat_growth(data, level - 1)
+    growth = companion_growth(key, level, BEASTS)
     stats = {stat: value + growth[stat] for stat, value in data['base_stats'].items()}
     row = {**stats, 'max_hp': stats['hp'], 'max_mana': stats['mana'], 'level': level,
            'happiness': 70, 'id': key}
@@ -237,6 +250,25 @@ def calibration_matrix(seeds=(0, 1), builds=('bare', 'entry', 'prepared', 'susta
                         row = simulate_raid(party[0], level, boss, count, 4, build=build, seed=seed, party_species=party)
                         row['party_species'] = ','.join(party)
                         rows.append(row)
+    return rows
+
+
+def progression_matrix(seeds=range(20, 26)):
+    """Attainable parties and crafts at each actual progression destination."""
+    from utils.raid_balance import reference_species
+    rows = []
+    for level, stage in PROGRESSION_STAGES.items():
+        for boss in BOSSES:
+            element = BEASTS[boss['id']]['type']
+            party = sorted(reference_species(level), key=lambda key:
+                state_for(key, level)['attack'] * get_type_multiplier(BEASTS[key]['type'], element), reverse=True)
+            for count in (1, 3, 10):
+                for seed in seeds:
+                    row = simulate_raid(party[0], level, boss, count, 4, build=stage['build'],
+                                        seed=seed, party_species=party)
+                    row.update(trainer_level=stage['trainer_level'], party_species=','.join(party),
+                               equipment=','.join(BUILDS[stage['build']]))
+                    rows.append(row)
     return rows
 
 

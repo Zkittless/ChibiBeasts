@@ -338,8 +338,9 @@ class Dev(commands.Cog):
     @dev_only()
     async def set_level(self, interaction: discord.Interaction, member: discord.Member, level: int):
         await interaction.response.defer(ephemeral=True)
-        if level < 1 or level > 100:
-            return await interaction.followup.send("✦ Level must be between 1 and 100.", ephemeral=True)
+        from utils.progression import MAX_LEVEL
+        if level < 1 or level > MAX_LEVEL:
+            return await interaction.followup.send(f"✦ Level must be between 1 and {MAX_LEVEL}.", ephemeral=True)
         await get_or_create_player(member.id, str(member))
         await update_player(member.id, level=level, exp=0)
         await interaction.followup.send(

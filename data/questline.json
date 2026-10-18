@@ -49,7 +49,7 @@
           "",
           "She looks at you for a long moment.",
           "",
-          "*'There's a young man camped near the Celestial Loom. Cael. He's been trying to reach me for a week but his messages arrive in the wrong order — Twine's doing, probably. Find him. He seems worried about something.'*"
+          "*'Cael has come down from the Celestial Loom to the edge of the Ember Wastes. Meet him when you reach trainer level six. He's been trying to reach me for a week but his messages arrive in the wrong order — Twine's doing, probably.'*"
         ],
         "reward": {
           "gold": 500,
@@ -59,14 +59,15 @@
             "maren": "known"
           },
           "unlock_next": "chapter_2"
-        }
+        },
+        "min_trainer_level": 3
       },
       "chapter_2": {
         "id": "chapter_2",
         "name": "Something's Off",
         "npc": "cael",
         "unlock_condition": "chapter_1_complete",
-        "location": "Celestial Loom",
+        "location": "Ember Wastes",
         "intro": [
           "*'Oh — you're here. Right. I knew you were coming. That's not a skill, Twine just — anyway.'*",
           "",
@@ -82,26 +83,33 @@
           "",
           "*'The Sundering events — the Altered Divines — they're accelerating. Three last month. One the month before. Before that, one every three months. The rate is wrong. Something is pulling at the Loom from somewhere I can't see, and when I try to follow the thread it goes into a place that Twine won't enter, which is the first time I've ever seen Twine refuse to go anywhere.'*",
           "",
-          "*'I need someone at the next Altered Divine event. Someone who can hold the line while I watch what the Loom does when the thread snaps. I've been watching from too far away. I need to be closer. And I can't be closer if I'm also fighting.'*"
+          "*'Meet me at the edge of the Ember Wastes. Help your companion through three battles, then walk the Wastes twice while I follow the loose threads. We can learn their rhythm before we approach anything corrupted.'*"
         ],
         "steps": [
           {
             "id": "reach_celestial_loom",
-            "description": "Reach trainer level 10 and visit the Celestial Loom",
+            "description": "Reach trainer level 6",
             "type": "player_level",
-            "target": 10
+            "target": 6
           },
           {
             "id": "participate_raid",
-            "description": "Participate in any raid",
-            "type": "raid_participate",
-            "target": 1
+            "description": "Win 3 battles beside Cael",
+            "type": "battle_win",
+            "target": 3
+          },
+          {
+            "id": "explore_ember_twice",
+            "description": "Explore the Ember Wastes twice (either route)",
+            "type": "explore_count",
+            "target": 2,
+            "track_biome": "🔥 The Ember Wastes"
           }
         ],
         "completion_dialogue": [
-          "You find Cael after the raid, scribbling in a notebook that's already full.",
+          "You find Cael after the patrol, scribbling in a notebook that's already full.",
           "",
-          "*'I saw it. I saw what the Loom does when it snaps.'*",
+          "*'I saw it. The same hesitation, even in the little threads along the Wastes.'*",
           "",
           "He stops writing.",
           "",
@@ -124,7 +132,8 @@
             "cael": "known"
           },
           "unlock_next": "chapter_3"
-        }
+        },
+        "min_trainer_level": 6
       },
       "chapter_3": {
         "id": "chapter_3",
@@ -149,23 +158,24 @@
           "",
           "She picks her tools back up.",
           "",
-          "*'I'll forge the first component of whatever Cael's building. But I need Phoenix Ash — real Ash, not shop-grade. That means you go into the Wastes and you catch something that lives here. A Phoenix. A Wyvern. A Dragon, if you can manage it. Bring me what they drop. Then we'll talk.'*"
+          "*'I'll forge the first component. Meet one of the Wastes' residents — a Hellhound, Phoenix, Wyvern, or Dragon — and bring me two Phoenix Ash. I'll mark Ash caches on your map while you need them. Choose Gather when you explore the Wastes; no waiting for a lucky drop.'*"
         ],
         "steps": [
           {
             "id": "catch_ember_beast",
-            "description": "Catch a Phoenix, Wyvern, or Dragon in the Ember Wastes",
+            "description": "Meet a Hellhound, Phoenix, Wyvern, or Dragon; companions already in your collection count",
             "type": "catch_specific_beast",
             "target_beasts": [
               "phoenix",
               "wyvern",
-              "dragon"
+              "dragon",
+              "hellhound"
             ],
             "target": 1
           },
           {
             "id": "collect_phoenix_ash",
-            "description": "Obtain Phoenix Ash (drops from exploring the Ember Wastes)",
+            "description": "Gather 2 Phoenix Ash in the Ember Wastes; Sable marks missing Ash as a guaranteed Gather choice",
             "type": "material_collect",
             "material_id": "phoenix_ash",
             "target": 2
@@ -205,7 +215,8 @@
         },
         "consume_materials": {
           "phoenix_ash": 2
-        }
+        },
+        "min_trainer_level": 10
       },
       "chapter_4": {
         "id": "chapter_4",
@@ -257,7 +268,7 @@
           "",
           "He hands you a small, smooth stone that feels heavier than it should.",
           "",
-          "*'This is the Whispering Relic. The stone knows where it came from. If you bring it back to the Celestial Loom along with the other three, The Archivist will be able to tell you what the hollow spot is.'*",
+          "*'This is the Whispering Relic. The stone knows where it came from. The Archivist has a traveling archive above the Sunken Abyssal Trenches. Bring the four relics there when you reach trainer level twenty-four. They can tell you what the hollow spot is.'*",
           "",
           "He pauses.",
           "",
@@ -274,14 +285,15 @@
             "orren": "known"
           },
           "unlock_next": "chapter_5"
-        }
+        },
+        "min_trainer_level": 14
       },
       "chapter_5": {
         "id": "chapter_5",
         "name": "The Archivist",
         "npc": "the_archivist",
         "unlock_condition": "chapter_4_complete",
-        "location": "Celestial Loom",
+        "location": "Sunken Abyssal Trenches · Shore Archive",
         "required_relics": [
           "ember_relic",
           "whisper_relic",
@@ -289,21 +301,21 @@
           "trench_relic"
         ],
         "intro": [
-          "A corridor of low stars leads to a library. The Archivist looks up from a book that has not yet been written.",
+          "Above the Sunken Abyssal Trenches, a canopy of low stars shelters a traveling archive. The Archivist looks up from a book that has not yet been written.",
           "*'Two relics. Two acts of attention. There are two more: one in the Glacial Hollows, one in the Trenches. Follow the marks; the places remember being held together.'*",
           "Their Paradox sits beside an empty chair. *'The hollow southwest of the Wastes is an old protective stitch. It has tightened around creatures it was meant to shelter. It needs help learning to let go. Bring back the other relics, and I will give you something that can take root there.'*"
         ],
         "steps": [
           {
             "id": "collect_glacial_relic",
-            "description": "Find the Glacial Relic in the Glacial Hollows (explore until discovered)",
+            "description": "Explore the Glacial Hollows 3 times to reveal the Glacial Relic (either route)",
             "type": "relic_collect",
             "relic_id": "glacial_relic",
             "biome": "Glacial Hollows"
           },
           {
             "id": "collect_trench_relic",
-            "description": "Find the Trench Relic in the Sunken Abyssal Trenches",
+            "description": "Explore the Sunken Abyssal Trenches 3 times to reveal the Trench Relic (either route)",
             "type": "relic_collect",
             "relic_id": "trench_relic",
             "biome": "Sunken Abyssal Trenches"
@@ -319,7 +331,7 @@
           "You lay all four relics on the table. They settle into the shape of a small, open circle.",
           "*'There. A place that can hold without closing,'* says the Archivist. They set a World-Tree Seed in your hands.",
           "*'Hatch this with /incubate, then care for it with /tend. A Pillar will remember how to leave room for another life. Take it to Cael. He has been trying to loosen the stitch by pulling harder. You can imagine how that has gone.'*",
-          "Paradox presses its nose into your palm. The library, for once, waits for you to leave before rearranging itself."
+          "Paradox presses its nose into your palm. The traveling archive, for once, waits for you to leave before rearranging itself. Beyond its canopy, a thread points toward the Celestial Loom."
         ],
         "reward": {
           "gold": 5000,
@@ -337,7 +349,8 @@
             "the_archivist": "trusted"
           },
           "unlock_next": "chapter_6"
-        }
+        },
+        "min_trainer_level": 24
       },
       "chapter_6": {
         "id": "chapter_6",
@@ -387,7 +400,8 @@
             "cael": "trusted"
           },
           "unlock_next": "chapter_7"
-        }
+        },
+        "min_trainer_level": 30
       },
       "chapter_7": {
         "id": "chapter_7",
@@ -411,7 +425,7 @@
         "steps": [
           {
             "id": "collect_forge_materials",
-            "description": "Collect 5 Hellhound Ember and 3 Dragon Scale",
+            "description": "Gather 5 Hellhound Ember and 3 Dragon Scale; missing supplies are guaranteed Gather choices in the Ember Wastes",
             "type": "material_collect_specific",
             "target": 1,
             "materials": {
@@ -447,7 +461,8 @@
         "consume_materials": {
           "hellhound_ember": 5,
           "dragon_scale": 3
-        }
+        },
+        "min_trainer_level": 32
       },
       "chapter_8": {
         "id": "chapter_8",
@@ -509,7 +524,8 @@
             "maren": "companion"
           },
           "unlock_next": "chapter_9"
-        }
+        },
+        "min_trainer_level": 34
       },
       "chapter_9": {
         "id": "chapter_9",
@@ -520,7 +536,7 @@
         "intro": [
           "Sable has spread Cael's notes across her forge bench. Thread keeps one corner from curling.",
           "*'They aren't becoming cruel,'* she says. *'They're caught in the same protection loop. The old stitch feels them struggling and holds tighter. We mistook a grip for an enemy.'*",
-          "*'Fight beside your guild twice more. Give them room to breathe. Watch when the corrupted shapes loosen; that is the rhythm we'll use at the hollow.'*"
+          "*'Fight beside your guild twice. Give them room to breathe. Watch when the corrupted shapes loosen; that is the rhythm we will use at the hollow. Raids need trainer level fifteen and three healthy level-fifteen companions; a guild summons one with fifty tokens and receives fifteen back after a victory.'*"
         ],
         "steps": [
           {
@@ -553,7 +569,8 @@
             "sable": "companion"
           },
           "unlock_next": "chapter_10"
-        }
+        },
+        "min_trainer_level": 36
       },
       "chapter_10": {
         "id": "chapter_10",
@@ -570,9 +587,9 @@
         "steps": [
           {
             "id": "reach_player_level",
-            "description": "Reach trainer level 15",
+            "description": "Reach trainer level 40",
             "type": "player_level",
-            "target": 15
+            "target": 40
           },
           {
             "id": "collect_beasts_20",
@@ -628,7 +645,8 @@
             "title": "Guardian of the Open Path",
             "scene": "You stand where the knot is tightest and hold the safe space steady. Your companion takes the other side. The first loop opens, and neither of you closes it again."
           }
-        }
+        },
+        "min_trainer_level": 40
       }
     }
   }

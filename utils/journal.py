@@ -11,6 +11,8 @@ import discord
 from utils import crafting, db as storage, expeditions, gear_art, journal_state, story
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
+from utils.habitats import biome_key, starter_training_destination
+from utils.equipment import definitions as equipment_definitions, dormant_label
 
 logger = logging.getLogger('chibibeasts.journal')
 PAGES = ('adventure', 'companions', 'workshop', 'story', 'activities')
@@ -45,6 +47,7 @@ class JournalView(discord.ui.LayoutView):
         self.picker_kind, self.picker_page, self.companion_page = 'recipe', 0, 0
         self.story_state, self.chapter, self.introduce = None, None, False
         self.story_scene = ''
+        self.story_lock = ''
         self.dailies = []
         self.reviewing = False
         self.awakening_scene = ''
@@ -156,10 +159,21 @@ class JournalView(discord.ui.LayoutView):
             self.text(f"### Choose an expedition\n{e.charges}/{expeditions.CAPACITY} exploration charges · Regenerates every {wait_text(e.interval)}\n"
                       'Follow tracks, gather a resource or stop at a landmark. An optional wild encounter uses the animated battle screen. Your trip saves after every choice.')
             self.realm_select.options = [discord.SelectOption(label=(b['name'] + (f" · Locked Lv.{b['min_level']}" if self.state.player['level'] < b['min_level'] else ''))[:100],
-                value=k, default=k == self.realm, description='Trainer Lv.' + str(b['min_level'])) for k, b in REALMS.items()]
+                value=k, default=k == self.realm,
+                description=f"Trainer Lv.{b['min_level']}+ required; companion Lv.{b['level_range'][0]}–{b['level_range'][1]} recommended") for k, b in REALMS.items()]
             self.row(self.realm_select)
+            destination = REALMS[self.realm]
+            low, high = destination['level_range']
+            self.text(f"**{destination['name']}** · Trainer Lv.{destination['min_level']} required · Recommended companion Lv.{low}–{high}.\n"
+                      'Wild levels stay in this range. Earlier paths become easy gathering trips and grant less combat EXP to stronger companions.')
             locked = self.state.player['level'] < REALMS[self.realm]['min_level']
             traveller = next((r for r in self.state.workshop.companions if r['is_active']), None)
+            if traveller:
+                training = starter_training_destination(storage.get_beast_data(traveller['beast_id']), traveller['level'], self.state.player['level'])
+                if training:
+                    self.text(f"**Suggested starter training: {REALMS[training]['name']}**\n"
+                              'Train in the Woods through companion Lv.7, then use the Depths from Lv.8 until your first awakening. '
+                              'Ember creatures can resist your starter’s type; prepare an awakened companion or suitable gear before pushing onward.')
             healthy = traveller and traveller['hp'] > 0 and not storage.is_knocked_out(traveller) and not traveller['listed']
             self.row(self.button('Begin expedition · 1 charge', 'begin', discord.ButtonStyle.success,
                                  disabled=not e.charges or locked or not healthy))
@@ -170,7 +184,7 @@ class JournalView(discord.ui.LayoutView):
                 self.text('Next charge in ' + wait_text(e.next_in) + '. Up to three charges wait for you between visits.')
             return
         p = trip['payload']
-        landmark, flavor = LANDMARKS[trip['realm']]
+        landmark, flavor = LANDMARKS[biome_key(trip['realm'])]
         e = self.state.energy
         recharge = 'Bank full' if not e.next_in else 'Next charge in ' + wait_text(e.next_in)
         self.text(f"### {REALMS[trip['realm']]['name']}\nStep {p['stage'] + 1}/3 · Supplies saved\n"
@@ -184,9 +198,9 @@ class JournalView(discord.ui.LayoutView):
             self.text(f'**Follow tracks** · Meet a wild creature; battle, befriend or observe.\n**Gather supplies** · Pick one of the materials you uncover.\n**Visit {landmark}** · Restore it, study it or rest together.')
         elif p['stage'] == 1 and p['route'] == 'tracks':
             beast = storage.get_beast_data(p['encounter'])
-            self.portrait(f"### {beast['name']} appears\n{beast['description']}\n**Challenge** to earn its trust in battle, **approach** for a chance to befriend it, or **observe** to gain 1 bond. A failed approach ends this encounter.", beast['id'])
+            self.portrait(f"### {beast['name']} · Lv.{p.get('encounter_level', REALMS[trip['realm']]['level_range'][0])} appears\n{beast['description']}\n**Challenge** to earn its trust in battle, **approach** for a chance to befriend it, or **observe** to gain 1 bond. A failed approach ends this encounter.", beast['id'])
         elif p['stage'] == 1 and p['route'] == 'gather':
-            self.text('**A promising gathering spot**\nChoose one material to bring back. The other finds stay here for the next visitor.')
+            self.text('**A promising gathering spot**\nChoose one material to bring back. Missing supplies for an active story commission are offered here in their region. The other finds stay here for the next visitor.')
         elif p['stage'] == 1:
             self.text(f'**You reach {landmark}.**\n**Repair together:** +2 bond, +5 happiness.\n**Study its markings:** a little extra trainer EXP.\n**Share a rest:** recover 5% max HP, +3 happiness. Recovery cannot revive a fallen companion.')
         else:
@@ -229,6 +243,11 @@ class JournalView(discord.ui.LayoutView):
         row = self.selected_companion()
         beast = storage.get_beast_data(row['beast_id'])
         self.portrait(f"### {safe(row['nickname'] or beast['name'])} · Lv.{row['level']}\n{'Active companion · ' if row['is_active'] else ''}HP {row['hp']}/{row['max_hp']} · MP {row['mana']}/{row['max_mana']}\nBond {row['bond']}/100 · Happiness {row['happiness']}/100\n{beast['description']}", beast['id'], row['armor_id'])
+        equipment = equipment_definitions()
+        dormant = [f"{equipment[key]['name']} · {dormant_label(equipment[key], self.state.player['level'])}"
+                   for key in (row['armor_id'], row['rune_id']) if key in equipment and dormant_label(equipment[key], self.state.player['level'])]
+        if dormant:
+            self.text('**Dormant gear**\n' + '\n'.join(dormant) + '\nOwned gear stays with this companion; its effects activate at the required trainer level.')
         if self.awakening_scene:
             self.text('**A familiar friend**\n' + self.awakening_scene)
         if beast.get('divine_passive'):
@@ -244,12 +263,16 @@ class JournalView(discord.ui.LayoutView):
         evo = beast.get('evolution') or {}
         if evo.get('form') == 'bond':
             after = storage.get_beast_data(evo['evolves_to'])
-            self.text(f"**Awakening · {after['name']}**\nLv.{row['level']}/{evo['level_required']} · Bond {row['bond']}/30 · Happiness {row['happiness']}/70\nNo item is required. Review the awakening below when ready.")
+            bond_required, happiness_required = evo.get('bond_required', 40), evo.get('happiness_required', 70)
+            trainer_required = evo.get('trainer_level_required', 8)
+            self.text(f"**Awakening · {after['name']}**\nCompanion Lv.{row['level']}/{evo['level_required']} · Trainer Lv.{self.state.player['level']}/{trainer_required} · Bond {row['bond']}/{bond_required} · Happiness {row['happiness']}/{happiness_required}\nNo item is required. Review the awakening below when ready.")
             self.row(self.button('Pin awakening', 'pin_awakening'), self.button('Review awakening', 'review_awakening', discord.ButtonStyle.success))
             if self.reviewing:
                 self.portrait(f"**{beast['name']} becomes {after['name']}**\n{after['description']}\nYour earned stats, bond and gear carry forward. No item is required.", after['id'], row['armor_id'])
                 self.awakening.options = [discord.SelectOption(label=f"Awaken {beast['name']} into {after['name']}"[:100], value=f"{row['id']}:{beast['id']}")]
-                self.awakening.disabled = row['level'] < evo['level_required'] or row['bond'] < 30 or row['happiness'] < 70 or row['listed'] or storage.is_knocked_out(row)
+                self.awakening.disabled = (row['level'] < evo['level_required'] or row['bond'] < bond_required
+                                           or row['happiness'] < happiness_required or self.state.player['level'] < trainer_required
+                                           or row['listed'] or row['hp'] <= 0 or storage.is_knocked_out(row))
                 self.row(self.awakening)
         if pages > 1:
             self.row(self.button('Previous companions', 'comp_prev', disabled=self.companion_page == 0), self.button(f'{self.companion_page + 1}/{pages}', 'page_count', disabled=True),
@@ -260,7 +283,7 @@ class JournalView(discord.ui.LayoutView):
             return [(key, item['name'], f"{item['section'].title()} · Trainer Lv.{journal_state.recipe_level(item)}") for key, item in crafting.recipes().items()]
         if self.picker_kind == 'creature':
             return [(b['id'], b['name'], b['rarity'].title() + ' · ' + b['type'].title()) for b in journal_state.hunt_targets()]
-        return [(str(r['id']), r['nickname'] or storage.get_beast_data(r['beast_id'])['name'], f"Lv.{r['level']} · Bond {r['bond']}/30")
+        return [(str(r['id']), r['nickname'] or storage.get_beast_data(r['beast_id'])['name'], f"Lv.{r['level']} · Bond {r['bond']}/40")
                 for r in self.state.workshop.companions if (storage.get_beast_data(r['beast_id']).get('evolution') or {}).get('form') == 'bond']
 
     def render_goals(self):
@@ -288,6 +311,9 @@ class JournalView(discord.ui.LayoutView):
             self.row(self.button('Turn the page', 'story_continue', discord.ButtonStyle.primary))
         elif self.state.player['level'] < 3:
             self.text('### A story waiting to begin\nReach trainer Lv.3 to meet Maren. Explore, challenge creatures and claim your daily reward to get there.')
+        elif self.story_lock:
+            self.text('### The next chapter is waiting\n' + safe(self.story_lock))
+            self.row(self.button('Explore', 'page:adventure'), self.button('Activities', 'page:activities'))
         elif not self.chapter:
             self.text('### The hollow is restored\nYour companions and the people of the Loom remember what you did together. Revisit a habitat, nurture a bond or help another trainer in a raid.')
         else:
@@ -299,8 +325,14 @@ class JournalView(discord.ui.LayoutView):
             progress = state['step_progress'].get(chapter['id'], {})
             lines = []
             for step in chapter['steps']:
-                target = step.get('target', 1)
-                lines.append(f"**{min(target, progress.get(step['id'], 0))}/{target}** · {step['description']}")
+                target = story.step_target(chapter, progress, step)
+                if target == 0:
+                    continue
+                description = step['description']
+                if target != step.get('target', 1):
+                    description = (f'Reach trainer level {target}' if step['type'] == 'player_level'
+                                   else 'Your earlier raid participation counts for this chapter')
+                lines.append(f"**{min(target, progress.get(step['id'], 0))}/{target}** · {description}")
                 if step['type'] == 'relic_collect':
                     lines.append(f"Clues {progress.get(step['id'] + '_search', 0)}/3 · Search {step['biome']}.")
                 elif step['type'] == 'material_collect_specific':
@@ -347,7 +379,7 @@ class JournalView(discord.ui.LayoutView):
 
     @property
     def art_realm(self):
-        return self.trip['realm'] if self.page == 'adventure' and self.trip and self.trip['status'] != 'complete' else self.realm
+        return biome_key(self.trip['realm'] if self.page == 'adventure' and self.trip and self.trip['status'] != 'complete' else self.realm)
 
     @property
     def header(self):
@@ -403,7 +435,12 @@ class JournalView(discord.ui.LayoutView):
 
     async def load_page(self):
         if self.page == 'story' and not self.story_scene and self.state.player['level'] >= 3:
-            self.story_state, self.chapter, self.introduce = await story.journal(self.user_id, self.guild_id)
+            self.story_lock = ''
+            try:
+                self.story_state, self.chapter, self.introduce = await story.journal(self.user_id, self.guild_id)
+            except ValueError as error:
+                self.story_state, self.chapter, self.introduce = None, None, False
+                self.story_lock = str(error)
         if self.page == 'activities':
             from utils.progress import get_daily_quests
             self.dailies = await get_daily_quests(self.user_id)

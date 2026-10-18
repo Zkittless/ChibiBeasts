@@ -45,10 +45,10 @@ async def shard_effect(db, user_id, sid, item):
     kind = item['type']
     if kind == 'explore_boost':
         await db.execute('UPDATE players SET divine_compass_charges=divine_compass_charges+3 WHERE user_id=?', (user_id,))
-        return 'Three Celestial Loom explorations now have 20% Divine odds. Charges wait until you visit the Loom.'
+        return 'Three Celestial Loom explorations gain +10 percentage points of Divine odds (up to 90%). Charges wait until you visit the Loom.'
     if kind == 'key':
         await db.execute('UPDATE players SET prism_keys=prism_keys+1 WHERE user_id=?', (user_id,))
-        return 'Your next Celestial Loom exploration has 30% Divine odds.'
+        return 'Your next Celestial Loom exploration gains +15 percentage points of Divine odds (up to 90%).'
     grant = item.get('grant_item_id', sid)
     await add_stack(db, 'player_inventory', user_id, grant)
     return 'Added to inventory. ' + ('Use /ancient to summon.' if kind == 'grant_item' else 'Use /use to activate it when ready.')

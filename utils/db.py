@@ -395,6 +395,8 @@ async def _run_migrations():
         """)
         from utils.balance_migrations import apply_base_stat_balance
         await apply_base_stat_balance(db)
+        from utils.balance_migrations import apply_progression_balance
+        await apply_progression_balance(db)
         from utils.expeditions import recover_interrupted
         await recover_interrupted(db)
         # Recover the old personal raid currency into the spendable Guild Tickets.
@@ -645,9 +647,13 @@ async def grant_beast(db, user_id, beast_data, *, starter=False, grant_key=None)
     # Apply disposition modifier to stats before storing
     final_stats = apply_disposition(beast_data["base_stats"], disposition)
     level = beast_data.get('level', 1)
-    if not isinstance(level, int) or level < 1:
-        raise ValueError('A granted companion needs a positive whole level.')
-    growth = calc_stat_growth({'rarity': beast_data['rarity']}, level - 1)
+    from utils.progression import MAX_LEVEL, companion_growth
+    if isinstance(level, bool) or not isinstance(level, int) or not 1 <= level <= MAX_LEVEL:
+        raise ValueError(f'A granted companion needs a whole level between 1 and {MAX_LEVEL}.')
+    catalog = load_beasts()
+    growth = (companion_growth(beast_data['id'], level, catalog)
+              if beast_data['id'] in catalog and beast_data['rarity'] == catalog[beast_data['id']]['rarity']
+              else calc_stat_growth({'rarity': beast_data['rarity']}, level - 1))
     final_stats = {stat: value + growth[stat] for stat, value in final_stats.items()}
 
     if grant_key:
@@ -770,11 +776,13 @@ def calc_exp_for_level(level: int) -> int:
 
 def calc_exp_for_level_wild(level: int) -> int:
     """Companion EXP needed for the next level, for starters and wild catches."""
-    return int(15 * level ** 1.1)
+    from utils.progression import beast_exp_for_level
+    return beast_exp_for_level(level)
 
 def calc_player_exp_for_level(level: int) -> int:
     """Trainer EXP needed for the next level."""
-    return int(60 * level ** 1.45)
+    from utils.progression import trainer_exp_for_level
+    return trainer_exp_for_level(level)
 
 def get_perk_slots(player_level: int) -> int:
     if player_level >= 50: return 5
@@ -789,21 +797,8 @@ def calc_stat_growth(beast_row: dict, levels_gained: int) -> dict:
     Returns a dict of {stat: amount_to_add} for each stat.
     Designed to be called once per level-up event, accumulated for multi-level jumps.
     """
-    RARITY_GROWTH = {
-        "common":        {"hp": 4, "attack": 1, "defense": 1, "speed": 1, "mana": 2},
-        "uncommon":      {"hp": 5, "attack": 2, "defense": 1, "speed": 1, "mana": 2},
-        "rare":          {"hp": 6, "attack": 2, "defense": 2, "speed": 2, "mana": 3},
-        "epic":          {"hp": 8, "attack": 3, "defense": 2, "speed": 2, "mana": 4},
-        "legendary":     {"hp": 10,"attack": 4, "defense": 3, "speed": 3, "mana": 5},
-        "divine":        {"hp": 12,"attack": 5, "defense": 4, "speed": 4, "mana": 6},
-        "altered_divine":{"hp": 15,"attack": 6, "defense": 5, "speed": 5, "mana": 7},
-        "corrupted":     {"hp": 18,"attack": 7, "defense": 6, "speed": 6, "mana": 8},
-        "ancient":       {"hp": 20,"attack": 8, "defense": 7, "speed": 7, "mana": 9},
-        "dev":           {"hp": 50,"attack": 20,"defense": 20,"speed": 20,"mana": 20},
-    }
-    rarity = beast_row.get("rarity", "common")
-    growth = RARITY_GROWTH.get(rarity, RARITY_GROWTH["common"])
-    return {stat: val * levels_gained for stat, val in growth.items()}
+    from utils.progression import rarity_growth
+    return rarity_growth(beast_row.get('rarity', 'common'), levels_gained)
 
 async def apply_beast_levelup(db, beast_row: dict, new_level: int, new_exp: int):
     """
@@ -825,12 +820,21 @@ async def apply_beast_levelup(db, beast_row: dict, new_level: int, new_exp: int)
     We compute the correct new_hp in Python first so the query always writes
     the right value regardless of SQLite's evaluation order.
     """
+    from utils.progression import MAX_LEVEL, companion_growth
+    new_level = min(MAX_LEVEL, max(1, int(new_level)))
+    new_exp = 0 if new_level == MAX_LEVEL else max(0, int(new_exp))
     if new_level > beast_row["level"]:
         # Level-up path: apply stat growth
         levels_gained = new_level - beast_row["level"]
         growth = calc_stat_growth(beast_row, levels_gained)
+        catalog = load_beasts()
+        species = beast_row.get('beast_id')
+        if species in catalog and beast_row.get('rarity') == catalog[species]['rarity']:
+            before = companion_growth(species, beast_row['level'], catalog)
+            after = companion_growth(species, new_level, catalog)
+            growth = {stat: after[stat] - before[stat] for stat in before}
         new_max_hp = beast_row["max_hp"] + growth["hp"]
-        new_hp     = min(beast_row["hp"] + growth["hp"], new_max_hp)
+        new_hp = 0 if beast_row['hp'] <= 0 else min(beast_row["hp"] + growth["hp"], new_max_hp)
         await db.execute("""
             UPDATE player_beasts SET
                 level    = ?,

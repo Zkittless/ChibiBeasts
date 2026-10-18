@@ -29,13 +29,11 @@
       "name": "Gnome-Grown Carrots",
       "rarity": "common",
       "type": "exp",
-      "value": 25,
-      "price": 150,
-      "description": "Grants 25 beast EXP plus 5 per trainer level, scaling through trainer level 30 (maximum 175 EXP). A catch-up treat alongside normal battles.",
+      "value": 20,
+      "price": 120,
+      "description": "Grants 20 companion EXP. Growth treats share a 60 EXP daily allowance per companion, resetting at midnight UTC.",
       "effect": {
-        "exp": 25,
-        "exp_per_level": 5,
-        "exp_level_cap": 30
+        "exp": 20
       }
     },
     "aether_tonic": {
@@ -75,7 +73,7 @@
         "stat_boost": 3
       },
       "resale_price": 250,
-      "min_level": 5
+      "min_level": 12
     },
     "spellbound_incense": {
       "id": "spellbound_incense",
@@ -113,7 +111,7 @@
       "rarity": "epic",
       "type": "cooldown_reset",
       "value": 0,
-      "price": 3500,
+      "price": 7500,
       "description": "Resets your /explore and /challenge cooldowns. A convenience purchase for another encounter; repeatable gold rewards scale through level 50.",
       "effect": {
         "reset_explore": true,
@@ -443,10 +441,10 @@
       "rarity": "rare",
       "type": "exp",
       "price": 0,
-      "value": 0,
-      "description": "A tiny fizzy universe. Grants your active beast two levels.",
+      "value": 60,
+      "description": "A tiny fizzy universe. Grants up to 60 companion EXP within the shared daily growth-treat allowance; never skips whole levels.",
       "effect": {
-        "instant_levels": 2
+        "exp": 60
       }
     }
   }

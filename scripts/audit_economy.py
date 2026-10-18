@@ -327,7 +327,8 @@ def main(output):
     write_csv(output/'training.csv',training)
     carrots = ITEMS['gnome_grown_carrots']
     growth = [{'trainer_level':level,'carrot_price':carrots['price'],
-               'exp_per_carrot':carrots['effect']['exp']+carrots['effect'].get('exp_per_level',0)*min(level,carrots['effect'].get('exp_level_cap',level)),
+               'exp_per_carrot':carrots['effect']['exp'],
+               'daily_treat_exp_cap':60,
                'companion_next_level_exp':storage.calc_exp_for_level(level)} for level in (1,5,10,15,30,50,100)]
     write_csv(output/'growth.csv',growth)
     report = {'generated_at_utc':datetime.now(timezone.utc).isoformat(),

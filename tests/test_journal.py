@@ -82,15 +82,15 @@ class JournalFlow(DatabaseCase):
         await journal_state.pin_goal(42, 'creature', 'genesis')
         goal = (await journal_state.snapshot(42)).goal
         self.assertIsNone(goal['realm'])
-        self.assertIn('Lv.10', goal['text'])
-        await storage.update_player(42, level=10)
+        self.assertIn('Lv.30', goal['text'])
+        await storage.update_player(42, level=30)
         goal = (await journal_state.snapshot(42)).goal
         self.assertEqual(goal['realm'], 'loom')
         await self.beast('genesis')
         self.assertTrue((await journal_state.snapshot(42)).goal['done'])
 
     async def test_recipe_gathering_goals_follow_material_regions_instead_of_creature_habitats(self):
-        await storage.update_player(42, level=10)
+        await storage.update_player(42, level=30)
         for recipe, expected in (('unicorn_healer_vestments', 'glacial'), ('basilisk_gaze_pauldrons', 'loom')):
             with self.subTest(recipe=recipe):
                 await journal_state.pin_goal(42, 'recipe', recipe)
@@ -102,13 +102,27 @@ class JournalFlow(DatabaseCase):
         row_id = await self.ready()
         await journal_state.pin_goal(42, 'awakening', row_id)
         goal = (await journal_state.snapshot(42)).goal
-        self.assertIn('Bond 0/30', goal['text'])
+        self.assertIn('Bond 0/40', goal['text'])
         await self.execute("UPDATE player_beasts SET beast_id='timestitch' WHERE id=?", (row_id,))
         self.assertTrue((await journal_state.snapshot(42)).goal['done'])
         await self.execute('UPDATE player_beasts SET user_id=43 WHERE id=?', (row_id,))
         goal = (await journal_state.snapshot(42)).goal
         self.assertFalse(goal['done'])
         self.assertIn('left your collection', goal['text'])
+
+    async def test_zero_hp_without_ko_timer_cannot_look_ready_to_awaken(self):
+        row_id = await self.ready()
+        await storage.update_player(42, level=8)
+        await self.execute('UPDATE player_beasts SET level=15,bond=40,happiness=100,hp=0,knocked_out_until=NULL WHERE id=?', (row_id,))
+        await journal_state.pin_goal(42, 'awakening', row_id)
+        goal = (await journal_state.snapshot(42)).goal
+        self.assertEqual(goal['action'], 'companions')
+        self.assertIn('recover', goal['text'])
+        view = await self.view('companions')
+        await self.click(view, 'review_awakening')
+        self.assertTrue(view.awakening.disabled)
+        await self.execute('UPDATE player_beasts SET hp=max_hp WHERE id=?', (row_id,))
+        self.assertEqual((await journal_state.snapshot(42)).goal['action'], 'awaken')
 
     async def test_goal_and_collection_pagination_reach_targets_beyond_twenty_five(self):
         await self.ready()
@@ -289,7 +303,7 @@ class JournalFlow(DatabaseCase):
         view.page, view.reviewing = 'companions', True
         view.render()
         self.assert_valid(view)
-        await self.execute('UPDATE player_beasts SET level=15,bond=30,happiness=80 WHERE id=?', (row_id,))
+        await self.execute('UPDATE player_beasts SET level=15,bond=40,happiness=80 WHERE id=?', (row_id,))
         view.state = await journal_state.snapshot(42)
         await self.click(view, 'awaken', f'{row_id}:twine')
         self.assertEqual((await storage.get_active_beast(42))['beast_id'], 'timestitch')

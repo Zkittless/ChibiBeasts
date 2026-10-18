@@ -203,7 +203,7 @@ class Expeditions(DatabaseCase):
         async def battle(interaction, row, data, perks, enemy, personality, title, win, loss, **kwargs):
             self.assertIn(42, active_fighters)
             self.assertEqual(kwargs, {'reserved': True, 'realm': 'woods'})
-            await win(discord.Embed(), {}, {}, False)
+            await win(discord.Embed(), {}, {'hp': 0}, False)
 
         with patch('cogs.battle.run_pve_battle', side_effect=battle) as runner:
             result = await trips.run_battle(interaction(), trip)
@@ -270,7 +270,7 @@ class Expeditions(DatabaseCase):
         self.assertEqual((await trips.current(42))['status'], 'active')
 
     async def test_story_guarantee_and_library_bonus_still_apply_once(self):
-        await self.ready(10)
+        await self.ready(30)
         state = {'user_id': 42, 'current_chapter': 'chapter_6', 'completed_chapters': ['chapter_' + str(n) for n in range(1, 6)],
                  'step_progress': {'chapter_6': {'explore_loom_3': 2}}, 'collected_relics': [], 'npc_relationships': {}}
         from utils.story import save_quest_state
@@ -288,7 +288,7 @@ class Expeditions(DatabaseCase):
         self.assertEqual((await get_quest_state(42))['step_progress']['chapter_6']['explore_loom_3'], 3)
 
     async def test_loom_compass_precedence_and_observatory_match_existing_explore(self):
-        await self.ready(10)
+        await self.ready(30)
         await storage.update_player(42, prism_keys=1, divine_compass_charges=1, ancient_compass_charges=1, incense_charges=1, catch_boost_charges=1)
         await self.execute("INSERT INTO guilds(id,name) VALUES(3,'Observatory')")
         await self.execute('INSERT INTO guild_members(guild_id,user_id) VALUES(3,42)')
@@ -297,6 +297,6 @@ class Expeditions(DatabaseCase):
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('genesis')) as encounter:
             await self.pick(trip, 'tracks')
         rates = encounter.call_args.args[0]
-        self.assertAlmostEqual(rates['divine'], .3)
+        self.assertAlmostEqual(rates['divine'], .4)
         player = await storage.get_player(42)
         self.assertEqual((player['prism_keys'], player['divine_compass_charges'], player['ancient_compass_charges'], player['incense_charges'], player['catch_boost_charges']), (0, 1, 1, 0, 0))

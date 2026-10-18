@@ -3,12 +3,18 @@ import aiosqlite
 from utils import db as storage
 from utils.gameplay import add_stack
 from utils.duels import exclusive_player
+from utils.economy_balance import recipe_level
 _UNSET = object()
 
 def definitions():
     from utils.catalog import load_catalog
     data=load_catalog('equipment.json')
     return {**data['equipment'],**data['runes']}
+
+
+def dormant_label(item, trainer_level):
+    required = recipe_level(item)
+    return f'Dormant until Trainer Lv.{required}' if trainer_level < required else ''
 
 
 def effect_summary(item):
@@ -49,6 +55,10 @@ async def equip(user_id, number, gear_id, *, replace=False, expected_row_id=None
             beast = await c.fetchone()
         if not beast:
             raise ValueError('That companion is not in your collection.')
+        async with db.execute('SELECT level FROM players WHERE user_id=?', (user_id,)) as cursor:
+            player = await cursor.fetchone()
+        if player is None or player['level'] < recipe_level(gear):
+            raise ValueError(f"Reach trainer level {recipe_level(gear)} to equip {gear['name']}.")
         if (expected_row_id is not None and beast['id'] != expected_row_id or
                 expected_species is not None and beast['beast_id'] != expected_species):
             raise ValueError('That companion changed. Review the updated selection before equipping.')

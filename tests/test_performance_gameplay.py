@@ -22,7 +22,7 @@ class CatalogAndReads(DatabaseCase):
         embed = fake.followup.send.call_args.kwargs['embed']
         evolution = next(field for field in embed.fields if 'Prismara' in field.name)
         self.assertIn('No item needed', evolution.value)
-        self.assertIn('Bond: 0/30', evolution.value)
+        self.assertIn('Bond: 0/40', evolution.value)
         self.assertNotIn('ready to evolve', evolution.value)
 
     async def test_repeated_startup_migrations_preserve_existing_players_and_companions(self):

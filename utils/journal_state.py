@@ -8,7 +8,7 @@ import aiosqlite
 from utils import crafting, db as storage, expeditions, story
 from utils.catalog import load_catalog, catalog_revision
 from utils.economy_balance import material_sources, recipe_level
-from utils.habitats import BIOMES, REGIONAL_MATERIALS, eligible
+from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key, eligible
 from utils.sanctuary import apply_craft_discount
 
 
@@ -87,7 +87,7 @@ def goal_status(goal, state):
             result['text'] = 'All materials ready. Craft it in the workshop.'
         else:
             first = missing[0]
-            regions = [key for key in BIOMES if first in REGIONAL_MATERIALS[key]]
+            regions = [key for key in BIOMES if first in REGIONAL_MATERIALS[biome_key(key)]]
             unlocked = [key for key in dict.fromkeys(regions) if state.level >= BIOMES[key]['min_level']]
             result['realm'] = min(unlocked, key=lambda k: BIOMES[k]['min_level']) if unlocked else None
             hint = f"Next: gather in {BIOMES[result['realm']]['name']}." if unlocked else material_sources(first)
@@ -111,13 +111,17 @@ def goal_status(goal, state):
             result['text'] = 'This companion has changed. Choose another goal.'
         else:
             evo = beast['evolution']
-            ready = row['level'] >= evo['level_required'] and row['bond'] >= 30 and row['happiness'] >= 70
+            bond_required = evo.get('bond_required', 40)
+            happiness_required = evo.get('happiness_required', 70)
+            trainer_required = evo.get('trainer_level_required', 8)
+            ready = (row['level'] >= evo['level_required'] and row['bond'] >= bond_required
+                     and row['happiness'] >= happiness_required and state.level >= trainer_required)
             guidance = 'Ready to awaken together.' if ready else 'Play, train and battle together to grow your bond.'
-            if ready and (row['listed'] or storage.is_knocked_out(row)):
+            if ready and (row['listed'] or row['hp'] <= 0 or storage.is_knocked_out(row)):
                 ready = False
                 guidance = 'Delist this companion before awakening.' if row['listed'] else 'Let this companion recover before awakening.'
             result.update(action='awaken' if ready else 'companions',
-                          text=f"Companion Lv.{min(row['level'], evo['level_required'])}/{evo['level_required']} · Bond {min(row['bond'], 30)}/30 · Happiness {min(row['happiness'], 70)}/70\n" +
+                          text=f"Companion Lv.{min(row['level'], evo['level_required'])}/{evo['level_required']} · Trainer Lv.{min(state.level, trainer_required)}/{trainer_required} · Bond {min(row['bond'], bond_required)}/{bond_required} · Happiness {min(row['happiness'], happiness_required)}/{happiness_required}\n" +
                           guidance)
     else:
         beast = storage.get_beast_data(target)
@@ -125,6 +129,10 @@ def goal_status(goal, state):
             return {**result, 'name': 'Creature unavailable', 'text': 'Choose another goal.'}
         done = any(row['beast_id'] == target for row in state.companions)
         regions = habitats(target)
+        if not regions:
+            return {**result, 'name': beast['name'], 'done': done,
+                    'text': 'Found! This creature is in your collection.' if done else
+                    'This creature has no current wild habitat. Unpin this goal and choose another creature.'}
         unlocked = [key for key in regions if state.level >= BIOMES[key]['min_level']]
         result.update(name=beast['name'], done=done, action='adventure',
                       realm=unlocked[0] if unlocked else None,

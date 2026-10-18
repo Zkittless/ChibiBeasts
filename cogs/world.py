@@ -18,6 +18,8 @@ from utils.progress import (
     record_bestiary_sighting, notify_unlocks, notify_quest_completions
 )
 from utils.sanctuary import get_user_sanctuary, apply_craft_discount
+from utils.progression import (AWAKENING_LEVEL, AWAKENING_TRAINER_LEVEL,
+                               AWAKENING_BOND, AWAKENING_HAPPINESS)
 
 
 # ── Data loaders ──────────────────────────────────────────────────────────────
@@ -299,6 +301,13 @@ class World(commands.Cog):
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
+            from utils.economy_balance import shop_level
+            async with db.execute('SELECT level FROM players WHERE user_id=?', (interaction.user.id,)) as cursor:
+                current_player = await cursor.fetchone()
+            if egg_id != 'world_tree_seed' and (not current_player or current_player['level'] < shop_level(egg)):
+                return await interaction.followup.send(embed=discord.Embed(
+                    description=f"Reach trainer level {shop_level(egg)} to incubate {egg['name']}. Your egg stays in your inventory.",
+                    color=COLORS['info']))
             async with db.execute(
                 "SELECT * FROM player_inventory WHERE user_id = ? AND item_id = ?",
                 (interaction.user.id, egg_id)
@@ -1010,7 +1019,9 @@ class World(commands.Cog):
                     "Pillar shaped Barkley to prove that steadiness didn't have to be boring. Barkley "
                     "has never once let anyone down, and never plans to start.\n\n"
                     "Their bonds can grow into **Prismara, Timestitch, Nebuloom and Rootwarden**. "
-                    "Reach beast level 15, bond 30 and happiness 70; open /journal → Companions to follow your progress."
+                    f"Reach companion level {AWAKENING_LEVEL}, trainer level {AWAKENING_TRAINER_LEVEL}, "
+                    f"bond {AWAKENING_BOND} and happiness {AWAKENING_HAPPINESS}; "
+                    "open /journal → Companions to follow your progress."
                 ),
                 "color": COLORS["divine"]
             },

@@ -3,9 +3,12 @@ import json
 from datetime import datetime, timedelta, timezone
 import aiosqlite
 from utils import db as storage
+from utils.progression import (AWAKENING_LEVEL, AWAKENING_TRAINER_LEVEL,
+                               AWAKENING_BOND, AWAKENING_HAPPINESS,
+                               companion_growth, evolution_blockers)
 STARTER_FORMS = {'prismite': 'prismara', 'twine': 'timestitch', 'gloop': 'nebuloom', 'barkley': 'rootwarden'}
-BOND_LEVEL = 15
-BOND_REQUIRED = 30
+BOND_LEVEL = AWAKENING_LEVEL
+BOND_REQUIRED = AWAKENING_BOND
 
 async def equip_perk(user_id,perk_id):
     definitions=storage.load_perks()['perks']
@@ -91,8 +94,9 @@ def evolved_stats(row, before, after):
     from utils.dispositions import apply_disposition
     old_base = apply_disposition(before['base_stats'], row.get('disposition'))
     new_base = apply_disposition(after['base_stats'], row.get('disposition'))
-    old_growth = storage.calc_stat_growth({'rarity': before['rarity']}, row['level'] - 1)
-    new_growth = storage.calc_stat_growth({'rarity': after['rarity']}, row['level'] - 1)
+    catalog = storage.load_beasts()
+    old_growth = companion_growth(before['id'], row['level'], catalog)
+    new_growth = companion_growth(after['id'], row['level'], catalog)
     names = {'hp': 'max_hp', 'attack': 'attack', 'defense': 'defense', 'speed': 'speed', 'mana': 'max_mana'}
     return {key: new_base[key] + new_growth[key] + max(0, row[col] - old_base[key] - old_growth[key]) for key, col in names.items()}
 
@@ -126,14 +130,12 @@ async def _evolve_beast(user_id, player_number, *, expected_row_id=None, expecte
             raise ValueError(f"{before['name']} has no further evolution.")
         if required_item is not None and evo.get('method') != required_item:
             raise ValueError('The selected catalyst does not match this companion’s next form.')
-        if row['level'] < evo['level_required']:
-            raise ValueError(f"Reach beast level {evo['level_required']} first.")
-        if evo.get('form') == 'bond':
-            if row['bond'] < BOND_REQUIRED:
-                raise ValueError(f"Reach {BOND_REQUIRED} bond first ({row['bond']}/{BOND_REQUIRED}). Play, battle and train together.")
-            if row['happiness'] < 70:
-                raise ValueError('Your companion needs at least 70 happiness to awaken.')
-        else:
+        async with db.execute('SELECT level FROM players WHERE user_id=?', (user_id,)) as c:
+            trainer = await c.fetchone()
+        blockers = evolution_blockers(row, trainer['level'] if trainer else 0, evo)
+        if blockers:
+            raise ValueError(blockers[0])
+        if evo.get('form') != 'bond':
             method = evo['method']
             consumed = await consume_stack(db, 'player_inventory', user_id, method)
             if not consumed and evo.get('form') == 'radiant' and required_item is None:

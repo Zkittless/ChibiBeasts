@@ -18,16 +18,27 @@ from utils.progress import (
     track_quest_event, check_achievements, notify_unlocks, notify_quest_completions
 )
 from utils.type_chart import get_type_multiplier, type_effectiveness_label
+from utils.habitats import BIOMES, biome_key, destination_label, encounter_difficulty, encounter_level, pick_encounter
+from utils.progression import encounter_beast_xp, encounter_trainer_xp
 
 pending_battles: dict[int, dict] = {}
+
+NPC_TIERS = {
+    'maren': dict(trainer=3, level=5, companion='barkley', personality='defensive'),
+    'cael': dict(trainer=8, level=15, companion='timestitch', personality='chaotic'),
+    'sable': dict(trainer=15, level=25, companion='cerberus', personality='aggressive'),
+    'orren': dict(trainer=23, level=35, companion='behemoth', personality='patient'),
+    'the_archivist': dict(trainer=35, level=48, companion='paradox', personality='optimal'),
+}
 
 # ── PvE AI Engine ─────────────────────────────────────────────────────────────
 
 
 def build_pve_beast_state(beast_data,level):
     from utils.combat import build_state
-    from utils.db import calc_stat_growth
-    growth=calc_stat_growth({"rarity":beast_data["rarity"]},max(0,level-1))
+    from utils.progression import companion_growth
+    level = max(1, min(50, level))
+    growth=companion_growth(beast_data['id'], level, load_beasts())
     stats={k:v+growth[k] for k,v in beast_data["base_stats"].items()}
     row={**stats,"max_hp":stats["hp"],"max_mana":stats["mana"],"level":level,"happiness":70}
     return build_state(beast_data,row,buffs={"ultimate_charges":0})
@@ -51,9 +62,9 @@ LEVEL_MILESTONES = {
         "title": "Lv.5 — Getting Dangerous", "emoji": "⚔️",
         "body": (
             "*Your beasts are stronger. You are learning how to read a fight.*\n\n"
-            "*The Glacial Hollows are now accessible — ice-type territory, tougher encounters, "
-            "better rewards. Sable the Forger works there. "
-            "She does not take meetings, but she takes notice of trainers who can handle the heat.*"
+            "*The deeper Woods are open. The Ember Wastes open at trainer level 6, "
+            "with wild companions at levels 11–15. Build your companion's strength "
+            "and prepare before taking that next path.*"
         ),
         "reward_gold": 800, "reward_shards": 8, "color": "epic",
     },
@@ -61,18 +72,18 @@ LEVEL_MILESTONES = {
         "title": "Lv.10 — A Real Trainer", "emoji": "🔥",
         "body": (
             "*Ten levels. Most people do not make it this far.*\n\n"
-            "*Guild Raids are now available — join a guild and take on Corrupted bosses "
+            "*Guild Raids open at trainer level 15 — join a guild and take on Corrupted bosses "
             "with other trainers. The rewards are unlike anything you find in the wild.\n\n"
-            "The Celestial Loom has opened. Cosmic and arcane companions live here. "
-            "Whatever lives there has been waiting a long time for someone worth fighting.*"
+            "The Glacial Hollows open at trainer level 12, with wild companions at levels 21–25. "
+            "The Celestial Loom waits until trainer level 30.*"
         ),
         "reward_gold": 2000, "reward_shards": 15, "color": "rare",
     },
     15: {
         "title": "Lv.15 — The Depths Call", "emoji": "🌊",
         "body": (
-            "*Your starter can awaken at beast level 15 with 30 bond and 70 happiness. "
-            "The beasts down there are old and strange and difficult.*\n\n"
+            "*Your starter can awaken at companion level 15, trainer level 8, "
+            "40 bond and 70 happiness. A first awakening begins a longer journey.*\n\n"
             "*Cael the Loom-Watcher has been watching your progress. "
             "He has questions only you can answer now.*"
         ),
@@ -82,8 +93,8 @@ LEVEL_MILESTONES = {
         "title": "Lv.25 — A Spark to Carry", "emoji": "🌌",
         "body": (
             "*Genesis Spark is now yours to equip. Start battles with more mana and empower your ultimate.*\n\n"
-            "*Legendary and Divine beasts inhabit this place. The Archivist — the keeper of "
-            "everything that has ever happened — has requested your presence. "
+            "*The deeper Trenches are open, with wild companions at levels 36–40. "
+            "The Celestial Loom opens at trainer level 30. "
             "There are still companions to meet and builds to explore.*\n\n"
             "*Whatever you find there will change what you understand about the Loom.*"
         ),
@@ -173,12 +184,14 @@ async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_
     from utils.db import is_knocked_out
     if is_knocked_out(player_beast_row):raise ValueError("Your companion is recovering. Use /use Phoenix Elixir or choose another beast.")
     state=await prepare_state(interaction.user.id,player_beast_row,player_beast_data,player_perks)
+    difficulty = encounter_difficulty(state, enemy_state)
     winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView,reserved=True,realm=realm)
     # The closing battlefield already contains final HP and its journal. This
     # follow-up carries the outcome, rewards and story instead of repeating it.
     embed=discord.Embed(title=f"⚔️ {battle_title} — {'Victory' if winner==0 else 'Draw' if winner is None else 'Lesson learned'}",color=COLORS["success"] if winner==0 else COLORS["info"])
-    if timed_out:embed.add_field(name="Time limit",value="The match ended on time. Reduced rewards; wild creatures are not caught on a time-limit win.",inline=False)
-    if winner==0:await on_win(embed,*states,timed_out)
+    clean_win = winner == 0 and not timed_out and states[0].get('hp', 0) > 0 and states[1].get('hp', 1) <= 0
+    if winner == 0 and not clean_win:embed.add_field(name="Time limit",value="The opponent is still standing. Reduced rewards; wild creatures are caught only after a knockout.",inline=False)
+    if winner==0:await on_win(embed,*states,not clean_win)
     else:await on_loss(embed,*states)
     kind="sparr" if battle_title.startswith("Spar") else "pve"
     async with storage.connect() as db:
@@ -186,8 +199,11 @@ async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_
         battle_id=cursor.lastrowid
         if winner!=0:await db.execute("UPDATE players SET losses=losses+1 WHERE user_id=?",(interaction.user.id,))
         await db.commit()
-    if enemy_personality!="wild":await beast_exp(interaction.user.id,player_beast_row["id"],max(15,enemy_state.get("level",1)*8)*(2 if winner==0 else 1))
-    if winner==0:
+    gained = encounter_beast_xp(player_beast_row['level'], enemy_state.get('level', 1), difficulty=difficulty,
+                                effort=1 if clean_win else .25)
+    new_level = await beast_exp(interaction.user.id, player_beast_row['id'], gained)
+    embed.add_field(name='Companion progress', value=f"+{gained} companion EXP" + (f" · Lv.{new_level}" if new_level > player_beast_row['level'] else ''), inline=False)
+    if clean_win:
         completed=await track_quest_event(interaction.user.id,"spar_win" if kind=="sparr" else "battle_win",event_key=f"duel:{battle_id}",beast_row_id=player_beast_row["id"])
         await notify_quest_completions(interaction.channel,completed)
     await interaction.channel.send(embed=embed)
@@ -295,8 +311,8 @@ async def start_battle(interaction,battle_id):
         return await _start_battle(interaction,battle_id,pending,ids)
 
 async def _start_battle(interaction,battle_id,pending,ids):
-    from utils.duels import prepare_state,duel,beast_exp
-    from utils.db import credit_gold
+    from utils.duels import prepare_state,duel
+    from utils.pvp_rewards import award_match
     from utils.db import is_knocked_out
     states=[];rows=[]
     candidates=[await get_active_beast(uid) for uid in ids]
@@ -315,14 +331,25 @@ async def _start_battle(interaction,battle_id,pending,ids):
         for uid in ids:await db.execute("UPDATE players SET ultimate_charges=MIN(3,ultimate_charges+1) WHERE user_id=?",(uid,))
         if winner_id:await db.execute("UPDATE players SET losses=losses+1 WHERE user_id=?",(ids[1-winner],))
         await db.commit()
-    for i,uid in enumerate(ids):
-        await credit_gold(uid,100 if uid==winner_id else 25)
-        await award_player_exp(uid,80 if uid==winner_id else 25)
-        await beast_exp(uid,rows[i]["id"],60 if uid==winner_id else 20)
-    if winner_id:
+    clean_ko = (winner in (0, 1) and not timed_out and states[winner].get('hp', 0) > 0
+                and states[1-winner].get('hp', 1) <= 0)
+    rewards = await award_match(f'duel:{battle_id}', ids, [row['id'] for row in rows], winner, clean_ko=clean_ko)
+    for uid, reward in zip(ids, rewards):
+        if reward['trainer_leveled']:
+            from utils.story import advance_quest_step
+            await advance_quest_step(uid, 'level_up', level=reward['trainer_level'])
+            await notify_level_up(interaction, (await get_player(uid))['level'] - 1, reward['trainer_level'], uid)
+        if reward['beast_leveled']:
+            await track_quest_event(uid, 'beast_level_up')
+    if clean_ko and rewards[winner]['eligible']:
         completed=await track_quest_event(winner_id,"pvp_win",event_key=f"pvp:{battle_id}",beast_row_id=rows[winner]["id"])
         await notify_quest_completions(interaction.channel,completed)
     embed=discord.Embed(title="⚔️ Battle complete",description=(f"<@{winner_id}> and **{states[winner]['name']}** win." if winner_id else "Both companions finish together. A draw."),color=COLORS["epic"])
+    granted = [f"<@{reward['user_id']}> · +{reward['beast_xp']} companion EXP · +{reward['trainer_xp']} trainer EXP · +{reward['gold']} gold"
+               for reward in rewards if reward['eligible']]
+    embed.add_field(name='Daily PvP progress', value='\n'.join(granted) if granted else
+                    'No growth rewards this match. A clean knockout against a new opponent can grant daily progress.', inline=False)
+    embed.set_footer(text='Normal and ranked share 60 companion EXP / 80 trainer EXP per trainer per UTC day; one reward per opponent.')
     await interaction.channel.send(embed=embed)
     return winner_id
 
@@ -333,13 +360,7 @@ class Battle(commands.Cog):
     # ── /challenge ────────────────────────────────────────────────────────
     @app_commands.command(name="challenge", description="Battle a wild beast in a biome! 🌿")
     @app_commands.describe(biome="Which biome to challenge a wild beast from")
-    @app_commands.choices(biome=[
-        app_commands.Choice(name="🌲 Whispering Woods (Lv1+)",          value="woods"),
-        app_commands.Choice(name="🔥 Ember Wastes (Lv3+)",             value="ember"),
-        app_commands.Choice(name="❄️ Glacial Hollows (Lv5+)",          value="glacial"),
-        app_commands.Choice(name="🌊 Sunken Abyssal Trenches (Lv8+)",  value="trenches"),
-        app_commands.Choice(name="🌌 Celestial Loom (Lv10+)",           value="loom"),
-    ])
+    @app_commands.choices(biome=[app_commands.Choice(name=destination_label(key)[:100], value=key) for key in BIOMES])
     async def challenge(self, interaction: discord.Interaction, biome: str = "woods"):
         await interaction.response.defer()
         from utils.duels import reserve_fighters
@@ -355,21 +376,8 @@ class Battle(commands.Cog):
                 color=COLORS["error"]
             ))
 
-        BIOME_GATES = {"woods": 1, "ember": 3, "glacial": 5, "trenches": 8, "loom": 10}
-        BIOME_NAMES = {
-            "woods":    "🌲 Whispering Woods",
-            "ember":    "🔥 Ember Wastes",
-            "glacial":  "❄️ Glacial Hollows",
-            "trenches": "🌊 Sunken Abyssal Trenches",
-            "loom":     "🌌 Celestial Loom",
-        }
-        BIOME_POOLS = {
-            "woods":    {"common": 0.55, "uncommon": 0.30, "rare": 0.10, "epic": 0.05},
-            "ember":    {"uncommon": 0.35, "rare": 0.35, "epic": 0.20, "legendary": 0.10},
-            "glacial":  {"uncommon": 0.30, "rare": 0.35, "epic": 0.25, "legendary": 0.10},
-            "trenches": {"rare": 0.30, "epic": 0.35, "legendary": 0.25, "divine": 0.10},
-            "loom":     {"epic": 0.30, "legendary": 0.40, "divine": 0.30},
-        }
+        if biome not in BIOMES:
+            return await interaction.followup.send('Choose a destination from the journal.')
 
         # 20 minute cooldown
         import time as _t
@@ -386,7 +394,6 @@ class Battle(commands.Cog):
                 color=COLORS["info"]
             ))
 
-        from utils.habitats import BIOMES
         if player["level"]<BIOMES[biome]["min_level"]:
             return await interaction.followup.send(f"Reach trainer level {BIOMES[biome]['min_level']} first.")
         from utils.db import is_knocked_out
@@ -396,18 +403,11 @@ class Battle(commands.Cog):
             if not cur.rowcount:return await interaction.followup.send("A challenge is already underway. Try again after the cooldown.")
             await db.commit()
 
-        pool_weights = dict(BIOMES[biome]["weights"])
-        from utils.habitats import challenge_weights
-        _biased_weights=challenge_weights(pool_weights,active_row.get('rarity','common'))
-
-        from utils.habitats import pick_encounter
-        wild_beast_data=pick_encounter(_biased_weights,biome)
-        if not wild_beast_data:return await interaction.followup.send("No creature is available in that habitat yet.")
-        rarity=wild_beast_data["rarity"]
-
-        # Scale wild beast to player's active beast level ±2
-        player_beast_level = active_row["level"]
-        wild_level = max(1, min(50, player_beast_level + random.randint(-2, 2)))
+        wild_beast_data = pick_encounter(BIOMES[biome]['weights'], biome)
+        if not wild_beast_data:
+            return await interaction.followup.send('No creature is available in that habitat yet.')
+        rarity = wild_beast_data['rarity']
+        wild_level = encounter_level(biome, active_row['level'])
         enemy_state = build_pve_beast_state(wild_beast_data, wild_level)
 
         active_beast_data = get_beast_data(active_row["beast_id"]) or {}
@@ -419,9 +419,13 @@ class Battle(commands.Cog):
             ) as c:
                 player_perks = [dict(r) for r in await c.fetchall()]
 
+        from utils.duels import prepare_state
+        preview_state = await prepare_state(interaction.user.id, active_row, active_beast_data, player_perks, consume=False)
+        difficulty = encounter_difficulty(preview_state, enemy_state)
+
         rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
         _challenge_intro = discord.Embed(
-            title=f"⚔️ Wild Battle! {BIOME_NAMES[biome]}",
+            title=f"⚔️ Wild Battle! {BIOMES[biome]['name']}",
             description=(
                 f"A wild **{rarity_emoji} {wild_beast_data['name']}** (Lv.{wild_level}) "
                 f"appeared and wants to fight!\n\n"
@@ -442,14 +446,15 @@ class Battle(commands.Cog):
                 # The enemy beast wasn't defeated — just outlasted on HP.
                 # Full rewards here would make stall tactics profitable.
                 from utils.economy_balance import gold_reward_level
-                gold_level=gold_reward_level(active_row["level"])
+                gold_level=gold_reward_level(wild_level)
                 consolation_gold = random.randint(gold_level * 2, gold_level * 4)
                 await credit_gold(interaction.user.id, consolation_gold)
-                _lvl, _, _leveled = await award_player_exp(interaction.user.id, random.randint(active_row["level"] * 8, active_row["level"] * 12))
+                partial_exp = encounter_trainer_xp(player['level'], wild_level, difficulty=difficulty, effort=.25)
+                _lvl, _, _leveled = await award_player_exp(interaction.user.id, partial_exp)
                 embed.add_field(
                     name="⏱️ Time Limit Rewards",
                     value=(
-                        f"+**{consolation_gold:,} gold** 💰 | +**10–20 EXP** ✨"
+                        f"+**{consolation_gold:,} gold** 💰 | +**{partial_exp} trainer EXP** ✨"
                         + (f"\n⬆️ **Trainer leveled up to {_lvl}!**" if _leveled else "")
                         + f"\n*No catch — the {wild_beast_data['name']} wasn't actually defeated.*\n"
                         f"*A win on HP, not a win by defeat. Try for a clean KO next time.*"
@@ -459,20 +464,12 @@ class Battle(commands.Cog):
                 return
 
             from utils.economy_balance import gold_reward_level
-            gold_level=gold_reward_level(active_row["level"])
+            gold_level=gold_reward_level(wild_level)
             gold_gain = random.randint(gold_level * 8, gold_level * 15)
-            # Beast EXP scales with enemy level and rarity — harder fights reward more
-            _RARITY_EXP_MULT = {"common":1,"uncommon":1.5,"rare":2.5,"epic":4,"legendary":6,"divine":10}
-            _exp_mult = _RARITY_EXP_MULT.get(rarity, 1)
-            beast_exp  = int(random.randint(20, 40) * _exp_mult + wild_level * 1.5)
-
-            from utils.duels import beast_exp as grant_beast_exp
-            new_level=await grant_beast_exp(interaction.user.id,active_row["id"],beast_exp)
-
             await credit_gold(interaction.user.id, gold_gain)
 
             # Player EXP — scales with biome difficulty
-            player_exp_gain = random.randint(active_row["level"] * 15, active_row["level"] * 25)
+            player_exp_gain = encounter_trainer_xp(player['level'], wild_level, difficulty=difficulty)
             _p_lvl, _, _p_leveled = await award_player_exp(interaction.user.id, player_exp_gain)
 
             if player.get("catch_boost_charges",0)>0:
@@ -484,12 +481,9 @@ class Battle(commands.Cog):
             pixie_bonus=.05 if any(p['perk_id']=='pixie_pocket' and p['equipped'] for p in player_perks) else 0
             caught = random.random() < min(.95,CATCH_RATES.get(rarity,.10)+pixie_bonus+(.15 if player.get("catch_boost_charges",0)>0 else 0))
 
-            reward_text = (
-                f"+**{gold_gain:,} gold** 💰 | +**{beast_exp} beast EXP** | +**{player_exp_gain} EXP** ✨"
-                + (f"\n⬆️ **{active_beast_data.get('name','')} leveled up to Lv.{new_level}!**"
-                   if new_level > active_row["level"] else "")
-                + (f"\n⬆️ **Trainer leveled up to {_p_lvl}!**" if _p_leveled else "")
-            )
+            reward_text = f"+**{gold_gain:,} gold** | +**{player_exp_gain} trainer EXP**"
+            if _p_leveled:
+                reward_text += f"\nTrainer leveled up to {_p_lvl}!"
 
             if caught:
                 from utils.db import add_beast_to_player
@@ -517,14 +511,14 @@ class Battle(commands.Cog):
                 await _udb.execute("UPDATE players SET ultimate_charges = MIN(3, ultimate_charges + 1) WHERE user_id = ?", (interaction.user.id,))
                 await _udb.commit()
             consolation_gold = random.randint(10, 25)
-            consolation_exp  = random.randint(active_row["level"] * 5, active_row["level"] * 10)
+            consolation_exp = encounter_trainer_xp(player['level'], wild_level, difficulty=difficulty, effort=.25)
             await credit_gold(interaction.user.id, consolation_gold)
             await award_player_exp(interaction.user.id, consolation_exp)
             embed.add_field(
                 name="💤 Lesson",
                 value=(
                     f"+**{consolation_gold} gold** 💰 | +**{consolation_exp} EXP** ✨\n"
-                    f"*{wild_beast_data['name']} returns to the {BIOME_NAMES[biome].split()[-1]}.*\n"
+                    f"*{wild_beast_data['name']} returns to the {BIOMES[biome]['name'].split()[-1]}.*\n"
                     f"*Every lesson teaches something.*"
                 ),
                 inline=False
@@ -538,7 +532,7 @@ class Battle(commands.Cog):
             enemy_state,
             enemy_personality="wild",
             battle_title=f"Wild {wild_beast_data['name']}",
-            realm=biome,
+            realm=biome_key(biome),
             on_win=on_win,
             on_loss=on_loss,
             reserved=True,
@@ -548,11 +542,8 @@ class Battle(commands.Cog):
     @app_commands.command(name="sparr", description="Spar with an NPC to deepen your bond 🤝")
     @app_commands.describe(npc_name="Which NPC to challenge")
     @app_commands.choices(npc_name=[
-        app_commands.Choice(name="📖 Maren (easy — Barkley)",              value="maren"),
-        app_commands.Choice(name="⏳ Cael (medium — Twine, unpredictable)", value="cael"),
-        app_commands.Choice(name="⚒️ Sable (medium-hard — Hellhound)",     value="sable"),
-        app_commands.Choice(name="🌿 Orren (hard — Dryad, patient)",        value="orren"),
-        app_commands.Choice(name="📚 The Archivist (endgame — Paradox)",    value="the_archivist"),
+        app_commands.Choice(name=f"{name.replace('_', ' ').title()} - Trainer {tier['trainer']}+ / Companion {tier['level']}", value=name)
+        for name, tier in NPC_TIERS.items()
     ])
     async def sparr(self, interaction: discord.Interaction, npc_name: str):
         await interaction.response.defer()
@@ -576,6 +567,10 @@ class Battle(commands.Cog):
             return await interaction.followup.send(embed=discord.Embed(
                 description="✦ NPC not found.", color=COLORS["error"]
             ))
+
+        tier = NPC_TIERS[npc_name]
+        if player['level'] < tier['trainer']:
+            return await interaction.followup.send(f"{npc['name']} spars with trainers at level {tier['trainer']}+. Recommended companion level: {tier['level']}.")
 
         # Archivist locked until Chapter 5 complete
         if npc_name == "the_archivist":
@@ -613,19 +608,10 @@ class Battle(commands.Cog):
                 color=COLORS["info"]
             ))
 
-        # Build NPC beast state scaled to player level
-        NPC_SCALING = {
-            "maren":         (0.80, "defensive"),
-            "cael":          (1.00, "chaotic"),
-            "sable":         (1.10, "aggressive"),
-            "orren":         (1.20, "patient"),
-            "the_archivist": (1.50, "optimal"),
-        }
-        scale, personality = NPC_SCALING[npc_name]
-        npc_level = max(1, min(50, int(active_row["level"] * scale)))
-
+        # Each mentor keeps a fixed training tier; returning veterans earn less XP.
+        personality, npc_level = tier['personality'], tier['level']
         all_beasts = load_beasts()
-        companion_id = npc["beast_companion"]
+        companion_id = tier['companion']
         companion_data = all_beasts.get(companion_id, {})
         if not companion_data:
             return await interaction.followup.send(embed=discord.Embed(
@@ -642,6 +628,10 @@ class Battle(commands.Cog):
                 (interaction.user.id,)
             ) as c:
                 player_perks = [dict(r) for r in await c.fetchall()]
+
+        from utils.duels import prepare_state
+        preview_state = await prepare_state(interaction.user.id, active_row, active_beast_data, player_perks, consume=False)
+        difficulty = encounter_difficulty(preview_state, enemy_state)
 
         npc_emoji = npc.get("emoji", "🐾")
         _sparr_intro = discord.Embed(
@@ -690,7 +680,8 @@ class Battle(commands.Cog):
                 # The NPC wasn't actually bested — just outlasted.
                 partial_gold = random.randint(30, 80)
                 await settle_spar_gold(partial_gold)
-                _lvl, _, _leveled = await award_player_exp(interaction.user.id, random.randint(active_row["level"] * 8, active_row["level"] * 12))
+                partial_exp = encounter_trainer_xp(player['level'], npc_level, difficulty=difficulty, effort=.25)
+                _lvl, _, _leveled = await award_player_exp(interaction.user.id, partial_exp)
                 NPC_TIMEOUT_LINES = {
                     "maren":         "*'A draw,'* says Maren. *'Barkley doesn't mind. Come back when you can end it properly.'*",
                     "cael":          "*'Twenty turns and neither of us won. Twine predicted this. I thought it was being dramatic.'*",
@@ -701,7 +692,7 @@ class Battle(commands.Cog):
                 embed.add_field(
                     name="⏱️ Time Limit",
                     value=(
-                        f"+**{partial_gold} gold** 💰 | +**15–30 EXP** ✨"
+                        f"+**{partial_gold} gold** 💰 | +**{partial_exp} trainer EXP** ✨"
                         + (f"\n⬆️ **Trainer leveled up to {_lvl}!**" if _leveled else "")
                         + f"\n{NPC_TIMEOUT_LINES.get(npc_name, '*The spar ended on time.*')}"
                     ),
@@ -748,7 +739,7 @@ class Battle(commands.Cog):
                 await db.commit()
 
             # Player EXP (outside the DB block — uses update_player which opens its own conn)
-            spar_exp = random.randint(active_row["level"] * 12, active_row["level"] * 20)
+            spar_exp = encounter_trainer_xp(player['level'], npc_level, difficulty=difficulty)
             _p_lvl, _, _p_leveled = await award_player_exp(interaction.user.id, spar_exp, interaction)
 
             if rel_advanced:
@@ -771,7 +762,7 @@ class Battle(commands.Cog):
                 await notify_unlocks(interaction.channel, interaction.user, unlocked)
 
         async def on_loss(embed, p_state, e_state):
-            loss_exp = random.randint(active_row["level"] * 5, active_row["level"] * 8)
+            loss_exp = encounter_trainer_xp(player['level'], npc_level, difficulty=difficulty, effort=.25)
             await settle_spar_gold(50)
             await award_player_exp(interaction.user.id, loss_exp)
             async with storage.connect() as _udb:
@@ -811,7 +802,7 @@ class Battle(commands.Cog):
                 enemy_state,
                 enemy_personality=personality,
                 battle_title=f"Spar with {npc['name']}",
-                realm=npc['location'],
+                realm=biome_key(npc['location']),
                 on_win=on_win,
                 on_loss=on_loss,
                 reserved=True,

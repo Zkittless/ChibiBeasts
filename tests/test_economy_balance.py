@@ -72,10 +72,10 @@ class CatalogBalance(unittest.TestCase):
 class EconomyTransactions(DatabaseCase):
     async def test_divine_purchase_checks_level_then_charges_the_real_price(self):
         await storage.update_player(42,gold=200000)
-        with self.assertRaisesRegex(ValueError,'level 25'):
+        with self.assertRaisesRegex(ValueError,'level 40'):
             await purchase_gold(42,'genesis_matrix')
         self.assertEqual(await storage.get_inventory(42),[])
-        await storage.update_player(42,level=25)
+        await storage.update_player(42,level=40)
         result=await purchase_gold(42,'genesis_matrix',2)
         self.assertEqual((result['total'],result['remaining']),(160000,40000))
         self.assertEqual((await storage.get_inventory(42))[0]['quantity'],2)
@@ -111,7 +111,7 @@ class EconomyTransactions(DatabaseCase):
 
     async def test_locked_shard_item_preserves_currency_and_weekly_limit(self):
         await storage.update_player(42,celestial_shards=100)
-        with self.assertRaisesRegex(ValueError,'level 10'):
+        with self.assertRaisesRegex(ValueError,'level 30'):
             await purchase_shard(42,'divine_compass')
         player=await storage.get_player(42)
         self.assertEqual(player['celestial_shards'],100)
@@ -176,7 +176,7 @@ class EconomyTransactions(DatabaseCase):
             await use_item(42,'quicksilver_tonic')
         self.assertEqual((await storage.get_inventory(42))[0]['quantity'],1)
 
-    async def test_growth_food_scaling_stops_at_its_declared_trainer_level(self):
+    async def test_growth_food_never_scales_with_trainer_level(self):
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
         await storage.update_player(42,level=100)
@@ -184,7 +184,7 @@ class EconomyTransactions(DatabaseCase):
         await use_item(42,'gnome_grown_carrots')
         row=(await self.rows('SELECT * FROM player_beasts WHERE id=?',(row_id,)))[0]
         total=row['exp']+sum(storage.calc_exp_for_level(level) for level in range(1,row['level']))
-        self.assertEqual(total,175)
+        self.assertEqual(total,20)
 
     async def test_stat_treat_limit_preserves_the_next_item(self):
         row_id=await self.beast()
@@ -281,12 +281,13 @@ class EconomyTransactions(DatabaseCase):
 
     async def test_treat_allowance_and_gains_survive_starter_evolution(self):
         from utils.gameplay import evolve_beast
+        await storage.update_player(42, level=8)
         row_id=await self.beast(starter=True)
         row=(await self.rows('SELECT * FROM player_beasts WHERE id=?',(row_id,)))[0]
         async with storage.connect() as db:
             await storage.apply_beast_levelup(db,row,15,0)
             await db.commit()
-        await self.execute('UPDATE player_beasts SET bond=30,happiness=80,stat_treats_used=12 WHERE id=?',(row_id,))
+        await self.execute('UPDATE player_beasts SET bond=40,happiness=80,stat_treats_used=12 WHERE id=?',(row_id,))
         await evolve_beast(42,1)
         row=(await self.rows('SELECT * FROM player_beasts WHERE id=?',(row_id,)))[0]
         self.assertEqual((row['beast_id'],row['stat_treats_used']),('prismara',12))
@@ -296,7 +297,7 @@ class EconomyTransactions(DatabaseCase):
         from utils import expeditions
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
-        await storage.update_player(42,level=10,ancient_compass_charges=1)
+        await storage.update_player(42,level=30,ancient_compass_charges=1)
         view = await Hatch.explore.callback(Hatch(None), interaction(), 'loom')
         self.addCleanup(view.stop)
         trip = view.trip
