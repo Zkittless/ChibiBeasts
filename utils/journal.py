@@ -8,14 +8,14 @@ from uuid import uuid4
 import aiosqlite
 import discord
 
-from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story
+from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
 from utils.equipment import definitions as equipment_definitions, dormant_label
 
 logger = logging.getLogger('chibibeasts.journal')
-PAGES = ('adventure', 'companions', 'workshop', 'story', 'activities')
+PAGES = ('adventure', 'team', 'companions', 'workshop', 'story', 'activities')
 PAGE_SIZE = 25
 REALMS = journal_state.BIOMES
 LANDMARKS = {
@@ -53,14 +53,20 @@ class JournalView(discord.ui.LayoutView):
         self.awakening_scene = ''
         self.message = None
         self.closed, self.mutating, self.art_enabled = False, False, True
+        self.message_repurposed = False
+        self._returned_battles = set()
+        self.team_art = None
         self.lock = asyncio.Lock()
         self.last_input = 0
         self.prefix = 'journal:' + uuid4().hex
         self._button_serial = 0
         self.container = discord.ui.Container(accent_colour=0xb7ad87)
         self.add_item(self.container)
-        self.nav = discord.ui.ActionRow(*(self.button(key.title(), 'page:' + key) for key in PAGES))
+        self.nav_buttons = {key: self.button(key.title(), 'page:' + key) for key in PAGES}
+        self.nav = discord.ui.ActionRow(*(self.nav_buttons[key] for key in PAGES[:3]))
+        self.nav_more = discord.ui.ActionRow(*(self.nav_buttons[key] for key in PAGES[3:]))
         self.tools = discord.ui.ActionRow(self.button('Home', 'page:home'), self.button('Pin a goal', 'page:goals'), self.button('Refresh', 'refresh'))
+        self._static_button_count = self._button_serial
         self.realm_select = self.select('realm', 'Choose your destination')
         self.path_select = self.select('path', 'Choose your next step')
         self.companion_select = self.select('companion', 'Choose a companion')
@@ -167,7 +173,6 @@ class JournalView(discord.ui.LayoutView):
             self.text(f"### Choose an expedition\n{e.charges}/{expeditions.CAPACITY} exploration charges · Regenerates every {wait_text(e.interval)}\n"
                       'Choose a route, help travellers and discover linked events. Take up to three companions; swaps and assists spend an action. Your team and every choice are saved.')
             self.render_team_summary()
-            self.row(self.button('Choose adventure team', 'page:team'))
             self.realm_select.options = [discord.SelectOption(label=(b['name'] + (f" · Locked Lv.{b['min_level']}" if self.state.player['level'] < b['min_level'] else ''))[:100],
                 value=k, default=k == self.realm,
                 description=f"Trainer Lv.{b['min_level']}+ required; companion Lv.{b['level_range'][0]}–{b['level_range'][1]} recommended") for k, b in REALMS.items()]
@@ -283,43 +288,8 @@ class JournalView(discord.ui.LayoutView):
             self.row(self.path_select)
 
     def render_team(self):
-        self.text('### Your adventure team\nYour active companion leads. Choose up to two reserves for exploration and wild battles. Raid parties have their own assignments.')
-        self.render_team_summary()
-        self.text('All travelling companions earn bounded EXP. Lower-level reserves catch up gradually. Each keeps their own health, mana, gear and ultimate charge; swapping spends your action.')
-        rows = self.state.workshop.companions
-        if not rows:
-            self.row(self.button('Choose your starter', 'launch:start', discord.ButtonStyle.success))
-            return
-        if self.state.trip:
-            self.text('**Team saved for this expedition.** Return home before changing your lead or reserves.')
-        pages = max(1, (len(rows) + PAGE_SIZE - 1) // PAGE_SIZE)
-        self.companion_page = max(0, min(self.companion_page, pages - 1))
-        visible = rows[self.companion_page * PAGE_SIZE:(self.companion_page + 1) * PAGE_SIZE]
-        if self.companion_id not in {row['id'] for row in visible}:
-            self.companion_id = visible[0]['id']
-        self.companion_select.options = [discord.SelectOption(label=f"#{row['player_number']} · {row['nickname'] or storage.get_beast_data(row['beast_id'])['name']} · Lv.{row['level']}"[:100],
-            value=str(row['id']), default=row['id'] == self.companion_id) for row in visible]
-        self.row(self.companion_select)
-        row = self.selected_companion()
-        beast = storage.get_beast_data(row['beast_id'])
-        self.portrait(f"**{safe(row['nickname'] or beast['name'])}** · {beast['type'].title()}\nHP {row['hp']}/{row['max_hp']} · MP {row['mana']}/{row['max_mana']}", beast['id'], row['armor_id'])
-        slots = self.state.team_slots
-        occupied = next((slot for slot, row_id in slots.items() if row_id == row['id']), None)
-        self.team_select.options = [discord.SelectOption(label=f'Assign reserve {slot}', value=f"{row['id']}:{slot}",
-            description='Replace the current reserve in this slot') for slot in (1, 2)]
-        if occupied:
-            self.team_select.options.append(discord.SelectOption(label='Remove from adventure team', value=f"{row['id']}:clear:{occupied}"))
-        self.team_select.disabled = bool(self.state.trip or row['listed'] or row['hp'] <= 0 or storage.is_knocked_out(row) or row['is_active'])
-        # A recovering reserve can still be removed when home.
-        if occupied and not self.state.trip and not row['is_active']:
-            self.team_select.disabled = False
-        self.row(self.team_select)
-        self.row(self.button('Make team lead', 'make_active', discord.ButtonStyle.primary,
-                             disabled=bool(self.state.trip or row['is_active'] or row['listed'] or row['hp'] <= 0 or storage.is_knocked_out(row))),
-                 self.button('Back to adventure', 'page:adventure'))
-        if pages > 1:
-            self.row(self.button('Previous companions', 'comp_prev', disabled=self.companion_page == 0),
-                     self.button('Next companions', 'comp_next', disabled=self.companion_page + 1 >= pages))
+        self.team_select.disabled = journal_team.frozen(self)  # Retain the older dispatch guard.
+        journal_team.render(self)
 
     def render_companions(self):
         rows = self.state.workshop.companions
@@ -354,7 +324,7 @@ class JournalView(discord.ui.LayoutView):
         else:
             self.text('Any companion can build a bond. The four Architect starters also have unique bond awakenings.')
         self.row(self.button('Make active', 'make_active', discord.ButtonStyle.primary, disabled=bool(row['is_active'] or row['listed'] or storage.is_knocked_out(row))),
-                 self.button('Play together', 'launch:play', disabled=not row['is_active']), self.button('Adventure team', 'page:team'))
+                 self.button('Play together', 'launch:play', disabled=not row['is_active']))
         evo = beast.get('evolution') or {}
         if evo.get('form') == 'bond':
             after = storage.get_beast_data(evo['evolves_to'])
@@ -452,16 +422,17 @@ class JournalView(discord.ui.LayoutView):
         self.row(self.button('Nursery', 'page:nursery'), self.button('Command guide', 'commands'))
 
     def render(self):
-        self._button_serial = 8  # The five navigation and three utility buttons are stable.
+        self._button_serial = self._static_button_count
         self.portraits = {}
         self.container.clear_items()
-        if self.art_enabled:
+        if self.art_enabled and not (self.page == 'team' and self.team_art):
             self.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(f'attachment://{self.header.name}', description='Field Journal · ' + REALMS[self.art_realm]['name'])))
         self.container.add_item(self.nav)
+        self.container.add_item(self.nav_more)
         self.container.add_item(self.tools)
         if self.notice:
             self.text(self.notice[:750])
-        for button, key in zip(self.nav.children, PAGES):
+        for key, button in self.nav_buttons.items():
             button.style = discord.ButtonStyle.primary if self.page == key else discord.ButtonStyle.secondary
         render = getattr(self, 'render_' + self.page, self.render_home)
         render()
@@ -474,14 +445,17 @@ class JournalView(discord.ui.LayoutView):
 
     @property
     def art_realm(self):
-        return biome_key(self.trip['realm'] if self.page == 'adventure' and self.trip and self.trip['status'] != 'complete' else self.realm)
+        return biome_key(self.trip['realm'] if self.page in {'adventure', 'team'} and self.trip and self.trip['status'] != 'complete' else self.realm)
 
     @property
     def header(self):
         return PROJECT_ROOT / 'data' / 'journal' / f'journal-{self.art_realm}.png'
 
-    async def publish(self, interaction, *, opening=False):
-        previous = {a.filename: a for a in getattr(self.message, 'attachments', [])}
+    async def publish(self, interaction, *, opening=False, channel_send=False):
+        if self.page == 'team' and self.art_enabled:
+            self.team_art = await journal_team_art.render_team([row for _, row in journal_team.roster(self)], self.art_realm)
+            self.render()
+        previous = {} if opening else {a.filename: a for a in getattr(self.message, 'attachments', [])}
         portraits = {}
         if self.art_enabled:
             for filename, appearance in self.portraits.items():
@@ -496,12 +470,21 @@ class JournalView(discord.ui.LayoutView):
             attachments, files = [], []
             if self.art_enabled:
                 # Only send artwork actually referenced on this page.
-                paths = {self.header.name: self.header}
+                stage = self.team_art if self.page == 'team' else None
+                paths = {} if stage else {self.header.name: self.header}
                 for name, path in paths.items():
                     if name in previous:
                         attachments.append(previous[name])
                     else:
                         file = discord.File(path)
+                        stack.callback(file.close)
+                        files.append(file)
+                if stage:
+                    if stage.name in previous:
+                        attachments.append(previous[stage.name])
+                    else:
+                        buffer = stack.enter_context(io.BytesIO(stage.data))
+                        file = discord.File(buffer, filename=stage.name)
                         stack.callback(file.close)
                         files.append(file)
                 for filename in self.portraits:
@@ -516,6 +499,8 @@ class JournalView(discord.ui.LayoutView):
             async def deliver(with_art):
                 async with asyncio.timeout(15):
                     if opening:
+                        if channel_send:
+                            return await interaction.channel.send(view=self, files=files if with_art else [], allowed_mentions=discord.AllowedMentions.none())
                         return await interaction.followup.send(view=self, files=files if with_art else [], allowed_mentions=discord.AllowedMentions.none(), wait=True)
                     return await interaction.edit_original_response(view=self, attachments=attachments + files if with_art else [], allowed_mentions=discord.AllowedMentions.none())
             try:
@@ -563,7 +548,7 @@ class JournalView(discord.ui.LayoutView):
                 if interaction.response.is_done():
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
-        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim'}
+        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim'} or action.startswith(('team_assign:', 'team_clear:'))
         duplicate = mutation and (self.mutating or self.lock.locked())
         if mutation and not duplicate:
             self.mutating = True
@@ -590,18 +575,22 @@ class JournalView(discord.ui.LayoutView):
                         if result:
                             self.closed = True
                             self.stop()
-                            await self.publish(interaction)
+                            await journal_sessions.discard(self, interaction)
                         return
                     if action in {'page:workshop', 'goal_workshop'}:
                         from utils.workshop import open_workshop
                         recipe = self.state.goal['target'] if action == 'goal_workshop' and self.state.goal and self.state.goal['kind'] == 'recipe' else None
                         result = await open_workshop(interaction, recipe_id=recipe, already_deferred=True, replace_message=True)
                         if result:
+                            self.message_repurposed = True
+                            await journal_sessions.forget(self, interaction)
                             self.closed = True
                             self.stop()
                         return
                     if action.startswith('page:'):
                         self.page = action.split(':', 1)[1]
+                        if self.page == 'team':
+                            self.team_role, self.team_candidate_id, self.team_page = None, None, 0
                         self.reviewing = False
                         self.awakening_scene = ''
                         if self.page == 'adventure':
@@ -630,6 +619,25 @@ class JournalView(discord.ui.LayoutView):
                         if selected not in {r['id'] for r in self.state.workshop.companions}:
                             raise ValueError('That companion has left your collection.')
                         self.companion_id, self.reviewing, self.awakening_scene = selected, False, ''
+                    elif action.startswith('team_role:'):
+                        journal_team.select_role(self, action.split(':', 1)[1])
+                    elif action == 'team_candidate':
+                        journal_team.select_candidate(self, interaction.data['values'][0])
+                    elif action in {'team_prev', 'team_next'}:
+                        journal_team.page_candidates(self, -1 if action == 'team_prev' else 1)
+                    elif action.startswith('team_assign:'):
+                        role, row_id = journal_team.assignment(self, action.split(':', 1)[1])
+                        if role == 'lead':
+                            row = next(r for r in self.state.workshop.companions if r['id'] == row_id)
+                            await storage.set_active_companion(self.user_id, row['player_number'], expected_row_id=row_id)
+                        else:
+                            await adventure_party.set_slot(self.user_id, row_id, int(role))
+                        self.notice = journal_team.ROLE_NAMES[role] + ' assigned. Your exploration team is saved.'
+                    elif action.startswith('team_clear:'):
+                        slot = journal_team.removal(self, action.split(':', 1)[1])
+                        await adventure_party.clear_slot(self.user_id, slot)
+                        self.team_candidate_id = None
+                        self.notice = f'Reserve {slot} cleared. Your other team slots stay assigned.'
                     elif action == 'team_slot':
                         values = interaction.data['values'][0].split(':')
                         row_id = int(values[0])
@@ -733,21 +741,14 @@ class JournalView(discord.ui.LayoutView):
                 self.render()
                 await self.publish(interaction)
             if battle:
+                receipt = {}
                 try:
-                    self.trip = await expeditions.run_battle(interaction, battle)
+                    self.trip = await expeditions.run_battle(interaction, battle, receipt=receipt)
                 except (ValueError, discord.HTTPException, TimeoutError) as error:
                     logger.info('Expedition encounter ended early: %s', error)
                     self.notice = 'The encounter closed. Your expedition and gathered supplies are saved.'
-                async with self.lock:
-                    if not self.closed:
-                        self.trip = await expeditions.read(self.user_id, battle['id'])
-                        self.state = await journal_state.snapshot(self.user_id)
-                        self.render()
-                        # The original component token may expire during a
-                        # slow battle; the bot-owned journal remains editable.
-                        if self.message:
-                            async with asyncio.timeout(15):
-                                await self.message.edit(view=self)
+                if receipt.get('owned'):
+                    await self.resume_after_battle(interaction, battle)
         except discord.NotFound:
             self.closed = True
             self.stop()
@@ -762,6 +763,26 @@ class JournalView(discord.ui.LayoutView):
             finally:
                 if mutation and not duplicate:
                     self.mutating = False
+
+    async def resume_after_battle(self, interaction, battle):
+        """Publish below the result, after the runner has settled every reward."""
+        token = battle['payload']['battle_token']
+        async with self.lock:
+            if token in self._returned_battles:
+                return
+            settled = await expeditions.read(self.user_id, battle['id'])
+            if not settled or settled['status'] == 'battle':
+                return
+            self._returned_battles.add(token)
+        try:
+            return await open_journal(interaction, bot=self.bot, page='adventure', realm=battle['realm'],
+                already_deferred=True, channel_send=True, source=self,
+                notice='Your expedition is ready to continue below.')
+        except (discord.HTTPException, TimeoutError):
+            # Publishing failed: the previous journal is still the recovery
+            # point. Do not delete it or retry a send with an uncertain result.
+            logger.exception('Could not bring the saved expedition journal below its encounter')
+            return None
 
     async def on_timeout(self):
         self.closed = True
@@ -787,7 +808,7 @@ class JournalView(discord.ui.LayoutView):
 
 
 async def open_journal(interaction, *, bot=None, page='home', realm='woods', notice='', already_deferred=False, replace_message=False,
-                       begin_expedition=False):
+                       begin_expedition=False, channel_send=False, source=None):
     if not already_deferred:
         await interaction.response.defer()
     await storage.get_or_create_player(interaction.user.id, str(interaction.user))
@@ -819,9 +840,16 @@ async def open_journal(interaction, *, bot=None, page='home', realm='woods', not
     if replace_message:
         view.message = interaction.message
     try:
-        await view.load_page()
-        view.render()
-        await view.publish(interaction, opening=not replace_message)
+        async def send():
+            # Openers serialize by trainer/channel. Refresh after waiting for
+            # that lock so an earlier snapshot cannot replace newer rewards.
+            view.state = await journal_state.snapshot(view.user_id)
+            view.trip = view.state.trip or await expeditions.latest(view.user_id)
+            await view.load_page()
+            view.render()
+            await view.publish(interaction, opening=not replace_message, channel_send=channel_send)
+            return view.message
+        await journal_sessions.publish(view, interaction, send, replace=replace_message, source=source)
     except BaseException:
         view.stop()
         raise

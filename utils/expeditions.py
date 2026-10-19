@@ -481,7 +481,7 @@ async def battle_result(user_id, trip_id, token, won, *, interrupted=False, only
         await db.execute("UPDATE expeditions SET status='active',version=version+1,payload=?,updated_at=? WHERE id=?", (json.dumps(p), time.time(), trip_id))
         await db.commit()
 
-async def run_battle(interaction, trip):
+async def run_battle(interaction, trip, *, receipt=None):
     from cogs.battle import build_pve_beast_state, run_pve_battle
     from utils.duels import reserve_fighters
     uid = interaction.user.id
@@ -501,6 +501,8 @@ async def run_battle(interaction, trip):
             await db.execute('UPDATE expeditions SET payload=? WHERE id=?', (json.dumps(latest['payload']), trip['id']))
             claimed = True
             await db.commit()
+            if receipt is not None:
+                receipt.update(owned=True, token=token, runner_id=runner_id)
         with reserve_fighters([uid]):
             from utils import adventure_party
             party = None

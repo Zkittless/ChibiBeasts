@@ -445,6 +445,7 @@ class Dev(commands.Cog):
                         ("nursery_research", "user_id"),
                         ("nursery_seen",     "user_id"),
                         ("nursery_grants",   "user_id"),
+                        ("journal_panels",   "user_id"),
                         ("player_beasts",    "user_id"),
                         ("player_inventory", "user_id"),
                         ("player_perks",     "user_id"),

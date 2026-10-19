@@ -253,11 +253,14 @@ class BattleDispatch(DatabaseCase):
 
     async def test_real_explore_command_completes_rewind_turns_and_catches_once(self):
         from cogs.hatch import Hatch
+        from utils.journal import JournalView
         await self.beast('twine', starter=True)
         await self.execute('UPDATE player_beasts SET attack=1000 WHERE user_id=42')
         store, pending, prompts = ViewStore(None), [], []
-        loading = SimpleNamespace(id=705, edit=AsyncMock())
+        loading = SimpleNamespace(id=705, edit=AsyncMock(), delete=AsyncMock())
         message = SimpleNamespace(id=706, edit=None)
+        continued_message = SimpleNamespace(id=707, attachments=[], edit=AsyncMock(), delete=AsyncMock())
+        continued, sent = [], []
         choices = iter((2, 2, 0))
 
         async def choose(view, index):
@@ -275,8 +278,13 @@ class BattleDispatch(DatabaseCase):
                 register(kwargs['view'])
 
         async def send(*args, **kwargs):
+            sent.append(kwargs)
             if isinstance(kwargs.get('view'), MoveView):
                 register(kwargs['view'])
+            elif isinstance(kwargs.get('view'), JournalView):
+                continued.append(kwargs['view'])
+                self.addCleanup(kwargs['view'].stop)
+                return continued_message
             return message
 
         message.edit = AsyncMock(side_effect=edit)
@@ -289,8 +297,9 @@ class BattleDispatch(DatabaseCase):
             click = component()
             click.user = fake.user
             click.channel = fake.channel
+            click.message = journal.message
             click.data = {'values': [next(o.value for o in journal.path_select.options if o.value.endswith(':' + choice))]}
-            click.edit_original_response.return_value = loading
+            click.edit_original_response.return_value = journal.message
             await journal.handle(click, 'path')
             click.response.defer.assert_awaited_once()
 
@@ -301,13 +310,23 @@ class BattleDispatch(DatabaseCase):
                 await journal_choice(journal, 'tracks')
                 await asyncio.wait_for(journal_choice(journal, 'challenge'), 8)
                 self.assertEqual([b['beast_id'] for b in await storage.get_player_beasts(42)].count('slime'), 0)
+                self.assertEqual(len(continued), 1)
+                self.assertTrue(journal.closed)
+                self.assertTrue(journal.is_finished())
+                loading.delete.assert_awaited_once()
+                self.assertIs(sent[-1]['view'], continued[0])
+                self.assertIn('Victory', sent[-2]['embed'].title)
+                journal = continued[0]
+                self.assertIs(journal.message, continued_message)
                 await journal_choice(journal, 'camp')
                 await journal_choice(journal, 'return')
             self.assertEqual(len(prompts), 3)
             self.assertTrue(all(view is prompts[0] for view in prompts))
             self.assertEqual([b['beast_id'] for b in await storage.get_player_beasts(42)].count('slime'), 1)
             self.assertEqual(sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials')), 1)
-            result = (await self.rows('SELECT winner_id,status FROM battles'))[0]
+            battles = await self.rows('SELECT winner_id,status FROM battles')
+            self.assertEqual(len(battles), 1)
+            result = battles[0]
             self.assertEqual((result['winner_id'], result['status']), (42, 'completed'))
         finally:
             results = await asyncio.gather(*pending, return_exceptions=True)
