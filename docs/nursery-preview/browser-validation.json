@@ -1,0 +1,118 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "checks": [
+    {
+      "width": 1100,
+      "page": "eggs",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "pool",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "incubations",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "offer",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "research",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "reveal",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "eggs",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "pool",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "incubations",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "offer",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "research",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "reveal",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "eggs",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "pool",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "incubations",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "offer",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "research",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "reveal",
+      "no_overflow": true,
+      "all_portraits_loaded": true
+    }
+  ],
+  "catalog_selection": true,
+  "pool_navigation": true,
+  "incubation_selection": true,
+  "research_selection": true
+}

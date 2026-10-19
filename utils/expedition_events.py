@@ -5,6 +5,53 @@ selector varies trips without making reopening a journal a new random roll.
 """
 import hashlib
 
+# Discoveries deliberately trail the region's wild encounters. Even the Loom
+# cannot give away Epic/Legendary/Divine incubators or the story-only seed.
+REGIONAL_NEST_EGGS = {
+    'woods': ('sprout_pod', 'pebble_shell'),
+    'ember': ('soot_hatchling',),
+    'glacial': ('gale_nest',),
+    'trenches': ('dewdrop_bulb',),
+    'loom': ('prism_sphere',),
+}
+NEST_EVENTS = frozenset(('rescue', 'discovery', 'camp', 'deep'))
+MAX_NEST_CHANCE = .10
+NEST_RELEASE_BUDGET = .25
+NEST_SHOP_BUDGET = 2.
+
+
+def prepare_nest(p, realm):
+    """Freeze one optional offer at departure, with a bounded currency value.
+
+    The upper budget uses every applicable hatch bonus and merchant resale.
+    Replacing the material makes the actual added reward smaller still. No
+    read, route choice, push, or restart calls this function for a saved trip.
+    """
+    from utils.economy_balance import RELEASE_VALUES, item_sell_price
+    from utils.nursery_catalog import definition, rarity_pool
+
+    candidates = [definition(egg_id) for egg_id in REGIONAL_NEST_EGGS[realm]]
+    candidates = [egg for egg in candidates if egg['min_level'] <= p['level']]
+    p.update(nest_version=1, nest_chance=0., egg_offer=None,
+             egg_reward=None, egg_granted=False)
+    if not candidates:
+        return
+    egg = _variant(p, candidates, 'nest-family')
+    boosted = rarity_pool(egg['id'],
+                          perks=({'perk_id': 'stardust_touch', 'equipped': 1},
+                                 {'perk_id': 'glimmering_fortune', 'equipped': 1}),
+                          sanctuary={'celestial_observatory': 1})
+    release_value = sum(RELEASE_VALUES[rarity] * chance for rarity, chance in boosted.items())
+    liquid_value = max(release_value, item_sell_price(egg, merchant=True))
+    chance = min(MAX_NEST_CHANCE,
+                 NEST_RELEASE_BUDGET * p['base_gold'] / max(1, liquid_value),
+                 NEST_SHOP_BUDGET * p['base_gold'] / max(1, egg['price']))
+    p['nest_chance'] = chance
+    # An independent seed stream leaves material/encounter rolls unchanged.
+    digest = hashlib.sha256(f"{p['seed']}:nest-discovery".encode()).digest()
+    if int.from_bytes(digest[:8], 'big') / 2 ** 64 < chance:
+        p['egg_offer'] = {key: egg[key] for key in ('id', 'name', 'family', 'grade', 'price')}
+
 REGIONS = {
     'woods': dict(trail='fern-covered fork', tracks='small prints beneath bent ferns',
                   gather='a mossy grove', landmark='a root-bound wayside shrine',
@@ -136,6 +183,21 @@ def page(p, realm, event):
             choices.append(_choice('push', 'Push a little deeper', 'One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material.'))
         else:
             body = 'Your team has finished the deeper stop. It is time to head home.'
+    egg = p.get('egg_offer')
+    if egg and not p.get('egg_reward') and event in NEST_EVENTS:
+        from utils.catalog import load_catalog
+        materials = load_catalog('materials.json')['materials']
+        material_name = materials[p['material']]['name']
+        clues = {
+            'rescue': 'Helping the hatchling reveals a small abandoned nest nearby.',
+            'discovery': 'The old trail markings lead to a small abandoned nest.',
+            'camp': 'Your companions spot a small abandoned nest beside the shelter.',
+            'deep': 'The hidden chamber shelters a small abandoned nest.',
+        }
+        body += (f" {clues[event]} A {egg['name']} needs shelter. You can carry it "
+                 f"instead of your {material_name} bundle, or leave it safe and keep your supplies.")
+        choices.append(_choice('recover_egg', f"Shelter the {egg['name']}"[:100],
+                               f"One incubation egg instead of {material_name}; gold and XP unchanged."[:100]))
     p.update(event=event, page=dict(title=title, body=body, choices=choices), stage=p['completed'])
 
 
@@ -196,7 +258,13 @@ def resolve(p, realm, choice):
             p['notes'].append('Your team shared its one short recovery camp.')
     else:
         next_event = 'homeward'
-        if choice.startswith('help:'):
+        if choice == 'recover_egg':
+            p['egg_reward'] = p['egg_offer']['id']
+            if event == 'rescue':
+                p['bond'] += 1
+                p['flags']['sanctuary'] = True
+            p['notes'].append(f"Your team sheltered a {p['egg_offer']['name']} instead of its material bundle.")
+        elif choice.startswith('help:'):
             helper = choice.split(':', 1)[1]
             p['participations'][helper] = p['participations'].get(helper, 0) + 1
             effects['helper_id'] = int(helper)
@@ -252,7 +320,9 @@ def presentation(trip):
         result['choices'] = []
     elif p['event'] != 'homeward':
         result['choices'].append(_choice('return_early', 'Head home now', 'Bank the earned fraction of your one reward bundle.'))
+    bundle = 'one incubation egg instead of material' if p.get('egg_reward') else 'one material bundle'
+    nest = f" · nest clue {p['nest_chance']:.1%} max/trip" if p.get('nest_version') else ''
     result.update(progress=dict(completed=p['completed'], total=p['target_stops']),
                   party_ids=list(p['party_ids']),
-                  footer=f"{p['completed']}/{p['target_stops']} stops · one material bundle · one possible catch · bonus {p['bonus']}%")
+                  footer=f"{p['completed']}/{p['target_stops']} stops · {bundle} · one possible catch · bonus {p['bonus']}%{nest}")
     return result

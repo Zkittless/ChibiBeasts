@@ -783,7 +783,7 @@ class Utilities(commands.Cog):
             "Your Field Journal": "/journal — Adventure, Companions, Workshop, Story and Activities\nSwitch active companions and review bond awakenings in Companions; open your material bag in Workshop.",
             "Adventure": "/explore — begin or resume a saved expedition with choices; one charge every 30 minutes, banking up to three\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/npc · /meet · /lore",
             "Companions": "/collection · /beastinfo · /nickname\n/play · /train · /evolve\n/codex · /bestiary · /typeinfo",
-            "Eggs and items": "/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — timed eggs\n/inventory · /use [beast_number]",
+            "Eggs and items": "/nursery — egg guarantees, hatch choices and family research\n/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — passive incubation and optional care\n/inventory · /use [beast_number]",
             "Builds and trade": "/craft · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade",
             "Guilds and endgame": "/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard",
             "Progress": "/daily · /dailies · /achievements · /profile\n/title · /history · /stats · /leaderboard · /party",

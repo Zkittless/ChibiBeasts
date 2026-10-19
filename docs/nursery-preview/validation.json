@@ -1,0 +1,423 @@
+{
+  "status": "passed",
+  "scope": "Real production LayoutView components and local portraits; disposable example DB; no live Discord actions.",
+  "primary_pages": [
+    "eggs",
+    "pool",
+    "incubations",
+    "offer",
+    "research",
+    "reveal"
+  ],
+  "total_payloads": 81,
+  "largest_text_count": 823,
+  "largest_component_count": 24,
+  "portraits": 3,
+  "checks": [
+    {
+      "page": "eggs",
+      "characters": 498,
+      "components": 18
+    },
+    {
+      "page": "pool",
+      "characters": 532,
+      "components": 15
+    },
+    {
+      "page": "incubations",
+      "characters": 378,
+      "components": 15
+    },
+    {
+      "page": "offer",
+      "characters": 823,
+      "components": 24
+    },
+    {
+      "page": "research",
+      "characters": 358,
+      "components": 14
+    },
+    {
+      "page": "eggs:common_egg",
+      "characters": 510,
+      "components": 18
+    },
+    {
+      "page": "pool:common_egg:0",
+      "characters": 553,
+      "components": 15
+    },
+    {
+      "page": "pool:common_egg:1",
+      "characters": 520,
+      "components": 15
+    },
+    {
+      "page": "eggs:wildheart_egg",
+      "characters": 515,
+      "components": 18
+    },
+    {
+      "page": "pool:wildheart_egg:0",
+      "characters": 581,
+      "components": 15
+    },
+    {
+      "page": "pool:wildheart_egg:1",
+      "characters": 488,
+      "components": 15
+    },
+    {
+      "page": "eggs:rare_egg",
+      "characters": 498,
+      "components": 18
+    },
+    {
+      "page": "pool:rare_egg:0",
+      "characters": 532,
+      "components": 15
+    },
+    {
+      "page": "pool:rare_egg:1",
+      "characters": 484,
+      "components": 15
+    },
+    {
+      "page": "research:rare_egg",
+      "characters": 343,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:unicorn",
+      "characters": 343,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:pegasus",
+      "characters": 343,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:griffin",
+      "characters": 343,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:basilisk",
+      "characters": 344,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:cerberus",
+      "characters": 344,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:wyvern",
+      "characters": 342,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:rukh",
+      "characters": 340,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:glacius",
+      "characters": 343,
+      "components": 14
+    },
+    {
+      "page": "research:rare_egg:loom_fragment",
+      "characters": 349,
+      "components": 14
+    },
+    {
+      "page": "eggs:resonant_egg",
+      "characters": 513,
+      "components": 18
+    },
+    {
+      "page": "pool:resonant_egg:0",
+      "characters": 549,
+      "components": 15
+    },
+    {
+      "page": "pool:resonant_egg:1",
+      "characters": 499,
+      "components": 15
+    },
+    {
+      "page": "eggs:celestial_egg",
+      "characters": 588,
+      "components": 19
+    },
+    {
+      "page": "pool:celestial_egg:0",
+      "characters": 596,
+      "components": 15
+    },
+    {
+      "page": "pool:celestial_egg:1",
+      "characters": 571,
+      "components": 15
+    },
+    {
+      "page": "pool:celestial_egg:2",
+      "characters": 393,
+      "components": 15
+    },
+    {
+      "page": "eggs:abyssal_egg",
+      "characters": 620,
+      "components": 19
+    },
+    {
+      "page": "pool:abyssal_egg:0",
+      "characters": 580,
+      "components": 15
+    },
+    {
+      "page": "pool:abyssal_egg:1",
+      "characters": 588,
+      "components": 15
+    },
+    {
+      "page": "eggs:sprout_pod",
+      "characters": 668,
+      "components": 16
+    },
+    {
+      "page": "pool:sprout_pod:0",
+      "characters": 417,
+      "components": 11
+    },
+    {
+      "page": "eggs:pebble_shell",
+      "characters": 663,
+      "components": 16
+    },
+    {
+      "page": "pool:pebble_shell:0",
+      "characters": 388,
+      "components": 11
+    },
+    {
+      "page": "eggs:soot_hatchling",
+      "characters": 656,
+      "components": 16
+    },
+    {
+      "page": "pool:soot_hatchling:0",
+      "characters": 487,
+      "components": 11
+    },
+    {
+      "page": "eggs:dewdrop_bulb",
+      "characters": 657,
+      "components": 16
+    },
+    {
+      "page": "pool:dewdrop_bulb:0",
+      "characters": 418,
+      "components": 11
+    },
+    {
+      "page": "eggs:gale_nest",
+      "characters": 657,
+      "components": 16
+    },
+    {
+      "page": "pool:gale_nest:0",
+      "characters": 408,
+      "components": 11
+    },
+    {
+      "page": "eggs:cavern_core",
+      "characters": 656,
+      "components": 16
+    },
+    {
+      "page": "pool:cavern_core:0",
+      "characters": 577,
+      "components": 15
+    },
+    {
+      "page": "pool:cavern_core:1",
+      "characters": 305,
+      "components": 15
+    },
+    {
+      "page": "research:cavern_core",
+      "characters": 358,
+      "components": 14
+    },
+    {
+      "page": "research:cavern_core:kitsune_1",
+      "characters": 358,
+      "components": 14
+    },
+    {
+      "page": "research:cavern_core:centry",
+      "characters": 357,
+      "components": 14
+    },
+    {
+      "page": "research:cavern_core:manticore",
+      "characters": 360,
+      "components": 14
+    },
+    {
+      "page": "research:cavern_core:will_o_wisp",
+      "characters": 362,
+      "components": 14
+    },
+    {
+      "page": "eggs:prism_sphere",
+      "characters": 667,
+      "components": 16
+    },
+    {
+      "page": "pool:prism_sphere:0",
+      "characters": 426,
+      "components": 11
+    },
+    {
+      "page": "eggs:glow_spore",
+      "characters": 673,
+      "components": 16
+    },
+    {
+      "page": "pool:glow_spore:0",
+      "characters": 468,
+      "components": 11
+    },
+    {
+      "page": "eggs:eclipse_pebble",
+      "characters": 659,
+      "components": 16
+    },
+    {
+      "page": "pool:eclipse_pebble:0",
+      "characters": 517,
+      "components": 11
+    },
+    {
+      "page": "eggs:volcanic_core",
+      "characters": 676,
+      "components": 16
+    },
+    {
+      "page": "pool:volcanic_core:0",
+      "characters": 513,
+      "components": 11
+    },
+    {
+      "page": "eggs:nimbus_cloud",
+      "characters": 671,
+      "components": 16
+    },
+    {
+      "page": "pool:nimbus_cloud:0",
+      "characters": 518,
+      "components": 11
+    },
+    {
+      "page": "eggs:monolith_relic",
+      "characters": 675,
+      "components": 16
+    },
+    {
+      "page": "pool:monolith_relic:0",
+      "characters": 552,
+      "components": 11
+    },
+    {
+      "page": "eggs:abyssal_trench_orb",
+      "characters": 752,
+      "components": 17
+    },
+    {
+      "page": "pool:abyssal_trench_orb:0",
+      "characters": 595,
+      "components": 11
+    },
+    {
+      "page": "eggs:dragon_hoard_scale",
+      "characters": 760,
+      "components": 17
+    },
+    {
+      "page": "pool:dragon_hoard_scale:0",
+      "characters": 555,
+      "components": 11
+    },
+    {
+      "page": "eggs:glacial_monolith",
+      "characters": 763,
+      "components": 17
+    },
+    {
+      "page": "pool:glacial_monolith:0",
+      "characters": 617,
+      "components": 11
+    },
+    {
+      "page": "eggs:genesis_matrix",
+      "characters": 727,
+      "components": 17
+    },
+    {
+      "page": "pool:genesis_matrix:0",
+      "characters": 348,
+      "components": 11
+    },
+    {
+      "page": "eggs:constellation_spool",
+      "characters": 739,
+      "components": 17
+    },
+    {
+      "page": "pool:constellation_spool:0",
+      "characters": 349,
+      "components": 11
+    },
+    {
+      "page": "eggs:singularity_core",
+      "characters": 724,
+      "components": 17
+    },
+    {
+      "page": "pool:singularity_core:0",
+      "characters": 348,
+      "components": 11
+    },
+    {
+      "page": "eggs:world_tree_seed",
+      "characters": 662,
+      "components": 15
+    },
+    {
+      "page": "pool:world_tree_seed:0",
+      "characters": 345,
+      "components": 11
+    },
+    {
+      "page": "incubation:1",
+      "characters": 378,
+      "components": 15
+    },
+    {
+      "page": "incubation:2",
+      "characters": 378,
+      "components": 15
+    },
+    {
+      "page": "reveal",
+      "characters": 275,
+      "components": 13
+    }
+  ]
+}

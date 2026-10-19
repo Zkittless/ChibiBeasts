@@ -2,7 +2,7 @@
 
 Every choice is checked against a saved revision in a short writer transaction.
 Battle playback and Discord calls run outside that transaction. One trip grants
-at most one material and one companion, even across retries and restarts.
+at most one material or one discovered egg, and one companion, across retries.
 """
 import asyncio
 from dataclasses import dataclass
@@ -140,6 +140,7 @@ async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0
                                 data = storage.get_beast_data(member['beast_id'])
                                 member.update(type=data['type'], name=data['name'])
                             expedition_events.initialize(payload, biome_key(realm), rng.getrandbits(64), party)
+                            expedition_events.prepare_nest(payload, biome_key(realm))
                     trip_id = uuid4().hex
                     await db.execute('INSERT INTO expeditions(id,user_id,realm,status,companion_id,payload,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)', (trip_id, user_id, realm, 'quick' if quick else 'active', companion['id'], json.dumps(payload), now, now))
                     await db.commit()
@@ -351,7 +352,17 @@ async def _settle(db, trip):
         multiplier = 1 + min(25, p['bonus']) / 100
         p['gold'] = int(p['base_gold'] * fraction * multiplier)
         p['exp'] = int(p['base_exp'] * fraction * multiplier)
-        p['material_granted'] = p['completed'] > 0
+        # A saved, explicitly chosen nest reward takes the material's place.
+        # This grant shares the gold/XP transaction and stale-click protection.
+        egg_id = p.get('egg_reward')
+        offer = p.get('egg_offer')
+        egg_earned = bool(p.get('nest_version') == 1 and p['completed'] > 0
+                          and offer and egg_id == offer['id']
+                          and any(row.get('choice') == 'recover_egg' for row in p['history']))
+        p['egg_granted'] = egg_earned
+        if egg_earned:
+            await add_stack(db, 'player_inventory', uid, egg_id)
+        p['material_granted'] = p['completed'] > 0 and not egg_earned
         if p['material_granted']:
             await add_stack(db, 'player_materials', uid, p['material'])
         # This is a small shared activity reward, not another battle reward.

@@ -829,17 +829,14 @@ class Shop(commands.Cog):
         # ── section data builders ──────────────────────────────────────────
         def get_instant_eggs():
             """Returns list of (id, name, price, pool_str)."""
-            from cogs.hatch import HATCH_EGGS, _BASE_EGG_POOLS, get_egg_pool
+            from cogs.hatch import HATCH_EGGS, get_egg_pool
             PRICES = {key:item["price"] for key,item in HATCH_EGGS.items()}
-            NAMES  = {"common_egg":"🥚 Common Egg","rare_egg":"🥚✨ Rare Egg",
-                      "celestial_egg":"🌌🥚 Celestial Egg","abyssal_egg":"🌊💎 Abyssal Egg"}
+            NAMES = {key: item['name'] for key, item in HATCH_EGGS.items()}
             out = []
             for eid in PRICES:
                 pool = get_egg_pool(eid)
-                alt = _BASE_EGG_POOLS.get(eid,{}).get("altered_chance",0)
-                pool_str = "Base odds: " + " · ".join(f"{RARITY_EMOJI.get(r,'⚪')} {v*(1-alt)*100:.1f}%"
+                pool_str = "Base odds: " + " · ".join(f"{RARITY_LABEL.get(r,r.title())} {v*100:g}%"
                     for r,v in sorted(pool.items(), key=lambda x: RARITY_ORDER.index(x[0]) if x[0] in RARITY_ORDER else 99))
-                if alt: pool_str += f" · ⚠️ Altered {int(alt*100)}%"
                 out.append((eid, NAMES[eid], PRICES[eid], pool_str))
             return out
 
@@ -880,9 +877,11 @@ class Shop(commands.Cog):
             per  = 3
             total = max(1,(len(items)+per-1)//per)
             page  = max(1,min(page,total))
-            emb = make_embed("⚡ Instant Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nHatch immediately with `/hatch` — no waiting.\n\u200b")
+            emb = make_embed("⚡ Instant Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nOpen `/nursery` for hatching, exact personal odds and possible companions.\n\u200b")
             for eid, name, price, pool_str in items[(page-1)*per:page*per]:
-                emb.add_field(name=f"{name} — `{price:,}g`", value=pool_str+f"\nTrainer Lv.{HATCH_EGGS[eid].get('min_level',1)}", inline=False)
+                egg = HATCH_EGGS[eid]
+                low, high = egg['level_range']
+                emb.add_field(name=f"{name} — `{price:,}g`", value=pool_str+f"\nGuaranteed {egg['grade'].title()}+ · Hatch Lv.{low}–{high} · Trainer Lv.{egg['min_level']}", inline=False)
             return emb, page, total
 
         def build_incub_embed(page, items):
@@ -891,14 +890,14 @@ class Shop(commands.Cog):
             per  = 3
             total = max(1,(len(items)+per-1)//per)
             page  = max(1,min(page,total))
-            emb = make_embed("⏱️ Incubation Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nTend with `/tend` after purchase.\n\u200b")
+            emb = make_embed("⏱️ Incubation Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nBegin incubation in `/nursery`. Finishes passively; optional care adds bond.\n\u200b")
             for eid, egg, price in items[(page-1)*per:page*per]:
                 r = RARITY_EMOJI.get(egg.get("rarity","common"),"⚪")
                 emoji = egg.get("emoji","🥚")
                 hours = egg.get("incubation_hours",1)
                 price_str = f"`{price:,}g`" if price > 0 else "`Free`"
                 emb.add_field(name=f"{emoji} {egg['name']} — {price_str}",
-                    value=f"{r} {egg.get('rarity','?').title()} · ⏱️ {hours}h incubation - Trainer Lv.{shop_level(egg)}\n{egg.get('flavor','')[:80]}", inline=False)
+                    value=f"{r} {egg.get('grade','?').title()} · {egg['family'].replace('_', ' ').title()} · {hours}h · Trainer Lv.{shop_level(egg)}\nHatch Lv.{egg['level_range'][0]}–{egg['level_range'][1]} · Choose one of up to three same-rarity companions.\n{egg.get('flavor','')[:80]}", inline=False)
             return emb, page, total
 
         def build_potions_embed(page, items, label, color):
@@ -1089,7 +1088,7 @@ class Shop(commands.Cog):
                         b1 = discord.ui.Button(label=label, emoji=emoji, style=discord.ButtonStyle.success, row=i+1)
                         async def _b1(bi, _id=eid, _p=price, _n=egg["name"]):
                             if bi.user.id!=uid: return await bi.response.send_message("✦ Not your shop!",ephemeral=True)
-                            await _buy(bi,_id,_p,_n,"Use `/tend` to care for your egg!")
+                            await _buy(bi,_id,_p,_n,"Open `/nursery` to begin passive incubation and choose a hatchling when ready.")
                         b1.callback=_b1
                         self_v.add_item(b1)
                     self_v._add_pagination(total, s)
@@ -1164,6 +1163,15 @@ class Shop(commands.Cog):
                 pg.label = f'{self_v.page}/{total}'
                 nxt.disabled = self_v.page >= total
                 self_v.add_item(prev); self_v.add_item(pg); self_v.add_item(nxt)
+                if s in {'instant', 'incubation'}:
+                    nursery_button = discord.ui.Button(label='Open Nursery', style=discord.ButtonStyle.primary, row=4)
+                    async def _nursery(bi):
+                        if bi.user.id != uid:
+                            return await bi.response.send_message('Open /nursery for your own eggs.', ephemeral=True)
+                        from utils.nursery_view import open_nursery
+                        await open_nursery(bi, bot=self.bot)
+                    nursery_button.callback = _nursery
+                    self_v.add_item(nursery_button)
 
         view = ShopView("instant")
         message = await interaction.followup.send(embed=view._current_embed(), view=view, wait=True)

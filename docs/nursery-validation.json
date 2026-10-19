@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "tests_validated": 575,
+  "local_regression": {
+    "tests": 564,
+    "initial_passed": 563,
+    "initial_obsolete_expectation_failures": 1,
+    "resolution": "Historical /tend test now verifies a persisted choice and exactly one companion under simultaneous claims.",
+    "affected_class_rerun": {
+      "tests": 14,
+      "status": "passed",
+      "log": "affected-gameplay-suite.txt"
+    }
+  },
+  "final_affected_paths_rerun": {
+    "status": "passed",
+    "tests": 60,
+    "total_suite_count": 575,
+    "seconds": 61.143,
+    "modules": [
+      "tests.test_nursery",
+      "tests.test_nursery_safety",
+      "tests.test_nursery_ui",
+      "tests.test_nursery_care",
+      "tests.test_nursery_dev",
+      "tests.test_gameplay.ItemsAndWorld"
+    ],
+    "log": "final-focus.txt"
+  },
+  "final_commit_gate": "Project checks on the PR runs the entire final suite, including the admin follow-up tests.",
+  "catalog_balance": {
+    "status": "passed",
+    "eggs": 25,
+    "paid_eggs": 24,
+    "bonus_scenarios": 384,
+    "maximum_expected_net_gold_per_paid_hatch": -87.205882,
+    "maximum_research_net_per_paid_hatch_upper_bound": -87.205882
+  },
+  "regional_nests": {
+    "status": "passed",
+    "seeds": 100000,
+    "destinations": 10,
+    "rules": {
+      "max_eggs_per_trip": 1,
+      "replaces": "one material bundle on explicit choice",
+      "roll": "once at departure, independent SHA-256 seed stream; persisted",
+      "maximum_offer_probability": 0.1,
+      "max_added_liquid_value_fraction": 0.25,
+      "max_expected_shop_price_fraction": 2.0,
+      "normal_stop_count": 3,
+      "optional_deep_stop_count": 4,
+      "old_saved_trips": "unchanged; no offer is added"
+    }
+  },
+  "native_preview": {
+    "status": "passed",
+    "payloads": 81,
+    "pages": 6,
+    "max_text": 823,
+    "max_components": 24,
+    "viewport_page_checks": 18,
+    "javascript_errors": []
+  },
+  "other_checks": [
+    "Python compileall passed",
+    "pip check passed",
+    "git diff --check passed"
+  ],
+  "commands": [
+    "python -m unittest discover -s tests -v",
+    "python scripts/audit_nursery.py",
+    "python scripts/audit_expedition_nests.py",
+    "python scripts/preview_nursery.py --capture --tool-path ../.tools/artwork-preview-packages"
+  ]
+}

@@ -73,6 +73,7 @@ Ranked matches use gear and chosen moves. Five placements establish a rank; 28-d
 
 ## Shops, crafting and care
 
+- `/nursery` brings egg guarantees, actual species pools, purchases, passive incubation, saved hatchling choices and duplicate research into one panel. Rare Eggs guarantee Rare or better; two new instant tiers fill the progression gaps. Hatch starting levels follow the egg grade. See the [Nursery rules](docs/NURSERY.md).
 - `/shop` sells instant eggs, incubation eggs and usable supplies. Whimsy Merchant discounts gold purchases by 5%.
 - Shard purchases grant real inventory items or saved exploration charges. A Prism Key takes priority over the Divine Compass. Incubation skips move both tending and hatching clocks.
 - Astral Reroll attunes a matching instant hatch at its rolled rarity; it remains saved when that rarity has no matching element.

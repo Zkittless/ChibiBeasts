@@ -379,6 +379,28 @@ async def _run_migrations():
                 user_id INTEGER NOT NULL, slot INTEGER NOT NULL CHECK(slot IN (1,2)),
                 beast_row_id INTEGER NOT NULL,
                 PRIMARY KEY(user_id,slot), UNIQUE(user_id,beast_row_id));
+            CREATE TABLE IF NOT EXISTS nursery_requests (
+                user_id INTEGER NOT NULL, request_key TEXT NOT NULL, operation TEXT NOT NULL,
+                arguments TEXT NOT NULL, result TEXT NOT NULL,
+                PRIMARY KEY(user_id,request_key));
+            CREATE TABLE IF NOT EXISTS nursery_incubations (
+                incubation_id INTEGER PRIMARY KEY, care_count INTEGER NOT NULL DEFAULT 0);
+            CREATE TABLE IF NOT EXISTS nursery_offers (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL,
+                incubation_id INTEGER NOT NULL UNIQUE, egg_id TEXT NOT NULL,
+                candidates TEXT NOT NULL, claimed INTEGER NOT NULL DEFAULT 0,
+                grant_id INTEGER);
+            CREATE TABLE IF NOT EXISTS nursery_research (
+                user_id INTEGER NOT NULL, family TEXT NOT NULL, points INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY(user_id,family));
+            CREATE TABLE IF NOT EXISTS nursery_seen (
+                user_id INTEGER NOT NULL, beast_id TEXT NOT NULL,
+                PRIMARY KEY(user_id,beast_id));
+            CREATE TABLE IF NOT EXISTS nursery_grants (
+                id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, egg_id TEXT NOT NULL,
+                payload TEXT NOT NULL, notified INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+            CREATE INDEX IF NOT EXISTS ix_nursery_pending ON nursery_grants(user_id,notified);
         """)
         await db.executescript("""
             CREATE INDEX IF NOT EXISTS ix_beasts_owner_number ON player_beasts(user_id,player_number);
