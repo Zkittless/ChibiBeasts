@@ -1,6 +1,6 @@
 # Adventure teams and branching expeditions
 
-Open `/journal` → **Companions** → **Adventure team**, or **Adventure** → **Choose adventure team**. Your active companion leads; assign up to two reserves. One companion remains a valid team. There is no new trainer-level gate, and raid-party assignments remain separate.
+Open `/journal` → **Team**. Your equipped lead stands in front of up to two reserves. Choose a named slot to browse companions and confirm its assignment. One companion remains a valid team. There is no new trainer-level gate, and raid-party assignments remain separate.
 
 ## Battles
 

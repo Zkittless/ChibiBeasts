@@ -22,7 +22,7 @@ Exploration regenerates **one charge every 30 minutes**, banking up to **three**
 
 ## Adventure teams
 
-Open `/journal` → **Companions** → **Adventure team** to bring your lead and up to two reserves. Wild encounters support tactical swaps, a shared bench-assist meter, and bounded XP for all travelling companions. New expeditions have three linked stops, optional deeper discoveries, companion abilities, rescues and one recovery camp. Earlier choices affect later paths; the team and every choice save between visits. See [adventure rules and balance limits](docs/ADVENTURE-TEAMS.md).
+Open `/journal` → **Team** to see your lead standing in front of two reserves with their equipped armor. Edit each named slot directly, browse the whole collection and confirm its assignment; the travelling roster stays locked during a saved expedition. Wild encounters support tactical swaps, a shared bench-assist meter, and bounded XP for all travelling companions. New expeditions have three linked stops, optional deeper discoveries, companion abilities, rescues and one recovery camp. Earlier choices affect later paths; the team and every choice save between visits. After each exploration encounter, a fresh journal appears below its result and replaces your previous journal in that channel. See the [interactive team and journal preview](docs/journal-flow-preview/journal-flow.html) and [adventure rules and balance limits](docs/ADVENTURE-TEAMS.md).
 
 ## Starter awakenings
 
