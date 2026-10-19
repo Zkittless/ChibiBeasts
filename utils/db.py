@@ -378,6 +378,8 @@ async def _run_migrations():
             CREATE TABLE IF NOT EXISTS journal_panels (
                 user_id INTEGER NOT NULL, channel_id INTEGER NOT NULL, message_id INTEGER NOT NULL,
                 PRIMARY KEY(user_id,channel_id));
+            CREATE TABLE IF NOT EXISTS exploration_preferences (
+                user_id INTEGER PRIMARY KEY, realm TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS adventure_team (
                 user_id INTEGER NOT NULL, slot INTEGER NOT NULL CHECK(slot IN (1,2)),
                 beast_row_id INTEGER NOT NULL,

@@ -20,6 +20,8 @@ The battlefield shows armored reserves, their health and the shared meter. A tag
 
 ## Expeditions
 
+`/explore` opens the Field Journal's destination selector. Check the habitat and saved team, then press **Begin expedition · 1 charge**. Opening the selector and changing the habitat spend nothing. **Save destination** makes the selected unlocked habitat the default for future openings; an explicit command destination overrides only that visit. **Clear default** restores the Woods for subsequent openings. The existing lead and reserve assignments stay saved separately. An expedition already underway resumes its original route and travelling roster, regardless of the default or a different command destination.
+
 New trips contain three meaningful choices, with an optional fourth discovery. Each region has its own trail, gathering area, landmark, obstacle, rescue and deep-discovery descriptions. Earlier choices determine later events: restoring markers reveals a crossing, studying a landmark reveals a hidden trail, and helping a traveller can reveal a sheltered entrance.
 
 Companion types can solve regional obstacles. A safe detour is always available, so a particular species or type is never mandatory. Short camps immediately restore 5% maximum HP to healthy travelling companions, once per trip, and cannot revive a knockout. Careful crossings and deeper exploration cost a small amount of HP; travel damage cannot knock a companion out. A team entirely at 1 HP cannot choose the risky deeper route.
@@ -44,4 +46,4 @@ The audit runs synthetic battles with production combat rules across all ten des
 
 Committed examples: [armored tag switch](adventure-team/tag-switch.gif), [healing assist](adventure-team/heal-assist.gif), [final still](adventure-team/tag-switch-final.png), [animation timings](adventure-team/animation-validation.json), and [720-trial balance audit](adventure-balance.json).
 
-The migration adds only the adventure-team assignment table. Existing collections, gear, economy, raid parties and saved expeditions are preserved. Back up the live SQLite database before any deployment, as with the existing upgrade process.
+Team assignments and destination defaults use the `adventure_team` and `exploration_preferences` tables. Existing collections, gear, economy, raid parties and saved expeditions are preserved. Back up the live SQLite database before any deployment, as with the existing upgrade process.

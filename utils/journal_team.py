@@ -140,6 +140,13 @@ def render(view):
         else:
             view.text(f"**{ROLE_NAMES[role]} · Empty**\n" + ('Choose a healthy lead to set out.' if role == 'lead' else 'Optional · choose a companion to travel with you.'))
 
+    role = getattr(view, 'team_role', None)
+    if frozen(view) or role not in ROLES:
+        care_buttons = [view.button('Care · ' + ROLE_NAMES[key].lower(), f"care:{assigned[key]['id']}")
+                        for key in ROLES if assigned[key]]
+        if care_buttons:
+            view.row(*care_buttons)
+
     if frozen(view):
         view.text('**Saved for this expedition**\nThis is the team travelling with you. Return home before changing its members.')
         view.row(view.button('Resume expedition', 'page:adventure', discord.ButtonStyle.primary))
@@ -148,7 +155,6 @@ def render(view):
         view.row(view.button('Meet your starter', 'launch:start', discord.ButtonStyle.success))
         return
 
-    role = getattr(view, 'team_role', None)
     view.row(*(view.button('Edit ' + ROLE_NAMES[key].lower(), 'team_role:' + key,
                           discord.ButtonStyle.primary if key == role else discord.ButtonStyle.secondary) for key in ROLES))
     if role not in ROLES:
@@ -185,6 +191,7 @@ def render(view):
                            discord.ButtonStyle.success, disabled=bool(same or not _eligible(selected, role)))]
     if role != 'lead':
         actions.append(view.button('Clear slot', f"team_clear:{role}:{current['id'] if current else 0}", disabled=current is None))
+    actions.append(view.button('Care selected', f"care:{selected['id']}"))
     view.row(*actions)
     if pages > 1:
         view.row(view.button('Previous companions', 'team_prev', disabled=view.team_page == 0),

@@ -1,0 +1,3771 @@
+{
+  "status": "passed",
+  "scope": "Actual game Embed/View and LayoutView exports from a disposable 30-companion example database. Local controls navigate saved payloads; no live Discord actions.",
+  "total_payloads": 622,
+  "companion_count": 30,
+  "artwork_count": 35,
+  "screens": [
+    "roster",
+    "filtered",
+    "rarity",
+    "detail",
+    "gear",
+    "explore",
+    "saved",
+    "care",
+    "healed",
+    "permanent",
+    "blocked"
+  ],
+  "max_embed_characters": 1013,
+  "max_layout_components": 26,
+  "care_transaction": {
+    "scope": "Real CareView Use callback and existing item transaction against the disposable preview database.",
+    "before": {
+      "hp": 64,
+      "stock": 4,
+      "active_id": 1
+    },
+    "after": {
+      "hp": 85,
+      "stock": 3,
+      "active_id": 1
+    },
+    "permanent_review_consumed": 0,
+    "ordinary_heal_ko_disabled": true
+  },
+  "checks": [
+    {
+      "page": "roster:all-number:0",
+      "characters": 631,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-number:1",
+      "characters": 636,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-number:2",
+      "characters": 639,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-number:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-level:0",
+      "characters": 633,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-level:1",
+      "characters": 637,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-level:2",
+      "characters": 636,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-level:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-rarity:0",
+      "characters": 640,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-rarity:1",
+      "characters": 638,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:all-rarity:2",
+      "characters": 628,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:all-rarity:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:common-number:0",
+      "characters": 595,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-number:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:common-level:0",
+      "characters": 595,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-level:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:common-rarity:0",
+      "characters": 595,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:common-rarity:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:uncommon-number:0",
+      "characters": 429,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-number:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-number:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-number:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-number:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-number:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:uncommon-level:0",
+      "characters": 429,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-level:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-level:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-level:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-level:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-level:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:uncommon-rarity:0",
+      "characters": 429,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-rarity:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-rarity:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-rarity:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-rarity:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:uncommon-rarity:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:rare-number:0",
+      "characters": 474,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-number:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-number:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-number:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-number:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-number:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-number:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:rare-level:0",
+      "characters": 474,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-level:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-level:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-level:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-level:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-level:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-level:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:rare-rarity:0",
+      "characters": 474,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-rarity:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-rarity:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-rarity:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-rarity:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-rarity:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:rare-rarity:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:epic-number:0",
+      "characters": 429,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-number:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-number:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-number:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-number:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-number:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:epic-level:0",
+      "characters": 429,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-level:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-level:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-level:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-level:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-level:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:epic-rarity:0",
+      "characters": 429,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-rarity:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-rarity:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-rarity:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-rarity:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:epic-rarity:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:legendary-number:0",
+      "characters": 436,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-number:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-number:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-number:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-number:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-number:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:legendary-level:0",
+      "characters": 436,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-level:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-level:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-level:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-level:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-level:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:legendary-rarity:0",
+      "characters": 436,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-rarity:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-rarity:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-rarity:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-rarity:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:legendary-rarity:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:divine-number:0",
+      "characters": 285,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:divine-level:0",
+      "characters": 285,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:divine-rarity:0",
+      "characters": 285,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:altered_divine-number:0",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:altered_divine-level:0",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:altered_divine-rarity:0",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:corrupted-number:0",
+      "characters": 288,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:corrupted-level:0",
+      "characters": 288,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:corrupted-rarity:0",
+      "characters": 288,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:ancient-number:0",
+      "characters": 286,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:ancient-level:0",
+      "characters": 286,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:ancient-rarity:0",
+      "characters": 286,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:dev-number:0",
+      "characters": 282,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:dev-level:0",
+      "characters": 282,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:dev-rarity:0",
+      "characters": 282,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:special-number:0",
+      "characters": 286,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:special-level:0",
+      "characters": 286,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:special-rarity:0",
+      "characters": 286,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query::0",
+      "characters": 631,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query::1",
+      "characters": 636,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query::2",
+      "characters": 639,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query::30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Ember:0",
+      "characters": 275,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Ember:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Twine:0",
+      "characters": 275,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Twine:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#27:0",
+      "characters": 272,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#27:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Gloop:0",
+      "characters": 265,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Gloop:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Barkley:0",
+      "characters": 269,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Barkley:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Prismite:0",
+      "characters": 272,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Prismite:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Fairy:0",
+      "characters": 266,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Fairy:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Pixie:0",
+      "characters": 266,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Pixie:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Goblin:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Goblin:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Imp:0",
+      "characters": 262,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Imp:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Slime:0",
+      "characters": 266,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Slime:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Kitsune:0",
+      "characters": 271,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Kitsune:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Dryad:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Dryad:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Hellhound:0",
+      "characters": 273,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Hellhound:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Harpy:0",
+      "characters": 265,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Harpy:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Centry:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Centry:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Unicorn:0",
+      "characters": 270,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Unicorn:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Pegasus:0",
+      "characters": 270,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Pegasus:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Griffin:0",
+      "characters": 270,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Griffin:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Basilisk:0",
+      "characters": 273,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Basilisk:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Cerberus:0",
+      "characters": 273,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Cerberus:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Phoenix:0",
+      "characters": 269,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Phoenix:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Thunderbird:0",
+      "characters": 278,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Thunderbird:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Sphinx:0",
+      "characters": 269,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Sphinx:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Yeti:0",
+      "characters": 263,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Yeti:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Minotaur:0",
+      "characters": 272,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Minotaur:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Dragon:0",
+      "characters": 266,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Dragon:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Kraken:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Kraken:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Mistral:0",
+      "characters": 275,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Mistral:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Fenrir:0",
+      "characters": 269,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Fenrir:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Charybdis:0",
+      "characters": 274,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Charybdis:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Wyvern:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Wyvern:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:Hydra:0",
+      "characters": 273,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:Hydra:27",
+      "characters": 725,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#1:0",
+      "characters": 273,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#1:1",
+      "characters": 977,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#2:0",
+      "characters": 263,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#2:2",
+      "characters": 1013,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#3:0",
+      "characters": 265,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#3:3",
+      "characters": 967,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#4:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#4:4",
+      "characters": 903,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#5:0",
+      "characters": 264,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#5:5",
+      "characters": 520,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#6:0",
+      "characters": 264,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#6:6",
+      "characters": 536,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#7:0",
+      "characters": 264,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#7:7",
+      "characters": 716,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#8:0",
+      "characters": 262,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#8:8",
+      "characters": 750,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#9:0",
+      "characters": 264,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#9:9",
+      "characters": 658,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#10:0",
+      "characters": 268,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#10:10",
+      "characters": 738,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#11:0",
+      "characters": 266,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#11:11",
+      "characters": 545,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#12:0",
+      "characters": 268,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#12:12",
+      "characters": 531,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#13:0",
+      "characters": 264,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#13:13",
+      "characters": 514,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#14:0",
+      "characters": 265,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#14:14",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#15:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#15:15",
+      "characters": 652,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#16:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#16:16",
+      "characters": 668,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#17:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#17:17",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#18:0",
+      "characters": 269,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#18:18",
+      "characters": 529,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#19:0",
+      "characters": 269,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#19:19",
+      "characters": 552,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#20:0",
+      "characters": 266,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#20:20",
+      "characters": 709,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#21:0",
+      "characters": 271,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#21:21",
+      "characters": 559,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#22:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#22:22",
+      "characters": 581,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#23:0",
+      "characters": 263,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#23:23",
+      "characters": 573,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#24:0",
+      "characters": 268,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#24:24",
+      "characters": 528,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#25:0",
+      "characters": 264,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#25:25",
+      "characters": 576,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#26:0",
+      "characters": 265,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#26:26",
+      "characters": 570,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#28:0",
+      "characters": 267,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#28:28",
+      "characters": 565,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#29:0",
+      "characters": 269,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#29:29",
+      "characters": 524,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "roster:query:#30:0",
+      "characters": 265,
+      "components": 9,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "detail:query:#30:30",
+      "characters": 558,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::1",
+      "characters": 216,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::2",
+      "characters": 243,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::3",
+      "characters": 208,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::4",
+      "characters": 311,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::5",
+      "characters": 308,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::6",
+      "characters": 308,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::7",
+      "characters": 309,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::8",
+      "characters": 306,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::9",
+      "characters": 308,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::10",
+      "characters": 315,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::11",
+      "characters": 313,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::12",
+      "characters": 317,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::13",
+      "characters": 312,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::14",
+      "characters": 313,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::15",
+      "characters": 314,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::16",
+      "characters": 315,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::17",
+      "characters": 315,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::18",
+      "characters": 316,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::19",
+      "characters": 316,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::20",
+      "characters": 315,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::21",
+      "characters": 319,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::22",
+      "characters": 314,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::23",
+      "characters": 312,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::24",
+      "characters": 316,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::25",
+      "characters": 313,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::26",
+      "characters": 313,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::27",
+      "characters": 314,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::28",
+      "characters": 314,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::29",
+      "characters": 317,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear::30",
+      "characters": 314,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Ember:1",
+      "characters": 230,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Twine:1",
+      "characters": 230,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#27:27",
+      "characters": 327,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Gloop:2",
+      "characters": 257,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Barkley:3",
+      "characters": 224,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Prismite:4",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Fairy:5",
+      "characters": 322,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Pixie:6",
+      "characters": 322,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Goblin:7",
+      "characters": 324,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Imp:8",
+      "characters": 318,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Slime:9",
+      "characters": 322,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Kitsune:10",
+      "characters": 331,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Dryad:11",
+      "characters": 327,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Hellhound:12",
+      "characters": 335,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Harpy:13",
+      "characters": 326,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Centry:14",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Unicorn:15",
+      "characters": 330,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Pegasus:16",
+      "characters": 331,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Griffin:17",
+      "characters": 331,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Basilisk:18",
+      "characters": 333,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Cerberus:19",
+      "characters": 333,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Phoenix:20",
+      "characters": 331,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Thunderbird:21",
+      "characters": 339,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Sphinx:22",
+      "characters": 329,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Yeti:23",
+      "characters": 325,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Minotaur:24",
+      "characters": 333,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Dragon:25",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Kraken:26",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Mistral:27",
+      "characters": 330,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Fenrir:28",
+      "characters": 329,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Charybdis:29",
+      "characters": 335,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Wyvern:30",
+      "characters": 329,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:Hydra:27",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#1:1",
+      "characters": 228,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#2:2",
+      "characters": 255,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#3:3",
+      "characters": 220,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#4:4",
+      "characters": 323,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#5:5",
+      "characters": 320,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#6:6",
+      "characters": 320,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#7:7",
+      "characters": 321,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#8:8",
+      "characters": 318,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#9:9",
+      "characters": 320,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#10:10",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#11:11",
+      "characters": 326,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#12:12",
+      "characters": 330,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#13:13",
+      "characters": 325,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#14:14",
+      "characters": 326,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#15:15",
+      "characters": 327,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#16:16",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#17:17",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#18:18",
+      "characters": 329,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#19:19",
+      "characters": 329,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#20:20",
+      "characters": 328,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#21:21",
+      "characters": 332,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#22:22",
+      "characters": 327,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#23:23",
+      "characters": 325,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#24:24",
+      "characters": 329,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#25:25",
+      "characters": 326,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#26:26",
+      "characters": 326,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#28:28",
+      "characters": 327,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#29:29",
+      "characters": 330,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "gear:#30:30",
+      "characters": 327,
+      "components": 7,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "explore::woods",
+      "characters": 980,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::woods_deep",
+      "characters": 990,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::ember",
+      "characters": 978,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::ember_deep",
+      "characters": 987,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::glacial",
+      "characters": 983,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::glacial_deep",
+      "characters": 992,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::trenches",
+      "characters": 990,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::trenches_deep",
+      "characters": 999,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::loom",
+      "characters": 981,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore::loom_deep",
+      "characters": 990,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:woods",
+      "characters": 998,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:woods_deep",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:ember",
+      "characters": 996,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:ember_deep",
+      "characters": 1005,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:glacial",
+      "characters": 1001,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:glacial_deep",
+      "characters": 1010,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:trenches",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:trenches_deep",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:loom",
+      "characters": 999,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods:loom_deep",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:woods",
+      "characters": 1007,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:woods_deep",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:ember",
+      "characters": 1005,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:ember_deep",
+      "characters": 1014,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:glacial",
+      "characters": 1010,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:glacial_deep",
+      "characters": 1019,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:trenches",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:trenches_deep",
+      "characters": 1026,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:loom",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:woods_deep:loom_deep",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:woods",
+      "characters": 994,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:woods_deep",
+      "characters": 1004,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:ember",
+      "characters": 992,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:ember_deep",
+      "characters": 1001,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:glacial",
+      "characters": 997,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:glacial_deep",
+      "characters": 1006,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:trenches",
+      "characters": 1004,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:trenches_deep",
+      "characters": 1013,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:loom",
+      "characters": 995,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember:loom_deep",
+      "characters": 1004,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:woods",
+      "characters": 1003,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:woods_deep",
+      "characters": 1013,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:ember",
+      "characters": 1001,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:ember_deep",
+      "characters": 1010,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:glacial",
+      "characters": 1006,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:glacial_deep",
+      "characters": 1015,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:trenches",
+      "characters": 1013,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:trenches_deep",
+      "characters": 1022,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:loom",
+      "characters": 1004,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:ember_deep:loom_deep",
+      "characters": 1013,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:woods",
+      "characters": 998,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:woods_deep",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:ember",
+      "characters": 996,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:ember_deep",
+      "characters": 1005,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:glacial",
+      "characters": 1001,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:glacial_deep",
+      "characters": 1010,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:trenches",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:trenches_deep",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:loom",
+      "characters": 999,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial:loom_deep",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:woods",
+      "characters": 1007,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:woods_deep",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:ember",
+      "characters": 1005,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:ember_deep",
+      "characters": 1014,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:glacial",
+      "characters": 1010,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:glacial_deep",
+      "characters": 1019,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:trenches",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:trenches_deep",
+      "characters": 1026,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:loom",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:glacial_deep:loom_deep",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:woods",
+      "characters": 1005,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:woods_deep",
+      "characters": 1015,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:ember",
+      "characters": 1003,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:ember_deep",
+      "characters": 1012,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:glacial",
+      "characters": 1008,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:glacial_deep",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:trenches",
+      "characters": 1015,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:trenches_deep",
+      "characters": 1024,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:loom",
+      "characters": 1006,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches:loom_deep",
+      "characters": 1015,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:woods",
+      "characters": 1014,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:woods_deep",
+      "characters": 1024,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:ember",
+      "characters": 1012,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:ember_deep",
+      "characters": 1021,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:glacial",
+      "characters": 1017,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:glacial_deep",
+      "characters": 1026,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:trenches",
+      "characters": 1024,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:trenches_deep",
+      "characters": 1033,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:loom",
+      "characters": 1015,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "explore:trenches_deep:loom_deep",
+      "characters": 1024,
+      "components": 26,
+      "kind": "LayoutView"
+    },
+    {
+      "page": "care",
+      "characters": 227,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "healed",
+      "characters": 245,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "permanent",
+      "characters": 411,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "blocked",
+      "characters": 321,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:2",
+      "characters": 291,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:2",
+      "characters": 412,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:3",
+      "characters": 425,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:4",
+      "characters": 295,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:4",
+      "characters": 416,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:5",
+      "characters": 292,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:5",
+      "characters": 413,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:6",
+      "characters": 292,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:6",
+      "characters": 413,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:7",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:7",
+      "characters": 414,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:8",
+      "characters": 290,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:8",
+      "characters": 411,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:9",
+      "characters": 292,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:9",
+      "characters": 413,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:10",
+      "characters": 295,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:10",
+      "characters": 416,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:11",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:11",
+      "characters": 414,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:12",
+      "characters": 297,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:12",
+      "characters": 418,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:13",
+      "characters": 292,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:13",
+      "characters": 413,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:14",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:14",
+      "characters": 414,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:15",
+      "characters": 294,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:15",
+      "characters": 415,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:16",
+      "characters": 295,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:16",
+      "characters": 416,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:17",
+      "characters": 295,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:17",
+      "characters": 416,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:18",
+      "characters": 296,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:18",
+      "characters": 417,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:19",
+      "characters": 296,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:19",
+      "characters": 417,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:20",
+      "characters": 295,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:20",
+      "characters": 416,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:21",
+      "characters": 299,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:21",
+      "characters": 420,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:22",
+      "characters": 294,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:22",
+      "characters": 415,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:23",
+      "characters": 292,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:23",
+      "characters": 413,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:24",
+      "characters": 296,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:24",
+      "characters": 417,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:25",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:25",
+      "characters": 414,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:26",
+      "characters": 293,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:26",
+      "characters": 414,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:27",
+      "characters": 294,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:27",
+      "characters": 415,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:28",
+      "characters": 294,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:28",
+      "characters": 415,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:29",
+      "characters": 297,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:29",
+      "characters": 418,
+      "components": 10,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:target:30",
+      "characters": 294,
+      "components": 8,
+      "kind": "Embed+View"
+    },
+    {
+      "page": "care:review:30",
+      "characters": 415,
+      "components": 10,
+      "kind": "Embed+View"
+    }
+  ]
+}

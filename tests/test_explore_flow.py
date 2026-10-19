@@ -1,4 +1,4 @@
-"""The public exploration entry point always opens the saved choice flow."""
+"""Exploration opens a charge-free selection, then saves the confirmed trip."""
 import asyncio
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
@@ -14,8 +14,9 @@ from utils.journal import JournalView
 
 
 class ExploreJournalFlow(DatabaseCase):
-    async def open(self, destination='woods', expedition=None):
+    async def open(self, destination=None, expedition=None, *, channel_id=999):
         command = interaction()
+        command.channel.id = channel_id
         command.followup.send.return_value = SimpleNamespace(id=123, attachments=[], edit=AsyncMock())
         arguments = {} if expedition is None else {'expedition': expedition}
         view = await Hatch.explore.callback(Hatch(None), command, destination, **arguments)
@@ -28,6 +29,15 @@ class ExploreJournalFlow(DatabaseCase):
     def text(self, view):
         return '\n'.join(item.content for item in view.walk_children() if isinstance(item, discord.ui.TextDisplay))
 
+    async def begin(self, view):
+        button = next(item for item in view.walk_children()
+                      if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
+        self.assertFalse(button.disabled)
+        click = component()
+        click.edit_original_response.return_value = view.message
+        await button.callback(click)
+        click.response.defer.assert_awaited_once()
+
     async def pick(self, view, choice):
         value = next(option.value for option in view.path_select.options if option.value.endswith(':' + choice))
         click = component()
@@ -36,28 +46,43 @@ class ExploreJournalFlow(DatabaseCase):
         await view.handle(click, 'path')
         click.response.defer.assert_awaited_once()
 
-    async def test_default_and_both_legacy_modes_open_the_same_saved_trip(self):
+    async def test_default_and_both_legacy_modes_open_selection_without_spending(self):
         await self.beast('twine', starter=True)
-        trip_id = None
         self.assertFalse(hasattr(Hatch, '_quick_explore'))
         for legacy in (None, False, True):
             _, view = await self.open(expedition=legacy)
-            trip_id = trip_id or view.trip['id']
-            self.assertEqual(view.trip['id'], trip_id)
-            self.assertEqual(view.trip['payload']['mode'], 'expedition')
-            self.assertEqual(view.trip['payload']['adventure_version'], 2)
-            self.assertEqual(view.trip['payload']['stage'], 0)
-            self.assertIn('0/3 stops completed', self.text(view))
-            self.assertIn('Exploration 0/3', self.text(view))
-            self.assertIn('Next charge in', self.text(view))
-            self.assertEqual({o.value.rsplit(':', 1)[1] for o in view.path_select.options},
-                             {'tracks', 'gather', 'shrine', 'return_early'})
+            self.assertIsNone(view.trip)
+            self.assertEqual(view.realm, 'woods')
+            self.assertIn('Choose an expedition', self.text(view))
+            self.assertIn('1/3 exploration charges', self.text(view))
+            self.assertIn(view.realm_select, list(view.walk_children()))
+        self.assertEqual(await self.rows('SELECT * FROM expeditions'), [])
+        self.assertEqual((await expeditions.energy(42)).charges, 1)
+
+    async def test_begin_spends_once_and_reopening_resumes_the_saved_trip(self):
+        await self.beast('twine', starter=True)
+        _, view = await self.open()
+        await self.begin(view)
+        trip_id = view.trip['id']
+        self.assertEqual(view.trip['payload']['mode'], 'expedition')
+        self.assertEqual(view.trip['payload']['adventure_version'], 2)
+        self.assertEqual(view.trip['payload']['stage'], 0)
+        self.assertIn('0/3 stops completed', self.text(view))
+        self.assertIn('Exploration 0/3', self.text(view))
+        self.assertIn('Next charge in', self.text(view))
+        self.assertEqual({o.value.rsplit(':', 1)[1] for o in view.path_select.options},
+                         {'tracks', 'gather', 'shrine', 'return_early'})
+        for legacy in (None, False, True):
+            _, resumed = await self.open('ember', expedition=legacy)
+            self.assertEqual(resumed.trip['id'], trip_id)
+            self.assertEqual(resumed.trip['realm'], 'woods')
         self.assertEqual(len(await self.rows('SELECT * FROM expeditions')), 1)
         self.assertEqual((await expeditions.energy(42)).charges, 0)
 
     async def test_decisions_save_and_one_material_is_banked_only_on_return(self):
         await self.beast('twine', starter=True)
         _, view = await self.open()
+        await self.begin(view)
         await self.pick(view, 'gather')
         saved = await expeditions.current(42)
         self.assertEqual(saved['payload']['route'], 'gather')
@@ -89,7 +114,10 @@ class ExploreJournalFlow(DatabaseCase):
     async def test_locked_or_empty_bank_keeps_journal_controls_and_spends_nothing(self):
         await self.beast('twine', starter=True)
         _, locked = await self.open('ember')
-        self.assertIn('Reach trainer level 6', self.text(locked))
+        self.assertEqual(locked.realm, 'ember')
+        self.assertIn('Trainer Lv.6 required', self.text(locked))
+        begin = next(item for item in locked.walk_children() if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
+        self.assertTrue(begin.disabled)
         self.assertIsNone(await expeditions.current(42))
         self.assertEqual((await expeditions.energy(42)).charges, 1)
         await self.execute('INSERT OR REPLACE INTO exploration_energy VALUES(42,0,?)', (time.time(),))
@@ -100,10 +128,17 @@ class ExploreJournalFlow(DatabaseCase):
         self.assertTrue(begin.disabled)
         self.assertIsNone(await expeditions.current(42))
 
-    async def test_two_simultaneous_invocations_resume_one_trip_and_spend_once(self):
+    async def test_two_simultaneous_openers_spend_nothing_and_begin_spends_once(self):
         await self.beast('twine', starter=True)
         await self.execute('INSERT OR REPLACE INTO exploration_energy VALUES(42,3,?)', (time.time(),))
-        first, second = await asyncio.gather(self.open(), self.open())
+        # Separate channels retain both real views. Same-channel reopening
+        # intentionally retires its previous journal before another click.
+        first, second = await asyncio.gather(self.open(channel_id=999), self.open(channel_id=1000))
+        self.assertIsNone(first[1].trip)
+        self.assertIsNone(second[1].trip)
+        self.assertEqual(await self.rows('SELECT * FROM expeditions'), [])
+        self.assertEqual((await expeditions.energy(42)).charges, 3)
+        await asyncio.gather(self.begin(first[1]), self.begin(second[1]))
         self.assertEqual(first[1].trip['id'], second[1].trip['id'])
         self.assertEqual(len(await self.rows('SELECT * FROM expeditions')), 1)
         self.assertEqual((await expeditions.energy(42)).charges, 2)
@@ -113,7 +148,7 @@ class ExploreJournalFlow(DatabaseCase):
 
         async def opened(*args, **kwargs):
             command.response.defer.assert_awaited_once()
-            self.assertTrue(kwargs['begin_expedition'])
+            self.assertFalse(kwargs.get('begin_expedition', False))
             self.assertTrue(kwargs['already_deferred'])
             return 'journal'
 

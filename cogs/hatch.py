@@ -345,14 +345,14 @@ class Hatch(commands.Cog):
         return await open_nursery(interaction, bot=self.bot, already_deferred=True, egg_id=egg_type, page='reveal', grants=grants)
 
 
-    @app_commands.command(name="explore", description="Begin or resume a choice-based expedition in your Field Journal")
+    @app_commands.command(name="explore", description="Choose an expedition or resume your saved route in the Field Journal")
     @app_commands.choices(destination=[app_commands.Choice(name=destination_label(key)[:100], value=key) for key in BIOMES])
-    @app_commands.describe(expedition="Compatibility option; every exploration now uses your Field Journal")
-    async def explore(self, interaction: discord.Interaction, destination: str = "woods", expedition: bool = True):
+    @app_commands.describe(destination="Preview a habitat; omit to use your saved destination", expedition="Compatibility option; confirm new trips in your Field Journal")
+    async def explore(self, interaction: discord.Interaction, destination: str | None = None, expedition: bool = True):
         await interaction.response.defer()
         from utils.journal import open_journal
         return await open_journal(interaction, bot=self.bot, page='adventure', realm=destination,
-                                  begin_expedition=True, already_deferred=True)
+                                  already_deferred=True)
 
 
 async def setup(bot: commands.Bot):

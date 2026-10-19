@@ -1,8 +1,5 @@
 from utils import db as storage
 from utils import gear_art
-import asyncio
-import io
-import logging
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -228,127 +225,17 @@ class Utilities(commands.Cog):
                 choices.append(app_commands.Choice(name=gear["name"], value=gid))
         return choices[:25]
 
-    @app_commands.command(name="gear", description="View a beast's equipped gear and what you have available 🛡️")
-    @app_commands.describe(beast_id="Your beast number from /collection")
-    async def gear(self, interaction: discord.Interaction, beast_id: int):
+    async def beast_autocomplete(self, interaction: discord.Interaction, current: str):
+        from utils.owned_roster import autocomplete
+        return await autocomplete(interaction, current)
+
+    @app_commands.command(name="gear", description="Browse your beasts and their equipped gear")
+    @app_commands.describe(beast_id="Choose a beast by name or number; defaults to your active beast")
+    @app_commands.autocomplete(beast_id=beast_autocomplete)
+    async def gear(self, interaction: discord.Interaction, beast_id: int = None):
         await interaction.response.defer()
-        equipment, runes = load_equipment()
-        all_gear = {**equipment, **runes}
-        trainer = await get_player(interaction.user.id)
-        trainer_level = trainer['level'] if trainer else 1
-
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",
-                (interaction.user.id, beast_id)
-            ) as c:
-                beast_row = await c.fetchone()
-            if not beast_row:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ No beast found with number `#{beast_id}`.",
-                    color=COLORS["error"]
-                ))
-            beast_row = dict(beast_row)
-            # Equipped armor
-            async with db.execute(
-                "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id = ? ORDER BY id",
-                (interaction.user.id, beast_row["id"])
-            ) as c:
-                armor_rows = [r["equipment_id"] for r in await c.fetchall()]
-            # Inventory gear (unequipped)
-            async with db.execute(
-                "SELECT equipment_id FROM player_equipment WHERE user_id = ? AND beast_row_id IS NULL",
-                (interaction.user.id,)
-            ) as c:
-                inv_gear = [r["equipment_id"] for r in await c.fetchall()]
-
-        bd       = get_beast_data(beast_row["beast_id"]) or {}
-        r_emoji  = RARITY_EMOJI.get(beast_row["rarity"], "⚪")
-        name     = beast_row.get("nickname") or bd.get("name", "?")
-        rune_id  = beast_row.get("rune_id")
-        # Legacy rune rows may share this table; the visual uses the armor slot
-        # only, consistently with combat preparation and the workshop.
-        armor_id = next((gid for gid in armor_rows if all_gear.get(gid, {}).get('slot') == 'armor'), '')
-        rune_id = rune_id or next((gid for gid in armor_rows if all_gear.get(gid, {}).get('slot') == 'rune'), None)
-
-        embed = discord.Embed(
-            title=f"🛡️ Gear — {r_emoji} {name} `#{beast_id}`",
-            description=f"Lv.{beast_row['level']} · `{beast_row['hp']}/{beast_row['max_hp']}HP`",
-            color=COLORS.get(beast_row["rarity"], COLORS["info"])
-        )
-
-        # Equipped armor
-        if armor_id:
-            for aid in (armor_id,):
-                g = all_gear.get(aid, {})
-                gr = RARITY_EMOJI.get(g.get("rarity","common"), "⚪")
-                eff_str = " · ".join(
-                    f"+{v}{'%' if 'percent' in k or 'chance' in k else ''} {k.replace('_',' ').replace(' percent','').replace(' chance','')}"
-                    if isinstance(v, (int,float)) else k.replace('_',' ')
-                    for k,v in g.get("effect",{}).items()
-                )
-                status = dormant_label(g, trainer_level)
-                embed.add_field(name=f"🔰 {gr} {g.get('name','?')}", value=status + '\nEffects are inactive.' if status else eff_str or "Special", inline=False)
-        else:
-            embed.add_field(name="🔰 Armor", value="*None equipped — use `/equip <armor> #{beast_id}`*", inline=False)
-
-        # Equipped rune
-        if rune_id:
-            g  = all_gear.get(rune_id, {})
-            gr = RARITY_EMOJI.get(g.get("rarity","common"), "⚪")
-            eff_str = " · ".join(
-                f"+{v} {k.replace('_',' ')}" if isinstance(v,(int,float)) else k.replace('_',' ')
-                for k,v in g.get("effect",{}).items()
-            )
-            status = dormant_label(g, trainer_level)
-            embed.add_field(name=f"💎 {gr} {g.get('name','?')}", value=status + '\nEffects are inactive.' if status else eff_str or "Special", inline=False)
-        else:
-            embed.add_field(name="💎 Rune", value="*None equipped — use `/equip <rune> #{beast_id}`*", inline=False)
-
-        # Available in inventory
-        available_armor = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot") == "armor"]
-        available_runes = [gid for gid in inv_gear if all_gear.get(gid,{}).get("slot") == "rune"]
-
-        if available_armor:
-            avail_str = "\n".join(
-                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}" + (f" · {dormant_label(all_gear[g], trainer_level)}" if dormant_label(all_gear[g], trainer_level) else '')
-                for g in available_armor if g in all_gear
-            )
-            embed.add_field(name="📦 Armor in Inventory", value=avail_str, inline=False)
-        if available_runes:
-            avail_str = "\n".join(
-                f"  {RARITY_EMOJI.get(all_gear[g].get('rarity','common'),'⚪')} {all_gear[g]['name']}" + (f" · {dormant_label(all_gear[g], trainer_level)}" if dormant_label(all_gear[g], trainer_level) else '')
-                for g in available_runes if g in all_gear
-            )
-            embed.add_field(name="📦 Runes in Inventory", value=avail_str, inline=False)
-
-        if not available_armor and not available_runes and not armor_id and not rune_id:
-            embed.add_field(
-                name="🔍 No Gear Available",
-                value="Open `/craft` to browse recipes, check materials and craft gear.",
-                inline=False
-            )
-
-        embed.set_footer(text="✦ /equip <item> <beast_id> to equip · /unequip <beast_id> to remove")
-        portrait = await gear_art.render_portrait(beast_row['beast_id'], armor_id)
-        if portrait is None:
-            return await interaction.followup.send(embed=embed)
-        with io.BytesIO(portrait.data) as buffer:
-            file = discord.File(buffer, filename=portrait.filename, description=f'{name} equipment appearance.')
-            embed.set_image(url=f'attachment://{portrait.filename}')
-            try:
-                async with asyncio.timeout(15):
-                    await interaction.followup.send(embed=embed, file=file)
-            except discord.HTTPException as error:
-                if isinstance(error, discord.NotFound):
-                    raise
-                logging.getLogger('chibibeasts.gear.art').warning('Equipment portrait rejected (%s); showing gear text', error.status)
-                embed.set_image(url=None)
-                async with asyncio.timeout(15):
-                    await interaction.followup.send(embed=embed)
-            finally:
-                file.close()
+        from utils.gear_view import open_gear
+        return await open_gear(interaction, beast_id)
 
     @app_commands.command(name="equip", description="Equip armor or a rune to a beast ⚔️")
     @app_commands.describe(
@@ -781,8 +668,8 @@ class Utilities(commands.Cog):
         embed=discord.Embed(title="🌱 Your next step",description=("Choose your first companion with /start." if not player.get("starter_claimed") else f"Story: {next_ch['name'] if next_ch else 'The hollow is restored'} · /journal → Story.\n/journal → Companions shows bonds, active selection and awakening milestones."),color=COLORS["info"])
         categories={
             "Your Field Journal": "/journal — Adventure, Companions, Workshop, Story and Activities\nSwitch active companions and review bond awakenings in Companions; open your material bag in Workshop.",
-            "Adventure": "/explore — begin or resume a saved expedition with choices; one charge every 30 minutes, banking up to three\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/npc · /meet · /lore",
-            "Companions": "/collection · /beastinfo · /nickname\n/play · /train · /evolve\n/codex · /bestiary · /typeinfo",
+        "Adventure": "/explore — choose or save a destination; confirm Begin to spend one charge, or resume your saved trip\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/npc · /meet · /lore",
+        "Companions": "/collection — search, filter and open your beasts\n/beastinfo · /nickname · /care\n/play · /train · /evolve\n/codex · /bestiary · /typeinfo",
             "Eggs and items": "/nursery — egg guarantees, hatch choices and family research\n/shop — eggs, consumables and shard purchases\n/hatch — instant eggs\n/incubate · /eggs · /tend — passive incubation and optional care\n/inventory · /use [beast_number]",
             "Builds and trade": "/craft · /gear\n/equip · /unequip · /perks · /perk_equip · /perk_unequip · /perk_use\n/market · /list · /delist · /appraise · /sell · /release · /trade",
             "Guilds and endgame": "/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\n/raidparty — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard",
