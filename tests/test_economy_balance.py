@@ -219,7 +219,10 @@ class EconomyTransactions(DatabaseCase):
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
         async def result(*args, **kwargs):
-            await args[7 if outcome == 'win' else 8](discord.Embed(), {}, {})
+            if outcome == 'win':
+                await args[7](discord.Embed(), {}, {'hp': 0}, False)
+            else:
+                await args[8](discord.Embed(), {}, {'hp': 1})
         for outcome in ('quiet','win','loss'):
             await storage.update_player(42,explore_last_at=0)
             await self.execute('DELETE FROM exploration_energy WHERE user_id=42')
@@ -227,16 +230,31 @@ class EconomyTransactions(DatabaseCase):
             view = await Hatch.explore.callback(Hatch(None), interaction())
             self.addCleanup(view.stop)
             trip = view.trip
-            if outcome != 'quiet':
+            self.assertEqual(trip['payload']['adventure_version'], 2)
+            if outcome == 'quiet':
+                for choice in ('shrine', 'repair', 'detour'):
+                    trip = await expeditions.choose(42, trip['id'], trip['version'], choice)
+            else:
                 with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('fairy')):
                     trip = await expeditions.choose(42, trip['id'], trip['version'], 'tracks')
                 trip = await expeditions.choose(42, trip['id'], trip['version'], 'challenge')
                 with patch('cogs.battle.run_pve_battle', side_effect=result):
                     trip = await expeditions.run_battle(interaction(), trip)
+                self.assertEqual(trip['payload']['encounter_result'], 'won' if outcome == 'win' else 'escaped')
+                followup = 'practice' if outcome == 'win' else 'calm'
+                trip = await expeditions.choose(42, trip['id'], trip['version'], followup)
+            self.assertEqual(trip['payload']['completed'], 3)
             self.assertEqual(sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials')), before)
-            await expeditions.choose(42, trip['id'], trip['version'], 'return_early')
+            done = await expeditions.choose(42, trip['id'], trip['version'], 'return')
             after=sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
             self.assertEqual(after-before,1,outcome)
+            self.assertTrue(done['payload']['material_granted'])
+            self.assertEqual(done['payload']['caught'], outcome == 'win')
+            self.assertLessEqual(done['payload']['gold'], int(done['payload']['base_gold'] * 1.25))
+            self.assertLessEqual(done['payload']['exp'], int(done['payload']['base_exp'] * 1.25))
+            with self.assertRaises(ValueError):
+                await expeditions.choose(42, trip['id'], trip['version'], 'return')
+            self.assertEqual(sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials')), after)
 
     async def test_workshop_explains_effects_and_respects_discord_limits(self):
         import discord
@@ -316,9 +334,13 @@ class EconomyTransactions(DatabaseCase):
         view = await Hatch.explore.callback(Hatch(None), interaction())
         self.addCleanup(view.stop)
         trip = view.trip
-        expected = round(trip['payload']['exp'] * 1.15)
+        self.assertEqual(trip['payload']['adventure_version'], 2)
+        for choice in ('shrine', 'repair', 'detour'):
+            trip = await expeditions.choose(42, trip['id'], trip['version'], choice)
+        self.assertEqual(trip['payload']['completed'], 3)
+        expected = round(trip['payload']['base_exp'] * 1.15)
         with patch('utils.rewards.player_exp', wraps=rewards.player_exp) as award:
-            done = await expeditions.choose(42, trip['id'], trip['version'], 'return_early')
+            done = await expeditions.choose(42, trip['id'], trip['version'], 'return')
             await expeditions.report({**done, 'reported': 0})
         self.assertEqual(award.await_count, 1)
         self.assertEqual(award.call_args.args[2], expected)

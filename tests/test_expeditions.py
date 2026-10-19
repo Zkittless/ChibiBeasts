@@ -12,6 +12,11 @@ from utils.duels import active_fighters, reserve_fighters
 
 
 class Expeditions(DatabaseCase):
+    # These regression cases intentionally exercise trips saved by the original
+    # two-stop journal. New default adventures have their own branch tests.
+    async def legacy_begin(self, *args, **kwargs):
+        return await trips.begin(*args, legacy=True, **kwargs)
+
     async def ready(self, level=1):
         row_id = await self.beast('twine', starter=True)
         await storage.update_player(42, level=level)
@@ -30,7 +35,7 @@ class Expeditions(DatabaseCase):
         self.assertEqual((await trips.energy(42, now=2800)).charges, 1)
         self.assertEqual((await trips.energy(42, now=100000)).charges, 3)
         await self.ready()
-        trip = await trips.begin(42, 'woods', now=100000)
+        trip = await self.legacy_begin(42, 'woods', now=100000)
         self.assertEqual((await trips.energy(42, now=100000)).next_in, 1800)
         await self.pick(trip, 'return_early')
 
@@ -46,19 +51,19 @@ class Expeditions(DatabaseCase):
         await self.ready()
         for destination in ('wrong', 'loom'):
             with self.assertRaises(ValueError):
-                await trips.begin(42, destination)
+                await self.legacy_begin(42, destination)
         self.assertEqual(await self.rows('SELECT * FROM exploration_energy'), [])
         with reserve_fighters([42]):
             with self.assertRaises(ValueError):
-                await trips.begin(42, 'woods')
+                await self.legacy_begin(42, 'woods')
         await self.execute('UPDATE player_beasts SET hp=0 WHERE user_id=42')
         with self.assertRaisesRegex(ValueError, 'recovery'):
-            await trips.begin(42, 'woods')
+            await self.legacy_begin(42, 'woods')
         self.assertEqual(await self.rows('SELECT * FROM exploration_energy'), [])
 
     async def test_two_panels_cannot_start_two_trips_or_double_spend(self):
         await self.ready()
-        results = await asyncio.gather(trips.begin(42, 'woods'), trips.begin(42, 'woods'), return_exceptions=True)
+        results = await asyncio.gather(self.legacy_begin(42, 'woods'), self.legacy_begin(42, 'woods'), return_exceptions=True)
         self.assertEqual(sum(isinstance(r, ValueError) for r in results), 1)
         self.assertEqual(len(await self.rows('SELECT * FROM expeditions')), 1)
         self.assertEqual((await trips.energy(42)).charges, 0)
@@ -67,18 +72,18 @@ class Expeditions(DatabaseCase):
     async def test_quick_and_branching_share_the_same_budget_and_active_trip_guard(self):
         await self.ready()
         await self.bank(1)
-        quick = await trips.begin(42, 'woods', quick=True, now=10000)
+        quick = await self.legacy_begin(42, 'woods', quick=True, now=10000)
         with self.assertRaisesRegex(ValueError, 'underway'):
-            await trips.begin(42, 'woods', now=10000)
+            await self.legacy_begin(42, 'woods', now=10000)
         await trips.finish_quick(42, quick['id'])
         with self.assertRaisesRegex(ValueError, 'next exploration charge'):
-            await trips.begin(42, 'woods', now=10000)
+            await self.legacy_begin(42, 'woods', now=10000)
         self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
         self.assertIsNone(await trips.read(42, quick['id']))
 
     async def test_wrong_owner_stale_revision_and_unoffered_choice_are_rejected(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         with self.assertRaises(ValueError):
             await trips.choose(43, trip['id'], 0, 'gather')
         with self.assertRaises(ValueError):
@@ -92,7 +97,7 @@ class Expeditions(DatabaseCase):
 
     async def test_gathering_preserves_material_rarity_and_grants_exactly_one(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods', rng=random.Random(7))
+        trip = await self.legacy_begin(42, 'woods', rng=random.Random(7))
         mats = load_catalog('materials.json')['materials']
         self.assertEqual(len({mats[m]['rarity'] for m in trip['payload']['offered']}), 1)
         trip = await self.pick(trip, 'gather')
@@ -106,7 +111,7 @@ class Expeditions(DatabaseCase):
         first = await self.ready()
         second = await self.beast('slime')
         await self.execute('UPDATE player_beasts SET happiness=50 WHERE user_id=42')
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         trip = await self.pick(trip, 'shrine')
         trip = await self.pick(trip, 'repair')
         await storage.set_active_companion(42, 2)
@@ -117,7 +122,7 @@ class Expeditions(DatabaseCase):
 
     async def test_optional_observation_adds_to_landmark_bond_without_an_extra_material(self):
         await self.ready()
-        trip = await self.pick(await trips.begin(42, 'woods'), 'shrine')
+        trip = await self.pick(await self.legacy_begin(42, 'woods'), 'shrine')
         trip = await self.pick(trip, 'repair')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')):
             trip = await self.pick(trip, 'rustle')
@@ -129,14 +134,14 @@ class Expeditions(DatabaseCase):
     async def test_rest_is_integer_capped_and_does_not_revive(self):
         row_id = await self.ready()
         await self.execute('UPDATE player_beasts SET hp=max_hp-1 WHERE id=?', (row_id,))
-        trip = await self.pick(await trips.begin(42, 'woods'), 'shrine')
+        trip = await self.pick(await self.legacy_begin(42, 'woods'), 'shrine')
         trip = await self.pick(trip, 'rest')
         await self.pick(trip, 'return')
         row = (await storage.get_player_beasts(42))[0]
         self.assertEqual(row['hp'], row['max_hp'])
         self.assertIsInstance(row['hp'], int)
         await self.bank()
-        trip = await self.pick(await trips.begin(42, 'woods'), 'shrine')
+        trip = await self.pick(await self.legacy_begin(42, 'woods'), 'shrine')
         trip = await self.pick(trip, 'rest')
         await self.execute('UPDATE player_beasts SET hp=0 WHERE id=?', (row_id,))
         await self.pick(trip, 'return')
@@ -144,7 +149,7 @@ class Expeditions(DatabaseCase):
 
     async def test_return_is_atomic_idempotent_and_reports_progress_once(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         results = await asyncio.gather(self.pick(trip, 'return_early'), self.pick(trip, 'return_early'), return_exceptions=True)
         self.assertEqual(sum(isinstance(r, ValueError) for r in results), 1)
         self.assertEqual(sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials')), 1)
@@ -156,7 +161,7 @@ class Expeditions(DatabaseCase):
 
     async def test_failed_settlement_rolls_back_all_rewards_and_can_retry(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         before = await storage.get_player(42)
         with patch('utils.rewards.player_exp', side_effect=RuntimeError('transaction failure')):
             with self.assertRaises(RuntimeError):
@@ -168,7 +173,7 @@ class Expeditions(DatabaseCase):
 
     async def test_single_friendly_roll_no_second_encounter_and_one_catch(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods', guild_id=7)
+        trip = await self.legacy_begin(42, 'woods', guild_id=7)
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')) as encounter:
             trip = await self.pick(trip, 'tracks', rng=random.Random(31))
             self.assertTrue(trip['payload']['friendly'])
@@ -183,7 +188,7 @@ class Expeditions(DatabaseCase):
 
     async def test_failed_approach_ends_encounter_and_keeps_material(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')):
             trip = await self.pick(trip, 'tracks', rng=random.Random(0))
         trip = await self.pick(trip, 'approach')
@@ -195,14 +200,16 @@ class Expeditions(DatabaseCase):
 
     async def test_battle_uses_existing_runner_once_and_banks_catch_on_return(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')):
             trip = await self.pick(trip, 'tracks')
         trip = await self.pick(trip, 'challenge')
 
         async def battle(interaction, row, data, perks, enemy, personality, title, win, loss, **kwargs):
             self.assertIn(42, active_fighters)
-            self.assertEqual(kwargs, {'reserved': True, 'realm': 'woods'})
+            self.assertEqual(kwargs['reserved'], True)
+            self.assertEqual(kwargs['realm'], 'woods')
+            self.assertEqual([member['id'] for member in kwargs['party_rows']], [row['id']])
             await win(discord.Embed(), {}, {'hp': 0}, False)
 
         with patch('cogs.battle.run_pve_battle', side_effect=battle) as runner:
@@ -218,7 +225,7 @@ class Expeditions(DatabaseCase):
 
     async def test_restart_recovers_battle_without_replaying_or_losing_supplies(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')):
             trip = await self.pick(trip, 'tracks')
         trip = await self.pick(trip, 'challenge')
@@ -232,7 +239,7 @@ class Expeditions(DatabaseCase):
 
     async def test_deleted_battle_message_releases_fighter_and_resumes_trip(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')):
             trip = await self.pick(trip, 'tracks')
         trip = await self.pick(trip, 'challenge')
@@ -246,7 +253,7 @@ class Expeditions(DatabaseCase):
 
     async def test_cancelled_battle_and_duplicate_launch_keep_one_runner_and_release(self):
         await self.ready()
-        trip = await trips.begin(42, 'woods')
+        trip = await self.legacy_begin(42, 'woods')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')):
             trip = await self.pick(trip, 'tracks')
         trip = await self.pick(trip, 'challenge')
@@ -278,7 +285,7 @@ class Expeditions(DatabaseCase):
         await self.execute("INSERT INTO guilds(id,name) VALUES(3,'Library')")
         await self.execute('INSERT INTO guild_members(guild_id,user_id) VALUES(3,42)')
         await self.execute('INSERT INTO guild_sanctuary(guild_id,arcane_library) VALUES(3,1)')
-        trip = await trips.begin(42, 'loom')
+        trip = await self.legacy_begin(42, 'loom')
         trip = await self.pick(trip, 'tracks')
         self.assertEqual(trip['payload']['encounter'], 'loom_fragment')
         trip = await self.pick(trip, 'observe')
@@ -293,7 +300,7 @@ class Expeditions(DatabaseCase):
         await self.execute("INSERT INTO guilds(id,name) VALUES(3,'Observatory')")
         await self.execute('INSERT INTO guild_members(guild_id,user_id) VALUES(3,42)')
         await self.execute('INSERT INTO guild_sanctuary(guild_id,celestial_observatory) VALUES(3,1)')
-        trip = await trips.begin(42, 'loom')
+        trip = await self.legacy_begin(42, 'loom')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('genesis')) as encounter:
             await self.pick(trip, 'tracks')
         rates = encounter.call_args.args[0]

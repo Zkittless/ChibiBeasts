@@ -301,6 +301,7 @@ class BattleDispatch(DatabaseCase):
                 await journal_choice(journal, 'tracks')
                 await asyncio.wait_for(journal_choice(journal, 'challenge'), 8)
                 self.assertEqual([b['beast_id'] for b in await storage.get_player_beasts(42)].count('slime'), 0)
+                await journal_choice(journal, 'camp')
                 await journal_choice(journal, 'return')
             self.assertEqual(len(prompts), 3)
             self.assertTrue(all(view is prompts[0] for view in prompts))

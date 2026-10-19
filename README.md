@@ -20,6 +20,10 @@ Each region has a deeper destination, giving ten fixed encounter bands from comp
 
 Exploration regenerates **one charge every 30 minutes**, banking up to **three**. `/explore` opens the Field Journal and begins a saved expedition in your chosen destination, or resumes your current trip without spending another charge. Remaining charges and the next recharge stay visible while you follow tracks, choose a gathering find, or visit a landmark for bond, study or rest. Trips save after every choice; reopen `/explore` or `/journal` to resume. Return home to bank the trip's single reward bundle. The legacy `expedition` option uses this same flow for either value. `/challenge` retains its 20-minute timer and `/play` its two hours. Equipped time perks reduce the relevant timers. Encounters use regional species pools and exclude starter and evolution-only forms.
 
+## Adventure teams
+
+Open `/journal` → **Companions** → **Adventure team** to bring your lead and up to two reserves. Wild encounters support tactical swaps, a shared bench-assist meter, and bounded XP for all travelling companions. New expeditions have three linked stops, optional deeper discoveries, companion abilities, rescues and one recovery camp. Earlier choices affect later paths; the team and every choice save between visits. See [adventure rules and balance limits](docs/ADVENTURE-TEAMS.md).
+
 ## Starter awakenings
 
 Each starter has its own Rare bond evolution, with a distinct silhouette and new passive:

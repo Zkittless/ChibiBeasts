@@ -1,5 +1,6 @@
 import aiosqlite
 import os
+import json
 from utils.artwork import PROJECT_ROOT, beast_image_url
 
 DB_PATH = str(PROJECT_ROOT / 'db' / 'chibibeast.db')
@@ -374,6 +375,10 @@ async def _run_migrations():
             CREATE TABLE IF NOT EXISTS journal_goals (
                 user_id INTEGER PRIMARY KEY, kind TEXT NOT NULL, target TEXT NOT NULL,
                 expected_species TEXT NOT NULL DEFAULT '');
+            CREATE TABLE IF NOT EXISTS adventure_team (
+                user_id INTEGER NOT NULL, slot INTEGER NOT NULL CHECK(slot IN (1,2)),
+                beast_row_id INTEGER NOT NULL,
+                PRIMARY KEY(user_id,slot), UNIQUE(user_id,beast_row_id));
         """)
         await db.executescript("""
             CREATE INDEX IF NOT EXISTS ix_beasts_owner_number ON player_beasts(user_id,player_number);
@@ -525,13 +530,26 @@ async def set_active_companion(user_id, number, *, expected_row_id=None):
                 raise ValueError(f'Companion #{number} is not in your collection.')
             if expected_row_id is not None and row['id'] != expected_row_id:
                 raise ValueError('That companion changed. Refresh your collection before choosing it.')
+            async with db.execute("SELECT payload FROM expeditions WHERE user_id=? AND status IN ('active','battle')", (user_id,)) as c:
+                trip = await c.fetchone()
+            if trip and json.loads(trip[0]).get('adventure_version', 0) >= 2:
+                raise ValueError('Return from your saved expedition before changing your team leader.')
             if is_knocked_out(dict(row)) or row['hp'] <= 0:
                 raise ValueError('Let this companion recover before making it active.')
             async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (row['id'],)) as c:
                 if await c.fetchone():
                     raise ValueError('Delist this companion before making it active.')
+            async with db.execute('SELECT id FROM player_beasts WHERE user_id=? AND is_active=1', (user_id,)) as c:
+                previous = await c.fetchone()
+            async with db.execute('SELECT slot FROM adventure_team WHERE user_id=? AND beast_row_id=?', (user_id, row['id'])) as c:
+                promoted = await c.fetchone()
             await db.execute('UPDATE player_beasts SET is_active=0 WHERE user_id=? AND is_active=1', (user_id,))
             await db.execute('UPDATE player_beasts SET is_active=1 WHERE user_id=? AND id=?', (user_id, row['id']))
+            await db.execute('DELETE FROM adventure_team WHERE user_id=? AND beast_row_id=?', (user_id, row['id']))
+            if promoted and previous and previous[0] != row['id']:
+                # Promoting a chosen teammate preserves the three-member roster.
+                await db.execute('DELETE FROM adventure_team WHERE user_id=? AND beast_row_id=?', (user_id, previous[0]))
+                await db.execute('INSERT INTO adventure_team VALUES(?,?,?)', (user_id, promoted[0], previous[0]))
             await db.commit()
 
 # KO recovery time by rarity (seconds)

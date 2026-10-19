@@ -45,7 +45,9 @@ class ExploreJournalFlow(DatabaseCase):
             trip_id = trip_id or view.trip['id']
             self.assertEqual(view.trip['id'], trip_id)
             self.assertEqual(view.trip['payload']['mode'], 'expedition')
+            self.assertEqual(view.trip['payload']['adventure_version'], 2)
             self.assertEqual(view.trip['payload']['stage'], 0)
+            self.assertIn('0/3 stops completed', self.text(view))
             self.assertIn('Exploration 0/3', self.text(view))
             self.assertIn('Next charge in', self.text(view))
             self.assertEqual({o.value.rsplit(':', 1)[1] for o in view.path_select.options},
@@ -67,8 +69,20 @@ class ExploreJournalFlow(DatabaseCase):
         self.assertEqual(resumed.trip['id'], saved['id'])
         self.assertEqual(resumed.trip['realm'], 'woods')
         self.assertEqual(resumed.trip['payload']['stage'], 2)
+        self.assertEqual(resumed.trip['payload']['history'], view.trip['payload']['history'])
+        # Gathering leads to one saved, seeded consequence. Complete that third
+        # stop through its real UI controls before taking the normal path home.
+        followups = {'obstacle': 'detour', 'merchant': 'assist', 'rescue': 'rescue'}
+        self.assertIn(resumed.trip['payload']['event'], followups)
+        self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
+        await self.pick(resumed, followups[resumed.trip['payload']['event']])
+        self.assertEqual(resumed.trip['payload']['completed'], 3)
+        self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
         await self.pick(resumed, 'return')
         self.assertEqual(resumed.trip['status'], 'complete')
+        self.assertTrue(resumed.trip['payload']['material_granted'])
+        self.assertLessEqual(resumed.trip['payload']['gold'], int(resumed.trip['payload']['base_gold'] * 1.25))
+        self.assertLessEqual(resumed.trip['payload']['exp'], int(resumed.trip['payload']['base_exp'] * 1.25))
         self.assertEqual(sum(row['quantity'] for row in await self.rows('SELECT quantity FROM player_materials')), 1)
         self.assertEqual((await expeditions.energy(42)).charges, 0)
 

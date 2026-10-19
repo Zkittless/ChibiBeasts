@@ -74,8 +74,15 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             if effect.get('reduce_incubation_percent') or effect.get('reduce_incubation_hours'):
                 messages.append(await shorten_incubation(db, user_id, hours=effect.get('reduce_incubation_hours', 0), percent=effect.get('reduce_incubation_percent', 0)))
             if effect.get('revive_party'):
-                await db.execute('UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND (raid_slot IS NOT NULL OR is_active=1)', (user_id,))
-                messages.append('Your active companion and raid party are fully recovered.')
+                if updated_party:
+                    targets = list(dict.fromkeys(member['id'] for member in updated_party))
+                    placeholders = ','.join('?' for _ in targets)
+                    await db.execute(f'UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND id IN ({placeholders})', (user_id, *targets))
+                    messages.append('Your current battle team is fully recovered.')
+                else:
+                    await db.execute('UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND '
+                                     '(raid_slot IS NOT NULL OR is_active=1 OR id IN (SELECT beast_row_id FROM adventure_team WHERE user_id=?))', (user_id, user_id))
+                    messages.append('Your active companion and assigned teams are fully recovered.')
                 for member in updated_party:
                     member.update(hp=member['max_hp'], status=None, status_turns=0, ko_recorded=False)
             elif effect.get('revive'):
@@ -86,7 +93,7 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
                 await db.execute('UPDATE player_beasts SET hp=?,knocked_out_until=NULL WHERE id=?', (hp, beast['id']))
                 messages.append(f'Revived with {hp} HP.')
                 if updated:
-                    updated.update(hp=hp, status=None, status_turns=0, ko_recorded=False)
+                    updated.update(hp=max(1, int(updated['max_hp'] * effect.get('heal_percent', 50) / 100)), status=None, status_turns=0, ko_recorded=False)
             elif effect.get('heal_percent'):
                 if storage.is_knocked_out(beast) or target['hp'] <= 0:
                     raise ValueError('A knocked-out companion needs a revive before ordinary healing.')

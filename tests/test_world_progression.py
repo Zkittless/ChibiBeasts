@@ -127,6 +127,7 @@ class WorldRewardFlow(DatabaseCase):
         import json
         await self.execute('UPDATE expeditions SET payload=? WHERE id=?', (json.dumps(trip['payload']), trip['id']))
         trip = await self.pick(trip, 'approach')
+        trip = await self.pick(trip, 'camp')
         trip = await self.pick(trip, 'return')
         caught = next(r for r in await storage.get_player_beasts(42) if r['beast_id'] == 'wisp')
         self.assertEqual(caught['level'], level)
@@ -146,6 +147,7 @@ class WorldRewardFlow(DatabaseCase):
         self.assertFalse(result['payload']['caught'])
 
     async def test_shared_pve_xp_is_identical_for_wild_and_aggressive_encounters(self):
+        from cogs.battle import run_pve_battle
         row_id = await self.ready()
         gains = []
         for personality in ('wild', 'aggressive'):
@@ -156,14 +158,15 @@ class WorldRewardFlow(DatabaseCase):
                 states[1]['hp'] = 0
                 return 0, states, [], False
 
-            with patch('utils.duels.duel', side_effect=finished), patch('utils.duels.beast_exp', new=AsyncMock(return_value=1)) as grant:
+            with patch('utils.duels.duel', side_effect=finished), patch('utils.adventure_party.award_xp', new=AsyncMock(return_value=[])) as grant:
                 await run_pve_battle(interaction(), row, storage.get_beast_data('twine'), [], enemy, personality,
                                      'Wild Slime', AsyncMock(), AsyncMock())
-                gains.append(grant.call_args.args[2])
+                gains.append(grant.call_args.args[3])
         self.assertEqual(gains[0], gains[1])
         self.assertLess(gains[0], 40)
 
     async def test_standing_enemy_win_is_reduced_and_does_not_record_a_clean_win(self):
+        from cogs.battle import run_pve_battle
         await self.ready()
         row = await storage.get_active_beast(42)
         enemy = build_pve_beast_state(storage.get_beast_data('slime'), 3)
@@ -172,11 +175,11 @@ class WorldRewardFlow(DatabaseCase):
         async def finished(click, states, *args, **kwargs):
             return 0, states, [], False
 
-        with patch('utils.duels.duel', side_effect=finished), patch('utils.duels.beast_exp', new=AsyncMock(return_value=1)) as grant:
+        with patch('utils.duels.duel', side_effect=finished), patch('utils.adventure_party.award_xp', new=AsyncMock(return_value=[])) as grant:
             await run_pve_battle(interaction(), row, storage.get_beast_data('twine'), [], enemy, 'aggressive',
                                  'Wild Slime', win, AsyncMock())
         self.assertTrue(win.call_args.args[-1])
-        self.assertLess(grant.call_args.args[2], 10)
+        self.assertLess(grant.call_args.args[3], 10)
         self.assertEqual((await storage.get_player(42))['wins'], 0)
 
     async def test_fresh_trainers_cannot_claim_any_npc_daily_slot(self):
@@ -267,6 +270,6 @@ class WorldRewardFlow(DatabaseCase):
             trip = await self.pick(trip, 'gather')
             trip = await self.pick(trip, 'material:' + target)
             before = sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
-            await self.pick(trip, 'return')
+            await self.pick(trip, 'return_early')
             after = sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
             self.assertEqual(after - before, 1)

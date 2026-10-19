@@ -1,0 +1,258 @@
+"""Pure, saved expedition pages. Choices change the next stop, never reroll it.
+
+All pages and their exact offers are persisted with the trip. The seeded flavour
+selector varies trips without making reopening a journal a new random roll.
+"""
+import hashlib
+
+REGIONS = {
+    'woods': dict(trail='fern-covered fork', tracks='small prints beneath bent ferns',
+                  gather='a mossy grove', landmark='a root-bound wayside shrine',
+                  obstacle='A stream has washed away the little footbridge.',
+                  ability={'water': 'find a shallow crossing', 'wind': 'scout a dry crossing',
+                           'earth': 'brace a stepping-stone path', 'nature': 'weave a vine crossing'},
+                  rescue='A hatchling is tangled in abandoned twine.',
+                  deep='A windstorm has exposed a hollow beneath an ancient oak.'),
+    'ember': dict(trail='split basalt trail', tracks='warm claw marks in the ash',
+                  gather='a sheltered mineral seam', landmark='a soot-covered pilgrim marker',
+                  obstacle='Loose cinders slide across the narrow ravine path.',
+                  ability={'fire': 'read the cooling cinders', 'earth': 'steady the loose rock',
+                           'wind': 'clear the ash from the safe path', 'water': 'cool a short crossing'},
+                  rescue='A hatchling is stranded on a cooling basalt shelf.',
+                  deep='A cooling vent has revealed an old firekeeper vault.'),
+    'glacial': dict(trail='snow-dusted fork', tracks='fresh prints beside wind-carved ice',
+                    gather='a sheltered frost garden', landmark='a frozen trailkeeper monument',
+                    obstacle='A frozen bridge creaks above a snow-filled gully.',
+                    ability={'ice': 'reinforce the ice', 'fire': 'reveal the buried handrail',
+                             'wind': 'find the sheltered ledge', 'earth': 'anchor a safe rope route'},
+                    rescue='A hatchling is stuck in a drift beside its empty nest.',
+                    deep='The clouds part above an abandoned summit observatory.'),
+    'trenches': dict(trail='fork in the reef passage', tracks='fresh ripples beside a coral arch',
+                     gather='a sheltered tide pool', landmark='a barnacle-covered beacon',
+                     obstacle='A strong current cuts across the reef passage.',
+                     ability={'water': 'guide the team through a still channel',
+                              'shadow': 'find shelter beneath the reef',
+                              'light': 'signal the safe reef markers', 'earth': 'anchor a guide rope'},
+                     rescue='A hatchling is caught in a discarded fishing net.',
+                     deep='The tide reveals a sealed chamber in a sunken watchtower.'),
+    'loom': dict(trail='fork between drifting starstones', tracks='faint motes around a broken constellation',
+                 gather='a quiet crystal outcrop', landmark='an unlit celestial waystone',
+                 obstacle='Floating stones drift out of alignment across the gap.',
+                 ability={'cosmic': 'read the orbit of the stones', 'arcane': 'steady their rhythm',
+                          'light': 'reveal the old crossing marks', 'wind': 'scout the next safe orbit'},
+                 rescue='A hatchling is trapped inside a flickering starstone ring.',
+                 deep='A passing constellation opens an ancient stargazer chamber.'),
+}
+
+
+def _variant(p, values, salt):
+    value = hashlib.sha256(f"{p['seed']}:{salt}".encode()).digest()
+    return values[int.from_bytes(value[:4], 'big') % len(values)]
+
+
+def _choice(value, label, description):
+    return dict(value=value, label=label, description=description)
+
+
+def initialize(p, realm, seed, party):
+    p.update(adventure_version=2, seed=str(seed), event='trailhead', completed=0,
+             target_stops=3, history=[], flags={}, camp_used=False, push_used=False,
+             bonus=0, base_gold=p['gold'], party_ids=[r['id'] for r in party],
+             party=[dict(id=r['id'], name=r.get('nickname') or r.get('name') or r['beast_id'],
+                         type=r.get('type', '')) for r in party],
+             participations={}, party_xp=[], material_granted=False, battle_awarded=False)
+    page(p, realm, 'trailhead')
+
+
+def page(p, realm, event):
+    r = REGIONS[realm]
+    choices = []
+    if event == 'trailhead':
+        title = 'Choose your trail'
+        body = f"Your team reaches a {r['trail']}. Decide what to investigate together."
+        choices = [_choice('tracks', 'Follow the tracks', f"Investigate {r['tracks']}; one wild encounter."),
+                   _choice('gather', 'Search for supplies', f"Search {r['gather']}; choose your one material bundle."),
+                   _choice('shrine', 'Visit the landmark', f"Investigate {r['landmark']}; study, repair, or make camp.")]
+    elif event == 'creature':
+        title = 'A creature on the trail'
+        body = f"Following {r['tracks']}, you spot a wild companion. Choose one approach; it will not wait for another try."
+        choices = [_choice('challenge', 'Challenge together', 'Fight with your saved team; a win befriends this creature.'),
+                   _choice('approach', 'Approach gently', 'Use the usual friendship chance; it may leave.'),
+                   _choice('observe', 'Observe quietly', 'Learn its habits and leave it undisturbed.')]
+    elif event == 'gathering':
+        from utils.catalog import load_catalog
+        materials = load_catalog('materials.json')['materials']
+        title, body = 'One bundle for the journey', f"At {r['gather']}, your team finds several useful materials. You have room for one bundle."
+        choices = [_choice('material:' + mid, materials[mid]['name'], 'Save this material for your return; no extra bundle is added.') for mid in p['offered']]
+    elif event == 'landmark':
+        title, body = 'A little care goes a long way', f"You arrive at {r['landmark']}. The trail beyond it is quiet."
+        choices = [_choice('repair', 'Repair the landmark', 'Build bond together; restored markers reveal a sheltered route.'),
+                   _choice('study', 'Study its markings', 'Earn a small expedition XP bonus and find a forgotten trail.')]
+        if not p['camp_used']:
+            choices.append(_choice('rest', 'Make a short camp', 'Restore 5% max HP to healthy teammates; once per trip, no revives.'))
+    elif event == 'obstacle':
+        title, body = 'A crossing to solve', r['obstacle']
+        if p['flags'].get('directions'):
+            body += ' Your earlier discovery marks a sheltered way across.'
+        choices = [_choice('detour', 'Take the marked detour', 'A safe route for every team; your saved supplies stay secure.'),
+                   _choice('cross', 'Cross carefully', 'Scout together, then cross; costs up to 3% max HP to healthy teammates.')]
+        for member in p['party']:
+            ability = r['ability'].get(member['type'])
+            if ability:
+                choices.insert(0, _choice('help:' + str(member['id']), f"Ask {member['name']}"[:100],
+                                          ability.capitalize() + '; no HP cost, a small teamwork bonus.'))
+    elif event == 'rescue':
+        title, body = 'A small traveller needs help', r['rescue'] + ' Helping it will not add another catch.'
+        if p['flags'].get('observed'):
+            body += ' The habits you observed show you how to calm it.'
+        choices = [_choice('rescue', 'Free it patiently', 'Build team bond; its family reveals a sheltered place deeper in.'),
+                   _choice('calm', 'Calm it from a distance', 'Learn safely; its calls reveal a trail clue.'),
+                   _choice('leave', 'Leave it space', 'Avoid disturbing the nest and continue home.')]
+    elif event == 'merchant':
+        title, body = 'A travelling mapmaker', 'A stranded mapmaker is trying to recover a windblown route chart.'
+        choices = [_choice('assist', 'Help recover the chart', 'Build bond and mark a safer route deeper in.'),
+                   _choice('listen', 'Trade trail stories', 'Learn a little and hear about a hidden landmark.')]
+    elif event == 'camp':
+        title, body = 'A sheltered clearing', 'Your earlier choice leads the team to a quiet shelter beside the trail.'
+        choices = [_choice('practice', 'Practise as a team', 'Build bond and prepare for the journey home.'),
+                   _choice('survey', 'Survey the way ahead', 'Record a useful trail clue for a deeper stop.')]
+        if not p['camp_used']:
+            choices.insert(0, _choice('camp', 'Share a short camp', 'Restore 5% max HP to healthy teammates; once per trip, no revives.'))
+    elif event == 'discovery':
+        title, body = 'A forgotten trail', 'The old markings lead to a hidden lookout with a view of the region.'
+        choices = [_choice('map', 'Map the hidden trail', 'Record a small expedition reward bonus and a safer deep route.'),
+                   _choice('watch', 'Watch the wildlife', 'Build bond together; this is not a second catch encounter.')]
+    elif event == 'deep':
+        title, body = 'One more discovery', r['deep']
+        if p['flags'].get('directions') or p['flags'].get('sanctuary'):
+            body += ' Your earlier trail clue reveals a sheltered entrance.'
+            choices.append(_choice('sheltered', 'Use the sheltered entrance', 'Earn a 10% bundle bonus without another HP cost.'))
+        choices.extend([_choice('venture', 'Investigate the unstable chamber', 'Earn a 15% bundle bonus; costs up to another 4% max HP, no extra catch or material.'),
+                        _choice('sketch', 'Sketch from the entrance', 'Earn a 5% bundle bonus and return safely.')])
+    else:
+        title, body = 'The path home', 'Your team has finished its planned stops. Bank the journey, or risk one final discovery.'
+        choices = [_choice('return', 'Return and bank rewards', 'Claim the single earned reward bundle for this trip.')]
+        if not p['push_used']:
+            choices.append(_choice('push', 'Push a little deeper', 'One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material.'))
+        else:
+            body = 'Your team has finished the deeper stop. It is time to head home.'
+    p.update(event=event, page=dict(title=title, body=body, choices=choices), stage=p['completed'])
+
+
+def _complete(p, choice):
+    p['history'].append(dict(event=p['event'], choice=choice))
+    p['completed'] += 1
+    p['stage'] = p['completed']
+    if p['party_ids']:
+        lead = str(p['party_ids'][0])
+        p['participations'][lead] = p['participations'].get(lead, 0) + 1
+
+
+def resolve(p, realm, choice):
+    """Advance a validated action and return bounded effects for the DB writer."""
+    event, effects = p['event'], {}
+    if choice == 'push':
+        p.update(push_used=True, target_stops=4)
+        p['history'].append(dict(event=event, choice=choice))
+        effects['damage'] = 4
+        page(p, realm, 'deep')
+        return effects
+    if choice == 'challenge':
+        return dict(battle=True)
+    _complete(p, choice)
+    if event == 'trailhead':
+        p['route'] = choice
+        next_event = {'tracks': 'creature', 'gather': 'gathering', 'shrine': 'landmark'}[choice]
+        effects['encounter'] = choice == 'tracks'
+    elif event == 'creature':
+        if choice == 'approach':
+            p.update(caught=bool(p['friendly']), encounter_result='befriended' if p['friendly'] else 'escaped')
+            p['notes'].append('The creature chose to come closer.' if p['friendly'] else 'The creature slipped back into its habitat.')
+        elif choice == 'observe':
+            p.update(encounter_result='observed', bond=p['bond'] + 1)
+            p['flags']['observed'] = True
+            p['notes'].append('You learned the local creatures\' habits without disturbing them.')
+        next_event = 'rescue' if p.get('encounter_result') in ('observed', 'escaped', 'interrupted') else 'camp'
+    elif event == 'gathering':
+        p['material'] = choice.split(':', 1)[1]
+        p['notes'].append('Your team packed one material bundle for the return journey.')
+        next_event = _variant(p, ('obstacle', 'merchant', 'rescue'), 'gather-followup')
+    elif event == 'landmark':
+        if choice == 'repair':
+            p['bond'] += 2
+            p['happiness'] += 5
+            p['flags']['directions'] = True
+            next_event = 'obstacle'
+            p['notes'].append('Restored trail markers revealed a safe way across.')
+        elif choice == 'study':
+            p['bonus'] += 5
+            next_event = 'discovery'
+            p['notes'].append('The landmark\'s markings revealed a forgotten trail.')
+        else:
+            p['camp_used'] = True
+            p['happiness'] += 3
+            effects['heal'] = 5
+            next_event = 'merchant'
+            p['notes'].append('Your team shared its one short recovery camp.')
+    else:
+        next_event = 'homeward'
+        if choice.startswith('help:'):
+            helper = choice.split(':', 1)[1]
+            p['participations'][helper] = p['participations'].get(helper, 0) + 1
+            effects['helper_id'] = int(helper)
+            p['bonus'] += 5
+            p['flags']['directions'] = True
+            p['notes'].append('A teammate found a safe crossing with its natural ability.')
+        elif choice == 'cross':
+            effects['damage'] = 3
+            p['bonus'] += 5
+            p['notes'].append('The team crossed carefully, picking up a few scrapes.')
+        elif choice in ('rescue', 'assist'):
+            p['bond'] += 1
+            p['flags']['sanctuary' if choice == 'rescue' else 'directions'] = True
+            p['notes'].append('Helping a traveller revealed a sheltered route deeper in.')
+        elif choice in ('calm', 'listen', 'survey', 'map'):
+            p['flags']['directions'] = True
+            p['bonus'] += 5
+            p['notes'].append('Your team recorded a useful route clue.')
+        elif choice in ('practice', 'watch'):
+            p['bond'] += 1
+            p['notes'].append('Your companions grew closer while exploring together.')
+        elif choice == 'camp':
+            p['camp_used'] = True
+            effects['heal'] = 5
+            p['happiness'] += 3
+            p['notes'].append('Your team shared its one short recovery camp.')
+        elif choice in ('sheltered', 'venture', 'sketch'):
+            p['bonus'] += {'sheltered': 10, 'venture': 15, 'sketch': 5}[choice]
+            if choice == 'venture':
+                effects['damage'] = 4
+            p['notes'].append('The deeper discovery added to your single expedition bundle.')
+    p['bonus'] = min(25, p['bonus'])
+    page(p, realm, next_event)
+    return effects
+
+
+def finish_battle(p, realm, won, interrupted):
+    p.update(caught=bool(won), encounter_result='interrupted' if interrupted else 'won' if won else 'escaped')
+    _complete(p, 'challenge')
+    p['notes'].append('The encounter was interrupted; your supplies are safe.' if interrupted else
+                      'The creature recognised your team\'s strength and chose to follow.' if won else
+                      'The creature withdrew. Your saved supplies are safe.')
+    if won:
+        p['bonus'] = min(25, p['bonus'] + 10)
+    page(p, realm, 'camp' if won else 'rescue')
+
+
+def presentation(trip):
+    p = trip['payload']
+    result = dict(p['page'])
+    result['choices'] = [dict(c) for c in result['choices']]
+    if trip['status'] != 'active':
+        result['choices'] = []
+    elif p['event'] != 'homeward':
+        result['choices'].append(_choice('return_early', 'Head home now', 'Bank the earned fraction of your one reward bundle.'))
+    result.update(progress=dict(completed=p['completed'], total=p['target_stops']),
+                  party_ids=list(p['party_ids']),
+                  footer=f"{p['completed']}/{p['target_stops']} stops · one material bundle · one possible catch · bonus {p['bonus']}%")
+    return result

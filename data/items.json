@@ -418,7 +418,7 @@
       "type": "reset",
       "price": 0,
       "value": 0,
-      "description": "Fully recovers your active companion and assigned raid party, including knocked-out beasts.",
+        "description": "Fully recovers your current battle team, including knocked-out companions. At home, recovers your active companion and assigned adventure and raid teams.",
       "effect": {
         "revive_party": true
       }

@@ -70,16 +70,25 @@ class Fighter:
     element: str
     revived: bool
     armor_id: str = ''
+    member_id: int | str = ''
+    party: tuple['Fighter', ...] = ()
+    assist_meter: int = 0
 
 
 def snapshot(states):
-    return tuple(Fighter(
-        s.get('beast_id', ''), str(s['name']), s.get('level', 1),
-        max(0, int(s['hp'])), max(1, int(s['max_hp'])), max(0, int(s['mana'])),
-        max(1, int(s['max_mana'])), s.get('ultimate_charges', 0),
-        s.get('status') or '', bool(s.get('guard')), s.get('shield', 0),
-        s.get('beast_type', ''), bool(s.get('revive_used')), s.get('armor_id') or '',
-    ) for s in states)
+    def member(s, party=()):
+        return Fighter(
+            s.get('beast_id', ''), str(s['name']), s.get('level', 1),
+            max(0, int(s['hp'])), max(1, int(s['max_hp'])), max(0, int(s['mana'])),
+            max(1, int(s['max_mana'])), s.get('ultimate_charges', 0),
+            s.get('status') or '', bool(s.get('guard')), s.get('shield', 0),
+            s.get('beast_type', ''), bool(s.get('revive_used')), s.get('armor_id') or '',
+            s.get('id', ''), party, max(0, min(100, int(s.get('_assist_meter', 0)))),
+        )
+
+    # Party metadata is read once, without following references back to live
+    # states. Frozen snapshots can outlive swaps and never mutate combat.
+    return tuple(member(s, tuple(member(p) for p in s.get('_party_states', ())[:3])) for s in states)
 
 
 @dataclass(frozen=True)
@@ -90,12 +99,20 @@ class Action:
     damage: int = 0
     ultimate: bool = False
     journal: tuple[str, ...] = ()
+    incoming_id: int | str = ''
+    outgoing_id: int | str = ''
+    support_id: int | str = ''
+    support_name: str = ''
+    support_species: str = ''
+    support_armor_id: str = ''
+    support_effect: str = ''
 
     @property
     def milliseconds(self):
         if self.ultimate:
             return 2650
-        return {'status': 1100, 'guard': 2100, 'heal': 2100, 'skill': 1950}.get(self.kind, 1650)
+        return {'status': 1100, 'guard': 2100, 'heal': 2100, 'skill': 1950,
+                'swap': 1900, 'assist': 2400}.get(self.kind, 1650)
 
 
 @dataclass(frozen=True)
