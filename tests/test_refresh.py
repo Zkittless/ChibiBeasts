@@ -152,13 +152,14 @@ class Extensions(unittest.IsolatedAsyncioTestCase):
             async with bot:
                 for path in sorted((PROJECT_ROOT / "cogs").glob("*.py")):
                     await bot.load_extension(f"cogs.{path.stem}")
-                self.assertEqual(len(bot.extensions), 16)
+                self.assertEqual(len(bot.extensions), 17)
                 self.assertIsNone(bot.tree.get_command("dev"))
                 group = bot.tree.get_command("dev", guild=discord.Object(id=456))
                 self.assertIsNotNone(group)
                 for command in group.walk_commands():
                     self.assertTrue(command.checks, f"/dev {command.name} lacks its owner check")
                 self.assertIsNotNone(bot.tree.get_command("journal"))
+                self.assertIsNotNone(bot.tree.get_command("care"))
                 for retired in ('guide', 'materials', 'setactive', 'questline', 'bond'):
                     self.assertIsNone(bot.tree.get_command(retired), f"Retired command /{retired} is still registered")
                 import inspect
