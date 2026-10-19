@@ -319,6 +319,9 @@ class BattleTiming(DatabaseCase):
     async def test_overlapping_pve_is_rejected_before_consuming_preparation(self):
         from cogs.battle import run_pve_battle
         from utils.duels import active_fighters
+        await self.beast(starter=True)
+        row = await storage.get_active_beast(42)
+        data = storage.get_beast_data(row['beast_id'])
         entered, release = asyncio.Event(), asyncio.Event()
 
         async def preparing(*args, **kwargs):
@@ -327,10 +330,10 @@ class BattleTiming(DatabaseCase):
             raise ValueError('Synthetic preparation failure')
 
         with patch('utils.duels.prepare_state', side_effect=preparing) as prepare:
-            first = asyncio.create_task(run_pve_battle(interaction(), {}, {}, [], {}, 'wild', 'Test', AsyncMock(), AsyncMock()))
-            await entered.wait()
+            first = asyncio.create_task(run_pve_battle(interaction(), row, data, [], {}, 'wild', 'Test', AsyncMock(), AsyncMock()))
+            await asyncio.wait_for(entered.wait(), 2)
             with self.assertRaisesRegex(ValueError, 'already'):
-                await run_pve_battle(interaction(), {}, {}, [], {}, 'wild', 'Test', AsyncMock(), AsyncMock())
+                await run_pve_battle(interaction(), row, data, [], {}, 'wild', 'Test', AsyncMock(), AsyncMock())
             self.assertEqual(prepare.await_count, 1)
             release.set()
             with self.assertRaises(ValueError):

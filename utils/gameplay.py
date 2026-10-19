@@ -122,6 +122,12 @@ async def _evolve_beast(user_id, player_number, *, expected_row_id=None, expecte
         async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (row['id'],)) as c:
             if await c.fetchone():
                 raise ValueError('Delist this companion before evolving it.')
+        async with db.execute("SELECT payload FROM expeditions WHERE user_id=? AND status IN ('active','battle')", (user_id,)) as c:
+            trip = await c.fetchone()
+        if trip:
+            saved = json.loads(trip[0])
+            if saved.get('adventure_version') == 2 and row['id'] in saved.get('party_ids', []):
+                raise ValueError('Return from your saved expedition before evolving a travelling companion.')
         before = beasts[row['beast_id']]
         evo = before.get('evolution')
         if storage.is_knocked_out(row):

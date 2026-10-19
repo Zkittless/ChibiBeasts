@@ -37,7 +37,7 @@ def exclusive_player(function):
                 return await function(user_id, *args, **kwargs)
     return protected
 
-async def prepare_state(user_id, row, data, perks, *, consume=True):
+async def prepare_state(user_id, row, data, perks, *, consume=True, party_reserve=False, preserve_resources=False):
     from utils.catalog import load_catalog
     from utils.economy_balance import recipe_level
     equipment=load_catalog('equipment.json')
@@ -66,7 +66,52 @@ async def prepare_state(user_id, row, data, perks, *, consume=True):
     # remain dormant until the trainer meets the same gate as a new equip.
     equipped = [gear[id] if player['level'] >= recipe_level(gear[id]) else {**gear[id], 'effect': {}}
                 for id in ids if id in gear]
-    return combat.build_state(data, row, perks, equipped, player)
+    if party_reserve:
+        # A trainer's carried charge and single-use preparations enter with the
+        # lead only. Preparing three members must never clone those resources.
+        player = {**player, 'ultimate_charges': 0, 'next_defense_boost': 0,
+                  'next_speed_boost': 0, 'status_ward_charges': 0}
+    state = combat.build_state(data, row, perks, equipped, player)
+    if preserve_resources:
+        # Armor raises the maximum, not the injured creature's health ratio.
+        # Ceiling here and floor when saving make an untouched armored member
+        # round-trip to exactly its starting collection HP, even at 1 HP.
+        base_max = max(1, row['max_hp'])
+        state['hp'] = max(1, min(state['max_hp'], (row['hp'] * state['max_hp'] + base_max - 1) // base_max))
+        state['_pve_mana_origin'] = (row['mana'], state['mana'])
+    return state
+
+
+async def persist_pve_states(user_id, party, active):
+    """Save resources and every KO atomically, including an interrupted trip.
+
+    Gear changes battle maximums, so save the same resource proportion against
+    the collection maximum. Never store temporary armor HP as permanent HP.
+    """
+    from datetime import datetime, timedelta, timezone
+    now = datetime.now(timezone.utc)
+    async with storage.connect() as db:
+        await db.execute('BEGIN IMMEDIATE')
+        for state in party:
+            hp = max(0, min(state['max_hp'], state['hp']))
+            if '_pve_mana_origin' in state:
+                collection_mana, battle_mana = state['_pve_mana_origin']
+                # Entry caps and Genesis Spark are combat preparations. Persist
+                # actual spending/restoration, never a free refill from merely
+                # preparing or cancelling a battle (or drain untouched benches).
+                mana_base, mana_delta = collection_mana, state['mana'] - battle_mana
+            else:
+                mana_base, mana_delta = 0, state['mana']
+            await db.execute('UPDATE player_beasts SET hp=CASE WHEN ?>0 THEN MAX(1,CAST(max_hp*?/? AS INTEGER)) ELSE 0 END,mana=MAX(0,MIN(max_mana,CAST(?+max_mana*?/? AS INTEGER))) WHERE user_id=? AND id=?',
+                             (hp, hp, max(1, state['max_hp']), mana_base, mana_delta, max(1, state['max_mana']), user_id, state['id']))
+            if state['hp'] <= 0:
+                seconds = storage.KO_RECOVERY_SECONDS.get(state.get('rarity'), 1800)
+                until = (now + timedelta(seconds=seconds)).isoformat()
+                await db.execute('UPDATE player_beasts SET knocked_out_until=? WHERE user_id=? AND id=? AND (knocked_out_until IS NULL OR julianday(knocked_out_until)<=julianday(?))',
+                                 (until, user_id, state['id'], now.isoformat()))
+        await db.execute('UPDATE players SET ultimate_charges=? WHERE user_id=?',
+                         (active.get('ultimate_charges', 0), user_id))
+        await db.commit()
 
 class MoveView(discord.ui.View):
 
@@ -394,6 +439,9 @@ async def _duel(interaction, states, users, title, personality, view_class, real
                         if uid is not None:
                             await db.execute('UPDATE players SET ultimate_charges=? WHERE user_id=?', (state['ultimate_charges'], uid))
                     await db.commit()
+                for uid, state in zip(users, states):
+                    if uid is not None and state.get('_persist_pve'):
+                        await persist_pve_states(uid, [state], state)
         finally:
             for uid in ids:
                 combat.active_states.pop(uid, None)

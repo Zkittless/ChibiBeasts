@@ -15,6 +15,9 @@ async def _transferable(db, owner, row_id, *, listing_id=None, allow_soulbound=F
         raise ValueError('Altered Divine companions are soulbound and cannot be transferred.')
     if row['is_active'] or row['raid_slot'] is not None:
         raise ValueError('Choose another active companion and remove this one from the raid party first.')
+    async with db.execute('SELECT 1 FROM adventure_team WHERE user_id=? AND beast_row_id=?', (owner, row_id)) as cursor:
+        if await cursor.fetchone():
+            raise ValueError('Remove this companion from your adventure team before transferring or releasing it.')
     async with db.execute('SELECT id FROM beast_market WHERE beast_row_id=?', (row_id,)) as cursor:
         listing = await cursor.fetchone()
     if listing and listing['id'] != listing_id:
@@ -26,6 +29,7 @@ async def _move(db, row_id, owner, recipient):
     async with db.execute('SELECT COALESCE(MAX(player_number),0)+1 FROM player_beasts WHERE user_id=?', (recipient,)) as cursor:
         number = (await cursor.fetchone())[0]
     await db.execute('UPDATE player_beasts SET user_id=?,player_number=?,is_active=0,raid_slot=NULL WHERE id=? AND user_id=?', (recipient, number, row_id, owner))
+    await db.execute('DELETE FROM adventure_team WHERE user_id=? AND beast_row_id=?', (owner, row_id))
     # Equipped armor travels with the advertised companion; runes are on its row.
     await db.execute('UPDATE player_equipment SET user_id=? WHERE beast_row_id=? AND user_id=?', (recipient, row_id, owner))
     return number

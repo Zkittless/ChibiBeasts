@@ -1,0 +1,214 @@
+{
+  "status": "passed",
+  "checked_utc": "2026-10-19T05:56:31.670297+00:00",
+  "offline_suite": {
+    "status": "passed",
+    "tests": 502,
+    "seconds": 185.445,
+    "isolation": "Every discovered test module exactly once, four fresh processes using final source. Two one-second legacy raid checks were then rechecked in isolation after parallel load ended.",
+    "shards": [
+      {
+        "shard": 1,
+        "status": "passed",
+        "tests": 127,
+        "seconds": 149.273,
+        "modules": [
+          "tests.test_adventure_combat",
+          "tests.test_artwork_cards",
+          "tests.test_battle_art",
+          "tests.test_branching_expeditions",
+          "tests.test_economy_balance",
+          "tests.test_equipment_progression",
+          "tests.test_interactions",
+          "tests.test_journal_appearance",
+          "tests.test_progression_simulation"
+        ],
+        "log": "clean-suite-1.txt",
+        "exit_code": 0
+      },
+      {
+        "shard": 2,
+        "status": "failed",
+        "tests": 114,
+        "seconds": 158.446,
+        "modules": [
+          "tests.test_adventure_animation",
+          "tests.test_adventure_items",
+          "tests.test_armor_art",
+          "tests.test_battle_dispatch",
+          "tests.test_battle_runtime",
+          "tests.test_hatch_progression",
+          "tests.test_journal",
+          "tests.test_move_animations",
+          "tests.test_workshop"
+        ],
+        "log": "clean-suite-2.txt",
+        "exit_code": 1
+      },
+      {
+        "shard": 3,
+        "status": "passed",
+        "tests": 140,
+        "seconds": 185.442,
+        "modules": [
+          "tests.test_activity_progression",
+          "tests.test_adventure_party",
+          "tests.test_combat_balance",
+          "tests.test_explore_flow",
+          "tests.test_field_journal",
+          "tests.test_gameplay",
+          "tests.test_pvp_rewards",
+          "tests.test_refresh",
+          "tests.test_world_progression"
+        ],
+        "log": "clean-suite-3.txt",
+        "exit_code": 0
+      },
+      {
+        "shard": 4,
+        "status": "failed",
+        "tests": 121,
+        "seconds": 126.968,
+        "modules": [
+          "tests.test_armor_atlas_packaging",
+          "tests.test_equipped_appearance",
+          "tests.test_expeditions",
+          "tests.test_gear_appearance_ui",
+          "tests.test_owned_portraits",
+          "tests.test_performance_gameplay",
+          "tests.test_progression_rebalance",
+          "tests.test_raid_art",
+          "tests.test_raid_story_progression"
+        ],
+        "log": "clean-suite-4.txt",
+        "exit_code": 1
+      }
+    ],
+    "initial_status": "failed",
+    "passed_unique_tests": 502,
+    "test_attempts": 504,
+    "timing_recheck": {
+      "status": "passed",
+      "tests": [
+        "tests.test_battle_runtime.RaidRuntime.test_stalled_final_edit_cannot_hold_a_completed_raid_open",
+        "tests.test_raid_art.RaidPresentationRuntime.test_cancelled_or_deleted_final_art_cannot_lose_rewards"
+      ],
+      "log": "isolated-timing-tests.txt",
+      "reason": "Two unchanged legacy raid checks exceeded one-second waits under parallel filesystem load; both passed in isolation with unchanged source. Initial failed shard logs retained."
+    }
+  },
+  "seeded_combat_trials": 720,
+  "animation_clips": {
+    "tag-switch": {
+      "bytes": 291309,
+      "frames": 17,
+      "milliseconds": 1900,
+      "one_shot": true,
+      "render_seconds": 0.505,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "heal-assist": {
+      "bytes": 408036,
+      "frames": 22,
+      "milliseconds": 2400,
+      "one_shot": true,
+      "render_seconds": 0.44,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "guard-assist": {
+      "bytes": 310205,
+      "frames": 20,
+      "milliseconds": 2400,
+      "one_shot": true,
+      "render_seconds": 0.48,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "attack-assist": {
+      "bytes": 596894,
+      "frames": 22,
+      "milliseconds": 2400,
+      "one_shot": true,
+      "render_seconds": 0.729,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "companion-knockout": {
+      "bytes": 748304,
+      "frames": 33,
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.725,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "reserve-replacement": {
+      "bytes": 221857,
+      "frames": 10,
+      "milliseconds": 1900,
+      "one_shot": true,
+      "render_seconds": 0.447,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "victory-retreat": {
+      "bytes": 737202,
+      "frames": 33,
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.713,
+      "size": [
+        640,
+        528
+      ]
+    }
+  },
+  "browser_checks": [
+    {
+      "surface": "inline",
+      "width": 736,
+      "no_overflow": true,
+      "images": 1,
+      "play_and_still": true
+    },
+    {
+      "surface": "inline",
+      "width": 320,
+      "no_overflow": true,
+      "images": 1,
+      "play_and_still": true
+    },
+    {
+      "surface": "gallery",
+      "width": 1024,
+      "no_overflow": true,
+      "reduced_motion": true,
+      "play_and_still": true
+    },
+    {
+      "surface": "gallery",
+      "width": 320,
+      "no_overflow": true,
+      "reduced_motion": true,
+      "play_and_still": true
+    }
+  ],
+  "compilation": "passed",
+  "dependencies": "pip check passed",
+  "whitespace": "git diff --check passed",
+  "scope": "Final local source, disposable databases, production combat and renderers. No live Discord session or deployment."
+}

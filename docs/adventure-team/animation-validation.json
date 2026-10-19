@@ -1,0 +1,113 @@
+{
+  "clips": {
+    "tag-switch": {
+      "bytes": 291309,
+      "frames": 17,
+      "milliseconds": 1900,
+      "one_shot": true,
+      "render_seconds": 0.505,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "heal-assist": {
+      "bytes": 408036,
+      "frames": 22,
+      "milliseconds": 2400,
+      "one_shot": true,
+      "render_seconds": 0.44,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "guard-assist": {
+      "bytes": 310205,
+      "frames": 20,
+      "milliseconds": 2400,
+      "one_shot": true,
+      "render_seconds": 0.48,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "attack-assist": {
+      "bytes": 596894,
+      "frames": 22,
+      "milliseconds": 2400,
+      "one_shot": true,
+      "render_seconds": 0.729,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "companion-knockout": {
+      "bytes": 748304,
+      "frames": 33,
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.725,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "reserve-replacement": {
+      "bytes": 221857,
+      "frames": 10,
+      "milliseconds": 1900,
+      "one_shot": true,
+      "render_seconds": 0.447,
+      "size": [
+        640,
+        528
+      ]
+    },
+    "victory-retreat": {
+      "bytes": 737202,
+      "frames": 33,
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.713,
+      "size": [
+        640,
+        528
+      ]
+    }
+  },
+  "layout": {
+    "active_homes": [
+      [
+        232,
+        212,
+        164
+      ],
+      [
+        490,
+        212,
+        164
+      ]
+    ],
+    "reserve_boxes": [
+      [
+        10,
+        146,
+        76,
+        243
+      ],
+      [
+        82,
+        146,
+        148,
+        243
+      ]
+    ],
+    "hud_height": 208,
+    "field_height": 248,
+    "journal_height": 72
+  },
+  "scope": "Actual packaged armored sprites. Synthetic resolved states for presentation validation; no combat rewards modified."
+}

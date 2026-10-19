@@ -97,7 +97,7 @@ async def _trainer(db, user_id, realm):
         raise ValueError('Your companion needs recovery. Choose a healthy companion or use a revive.')
     return (dict(player), dict(companion))
 
-async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0):
+async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0, legacy=False):
     from utils.duels import reserve_fighters
     from utils import combat
     now = time.time() if now is None else now
@@ -133,6 +133,13 @@ async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0
                         gold = rng.randint(gold_level * 3, gold_level * 6)
                         reward_exp = encounter_trainer_xp(level, destination_level, effort=.55)
                         payload = dict(mode='expedition', stage=0, route='', material=material, offered=offered, gold=int(gold * 1.1) if pixie else gold, exp=reward_exp, base_exp=reward_exp, encounter='', encounter_result='', caught=False, bond=0, happiness=0, restore=0, notes=[], level=level, grant_id=None, guild_id=guild_id)
+                        if not legacy:
+                            from utils import adventure_party, expedition_events
+                            party = await adventure_party.rows(user_id, db=db)
+                            for member in party:
+                                data = storage.get_beast_data(member['beast_id'])
+                                member.update(type=data['type'], name=data['name'])
+                            expedition_events.initialize(payload, biome_key(realm), rng.getrandbits(64), party)
                     trip_id = uuid4().hex
                     await db.execute('INSERT INTO expeditions(id,user_id,realm,status,companion_id,payload,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)', (trip_id, user_id, realm, 'quick' if quick else 'active', companion['id'], json.dumps(payload), now, now))
                     await db.commit()
@@ -153,11 +160,20 @@ def options(trip):
     p = trip['payload']
     if trip['status'] != 'active':
         return ()
+    if p.get('adventure_version') == 2:
+        return tuple(c['value'] for c in presentation(trip)['choices'])
     if p['stage'] == 0:
         return ('tracks', 'gather', 'shrine')
     if p['stage'] == 1:
         return ('challenge', 'approach', 'observe') if p['route'] == 'tracks' else tuple(('material:' + m for m in p['offered'])) if p['route'] == 'gather' else ('repair', 'study', 'rest')
     return ('return', 'rustle') if not p['encounter'] else ('return',)
+
+def presentation(trip):
+    """A pure presentation contract for the saved v2 journal page."""
+    from utils import expedition_events
+    if trip['payload'].get('adventure_version') != 2:
+        return None
+    return expedition_events.presentation(trip)
 
 async def _encounter(db, user_id, realm, p, rng):
     if p['encounter']:
@@ -234,11 +250,15 @@ async def choose(user_id, trip_id, version, choice, *, rng=random):
                 if trip['status'] != 'active' or trip['version'] != version:
                     raise ValueError('That choice belongs to an older page. Use the refreshed expedition.')
                 p = trip['payload']
-                if choice == 'return_early':
+                if p.get('adventure_version') == 2:
+                    status = await _choose_v2(db, trip, choice, rng)
+                elif choice == 'return_early':
                     choice = 'return'
                 elif choice not in options(trip):
                     raise ValueError('Choose a path offered on this page.')
-                if choice == 'return':
+                if p.get('adventure_version') == 2:
+                    pass
+                elif choice == 'return':
                     await _settle(db, trip)
                     status = 'complete'
                 else:
@@ -281,18 +301,90 @@ async def choose(user_id, trip_id, version, choice, *, rng=random):
         await report(result)
     return result
 
+async def _choose_v2(db, trip, choice, rng):
+    from utils import adventure_party, expedition_events
+    p, uid = trip['payload'], trip['user_id']
+    if choice not in options(trip) and choice != 'return_early':
+        raise ValueError('Choose a path offered on this page.')
+    if choice in ('return', 'return_early'):
+        await _settle(db, trip)
+        return 'complete'
+    if choice.startswith('help:'):
+        helper_id = int(choice.split(':', 1)[1])
+        available = await adventure_party.rows(uid, db=db, ids=p['party_ids'])
+        if helper_id not in {r['id'] for r in available}:
+            raise ValueError('That teammate needs recovery or is no longer available. The safe detour is still open.')
+    if choice in ('push', 'venture'):
+        available = await adventure_party.rows(uid, db=db, ids=p['party_ids'])
+        if not any(member['hp'] > 1 for member in available):
+            raise ValueError('Your team is too exhausted to risk going deeper. Head home or sketch from the safe entrance.')
+    effects = expedition_events.resolve(p, biome_key(trip['realm']), choice)
+    if effects.get('encounter'):
+        await _encounter(db, uid, trip['realm'], p, rng)
+    if effects.get('battle'):
+        party = await adventure_party.rows(uid, db=db, ids=p['party_ids'])
+        if not party:
+            raise ValueError('Your team needs recovery. You can still observe or return home.')
+        p['battle_token'] = uuid4().hex
+        p['battle_lead_id'] = party[0]['id']
+        return 'battle'
+    if effects.get('heal') or effects.get('damage'):
+        # All recovery and travel costs are part of the same saved choice.
+        # No revival, lethal overworld damage, or repeated camp on stale clicks.
+        party = await adventure_party.rows(uid, db=db, ids=p['party_ids'])
+        for member in party:
+            if effects.get('heal'):
+                await db.execute('UPDATE player_beasts SET hp=MIN(max_hp,hp+MAX(1,CAST(max_hp*?/100 AS INTEGER))) WHERE id=? AND user_id=?',
+                                 (effects['heal'], member['id'], uid))
+            elif member['hp'] > 1:
+                await db.execute('UPDATE player_beasts SET hp=MAX(1,hp-MAX(1,CAST(max_hp*?/100 AS INTEGER))) WHERE id=? AND user_id=?',
+                                 (effects['damage'], member['id'], uid))
+    return 'active'
+
 async def _settle(db, trip):
     from utils.rewards import player_exp
     from utils.crafting import sanctuary_in_transaction
     p = trip['payload']
     uid = trip['user_id']
-    await add_stack(db, 'player_materials', uid, p['material'])
+    if p.get('adventure_version') == 2:
+        fraction = min(1., max(0., p['completed'] / 3))
+        multiplier = 1 + min(25, p['bonus']) / 100
+        p['gold'] = int(p['base_gold'] * fraction * multiplier)
+        p['exp'] = int(p['base_exp'] * fraction * multiplier)
+        p['material_granted'] = p['completed'] > 0
+        if p['material_granted']:
+            await add_stack(db, 'player_materials', uid, p['material'])
+        # This is a small shared activity reward, not another battle reward.
+        # The combat runner already awards team XP when a fight is played.
+        if p['completed'] and not p.get('battle_awarded'):
+            from utils import adventure_party
+            from utils.progression import encounter_beast_xp
+            async with db.execute('SELECT level FROM player_beasts WHERE id=? AND user_id=?', (trip['companion_id'], uid)) as c:
+                lead = await c.fetchone()
+            if lead:
+                high = BIOMES[trip['realm']]['level_range'][1]
+                source_level = min(lead[0], high)
+                amount = max(1, int(encounter_beast_xp(source_level, effort=.2)
+                                    * min(1., high / max(1, lead[0])) * fraction))
+                p['party_xp'] = await adventure_party.award_xp_in_transaction(
+                    db, uid, p['party_ids'], trip['companion_id'], amount,
+                    p.get('encounter_level', BIOMES[trip['realm']]['level_range'][0]),
+                    participated=[int(key) for key, value in p['participations'].items() if value])
+    else:
+        await add_stack(db, 'player_materials', uid, p['material'])
     await db.execute('UPDATE players SET gold=gold+?,total_gold_earned=total_gold_earned+? WHERE user_id=?', (p['gold'], p['gold'], uid))
     sanctuary = await sanctuary_in_transaction(db, uid)
     p['exp_granted'] = round(p['exp'] * 1.15) if sanctuary.get('arcane_library') else p['exp']
     result = await player_exp(db, uid, p['exp_granted'])
     p['new_level'], p['leveled'] = (result[0], result[2])
     await db.execute('UPDATE player_beasts SET bond=MIN(100,bond+?),happiness=MIN(100,happiness+?) WHERE id=? AND user_id=?', (p['bond'], p['happiness'], trip['companion_id'], uid))
+    if p.get('adventure_version') == 2 and p['completed']:
+        # A helpful group event gives reserves a small social benefit as well;
+        # the lead retains the original activity reward and the total is capped.
+        for row_id in p['party_ids']:
+            if row_id != trip['companion_id']:
+                await db.execute('UPDATE player_beasts SET bond=MIN(100,bond+?),happiness=MIN(100,happiness+?) WHERE id=? AND user_id=?',
+                                 (min(1, p['bond']), min(3, p['happiness']), row_id, uid))
     if p['restore']:
         async with db.execute('SELECT * FROM player_beasts WHERE id=? AND user_id=?', (trip['companion_id'], uid)) as c:
             comp = await c.fetchone()
@@ -312,21 +404,39 @@ async def report(trip):
     uid = trip['user_id']
     p = trip['payload']
     key = 'expedition:' + trip['id']
+    if p.get('adventure_version') == 2 and not p['completed']:
+        # Leaving the trailhead spends its reserved charge, but is not a visit
+        # for story, achievements, sightings or resource collection progress.
+        async with storage.connect() as db:
+            await db.execute('UPDATE expeditions SET reported=1 WHERE id=?', (trip['id'],))
+            await db.commit()
+        return
     await record_event(uid, 'explore', biome=BIOMES[biome_key(trip['realm'])]['name'], event_key=key + ':explore')
-    await record_event(uid, 'material_collect', material_id=p['material'], event_key=key + ':material')
+    material_granted = p.get('adventure_version') != 2 or p.get('material_granted', False)
+    if material_granted:
+        await record_event(uid, 'material_collect', material_id=p['material'], event_key=key + ':material')
     from utils.progress import unlock_simple_achievement, record_bestiary_sighting
     await unlock_simple_achievement(uid, 'first_explore')
-    async with storage.connect() as db:
-        cursor = await db.execute("INSERT OR IGNORE INTO gameplay_events(event_key,user_id,event_type) VALUES(?,?,'material_story')", (key + ':material-story', uid))
-        await db.commit()
-    if cursor.rowcount:
-        await advance_quest_step(uid, 'material_gained', material_id=p['material'], amount=1)
+    if material_granted:
+        async with storage.connect() as db:
+            cursor = await db.execute("INSERT OR IGNORE INTO gameplay_events(event_key,user_id,event_type) VALUES(?,?,'material_story')", (key + ':material-story', uid))
+            await db.commit()
+        if cursor.rowcount:
+            await advance_quest_step(uid, 'material_gained', material_id=p['material'], amount=1)
     if p['grant_id']:
         await acquired_beast(uid, p['grant_id'], storage.get_beast_data(p['encounter']), 'discover')
         if p.get('guild_id'):
             await record_bestiary_sighting(p['guild_id'], p['encounter'], uid)
     if p.get('leveled'):
         await advance_quest_step(uid, 'level_up', level=p['new_level'])
+    if any(row.get('leveled') for row in p.get('party_xp', [])):
+        # The keyed receipt keeps retried post-commit notifications bounded.
+        async with storage.connect() as db:
+            cursor = await db.execute("INSERT OR IGNORE INTO gameplay_events(event_key,user_id,event_type) VALUES(?,?,'team_level')", (key + ':team-level', uid))
+            await db.commit()
+        if cursor.rowcount:
+            from utils.progress import track_quest_event
+            await track_quest_event(uid, 'beast_level_up')
     async with storage.connect() as db:
         await db.execute('UPDATE expeditions SET reported=1 WHERE id=?', (trip['id'],))
         await db.commit()
@@ -344,9 +454,16 @@ async def battle_result(user_id, trip_id, token, won, *, interrupted=False, only
         if runner_id is not None and trip['payload'].get('runner_id') != runner_id:
             return
         p = trip['payload']
-        p.update(stage=2, caught=bool(won), encounter_result='interrupted' if interrupted else 'won' if won else 'escaped')
-        p['notes'].append('The encounter was interrupted; your gathered supplies are safe.' if interrupted else 'The creature recognised your strength and chose to follow.' if won else 'The creature withdrew. You kept your gathered supplies.')
-        if won:
+        if p.get('adventure_version') == 2:
+            from utils import expedition_events
+            expedition_events.finish_battle(p, biome_key(trip['realm']), won, interrupted)
+            # Conservatively treat a launched runner as rewarded: never add a
+            # second activity budget after cancellation during result playback.
+            p['battle_awarded'] = bool(p.get('battle_started'))
+        else:
+            p.update(stage=2, caught=bool(won), encounter_result='interrupted' if interrupted else 'won' if won else 'escaped')
+            p['notes'].append('The encounter was interrupted; your gathered supplies are safe.' if interrupted else 'The creature recognised your strength and chose to follow.' if won else 'The creature withdrew. You kept your gathered supplies.')
+        if won and p.get('adventure_version') != 2:
             p['gold'] = int(p['gold'] * 1.25)
             p['exp'] = encounter_trainer_xp(p['level'], p.get('encounter_level', BIOMES[trip['realm']]['level_range'][0]),
                                            difficulty=p.get('battle_difficulty', 'normal'))
@@ -374,7 +491,13 @@ async def run_battle(interaction, trip):
             claimed = True
             await db.commit()
         with reserve_fighters([uid]):
-            row = await storage.get_active_beast(uid)
+            from utils import adventure_party
+            party = None
+            if latest['payload'].get('adventure_version') == 2:
+                party = await adventure_party.rows(uid, ids=latest['payload']['party_ids'])
+                row = party[0] if party else None
+            else:
+                row = await storage.get_active_beast(uid)
             if not row:
                 raise ValueError('Choose an active companion before continuing the encounter.')
             if row['hp'] <= 0 or storage.is_knocked_out(row):
@@ -394,14 +517,24 @@ async def run_battle(interaction, trip):
             async def loss(embed, *args):
                 await battle_result(uid, trip['id'], token, False, runner_id=runner_id)
             from utils.duels import prepare_state
-            from utils.habitats import encounter_difficulty
             enemy = build_pve_beast_state(beast, latest['payload'].get('encounter_level', BIOMES[latest['realm']]['level_range'][0]))
-            actor = await prepare_state(uid, row, storage.get_beast_data(row['beast_id']), perks, consume=False)
+            if party is None:
+                # Legacy saved routes now use the current adventure loadout.
+                # Freeze that exact roster for both the reward preview and the
+                # runner, just as version-two trips freeze their travelling IDs.
+                party = await adventure_party.rows(uid)
+                if not party or party[0]['id'] != row['id']:
+                    raise ValueError('Your active companion changed while the battle was preparing. Try again.')
+            prepared = []
+            for index, member in enumerate(party):
+                prepared.append(await prepare_state(uid, member, storage.get_beast_data(member['beast_id']), perks,
+                                                    consume=False, party_reserve=index > 0, preserve_resources=True))
             async with storage.connect() as db:
-                latest['payload']['battle_difficulty'] = encounter_difficulty(actor, enemy)
+                latest['payload']['battle_difficulty'] = adventure_party.encounter_difficulty(prepared, enemy)
                 await db.execute('UPDATE expeditions SET payload=? WHERE id=?', (json.dumps(latest['payload']), trip['id']))
                 await db.commit()
-            await run_pve_battle(interaction, row, storage.get_beast_data(row['beast_id']), perks, enemy, 'aggressive', 'Wild ' + beast['name'], win, loss, reserved=True, realm=biome_key(latest['realm']))
+            kwargs = dict(reserved=True, realm=biome_key(latest['realm']), party_rows=party)
+            await run_pve_battle(interaction, row, storage.get_beast_data(row['beast_id']), perks, enemy, 'aggressive', 'Wild ' + beast['name'], win, loss, **kwargs)
     finally:
         if claimed:
             await asyncio.shield(battle_result(uid, trip['id'], token, False, interrupted=True, runner_id=runner_id))
@@ -418,6 +551,13 @@ async def recover_interrupted(db):
             continue
         p = json.loads(payload)
         if status == 'battle':
-            p.update(stage=2, caught=False, encounter_result='interrupted')
-            p.setdefault('notes', []).append('The encounter was interrupted. Return with your gathered supplies.')
+            if p.get('adventure_version') == 2:
+                from utils import expedition_events
+                async with db.execute('SELECT realm FROM expeditions WHERE id=?', (trip_id,)) as cursor:
+                    realm = (await cursor.fetchone())[0]
+                expedition_events.finish_battle(p, biome_key(realm), False, True)
+                p['battle_awarded'] = bool(p.get('battle_started'))
+            else:
+                p.update(stage=2, caught=False, encounter_result='interrupted')
+                p.setdefault('notes', []).append('The encounter was interrupted. Return with your gathered supplies.')
         await db.execute("UPDATE expeditions SET status='active',version=version+1,payload=?,updated_at=? WHERE id=?", (json.dumps(p), time.time(), trip_id))

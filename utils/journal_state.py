@@ -1,5 +1,5 @@
 """Fresh journal snapshots and durable goals; UI pages never own inventory."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from functools import lru_cache
 
@@ -150,6 +150,8 @@ class JournalState:
     trip: dict | None
     goal: dict | None
     story: dict
+    team: list = field(default_factory=list)
+    team_slots: dict = field(default_factory=dict)
 
 
 async def snapshot(user_id):
@@ -167,4 +169,7 @@ async def snapshot(user_id):
             row = await c.fetchone()
             goal = dict(row) if row else None
         state = await story.read_state(db, user_id)
-    return JournalState(player, workshop, energy, trip, goal_status(goal, workshop), state)
+    from utils import adventure_party
+    team = await adventure_party.rows(user_id)
+    slots = await adventure_party.assignments(user_id)
+    return JournalState(player, workshop, energy, trip, goal_status(goal, workshop), state, team, slots)

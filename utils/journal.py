@@ -8,7 +8,7 @@ from uuid import uuid4
 import aiosqlite
 import discord
 
-from utils import crafting, db as storage, expeditions, gear_art, journal_state, story
+from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
@@ -64,6 +64,7 @@ class JournalView(discord.ui.LayoutView):
         self.realm_select = self.select('realm', 'Choose your destination')
         self.path_select = self.select('path', 'Choose your next step')
         self.companion_select = self.select('companion', 'Choose a companion')
+        self.team_select = self.select('team_slot', 'Choose this companion\'s team role')
         self.goal_kind = self.select('goal_kind', 'Choose a goal category')
         self.goal_target = self.select('goal_target', 'Choose a goal to pin')
         self.story_choice = self.select('story_claim', 'Report back to complete this chapter')
@@ -149,7 +150,11 @@ class JournalView(discord.ui.LayoutView):
             if trip:
                 p = trip['payload']
                 material = load_catalog('materials.json')['materials'][p['material']]['name']
-                self.text(f"### Back from {REALMS[trip['realm']]['name']}\n**{p['gold']:,} gold · {p.get('exp_granted', p['exp']):,} trainer EXP · 1 {material}**\n" + '\n'.join(safe(n) for n in p['notes']))
+                quantity = int(p.get('material_granted', 1))
+                loot = f" · {quantity} {material}" if quantity else ''
+                self.text(f"### Back from {REALMS[trip['realm']]['name']}\n**{p['gold']:,} gold · {p.get('exp_granted', p['exp']):,} trainer EXP{loot}**\n" + '\n'.join(safe(n) for n in p['notes'][-5:]))
+                if p.get('party_xp'):
+                    self.text('**Team progress**\n' + '\n'.join(f"{safe(row['name'])}: +{row['amount']} EXP" + (f" · Lv.{row['level']}" if row['leveled'] else '') for row in p['party_xp']))
                 if p['caught']:
                     beast = storage.get_beast_data(p['encounter'])
                     self.portrait(f"**{beast['name']} joined your collection.**\n{beast['description']}", beast['id'])
@@ -157,7 +162,9 @@ class JournalView(discord.ui.LayoutView):
                     self.text(f"Trainer level up! You reached Lv.{p['new_level']}.")
             e = self.state.energy
             self.text(f"### Choose an expedition\n{e.charges}/{expeditions.CAPACITY} exploration charges · Regenerates every {wait_text(e.interval)}\n"
-                      'Follow tracks, gather a resource or stop at a landmark. An optional wild encounter uses the animated battle screen. Your trip saves after every choice.')
+                      'Choose a route, help travellers and discover linked events. Take up to three companions; swaps and assists spend an action. Your team and every choice are saved.')
+            self.render_team_summary()
+            self.row(self.button('Choose adventure team', 'page:team'))
             self.realm_select.options = [discord.SelectOption(label=(b['name'] + (f" · Locked Lv.{b['min_level']}" if self.state.player['level'] < b['min_level'] else ''))[:100],
                 value=k, default=k == self.realm,
                 description=f"Trainer Lv.{b['min_level']}+ required; companion Lv.{b['level_range'][0]}–{b['level_range'][1]} recommended") for k, b in REALMS.items()]
@@ -184,6 +191,9 @@ class JournalView(discord.ui.LayoutView):
                 self.text('Next charge in ' + wait_text(e.next_in) + '. Up to three charges wait for you between visits.')
             return
         p = trip['payload']
+        if p.get('adventure_version', 0) >= 2:
+            self.render_branching_trip(trip)
+            return
         landmark, flavor = LANDMARKS[biome_key(trip['realm'])]
         e = self.state.energy
         recharge = 'Bank full' if not e.next_in else 'Next charge in ' + wait_text(e.next_in)
@@ -226,6 +236,88 @@ class JournalView(discord.ui.LayoutView):
         self.path_select.options = options
         self.row(self.path_select)
 
+    def render_team_summary(self, trip=None):
+        all_rows = {row['id']: row for row in self.state.workshop.companions}
+        if trip:
+            ids = trip['payload'].get('party_ids', [])
+        else:
+            lead = next((row['id'] for row in self.state.workshop.companions if row['is_active']), None)
+            ids = list(dict.fromkeys(([lead] if lead else []) + list(self.state.team_slots.values())))[:3]
+        lines = []
+        for index, row_id in enumerate(ids):
+            row = all_rows.get(row_id)
+            if not row:
+                continue
+            name = row['nickname'] or storage.get_beast_data(row['beast_id'])['name']
+            role = 'Lead' if index == 0 else 'Reserve'
+            status = ('Recovering' + (' · stays home' if not trip else '')) if storage.is_knocked_out(row) or row['hp'] <= 0 else f"HP {row['hp']}/{row['max_hp']}"
+            lines.append(f"{role} · **{safe(name)}** Lv.{row['level']} · {status}")
+        self.text('**Adventure team**\n' + ('\n'.join(lines) if lines else 'Choose a healthy lead companion. Reserves are optional.'))
+
+    def render_branching_trip(self, trip):
+        page = expeditions.presentation(trip)
+        p = trip['payload']
+        progress = page.get('progress', {})
+        energy = self.state.energy
+        recharge = 'Bank full' if not energy.next_in else 'Next charge in ' + wait_text(energy.next_in)
+        self.text(f"### {safe(page['title'])}\n{REALMS[trip['realm']]['name']} · {progress.get('completed', 0)}/{progress.get('total', 3)} stops completed\n"
+                  f"**Exploration {energy.charges}/{expeditions.CAPACITY}** · {recharge}")
+        self.render_team_summary(trip)
+        if trip['status'] == 'battle':
+            self.text('**Encounter in progress.** Use the battle controls below. Your route and team are saved.')
+            if not p.get('battle_started'):
+                self.row(self.button('Continue encounter', 'battle_continue', discord.ButtonStyle.primary))
+            return
+        if p.get('encounter') and any(choice['value'] == 'challenge' for choice in page['choices']):
+            beast = storage.get_beast_data(p['encounter'])
+            self.portrait(f"**{safe(beast['name'])} · Lv.{p.get('encounter_level', 1)}**\n{safe(beast['description'])}", beast['id'])
+        self.text(page['body'])
+        if page.get('footer'):
+            self.text(page['footer'])
+        self.path_select.options = [discord.SelectOption(label=choice['label'][:100], description=choice['description'][:100],
+            value=f"{trip['id']}:{trip['version']}:{choice['value']}") for choice in page['choices']]
+        if self.path_select.options:
+            self.row(self.path_select)
+
+    def render_team(self):
+        self.text('### Your adventure team\nYour active companion leads. Choose up to two reserves for exploration and wild battles. Raid parties have their own assignments.')
+        self.render_team_summary()
+        self.text('All travelling companions earn bounded EXP. Lower-level reserves catch up gradually. Each keeps their own health, mana, gear and ultimate charge; swapping spends your action.')
+        rows = self.state.workshop.companions
+        if not rows:
+            self.row(self.button('Choose your starter', 'launch:start', discord.ButtonStyle.success))
+            return
+        if self.state.trip:
+            self.text('**Team saved for this expedition.** Return home before changing your lead or reserves.')
+        pages = max(1, (len(rows) + PAGE_SIZE - 1) // PAGE_SIZE)
+        self.companion_page = max(0, min(self.companion_page, pages - 1))
+        visible = rows[self.companion_page * PAGE_SIZE:(self.companion_page + 1) * PAGE_SIZE]
+        if self.companion_id not in {row['id'] for row in visible}:
+            self.companion_id = visible[0]['id']
+        self.companion_select.options = [discord.SelectOption(label=f"#{row['player_number']} · {row['nickname'] or storage.get_beast_data(row['beast_id'])['name']} · Lv.{row['level']}"[:100],
+            value=str(row['id']), default=row['id'] == self.companion_id) for row in visible]
+        self.row(self.companion_select)
+        row = self.selected_companion()
+        beast = storage.get_beast_data(row['beast_id'])
+        self.portrait(f"**{safe(row['nickname'] or beast['name'])}** · {beast['type'].title()}\nHP {row['hp']}/{row['max_hp']} · MP {row['mana']}/{row['max_mana']}", beast['id'], row['armor_id'])
+        slots = self.state.team_slots
+        occupied = next((slot for slot, row_id in slots.items() if row_id == row['id']), None)
+        self.team_select.options = [discord.SelectOption(label=f'Assign reserve {slot}', value=f"{row['id']}:{slot}",
+            description='Replace the current reserve in this slot') for slot in (1, 2)]
+        if occupied:
+            self.team_select.options.append(discord.SelectOption(label='Remove from adventure team', value=f"{row['id']}:clear:{occupied}"))
+        self.team_select.disabled = bool(self.state.trip or row['listed'] or row['hp'] <= 0 or storage.is_knocked_out(row) or row['is_active'])
+        # A recovering reserve can still be removed when home.
+        if occupied and not self.state.trip and not row['is_active']:
+            self.team_select.disabled = False
+        self.row(self.team_select)
+        self.row(self.button('Make team lead', 'make_active', discord.ButtonStyle.primary,
+                             disabled=bool(self.state.trip or row['is_active'] or row['listed'] or row['hp'] <= 0 or storage.is_knocked_out(row))),
+                 self.button('Back to adventure', 'page:adventure'))
+        if pages > 1:
+            self.row(self.button('Previous companions', 'comp_prev', disabled=self.companion_page == 0),
+                     self.button('Next companions', 'comp_next', disabled=self.companion_page + 1 >= pages))
+
     def render_companions(self):
         rows = self.state.workshop.companions
         self.text('### Your travelling companions\nChoose a companion to view their bond, make them active or plan their awakening.')
@@ -259,7 +351,7 @@ class JournalView(discord.ui.LayoutView):
         else:
             self.text('Any companion can build a bond. The four Architect starters also have unique bond awakenings.')
         self.row(self.button('Make active', 'make_active', discord.ButtonStyle.primary, disabled=bool(row['is_active'] or row['listed'] or storage.is_knocked_out(row))),
-                 self.button('Play together', 'launch:play', disabled=not row['is_active']))
+                 self.button('Play together', 'launch:play', disabled=not row['is_active']), self.button('Adventure team', 'page:team'))
         evo = beast.get('evolution') or {}
         if evo.get('form') == 'bond':
             after = storage.get_beast_data(evo['evolves_to'])
@@ -468,7 +560,7 @@ class JournalView(discord.ui.LayoutView):
                 if interaction.response.is_done():
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
-        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'awaken', 'story_claim'}
+        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim'}
         duplicate = mutation and (self.mutating or self.lock.locked())
         if mutation and not duplicate:
             self.mutating = True
@@ -527,6 +619,20 @@ class JournalView(discord.ui.LayoutView):
                         if selected not in {r['id'] for r in self.state.workshop.companions}:
                             raise ValueError('That companion has left your collection.')
                         self.companion_id, self.reviewing, self.awakening_scene = selected, False, ''
+                    elif action == 'team_slot':
+                        values = interaction.data['values'][0].split(':')
+                        row_id = int(values[0])
+                        if row_id != self.companion_id:
+                            raise ValueError('That team choice belongs to an older companion page.')
+                        if values[1] == 'clear':
+                            slot = int(values[2])
+                            if self.state.team_slots.get(slot) != row_id:
+                                raise ValueError('That reserve assignment changed. Refresh your team.')
+                            await adventure_party.clear_slot(self.user_id, slot)
+                            self.notice = 'Companion removed from the adventure team.'
+                        else:
+                            await adventure_party.set_slot(self.user_id, row_id, int(values[1]))
+                            self.notice = 'Your adventure reserve is ready.'
                     elif action in {'make_active', 'pin_awakening', 'review_awakening'}:
                         row = self.selected_companion()
                         if not row:

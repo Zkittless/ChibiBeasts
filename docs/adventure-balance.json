@@ -1,0 +1,237 @@
+{
+  "status": "passed",
+  "trials": 720,
+  "assumptions": "Synthetic ungeared Twine/Fairy/Imp teams; production turn rules, 20-round cap, one simple tactical policy; no player telemetry.",
+  "economy": "Trainer XP, encounter levels, catch odds, charges and gold do not multiply with party size. Shared companion XP has per-level reserve ceilings.",
+  "level_one_catchup_xp": 16,
+  "actions": {
+    "skill": 1106,
+    "attack": 1306,
+    "assist": 141,
+    "swap": 443,
+    "heal": 468,
+    "forced_swap": 594
+  },
+  "regions": [
+    {
+      "region": "woods",
+      "level": 3,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 19,
+          "median_rounds": 5.0,
+          "mean_standing": 0.79
+        },
+        "2": {
+          "clean_wins": 21,
+          "median_rounds": 6.0,
+          "mean_standing": 1.5
+        },
+        "3": {
+          "clean_wins": 22,
+          "median_rounds": 6.0,
+          "mean_standing": 2.46
+        }
+      }
+    },
+    {
+      "region": "woods_deep",
+      "level": 8,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 9,
+          "median_rounds": 4.0,
+          "mean_standing": 0.38
+        },
+        "2": {
+          "clean_wins": 20,
+          "median_rounds": 7.0,
+          "mean_standing": 1.38
+        },
+        "3": {
+          "clean_wins": 21,
+          "median_rounds": 7.0,
+          "mean_standing": 2.21
+        }
+      }
+    },
+    {
+      "region": "ember",
+      "level": 13,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 2,
+          "median_rounds": 4.0,
+          "mean_standing": 0.08
+        },
+        "2": {
+          "clean_wins": 16,
+          "median_rounds": 7.5,
+          "mean_standing": 0.92
+        },
+        "3": {
+          "clean_wins": 21,
+          "median_rounds": 7.5,
+          "mean_standing": 1.79
+        }
+      }
+    },
+    {
+      "region": "ember_deep",
+      "level": 18,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 0,
+          "median_rounds": 2.0,
+          "mean_standing": 0
+        },
+        "2": {
+          "clean_wins": 0,
+          "median_rounds": 9.0,
+          "mean_standing": 0
+        },
+        "3": {
+          "clean_wins": 5,
+          "median_rounds": 9.0,
+          "mean_standing": 0.25
+        }
+      }
+    },
+    {
+      "region": "glacial",
+      "level": 23,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 0,
+          "median_rounds": 4.0,
+          "mean_standing": 0
+        },
+        "2": {
+          "clean_wins": 0,
+          "median_rounds": 5.0,
+          "mean_standing": 0
+        },
+        "3": {
+          "clean_wins": 0,
+          "median_rounds": 8.0,
+          "mean_standing": 0
+        }
+      }
+    },
+    {
+      "region": "glacial_deep",
+      "level": 28,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 0,
+          "median_rounds": 3.5,
+          "mean_standing": 0
+        },
+        "2": {
+          "clean_wins": 0,
+          "median_rounds": 5.0,
+          "mean_standing": 0
+        },
+        "3": {
+          "clean_wins": 0,
+          "median_rounds": 7.5,
+          "mean_standing": 0
+        }
+      }
+    },
+    {
+      "region": "trenches",
+      "level": 33,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 0,
+          "median_rounds": 2.0,
+          "mean_standing": 0
+        },
+        "2": {
+          "clean_wins": 0,
+          "median_rounds": 5.0,
+          "mean_standing": 0
+        },
+        "3": {
+          "clean_wins": 0,
+          "median_rounds": 7.0,
+          "mean_standing": 0
+        }
+      }
+    },
+    {
+      "region": "trenches_deep",
+      "level": 38,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 0,
+          "median_rounds": 2.0,
+          "mean_standing": 0
+        },
+        "2": {
+          "clean_wins": 0,
+          "median_rounds": 5.0,
+          "mean_standing": 0
+        },
+        "3": {
+          "clean_wins": 0,
+          "median_rounds": 8.0,
+          "mean_standing": 0
+        }
+      }
+    },
+    {
+      "region": "loom",
+      "level": 43,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 0,
+          "median_rounds": 3.0,
+          "mean_standing": 0
+        },
+        "2": {
+          "clean_wins": 0,
+          "median_rounds": 5.0,
+          "mean_standing": 0
+        },
+        "3": {
+          "clean_wins": 0,
+          "median_rounds": 7.0,
+          "mean_standing": 0
+        }
+      }
+    },
+    {
+      "region": "loom_deep",
+      "level": 48,
+      "trials_per_size": 24,
+      "teams": {
+        "1": {
+          "clean_wins": 0,
+          "median_rounds": 2.0,
+          "mean_standing": 0
+        },
+        "2": {
+          "clean_wins": 0,
+          "median_rounds": 4.0,
+          "mean_standing": 0
+        },
+        "3": {
+          "clean_wins": 0,
+          "median_rounds": 7.0,
+          "mean_standing": 0
+        }
+      }
+    }
+  ]
+}

@@ -173,19 +173,38 @@ async def award_player_exp(user_id: int, exp_gain: int, interaction=None):
     return result
 
 
-async def run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,reserved=False,realm=None):
+async def run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,reserved=False,realm=None,party_rows=None):
     from utils.duels import reserve_fighters
     from contextlib import nullcontext
     with nullcontext() if reserved else reserve_fighters([interaction.user.id]):
-        return await _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,realm=realm)
+        return await _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,realm=realm,party_rows=party_rows)
 
-async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,realm=None):
-    from utils.duels import prepare_state,duel,beast_exp,active_fighters
-    from utils.db import is_knocked_out
-    if is_knocked_out(player_beast_row):raise ValueError("Your companion is recovering. Use /use Phoenix Elixir or choose another beast.")
-    state=await prepare_state(interaction.user.id,player_beast_row,player_beast_data,player_perks)
-    difficulty = encounter_difficulty(state, enemy_state)
-    winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView,reserved=True,realm=realm)
+async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_perks,enemy_state,enemy_personality,battle_title,on_win,on_loss,*,realm=None,party_rows=None):
+    from utils.duels import prepare_state,duel
+    from utils import adventure_party
+    # Re-read ownership, listings and recovery while the trainer is reserved.
+    # An expedition supplies its captured roster; never fill a missing member
+    # with a newly assigned reserve or a creature caught along the route.
+    supplied = party_rows is not None
+    roster = await adventure_party.rows(interaction.user.id, ids=[r['id'] for r in party_rows] if supplied else None)
+    if not roster:
+        raise ValueError('Your adventure team needs a healthy, unlisted companion before it can battle.')
+    if not supplied and roster[0]['id'] != player_beast_row['id']:
+        raise ValueError('Your active companion changed while the battle was preparing. Try again.')
+    lead = roster[0]
+    lead_data = player_beast_data if lead['beast_id'] == player_beast_data['id'] else get_beast_data(lead['beast_id'])
+    state=await prepare_state(interaction.user.id,lead,lead_data,player_perks,preserve_resources=True)
+    state['_persist_pve'] = True
+    party = [state]
+    for row in roster[1:]:
+        party.append(await prepare_state(interaction.user.id,row,get_beast_data(row['beast_id']),player_perks,
+                                         consume=False,party_reserve=True,preserve_resources=True))
+    difficulty = adventure_party.encounter_difficulty(party, enemy_state)
+    if len(roster) > 1:
+        from utils.team_combat import team_duel
+        winner,states,log,timed_out=await team_duel(interaction,party,enemy_state,battle_title,enemy_personality,reserved=True,realm=realm)
+    else:
+        winner,states,log,timed_out=await duel(interaction,[state,enemy_state],[interaction.user.id,None],battle_title,enemy_personality,MoveView,reserved=True,realm=realm)
     # The closing battlefield already contains final HP and its journal. This
     # follow-up carries the outcome, rewards and story instead of repeating it.
     embed=discord.Embed(title=f"⚔️ {battle_title} — {'Victory' if winner==0 else 'Draw' if winner is None else 'Lesson learned'}",color=COLORS["success"] if winner==0 else COLORS["info"])
@@ -195,18 +214,22 @@ async def _run_pve_battle(interaction,player_beast_row,player_beast_data,player_
     else:await on_loss(embed,*states)
     kind="sparr" if battle_title.startswith("Spar") else "pve"
     async with storage.connect() as db:
-        cursor=await db.execute("INSERT INTO battles(challenger_id,winner_id,challenger_beast,status,battle_type) VALUES(?,?,?,'completed',?)",(interaction.user.id,interaction.user.id if winner==0 else None,player_beast_row["id"],kind))
+        cursor=await db.execute("INSERT INTO battles(challenger_id,winner_id,challenger_beast,status,battle_type) VALUES(?,?,?,'completed',?)",(interaction.user.id,interaction.user.id if winner==0 else None,lead["id"],kind))
         battle_id=cursor.lastrowid
         if winner!=0:await db.execute("UPDATE players SET losses=losses+1 WHERE user_id=?",(interaction.user.id,))
         await db.commit()
-    gained = encounter_beast_xp(player_beast_row['level'], enemy_state.get('level', 1), difficulty=difficulty,
+    gained = encounter_beast_xp(lead['level'], enemy_state.get('level', 1), difficulty=difficulty,
                                 effort=1 if clean_win else .25)
-    new_level = await beast_exp(interaction.user.id, player_beast_row['id'], gained)
-    embed.add_field(name='Companion progress', value=f"+{gained} companion EXP" + (f" · Lv.{new_level}" if new_level > player_beast_row['level'] else ''), inline=False)
+    progress = await adventure_party.award_xp(interaction.user.id, [row['id'] for row in roster], lead['id'], gained,
+                                              enemy_state.get('level', 1), participated=states[0].get('_participated', (lead['id'],)))
+    embed.add_field(name='Companion progress', value='\n'.join(
+        f"**{result['name']}** +{result['amount']} EXP" + (f" · Lv.{result['level']}" if result['leveled'] else '')
+        for result in progress) or 'Your companions have reached their growth limit.', inline=False)
     if clean_win:
-        completed=await track_quest_event(interaction.user.id,"spar_win" if kind=="sparr" else "battle_win",event_key=f"duel:{battle_id}",beast_row_id=player_beast_row["id"])
+        completed=await track_quest_event(interaction.user.id,"spar_win" if kind=="sparr" else "battle_win",event_key=f"duel:{battle_id}",beast_row_id=lead["id"])
         await notify_quest_completions(interaction.channel,completed)
     await interaction.channel.send(embed=embed)
+    return winner, states, log, timed_out
 
 
 # ── Divine Passive Processor ──────────────────────────────────────────────────
@@ -420,8 +443,13 @@ class Battle(commands.Cog):
                 player_perks = [dict(r) for r in await c.fetchall()]
 
         from utils.duels import prepare_state
-        preview_state = await prepare_state(interaction.user.id, active_row, active_beast_data, player_perks, consume=False)
-        difficulty = encounter_difficulty(preview_state, enemy_state)
+        from utils import adventure_party
+        selected_roster = await adventure_party.rows(interaction.user.id)
+        preview_states = []
+        for index, row in enumerate(selected_roster):
+            preview_states.append(await prepare_state(interaction.user.id, row, get_beast_data(row['beast_id']),
+                player_perks, consume=False, party_reserve=index > 0, preserve_resources=True))
+        difficulty = adventure_party.encounter_difficulty(preview_states, enemy_state)
 
         rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
         _challenge_intro = discord.Embed(
@@ -536,6 +564,7 @@ class Battle(commands.Cog):
             on_win=on_win,
             on_loss=on_loss,
             reserved=True,
+            party_rows=selected_roster,
         )
 
     # ── /sparr ────────────────────────────────────────────────────────────
@@ -806,6 +835,7 @@ class Battle(commands.Cog):
                 on_win=on_win,
                 on_loss=on_loss,
                 reserved=True,
+                party_rows=[active_row],
             )
         except BaseException:
             # Release an unpaid slot on errors AND cancellation. Paid attempts
