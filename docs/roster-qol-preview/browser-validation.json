@@ -1,0 +1,210 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "checks": [
+    {
+      "width": 1100,
+      "page": "roster",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "filtered",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "rarity",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "detail",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "gear",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "explore",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "saved",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "care",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "healed",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "blocked",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "permanent",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "roster",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "filtered",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "rarity",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "detail",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "gear",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "explore",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "saved",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "care",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "healed",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "blocked",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "permanent",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "roster",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "filtered",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "rarity",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "detail",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "gear",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "explore",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "saved",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "care",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "healed",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "blocked",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "permanent",
+      "no_overflow": true,
+      "all_art_loaded": true
+    }
+  ],
+  "roster_pages": true,
+  "direct_selection": true,
+  "back_preserves_page": true,
+  "search": true,
+  "saved_destination": true,
+  "care_keeps_roster_and_gear_target": true
+}

@@ -1,12 +1,54 @@
 """Validate an item effect before consuming it, using fresh inventory and live state."""
 import copy
+import hashlib
+import json
 import random
+from datetime import datetime, timezone
 import aiosqlite
 from utils import db as storage, combat
 from utils.gameplay import shorten_incubation
 ELEMENTS = ('fire', 'water', 'ice', 'earth', 'wind', 'nature', 'arcane', 'shadow', 'cosmic', 'light')
 
-async def use_item(user_id, item_id, *, choice=None, beast_number=None):
+def care_fingerprint(beast, target, player, party, feed_earned=0):
+    """Bind a Care preview to the exact companion and effects being reviewed."""
+    def fields(row):
+        keys = ('id', 'user_id', 'player_number', 'beast_id', 'name', 'nickname', 'hp', 'max_hp', 'knocked_out_until',
+                'happiness', 'level', 'exp', 'damage_bonus', 'stat_treats_used',
+                'attack', 'defense', 'speed', 'status', 'status_ward', 'ultimate_charges',
+                'item_defense_boost_percent', 'item_speed_boost_percent')
+        return {key: row.get(key) for key in keys} if row else None
+    payload = [fields(beast), fields(target),
+               {key: player.get(key) for key in ('ultimate_charges', 'next_defense_boost',
+                 'next_speed_boost', 'status_ward_charges')},
+               [fields(row) for row in sorted(party, key=lambda row: row['id'])],
+               feed_earned, datetime.now(timezone.utc).date().isoformat()]
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
+async def party_recovery_targets(db, user_id, live_party=()):
+    if live_party:
+        ids = [row['id'] for row in live_party]
+        placeholders = ','.join('?' for _ in ids)
+        async with db.execute(f'SELECT * FROM player_beasts WHERE user_id=? AND id IN ({placeholders})', (user_id, *ids)) as cursor:
+            owned = {row['id']: dict(row) for row in await cursor.fetchall()}
+        if any(row_id not in owned for row_id in ids):
+            raise ValueError('Your battle team changed. Refresh Care before using party recovery.')
+        return [{**owned[row['id']], **row} for row in live_party]
+    async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND '
+                          '(raid_slot IS NOT NULL OR is_active=1 OR id IN '
+                          '(SELECT beast_row_id FROM adventure_team WHERE user_id=?)) ORDER BY id',
+                          (user_id, user_id)) as cursor:
+        return [dict(row) for row in await cursor.fetchall()]
+
+
+async def growth_treat_earned(db, beast_id):
+    key = f'activity_xp:{beast_id}:feed:{datetime.now(timezone.utc).date().isoformat()}'
+    async with db.execute('SELECT COALESCE(SUM(value),0) FROM player_progress WHERE stat_key=?', (key,)) as cursor:
+        return (await cursor.fetchone())[0]
+
+
+async def use_item(user_id, item_id, *, choice=None, beast_number=None,
+                   expected_row_id=None, expected_species=None, expected_care_state=None):
     item = storage.load_items().get(item_id)
     if not item:
         raise ValueError('That item has no usable definition.')
@@ -31,7 +73,14 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
                 inv = await c.fetchone()
             if not inv:
                 raise ValueError(f"You do not have {item['name']}.")
-            if beast_number is not None:
+            if expected_row_id is not None:
+                async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND id=?', (user_id, expected_row_id)) as c:
+                    row = await c.fetchone()
+                if not row:
+                    raise ValueError('That companion has left your collection. Nothing was consumed.')
+                if expected_species is not None and row['beast_id'] != expected_species:
+                    raise ValueError('Your companion has changed. Review its updated Care panel first.')
+            elif beast_number is not None:
                 async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND player_number=?', (user_id, beast_number)) as c:
                     row = await c.fetchone()
             elif live:
@@ -46,6 +95,18 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             if beast:
                 updated = next((state for state in updated_party if state['id'] == beast['id']), None)
             target = updated or beast
+            recovery_targets = await party_recovery_targets(db, user_id, updated_party) if effect.get('revive_party') else []
+            target_ids = [row['id'] for row in recovery_targets] if effect.get('revive_party') else [beast['id']] if beast else []
+            if target_ids:
+                placeholders = ','.join('?' for _ in target_ids)
+                async with db.execute(f'SELECT 1 FROM beast_market WHERE beast_row_id IN ({placeholders}) LIMIT 1', target_ids) as cursor:
+                    if await cursor.fetchone():
+                        raise ValueError('Delist the affected companion before using items. Nothing was consumed.')
+            if expected_care_state is not None:
+                earned = await growth_treat_earned(db, beast['id']) if beast else 0
+                actual = care_fingerprint(beast, target, player, recovery_targets, earned)
+                if actual != expected_care_state:
+                    raise ValueError('Your companion or team changed. Review the refreshed effect before using an item.')
             no_beast = {'choose_element', 'clear_title', 'reduce_incubation_percent', 'reduce_incubation_hours', 'reset_explore', 'reset_challenge', 'encounter_boost', 'raid_damage_boost', 'catch_boost_charges', 'guaranteed_rare_charges', 'guild_title', 'revive_party'}
             if not beast and (not no_beast.intersection(effect)):
                 raise ValueError('Open /journal → Companions and make a companion active first.')
@@ -74,6 +135,9 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
             if effect.get('reduce_incubation_percent') or effect.get('reduce_incubation_hours'):
                 messages.append(await shorten_incubation(db, user_id, hours=effect.get('reduce_incubation_hours', 0), percent=effect.get('reduce_incubation_percent', 0)))
             if effect.get('revive_party'):
+                if not any(member['hp'] < member['max_hp'] or storage.is_knocked_out(member)
+                           or member.get('status') for member in recovery_targets):
+                    raise ValueError('Your assigned teams are already fully recovered. The item is yours to keep.')
                 if updated_party:
                     targets = list(dict.fromkeys(member['id'] for member in updated_party))
                     placeholders = ','.join('?' for _ in targets)
@@ -87,13 +151,14 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
                     member.update(hp=member['max_hp'], status=None, status_turns=0, ko_recorded=False)
             elif effect.get('revive'):
                 from utils.db import is_knocked_out
-                if not beast or not (is_knocked_out(beast) or beast['hp'] <= 0):
+                if not beast or not (is_knocked_out(beast) or target['hp'] <= 0):
                     raise ValueError('Choose a knocked-out beast with the optional beast number.')
                 hp = max(1, int(beast['max_hp'] * effect.get('heal_percent', 50) / 100))
                 await db.execute('UPDATE player_beasts SET hp=?,knocked_out_until=NULL WHERE id=?', (hp, beast['id']))
-                messages.append(f'Revived with {hp} HP.')
+                restored = max(1, int(updated['max_hp'] * effect.get('heal_percent', 50) / 100)) if updated else hp
+                messages.append(f'Revived with {restored} HP.')
                 if updated:
-                    updated.update(hp=max(1, int(updated['max_hp'] * effect.get('heal_percent', 50) / 100)), status=None, status_turns=0, ko_recorded=False)
+                    updated.update(hp=restored, status=None, status_turns=0, ko_recorded=False)
             elif effect.get('heal_percent'):
                 if storage.is_knocked_out(beast) or target['hp'] <= 0:
                     raise ValueError('A knocked-out companion needs a revive before ordinary healing.')
@@ -102,6 +167,8 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
                     raise ValueError('This beast cannot benefit from healing right now. The item is yours to keep.')
                 hp = min(target['max_hp'], target['hp'] + int(target['max_hp'] * effect['heal_percent'] / 100))
                 restored = hp - target['hp']
+                if restored <= 0:
+                    raise ValueError('This item cannot restore any HP right now. The item is yours to keep.')
                 if updated:
                     updated['hp'] = hp
                 else:
@@ -150,6 +217,8 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None):
                 messages.append(f'Permanent {stat}: +{amount}. Treats: {beast["stat_treats_used"]+1}/{STAT_TREAT_LIMIT}.')
             if effect.get('status_ward'):
                 if updated:
+                    if updated.get('status_ward') and not updated.get('status'):
+                        raise ValueError('This companion is already protected by an Aether ward. The item is yours to keep.')
                     updated['status'] = None
                     updated['status_ward'] = True
                 else:

@@ -182,6 +182,12 @@ class JournalView(discord.ui.LayoutView):
             self.text(f"**{destination['name']}** · Trainer Lv.{destination['min_level']} required · Recommended companion Lv.{low}–{high}.\n"
                       'Wild levels stay in this range. Earlier paths become easy gathering trips and grant less combat EXP to stronger companions.')
             locked = self.state.player['level'] < REALMS[self.realm]['min_level']
+            saved = self.state.explore_default
+            saved_name = REALMS[saved]['name'] if saved in REALMS else 'Unavailable destination' if saved else 'None'
+            self.text(f'**Saved destination · {saved_name}**\nOpening /explore asks you to confirm before spending a charge. Your current exploration team stays saved.')
+            self.row(self.button('Save destination', 'save_destination:' + self.realm,
+                                 disabled=locked or saved == self.realm),
+                     self.button('Clear default', 'clear_destination', disabled=saved is None))
             traveller = next((r for r in self.state.workshop.companions if r['is_active']), None)
             if traveller:
                 training = starter_training_destination(storage.get_beast_data(traveller['beast_id']), traveller['level'], self.state.player['level'])
@@ -324,7 +330,8 @@ class JournalView(discord.ui.LayoutView):
         else:
             self.text('Any companion can build a bond. The four Architect starters also have unique bond awakenings.')
         self.row(self.button('Make active', 'make_active', discord.ButtonStyle.primary, disabled=bool(row['is_active'] or row['listed'] or storage.is_knocked_out(row))),
-                 self.button('Play together', 'launch:play', disabled=not row['is_active']))
+                 self.button('Play together', 'launch:play', disabled=not row['is_active']),
+                 self.button('Care', f"care:{row['id']}"))
         evo = beast.get('evolution') or {}
         if evo.get('form') == 'bond':
             after = storage.get_beast_data(evo['evolves_to'])
@@ -541,6 +548,17 @@ class JournalView(discord.ui.LayoutView):
             return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
         if self.closed or self.is_finished():
             return await interaction.response.send_message('This page has closed. Open /journal to resume your saved expedition.', ephemeral=True)
+        if action.startswith('care:') or action == 'launch:care':
+            from utils.care_view import open_care
+            if action == 'launch:care':
+                row = self.selected_companion() or next((row for row in self.state.workshop.companions if row['is_active']), None)
+                row_id = row['id'] if row else None
+            else:
+                try:
+                    row_id = int(action.split(':', 1)[1])
+                except (ValueError, IndexError):
+                    return await interaction.response.send_message('Choose a companion from your current journal.', ephemeral=True)
+            return await open_care(interaction, beast_row_id=row_id)
         if action.startswith('launch:'):
             try:
                 return await self.launch(interaction, action.split(':', 1)[1])
@@ -548,7 +566,7 @@ class JournalView(discord.ui.LayoutView):
                 if interaction.response.is_done():
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
-        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim'} or action.startswith(('team_assign:', 'team_clear:'))
+        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:'))
         duplicate = mutation and (self.mutating or self.lock.locked())
         if mutation and not duplicate:
             self.mutating = True
@@ -602,6 +620,15 @@ class JournalView(discord.ui.LayoutView):
                         self.realm = key
                     elif action == 'begin':
                         self.trip = await expeditions.begin(self.user_id, self.realm, guild_id=getattr(interaction.guild, 'id', 0))
+                    elif action.startswith('save_destination:'):
+                        realm = action.split(':', 1)[1]
+                        if self.state.trip or realm != self.realm:
+                            raise ValueError('Choose a destination on the current selection page before saving it.')
+                        await journal_state.save_explore_default(self.user_id, realm)
+                        self.notice = 'Default destination saved. /explore will select it for you to confirm.'
+                    elif action == 'clear_destination':
+                        await journal_state.clear_explore_default(self.user_id)
+                        self.notice = 'Default destination cleared. Future /explore openings select the Woods.'
                     elif action == 'path':
                         trip_id, version, choice = interaction.data['values'][0].split(':', 2)
                         self.trip = await expeditions.choose(self.user_id, trip_id, int(version), choice)
@@ -807,7 +834,7 @@ class JournalView(discord.ui.LayoutView):
             pass
 
 
-async def open_journal(interaction, *, bot=None, page='home', realm='woods', notice='', already_deferred=False, replace_message=False,
+async def open_journal(interaction, *, bot=None, page='home', realm=None, notice='', already_deferred=False, replace_message=False,
                        begin_expedition=False, channel_send=False, source=None):
     if not already_deferred:
         await interaction.response.defer()
@@ -823,10 +850,10 @@ async def open_journal(interaction, *, bot=None, page='home', realm='woods', not
         await expeditions.report(trip)
     if pending:
         state = await journal_state.snapshot(interaction.user.id)
-    if realm not in REALMS:
-        realm = 'woods'
-        notice = 'Choose an available destination from your journal.'
-    elif begin_expedition and not state.trip:
+    requested_realm = realm
+    realm, realm_notice = journal_state.explore_destination(state, requested_realm)
+    notice = realm_notice or notice
+    if begin_expedition and not state.trip:
         try:
             await expeditions.begin(interaction.user.id, realm, guild_id=getattr(interaction.guild, 'id', 0))
         except ValueError as error:
@@ -844,6 +871,9 @@ async def open_journal(interaction, *, bot=None, page='home', realm='woods', not
             # Openers serialize by trainer/channel. Refresh after waiting for
             # that lock so an earlier snapshot cannot replace newer rewards.
             view.state = await journal_state.snapshot(view.user_id)
+            if requested_realm is None:
+                view.realm, realm_notice = journal_state.explore_destination(view.state)
+                view.notice = realm_notice or view.notice
             view.trip = view.state.trip or await expeditions.latest(view.user_id)
             await view.load_page()
             view.render()

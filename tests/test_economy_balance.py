@@ -9,6 +9,7 @@ from utils.equipment import effect_summary
 from utils.items import use_item
 from utils.shops import purchase_gold, purchase_guild, purchase_shard, gold_catalog
 from tests.test_gameplay import DatabaseCase, interaction
+from tests.test_interactions import component
 
 
 class CatalogBalance(unittest.TestCase):
@@ -70,6 +71,26 @@ class CatalogBalance(unittest.TestCase):
 
 
 class EconomyTransactions(DatabaseCase):
+    async def begin_exploration(self, view):
+        import discord
+        from utils import expeditions
+        # Every fixture starts with one charge. Merely opening the selection
+        # must leave it available and must not create an active expedition.
+        self.assertIsNone(await expeditions.current(42))
+        self.assertEqual((await expeditions.energy(42)).charges, 1)
+        before = len(await self.rows('SELECT id FROM expeditions'))
+        begin = next(item for item in view.walk_children()
+                     if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
+        self.assertFalse(begin.disabled)
+        click = component()
+        click.edit_original_response.return_value = view.message
+        await begin.callback(click)
+        click.response.defer.assert_awaited_once()
+        self.assertEqual((await expeditions.energy(42)).charges, 0)
+        self.assertEqual(len(await self.rows('SELECT id FROM expeditions')), before + 1)
+        self.assertEqual(view.trip['status'], 'active')
+        return view.trip
+
     async def test_divine_purchase_checks_level_then_charges_the_real_price(self):
         await storage.update_player(42,gold=200000)
         with self.assertRaisesRegex(ValueError,'level 40'):
@@ -229,7 +250,7 @@ class EconomyTransactions(DatabaseCase):
             before=sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
             view = await Hatch.explore.callback(Hatch(None), interaction())
             self.addCleanup(view.stop)
-            trip = view.trip
+            trip = await self.begin_exploration(view)
             self.assertEqual(trip['payload']['adventure_version'], 2)
             if outcome == 'quiet':
                 for choice in ('shrine', 'repair', 'detour'):
@@ -318,7 +339,7 @@ class EconomyTransactions(DatabaseCase):
         await storage.update_player(42,level=30,ancient_compass_charges=1)
         view = await Hatch.explore.callback(Hatch(None), interaction(), 'loom')
         self.addCleanup(view.stop)
-        trip = view.trip
+        trip = await self.begin_exploration(view)
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('genesis')):
             await expeditions.choose(42, trip['id'], trip['version'], 'tracks')
         self.assertEqual((await storage.get_player(42))['ancient_compass_charges'],1)
@@ -333,7 +354,7 @@ class EconomyTransactions(DatabaseCase):
         await self.execute('INSERT INTO guild_sanctuary(guild_id,arcane_library) VALUES(3,1)')
         view = await Hatch.explore.callback(Hatch(None), interaction())
         self.addCleanup(view.stop)
-        trip = view.trip
+        trip = await self.begin_exploration(view)
         self.assertEqual(trip['payload']['adventure_version'], 2)
         for choice in ('shrine', 'repair', 'detour'):
             trip = await expeditions.choose(42, trip['id'], trip['version'], choice)

@@ -307,6 +307,15 @@ class BattleDispatch(DatabaseCase):
             with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('slime')), patch('utils.expeditions.random.random', return_value=1), patch('utils.expeditions.random.randint', side_effect=lambda a, b: a):
                 journal = await asyncio.wait_for(Hatch.explore.callback(Hatch(None), fake, 'woods'), 8)
                 self.addCleanup(journal.stop)
+                begin = next(item for item in journal.walk_children()
+                             if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
+                begin_click = component()
+                begin_click.user = fake.user
+                begin_click.channel = fake.channel
+                begin_click.message = journal.message
+                begin_click.edit_original_response.return_value = journal.message
+                await begin.callback(begin_click)
+                begin_click.response.defer.assert_awaited_once()
                 await journal_choice(journal, 'tracks')
                 await asyncio.wait_for(journal_choice(journal, 'challenge'), 8)
                 self.assertEqual([b['beast_id'] for b in await storage.get_player_beasts(42)].count('slime'), 0)

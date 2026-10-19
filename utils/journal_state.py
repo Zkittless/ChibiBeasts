@@ -63,6 +63,41 @@ async def clear_goal(user_id):
         await db.commit()
 
 
+async def save_explore_default(user_id, realm):
+    """Save a destination preference without starting a trip or spending."""
+    if realm not in BIOMES:
+        raise ValueError('Choose a destination from your journal.')
+    async with storage.connect() as db:
+        await db.execute('BEGIN IMMEDIATE')
+        async with db.execute('SELECT level FROM players WHERE user_id=?', (user_id,)) as cursor:
+            player = await cursor.fetchone()
+        if not player:
+            raise ValueError('Open your Field Journal before saving a destination.')
+        if player[0] < BIOMES[realm]['min_level']:
+            raise ValueError(f"Reach trainer level {BIOMES[realm]['min_level']} to save this destination.")
+        await db.execute('INSERT INTO exploration_preferences(user_id,realm) VALUES(?,?) '
+                         'ON CONFLICT(user_id) DO UPDATE SET realm=excluded.realm', (user_id, realm))
+        await db.commit()
+
+
+async def clear_explore_default(user_id):
+    async with storage.connect() as db:
+        await db.execute('DELETE FROM exploration_preferences WHERE user_id=?', (user_id,))
+        await db.commit()
+
+
+def explore_destination(state, requested=None):
+    """Resolve an opening selection; explicit choices never update the default."""
+    if requested is not None:
+        return (requested, '') if requested in BIOMES else ('woods', 'Choose an available destination from your journal.')
+    saved = state.explore_default
+    if saved is None:
+        return 'woods', ''
+    if saved in BIOMES and state.player['level'] >= BIOMES[saved]['min_level']:
+        return saved, ''
+    return 'woods', 'Your saved destination is unavailable at your current trainer level. Choose a destination or clear the default.'
+
+
 def goal_status(goal, state):
     """Compute progress from current ownership, recipe costs and level gates."""
     if not goal:
@@ -152,6 +187,7 @@ class JournalState:
     story: dict
     team: list = field(default_factory=list)
     team_slots: dict = field(default_factory=dict)
+    explore_default: str | None = None
 
 
 async def snapshot(user_id):
@@ -168,8 +204,11 @@ async def snapshot(user_id):
         async with db.execute('SELECT * FROM journal_goals WHERE user_id=?', (user_id,)) as c:
             row = await c.fetchone()
             goal = dict(row) if row else None
+        async with db.execute('SELECT realm FROM exploration_preferences WHERE user_id=?', (user_id,)) as c:
+            preference = await c.fetchone()
         state = await story.read_state(db, user_id)
     from utils import adventure_party
     team = await adventure_party.rows(user_id)
     slots = await adventure_party.assignments(user_id)
-    return JournalState(player, workshop, energy, trip, goal_status(goal, workshop), state, team, slots)
+    return JournalState(player, workshop, energy, trip, goal_status(goal, workshop), state, team, slots,
+                        preference['realm'] if preference else None)
