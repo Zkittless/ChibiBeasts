@@ -33,105 +33,10 @@ def load_equipment():
     return data['equipment'],data['runes']
 
 # ── Egg definitions ───────────────────────────────────────────────────────────
-EGGS = {
-    # Common eggs — fast, lower odds
-    "sprout_pod":    {"name": "Sprout Pod",    "rarity": "common",    "emoji": "🌱", "incubation_hours": 1,
-                      "pool": {"common": 0.55, "uncommon": 0.35, "rare": 0.10},
-                      "flavor": "A soft leafy green capsule that smells like fresh rain.",
-                      "lore": "The Loom made these first, when it was still learning what shapes beasts come in."},
-    "pebble_shell":  {"name": "Pebble Shell",  "rarity": "common",    "emoji": "🪨", "incubation_hours": 1,
-                      "pool": {"common": 0.50, "uncommon": 0.38, "rare": 0.12},
-                      "flavor": "A rough stone-textured egg that looks like a common river rock.",
-                      "lore": "Barkley once used one as a pillow. It hatched into a Goblin. They're still friends."},
-    "soot_hatchling":{"name": "Soot Hatchling","rarity": "common",    "emoji": "🖤", "incubation_hours": 1,
-                      "pool": {"common": 0.45, "uncommon": 0.40, "rare": 0.15},
-                      "flavor": "A tiny warm egg covered in dark ash. Something impatient is inside.",
-                      "lore": "Imp-adjacent. Best hatched somewhere fireproof."},
-    # Uncommon eggs — beat Rare Egg: strong rare/epic spread
-    "dewdrop_bulb":  {"name": "Dewdrop Bulb",  "rarity": "uncommon",  "emoji": "💧", "incubation_hours": 4,
-                      "pool": {"uncommon": 0.30, "rare": 0.50, "epic": 0.20},
-                      "flavor": "A translucent water-filled egg that lightly ripples when touched.",
-                      "lore": "Found near Kelpie territory. Handle carefully — it sloshes."},
-    "gale_nest":     {"name": "Gale Nest",     "rarity": "uncommon",  "emoji": "🌬️", "incubation_hours": 4,
-                      "pool": {"uncommon": 0.28, "rare": 0.48, "epic": 0.24},
-                      "flavor": "A lightweight feathery egg that hovers an inch off the ground.",
-                      "lore": "Has to be weighted down during hatching or it drifts away. Always upward."},
-    "cavern_core":   {"name": "Cavern Core",   "rarity": "uncommon",  "emoji": "💎", "incubation_hours": 4,
-                      "pool": {"uncommon": 0.30, "rare": 0.50, "epic": 0.20},
-                      "flavor": "A dense egg embedded with glowing raw crystals.",
-                      "lore": "Found in cave networks that don't appear on any map."},
-    # Rare eggs — strong legendary access, beats Rare Egg significantly
-    "prism_sphere":  {"name": "Prism Sphere",  "rarity": "rare",      "emoji": "🔮", "incubation_hours": 8,
-                      "pool": {"rare": 0.40, "epic": 0.40, "legendary": 0.20},
-                      "flavor": "A crystal egg that refracts light into brilliant rainbows.",
-                      "lore": "Prismite is drawn to these. It stares at them for hours."},
-    "glow_spore":    {"name": "Glow-Spore Cluster","rarity": "rare",  "emoji": "🍄", "incubation_hours": 8,
-                      "pool": {"rare": 0.38, "epic": 0.42, "legendary": 0.20},
-                      "flavor": "A bioluminescent egg covered in glowing mushrooms.",
-                      "lore": "The mushrooms grow during incubation. They're part of the beast. Don't pick them."},
-    "eclipse_pebble":{"name": "Eclipse Pebble","rarity": "rare",      "emoji": "🌗", "incubation_hours": 10,
-                      "pool": {"rare": 0.35, "epic": 0.40, "legendary": 0.25},
-                      "flavor": "A smooth grey stone that alternates between ice-cold and burning hot.",
-                      "lore": "Holds two things that don't agree with each other. Something will break the tie."},
-    # Epic eggs — 25% divine, beats Celestial instant if you're patient
-    "volcanic_core": {"name": "Volcanic Core", "rarity": "epic",      "emoji": "🌋", "incubation_hours": 18,
-                      "pool": {"epic": 0.35, "legendary": 0.40, "divine": 0.25},
-                      "flavor": "A heavy obsidian egg with bright orange magma veins across the shell.",
-                      "lore": "Requires heat to incubate correctly. Store in the Ember Wastes if possible."},
-    "nimbus_cloud":  {"name": "Nimbus Cloud",  "rarity": "epic",      "emoji": "⛈️", "incubation_hours": 18,
-                      "pool": {"epic": 0.35, "legendary": 0.40, "divine": 0.25},
-                      "flavor": "A fluffy stormy cloud wrapped tightly into an egg shape, crackling with mini lightning.",
-                      "lore": "Thunderbird-adjacent. Keep away from electronics during incubation."},
-    "monolith_relic":{"name": "Monolith Relic","rarity": "epic",      "emoji": "🗿", "incubation_hours": 24,
-                      "pool": {"epic": 0.30, "legendary": 0.40, "divine": 0.30},
-                      "flavor": "An ancient stone tablet egg carved with glowing golden hieroglyphics.",
-                      "lore": "Atlas is vaguely familiar with these. It won't say how."},
-    # Legendary eggs — curated pools: 60% Legendary, 38% Divine, 2% Altered.
-    # Abyssal instant (25k, no wait): legendary 70% / divine 25% — open pool
-    # These (24k, 48h) trade incubation time for better odds and a focused pool.
-    "abyssal_trench_orb":  {"name": "Abyssal Trench Orb", "rarity": "legendary", "emoji": "🌊", "incubation_hours": 48,
-                            "pool": {"legendary": 0.60, "divine": 0.38, "altered_chance": 0.02},
-                            "legendary_pool": ["kraken", "leviathan", "charybdis", "jormungandr"],
-                            "divine_pool": ["aetherius", "nirvana", "abyss", "nebula"],
-                            "altered_pool": ["abyssal_nebula"],
-                            "flavor": "Covered in ancient barnacles and dark glowing runes, pressure-sealed by the deep sea.",
-                            "lore": "The Sunken Abyssal Trenches give these up rarely. They do not give them up gently."},
-    "dragon_hoard_scale":  {"name": "Dragon-Hoard Scale", "rarity": "legendary", "emoji": "🐉", "incubation_hours": 48,
-                            "pool": {"legendary": 0.60, "divine": 0.38, "altered_chance": 0.02},
-                            "legendary_pool": ["dragon", "fenrir", "hydra"],
-                            "divine_pool": ["supernova", "genesis", "asgard", "atlas"],
-                            "altered_pool": ["fractured_genesis"],
-                            "flavor": "A massive diamond-hard egg made entirely of overlapping crimson and gold dragon scales.",
-                            "lore": "These are technically stolen. The Dragon is aware. The Dragon is patient."},
-    "glacial_monolith":    {"name": "Glacial Monolith",   "rarity": "legendary", "emoji": "🧊", "incubation_hours": 48,
-                            "pool": {"legendary": 0.60, "divine": 0.38, "altered_chance": 0.02},
-                            "legendary_pool": ["simurgh", "fenrir", "dragon", "jormungandr"],
-                            "divine_pool": ["chronos", "terminus", "zodiac", "paradox", "horizon"],
-                            "altered_pool": ["void_chronos"],
-                            "flavor": "Solid unmelting black ice with a massive dark silhouette frozen inside.",
-                            "lore": "The silhouette is always moving when you're not watching it directly."},
-    # Divine eggs (collection-specific)
-    "genesis_matrix":      {"name": "Genesis Matrix",    "rarity": "divine",   "emoji": "🏛️", "incubation_hours": 96,
-                            "pool": {"divine": 1.0},
-                            "divine_pool": ["genesis", "terminus", "paradox"],
-                            "flavor": "A perfectly flawless white geometric cube, floating and slowly rotating.",
-                            "lore": "The Architects made this last. Or first. Paradox is involved."},
-    "constellation_spool": {"name": "Constellation Spool","rarity": "divine",  "emoji": "⏳", "incubation_hours": 96,
-                            "pool": {"divine": 1.0},
-                            "divine_pool": ["zodiac", "karma", "horizon"],
-                            "flavor": "A swirling vortex of midnight-blue space dust wound with glowing red lines.",
-                            "lore": "Karma wove the first one of these. It hasn't said why."},
-    "singularity_core":    {"name": "Singularity Core",  "rarity": "divine",   "emoji": "🎴", "incubation_hours": 96,
-                            "pool": {"divine": 1.0},
-                            "divine_pool": ["supernova", "nebula", "abyss"],
-                            "flavor": "A pitch-black miniature black hole in a fragile cage of neon-purple stellar gas.",
-                            "lore": "Obtained from Altered Divine raid drops. The Loom made this as a warning."},
-    "world_tree_seed":     {"name": "World-Tree Seed",   "rarity": "divine",   "emoji": "🏮", "incubation_hours": 24,
-                            "pool": {"divine": 1.0},
-                            "divine_pool": ["atlas", "asgard", "nirvana"],
-                            "flavor": "An ancient golden seed with tiny roots made of light breaking through the shell.",
-                            "lore": "The Mythological Pillars remember a time before this was an egg. They don't discuss it."},
-}
+from utils.nursery_catalog import incubation_definitions, choose_rarity, species_pool
+
+# Older scripts can still import these names; actual hatches use utils.nursery.
+EGGS = incubation_definitions()
 
 from utils.economy_balance import INCUBATION_PRICES as EGG_PRICES
 
@@ -214,43 +119,12 @@ SANCTUARY_UPGRADES = {
 
 
 def roll_egg_rarity(egg_id: str) -> str:
-    egg = EGGS.get(egg_id)
-    if not egg:
-        return "common"
-    pool = egg["pool"]
-    # Check altered_chance first — it's a separate pre-roll
-    altered_chance = pool.get("altered_chance", 0)
-    if altered_chance and random.random() < altered_chance:
-        return "altered_divine"
-    # Roll normal pool (excluding altered_chance key)
-    normal_pool = {k: v for k, v in pool.items() if k != "altered_chance"}
-    total = sum(normal_pool.values())
-    normal_pool = {k:v/total for k,v in normal_pool.items()}
-    roll = random.random()
-    cumulative = 0.0
-    for rarity, chance in normal_pool.items():
-        cumulative += chance
-        if roll <= cumulative:
-            return rarity
-    return list(normal_pool.keys())[-1]
+    return choose_rarity(egg_id, rng=random) if egg_id in EGGS else 'common'
 
 
 def pick_beast_for_rarity(rarity: str, egg: dict) -> dict | None:
-    all_beasts = load_beasts()
-    STARTER_IDS = {"prismite", "twine", "gloop", "barkley"}
-    # Altered divine — use egg's altered_pool if specified, else all altered divines
-    if rarity == "altered_divine":
-        pool_ids = egg.get("altered_pool") or [bid for bid, b in all_beasts.items() if b["rarity"] == "altered_divine"]
-        pool = [all_beasts[bid] for bid in pool_ids if bid in all_beasts]
-        return random.choice(pool) if pool else None
-    # Curated pools — eggs can specify exact beast IDs for any rarity
-    pool_key = f"{rarity}_pool"
-    if pool_key in egg:
-        pool_ids = egg[pool_key]
-        pool = [all_beasts[bid] for bid in pool_ids if bid in all_beasts and not all_beasts[bid].get("evolution_only")]
-    else:
-        pool = [b for b in all_beasts.values()
-                if b["rarity"] == rarity and b["id"] not in STARTER_IDS and not b.get("evolution_only") and b.get("wild_encounter",True)]
+    egg_id = egg.get('id') or next((key for key, item in EGGS.items() if item == egg), None)
+    pool = species_pool(egg_id, rarity) if egg_id else []
     return random.choice(pool) if pool else None
 
 
@@ -260,374 +134,64 @@ class World(commands.Cog):
 
     # ── /incubate ──────────────────────────────────────────────────────────
     async def incubate_autocomplete(self, interaction: discord.Interaction, current: str):
-        """Show only incubation eggs the player actually has in inventory."""
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT item_id, quantity FROM player_inventory WHERE user_id = ?",
-                (interaction.user.id,)
-            ) as c:
-                inv = {r["item_id"]: r["quantity"] for r in await c.fetchall()}
-        choices = []
-        for eid, egg in EGGS.items():
-            if eid in inv and inv[eid] > 0:
-                if current.lower() in egg["name"].lower():
-                    qty = f" (x{inv[eid]})" if inv[eid] > 1 else ""
-                    choices.append(app_commands.Choice(name=f"{egg['emoji']} {egg['name']}{qty}", value=eid))
-        return choices[:25]
+        # Autocomplete has no defer response; keep it a small inventory read.
+        inventory = await storage.get_inventory(interaction.user.id)
+        owned = {row['item_id']: row['quantity'] for row in inventory}
+        return [app_commands.Choice(name=f"{egg['name']} (x{owned[egg_id]})"[:100], value=egg_id)
+                for egg_id, egg in EGGS.items() if owned.get(egg_id, 0) > 0
+                and current.lower() in egg['name'].lower()][:25]
 
-    @app_commands.command(name="incubate", description="Place an egg to incubate 🥚")
+    @app_commands.command(name="incubate", description="Start passive incubation in the Nursery")
     @app_commands.describe(egg_name="Egg to incubate (from your inventory)")
     @app_commands.autocomplete(egg_name=incubate_autocomplete)
     async def incubate(self, interaction: discord.Interaction, egg_name: str):
         await interaction.response.defer()
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
+        from utils import nursery
+        from utils.nursery_view import open_nursery, request_key
+        await get_or_create_player(interaction.user.id, str(interaction.user))
+        egg_id = egg_name.lower().replace(' ', '_').replace('-', '_')
+        if egg_id not in EGGS:
+            egg_id = next((key for key, egg in EGGS.items() if egg_name.lower() in egg['name'].lower()), None)
+        notice = 'Choose an incubation egg from the Nursery.'
+        if egg_id:
+            try:
+                await nursery.incubate(interaction.user.id, egg_id, request_key=request_key(interaction, 'incubate'))
+                notice = 'Your egg is settling in. Incubation finishes at its deadline; care is optional.'
+            except ValueError as error:
+                notice = str(error)
+        return await open_nursery(interaction, bot=self.bot, already_deferred=True, egg_id=egg_id, page='incubations', notice=notice)
 
-        # Match egg name to EGGS
-        egg_id = egg_name.lower().replace(" ", "_").replace("-", "_")
-        egg = EGGS.get(egg_id)
-        if not egg:
-            matches = [(k, e) for k, e in EGGS.items()
-                       if egg_name.lower() in e["name"].lower()]
-            if matches:
-                egg_id, egg = matches[0]
-            else:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ Egg `{egg_name}` not found! Check `/eggs` for available eggs.",
-                    color=COLORS["error"]
-                ))
-
-        # Check inventory
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            await db.execute("BEGIN IMMEDIATE")
-            from utils.economy_balance import shop_level
-            async with db.execute('SELECT level FROM players WHERE user_id=?', (interaction.user.id,)) as cursor:
-                current_player = await cursor.fetchone()
-            if egg_id != 'world_tree_seed' and (not current_player or current_player['level'] < shop_level(egg)):
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"Reach trainer level {shop_level(egg)} to incubate {egg['name']}. Your egg stays in your inventory.",
-                    color=COLORS['info']))
-            async with db.execute(
-                "SELECT * FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                (interaction.user.id, egg_id)
-            ) as c:
-                inv_row = await c.fetchone()
-
-            if not inv_row or inv_row["quantity"] < 1:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ You don't have a **{egg['name']}** in your inventory!",
-                    color=COLORS["error"]
-                ))
-
-            # Check egg slots (max 3 at once)
-            async with db.execute(
-                "SELECT COUNT(*) FROM incubating_eggs WHERE user_id = ? AND hatched = 0",
-                (interaction.user.id,)
-            ) as c:
-                count = (await c.fetchone())[0]
-            if count >= 3:
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ You already have 3 eggs incubating! Tend and hatch one first.",
-                    color=COLORS["error"]
-                ))
-
-            from utils.rewards import has_perk
-            hours = egg["incubation_hours"] * (.8 if await has_perk(db,interaction.user.id,"chronos_hourglass") else 1)
-            ready_at = datetime.now(timezone.utc) + timedelta(hours=hours)
-
-            # Calculate tend schedule
-            # Tends required based on incubation time:
-            #   1h  → 2 tends (every 0.5h)
-            #   4h  → 3 tends (every 2h)
-            #   8-10h → 4 tends
-            #   18-24h → 4 tends
-            #   48h → 5 tends (every 12h)
-            if hours <= 1:
-                tends_required = 2
-            elif hours <= 4:
-                tends_required = 3
-            elif hours <= 24:
-                tends_required = 4
-            else:
-                tends_required = 5
-
-            interval_hours = hours / tends_required
-            next_tend_at = datetime.now(timezone.utc) + timedelta(hours=interval_hours)
-
-            # Deduct from inventory
-            if inv_row["quantity"] == 1:
-                await db.execute("DELETE FROM player_inventory WHERE id = ?", (inv_row["id"],))
-            else:
-                await db.execute(
-                    "UPDATE player_inventory SET quantity = quantity - 1 WHERE id = ?",
-                    (inv_row["id"],)
-                )
-            await db.execute(
-                """INSERT INTO incubating_eggs
-                   (user_id, egg_type, egg_name, rarity, ready_at,
-                    tends_required, tends_done, next_tend_at)
-                   VALUES (?,?,?,?,?,?,0,?)""",
-                (interaction.user.id, egg_id, egg["name"], egg["rarity"],
-                 ready_at.strftime("%Y-%m-%d %H:%M:%S"),
-                 tends_required,
-                 next_tend_at.strftime("%Y-%m-%d %H:%M:%S"))
-            )
-            await db.commit()
-
-        interval_display = f"{interval_hours:.0f}h" if interval_hours >= 1 else f"{int(interval_hours*60)}min"
-        embed = discord.Embed(
-            title=f"{egg['emoji']} Egg Incubating: {egg['name']}",
-            description=(
-                f"*{egg['flavor']}*\n\n"
-                f"*{egg['lore']}*\n\n"
-                f"⏳ Incubation time: **{hours} hour{'s' if hours != 1 else ''}**\n"
-                f"🤲 Tends required: **{tends_required}** — every **{interval_display}**\n\n"
-                f"First tend available in **{interval_display}** — use `/tend` to check in.\n"
-                f"The final tend hatches the egg!"
-            ),
-            color=COLORS.get(egg["rarity"], COLORS["info"])
-        )
-        embed.set_footer(text="ChibiBeasts 🐾  •  The Loom is still weaving. Be patient.")
-        await interaction.followup.send(embed=embed)
-
-    # ── /eggs ──────────────────────────────────────────────────────────────
-    @app_commands.command(name="eggs", description="View your incubating eggs and tend status 🥚")
+    @app_commands.command(name="eggs", description="Open your Nursery eggs and passive incubators")
     async def eggs(self, interaction: discord.Interaction):
-        await interaction.response.defer()
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY ready_at ASC",
-                (interaction.user.id,)
-            ) as c:
-                rows = [dict(r) for r in await c.fetchall()]
+        from utils.nursery_view import open_nursery
+        return await open_nursery(interaction, bot=self.bot, page='incubations')
 
-        if not rows:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You have no eggs incubating. Pick one up in the `/shop` and use `/incubate`!",
-                color=COLORS["info"]
-            ))
-
-        now = datetime.now(timezone.utc)
-        embed = discord.Embed(
-            title="🥚 Your Incubating Eggs",
-            description="*Tend along the way, or return at the deadline for the final hatch. Time skips move both clocks.*",
-            color=COLORS["info"]
-        )
-        for row in rows:
-            egg = EGGS.get(row["egg_type"], {})
-            tends_done = row.get("tends_done") or 0
-            tends_required = row.get("tends_required") or 1
-            next_tend_at = row.get("next_tend_at")
-            tends_left = tends_required - tends_done
-
-            # Build tend progress bar
-            filled = "🟢" * tends_done + "⬜" * tends_left
-            progress = f"{filled} `{tends_done}/{tends_required}`"
-
-            if next_tend_at:
-                next_dt = datetime.strptime(next_tend_at, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-                if now >= next_dt:
-                    if tends_done >= tends_required - 1:
-                        tend_status = "✅ **Final tend ready — use `/tend` to hatch!**"
-                    else:
-                        # Overdue — egg is paused
-                        overdue = now - next_dt
-                        o_hrs, o_rem = divmod(int(overdue.total_seconds()), 3600)
-                        o_mins = o_rem // 60
-                        overdue_str = f"{o_hrs}h {o_mins}m" if o_hrs else f"{o_mins}m"
-                        tend_status = f"⚠️ **Paused** — tend overdue by `{overdue_str}` · use `/tend`!"
-                else:
-                    remaining = next_dt - now
-                    hrs, rem = divmod(int(remaining.total_seconds()), 3600)
-                    mins = rem // 60
-                    tend_status = f"⏳ Next tend in `{hrs}h {mins}m`"
-            else:
-                tend_status = "✅ **Ready — use `/tend`!**"
-
-            embed.add_field(
-                name=f"{egg.get('emoji','🥚')} {row['egg_name']} (ID: #{row['id']})",
-                value=f"{progress}\n{tend_status}\n*{RARITY_LABEL.get(row['rarity'], row['rarity'])}*",
-                inline=False
-            )
-        await interaction.followup.send(embed=embed)
-
-    # ── /tend ───────────────────────────────────────────────────────────────
-    @app_commands.command(name="tend", description="Tend to an incubating egg — final tend hatches it! 🤲")
-    @app_commands.describe(egg_id="The incubation ID from /eggs (leave blank for oldest ready egg)")
+    @app_commands.command(name="tend", description="Offer optional care, or choose a ready hatchling")
+    @app_commands.describe(egg_id="The incubation ID from /eggs (leave blank for oldest available egg)")
     async def tend(self, interaction: discord.Interaction, egg_id: int = None):
-        from utils.hatching import incubation_locks
-        async with incubation_locks[interaction.user.id]:
-            await self._tend(interaction,egg_id)
+        return await self._tend(interaction, egg_id)
 
     async def _tend(self, interaction, egg_id=None):
         await interaction.response.defer()
+        from utils import nursery
+        from utils.nursery_view import open_nursery
         await get_or_create_player(interaction.user.id, str(interaction.user))
-        now = datetime.now(timezone.utc)
-
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            if egg_id:
-                async with db.execute(
-                    "SELECT * FROM incubating_eggs WHERE id = ? AND user_id = ? AND hatched = 0",
-                    (egg_id, interaction.user.id)
-                ) as c:
-                    row = await c.fetchone()
-            else:
-                # Find oldest egg with a ready tend
-                async with db.execute(
-                    """SELECT * FROM incubating_eggs
-                       WHERE user_id = ? AND hatched = 0
-                         AND (next_tend_at IS NULL OR next_tend_at <= ? OR ready_at <= ?)
-                       ORDER BY ready_at ASC LIMIT 1""",
-                    (interaction.user.id, now.strftime("%Y-%m-%d %H:%M:%S"), now.strftime("%Y-%m-%d %H:%M:%S"))
-                ) as c:
-                    row = await c.fetchone()
-
+        state = await nursery.snapshot(interaction.user.id)
+        rows = state['incubations']
+        row = next((r for r in rows if r['id'] == egg_id), None) if egg_id is not None else next((r for r in rows if r.get('ready') or r.get('care_available')), None)
+        notice, offer = '', None
+        try:
             if not row:
-                # Check if any eggs exist but none are ready to tend
-                async with db.execute(
-                    "SELECT next_tend_at FROM incubating_eggs WHERE user_id = ? AND hatched = 0 ORDER BY next_tend_at ASC LIMIT 1",
-                    (interaction.user.id,)
-                ) as c:
-                    next_row = await c.fetchone()
-                if next_row and next_row["next_tend_at"]:
-                    next_dt = datetime.strptime(next_row["next_tend_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-                    remaining = next_dt - now
-                    hrs, rem = divmod(int(remaining.total_seconds()), 3600)
-                    mins = rem // 60
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description=f"✦ No eggs ready to tend yet.\n⏳ Next tend available in `{hrs}h {mins}m`.\nCheck `/eggs` for your full schedule.",
-                        color=COLORS["info"]
-                    ))
-                return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ No eggs incubating! Use `/incubate` to start one.",
-                    color=COLORS["error"]
-                ))
-
-            row = dict(row)
-
-            # Verify tend window if specific egg_id was given
-            if egg_id and row.get("next_tend_at"):
-                next_dt = datetime.strptime(row["next_tend_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-                if now < next_dt and now < datetime.strptime(row["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc):
-                    remaining = next_dt - now
-                    hrs, rem = divmod(int(remaining.total_seconds()), 3600)
-                    mins = rem // 60
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description=f"✦ **{row['egg_name']}** isn't ready to tend yet.\n⏳ Next tend in `{hrs}h {mins}m`.",
-                        color=COLORS["error"]
-                    ))
-
-            deadline=datetime.strptime(row["ready_at"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-            tends_done = (row.get("tends_done") or 0) + 1
-            if now>=deadline:
-                tends_done=row.get("tends_required") or 1
-            tends_required = row.get("tends_required") or 1
-            egg_def = EGGS.get(row["egg_type"], {})
-            hours = egg_def.get("incubation_hours", 1)
-
-            # Last tend — hatch the egg
-            if tends_done >= tends_required:
-                rarity = roll_egg_rarity(row["egg_type"])
-                beast = pick_beast_for_rarity(rarity, egg_def)
-
-                if not beast:
-                    return await interaction.followup.send(embed=discord.Embed(
-                        description="✦ Something went wrong hatching the egg. Try again!",
-                        color=COLORS["error"]
-                    ))
-
-                beast_row_id = await add_beast_to_player(
-                    interaction.user.id, {**beast, "caught_from": "incubation:"+row["egg_type"]},grant_key=f"egg:{row['id']}"
-                )
-                await db.execute("UPDATE incubating_eggs SET hatched = 1, tends_done = ? WHERE id = ?",
-                                 (tends_done, row["id"]))
-                await db.commit()
-
-                rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
-                type_emoji = TYPE_EMOJI.get(beast.get("type", ""), "❓")
-                color = COLORS.get(rarity, COLORS["info"])
-
-                # Milestone catch count
-                from cogs.hatch import get_catch_count, _catch_milestone_line
-                count, is_milestone = await get_catch_count(beast["id"], rarity)
-                milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
-
-                embed = discord.Embed(
-                    title=f"🐣 {row['egg_name']} Hatched!",
-                    description=(
-                        f"*The Loom finishes one more stitch.*\n\n"
-                        f"{rarity_emoji} **{beast['name']}** emerged — *{beast['title']}*\n\n"
-                        f"{type_emoji} Type: **{beast.get('type','?').capitalize()}** | "
-                        f"Rarity: **{RARITY_LABEL.get(rarity, rarity)}**\n\n"
-                        f"*{beast['description']}*"
-                    ),
-                    color=color
-                )
-                if beast.get("divine_passive"):
-                    dp = beast["divine_passive"]
-                    passive_labels = {"divine": "✨ Divine Passive", "altered_divine": "⚠️ Altered Passive",
-                                      "corrupted": "🖤 Corrupted Passive", "ancient": "🏛️ Ancient Passive"}
-                    plabel = passive_labels.get(rarity, "✨ Special Passive")
-                    embed.add_field(name=f"{plabel}: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
-                if milestone_line:
-                    embed.add_field(name="📜 The Loom Stirs", value=milestone_line, inline=False)
-                embed.set_image(url=beast["image_url"])
-                embed.set_footer(text="ChibiBeasts 🐾  •  Beast added to your collection!")
-                completed_quests = await track_quest_event(interaction.user.id, "hatch")
-                if row["egg_type"]=="world_tree_seed":
-                    from utils.story import advance_quest_step
-                    await advance_quest_step(interaction.user.id,"seed_hatched")
-                    embed.add_field(name="A root for the hollow",value="Your new companion remembers a place that needs room to grow. Open /journal → Story.",inline=False)
-                await interaction.followup.send(embed=embed)
-                from cogs.hatch import check_collection_completion
-                await check_collection_completion(interaction,beast,load_beasts())
-                unlocked = await check_achievements(interaction.user.id)
-                if interaction.guild:
-                    await record_bestiary_sighting(interaction.guild.id, beast["id"], interaction.user.id)
-                await notify_quest_completions(interaction.channel, completed_quests)
-                await notify_unlocks(interaction.channel, interaction.user, unlocked)
-
+                raise ValueError('No egg is ready for care yet. Eggs keep incubating while you are away.' if rows else 'No eggs incubating. Choose an origin egg to begin.')
+            if row.get('ready'):
+                offer = await nursery.prepare_offer(interaction.user.id, row['id'])
             else:
-                # Intermediate tend — advance schedule
-                interval_hours = hours / (row.get("tends_required") or 1)
-                next_tend_at = min(deadline,now + timedelta(hours=interval_hours))
-                await db.execute(
-                    "UPDATE incubating_eggs SET tends_done = ?, next_tend_at = ? WHERE id = ?",
-                    (tends_done, next_tend_at.strftime("%Y-%m-%d %H:%M:%S"), row["id"])
-                )
-                await db.commit()
+                await nursery.care(interaction.user.id, row['id'])
+                notice = 'A little warmth and company. Optional care adds starting bond; the deadline stays the same.'
+        except ValueError as error:
+            notice = str(error)
+        return await open_nursery(interaction, bot=self.bot, already_deferred=True, page='offer' if offer else 'incubations', notice=notice, offer=offer)
 
-                tends_left = tends_required - tends_done
-                interval_display = f"{interval_hours:.0f}h" if interval_hours >= 1 else f"{int(interval_hours*60)}min"
-
-                # Lore-flavored tend messages
-                TEND_LINES = egg_def.get("tend_lines", [
-                    f"*The egg shifts slightly under your hands. Something inside has noticed you.*",
-                    f"*It's warmer than before. The shell hums faintly.*",
-                    f"*Whatever is inside stirs. It knows you're here.*",
-                    f"*The egg is getting restless. It won't be long now.*",
-                ])
-                tend_line = TEND_LINES[min(tends_done - 1, len(TEND_LINES) - 1)]
-
-                filled = "🟢" * tends_done + "⬜" * tends_left
-                embed = discord.Embed(
-                    title=f"🤲 Tended: {row['egg_name']}",
-                    description=(
-                        f"{tend_line}\n\n"
-                        f"{filled} `{tends_done}/{tends_required}` tends done\n\n"
-                        f"{'✅ **Final tend** available in' if tends_left == 1 else '⏳ Next tend in'} **{interval_display}**"
-                    ),
-                    color=COLORS.get(row["rarity"], COLORS["info"])
-                )
-                embed.set_footer(text="ChibiBeasts 🐾  •  Come back and tend again soon.")
-                import asyncio as _asyncio
-                await track_quest_event(interaction.user.id, "tend")
-                await interaction.followup.send(embed=embed)
-
-    # ── /sanctuary ────────────────────────────────────────────────────────
     @app_commands.command(name="sanctuary", description="View and upgrade your guild's Sanctuary 🏰")
     async def sanctuary(self, interaction: discord.Interaction):
         await interaction.response.defer()

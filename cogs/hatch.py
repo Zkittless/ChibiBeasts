@@ -93,67 +93,17 @@ def _catch_milestone_line(beast_name: str, rarity: str, count: int, is_milestone
         return messages.get(count)
 
 # ── Base egg definitions ─────────────────────────────────────────────────────
-# Pools are *base* values. Call get_egg_pool(egg_type, perks, sanctuary)
-# at runtime to get the effective pool with all active modifiers applied.
-#
-# Design philosophy:
-#   Instant eggs  = convenient, immediate, slightly worse odds
-#   Incubation    = patient, time-gated, meaningfully better odds per tier
-#   Top incubation = curated collections and a higher guaranteed rarity floor
-#
-# Incubation prices/unlocks live in utils.economy_balance. Instant eggs favor
-# convenience; Epic incubators favor broad collection, Legendary eggs offer
-# curated Legendary/Divine pools, and Divine eggs guarantee a focused collection.
+# The Nursery catalog owns grades, origin pools and exact effective odds.
 
-_BASE_EGG_POOLS = {
-    # Common: fast and cheap — no rare access, just common/uncommon
-    "common_egg":    {"common": 0.75, "uncommon": 0.25},
-    # Rare: mid-tier — no legendary access, good rare/epic spread
-    "rare_egg":      {"uncommon": 0.35, "rare": 0.50, "epic": 0.15},
-    # Celestial: high-tier — legendary access but divine is rare (5%)
-    "celestial_egg": {"epic": 0.50, "legendary": 0.45, "divine": 0.05},
-    # Abyssal: 74% Legendary, 25% Divine, 1% Altered Divine before Fortune.
-    "abyssal_egg":   {"legendary": 0.74, "divine": 0.25, "altered_chance": 0.01},
-}
+from utils.nursery_catalog import instant_definitions, rarity_pool, choose_rarity
 
-HATCH_EGGS = {
-    "common_egg": {
-        "name": "🥚 Common Egg", "price": 200, "min_level": 1,
-        "flavor": "A small, warm egg. Something common and wonderful is inside.",
-    },
-    "rare_egg": {
-        "name": "🥚✨ Rare Egg", "price": 1500, "min_level": 12,
-        "flavor": "The shell vibrates faintly. Something with opinions is in there.",
-    },
-    "celestial_egg": {
-        "name": "🌌🥚 Celestial Egg", "price": 8000, "min_level": 30,
-        "flavor": "The Loom wove this one slowly. Whatever is inside has been waiting.",
-    },
-    "abyssal_egg": {
-        "name": "🌊💎 Abyssal Egg", "price": 25000, "min_level": 40,
-        "flavor": "It comes from somewhere deeper than deep. The weight of it is strange.",
-    },
-}
+# Compatibility exports; the service and shop share this one catalog.
+HATCH_EGGS = instant_definitions()
+_BASE_EGG_POOLS = {key: dict(egg['pool']) for key, egg in HATCH_EGGS.items()}
 
 
 def get_egg_pool(egg_type: str, perks=None, sanctuary=None) -> dict:
-    pool={k:v for k,v in _BASE_EGG_POOLS.get(egg_type,{"common":1.0}).items() if k!="altered_chance"}
-    def promote(target,amount):
-        # Bonuses improve tiers this egg already offers; a cheap egg stays cheap.
-        if target not in pool:return
-        rank=RARITY_ORDER.index(target)
-        donors=[k for k in pool if RARITY_ORDER.index(k)<rank]
-        available=sum(pool[k] for k in donors)
-        moved=min(amount,available)
-        if not moved:return
-        for key in donors:pool[key]-=moved*pool[key]/available
-        pool[target]=pool.get(target,0)+moved
-    if any(p.get("perk_id")=="stardust_touch" and p.get("equipped") for p in perks or ()):
-        promote("rare",.10);promote("epic",.10)
-    if sanctuary and sanctuary.get("celestial_observatory"):
-        promote("epic",.02);promote("legendary",.02)
-    total=sum(pool.values())
-    return {k:v/total for k,v in pool.items() if v>0}
+    return rarity_pool(egg_type, perks or (), sanctuary)
 
 
 # Keep for explore wild encounter rolls only
@@ -181,21 +131,9 @@ ALTERED_DIVINE_IDS = ["void_chronos", "fractured_genesis", "abyssal_nebula"]
 
 
 def roll_with_altered(egg_type: str) -> tuple[str, bool]:
-    """
-    Roll rarity for an egg, checking altered_chance first.
-    Returns (rarity, is_altered) where is_altered=True means pick from ALTERED_DIVINE_IDS.
-    """
-    altered_chance = _BASE_EGG_POOLS.get(egg_type, {}).get("altered_chance", 0)
-    if altered_chance and random.random() < altered_chance:
-        return "altered_divine", True
-    # Strip non-rarity keys and roll normally
-    pool = {k: v for k, v in _BASE_EGG_POOLS.get(egg_type, {"common": 1.0}).items()
-            if k != "altered_chance"}
-    total=sum(pool.values())
-    pool={k:v/total for k,v in pool.items()}
-    return roll_rarity(pool), False
+    rarity = choose_rarity(egg_type, rng=random)
+    return rarity, rarity == 'altered_divine'
 
-# ── Collection completion helper ─────────────────────────────────────────────
 COLLECTION_REWARDS = {
     "Cosmic Creators":       {"gold": 3000, "celestial_shards": 30, "title": "Cosmic Witness",     "npc_line": "Cael goes very quiet when you tell him. Then: *'All four. I... yes. That makes sense actually.'*"},
     "Architects of Reality": {"gold": 4000, "celestial_shards": 40, "title": "Reality's Student",  "npc_line": "The Archivist says: *'You have met all three. They know who you are now. They've known for some time.'*"},
@@ -374,185 +312,37 @@ class Hatch(commands.Cog):
         embed.set_footer(text="ChibiBeasts 🐾  •  Use /collection to view your beasts")
         return embed
 
-    @app_commands.command(name="hatch", description="Hatch an instant egg from your inventory 🥚")
+    @app_commands.command(name="nursery", description="Choose, hatch and care for your next companions")
+    async def nursery(self, interaction: discord.Interaction):
+        from utils.nursery_view import open_nursery
+        return await open_nursery(interaction, bot=self.bot)
+
+    @app_commands.command(name="hatch", description="Open an instant egg in the Nursery")
     @app_commands.describe(egg_type="Type of egg to hatch")
     @app_commands.choices(egg_type=[app_commands.Choice(name=f"{egg['name']} · Trainer Lv.{egg['min_level']}", value=key)
                                   for key, egg in HATCH_EGGS.items()])
     async def hatch(self, interaction: discord.Interaction, egg_type: str = "common_egg"):
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
-        egg_def = HATCH_EGGS[egg_type]
-        if player['level'] < egg_def['min_level']:
-            return await interaction.response.send_message(embed=discord.Embed(
-                description=f"Reach trainer level {egg_def['min_level']} to hatch {egg_def['name']}. Your eggs stay in your inventory.",
-                color=COLORS['info']), ephemeral=True)
-
-        # Check inventory
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                (interaction.user.id, egg_type)
-            ) as c:
-                inv_row = await c.fetchone()
-
-        if not inv_row or inv_row["quantity"] < 1:
-            return await interaction.response.send_message(embed=discord.Embed(
-                description=(
-                    f"✦ You don't have a **{egg_def['name']}** in your inventory!\n"
-                    f"Buy one from `/shop` → ⚡ Instant Eggs first."
-                ),
-                color=COLORS["error"]
-            ), ephemeral=True)
-
-        from utils.modals import QuantityModal
-
-        async def do_hatch(modal_interaction: discord.Interaction, quantity: int):
-            if not modal_interaction.response.is_done():
-                await modal_interaction.response.defer()
-
-            # Deduct all at once atomically
-            async with storage.connect() as db:
-                db.row_factory = aiosqlite.Row
-                await db.execute("BEGIN IMMEDIATE")
-                async with db.execute('SELECT level FROM players WHERE user_id=?', (modal_interaction.user.id,)) as cursor:
-                    current_player = await cursor.fetchone()
-                required = HATCH_EGGS[egg_type]['min_level']
-                if not current_player or current_player['level'] < required:
-                    return await modal_interaction.followup.send(embed=discord.Embed(
-                        description=f"Reach trainer level {required} to hatch {egg_def['name']}. Your eggs stay in your inventory.",
-                        color=COLORS['info']))
-                async with db.execute(
-                    "SELECT id, quantity FROM player_inventory WHERE user_id = ? AND item_id = ?",
-                    (modal_interaction.user.id, egg_type)
-                ) as c:
-                    fresh = await c.fetchone()
-                if not fresh or fresh["quantity"] < quantity:
-                    return await modal_interaction.followup.send(embed=discord.Embed(
-                        description=f"✦ You only have `{fresh['quantity'] if fresh else 0}` eggs now.",
-                        color=COLORS["error"]
-                    ))
-                if fresh["quantity"] == quantity:
-                    await db.execute("DELETE FROM player_inventory WHERE id = ?", (fresh["id"],))
-                else:
-                    await db.execute(
-                        "UPDATE player_inventory SET quantity = quantity - ? WHERE id = ?",
-                        (quantity, fresh["id"])
-                    )
-                await db.commit()
-
-            async with storage.connect() as db:
-                db.row_factory = aiosqlite.Row
-                async with db.execute(
-                    "SELECT * FROM player_perks WHERE user_id = ? AND equipped = 1",
-                    (modal_interaction.user.id,)
-                ) as cursor:
-                    perks = [dict(r) for r in await cursor.fetchall()]
-
-            beasts_data = load_beasts()
-            sanctuary = await get_user_sanctuary(modal_interaction.user.id)
-            hatched = []
-
-            for i in range(quantity):
-                if check_glimmering_fortune(perks):
-                    rarity = "divine"
-                    divine_pool = [b for b in beasts_data.values() if b["rarity"] == "divine" and b["id"] not in STARTER_IDS and not b.get("evolution_only")]
-                    beast = random.choice(divine_pool)
-                else:
-                    rarity, is_altered = roll_with_altered(egg_type)
-                    if is_altered:
-                        altered_pool = [b for b in beasts_data.values() if b["rarity"] == "altered_divine"]
-                        beast = random.choice(altered_pool) if altered_pool else get_beast_by_rarity("divine", beasts_data)
-                    else:
-                        effective_pool = get_egg_pool(egg_type, perks, sanctuary)
-                        rarity = roll_rarity(effective_pool)
-                        beast = get_beast_by_rarity(rarity, beasts_data)
-                if beast:
-                    from utils.hatching import attune_hatch
-                    beast=await attune_hatch(modal_interaction.user.id,beast,beasts_data)
-                    rarity=beast["rarity"]
-                    beast_row_id = await add_beast_to_player(modal_interaction.user.id, {**beast, "caught_from": "hatch"})
-                    hatched.append((beast, rarity, beast_row_id))
-
-            if not hatched:
-                return await modal_interaction.followup.send(embed=discord.Embed(
-                    description="✦ The eggs fizzled. Try again!", color=COLORS["error"]
-                ))
-
-            # Auto-set active if first ever beast
-            all_owned = await get_player_beasts(modal_interaction.user.id)
-            if len(all_owned) == len(hatched):
-                async with storage.connect() as db:
-                    await db.execute("UPDATE player_beasts SET is_active = 1 WHERE id = ?", (hatched[0][2],))
-                    await db.commit()
-
-            if quantity == 1:
-                # Single hatch — full dramatic reveal
-                beast, rarity, beast_row_id = hatched[0]
-                count, is_milestone = await get_catch_count(beast["id"], rarity)
-                subtitle = f"*A new companion emerged from your {egg_def['name']}!*"
-                msg = await modal_interaction.followup.send(embed=discord.Embed(
-                    title="🥚 Hatching...", description=f"*{egg_def['flavor']}*", color=COLORS["info"]
-                ))
-                await asyncio.sleep(1.5)
-                await msg.edit(embed=discord.Embed(
-                    title="🥚 Hatching...", description="*Cracks are forming...*\n✨✨✨", color=COLORS["info"]
-                ))
-                await asyncio.sleep(1.5)
-                embed = self.build_beast_embed(beast, title=f"🥚 **{beast['name']}** Hatched!", subtitle=subtitle)
-                if beast.get("divine_passive"):
-                    dp = beast["divine_passive"]
-                    passive_labels = {"divine": "✨ Divine Passive", "altered_divine": "⚠️ Altered Passive",
-                                      "corrupted": "🖤 Corrupted Passive", "ancient": "🏛️ Ancient Passive"}
-                    plabel = passive_labels.get(beast.get("rarity", ""), "✨ Special Passive")
-                    embed.add_field(name=f"{plabel}: {dp['passive_name']}", value=dp["passive_desc"], inline=False)
-                milestone_line = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
-                if milestone_line:
-                    embed.add_field(name="📜 The Loom Stirs", value=milestone_line, inline=False)
-                view = HatchView(beast, modal_interaction.user.id)
-                await msg.edit(embed=embed, view=view)
-            else:
-                # Multi-hatch — summary embed, increment counts silently
-                lines = []
-                milestone_lines = []
-                for beast, rarity, beast_row_id in hatched:
-                    r_emoji = RARITY_EMOJI.get(rarity, "⚪")
-                    lines.append(f"{r_emoji} **{beast['name']}** — {RARITY_LABEL.get(rarity, rarity)}")
-                    count, is_milestone = await get_catch_count(beast["id"], rarity)
-                    ml = _catch_milestone_line(beast["name"], rarity, count, is_milestone)
-                    if ml:
-                        milestone_lines.append(ml)
-                embed = discord.Embed(
-                    title=f"🥚 Hatched {quantity}x {egg_def['name']}!",
-                    description="\n".join(lines),
-                    color=COLORS["legendary"]
-                )
-                if milestone_lines:
-                    embed.add_field(name="📜 The Loom Stirs", value="\n".join(milestone_lines), inline=False)
-                embed.set_footer(text="ChibiBeasts 🐾  •  Check /collection to see your new beasts!")
-                await modal_interaction.followup.send(embed=embed)
-
-            completed_quests = await track_quest_event(modal_interaction.user.id, "hatch",amount=len(hatched))
-            await unlock_simple_achievement(modal_interaction.user.id, "first_steps")
-            more_unlocked = await check_achievements(modal_interaction.user.id)
-            if modal_interaction.guild:
-                for beast, rarity, _ in hatched:
-                    await record_bestiary_sighting(modal_interaction.guild.id, beast["id"], modal_interaction.user.id)
-                    await check_collection_completion(modal_interaction, beast, beasts_data)
-            await notify_quest_completions(modal_interaction.channel, completed_quests)
-            await notify_unlocks(modal_interaction.channel, modal_interaction.user, more_unlocked)
-
-        # Skip modal if only 1 egg — hatch immediately
-        if inv_row["quantity"] == 1:
-            await do_hatch(interaction, 1)
-        else:
-            from utils.modals import QuantityModal
-            await interaction.response.send_modal(QuantityModal(
-                title=f"Hatch {egg_def['name']}",
-                item_name=egg_def["name"],
-                max_quantity=inv_row["quantity"],
-                callback=do_hatch
-            ))
-
+        # Acknowledge before player lookup, inventory checks or image rendering.
+        await interaction.response.defer()
+        from utils import nursery
+        from utils.nursery_view import open_nursery, request_key
+        await get_or_create_player(interaction.user.id, str(interaction.user))
+        try:
+            state = await nursery.snapshot(interaction.user.id)
+            egg = next((e for e in state['eggs'] if e['id'] == egg_type), None)
+            if not egg or egg.get('incubation_hours'):
+                raise ValueError('Choose an instant egg from the Nursery.')
+            if egg.get('locked'):
+                raise ValueError(f"Reach trainer level {egg['min_level']} to hatch {egg['name']}. Your eggs stay in your inventory.")
+            if not egg.get('quantity'):
+                raise ValueError(f"You do not have a {egg['name']}. Buy one in the Nursery when you are ready.")
+            if egg['quantity'] > 1:
+                return await open_nursery(interaction, bot=self.bot, already_deferred=True, egg_id=egg_type,
+                    notice='Choose Hatch one or Hatch quantity below. Inventory and level are checked again when you confirm.')
+            grants = await nursery.hatch(interaction.user.id, egg_type, request_key=request_key(interaction, 'hatch'))
+        except ValueError as error:
+            return await open_nursery(interaction, bot=self.bot, already_deferred=True, egg_id=egg_type, notice=str(error))
+        return await open_nursery(interaction, bot=self.bot, already_deferred=True, egg_id=egg_type, page='reveal', grants=grants)
 
 
     @app_commands.command(name="explore", description="Begin or resume a choice-based expedition in your Field Journal")

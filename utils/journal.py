@@ -152,6 +152,9 @@ class JournalView(discord.ui.LayoutView):
                 material = load_catalog('materials.json')['materials'][p['material']]['name']
                 quantity = int(p.get('material_granted', 1))
                 loot = f" · {quantity} {material}" if quantity else ''
+                if p.get('egg_granted') and p.get('egg_reward'):
+                    from utils.nursery_catalog import definition
+                    loot += ' · ' + definition(p['egg_reward'])['name']
                 self.text(f"### Back from {REALMS[trip['realm']]['name']}\n**{p['gold']:,} gold · {p.get('exp_granted', p['exp']):,} trainer EXP{loot}**\n" + '\n'.join(safe(n) for n in p['notes'][-5:]))
                 if p.get('party_xp'):
                     self.text('**Team progress**\n' + '\n'.join(f"{safe(row['name'])}: +{row['amount']} EXP" + (f" · Lv.{row['level']}" if row['leveled'] else '') for row in p['party_xp']))
@@ -446,7 +449,7 @@ class JournalView(discord.ui.LayoutView):
         self.row(self.button('Claim daily', 'launch:daily', discord.ButtonStyle.success, disabled=not daily_ready), self.button('Shop', 'launch:shop'), self.button('Daily quests', 'launch:dailies'))
         self.text('**Battles and community**\nChallenge a wild creature in your selected realm, check your guild or join its raid. These open their existing game panels in this channel.')
         self.row(self.button('Wild challenge', 'launch:challenge'), self.button('Guild', 'launch:guild'), self.button('Guild raid', 'launch:raid'))
-        self.row(self.button('Command guide', 'commands'))
+        self.row(self.button('Nursery', 'page:nursery'), self.button('Command guide', 'commands'))
 
     def render(self):
         self._button_serial = 8  # The five navigation and three utility buttons are stable.
@@ -581,6 +584,14 @@ class JournalView(discord.ui.LayoutView):
                     self.trip = self.state.trip
                 self.notice = ''
                 try:
+                    if action == 'page:nursery':
+                        from utils.nursery_view import open_nursery
+                        result = await open_nursery(interaction, bot=self.bot, already_deferred=True)
+                        if result:
+                            self.closed = True
+                            self.stop()
+                            await self.publish(interaction)
+                        return
                     if action in {'page:workshop', 'goal_workshop'}:
                         from utils.workshop import open_workshop
                         recipe = self.state.goal['target'] if action == 'goal_workshop' and self.state.goal and self.state.goal['kind'] == 'recipe' else None

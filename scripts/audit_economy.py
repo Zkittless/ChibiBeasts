@@ -8,7 +8,6 @@ import ast
 from collections import Counter, defaultdict
 import csv
 from datetime import datetime, timezone
-import itertools
 import hashlib
 import json
 from pathlib import Path
@@ -23,7 +22,7 @@ from utils import db as storage
 from utils.habitats import BIOMES, encounter_pool, material_pool
 from utils.catalog import load_catalog
 from utils.sanctuary import apply_craft_discount
-from cogs.hatch import HATCH_EGGS, get_egg_pool, _BASE_EGG_POOLS
+from cogs.hatch import HATCH_EGGS
 from cogs.world import EGGS
 from cogs.utilities import SHARD_SHOP
 from utils.shops import GUILD_ITEMS
@@ -94,32 +93,14 @@ def material_distribution(biome, win_rate=.75):
 
 
 def egg_values():
-    rows = []
-    for eid, egg in HATCH_EGGS.items():
-        for star, merchant, observatory, fortune in itertools.product((False,True), repeat=4):
-            perks = [{'perk_id':'stardust_touch','equipped':1}] if star else []
-            pool = get_egg_pool(eid, perks, {'celestial_observatory':int(observatory)})
-            altered = _BASE_EGG_POOLS[eid].get('altered_chance',0)
-            refund = sum(p*RELEASE.get(r,50) for r,p in pool.items())
-            refund = refund*(1-altered)+RELEASE['altered_divine']*altered
-            if fortune:
-                refund = refund*.9995+RELEASE['divine']*.0005
-            price = int(egg['price']*.95) if merchant else egg['price']
-            rows.append({'egg':eid,'stardust':star,'merchant':merchant,'observatory':observatory,'fortune':fortune,
-                         'price':price,'expected_release_gold':round(refund,2),'expected_net_gold':round(refund-price,2),
-                         'effective_pool':json.dumps(pool,sort_keys=True)})
-    for eid, egg in EGGS.items():
-        if eid=='world_tree_seed':
-            continue
-        pool = {k:v for k,v in egg['pool'].items() if k!='altered_chance'}
-        total = sum(pool.values())
-        altered = egg['pool'].get('altered_chance',0)
-        refund = sum(p/total*RELEASE.get(r,50) for r,p in pool.items())*(1-altered)+RELEASE['altered_divine']*altered
-        price = INCUBATION_PRICES[egg['rarity']]
-        rows.append({'egg':eid,'stardust':False,'merchant':False,'observatory':False,'fortune':False,
-                     'price':price,'expected_release_gold':round(refund,2),'expected_net_gold':round(refund-price,2),
-                     'effective_pool':json.dumps(pool,sort_keys=True)})
-    return rows
+    # Nursery owns one exact distribution, including Fortune and Altered odds.
+    # Keep this older ledger's CSV columns without re-rolling those bonuses.
+    from scripts.audit_nursery import egg_values as nursery_values
+    fields = ('egg', 'stardust', 'merchant', 'observatory', 'fortune', 'price',
+              'expected_release_gold', 'expected_net_gold')
+    return [{**{key: row[key] for key in fields},
+             'effective_pool': json.dumps(row['effective_pool'], sort_keys=True)}
+            for row in nursery_values()]
 
 
 def offers():

@@ -386,7 +386,7 @@ async def get_daily_quests(user_id):
         return [{**q,'progress':rows[q['id']]['progress'] if q['id'] in rows else 0,'completed':bool(rows[q['id']]['completed']) if q['id'] in rows else False} for q in quests]
 
 
-async def _track_daily_event(user_id,event,amount=1):
+async def _track_daily_event(user_id,event,amount=1,*,event_key=None):
     from utils.rewards import shards,player_exp
     date_str=_today_str();quests=await eligible_daily_set(user_id,date_str)
     matching=[q for q in quests if q['event']==event]
@@ -395,6 +395,10 @@ async def _track_daily_event(user_id,event,amount=1):
     async with storage.connect() as db:
         db.row_factory=aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
+        if event_key:
+            receipt = await db.execute('INSERT OR IGNORE INTO gameplay_events(event_key,user_id,event_type) VALUES(?,?,?)',
+                                       (event_key,user_id,'daily:'+event))
+            if not receipt.rowcount:return []
         async with db.execute('SELECT quest_id,progress,completed FROM daily_quests WHERE user_id=? AND date=?',(user_id,date_str)) as c:rows={r['quest_id']:dict(r) for r in await c.fetchall()}
         for quest in matching:
             row=rows.get(quest['id'],{})

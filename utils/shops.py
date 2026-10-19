@@ -17,7 +17,7 @@ def gold_catalog():
     return offers
 
 
-async def purchase_gold(user_id, item_id, quantity=1):
+async def purchase_gold(user_id, item_id, quantity=1, *, request_key=None):
     from utils.economy_balance import shop_level
     from utils.rewards import has_perk
     if isinstance(quantity,bool) or not isinstance(quantity,int) or not 1<=quantity<=100:
@@ -28,6 +28,11 @@ async def purchase_gold(user_id, item_id, quantity=1):
     async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
+        if request_key is not None:
+            from utils.nursery import _replay, _receipt
+            previous = await _replay(db, user_id, request_key, 'purchase', [item_id, quantity])
+            if previous is not None:
+                return previous
         async with db.execute('SELECT gold,level FROM players WHERE user_id=?',(user_id,)) as c:
             player = await c.fetchone()
         if not player or player['level']<shop_level(item):
@@ -38,8 +43,12 @@ async def purchase_gold(user_id, item_id, quantity=1):
         if not paid.rowcount:
             raise ValueError(f"Need {total:,} gold; you have {player['gold']:,}.")
         await add_stack(db,'player_inventory',user_id,item_id,quantity)
+        result = {'item':item,'total':total,'remaining':player['gold']-total}
+        if request_key is not None:
+            result = json.loads(json.dumps(result))
+            await _receipt(db, user_id, request_key, 'purchase', [item_id, quantity], result)
         await db.commit()
-    return {'item':item,'total':total,'remaining':player['gold']-total}
+    return result
 
 async def shard_effect(db, user_id, sid, item):
     kind = item['type']

@@ -283,13 +283,28 @@ class Dev(commands.Cog):
     @dev_only()
     async def hatch_egg(self, interaction: discord.Interaction, member: discord.Member, egg_id: int = None):
         await interaction.response.defer(ephemeral=True)
-        from cogs.world import EGGS, roll_egg_rarity, pick_beast_for_rarity
-        from utils.db import add_beast_to_player
+        from datetime import datetime, timezone
+        from uuid import uuid4
+        from utils import nursery
         from utils.theme import RARITY_LABEL, TYPE_EMOJI
+        receipt_key = f"dev-hatch:{getattr(interaction, 'id', None) or uuid4().hex}"
+        grant = None
 
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
-            if egg_id:
+            # Keep the receipt check and oldest-row lookup in one read snapshot.
+            # Even overlapping retries then address the original incubation.
+            await db.execute('BEGIN')
+            async with db.execute(
+                "SELECT result FROM nursery_requests WHERE user_id=? AND request_key=? AND operation='claim'",
+                (member.id, receipt_key)
+            ) as cursor:
+                receipt = await cursor.fetchone()
+            if receipt:
+                grant = json.loads(receipt['result'])
+                from utils.nursery_catalog import definition
+                row = {'egg_name': definition(grant['egg_id'])['name']}
+            elif egg_id:
                 async with db.execute(
                     "SELECT * FROM incubating_eggs WHERE id = ? AND user_id = ? AND hatched = 0",
                     (egg_id, member.id)
@@ -308,27 +323,28 @@ class Dev(commands.Cog):
                 )
             row = dict(row)
 
-            egg_def = EGGS.get(row["egg_type"], {})
-            rarity  = roll_egg_rarity(row["egg_type"])
-            beast   = pick_beast_for_rarity(rarity, egg_def)
-
-            if not beast:
-                return await interaction.followup.send(
-                    "✦ Couldn't roll a beast for this egg type.", ephemeral=True
-                )
-
-            beast_row_id = await add_beast_to_player(
-                member.id, {**beast, "caught_from": "incubation"}
-            )
-            await db.execute("UPDATE incubating_eggs SET hatched = 1 WHERE id = ?", (row["id"],))
-            await db.commit()
+        # Admin fast-forward changes only the readiness clock. The same saved
+        # choice, grade levels, research and atomic claim apply as in /nursery.
+        try:
+            if grant is None:
+                deadline = datetime.fromisoformat(str(row['ready_at']).replace('Z', '+00:00'))
+                if deadline.tzinfo is None:
+                    deadline = deadline.replace(tzinfo=timezone.utc)
+                offer = await nursery.prepare_offer(member.id, row['id'], now=max(datetime.now(timezone.utc), deadline))
+                grant = await nursery.claim_offer(member.id, offer['id'], 0, request_key=receipt_key)
+            else:
+                await nursery.notify_grants(member.id, [grant])
+        except ValueError as error:
+            return await interaction.followup.send(f"✦ {error}", ephemeral=True)
+        beast = get_beast_data(grant['beast_id'])
+        rarity = grant['rarity']
 
         rarity_emoji = RARITY_EMOJI.get(rarity, "⚪")
         type_emoji   = TYPE_EMOJI.get(beast.get("type", ""), "❓")
         await interaction.followup.send(
             f"✅ Hatched **{row['egg_name']}** for **{member.display_name}**:\n"
             f"{rarity_emoji} **{beast['name']}** — {type_emoji} {beast.get('type','?').capitalize()} "
-            f"({RARITY_LABEL.get(rarity, rarity)}) — Beast ID #{beast_row_id}",
+            f"({RARITY_LABEL.get(rarity, rarity)}) · Lv.{grant['level']} — Beast ID #{grant['id']}",
             ephemeral=True
         )
 
@@ -417,7 +433,18 @@ class Dev(commands.Cog):
                             (gm[0],)
                         )
                     # Wipe all player data
+                    # Care metadata has no user_id; remove it while the owned
+                    # incubation rows still identify which records belong here.
+                    await db.execute(
+                        "DELETE FROM nursery_incubations WHERE incubation_id IN "
+                        "(SELECT id FROM incubating_eggs WHERE user_id = ?)", (uid,)
+                    )
                     for table, col in [
+                        ("nursery_requests", "user_id"),
+                        ("nursery_offers",   "user_id"),
+                        ("nursery_research", "user_id"),
+                        ("nursery_seen",     "user_id"),
+                        ("nursery_grants",   "user_id"),
                         ("player_beasts",    "user_id"),
                         ("player_inventory", "user_id"),
                         ("player_perks",     "user_id"),

@@ -122,10 +122,16 @@ class Campaign(DatabaseCase):
                 elif kind == 'raid_damage':
                     await record_event(uid, 'raid_damage', amount=target)
                 elif kind == 'seed_hatched':
-                    fake = interaction(uid)
-                    await World.incubate.callback(World(None), fake, 'world_tree_seed')
-                    await self.execute("UPDATE incubating_eggs SET ready_at='2000-01-01 00:00:00',next_tend_at='2000-01-01 00:00:00' WHERE user_id=?", (uid,))
-                    await World.tend.callback(World(None), fake)
+                    with patch('utils.gear_art.render_portrait', new=AsyncMock(return_value=None)):
+                        incubator = await World.incubate.callback(World(None), interaction(uid), 'world_tree_seed')
+                        self.addCleanup(incubator.stop)
+                        await self.execute("UPDATE incubating_eggs SET ready_at='2000-01-01 00:00:00',next_tend_at='2000-01-01 00:00:00' WHERE user_id=?", (uid,))
+                        choice = await World.tend.callback(World(None), interaction(uid))
+                        self.addCleanup(choice.stop)
+                        self.assertEqual((await self.rows("SELECT hatched FROM incubating_eggs WHERE user_id=? AND egg_type='world_tree_seed'", (uid,)))[0]['hatched'], 0)
+                        self.assertEqual({c['beast_id'] for c in choice.offer['candidates']}, {'atlas', 'asgard', 'nirvana'})
+                        await choice.handle(interaction(uid), 'claim:0', revision=choice.revision)
+                        self.assertEqual((await self.rows("SELECT hatched FROM incubating_eggs WHERE user_id=? AND egg_type='world_tree_seed'", (uid,)))[0]['hatched'], 1)
             state, current, _ = await story.journal(uid, 7)
             self.assertTrue(story.complete(chapter, state), (chapter_id, state['step_progress'].get(chapter_id)))
             await story.claim_chapter(uid, chapter_id, 7, choice=answer if chapter_id == 'chapter_10' else None)
@@ -355,10 +361,16 @@ class ItemsAndWorld(DatabaseCase):
         self.assertEqual(sum((r['quantity'] for r in await storage.get_inventory(42) if r['item_id'] == rune)), 1)
         self.assertEqual(len(await self.rows('SELECT * FROM player_equipment WHERE beast_row_id=?', (second,))), 1)
 
-    async def test_two_tends_hatch_a_ready_egg_once(self):
+    async def test_two_tends_save_one_offer_and_simultaneous_choices_hatch_once(self):
         from cogs.world import World
-        await self.execute("INSERT INTO incubating_eggs(user_id,egg_type,egg_name,rarity,ready_at,next_tend_at,tends_required) VALUES(42,'common','Test egg','common','2000-01-01 00:00:00','2000-01-01 00:00:00',2)")
-        await asyncio.gather(*(World.tend.callback(World(None), interaction()) for _ in range(2)))
+        await self.execute("INSERT INTO incubating_eggs(user_id,egg_type,egg_name,rarity,ready_at,next_tend_at,tends_required) VALUES(42,'sprout_pod','Sprout Pod','common','2000-01-01 00:00:00','2000-01-01 00:00:00',2)")
+        views = await asyncio.gather(*(World.tend.callback(World(None), interaction()) for _ in range(2)))
+        for view in views:
+            self.addCleanup(view.stop)
+        self.assertEqual(await storage.get_player_beasts(42), [])
+        self.assertEqual(len(await self.rows('SELECT * FROM nursery_offers')), 1)
+        self.assertEqual(views[0].offer, views[1].offer)
+        await asyncio.gather(*(view.handle(interaction(), 'claim:0', revision=view.revision) for view in views))
         self.assertEqual(len(await storage.get_player_beasts(42)), 1)
         self.assertEqual((await self.rows('SELECT hatched FROM incubating_eggs'))[0]['hatched'], 1)
 
