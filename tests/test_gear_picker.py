@@ -127,7 +127,9 @@ class GearPicker(DatabaseCase):
         self.assertNotEqual(payload['attachments'][0].filename, first)
         fields = '\n'.join(field.name + field.value for field in payload['embed'].fields)
         self.assertIn('Gnome-Iron Plating', fields)
-        self.assertIn('Bark Sigil ×3', fields)
+        await view.change_rune.callback(component())
+        picker = next(item for item in view.children if isinstance(item, discord.ui.Select) and item.row == 3)
+        self.assertIn('Bark Sigil ×3', [option.label for option in picker.options])
 
     async def test_no_search_match_still_allows_clearing_or_searching_again(self):
         await self.beast('twine', starter=True)

@@ -112,7 +112,10 @@ async def equip(user_id, number, gear_id, *, replace=False, expected_row_id=None
     return (dict(beast), gear)
 
 @exclusive_player
-async def unequip(user_id, number):
+async def unequip(user_id, number, *, slot=None, expected_row_id=None,
+                  expected_species=None, expected_equipment=_UNSET):
+    if slot not in {None, 'armor', 'rune'}:
+        raise ValueError('Choose armor or a rune.')
     gear = definitions()
     removed = []
     async with storage.connect() as db:
@@ -122,14 +125,26 @@ async def unequip(user_id, number):
             beast = await c.fetchone()
         if not beast:
             raise ValueError('That companion is not in your collection.')
+        if (expected_row_id is not None and beast['id'] != expected_row_id or
+                expected_species is not None and beast['beast_id'] != expected_species):
+            raise ValueError('That companion changed. Review the updated selection.')
+        async with db.execute('SELECT 1 FROM beast_market WHERE beast_row_id=?', (beast['id'],)) as c:
+            if await c.fetchone():
+                raise ValueError('Delist this companion before changing its equipment.')
         async with db.execute('SELECT equipment_id FROM player_equipment WHERE user_id=? AND beast_row_id=?', (user_id, beast['id'])) as c:
             ids = [r[0] for r in await c.fetchall()]
-        if beast['rune_id']:
+        previous = (beast['rune_id'] or next((key for key in ids if gear.get(key, {}).get('slot') == 'rune'), None)
+                    if slot == 'rune' else next((key for key in ids if gear.get(key, {}).get('slot') != 'rune'), None))
+        if expected_equipment is not _UNSET and previous != expected_equipment:
+            raise ValueError('This companion’s equipment changed. Review the updated selection.')
+        selected_ids = [key for key in ids if slot is None or gear.get(key, {}).get('slot') == slot]
+        if beast['rune_id'] and slot in {None, 'rune'}:
             if beast['rune_id'] not in ids:
                 await add_stack(db, 'player_inventory', user_id, beast['rune_id'])
                 removed.append(gear.get(beast['rune_id'], {}).get('name', beast['rune_id']))
             await db.execute('UPDATE player_beasts SET rune_id=NULL WHERE id=?', (beast['id'],))
-        removed.extend((gear.get(key, {}).get('name', key) for key in ids))
-        await db.execute('UPDATE player_equipment SET beast_row_id=NULL WHERE user_id=? AND beast_row_id=?', (user_id, beast['id']))
+        removed.extend((gear.get(key, {}).get('name', key) for key in selected_ids))
+        for key in selected_ids:
+            await db.execute('UPDATE player_equipment SET beast_row_id=NULL WHERE user_id=? AND beast_row_id=? AND equipment_id=?', (user_id, beast['id'], key))
         await db.commit()
     return removed
