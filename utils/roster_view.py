@@ -135,8 +135,19 @@ def compact_embed(row, player, inventory):
     evo = beast.get('evolution') or {}
     if evo.get('evolves_to'):
         blockers = evolution_blockers(row, player['level'], evo, inventory=inventory, knocked_out=is_knocked_out(row))
-        embed.add_field(name='Evolution · ' + get_beast_data(evo['evolves_to'])['name'],
-                        value=blockers[0] if blockers else 'Ready · choose Evolve in companion actions.', inline=False)
+        readiness = blockers[0] if blockers else 'Your companion is ready to evolve.'
+        if evo.get('form') == 'bond':
+            required = awakening_requirements(evo)
+            cost = (f"No item needed · Bond: {row.get('bond', 0)}/{required['bond']}\n"
+                    f"Trainer: {player['level']}/{required['trainer_level']} · Happiness: {row['happiness']}/{required['happiness']}")
+        else:
+            item = storage.load_items().get(evo.get('method'), {})
+            cost = f"{item.get('name', evo.get('method', 'Catalyst'))} · Owned: {inventory.get(evo.get('method'), 0)}"
+            if item.get('recipe'):
+                from utils.economy_balance import recipe_level
+                cost += f"\nCraft at trainer level {recipe_level(item)}."
+        embed.add_field(name='Evolution → ' + get_beast_data(evo['evolves_to'])['name'],
+                        value=readiness + '\n' + cost, inline=False)
     embed.set_footer(text=f"Beast #{owned_roster.number(row)} · Companion actions for care, gear and growth. Details shows moves and lore.")
     return embed
 

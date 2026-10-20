@@ -11,7 +11,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -65,14 +65,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -84,14 +84,14 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Exploration",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Raids",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
               }
             ]
           },
@@ -131,21 +131,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Care · lead",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:1:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:1:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Care · reserve 1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:2:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:2:5"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Care · reserve 2",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:3:6"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:3:6"
               }
             ]
           },
@@ -157,21 +157,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Edit lead",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:7"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:7"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Edit reserve 1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:8"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:8"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Edit reserve 2",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:9"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:9"
               }
             ]
           },
@@ -187,7 +187,7 @@
                 "style": 3,
                 "disabled": false,
                 "label": "Choose an expedition",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:10"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:10"
               }
             ]
           }
@@ -217,7 +217,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -271,14 +271,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -290,7 +290,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:battle_log:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:battle_log:2"
               }
             ]
           },
@@ -307,7 +307,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:realm",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:realm",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -394,14 +394,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Save destination",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:save_destination:woods:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:save_destination:woods:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Clear default",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:clear_destination:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:clear_destination:4"
               }
             ]
           },
@@ -417,7 +417,7 @@
                 "style": 3,
                 "disabled": false,
                 "label": "Begin expedition · 1 charge",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:begin:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:begin:5"
               }
             ]
           }
@@ -435,7 +435,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -489,14 +489,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -508,14 +508,14 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Exploration",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Raids",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
               }
             ]
           },
@@ -555,21 +555,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Edit lead",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Edit reserve 1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
               },
               {
                 "type": 2,
                 "style": 1,
                 "disabled": false,
                 "label": "Edit reserve 2",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
               }
             ]
           },
@@ -582,7 +582,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -611,7 +611,7 @@
                     "label": "#4 · Fairy · Lv.8",
                     "value": "2:4",
                     "default": true,
-                    "description": "HP 116/116 · Ready"
+                    "description": "HP 108/108 · Ready"
                   }
                 ]
               }
@@ -619,7 +619,7 @@
           },
           {
             "type": 10,
-            "content": "**Selected · Fairy** · Lv.8\nHP 116/116 · Ready"
+            "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
           },
           {
             "type": 1,
@@ -629,21 +629,21 @@
                 "style": 3,
                 "disabled": false,
                 "label": "Assign reserve 2",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:2:4:7"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:2:4:7"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Clear slot",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:2:3:8"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:2:3:8"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Care selected",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:4:9"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:4:9"
               }
             ]
           }
@@ -661,7 +661,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -715,14 +715,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -734,14 +734,14 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Exploration",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Raids",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
               }
             ]
           },
@@ -781,21 +781,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Care · lead",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:1:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:1:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Care · reserve 1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:2:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:2:5"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Care · reserve 2",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:3:6"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:3:6"
               }
             ]
           },
@@ -811,7 +811,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Resume expedition",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:7"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:7"
               }
             ]
           }
@@ -841,7 +841,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -895,14 +895,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -914,7 +914,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:battle_log:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:battle_log:2"
               }
             ]
           },
@@ -952,7 +952,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:path",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -961,25 +961,25 @@
                 "options": [
                   {
                     "label": "Challenge together",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:1:challenge",
+                    "value": "2ddaeb4c9d58433c94780692da678927:1:challenge",
                     "default": false,
                     "description": "Fight with your saved team; a win befriends this creature."
                   },
                   {
                     "label": "Approach gently",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:1:approach",
+                    "value": "2ddaeb4c9d58433c94780692da678927:1:approach",
                     "default": false,
                     "description": "Use the usual friendship chance; it may leave."
                   },
                   {
                     "label": "Observe quietly",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:1:observe",
+                    "value": "2ddaeb4c9d58433c94780692da678927:1:observe",
                     "default": false,
                     "description": "Learn its habits and leave it undisturbed."
                   },
                   {
                     "label": "Head home now",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:1:return_early",
+                    "value": "2ddaeb4c9d58433c94780692da678927:1:return_early",
                     "default": false,
                     "description": "Bank the earned fraction of your one reward bundle."
                   }
@@ -1013,7 +1013,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1067,14 +1067,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -1086,7 +1086,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:battle_log:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:battle_log:2"
               }
             ]
           },
@@ -1110,7 +1110,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Continue encounter",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:battle_continue:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:battle_continue:3"
               }
             ]
           }
@@ -1140,7 +1140,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1194,14 +1194,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -1213,7 +1213,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:battle_log:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:battle_log:2"
               }
             ]
           },
@@ -1234,7 +1234,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:path",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1243,25 +1243,25 @@
                 "options": [
                   {
                     "label": "Share a short camp",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:3:camp",
+                    "value": "2ddaeb4c9d58433c94780692da678927:3:camp",
                     "default": false,
                     "description": "Restore 5% max HP to healthy teammates; once per trip, no revives."
                   },
                   {
                     "label": "Practise as a team",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:3:practice",
+                    "value": "2ddaeb4c9d58433c94780692da678927:3:practice",
                     "default": false,
                     "description": "Build bond and prepare for the journey home."
                   },
                   {
                     "label": "Survey the way ahead",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:3:survey",
+                    "value": "2ddaeb4c9d58433c94780692da678927:3:survey",
                     "default": false,
                     "description": "Record a useful trail clue for a deeper stop."
                   },
                   {
                     "label": "Head home now",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71:3:return_early",
+                    "value": "2ddaeb4c9d58433c94780692da678927:3:return_early",
                     "default": false,
                     "description": "Bank the earned fraction of your one reward bundle."
                   }
@@ -1295,7 +1295,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1349,14 +1349,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -1365,7 +1365,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_kind",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1409,13 +1409,13 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:2"
               }
             ]
           },
           {
             "type": 10,
-            "content": "### Battle log · 🌲 The Whispering Woods\n<t:1792472179:f> · On the trail · Victory"
+            "content": "### Battle log · 🌲 The Whispering Woods\n<t:1792472668:f> · On the trail · Victory"
           },
           {
             "type": 10,
@@ -1458,7 +1458,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "All trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_back:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_back:3"
               }
             ]
           }
@@ -1488,7 +1488,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1542,14 +1542,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -1561,7 +1561,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:battle_log:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:battle_log:2"
               }
             ]
           },
@@ -1582,7 +1582,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:realm",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:realm",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1669,14 +1669,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Save destination",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:save_destination:woods:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:save_destination:woods:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Clear default",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:clear_destination:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:clear_destination:4"
               }
             ]
           },
@@ -1692,7 +1692,7 @@
                 "style": 3,
                 "disabled": true,
                 "label": "Begin expedition · 1 charge",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:begin:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:begin:5"
               }
             ]
           },
@@ -1726,7 +1726,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1780,14 +1780,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -1796,7 +1796,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_kind",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1840,7 +1840,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:2"
               }
             ]
           },
@@ -1850,14 +1850,14 @@
           },
           {
             "type": 10,
-            "content": "**🌲 The Whispering Woods** · <t:1792472179:d>\nReturned · Victory"
+            "content": "**🌲 The Whispering Woods** · <t:1792472668:d>\nReturned · Victory"
           },
           {
             "type": 1,
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_entry",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_entry",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1865,8 +1865,8 @@
                 "placeholder": "Open an expedition recap",
                 "options": [
                   {
-                    "label": "🌲 The Whispering Woods · 20 Oct 04:56 UTC",
-                    "value": "b8841b7ea9e645f18253e3de9d138f71",
+                    "label": "🌲 The Whispering Woods · 20 Oct 05:04 UTC",
+                    "value": "2ddaeb4c9d58433c94780692da678927",
                     "default": false,
                     "description": "Returned · Victory"
                   }
@@ -1882,21 +1882,21 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Newer trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_prev:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_prev:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "1/1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_count:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_count:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Older trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_next:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_next:5"
               }
             ]
           }
@@ -1926,7 +1926,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1980,14 +1980,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -1996,7 +1996,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_kind",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2040,13 +2040,13 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:2"
               }
             ]
           },
           {
             "type": 10,
-            "content": "### Battle log · 🌲 The Whispering Woods\n<t:1792472179:f> · Returned · Victory"
+            "content": "### Battle log · 🌲 The Whispering Woods\n<t:1792472668:f> · Returned · Victory"
           },
           {
             "type": 10,
@@ -2093,7 +2093,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "All trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_back:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_back:3"
               }
             ]
           }
@@ -2123,7 +2123,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2177,14 +2177,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -2193,7 +2193,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_kind",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2237,7 +2237,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:2"
               }
             ]
           },
@@ -2247,7 +2247,7 @@
           },
           {
             "type": 10,
-            "content": "**Win · Wild battle**\n<t:1792472179:d>"
+            "content": "**Win · Wild battle**\n<t:1792472668:d>"
           },
           {
             "type": 1,
@@ -2257,21 +2257,21 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Newer trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_prev:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_prev:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "1/1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_count:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_count:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Older trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_next:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_next:5"
               }
             ]
           }
@@ -2301,7 +2301,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2355,14 +2355,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -2371,7 +2371,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_kind",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2415,7 +2415,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:2"
               }
             ]
           },
@@ -2435,21 +2435,21 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Newer trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_prev:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_prev:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "1/1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_count:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_count:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Older trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_next:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_next:5"
               }
             ]
           }
@@ -2479,7 +2479,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2533,14 +2533,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -2549,7 +2549,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_kind",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2593,7 +2593,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:2"
               }
             ]
           },
@@ -2613,21 +2613,21 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Newer trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_prev:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_prev:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "1/1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_count:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_count:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Older trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_next:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_next:5"
               }
             ]
           }
@@ -2657,7 +2657,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2711,14 +2711,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -2727,7 +2727,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_kind",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2771,7 +2771,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:2"
               }
             ]
           },
@@ -2791,21 +2791,21 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Newer trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_prev:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_prev:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "1/1",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_count:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_count:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Older trips",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:log_next:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:log_next:5"
               }
             ]
           }
@@ -2823,7 +2823,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2877,14 +2877,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -2896,14 +2896,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Exploration",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
               },
               {
                 "type": 2,
                 "style": 1,
                 "disabled": false,
                 "label": "Raids",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
               }
             ]
           },
@@ -2943,21 +2943,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Care · front",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:1:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:1:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Care · mid",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:2:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:2:5"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Care · bench",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:3:6"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:3:6"
               }
             ]
           },
@@ -2969,21 +2969,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Edit front",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:raid1:7"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:raid1:7"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Edit mid",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:raid2:8"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:raid2:8"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Edit bench",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:raid3:9"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:raid3:9"
               }
             ]
           },
@@ -2999,7 +2999,7 @@
                 "style": 3,
                 "disabled": false,
                 "label": "Guild raid",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:raid:10"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:raid:10"
               }
             ]
           }
@@ -3029,7 +3029,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3083,14 +3083,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -3110,21 +3110,21 @@
                 "style": 3,
                 "disabled": false,
                 "label": "Claim daily",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:daily:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:daily:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Shop",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:shop:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:shop:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Daily objectives",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:daily_details:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:daily_details:4"
               }
             ]
           },
@@ -3140,21 +3140,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Wild challenge",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:challenge:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:challenge:5"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Guild",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:guild:6"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:guild:6"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Guild raid",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:raid:7"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:raid:7"
               }
             ]
           },
@@ -3166,21 +3166,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Nursery",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:nursery:8"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:nursery:8"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Perks",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:panel:perks:9"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:panel:perks:9"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Command guide",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:commands:10"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:commands:10"
               }
             ]
           }
@@ -3210,7 +3210,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3264,14 +3264,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -3295,21 +3295,21 @@
                 "style": 3,
                 "disabled": false,
                 "label": "Claim daily",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:daily:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:daily:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Shop",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:shop:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:shop:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Hide objectives",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:daily_details:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:daily_details:4"
               }
             ]
           },
@@ -3325,21 +3325,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Wild challenge",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:challenge:5"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:challenge:5"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Guild",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:guild:6"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:guild:6"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Guild raid",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:launch:raid:7"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:launch:raid:7"
               }
             ]
           },
@@ -3351,21 +3351,21 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Nursery",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:nursery:8"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:nursery:8"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Perks",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:panel:perks:9"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:panel:perks:9"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Command guide",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:commands:10"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:commands:10"
               }
             ]
           }
@@ -3395,7 +3395,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3449,14 +3449,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -3472,7 +3472,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Read dialogue",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:story_dialogue:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:story_dialogue:2"
               }
             ]
           },
@@ -3488,14 +3488,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Explore",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Workshop",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:workshop:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:workshop:4"
               }
             ]
           }
@@ -3525,7 +3525,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3579,14 +3579,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
               }
             ]
           },
@@ -3606,7 +3606,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Hide dialogue",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:story_dialogue:2"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:story_dialogue:2"
               }
             ]
           },
@@ -3622,14 +3622,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Explore",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:adventure:3"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:adventure:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Workshop",
-                "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:workshop:4"
+                "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:workshop:4"
               }
             ]
           }
@@ -3654,8 +3654,8 @@
           },
           {
             "inline": false,
-            "name": "Evolution · Timestitch",
-            "value": "Reach beast level 15 first."
+            "name": "Evolution → Timestitch",
+            "value": "Reach beast level 15 first.\nNo item needed · Bond: 0/40\nTrainer: 8/8 · Happiness: 100/70"
           }
         ],
         "flags": 0,
@@ -3670,7 +3670,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "138d9c7a2209c6016bc748b960d1abe5",
+              "custom_id": "df371d9ac9fb059832b6ae1f41344bcb",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -3721,7 +3721,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec143657183425537d998fa354c6012b",
+              "custom_id": "bd7015e4d7ae35cfc88a6a2ef44e9efc",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -3750,7 +3750,7 @@
                   "label": "#4 · Fairy · Lv.8",
                   "value": "4",
                   "default": false,
-                  "description": "Fairy · HP 116/116"
+                  "description": "Fairy · HP 108/108"
                 },
                 {
                   "label": "#5 · Wisp · Lv.5",
@@ -3770,28 +3770,28 @@
               "style": 2,
               "disabled": true,
               "label": "◀",
-              "custom_id": "9b577cc1f5af172396b3936c25a0cad8"
+              "custom_id": "edfd29cce48ac7b46181f48b0a99208c"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Back to roster",
-              "custom_id": "31c6828e73c1496592a99e5ce7ea93f3"
+              "custom_id": "430943f773e26465ff2918b43f3a81c4"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "#2 ▶",
-              "custom_id": "77ff7eaadb24bf274b0a94f04a33d5e5"
+              "custom_id": "b2f77b80245bbe56f6aa4cb22237f90e"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Field Journal",
-              "custom_id": "6b8e72ca1fe8cc486be643087da40b1c"
+              "custom_id": "c17ad3478cb4447b7f645826d9bee1e0"
             }
           ]
         },
@@ -3803,28 +3803,28 @@
               "style": 1,
               "disabled": false,
               "label": "Search",
-              "custom_id": "7afc9c782a9a3ee60f287fc9e46e6f62"
+              "custom_id": "9f9877088499b4b2890ed7aa7a8e45a2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "6fc3be6e5567c74e61660b04bd9c506e"
+              "custom_id": "bd0dc96b5e28b4b4913f4122e5652711"
             },
             {
               "type": 2,
               "style": 3,
               "disabled": false,
               "label": "Care & items",
-              "custom_id": "86929de72341222801e3a9c8d3fa08fd"
+              "custom_id": "e5fcaaa41a4b875f8533d845b6a349a2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Details",
-              "custom_id": "c293915e6f31af0326f52b9619f7b145"
+              "custom_id": "4eaf4413f975bf16d4a3b0ea76a31d30"
             }
           ]
         }
@@ -3882,7 +3882,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "7da685974f847a46417e9d7ff4777f76",
+              "custom_id": "f03a6a2c6e8cfdaea58f763ce680bfc1",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -3933,7 +3933,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec143657183425537d998fa354c6012b",
+              "custom_id": "bd7015e4d7ae35cfc88a6a2ef44e9efc",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -3962,7 +3962,7 @@
                   "label": "#4 · Fairy · Lv.8",
                   "value": "4",
                   "default": false,
-                  "description": "Fairy · HP 116/116"
+                  "description": "Fairy · HP 108/108"
                 },
                 {
                   "label": "#5 · Wisp · Lv.5",
@@ -3982,28 +3982,28 @@
               "style": 2,
               "disabled": true,
               "label": "◀",
-              "custom_id": "9b577cc1f5af172396b3936c25a0cad8"
+              "custom_id": "edfd29cce48ac7b46181f48b0a99208c"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Back to roster",
-              "custom_id": "31c6828e73c1496592a99e5ce7ea93f3"
+              "custom_id": "430943f773e26465ff2918b43f3a81c4"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "#2 ▶",
-              "custom_id": "77ff7eaadb24bf274b0a94f04a33d5e5"
+              "custom_id": "b2f77b80245bbe56f6aa4cb22237f90e"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Field Journal",
-              "custom_id": "6b8e72ca1fe8cc486be643087da40b1c"
+              "custom_id": "c17ad3478cb4447b7f645826d9bee1e0"
             }
           ]
         },
@@ -4015,28 +4015,28 @@
               "style": 1,
               "disabled": false,
               "label": "Search",
-              "custom_id": "7afc9c782a9a3ee60f287fc9e46e6f62"
+              "custom_id": "9f9877088499b4b2890ed7aa7a8e45a2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "6fc3be6e5567c74e61660b04bd9c506e"
+              "custom_id": "bd0dc96b5e28b4b4913f4122e5652711"
             },
             {
               "type": 2,
               "style": 3,
               "disabled": false,
               "label": "Care & items",
-              "custom_id": "86929de72341222801e3a9c8d3fa08fd"
+              "custom_id": "e5fcaaa41a4b875f8533d845b6a349a2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Hide details",
-              "custom_id": "c293915e6f31af0326f52b9619f7b145"
+              "custom_id": "4eaf4413f975bf16d4a3b0ea76a31d30"
             }
           ]
         }
@@ -4074,7 +4074,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ed3ff8cfa22284c6a108580ae6e431db",
+              "custom_id": "62c99d8ed0b1ac230d7f230f50bcb252",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4103,7 +4103,7 @@
                   "label": "#4 · Fairy · Lv.8",
                   "value": "4",
                   "default": false,
-                  "description": "Fairy · HP 116/116"
+                  "description": "Fairy · HP 108/108"
                 },
                 {
                   "label": "#5 · Wisp · Lv.5",
@@ -4123,14 +4123,14 @@
               "style": 2,
               "disabled": false,
               "label": "Search",
-              "custom_id": "c631c04fa8144e7c5b9244677bcdf830"
+              "custom_id": "b600f6bf7ba74a18ff2528570ce36819"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "a8e62f8ab1064a892e4d098696718e90"
+              "custom_id": "15a57a2f5ea03477760209bc5feafcfa"
             }
           ]
         },
@@ -4142,28 +4142,28 @@
               "style": 1,
               "disabled": false,
               "label": "Care",
-              "custom_id": "fb594c5ee60e588d1c0cbd57746ca71c"
+              "custom_id": "9beb14f19b521b19569129d39d5df72a"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Change armor",
-              "custom_id": "5457ea303c490cbc71d4f6702c5fd47d"
+              "custom_id": "c94e899e7c4bf1ba680190c8c370e3c2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Change rune",
-              "custom_id": "5a9aab2a3878ec093756703305a723a5"
+              "custom_id": "49c921b186e46bfb1df4f15606328c1a"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Workshop",
-              "custom_id": "8d89701150dc73df017acab9f896f7b4"
+              "custom_id": "7bf79125639d82be903ac2d725dc2495"
             }
           ]
         }
@@ -4206,7 +4206,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ed3ff8cfa22284c6a108580ae6e431db",
+              "custom_id": "62c99d8ed0b1ac230d7f230f50bcb252",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4235,7 +4235,7 @@
                   "label": "#4 · Fairy · Lv.8",
                   "value": "4",
                   "default": false,
-                  "description": "Fairy · HP 116/116"
+                  "description": "Fairy · HP 108/108"
                 },
                 {
                   "label": "#5 · Wisp · Lv.5",
@@ -4255,14 +4255,14 @@
               "style": 2,
               "disabled": false,
               "label": "Search",
-              "custom_id": "c631c04fa8144e7c5b9244677bcdf830"
+              "custom_id": "b600f6bf7ba74a18ff2528570ce36819"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "a8e62f8ab1064a892e4d098696718e90"
+              "custom_id": "15a57a2f5ea03477760209bc5feafcfa"
             }
           ]
         },
@@ -4274,28 +4274,28 @@
               "style": 1,
               "disabled": false,
               "label": "Care",
-              "custom_id": "fb594c5ee60e588d1c0cbd57746ca71c"
+              "custom_id": "9beb14f19b521b19569129d39d5df72a"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Change armor",
-              "custom_id": "5457ea303c490cbc71d4f6702c5fd47d"
+              "custom_id": "c94e899e7c4bf1ba680190c8c370e3c2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Change rune",
-              "custom_id": "5a9aab2a3878ec093756703305a723a5"
+              "custom_id": "49c921b186e46bfb1df4f15606328c1a"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Workshop",
-              "custom_id": "8d89701150dc73df017acab9f896f7b4"
+              "custom_id": "7bf79125639d82be903ac2d725dc2495"
             }
           ]
         },
@@ -4304,7 +4304,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "270d00a2b0a4296359746f7eede96f4d",
+              "custom_id": "1a8337303b47f270900573094a40626d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4329,21 +4329,21 @@
               "style": 3,
               "disabled": false,
               "label": "Equip selected",
-              "custom_id": "d5ca0d6e4fad71836e2f2f438371252b"
+              "custom_id": "43616db14287ef8b43b92825c687e4de"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Remove armor",
-              "custom_id": "fbed1daef29f7eb7f2b54922a30d0e6a"
+              "custom_id": "299af6685bb507c53de23cd0ad6398f6"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Done",
-              "custom_id": "5bea0ecb4997e906871a52feaca0e4cb"
+              "custom_id": "03129acdded9e451b9ea09f009968d77"
             }
           ]
         }
@@ -4386,7 +4386,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ed3ff8cfa22284c6a108580ae6e431db",
+              "custom_id": "62c99d8ed0b1ac230d7f230f50bcb252",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4415,7 +4415,7 @@
                   "label": "#4 · Fairy · Lv.8",
                   "value": "4",
                   "default": false,
-                  "description": "Fairy · HP 116/116"
+                  "description": "Fairy · HP 108/108"
                 },
                 {
                   "label": "#5 · Wisp · Lv.5",
@@ -4435,14 +4435,14 @@
               "style": 2,
               "disabled": false,
               "label": "Search",
-              "custom_id": "c631c04fa8144e7c5b9244677bcdf830"
+              "custom_id": "b600f6bf7ba74a18ff2528570ce36819"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "a8e62f8ab1064a892e4d098696718e90"
+              "custom_id": "15a57a2f5ea03477760209bc5feafcfa"
             }
           ]
         },
@@ -4454,28 +4454,28 @@
               "style": 1,
               "disabled": false,
               "label": "Care",
-              "custom_id": "fb594c5ee60e588d1c0cbd57746ca71c"
+              "custom_id": "9beb14f19b521b19569129d39d5df72a"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Change armor",
-              "custom_id": "5457ea303c490cbc71d4f6702c5fd47d"
+              "custom_id": "c94e899e7c4bf1ba680190c8c370e3c2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Change rune",
-              "custom_id": "5a9aab2a3878ec093756703305a723a5"
+              "custom_id": "49c921b186e46bfb1df4f15606328c1a"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Workshop",
-              "custom_id": "8d89701150dc73df017acab9f896f7b4"
+              "custom_id": "7bf79125639d82be903ac2d725dc2495"
             }
           ]
         },
@@ -4484,7 +4484,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "353fa380ef1090234526355ef7edccc7",
+              "custom_id": "4ad6181f65fca1b2bccb89eed19a40aa",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4509,21 +4509,21 @@
               "style": 3,
               "disabled": false,
               "label": "Equip selected",
-              "custom_id": "33b750e82020cf26299e5409c88a8185"
+              "custom_id": "565e6084002d389e28c35b16ffb39540"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": true,
               "label": "Remove rune",
-              "custom_id": "343c5265b1352da59535493fe7ad7fac"
+              "custom_id": "c10f48b845f4ca0aa1ff672ddbbfba08"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Done",
-              "custom_id": "3b051f932846c6647b11f7ec79828a37"
+              "custom_id": "d04be033817868e3c93b98249666bad6"
             }
           ]
         }
@@ -4550,7 +4550,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "9a5b2b14a49f2b1b6c66a2571d27109b",
+              "custom_id": "7949462aac0ab4252e059806d4ee4f94",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4587,14 +4587,14 @@
               "style": 2,
               "disabled": true,
               "label": "Equip",
-              "custom_id": "13d6c28025481995f72aebdbbb497231"
+              "custom_id": "4e06a6202c4d91f1fc66724f417b226a"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Unequip",
-              "custom_id": "add6fe55874e4631f469b65f2cf3bd7d"
+              "custom_id": "4b1f3859cd32ec44de54f6bf0d1f0ede"
             }
           ]
         },
@@ -4606,7 +4606,7 @@
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "dbca70a9224d1aa40f190e22208f3a20"
+              "custom_id": "18f1de64b9de73c988548dd27a58b8b1"
             }
           ]
         }
@@ -4626,7 +4626,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "51bd081f102dd1fdd7259d631d607f27",
+              "custom_id": "5531bc34722eb9a11e6381c744250ba4",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4665,7 +4665,7 @@
               "style": 3,
               "disabled": false,
               "label": "Train attack · 50 gold",
-              "custom_id": "193c18b5fd0d6fcd7e7674620f1caa57"
+              "custom_id": "4518fa35bcbaeb03e9ffd5e49a9af5c9"
             }
           ]
         }
@@ -4685,7 +4685,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4774,7 +4774,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4861,7 +4861,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -4948,7 +4948,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5035,7 +5035,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5122,7 +5122,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5209,7 +5209,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5296,7 +5296,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5383,7 +5383,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5470,7 +5470,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5557,7 +5557,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5644,7 +5644,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5731,7 +5731,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "ec4005cba3090805239edb1a96ad7e1b",
+              "custom_id": "d5ee2163156cc681591e76016bfef71d",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -5818,7 +5818,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -5872,14 +5872,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -5891,14 +5891,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -5938,21 +5938,21 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -5965,7 +5965,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -5994,7 +5994,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "lead:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -6012,14 +6012,14 @@
                   "style": 3,
                   "disabled": true,
                   "label": "Assign lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:lead:1:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:lead:1:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:1:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:1:8"
                 }
               ]
             }
@@ -6037,7 +6037,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6091,14 +6091,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -6110,14 +6110,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -6157,21 +6157,21 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -6184,7 +6184,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6213,7 +6213,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "lead:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -6231,14 +6231,14 @@
                   "style": 3,
                   "disabled": false,
                   "label": "Assign lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:lead:2:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:lead:2:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:2:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:2:8"
                 }
               ]
             }
@@ -6256,7 +6256,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6310,14 +6310,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -6329,14 +6329,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -6376,21 +6376,21 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -6403,7 +6403,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6432,7 +6432,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "lead:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -6450,14 +6450,14 @@
                   "style": 3,
                   "disabled": false,
                   "label": "Assign lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:lead:3:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:lead:3:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:3:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:3:8"
                 }
               ]
             }
@@ -6475,7 +6475,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6529,14 +6529,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -6548,14 +6548,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -6595,21 +6595,21 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -6622,7 +6622,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6651,7 +6651,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "lead:4",
                       "default": true,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -6659,7 +6659,7 @@
             },
             {
               "type": 10,
-              "content": "**Selected · Fairy** · Lv.8\nHP 116/116 · Ready"
+              "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
             },
             {
               "type": 1,
@@ -6669,14 +6669,14 @@
                   "style": 3,
                   "disabled": false,
                   "label": "Assign lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:lead:4:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:lead:4:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:4:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:4:8"
                 }
               ]
             }
@@ -6696,7 +6696,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6750,14 +6750,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -6769,14 +6769,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -6816,21 +6816,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -6843,7 +6843,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6872,7 +6872,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "1:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -6890,21 +6890,21 @@
                   "style": 3,
                   "disabled": true,
                   "label": "Assign reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:1:1:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:1:1:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:1:2:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:1:2:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:1:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:1:9"
                 }
               ]
             }
@@ -6922,7 +6922,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -6976,14 +6976,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -6995,14 +6995,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -7042,21 +7042,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -7069,7 +7069,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7098,7 +7098,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "1:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -7116,21 +7116,21 @@
                   "style": 3,
                   "disabled": true,
                   "label": "Assign reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:1:2:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:1:2:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:1:2:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:1:2:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:2:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:2:9"
                 }
               ]
             }
@@ -7148,7 +7148,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7202,14 +7202,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -7221,14 +7221,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -7268,21 +7268,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -7295,7 +7295,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7324,7 +7324,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "1:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -7342,21 +7342,21 @@
                   "style": 3,
                   "disabled": false,
                   "label": "Assign reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:1:3:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:1:3:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:1:2:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:1:2:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:3:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:3:9"
                 }
               ]
             }
@@ -7374,7 +7374,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7428,14 +7428,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -7447,14 +7447,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -7494,21 +7494,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -7521,7 +7521,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7550,7 +7550,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "1:4",
                       "default": true,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -7558,7 +7558,7 @@
             },
             {
               "type": 10,
-              "content": "**Selected · Fairy** · Lv.8\nHP 116/116 · Ready"
+              "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
             },
             {
               "type": 1,
@@ -7568,21 +7568,21 @@
                   "style": 3,
                   "disabled": false,
                   "label": "Assign reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:1:4:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:1:4:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:1:2:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:1:2:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:4:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:4:9"
                 }
               ]
             }
@@ -7602,7 +7602,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7656,14 +7656,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -7675,14 +7675,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -7722,21 +7722,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -7749,7 +7749,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7778,7 +7778,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "2:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -7796,21 +7796,21 @@
                   "style": 3,
                   "disabled": true,
                   "label": "Assign reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:2:1:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:2:1:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:2:3:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:2:3:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:1:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:1:9"
                 }
               ]
             }
@@ -7828,7 +7828,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -7882,14 +7882,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -7901,14 +7901,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -7948,21 +7948,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -7975,7 +7975,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -8004,7 +8004,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "2:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -8022,21 +8022,21 @@
                   "style": 3,
                   "disabled": false,
                   "label": "Assign reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:2:2:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:2:2:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:2:3:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:2:3:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:2:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:2:9"
                 }
               ]
             }
@@ -8054,7 +8054,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -8108,14 +8108,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -8127,14 +8127,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -8174,21 +8174,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -8201,7 +8201,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -8230,7 +8230,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "2:4",
                       "default": false,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -8248,21 +8248,21 @@
                   "style": 3,
                   "disabled": true,
                   "label": "Assign reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:2:3:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:2:3:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:2:3:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:2:3:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:3:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:3:9"
                 }
               ]
             }
@@ -8280,7 +8280,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page_menu",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page_menu",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -8334,14 +8334,14 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Pin a goal",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:page:goals:0"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:page:goals:0"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Refresh",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:refresh:1"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:refresh:1"
                 }
               ]
             },
@@ -8353,14 +8353,14 @@
                   "style": 1,
                   "disabled": false,
                   "label": "Exploration",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:exploration:2"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:exploration:2"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Raids",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_mode:raid:3"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_mode:raid:3"
                 }
               ]
             },
@@ -8400,21 +8400,21 @@
                   "style": 2,
                   "disabled": false,
                   "label": "Edit lead",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:lead:4"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:lead:4"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Edit reserve 1",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:1:5"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:1:5"
                 },
                 {
                   "type": 2,
                   "style": 1,
                   "disabled": false,
                   "label": "Edit reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_role:2:6"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_role:2:6"
                 }
               ]
             },
@@ -8427,7 +8427,7 @@
               "components": [
                 {
                   "type": 3,
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_candidate",
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_candidate",
                   "min_values": 1,
                   "max_values": 1,
                   "disabled": false,
@@ -8456,7 +8456,7 @@
                       "label": "#4 · Fairy · Lv.8",
                       "value": "2:4",
                       "default": true,
-                      "description": "HP 116/116 · Ready"
+                      "description": "HP 108/108 · Ready"
                     }
                   ]
                 }
@@ -8464,7 +8464,7 @@
             },
             {
               "type": 10,
-              "content": "**Selected · Fairy** · Lv.8\nHP 116/116 · Ready"
+              "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
             },
             {
               "type": 1,
@@ -8474,21 +8474,21 @@
                   "style": 3,
                   "disabled": false,
                   "label": "Assign reserve 2",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_assign:2:4:7"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_assign:2:4:7"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Clear slot",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:team_clear:2:3:8"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:team_clear:2:3:8"
                 },
                 {
                   "type": 2,
                   "style": 2,
                   "disabled": false,
                   "label": "Care selected",
-                  "custom_id": "journal:19b97aad9dd542d8b990fc40e84e66a2:care:4:9"
+                  "custom_id": "journal:faf2e97dd336458cac993786c5932137:care:4:9"
                 }
               ]
             }
