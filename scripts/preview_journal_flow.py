@@ -27,18 +27,20 @@ RENDERER = r"""
 (() => {
   const root = document.getElementById('cb-journal-flow');
   const data = __FLOW_DATA__, art = __ART_DATA__;
-  const names = {team:'Team overview', edit_reserve:'Edit a reserve', frozen:'Team saved for an expedition', encounter:'A creature on the trail', during_battle:'During the encounter', continued:'After the encounter'};
+  const names = {selection:'Choose an expedition', returned:'After returning home', battle_log:'Battle log', log_detail:'Completed trip recap', pending_log:'Trip still in progress', team:'Team overview', edit_reserve:'Edit a reserve', frozen:'Team saved for an expedition', encounter:'A creature on the trail', during_battle:'During the encounter', continued:'After the encounter'};
   const picker = root.querySelector('#cj-screen'), stage = root.querySelector('.cj-stage'), note = root.querySelector('.cj-note');
-  let current = 'team', role = '2', candidate = data.example_candidate;
+  let current = 'selection', role = '2', candidate = data.example_candidate;
   const message = 'Real Discord component payloads · example trainer · no live actions.';
   for (const [value, label] of Object.entries(names)) { const option = document.createElement('option'); option.value = value; option.textContent = label; picker.append(option); }
   function html(value) { const span = document.createElement('span'); span.textContent = String(value); return span.innerHTML; }
-  function markdown(value) { return html(value).replace(/\\([_~*`])/g, '$1').split('\n').map(line => line.startsWith('### ') ? '<h3>' + line.slice(4) + '</h3>' : line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') + '<br>').join(''); }
+  function markdown(value) { return html(value).replace(/&lt;t:(\d+):([df])&gt;/g, (_, stamp, format) => new Date(Number(stamp) * 1000).toLocaleString('en-GB', format === 'd' ? {dateStyle:'medium', timeZone:'UTC'} : {dateStyle:'medium', timeStyle:'short', timeZone:'UTC'}) + ' UTC').replace(/\\([_~*`])/g, '$1').split('\n').map(line => line.startsWith('### ') ? '<h3>' + line.slice(4) + '</h3>' : line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') + '<br>').join(''); }
   function action(id) { const parts = id.split(':').slice(2); if (/^\d+$/.test(parts[parts.length - 1])) parts.pop(); return parts.join(':'); }
   function show(page, status = message) { if (!names[page]) return; current = page; render(); note.textContent = status; }
   function buttonAction(key) {
     if (key === 'page:team') return show('team');
-    if (key === 'page:adventure') return show('encounter');
+    if (key === 'page:adventure') return show(current === 'pending_log' ? 'continued' : 'returned');
+    if (key === 'page:battle_log' || key === 'log_back') return show('battle_log');
+    if (key === 'begin') return show('encounter');
     if (key.startsWith('team_role:')) { role = key.split(':')[1]; candidate = data.defaults[role]; return show('edit_reserve'); }
     if (key.startsWith('team_assign:')) { note.textContent = 'In Discord, confirmation changes only the selected slot. Promoting a reserve keeps the three-member roster by swapping it with the lead.'; return; }
     if (key.startsWith('team_clear:')) { note.textContent = 'In Discord, this removes the companion from this reserve slot. It stays in your collection.'; return; }
@@ -46,6 +48,7 @@ RENDERER = r"""
     note.textContent = 'This control uses your saved trainer in Discord.';
   }
   function selection(key, value) {
+    if (key === 'log_entry') return show('log_detail');
     if (key === 'team_candidate') { const parts = value.split(':'); role = parts[0]; candidate = parts[1]; return show('edit_reserve'); }
     if (key === 'path' && value.endsWith(':challenge')) return show('during_battle');
     note.textContent = 'This route choice is stored with your expedition in Discord.';
@@ -75,7 +78,7 @@ RENDERER = r"""
   }
   picker.onchange = () => show(picker.value);
   root.journalFlowPreview = {show, getState: () => ({page: current, role, candidate})};
-  show('team'); root.dataset.ready = 'true';
+  show('selection'); root.dataset.ready = 'true';
 })();
 """
 
@@ -124,6 +127,9 @@ async def export(output):
 
         try:
             pages = dict(team=await save('team'))
+            view.page = 'adventure'
+            pages['selection'] = await save('selection')
+            view.page = 'team'
             editors, defaults = {}, {}
             for role in journal_team.ROLES:
                 journal_team.select_role(view, role)
@@ -148,6 +154,19 @@ async def export(output):
             view.state, view.trip = await journal_state.snapshot(42), trip
             pages['continued'] = await save('continued')
             result_note = trip['payload']['notes'][-1]
+            view.page = 'battle_log'
+            view.log_selected_id = trip['id']
+            await view.load_page()
+            pages['pending_log'] = await save('pending_log')
+            trip = await expeditions.choose(42, trip['id'], trip['version'], 'return_early', rng=rng)
+            view.state, view.trip, view.page = await journal_state.snapshot(42), trip, 'adventure'
+            pages['returned'] = await save('returned')
+            view.page, view.log_selected_id = 'battle_log', None
+            await view.load_page()
+            pages['battle_log'] = await save('battle_log')
+            view.log_selected_id = trip['id']
+            await view.load_page()
+            pages['log_detail'] = await save('log_detail')
         finally:
             view.stop()
     party = [build_pve_beast_state(storage.get_beast_data(species), 8) for species in ('twine', 'gloop', 'barkley')]
@@ -162,7 +181,7 @@ async def export(output):
     fragment = template.replace('cb-field-journal', 'cb-journal-flow').replace('ChibiBeasts Field Journal preview', 'ChibiBeasts team and journal flow preview').replace('<div class="cj-card" aria-live="polite"></div>', '').replace('color-scheme: light dark;', 'color-scheme: dark;')
     script = RENDERER.replace('__FLOW_DATA__', json.dumps(data, ensure_ascii=False).replace('</', '<\\/')).replace('__ART_DATA__', json.dumps(art))
     style = '<style>html,#cb-journal-flow{color-scheme:dark}body{margin:0;padding:28px 12px;background:#202126;color:#dbdee1;font:14px/1.5 Arial,sans-serif}main{max-width:920px;margin:auto}header{max-width:640px;margin:0 auto 20px}h1{font-size:26px;line-height:1.25;margin:0 0 8px}header p{color:#b5bac1;margin:0}.flow-label{max-width:640px;margin:0 auto 12px;padding:0 2px;color:#d3c49c}.cj-stage{display:grid;gap:16px}.flow-battle img{width:100%;display:block;image-rendering:pixelated;margin-bottom:12px}.flow-result{border-left-color:#5aab7a!important}.flow-result p{margin:8px 0 0}@media(max-width:420px){body{padding:16px 8px}h1{font-size:22px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}</style>'
-    document = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Team and journal flow</title>' + style + '</head><body><main><header><h1>Your team. Your next step.</h1><p>A dedicated Team tab and a fresh journal below every exploration encounter.</p></header>' + fragment + '<script>' + script + '</script></main></body></html>'
+    document = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Adventure and battle log</title>' + style + '</head><body><main><header><h1>Adventure, without the clutter.</h1><p>Your next choice on Adventure. Past encounters and rewards in Battle log.</p></header>' + fragment + '<script>' + script + '</script></main></body></html>'
     (output / 'journal-flow.html').write_text(document, encoding='utf-8')
     report = dict(status='passed', scope='Actual JournalView.to_components() exports and packaged portraits from a disposable example database. Encounter outcome and chat placement are illustrative; automated regressions verify live message ordering and retirement.',
                   pages=list(pages), total_payloads=len(checks), largest_text_count=max(row['characters'] for row in checks), largest_component_count=max(row['components'] for row in checks), checks=checks)
@@ -182,7 +201,7 @@ async def capture(path, output):
         await page.wait_for_selector('#cb-journal-flow[data-ready="true"]')
         for width, label in ((1100, 'desktop'), (390, 'mobile'), (320, 'narrow')):
             await page.set_viewport_size(dict(width=width, height=1000))
-            for screen in ('team', 'edit_reserve', 'frozen', 'during_battle', 'continued'):
+            for screen in ('selection', 'returned', 'battle_log', 'log_detail', 'pending_log', 'team', 'edit_reserve', 'frozen', 'during_battle', 'continued'):
                 await page.locator('#cj-screen').select_option(screen)
                 await page.wait_for_function('Array.from(document.images).every(img => img.complete && img.naturalWidth > 0)')
                 assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
@@ -192,6 +211,14 @@ async def capture(path, output):
                     assert await page.locator('.cj-stage > [data-message]').evaluate_all('(nodes) => nodes.map(n => n.dataset.message).join(",")') == 'result,journal'
                 await page.screenshot(path=str(output / f'{label}-{screen}.png'), full_page=True)
                 checks.append(dict(width=width, page=screen, no_overflow=True, all_art_loaded=True))
+        await page.locator('#cj-screen').select_option('returned')
+        assert 'Rewards received' not in await page.locator('.cj-stage').inner_text()
+        await page.get_by_role('button', name='Battle log', exact=True).click()
+        picker = page.get_by_role('combobox', name='Open an expedition recap')
+        await picker.select_option(index=1)
+        assert 'Rewards received' in await page.locator('.cj-stage').inner_text()
+        await page.get_by_role('button', name='Back to Adventure', exact=True).click()
+        assert 'Back from' in await page.locator('.cj-stage').inner_text()
         await page.locator('#cj-screen').select_option('team')
         await page.get_by_role('button', name='Edit reserve 2', exact=True).click()
         picker = page.get_by_role('combobox', name='Choose your reserve 2')

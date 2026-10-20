@@ -1,0 +1,4579 @@
+{
+  "pages": {
+    "team": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                },
+                "spoiler": false,
+                "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+          },
+          {
+            "type": 10,
+            "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+          },
+          {
+            "type": 10,
+            "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Care · lead",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:1:9"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Care · reserve 1",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:2:10"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Care · reserve 2",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:3:11"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Edit lead",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:12"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Edit reserve 1",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:13"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Edit reserve 2",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:14"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Choose a slot above to edit your team. Travelling reserves earn shared EXP; swaps and assists spend an action. Raid teams have separate assignments."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Choose an expedition",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:15"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "selection": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:battle_log:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Choose an expedition\n1/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team."
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:realm",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your destination",
+                "options": [
+                  {
+                    "label": "🌲 The Whispering Woods",
+                    "value": "woods",
+                    "default": true,
+                    "description": "Trainer Lv.1+ required; companion Lv.1–5 recommended"
+                  },
+                  {
+                    "label": "🌲 The Whispering Woods · Depths",
+                    "value": "woods_deep",
+                    "default": false,
+                    "description": "Trainer Lv.3+ required; companion Lv.6–10 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes",
+                    "value": "ember",
+                    "default": false,
+                    "description": "Trainer Lv.6+ required; companion Lv.11–15 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes · Depths · Locked Lv.9",
+                    "value": "ember_deep",
+                    "default": false,
+                    "description": "Trainer Lv.9+ required; companion Lv.16–20 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows · Locked Lv.12",
+                    "value": "glacial",
+                    "default": false,
+                    "description": "Trainer Lv.12+ required; companion Lv.21–25 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows · Depths · Locked Lv.16",
+                    "value": "glacial_deep",
+                    "default": false,
+                    "description": "Trainer Lv.16+ required; companion Lv.26–30 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches · Locked Lv.20",
+                    "value": "trenches",
+                    "default": false,
+                    "description": "Trainer Lv.20+ required; companion Lv.31–35 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches · Depths · Locked Lv.25",
+                    "value": "trenches_deep",
+                    "default": false,
+                    "description": "Trainer Lv.25+ required; companion Lv.36–40 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom · Locked Lv.30",
+                    "value": "loom",
+                    "default": false,
+                    "description": "Trainer Lv.30+ required; companion Lv.41–45 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom · Depths · Locked Lv.38",
+                    "value": "loom_deep",
+                    "default": false,
+                    "description": "Trainer Lv.38+ required; companion Lv.46–50 recommended"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**🌲 The Whispering Woods** · Trainer Lv.1 required · Companion Lv.1–5 recommended."
+          },
+          {
+            "type": 10,
+            "content": "**Saved destination · None**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Save destination",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:save_destination:woods:10"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Clear default",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:clear_destination:11"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Suggested starter training: **🌲 The Whispering Woods · Depths**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Begin expedition · 1 charge",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:begin:12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "edit_reserve": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                },
+                "spoiler": false,
+                "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+          },
+          {
+            "type": 10,
+            "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+          },
+          {
+            "type": 10,
+            "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Edit lead",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Edit reserve 1",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Edit reserve 2",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Editing reserve 2** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your reserve 2",
+                "options": [
+                  {
+                    "label": "#1 · Twine · Lv.8",
+                    "value": "2:1",
+                    "default": false,
+                    "description": "HP 113/113 · Already leads your team"
+                  },
+                  {
+                    "label": "#2 · Gloop · Lv.8",
+                    "value": "2:2",
+                    "default": false,
+                    "description": "HP 123/123 · Ready"
+                  },
+                  {
+                    "label": "#3 · Barkley · Lv.8",
+                    "value": "2:3",
+                    "default": false,
+                    "description": "HP 128/128 · Ready"
+                  },
+                  {
+                    "label": "#4 · Fairy · Lv.8",
+                    "value": "2:4",
+                    "default": true,
+                    "description": "HP 108/108 · Ready"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Assign reserve 2",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:2:4:12"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Clear slot",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:2:3:13"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Care selected",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:4:14"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "frozen": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                },
+                "spoiler": false,
+                "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+          },
+          {
+            "type": 10,
+            "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+          },
+          {
+            "type": 10,
+            "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Care · lead",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:1:9"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Care · reserve 1",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:2:10"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Care · reserve 2",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:3:11"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Saved for this expedition**\nThis is the team travelling with you. Return home before changing its members."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Resume expedition",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "encounter": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:battle_log:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### A creature on the trail\n🌲 The Whispering Woods · 1/3 stops completed\n**Exploration 0/3** · Next charge in 30m 0s"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Wisp · Lv.5**"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "spoiler": false,
+              "media": {
+                "url": "attachment://equipped-167533a1c51fcb89589f.png"
+              },
+              "description": "Wisp"
+            }
+          },
+          {
+            "type": 10,
+            "content": "Following small prints beneath bent ferns, you spot a wild companion. Choose one approach; it will not wait for another try."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Challenge together",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:1:challenge",
+                    "default": false,
+                    "description": "Fight with your saved team; a win befriends this creature."
+                  },
+                  {
+                    "label": "Approach gently",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:1:approach",
+                    "default": false,
+                    "description": "Use the usual friendship chance; it may leave."
+                  },
+                  {
+                    "label": "Observe quietly",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:1:observe",
+                    "default": false,
+                    "description": "Learn its habits and leave it undisturbed."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:1:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction of your one reward bundle."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "during_battle": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:battle_log:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### A creature on the trail\n🌲 The Whispering Woods · 1/3 stops completed\n**Exploration 0/3** · Next charge in 29m 59s"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "**Encounter in progress.** Use the battle controls below. Your route and team are saved."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Continue encounter",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:battle_continue:10"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "continued": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:battle_log:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### A sheltered clearing\n🌲 The Whispering Woods · 2/3 stops completed\n**Exploration 0/3** · Next charge in 29m 59s"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "Your earlier choice leads the team to a quiet shelter beside the trail."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Share a short camp",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:3:camp",
+                    "default": false,
+                    "description": "Restore 5% max HP to healthy teammates; once per trip, no revives."
+                  },
+                  {
+                    "label": "Practise as a team",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:3:practice",
+                    "default": false,
+                    "description": "Build bond and prepare for the journey home."
+                  },
+                  {
+                    "label": "Survey the way ahead",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:3:survey",
+                    "default": false,
+                    "description": "Record a useful trail clue for a deeper stop."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "60b44339e45e456baa71cbc3360b63fe:3:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction of your one reward bundle."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "pending_log": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Back to Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Battle log · 🌲 The Whispering Woods\n<t:1792470947:f> · On the trail · Victory"
+          },
+          {
+            "type": 10,
+            "content": "**Expedition team** · Twine · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "2/3 stops · one material bundle · one possible catch · bonus 10% · nest clue 2.2% max/trip"
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Wisp · Lv.5**\nVictory · Catch pending return"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "spoiler": false,
+              "media": {
+                "url": "attachment://equipped-167533a1c51fcb89589f.png"
+              },
+              "description": "Wisp"
+            }
+          },
+          {
+            "type": 10,
+            "content": "**Rewards pending return**\nReturn home to bank this trip. Final rewards are calculated then."
+          },
+          {
+            "type": 10,
+            "content": "**Expedition notes**\nThe creature recognised your team's strength and chose to follow."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "All trips",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:log_back:10"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "returned": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:battle_log:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Back from 🌲 The Whispering Woods** · Results in Battle log."
+          },
+          {
+            "type": 10,
+            "content": "### Choose an expedition\n0/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team."
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:realm",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your destination",
+                "options": [
+                  {
+                    "label": "🌲 The Whispering Woods",
+                    "value": "woods",
+                    "default": true,
+                    "description": "Trainer Lv.1+ required; companion Lv.1–5 recommended"
+                  },
+                  {
+                    "label": "🌲 The Whispering Woods · Depths",
+                    "value": "woods_deep",
+                    "default": false,
+                    "description": "Trainer Lv.3+ required; companion Lv.6–10 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes",
+                    "value": "ember",
+                    "default": false,
+                    "description": "Trainer Lv.6+ required; companion Lv.11–15 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes · Depths · Locked Lv.9",
+                    "value": "ember_deep",
+                    "default": false,
+                    "description": "Trainer Lv.9+ required; companion Lv.16–20 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows · Locked Lv.12",
+                    "value": "glacial",
+                    "default": false,
+                    "description": "Trainer Lv.12+ required; companion Lv.21–25 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows · Depths · Locked Lv.16",
+                    "value": "glacial_deep",
+                    "default": false,
+                    "description": "Trainer Lv.16+ required; companion Lv.26–30 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches · Locked Lv.20",
+                    "value": "trenches",
+                    "default": false,
+                    "description": "Trainer Lv.20+ required; companion Lv.31–35 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches · Depths · Locked Lv.25",
+                    "value": "trenches_deep",
+                    "default": false,
+                    "description": "Trainer Lv.25+ required; companion Lv.36–40 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom · Locked Lv.30",
+                    "value": "loom",
+                    "default": false,
+                    "description": "Trainer Lv.30+ required; companion Lv.41–45 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom · Depths · Locked Lv.38",
+                    "value": "loom_deep",
+                    "default": false,
+                    "description": "Trainer Lv.38+ required; companion Lv.46–50 recommended"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**🌲 The Whispering Woods** · Trainer Lv.1 required · Companion Lv.1–5 recommended."
+          },
+          {
+            "type": 10,
+            "content": "**Saved destination · None**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Save destination",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:save_destination:woods:10"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Clear default",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:clear_destination:11"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Suggested starter training: **🌲 The Whispering Woods · Depths**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": true,
+                "label": "Begin expedition · 1 charge",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:begin:12"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Next charge in 29m 59s. Up to three charges wait for you between visits."
+          }
+        ]
+      }
+    ],
+    "battle_log": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Back to Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Battle log\nPast encounters, expedition notes and rewards. Newest trips first."
+          },
+          {
+            "type": 10,
+            "content": "**🌲 The Whispering Woods** · <t:1792470947:d>\nReturned · Victory"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:log_entry",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Open an expedition recap",
+                "options": [
+                  {
+                    "label": "🌲 The Whispering Woods · 20 Oct 04:35 UTC",
+                    "value": "60b44339e45e456baa71cbc3360b63fe",
+                    "default": false,
+                    "description": "Returned · Victory"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Newer trips",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:log_prev:10"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "1/1",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:log_count:11"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Older trips",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:log_next:12"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "log_detail": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Team",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Companions",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Workshop",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Story",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Activities",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Home",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Back to Adventure",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:9"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Battle log · 🌲 The Whispering Woods\n<t:1792470947:f> · Returned · Victory"
+          },
+          {
+            "type": 10,
+            "content": "**Expedition team** · Twine · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "2/3 stops · one material bundle · one possible catch · bonus 10% · nest clue 2.2% max/trip"
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Wisp · Lv.5**\nVictory · Joined your collection"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "spoiler": false,
+              "media": {
+                "url": "attachment://equipped-167533a1c51fcb89589f.png"
+              },
+              "description": "Wisp"
+            }
+          },
+          {
+            "type": 10,
+            "content": "**Rewards received**\n11 gold · 72 trainer EXP · 1 Spirit Crystal"
+          },
+          {
+            "type": 10,
+            "content": "**Team progress**\nTwine: +3 EXP\nGloop: +1 EXP\nBarkley: +1 EXP"
+          },
+          {
+            "type": 10,
+            "content": "**Expedition notes**\nThe creature recognised your team's strength and chose to follow."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "All trips",
+                "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:log_back:10"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "editors": {
+    "lead": {
+      "1": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing lead** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your lead",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "lead:1",
+                      "default": true,
+                      "description": "HP 113/113 · Ready"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "lead:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "lead:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "lead:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": true,
+                  "label": "Assign lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:lead:1:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:1:13"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing lead** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your lead",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "lead:1",
+                      "default": false,
+                      "description": "HP 113/113 · Ready"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "lead:2",
+                      "default": true,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "lead:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "lead:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Gloop** · Lv.8\nHP 123/123 · Ready\nPromoting this reserve moves your current lead into reserve 1."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": false,
+                  "label": "Assign lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:lead:2:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:2:13"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing lead** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your lead",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "lead:1",
+                      "default": false,
+                      "description": "HP 113/113 · Ready"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "lead:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "lead:3",
+                      "default": true,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "lead:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Barkley** · Lv.8\nHP 128/128 · Ready\nPromoting this reserve moves your current lead into reserve 2."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": false,
+                  "label": "Assign lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:lead:3:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:3:13"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing lead** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your lead",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "lead:1",
+                      "default": false,
+                      "description": "HP 113/113 · Ready"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "lead:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "lead:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "lead:4",
+                      "default": true,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": false,
+                  "label": "Assign lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:lead:4:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:4:13"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "1": {
+      "1": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 1** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 1",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "1:1",
+                      "default": true,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "1:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "1:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "1:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": true,
+                  "label": "Assign reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:1:1:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:1:2:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:1:14"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 1** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 1",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "1:1",
+                      "default": false,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "1:2",
+                      "default": true,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "1:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "1:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": true,
+                  "label": "Assign reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:1:2:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:1:2:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:2:14"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 1** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 1",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "1:1",
+                      "default": false,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "1:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "1:3",
+                      "default": true,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "1:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Barkley** · Lv.8\nHP 128/128 · Ready\nThis companion moves from reserve 2 into the selected slot."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": false,
+                  "label": "Assign reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:1:3:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:1:2:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:3:14"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 1** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 1",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "1:1",
+                      "default": false,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "1:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "1:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "1:4",
+                      "default": true,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": false,
+                  "label": "Assign reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:1:4:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:1:2:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:4:14"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "2": {
+      "1": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 2** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 2",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "2:1",
+                      "default": true,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "2:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "2:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "2:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": true,
+                  "label": "Assign reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:2:1:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:2:3:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:1:14"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 2** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 2",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "2:1",
+                      "default": false,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "2:2",
+                      "default": true,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "2:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "2:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Gloop** · Lv.8\nHP 123/123 · Ready\nThis companion moves from reserve 1 into the selected slot."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": false,
+                  "label": "Assign reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:2:2:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:2:3:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:2:14"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 2** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 2",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "2:1",
+                      "default": false,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "2:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "2:3",
+                      "default": true,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "2:4",
+                      "default": false,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": true,
+                  "label": "Assign reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:2:3:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:2:3:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:3:14"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "type": 17,
+          "accent_color": 12037511,
+          "spoiler": false,
+          "components": [
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Adventure",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:adventure:0"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Team",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:team:1"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Companions",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:companions:2"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Workshop",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:workshop:3"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Story",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:story:4"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Activities",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:activities:5"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Home",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:home:6"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Pin a goal",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:page:goals:7"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Refresh",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:refresh:8"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles."
+            },
+            {
+              "type": 12,
+              "items": [
+                {
+                  "media": {
+                    "url": "attachment://exploration-team-56815093b8b3bd333f5a5494.png"
+                  },
+                  "spoiler": false,
+                  "description": "Your equipped exploration team. The lead stands in front, with the two reserves behind."
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Lead · Twine** · Lv.8\nHP 113/113 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 1 · Gloop** · Lv.8\nHP 123/123 · Ready"
+            },
+            {
+              "type": 10,
+              "content": "**Reserve 2 · Barkley** · Lv.8\nHP 128/128 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit lead",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:lead:9"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Edit reserve 1",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:1:10"
+                },
+                {
+                  "type": 2,
+                  "style": 1,
+                  "disabled": false,
+                  "label": "Edit reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_role:2:11"
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Editing reserve 2** · Collection page 1/1\nChoose a companion, then confirm the assignment."
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 3,
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_candidate",
+                  "min_values": 1,
+                  "max_values": 1,
+                  "disabled": false,
+                  "required": true,
+                  "placeholder": "Choose your reserve 2",
+                  "options": [
+                    {
+                      "label": "#1 · Twine · Lv.8",
+                      "value": "2:1",
+                      "default": false,
+                      "description": "HP 113/113 · Already leads your team"
+                    },
+                    {
+                      "label": "#2 · Gloop · Lv.8",
+                      "value": "2:2",
+                      "default": false,
+                      "description": "HP 123/123 · Ready"
+                    },
+                    {
+                      "label": "#3 · Barkley · Lv.8",
+                      "value": "2:3",
+                      "default": false,
+                      "description": "HP 128/128 · Ready"
+                    },
+                    {
+                      "label": "#4 · Fairy · Lv.8",
+                      "value": "2:4",
+                      "default": true,
+                      "description": "HP 108/108 · Ready"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": 10,
+              "content": "**Selected · Fairy** · Lv.8\nHP 108/108 · Ready"
+            },
+            {
+              "type": 1,
+              "components": [
+                {
+                  "type": 2,
+                  "style": 3,
+                  "disabled": false,
+                  "label": "Assign reserve 2",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_assign:2:4:12"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Clear slot",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:team_clear:2:3:13"
+                },
+                {
+                  "type": 2,
+                  "style": 2,
+                  "disabled": false,
+                  "label": "Care selected",
+                  "custom_id": "journal:43d56131b077412a8dc7d346d5c8d758:care:4:14"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "defaults": {
+    "lead": "1",
+    "1": "2",
+    "2": "3"
+  },
+  "example_candidate": "4",
+  "result_note": "The creature recognised your team's strength and chose to follow."
+}
