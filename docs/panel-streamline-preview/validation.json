@@ -1,0 +1,234 @@
+{
+  "status": "passed",
+  "scope": "Actual JournalView.to_components() exports and packaged portraits from a disposable example database. Encounter outcome and chat placement are illustrative; automated regressions verify live message ordering and retirement.",
+  "pages": [
+    "team",
+    "selection",
+    "edit_reserve",
+    "frozen",
+    "encounter",
+    "during_battle",
+    "continued",
+    "pending_log",
+    "returned",
+    "battle_log",
+    "log_detail",
+    "history_battles",
+    "history_raids",
+    "history_trades",
+    "history_divines",
+    "raid_team",
+    "activities",
+    "activities_details",
+    "story",
+    "story_dialogue",
+    "roster",
+    "roster_details",
+    "gear",
+    "gear_edit",
+    "gear_rune",
+    "perks",
+    "training",
+    "guide"
+  ],
+  "total_payloads": 39,
+  "largest_text_count": 978,
+  "largest_component_count": 26,
+  "checks": [
+    {
+      "page": "team",
+      "characters": 300,
+      "components": 25
+    },
+    {
+      "page": "selection",
+      "characters": 347,
+      "components": 21
+    },
+    {
+      "page": "editor:lead:1",
+      "characters": 362,
+      "components": 25
+    },
+    {
+      "page": "editor:lead:2",
+      "characters": 425,
+      "components": 25
+    },
+    {
+      "page": "editor:lead:3",
+      "characters": 427,
+      "components": 25
+    },
+    {
+      "page": "editor:lead:4",
+      "characters": 362,
+      "components": 25
+    },
+    {
+      "page": "editor:1:1",
+      "characters": 367,
+      "components": 26
+    },
+    {
+      "page": "editor:1:2",
+      "characters": 367,
+      "components": 26
+    },
+    {
+      "page": "editor:1:3",
+      "characters": 429,
+      "components": 26
+    },
+    {
+      "page": "editor:1:4",
+      "characters": 367,
+      "components": 26
+    },
+    {
+      "page": "editor:2:1",
+      "characters": 367,
+      "components": 26
+    },
+    {
+      "page": "editor:2:2",
+      "characters": 427,
+      "components": 26
+    },
+    {
+      "page": "editor:2:3",
+      "characters": 369,
+      "components": 26
+    },
+    {
+      "page": "editor:2:4",
+      "characters": 367,
+      "components": 26
+    },
+    {
+      "page": "frozen",
+      "characters": 337,
+      "components": 21
+    },
+    {
+      "page": "encounter",
+      "characters": 296,
+      "components": 17
+    },
+    {
+      "page": "during_battle",
+      "characters": 245,
+      "components": 14
+    },
+    {
+      "page": "continued",
+      "characters": 226,
+      "components": 14
+    },
+    {
+      "page": "pending_log",
+      "characters": 440,
+      "components": 21
+    },
+    {
+      "page": "returned",
+      "characters": 480,
+      "components": 23
+    },
+    {
+      "page": "battle_log",
+      "characters": 145,
+      "components": 19
+    },
+    {
+      "page": "log_detail",
+      "characters": 471,
+      "components": 22
+    },
+    {
+      "page": "history_battles",
+      "characters": 59,
+      "components": 17
+    },
+    {
+      "page": "history_raids",
+      "characters": 51,
+      "components": 17
+    },
+    {
+      "page": "history_trades",
+      "characters": 52,
+      "components": 17
+    },
+    {
+      "page": "history_divines",
+      "characters": 61,
+      "components": 17
+    },
+    {
+      "page": "raid_team",
+      "characters": 244,
+      "components": 25
+    },
+    {
+      "page": "activities",
+      "characters": 107,
+      "components": 22
+    },
+    {
+      "page": "activities_details",
+      "characters": 335,
+      "components": 23
+    },
+    {
+      "page": "story",
+      "characters": 139,
+      "components": 14
+    },
+    {
+      "page": "story_dialogue",
+      "characters": 849,
+      "components": 15
+    },
+    {
+      "page": "roster",
+      "characters": 282,
+      "components": 10
+    },
+    {
+      "page": "roster_details",
+      "characters": 978,
+      "components": 10
+    },
+    {
+      "page": "gear",
+      "characters": 198,
+      "components": 7
+    },
+    {
+      "page": "gear_edit",
+      "characters": 245,
+      "components": 11
+    },
+    {
+      "page": "gear_rune",
+      "characters": 212,
+      "components": 11
+    },
+    {
+      "page": "perks",
+      "characters": 136,
+      "components": 4
+    },
+    {
+      "page": "training",
+      "characters": 92,
+      "components": 2
+    },
+    {
+      "page": "guide",
+      "characters": 350,
+      "components": 1
+    }
+  ]
+}

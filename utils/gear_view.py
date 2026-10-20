@@ -59,8 +59,11 @@ class GearView(discord.ui.View):
         self.add_item(self.care)
         self.change_armor = discord.ui.Button(label='Change armor', row=2)
         self.change_rune = discord.ui.Button(label='Change rune', row=2)
+        self.workshop = discord.ui.Button(label='Workshop', row=2)
+        self.workshop.callback = lambda click: self.handle(click, 'workshop')
         self.add_item(self.change_armor)
         self.add_item(self.change_rune)
+        self.add_item(self.workshop)
 
     def button(self, label, action):
         button = discord.ui.Button(label=label, style=discord.ButtonStyle.secondary, row=1)
@@ -104,37 +107,19 @@ class GearView(discord.ui.View):
         rune = row.get('rune_id') or next((key for key in equipped if catalog.get(key, {}).get('slot') == 'rune'), None)
         return armor, rune
 
-    def inventory_text(self, slot):
-        catalog = definitions()
-        counts = {}
-        for entry in self.bound:
-            key = entry['equipment_id']
-            if entry['beast_row_id'] is None and catalog.get(key, {}).get('slot') == slot:
-                counts[key] = counts.get(key, 0) + 1
-        if slot == 'rune':
-            for key, amount in self.available.items():
-                if catalog.get(key, {}).get('slot') == slot:
-                    counts[key] = counts.get(key, 0) + amount
-        lines = []
-        for key, amount in counts.items():
-            gear = catalog[key]
-            line = f"{RARITY_EMOJI.get(gear.get('rarity'), '⚪')} {gear['name']}"
-            if amount > 1:
-                line += f' ×{amount}'
-            dormant = dormant_label(gear, self.trainer_level)
-            if dormant:
-                line += ' · ' + dormant
-            if len('\n'.join(lines + [line])) > 920:
-                lines.append('More gear available — open /craft to browse it.')
-                break
-            lines.append(line)
-        return '\n'.join(lines)
 
     def render(self):
         for control in self.editor_controls:
             self.remove_item(control)
         self.editor_controls = []
         visible, pages = self.page_rows()
+        for control in (self.previous, self.next, self.clear):
+            self.remove_item(control)
+        if pages > 1:
+            self.add_item(self.previous)
+            self.add_item(self.next)
+        if self.picker.query:
+            self.add_item(self.clear)
         self.select.options = owned_roster.options(visible, self.selected_id) or [
             discord.SelectOption(label='No matching beasts', value='none')]
         self.select.placeholder = f'Choose a beast · Page {self.picker.page + 1}/{pages}'
@@ -279,6 +264,10 @@ class GearView(discord.ui.View):
             return await interaction.response.send_message('This gear panel has closed. Open /gear again.', ephemeral=True)
         if action == 'open_search':
             return await interaction.response.send_modal(GearSearch(self))
+        if action == 'workshop':
+            await interaction.response.defer(ephemeral=True)
+            from utils.workshop import open_workshop
+            return await open_workshop(interaction, already_deferred=True)
         await interaction.response.defer()
         async with self.lock:
             if self.closed:
@@ -308,8 +297,10 @@ class GearView(discord.ui.View):
                         _, gear = await equipment.equip(self.user_id, owned_roster.number(row), choice, replace=True,
                             expected_row_id=target[0], expected_species=target[1], expected_equipment=target[2])
                         self.notice = 'Equipped ' + gear['name'] + '.'
-                        from utils.progress import track_quest_event, unlock_simple_achievement
-                        await track_quest_event(self.user_id, 'equip')
+                        from utils.progress import track_quest_event, unlock_simple_achievement, notify_quest_completions
+                        completed = await track_quest_event(self.user_id, 'equip')
+                        if completed and interaction.channel:
+                            await notify_quest_completions(interaction.channel, completed)
                         await unlock_simple_achievement(self.user_id, 'first_equip')
                         if gear.get('rarity') == 'legendary':
                             await unlock_simple_achievement(self.user_id, 'first_legendary_gear')
@@ -378,10 +369,14 @@ class GearView(discord.ui.View):
             self.stop()
 
 
-async def open_gear(interaction, beast_number=None):
+async def open_gear(interaction, beast_number=None, *, beast_row_id=None):
     view = GearView(interaction.user.id)
     await view.reload()
-    if beast_number is None:
+    if beast_row_id is not None:
+        row = next((row for row in view.rows if row['id'] == beast_row_id), None)
+        if row is None:
+            view.notice = 'That companion is no longer in your collection. Choose another beast.'
+    elif beast_number is None:
         row = next((row for row in view.rows if row.get('is_active')), view.rows[0] if view.rows else None)
     else:
         row = next((row for row in view.rows if owned_roster.number(row) == beast_number), None)

@@ -169,7 +169,7 @@ class Economy(commands.Cog):
         with reserve_fighters([interaction.user.id]):
             return await self._train(interaction, beast_id, stat)
 
-    async def _train(self, interaction, beast_id, stat):
+    async def _train(self, interaction, beast_id, stat, *, expected_row_id=None, expected_species=None, expected_cost=None):
         if stat not in {'attack', 'defense', 'speed', 'hp'}:
             raise ValueError('Choose attack, defense, speed or hp.')
         player = await get_or_create_player(interaction.user.id, str(interaction.user))
@@ -190,6 +190,9 @@ class Economy(commands.Cog):
                     color=COLORS["error"]
                 ))
             row = dict(row)
+            if (expected_row_id is not None and row['id'] != expected_row_id or
+                    expected_species is not None and row['beast_id'] != expected_species):
+                raise ValueError('That companion changed. Review its training again.')
 
             day = datetime.now(timezone.utc).date().isoformat()
             daily_key = f'training_sessions:{row["id"]}:{day}'
@@ -236,6 +239,8 @@ class Economy(commands.Cog):
             from utils.sanctuary import get_user_sanctuary as _gsanc, apply_training_discount as _atd
             _sanc = await _gsanc(interaction.user.id)
             cost = _atd(cost, _sanc)
+            if expected_cost is not None and cost != expected_cost:
+                raise ValueError('The training cost changed. Review the new price before training.')
 
             if player["gold"] < cost:
                 return await interaction.followup.send(embed=discord.Embed(

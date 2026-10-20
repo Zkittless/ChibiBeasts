@@ -1,0 +1,391 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "checks": [
+    {
+      "width": 1100,
+      "page": "selection",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "returned",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "battle_log",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "log_detail",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "history_battles",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "team",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "raid_team",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "edit_reserve",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "roster",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "roster_details",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "gear",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "gear_edit",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "gear_rune",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "perks",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "training",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "activities",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "story",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "story_dialogue",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "guide",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "during_battle",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "continued",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "selection",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "returned",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "battle_log",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "log_detail",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "history_battles",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "team",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "raid_team",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "edit_reserve",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "roster",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "roster_details",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "gear",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "gear_edit",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "gear_rune",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "perks",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "training",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "activities",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "story",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "story_dialogue",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "guide",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "during_battle",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "continued",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "selection",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "returned",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "battle_log",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "log_detail",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "history_battles",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "team",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "raid_team",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "edit_reserve",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "roster",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "roster_details",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "gear",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "gear_edit",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "gear_rune",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "perks",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "training",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "activities",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "story",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "story_dialogue",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "guide",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "during_battle",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "continued",
+      "no_overflow": true,
+      "all_art_loaded": true
+    }
+  ],
+  "role_editor_navigation": true,
+  "candidate_selection": true,
+  "battle_return_order": [
+    "result",
+    "journal"
+  ],
+  "returned_live_journals": 1
+}

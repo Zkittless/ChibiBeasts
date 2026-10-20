@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import aiosqlite
 import discord
 
-from utils import db as storage, expeditions
+from utils import db as storage, expeditions, journal_history
 from utils.catalog import load_catalog
 from utils.habitats import BIOMES
 
@@ -27,6 +27,10 @@ def summary(trip):
 
 
 async def load(view):
+    if view.log_kind != 'expeditions':
+        view.log_total, view.log_page, view.log_entries = await journal_history.load(view.user_id, view.log_kind, view.log_page)
+        view.log_selected, view.log_selected_id = None, None
+        return
     async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         where = "user_id=? AND status IN ('complete','active','battle')"
@@ -43,7 +47,18 @@ async def load(view):
 
 
 def render(view):
+    categories = view.select('log_kind', 'History · ' + journal_history.KINDS[view.log_kind])
+    categories.options = [discord.SelectOption(label=name, value=key, default=key == view.log_kind) for key, name in journal_history.KINDS.items()]
+    view.row(categories)
     view.row(view.button('Back to Adventure', 'page:adventure', discord.ButtonStyle.primary))
+    if view.log_kind != 'expeditions':
+        view.text('### History · ' + journal_history.KINDS[view.log_kind])
+        for entry in view.log_entries:
+            view.text(journal_history.text(view.user_id, view.log_kind, entry, safe))
+        if not view.log_entries:
+            view.text('No records in this category yet.')
+        render_pagination(view)
+        return
     trip = view.log_selected
     if trip:
         render_detail(view, trip)
@@ -60,6 +75,10 @@ def render(view):
         label=f"{BIOMES[trip['realm']]['name']} · {datetime.fromtimestamp(trip['updated_at'], timezone.utc):%d %b %H:%M} UTC"[:100],
         description=summary(trip)[:100], value=trip['id']) for trip in view.log_entries]
     view.row(picker)
+    render_pagination(view)
+
+
+def render_pagination(view):
     pages = max(1, (view.log_total + PAGE_SIZE - 1) // PAGE_SIZE)
     view.row(view.button('Newer trips', 'log_prev', disabled=view.log_page == 0),
              view.button(f'{view.log_page + 1}/{pages}', 'log_count', disabled=True),

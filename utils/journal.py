@@ -8,7 +8,7 @@ from uuid import uuid4
 import aiosqlite
 import discord
 
-from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art, journal_log
+from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art, journal_log, journal_history
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
@@ -47,9 +47,11 @@ class JournalView(discord.ui.LayoutView):
         self.picker_kind, self.picker_page, self.companion_page = 'recipe', 0, 0
         self.story_state, self.chapter, self.introduce = None, None, False
         self.story_scene = ''
+        self.show_story_dialogue, self.show_daily_details = False, False
         self.story_lock = ''
         self.dailies = []
         self.log_page, self.log_total = 0, 0
+        self.log_kind = 'expeditions'
         self.log_entries = []
         self.log_selected_id, self.log_selected = None, None
         self.reviewing = False
@@ -59,17 +61,17 @@ class JournalView(discord.ui.LayoutView):
         self.message_repurposed = False
         self._returned_battles = set()
         self.team_art = None
+        self.team_mode = 'exploration'
         self.lock = asyncio.Lock()
         self.last_input = 0
         self.prefix = 'journal:' + uuid4().hex
         self._button_serial = 0
         self.container = discord.ui.Container(accent_colour=0xb7ad87)
         self.add_item(self.container)
-        self.nav_buttons = {key: self.button(key.title(), 'page:' + key) for key in PAGES}
-        self.nav = discord.ui.ActionRow(*(self.nav_buttons[key] for key in PAGES[:3]))
-        self.nav_more = discord.ui.ActionRow(*(self.nav_buttons[key] for key in PAGES[3:]))
-        self.tools = discord.ui.ActionRow(self.button('Home', 'page:home'), self.button('Pin a goal', 'page:goals'), self.button('Refresh', 'refresh'))
+        self.tools = discord.ui.ActionRow(self.button('Pin a goal', 'page:goals'), self.button('Refresh', 'refresh'))
         self._static_button_count = self._button_serial
+        self.page_menu = self.select('page_menu', 'Field Journal')
+        self.menu = discord.ui.ActionRow(self.page_menu)
         self.realm_select = self.select('realm', 'Choose your destination')
         self.path_select = self.select('path', 'Choose your next step')
         self.companion_select = self.select('companion', 'Choose a companion')
@@ -187,7 +189,7 @@ class JournalView(discord.ui.LayoutView):
                                  disabled=not e.charges or locked or not healthy))
             if not healthy:
                 self.text('Choose a healthy active companion before setting out.')
-                self.row(self.button('Choose a companion', 'page:companions'))
+                self.row(self.button('Choose a companion', 'page:roster'))
             if not e.charges:
                 self.text('Next charge in ' + wait_text(e.next_in) + '. Up to three charges wait for you between visits.')
             return
@@ -389,8 +391,10 @@ class JournalView(discord.ui.LayoutView):
             chapter, state = self.chapter, self.story_state
             npc = story.load_npcs()[chapter['npc']]
             self.text(f"### {chapter['name']}\n{npc['name']} · {chapter['location']}")
-            if self.introduce:
+            if chapter.get('intro') and self.show_story_dialogue:
                 self.text('\n\n'.join(chapter['intro'])[:2200])
+            if chapter.get('intro'):
+                self.row(self.button('Hide dialogue' if self.show_story_dialogue else 'Read dialogue', 'story_dialogue'))
             progress = state['step_progress'].get(chapter['id'], {})
             lines = []
             for step in chapter['steps']:
@@ -419,11 +423,15 @@ class JournalView(discord.ui.LayoutView):
         daily_ready = not player['_daily_claimed']
         self.text('### Around the camp\n' + ('Your daily reward is ready.' if daily_ready else 'Daily reward claimed. The next day begins at 00:00 UTC.'))
         if self.dailies:
-            self.text('**Daily objectives**\n' + '\n'.join(f"{min(q['progress'], q['target'])}/{q['target']} · {q['desc'].format(target=q['target'])}" for q in self.dailies))
-        self.row(self.button('Claim daily', 'launch:daily', discord.ButtonStyle.success, disabled=not daily_ready), self.button('Shop', 'launch:shop'), self.button('Daily quests', 'launch:dailies'))
-        self.text('**Battles and community**\nChallenge a wild creature in your selected realm, check your guild or join its raid. These open their existing game panels in this channel.')
+            complete = sum(q['progress'] >= q['target'] for q in self.dailies)
+            self.text(f"**Daily objectives · {complete}/{len(self.dailies)} complete**")
+            if self.show_daily_details:
+                self.text('\n\n'.join(f"{min(q['progress'], q['target'])}/{q['target']} · {q['desc'].format(target=q['target'])}\n"
+                                      f"Reward · {q['reward_gold']:,} gold · {q['reward_exp']} EXP" for q in self.dailies))
+        self.row(self.button('Claim daily', 'launch:daily', discord.ButtonStyle.success, disabled=not daily_ready), self.button('Shop', 'launch:shop'), self.button('Hide objectives' if self.show_daily_details else 'Daily objectives', 'daily_details'))
+        self.text('**Battles and community**')
         self.row(self.button('Wild challenge', 'launch:challenge'), self.button('Guild', 'launch:guild'), self.button('Guild raid', 'launch:raid'))
-        self.row(self.button('Nursery', 'page:nursery'), self.button('Command guide', 'commands'))
+        self.row(self.button('Nursery', 'page:nursery'), self.button('Perks', 'panel:perks'), self.button('Command guide', 'commands'))
 
     def render(self):
         self._button_serial = self._static_button_count
@@ -431,14 +439,14 @@ class JournalView(discord.ui.LayoutView):
         self.container.clear_items()
         if self.art_enabled and not (self.page == 'team' and self.team_art):
             self.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(f'attachment://{self.header.name}', description='Field Journal · ' + REALMS[self.art_realm]['name'])))
-        self.container.add_item(self.nav)
-        self.container.add_item(self.nav_more)
+        current = 'adventure' if self.page == 'battle_log' else self.page
+        self.page_menu.options = [discord.SelectOption(label=key.title(), value=key, default=key == current)
+                                  for key in ('home',) + PAGES]
+        self.page_menu.placeholder = 'Field Journal · ' + self.page.replace('_', ' ').title()
+        self.container.add_item(self.menu)
         self.container.add_item(self.tools)
         if self.notice:
             self.text(self.notice[:750])
-        for key, button in self.nav_buttons.items():
-            active = self.page == key or (self.page == 'battle_log' and key == 'adventure')
-            button.style = discord.ButtonStyle.primary if active else discord.ButtonStyle.secondary
         render = getattr(self, 'render_' + self.page, self.render_home)
         render()
         if self.closed:
@@ -548,6 +556,18 @@ class JournalView(discord.ui.LayoutView):
             return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
         if self.closed or self.is_finished():
             return await interaction.response.send_message('This page has closed. Open /journal to resume your saved expedition.', ephemeral=True)
+        if action == 'page_menu':
+            value = interaction.data.get('values', [''])[0]
+            if value not in ('home',) + PAGES:
+                return await interaction.response.send_message('Choose a page from the current journal.', ephemeral=True)
+            action = 'page:roster' if value == 'companions' else 'page:' + value
+        if action == 'panel:perks':
+            from utils.perks_view import open_perks
+            return await open_perks(interaction, ephemeral=True)
+        if action == 'commands':
+            await interaction.response.defer(ephemeral=True)
+            from cogs.utilities import command_guide
+            return await command_guide(interaction)
         if action.startswith('care:') or action == 'launch:care':
             from utils.care_view import open_care
             if action == 'launch:care':
@@ -587,6 +607,14 @@ class JournalView(discord.ui.LayoutView):
                     self.trip = self.state.trip
                 self.notice = ''
                 try:
+                    if action == 'page:roster':
+                        from utils.roster_view import open_roster
+                        result = await open_roster(interaction, already_deferred=True)
+                        if result:
+                            self.closed = True
+                            self.stop()
+                            await journal_sessions.discard(self, interaction)
+                        return
                     if action == 'page:nursery':
                         from utils.nursery_view import open_nursery
                         result = await open_nursery(interaction, bot=self.bot, already_deferred=True)
@@ -611,14 +639,20 @@ class JournalView(discord.ui.LayoutView):
                             self.team_role, self.team_candidate_id, self.team_page = None, None, 0
                         if self.page == 'battle_log':
                             self.log_page, self.log_selected_id = 0, None
+                            self.log_kind = 'expeditions'
                         self.reviewing = False
                         self.awakening_scene = ''
                         if self.page == 'adventure':
                             self.trip = self.state.trip or self.trip
-                    elif action in {'log_prev', 'log_next', 'log_entry', 'log_back'}:
+                    elif action in {'log_prev', 'log_next', 'log_entry', 'log_back', 'log_kind'}:
                         if self.page != 'battle_log':
                             raise ValueError('Open the Battle log before choosing a past trip.')
-                        if action == 'log_entry':
+                        if action == 'log_kind':
+                            kind = interaction.data['values'][0]
+                            if kind not in journal_history.KINDS:
+                                raise ValueError('Choose a current history category.')
+                            self.log_kind, self.log_page, self.log_selected_id = kind, 0, None
+                        elif action == 'log_entry':
                             selected = interaction.data['values'][0]
                             if selected not in {trip['id'] for trip in self.log_entries}:
                                 raise ValueError('Choose a trip from the current log page.')
@@ -663,23 +697,35 @@ class JournalView(discord.ui.LayoutView):
                         self.companion_id, self.reviewing, self.awakening_scene = selected, False, ''
                     elif action.startswith('team_role:'):
                         journal_team.select_role(self, action.split(':', 1)[1])
+                    elif action.startswith('team_mode:'):
+                        mode = action.split(':', 1)[1]
+                        if mode not in {'exploration', 'raid'}:
+                            raise ValueError('Choose Exploration or Raids.')
+                        self.page, self.team_mode = 'team', mode
+                        self.team_role, self.team_candidate_id, self.team_page = None, None, 0
+                        self.team_art = None
                     elif action == 'team_candidate':
                         journal_team.select_candidate(self, interaction.data['values'][0])
                     elif action in {'team_prev', 'team_next'}:
                         journal_team.page_candidates(self, -1 if action == 'team_prev' else 1)
                     elif action.startswith('team_assign:'):
                         role, row_id = journal_team.assignment(self, action.split(':', 1)[1])
-                        if role == 'lead':
+                        if role in journal_team.RAID_ROLES:
+                            await storage.set_raid_slot(self.user_id, row_id, int(role[-1]))
+                        elif role == 'lead':
                             row = next(r for r in self.state.workshop.companions if r['id'] == row_id)
                             await storage.set_active_companion(self.user_id, row['player_number'], expected_row_id=row_id)
                         else:
                             await adventure_party.set_slot(self.user_id, row_id, int(role))
-                        self.notice = journal_team.ROLE_NAMES[role] + ' assigned. Your exploration team is saved.'
+                        self.notice = journal_team.ROLE_NAMES[role] + ' assigned. Your team is saved.'
                     elif action.startswith('team_clear:'):
                         slot = journal_team.removal(self, action.split(':', 1)[1])
-                        await adventure_party.clear_slot(self.user_id, slot)
+                        if isinstance(slot, str):
+                            await storage.clear_raid_slot(self.user_id, int(slot[-1]))
+                        else:
+                            await adventure_party.clear_slot(self.user_id, slot)
                         self.team_candidate_id = None
-                        self.notice = f'Reserve {slot} cleared. Your other team slots stay assigned.'
+                        self.notice = 'Slot cleared. Your other team slots stay assigned.'
                     elif action == 'team_slot':
                         values = interaction.data['values'][0].split(':')
                         row_id = int(values[0])
@@ -769,6 +815,11 @@ class JournalView(discord.ui.LayoutView):
                         self.story_scene = f"### {chapter['name']} · Complete\n" + '\n\n'.join(lines) + '\n\n**Rewards** · ' + ' · '.join(rewards)
                     elif action == 'story_continue':
                         self.story_scene = ''
+                        self.show_story_dialogue = False
+                    elif action == 'story_dialogue':
+                        self.show_story_dialogue = not self.show_story_dialogue
+                    elif action == 'daily_details':
+                        self.show_daily_details = not self.show_daily_details
                     elif action == 'commands':
                         from cogs.utilities import command_guide
                         return await command_guide(interaction)
@@ -850,7 +901,7 @@ class JournalView(discord.ui.LayoutView):
 
 
 async def open_journal(interaction, *, bot=None, page='home', realm=None, notice='', already_deferred=False, replace_message=False,
-                       begin_expedition=False, channel_send=False, source=None):
+                       begin_expedition=False, channel_send=False, source=None, team_mode='exploration', log_kind='expeditions'):
     if not already_deferred:
         await interaction.response.defer()
     await storage.get_or_create_player(interaction.user.id, str(interaction.user))
@@ -877,6 +928,8 @@ async def open_journal(interaction, *, bot=None, page='home', realm=None, notice
             notice = str(error)
         state = await journal_state.snapshot(interaction.user.id)
     view = JournalView(interaction.user.id, state, bot=bot or getattr(interaction, 'client', None), page=page, realm=realm, notice=notice, guild_id=getattr(interaction.guild, 'id', 0))
+    view.team_mode = team_mode if team_mode in {'exploration', 'raid'} else 'exploration'
+    view.log_kind = log_kind if log_kind in journal_history.KINDS else 'expeditions'
     if not view.trip:
         view.trip = await expeditions.latest(interaction.user.id)
     if replace_message:

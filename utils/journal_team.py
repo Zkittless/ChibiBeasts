@@ -10,7 +10,16 @@ from utils import db as storage
 
 PAGE_SIZE = 25
 ROLES = ('lead', '1', '2')
-ROLE_NAMES = {'lead': 'Lead', '1': 'Reserve 1', '2': 'Reserve 2'}
+RAID_ROLES = ('raid1', 'raid2', 'raid3')
+ROLE_NAMES = {'lead': 'Lead', '1': 'Reserve 1', '2': 'Reserve 2', 'raid1': 'Front', 'raid2': 'Mid', 'raid3': 'Bench'}
+
+
+def raid_mode(view):
+    return getattr(view, 'team_mode', 'exploration') == 'raid'
+
+
+def roles(view):
+    return RAID_ROLES if raid_mode(view) else ROLES
 
 
 def safe(value):
@@ -18,6 +27,8 @@ def safe(value):
 
 
 def frozen(view):
+    if raid_mode(view):
+        return False  # The existing raid assignment service guards active combat.
     trip = view.state.trip
     return bool(trip and trip['status'] != 'complete')
 
@@ -29,6 +40,9 @@ def companions(view):
 def roster(view):
     """Keep the exact saved travelling roster when an expedition is active."""
     rows = {row['id']: row for row in companions(view)}
+    if raid_mode(view):
+        return [(role, next((row for row in rows.values() if row.get('raid_slot') == index), None))
+                for index, role in enumerate(RAID_ROLES, 1)]
     if frozen(view) and 'party_ids' in view.state.trip['payload']:
         ids = view.state.trip['payload']['party_ids'][:3]
         return [(role, rows.get(ids[index]) if index < len(ids) else None)
@@ -46,6 +60,8 @@ def status(row):
 
 
 def _eligible(row, role):
+    if role in RAID_ROLES:
+        return not row.get('listed')
     return status(row) == 'Ready' and (role == 'lead' or not row['is_active'])
 
 
@@ -54,13 +70,15 @@ def _name(row):
 
 
 def _role(value):
-    if value not in ROLES:
+    if value not in ROLES + RAID_ROLES:
         raise ValueError('Choose the lead or one of the two reserve slots.')
     return value
 
 
 def select_role(view, role):
     _role(role)
+    if role not in roles(view):
+        raise ValueError('Choose a slot from the current team mode.')
     if frozen(view):
         raise ValueError('Return from your saved expedition before editing your exploration team.')
     view.team_role = role
@@ -115,19 +133,24 @@ def removal(view, value):
     role, row_id = _choice(view, value)
     if role == 'lead':
         raise ValueError('Choose another lead instead of removing your active companion.')
-    if view.state.team_slots.get(int(role)) != row_id:
+    current = dict(roster(view)).get(role)
+    if not current or current['id'] != row_id:
         raise ValueError('That reserve assignment changed. Refresh your team.')
-    return int(role)
+    return role if role in RAID_ROLES else int(role)
 
 
 def render(view):
-    view.text('### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles.')
+    raid = raid_mode(view)
+    active_roles = roles(view)
+    view.row(view.button('Exploration', 'team_mode:exploration', discord.ButtonStyle.primary if not raid else discord.ButtonStyle.secondary),
+             view.button('Raids', 'team_mode:raid', discord.ButtonStyle.primary if raid else discord.ButtonStyle.secondary))
+    view.text('### Raid team\nThree ready companions are required for raids.' if raid else '### Exploration team\nChoose a lead and up to two reserves for exploration and wild battles.')
     stage = getattr(view, 'team_art', None)
     if view.art_enabled and stage:
         view.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(
             f'attachment://{stage.name}', description='Your equipped exploration team. The lead stands in front, with the two reserves behind.')))
     assigned = dict(roster(view))
-    for role in ROLES:
+    for role in active_roles:
         row = assigned[role]
         if row:
             beast = storage.get_beast_data(row['beast_id'])
@@ -141,9 +164,9 @@ def render(view):
             view.text(f"**{ROLE_NAMES[role]} · Empty**\n" + ('Choose a healthy lead to set out.' if role == 'lead' else 'Optional · choose a companion to travel with you.'))
 
     role = getattr(view, 'team_role', None)
-    if frozen(view) or role not in ROLES:
+    if frozen(view) or role not in active_roles:
         care_buttons = [view.button('Care · ' + ROLE_NAMES[key].lower(), f"care:{assigned[key]['id']}")
-                        for key in ROLES if assigned[key]]
+                        for key in active_roles if assigned[key]]
         if care_buttons:
             view.row(*care_buttons)
 
@@ -156,10 +179,10 @@ def render(view):
         return
 
     view.row(*(view.button('Edit ' + ROLE_NAMES[key].lower(), 'team_role:' + key,
-                          discord.ButtonStyle.primary if key == role else discord.ButtonStyle.secondary) for key in ROLES))
-    if role not in ROLES:
-        view.text('Choose a slot above to edit your team. Travelling reserves earn shared EXP; swaps and assists spend an action. Raid teams have separate assignments.')
-        view.row(view.button('Choose an expedition', 'page:adventure', discord.ButtonStyle.success))
+                          discord.ButtonStyle.primary if key == role else discord.ButtonStyle.secondary) for key in active_roles))
+    if role not in active_roles:
+        view.text('Raid assignments are saved separately from exploration.' if raid else 'Travelling reserves earn shared EXP; swaps and assists spend an action.')
+        view.row(view.button('Guild raid', 'launch:raid', discord.ButtonStyle.success) if raid else view.button('Choose an expedition', 'page:adventure', discord.ButtonStyle.success))
         return
 
     rows = companions(view)
@@ -175,7 +198,7 @@ def render(view):
     picker.options = [discord.SelectOption(
         label=f"#{row['player_number']} · {_name(row)} · Lv.{row['level']}"[:100],
         value=f"{role}:{row['id']}", default=row['id'] == selected['id'],
-        description=(f"HP {row['hp']}/{row['max_hp']} · " + ('Already leads your team' if role != 'lead' and row['is_active'] else status(row)))[:100]) for row in visible]
+            description=(f"HP {row['hp']}/{row['max_hp']} · " + ('Already leads your team' if not raid and role != 'lead' and row['is_active'] else status(row)))[:100]) for row in visible]
     view.row(picker)
     current = assigned[role]
     same = current and current['id'] == selected['id']
