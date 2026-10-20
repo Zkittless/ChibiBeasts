@@ -124,6 +124,34 @@ def detail_embed(row: dict, player, inventory, rows) -> discord.Embed:
     return embed
 
 
+def compact_embed(row, player, inventory):
+    beast = get_beast_data(row['beast_id'])
+    embed = discord.Embed(title=f"{safe(owned_roster.name(row))} · #{owned_roster.number(row)}",
+        description=f"Lv.{row['level']} · Bond {row.get('bond', 0)}/100 · Happiness {row['happiness']}/100" + ('\n**Active lead**' if row['is_active'] else ''),
+        color=COLORS.get(row['rarity'], COLORS['info']))
+    embed.add_field(name='Stats', value=fmt_stats(row), inline=False)
+    if is_knocked_out(row):
+        embed.add_field(name='Recovering', value=ko_time_remaining(row), inline=False)
+    evo = beast.get('evolution') or {}
+    if evo.get('evolves_to'):
+        blockers = evolution_blockers(row, player['level'], evo, inventory=inventory, knocked_out=is_knocked_out(row))
+        readiness = blockers[0] if blockers else 'Your companion is ready to evolve.'
+        if evo.get('form') == 'bond':
+            required = awakening_requirements(evo)
+            cost = (f"No item needed · Bond: {row.get('bond', 0)}/{required['bond']}\n"
+                    f"Trainer: {player['level']}/{required['trainer_level']} · Happiness: {row['happiness']}/{required['happiness']}")
+        else:
+            item = storage.load_items().get(evo.get('method'), {})
+            cost = f"{item.get('name', evo.get('method', 'Catalyst'))} · Owned: {inventory.get(evo.get('method'), 0)}"
+            if item.get('recipe'):
+                from utils.economy_balance import recipe_level
+                cost += f"\nCraft at trainer level {recipe_level(item)}."
+        embed.add_field(name='Evolution → ' + get_beast_data(evo['evolves_to'])['name'],
+                        value=readiness + '\n' + cost, inline=False)
+    embed.set_footer(text=f"Beast #{owned_roster.number(row)} · Companion actions for care, gear and growth. Details shows moves and lore.")
+    return embed
+
+
 class SearchModal(discord.ui.Modal, title='Find a companion'):
     def __init__(self, view):
         super().__init__()
@@ -152,6 +180,7 @@ class OwnedRosterView(discord.ui.View):
         self.lock = asyncio.Lock()
         self.art_enabled = True
         self.notice = ''
+        self.expanded = False
 
         self.rarity_select = discord.ui.Select(placeholder='Filter by rarity', row=0)
         self.rarity_select.callback = self.choose_rarity
@@ -175,6 +204,8 @@ class OwnedRosterView(discord.ui.View):
         self.refresh_button = self.button('Refresh', row=4, callback=lambda click: self.show(click))
         self.care_button = self.button('Care & items', row=4, callback=self.care,
                                       style=discord.ButtonStyle.success)
+        self.details_button = self.button('Details', row=4, callback=lambda click: self.show(click, expanded=not self.expanded))
+        self.journal_button = self.button('Field Journal', row=3, callback=self.return_journal)
 
     @staticmethod
     def button(label, *, row, callback, style=discord.ButtonStyle.secondary):
@@ -271,13 +302,14 @@ class OwnedRosterView(discord.ui.View):
         ) for rarity in rarity_values]
         self.sort_select.options = [discord.SelectOption(label=label, value=value, default=value == self.picker.sort)
                                     for value, label in (('number', 'Collection number'), ('level', 'Highest level'), ('rarity', 'Highest rarity'))]
-        self.add_item(self.rarity_select)
-        self.add_item(self.sort_select)
+        row = self.selected() if self.mode == 'detail' else None
+        if not row:
+            self.add_item(self.rarity_select)
+            self.add_item(self.sort_select)
         self.beast_select.options = owned_roster.options(visible, self.selected_id if self.mode == 'detail' else None)
         if self.beast_select.options:
             self.add_item(self.beast_select)
 
-        row = self.selected() if self.mode == 'detail' else None
         if row:
             index = next(index for index, item in enumerate(matches) if item['id'] == row['id'])
             self.prev_btn.disabled = index == 0
@@ -286,7 +318,13 @@ class OwnedRosterView(discord.ui.View):
             self.next_btn.label = f"#{owned_roster.number(matches[index + 1])} ▶" if index + 1 < len(matches) else '▶'
             for item in (self.prev_btn, self.back_button, self.next_btn):
                 self.add_item(item)
-            embed = detail_embed(row, self.player, self.inventory, self.rows)
+            embed = detail_embed(row, self.player, self.inventory, self.rows) if self.expanded else compact_embed(row, self.player, self.inventory)
+            actions = discord.ui.Select(placeholder='Companion actions', row=1, options=[
+                discord.SelectOption(label=label, value=key) for key, label in (
+                    ('care', 'Care & items'), ('gear', 'Gear'), ('lead', 'Make active lead'),
+                    ('train', 'Train'), ('rename', 'Rename'), ('evolve', 'Evolve / awaken'), ('team', 'Team panel'))])
+            actions.callback = lambda click, target=dict(row): self.act(click, target)
+            self.add_item(actions)
         else:
             self.mode = 'overview'
             self.prev_page.disabled = self.picker.page == 0
@@ -296,22 +334,86 @@ class OwnedRosterView(discord.ui.View):
                 self.add_item(item)
             embed = self.overview_embed(visible, pages)
         self.clear_button.disabled = not (self.picker.query or self.picker.rarity != 'all' or self.picker.sort != 'number')
-        for item in (self.search_button, self.clear_button, self.refresh_button):
+        self.add_item(self.journal_button)
+        for item in (self.search_button, self.refresh_button):
             self.add_item(item)
+        if not self.clear_button.disabled:
+            self.add_item(self.clear_button)
         if row:
             self.add_item(self.care_button)
+            self.details_button.label = 'Hide details' if self.expanded else 'Details'
+            self.add_item(self.details_button)
+            if self.notice:
+                embed.description += '\n\n' + self.notice
         return embed, row
 
-    async def show(self, click, *, delta=0, target_number=None, target_id=None, mode=None,
-                   query=None, rarity=None, sort=None, page_delta=0, reset=False, opening=False):
+    async def act(self, click, target):
         if not await self.permitted(click):
             return
-        if not opening:
+        if self.is_finished():
+            return await click.response.send_message('This roster has closed. Open /collection again.', ephemeral=True)
+        from utils.companion_actions import current, open_growth, RenameModal
+        action = click.data['values'][0]
+        if action == 'rename':
+            return await click.response.send_modal(RenameModal(self.user_id, target))
+        if action in {'train', 'evolve'}:
+            return await open_growth(click, target, action)
+        if action == 'care':
+            from utils.care_view import open_care
+            return await open_care(click, beast_row_id=target['id'])
+        await click.response.defer(ephemeral=action == 'gear')
+        try:
+            row = await current(self.user_id, target)
+            if action == 'gear':
+                from utils.gear_view import open_gear
+                return await open_gear(click, beast_row_id=row['id'])
+            if action == 'lead':
+                await storage.set_active_companion(self.user_id, owned_roster.number(row), expected_row_id=row['id'])
+                await self.show(click, target_id=row['id'], already_deferred=True)
+                return
+            if action == 'team':
+                from utils.journal import open_journal
+                view = await open_journal(click, page='team', already_deferred=True)
+                if view and self.message:
+                    try:
+                        await self.message.delete()
+                    except discord.HTTPException:
+                        pass
+                    self.stop()
+                return view
+        except ValueError as error:
+            return await click.followup.send(str(error), ephemeral=True)
+
+    async def return_journal(self, click):
+        if not await self.permitted(click):
+            return
+        if self.is_finished():
+            return await click.response.send_message('Open /journal to resume.', ephemeral=True)
+        from utils.journal import open_journal
+        view = await open_journal(click)
+        if view and self.message:
+            try:
+                await self.message.delete()
+            except discord.HTTPException:
+                pass
+            self.stop()
+        return view
+
+    async def show(self, click, *, delta=0, target_number=None, target_id=None, mode=None,
+                   query=None, rarity=None, sort=None, page_delta=0, reset=False, opening=False,
+                   expanded=None, already_deferred=False):
+        if not await self.permitted(click):
+            return
+        if not opening and not already_deferred:
             await click.response.defer()
         async with self.lock:
             if self.is_finished():
                 return await click.followup.send('This roster has closed. Open /collection again.', ephemeral=True)
             self.notice = ''
+            if expanded is not None:
+                self.expanded = expanded
+            elif delta or target_id is not None or target_number is not None:
+                self.expanded = False
             self.rows = await storage.get_player_beasts(self.user_id)
             self.player = await storage.get_player(self.user_id) or self.player
             self.inventory = {}
@@ -433,8 +535,9 @@ class OwnedRosterView(discord.ui.View):
             pass
 
 
-async def open_roster(interaction, *, beast_number=None, details=False):
-    await interaction.response.defer()
+async def open_roster(interaction, *, beast_number=None, details=False, already_deferred=False):
+    if not already_deferred:
+        await interaction.response.defer()
     await storage.get_or_create_player(interaction.user.id, str(interaction.user))
     view = OwnedRosterView(interaction.user.id, interaction.user.display_name, details=details)
     await view.show(interaction, target_number=beast_number, opening=True)

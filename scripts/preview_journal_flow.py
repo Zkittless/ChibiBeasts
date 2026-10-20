@@ -10,7 +10,8 @@ from pathlib import Path
 import random
 import sys
 import tempfile
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 import aiosqlite
 
@@ -27,7 +28,7 @@ RENDERER = r"""
 (() => {
   const root = document.getElementById('cb-journal-flow');
   const data = __FLOW_DATA__, art = __ART_DATA__;
-  const names = {selection:'Choose an expedition', returned:'After returning home', battle_log:'Battle log', log_detail:'Completed trip recap', pending_log:'Trip still in progress', team:'Team overview', edit_reserve:'Edit a reserve', frozen:'Team saved for an expedition', encounter:'A creature on the trail', during_battle:'During the encounter', continued:'After the encounter'};
+  const names = {selection:'Choose an expedition', returned:'After returning home', battle_log:'Battle log', log_detail:'Completed trip recap', pending_log:'Trip still in progress', history_battles:'History: battles', history_raids:'History: raids', history_trades:'History: trades', history_divines:'History: altered divines', team:'Exploration team', raid_team:'Raid team', edit_reserve:'Edit a reserve', frozen:'Team saved for an expedition', roster:'Compact companion card', roster_details:'Companion details', gear:'Gear overview', gear_edit:'Change armor', gear_rune:'Change rune', perks:'Perk build', training:'Training preview', activities:'Camp activities', activities_details:'Daily objective details', story:'Current story objective', story_dialogue:'Story dialogue', guide:'Panel and command guide', encounter:'A creature on the trail', during_battle:'During the encounter', continued:'After the encounter'};
   const picker = root.querySelector('#cj-screen'), stage = root.querySelector('.cj-stage'), note = root.querySelector('.cj-note');
   let current = 'selection', role = '2', candidate = data.example_candidate;
   const message = 'Real Discord component payloads · example trainer · no live actions.';
@@ -36,18 +37,34 @@ RENDERER = r"""
   function markdown(value) { return html(value).replace(/&lt;t:(\d+):([df])&gt;/g, (_, stamp, format) => new Date(Number(stamp) * 1000).toLocaleString('en-GB', format === 'd' ? {dateStyle:'medium', timeZone:'UTC'} : {dateStyle:'medium', timeStyle:'short', timeZone:'UTC'}) + ' UTC').replace(/\\([_~*`])/g, '$1').split('\n').map(line => line.startsWith('### ') ? '<h3>' + line.slice(4) + '</h3>' : line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') + '<br>').join(''); }
   function action(id) { const parts = id.split(':').slice(2); if (/^\d+$/.test(parts[parts.length - 1])) parts.pop(); return parts.join(':'); }
   function show(page, status = message) { if (!names[page]) return; current = page; render(); note.textContent = status; }
-  function buttonAction(key) {
+  function buttonAction(key, label = '') {
     if (key === 'page:team') return show('team');
     if (key === 'page:adventure') return show(current === 'pending_log' ? 'continued' : 'returned');
     if (key === 'page:battle_log' || key === 'log_back') return show('battle_log');
     if (key === 'begin') return show('encounter');
+    if (key === 'team_mode:raid') return show('raid_team');
+    if (key === 'team_mode:exploration') return show('team');
+    if (key === 'panel:perks') return show('perks');
+    if (key === 'commands') return show('guide');
+    if (key === 'daily_details') return show(current === 'activities' ? 'activities_details' : 'activities');
+    if (key === 'story_dialogue') return show(current === 'story' ? 'story_dialogue' : 'story');
+    if (label === 'Change armor') return show('gear_edit');
+    if (label === 'Change rune') return show('gear_rune');
+    if (label === 'Done') return show('gear');
+    if (label === 'Details') return show('roster_details');
+    if (label === 'Hide details') return show('roster');
+    if (label === 'Field Journal') return show('selection');
     if (key.startsWith('team_role:')) { role = key.split(':')[1]; candidate = data.defaults[role]; return show('edit_reserve'); }
     if (key.startsWith('team_assign:')) { note.textContent = 'In Discord, confirmation changes only the selected slot. Promoting a reserve keeps the three-member roster by swapping it with the lead.'; return; }
     if (key.startsWith('team_clear:')) { note.textContent = 'In Discord, this removes the companion from this reserve slot. It stays in your collection.'; return; }
     if (key === 'refresh') return show(current);
     note.textContent = 'This control uses your saved trainer in Discord.';
   }
-  function selection(key, value) {
+  function selection(key, value, placeholder = '') {
+    if (current === 'guide' && data.guide_topics[value]) { data.legacy.guide = data.guide_topics[value]; return show('guide'); }
+    if (key === 'page_menu') return show(({home:'selection', adventure:'encounter', team:'team', companions:'roster', activities:'activities', story:'story'})[value]);
+    if (key === 'log_kind') return show(value === 'expeditions' ? 'battle_log' : 'history_' + value);
+    if (placeholder === 'Companion actions') return show(({gear:'gear', train:'training', team:'team'})[value], message);
     if (key === 'log_entry') return show('log_detail');
     if (key === 'team_candidate') { const parts = value.split(':'); role = parts[0]; candidate = parts[1]; return show('edit_reserve'); }
     if (key === 'path' && value.endsWith(':challenge')) return show('during_battle');
@@ -58,11 +75,21 @@ RENDERER = r"""
     if (item.type === 12) { const gallery = document.createElement('div'); gallery.className = 'cj-gallery'; for (const media of item.items) { const img = document.createElement('img'); img.src = art[media.media.url.replace('attachment://', '')] || ''; img.alt = media.description || 'Field Journal'; gallery.append(img); } parent.append(gallery); return; }
     if (item.type === 10) { const text = document.createElement('div'); text.className = 'cj-text'; text.innerHTML = markdown(item.content); parent.append(text); return; }
     if (item.type === 1) { const row = document.createElement('div'); row.className = 'cj-row'; for (const child of item.components) component(child, row); parent.append(row); return; }
-    if (item.type === 2) { const button = document.createElement('button'); button.type = 'button'; button.textContent = item.label; button.disabled = !!item.disabled; button.dataset.style = item.style; button.onclick = () => buttonAction(action(item.custom_id)); parent.append(button); return; }
-    if (item.type === 3) { const select = document.createElement('select'); select.setAttribute('aria-label', item.placeholder || 'Choose an option'); select.disabled = !!item.disabled; const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = item.placeholder || 'Choose an option'; placeholder.disabled = true; select.append(placeholder); for (const entry of item.options) { const option = document.createElement('option'); option.value = entry.value; option.textContent = entry.label; option.selected = !!entry.default; select.append(option); } if (!item.options.some(option => option.default)) select.value = ''; select.onchange = () => selection(action(item.custom_id), select.value); parent.append(select); return; }
+    if (item.type === 2) { const button = document.createElement('button'); button.type = 'button'; button.textContent = item.label; button.disabled = !!item.disabled; button.dataset.style = item.style; button.onclick = () => buttonAction(action(item.custom_id), item.label); parent.append(button); return; }
+    if (item.type === 3) { const select = document.createElement('select'); select.setAttribute('aria-label', item.placeholder || 'Choose an option'); select.disabled = !!item.disabled; const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = item.placeholder || 'Choose an option'; placeholder.disabled = true; select.append(placeholder); for (const entry of item.options) { const option = document.createElement('option'); option.value = entry.value; option.textContent = entry.label; option.selected = !!entry.default; select.append(option); } if (!item.options.some(option => option.default)) select.value = ''; select.onchange = () => selection(action(item.custom_id), select.value, item.placeholder); parent.append(select); return; }
     if (item.type === 9) { const section = document.createElement('div'); section.className = 'cj-section'; const text = document.createElement('div'); for (const child of item.components) component(child, text); section.append(text); const img = document.createElement('img'); img.src = art[item.accessory.media.url.replace('attachment://', '')] || ''; img.alt = item.accessory.description || 'Companion'; section.append(img); parent.append(section); }
   }
   function journal(payload) { const card = document.createElement('div'); card.className = 'cj-card'; card.dataset.message = 'journal'; for (const item of payload) component(item, card); stage.append(card); }
+  function legacyPanel(panel) {
+    const card = document.createElement('div'); card.className = 'cj-card'; card.dataset.message = 'panel';
+    const embed = panel.embed, text = document.createElement('div'); text.className = 'cj-text';
+    text.innerHTML = '<h3 style="display:block;margin-bottom:10px">' + html(embed.title || '') + '</h3><div>' + markdown(embed.description || '') + '</div>';
+    for (const field of embed.fields || []) text.innerHTML += '<h4>' + html(field.name) + '</h4>' + markdown(field.value);
+    card.append(text);
+    if (embed.image) { const img = document.createElement('img'); img.src = art[embed.image.url.replace('attachment://', '')]; img.alt = embed.title || 'Companion'; img.style.cssText = 'display:block;max-width:230px;max-height:240px;margin:16px auto;image-rendering:pixelated'; card.append(img); }
+    if (embed.footer) { const footer = document.createElement('p'); footer.className = 'cj-note'; footer.textContent = embed.footer.text; card.append(footer); }
+    for (const item of panel.components) component(item, card); stage.append(card);
+  }
   function label(text) { const item = document.createElement('p'); item.className = 'flow-label'; item.textContent = text; stage.append(item); }
   function render() {
     stage.replaceChildren(); root.dataset.flow = current;
@@ -73,7 +100,8 @@ RENDERER = r"""
       label('Older journal removed · encounter result retained · one fresh journal at the bottom');
       const result = document.createElement('div'); result.className = 'cj-card flow-result'; result.dataset.message = 'result'; result.innerHTML = '<strong>Encounter complete</strong><p>' + html(data.result_note) + '</p>'; stage.append(result);
       journal(data.pages.continued);
-    } else journal(current === 'edit_reserve' ? data.editors[role][candidate] : data.pages[current]);
+    } else if (data.legacy[current]) legacyPanel(data.legacy[current]);
+    else journal(current === 'edit_reserve' ? data.editors[role][candidate] : data.pages[current]);
     picker.value = current;
   }
   picker.onchange = () => show(picker.value);
@@ -127,6 +155,18 @@ async def export(output):
 
         try:
             pages = dict(team=await save('team'))
+            legacy = {}
+            guide_topics = {}
+
+            async def save_panel(name, panel, embed, species='', armor=''):
+                if species:
+                    portrait = await gear_art.render_portrait(species, armor)
+                    if portrait:
+                        (portraits / portrait.filename).write_bytes(portrait.data)
+                        art[portrait.filename] = 'portraits/' + portrait.filename
+                        embed.set_image(url='attachment://' + portrait.filename)
+                legacy[name] = dict(embed=embed.to_dict(), components=panel.to_components())
+                checks.append(dict(page=name, characters=len(embed), components=len(panel.children)))
             view.page = 'adventure'
             pages['selection'] = await save('selection')
             view.page = 'team'
@@ -167,6 +207,76 @@ async def export(output):
             view.log_selected_id = trip['id']
             await view.load_page()
             pages['log_detail'] = await save('log_detail')
+            await storage.update_player(42, level=8)
+            async with storage.connect() as db:
+                await db.execute("INSERT INTO battles(challenger_id,winner_id,status,battle_type) VALUES(42,42,'completed','pve')")
+                await db.execute("INSERT INTO player_equipment(user_id,equipment_id) VALUES(42,'kelpie_scale_mail')")
+                await db.execute("INSERT INTO player_inventory(user_id,item_id,quantity) VALUES(42,'bark_sigil',2)")
+                await db.execute("INSERT OR IGNORE INTO player_perks(user_id,perk_id,equipped) VALUES(42,'bramble_walker',1)")
+                await db.commit()
+            for kind in ('battles', 'raids', 'trades', 'divines'):
+                view.log_kind = kind
+                await view.load_page()
+                pages['history_' + kind] = await save('history_' + kind)
+            view.page = 'team'
+            view.team_role = None
+            for slot, row_id in enumerate(ids[:3], 1):
+                await storage.set_raid_slot(42, row_id, slot)
+            view.state = await journal_state.snapshot(42)
+            view.team_mode = 'raid'
+            pages['raid_team'] = await save('raid_team')
+            view.team_mode = 'exploration'
+            view.page = 'activities'
+            await view.load_page()
+            pages['activities'] = await save('activities')
+            view.show_daily_details = True
+            pages['activities_details'] = await save('activities_details')
+            view.page = 'story'
+            await view.load_page()
+            pages['story'] = await save('story')
+            view.show_story_dialogue = True
+            pages['story_dialogue'] = await save('story_dialogue')
+            from utils.roster_view import OwnedRosterView
+            roster = OwnedRosterView(42, 'Example trainer', details=True)
+            roster.rows = await storage.get_player_beasts(42)
+            roster.player = await storage.get_player(42)
+            roster.inventory = {row['item_id']: row['quantity'] for row in await storage.get_inventory(42)}
+            roster.selected_id = ids[0]
+            embed, row = roster.render()
+            await save_panel('roster', roster, embed, row['beast_id'], 'gnome_iron_plating')
+            roster.expanded = True
+            embed, row = roster.render()
+            await save_panel('roster_details', roster, embed, row['beast_id'], 'gnome_iron_plating')
+            roster.stop()
+            from utils.gear_view import GearView
+            gear = GearView(42)
+            await gear.reload()
+            gear.selected_id = ids[0]
+            await save_panel('gear', gear, gear.render(), 'twine', 'gnome_iron_plating')
+            gear.edit_slot = 'armor'
+            await save_panel('gear_edit', gear, gear.render(), 'twine', 'gnome_iron_plating')
+            gear.edit_slot = 'rune'
+            gear.gear_choice = None
+            await save_panel('gear_rune', gear, gear.render(), 'twine', 'gnome_iron_plating')
+            gear.stop()
+            from utils.perks_view import PerksView
+            perks = PerksView(42)
+            await perks.load()
+            await save_panel('perks', perks, perks.render())
+            perks.stop()
+            from utils.companion_actions import GrowthView
+            growth = GrowthView(42, roster.rows[0], 'train')
+            await save_panel('training', growth, await growth.preview())
+            growth.stop()
+            from cogs.utilities import Utilities
+            guide_click = SimpleNamespace(user=SimpleNamespace(id=42), followup=SimpleNamespace(send=AsyncMock()))
+            await Utilities(None)._command_guide(guide_click, already_deferred=True)
+            guide = guide_click.followup.send.call_args.kwargs
+            await save_panel('guide', guide['view'], guide['embed'])
+            for topic in guide['view'].categories:
+                guide['view'].category = topic
+                guide_topics[topic] = dict(embed=guide['view'].render().to_dict(), components=guide['view'].to_components())
+            guide['view'].stop()
         finally:
             view.stop()
     party = [build_pve_beast_state(storage.get_beast_data(species), 8) for species in ('twine', 'gloop', 'barkley')]
@@ -175,16 +285,16 @@ async def export(output):
     enemy = build_pve_beast_state(storage.get_beast_data('wisp'), 4)
     snapshot = battle_art.snapshot([dict(party[0], _party_states=party), enemy])
     battle_art.frame(snapshot, snapshot, 'woods').save(output / 'battle.png')
-    data = dict(pages=pages, editors=editors, defaults=defaults, example_candidate=str(ids[3]), result_note=result_note)
+    data = dict(pages=pages, legacy=legacy, guide_topics=guide_topics, editors=editors, defaults=defaults, example_candidate=str(ids[3]), result_note=result_note)
     (output / 'components.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     template = (ROOT / 'scripts' / 'journal-preview-template.html').read_text(encoding='utf-8').split('<script>', 1)[0]
     fragment = template.replace('cb-field-journal', 'cb-journal-flow').replace('ChibiBeasts Field Journal preview', 'ChibiBeasts team and journal flow preview').replace('<div class="cj-card" aria-live="polite"></div>', '').replace('color-scheme: light dark;', 'color-scheme: dark;')
     script = RENDERER.replace('__FLOW_DATA__', json.dumps(data, ensure_ascii=False).replace('</', '<\\/')).replace('__ART_DATA__', json.dumps(art))
     style = '<style>html,#cb-journal-flow{color-scheme:dark}body{margin:0;padding:28px 12px;background:#202126;color:#dbdee1;font:14px/1.5 Arial,sans-serif}main{max-width:920px;margin:auto}header{max-width:640px;margin:0 auto 20px}h1{font-size:26px;line-height:1.25;margin:0 0 8px}header p{color:#b5bac1;margin:0}.flow-label{max-width:640px;margin:0 auto 12px;padding:0 2px;color:#d3c49c}.cj-stage{display:grid;gap:16px}.flow-battle img{width:100%;display:block;image-rendering:pixelated;margin-bottom:12px}.flow-result{border-left-color:#5aab7a!important}.flow-result p{margin:8px 0 0}@media(max-width:420px){body{padding:16px 8px}h1{font-size:22px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}</style>'
-    document = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Adventure and battle log</title>' + style + '</head><body><main><header><h1>Adventure, without the clutter.</h1><p>Your next choice on Adventure. Past encounters and rewards in Battle log.</p></header>' + fragment + '<script>' + script + '</script></main></body></html>'
+    document = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Streamlined panels</title>' + style + '</head><body><main><header><h1>Your game. Fewer commands.</h1><p>Compact journal pages and companion cards, with actions where you need them.</p></header>' + fragment + '<script>' + script + '</script></main></body></html>'
     (output / 'journal-flow.html').write_text(document, encoding='utf-8')
     report = dict(status='passed', scope='Actual JournalView.to_components() exports and packaged portraits from a disposable example database. Encounter outcome and chat placement are illustrative; automated regressions verify live message ordering and retirement.',
-                  pages=list(pages), total_payloads=len(checks), largest_text_count=max(row['characters'] for row in checks), largest_component_count=max(row['components'] for row in checks), checks=checks)
+                  pages=list(pages) + list(legacy), total_payloads=len(checks), largest_text_count=max(row['characters'] for row in checks), largest_component_count=max(row['components'] for row in checks), checks=checks)
     (output / 'validation.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     print(json.dumps({key: value for key, value in report.items() if key != 'checks'}))
     return output / 'journal-flow.html'
@@ -201,7 +311,7 @@ async def capture(path, output):
         await page.wait_for_selector('#cb-journal-flow[data-ready="true"]')
         for width, label in ((1100, 'desktop'), (390, 'mobile'), (320, 'narrow')):
             await page.set_viewport_size(dict(width=width, height=1000))
-            for screen in ('selection', 'returned', 'battle_log', 'log_detail', 'pending_log', 'team', 'edit_reserve', 'frozen', 'during_battle', 'continued'):
+            for screen in ('selection', 'returned', 'battle_log', 'log_detail', 'history_battles', 'team', 'raid_team', 'edit_reserve', 'roster', 'roster_details', 'gear', 'gear_edit', 'gear_rune', 'perks', 'training', 'activities', 'story', 'story_dialogue', 'guide', 'during_battle', 'continued'):
                 await page.locator('#cj-screen').select_option(screen)
                 await page.wait_for_function('Array.from(document.images).every(img => img.complete && img.naturalWidth > 0)')
                 assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
@@ -219,6 +329,15 @@ async def capture(path, output):
         assert 'Rewards received' in await page.locator('.cj-stage').inner_text()
         await page.get_by_role('button', name='Back to Adventure', exact=True).click()
         assert 'Back from' in await page.locator('.cj-stage').inner_text()
+        await page.locator('#cj-screen').select_option('guide')
+        await page.get_by_role('combobox', name='Choose a guide topic').select_option('Shortcuts')
+        assert '/beastinfo' in await page.locator('.cj-stage').inner_text()
+        await page.locator('#cj-screen').select_option('roster')
+        await page.get_by_role('button', name='Details', exact=True).click()
+        assert await page.get_by_role('button', name='Hide details', exact=True).count() == 1
+        await page.locator('#cj-screen').select_option('gear')
+        await page.get_by_role('button', name='Change armor', exact=True).click()
+        assert await page.get_by_role('button', name='Equip selected', exact=True).count() == 1
         await page.locator('#cj-screen').select_option('team')
         await page.get_by_role('button', name='Edit reserve 2', exact=True).click()
         picker = page.get_by_role('combobox', name='Choose your reserve 2')

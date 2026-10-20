@@ -217,54 +217,8 @@ class Perks(commands.Cog):
 
     @app_commands.command(name="perks", description="View and manage your trainer perks 🎯")
     async def perks(self, interaction: discord.Interaction):
-        await interaction.response.defer()
-        player = await get_or_create_player(interaction.user.id, str(interaction.user))
-        from utils.progress import check_achievements
-        await check_achievements(interaction.user.id)
-        perks_data = load_perks()
-        all_perks = perks_data["perks"]
-
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT * FROM player_perks WHERE user_id = ?", (interaction.user.id,)
-            ) as c:
-                owned_perks = {r["perk_id"]: dict(r) for r in await c.fetchall()}
-
-        total_slots = get_perk_slots(player["level"])
-        used_slots = sum(
-            all_perks[p["perk_id"]]["slot_cost"]
-            for p in owned_perks.values()
-            if p["equipped"] and p["perk_id"] in all_perks
-        )
-
-        embed = discord.Embed(
-            title="🎯 Your Perks",
-            description=f"**Slots:** `{used_slots}/{total_slots}` used | Unlock more by leveling up!",
-            color=COLORS["epic"]
-        )
-
-        if not owned_perks:
-            embed.add_field(
-                name="No Perks Yet!",
-                value="Perks unlock through trainer levels, catches, victories, exploration, raids and the campaign. Your first unlock is at trainer level 3.",
-                inline=False
-            )
-        else:
-            for perk_id, owned in owned_perks.items():
-                perk = all_perks.get(perk_id)
-                if not perk:
-                    continue
-                rarity_emoji = RARITY_EMOJI.get(perk["rarity"], "⚪")
-                equipped = "✅ **EQUIPPED**" if owned["equipped"] else "➖ Unequipped"
-                embed.add_field(
-                    name=f"{rarity_emoji} {perk['name']} [{perk['slot_cost']} slots] — {equipped}",
-                    value=f"*{perk['flavor']}*\n{perk['description']}",
-                    inline=False
-                )
-
-        embed.set_footer(text="Use /perk_equip <name> or /perk_unequip <name> to manage")
-        await interaction.followup.send(embed=embed)
+        from utils.perks_view import open_perks
+        return await open_perks(interaction)
 
     async def perk_equip_autocomplete(self, interaction: discord.Interaction, current: str):
         """Show perks the player owns but hasn't equipped yet."""
@@ -358,12 +312,11 @@ class Perks(commands.Cog):
                     description=f"✦ Perk `{perk_name}` not found!", color=COLORS["error"]
                 ))
 
-        async with storage.connect() as db:
-            await db.execute(
-                "UPDATE player_perks SET equipped = 0 WHERE user_id = ? AND perk_id = ?",
-                (interaction.user.id, perk_id)
-            )
-            await db.commit()
+        from utils.perks_view import unequip_perk
+        try:
+            await unequip_perk(interaction.user.id, perk_id)
+        except ValueError as error:
+            return await interaction.followup.send(str(error))
 
         await interaction.followup.send(embed=discord.Embed(
             description=f"✦ **{perk['name']}** unequipped!",
@@ -434,25 +387,14 @@ class PerkUse(commands.Cog):
     @app_commands.describe(perk_name="The perk to activate (e.g. Astral Resonance)")
     async def perk_use(self,interaction:discord.Interaction,perk_name:str):
         await interaction.response.defer(ephemeral=True)
-        from utils.gameplay import shorten_incubation
-        from utils.rewards import has_perk
-        from datetime import datetime,timezone
-        import json
-        if "astral" not in perk_name.lower():return await interaction.followup.send("Astral Resonance is the perk with a weekly active ability.",ephemeral=True)
-        async with storage.connect() as db:
-            await db.execute("BEGIN IMMEDIATE")
-            if not await has_perk(db,interaction.user.id,"astral_resonance"):return await interaction.followup.send("Equip Astral Resonance first.",ephemeral=True)
-            async with db.execute("SELECT shard_shop_week FROM players WHERE user_id=?",(interaction.user.id,)) as c:row=await c.fetchone()
-            try:week_data=json.loads(row[0] or "{}")
-            except (ValueError,TypeError):week_data={}
-            week=datetime.now(timezone.utc).strftime("%G-W%V")
-            if week_data.get("week")!=week:week_data={"week":week}
-            if week_data.get("astral_resonance_used"):return await interaction.followup.send("Already used this week. Resets Monday UTC.",ephemeral=True)
-            try:result=await shorten_incubation(db,interaction.user.id,hours=6)
-            except ValueError as error:return await interaction.followup.send(str(error),ephemeral=True)
-            week_data["astral_resonance_used"]=True
-            await db.execute("UPDATE players SET shard_shop_week=? WHERE user_id=?",(json.dumps(week_data),interaction.user.id));await db.commit()
-        await interaction.followup.send(result,ephemeral=True)
+        from utils.perks_view import activate_astral
+        if 'astral' not in perk_name.lower():
+            return await interaction.followup.send('Astral Resonance is the perk with a weekly active ability.', ephemeral=True)
+        try:
+            result = await activate_astral(interaction.user.id)
+        except ValueError as error:
+            result = str(error)
+        await interaction.followup.send(result, ephemeral=True)
 
 
 async def setup(bot: commands.Bot):

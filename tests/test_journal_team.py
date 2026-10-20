@@ -129,7 +129,7 @@ class ExplorationTeamPanel(DatabaseCase):
         self.render(view)
         self.assertEqual([row['id'] for _, row in journal_team.roster(view)], ids)
         self.assertIn('Saved for this expedition', self.text(view))
-        self.assertFalse(any(isinstance(item, discord.ui.Select) for item in view.walk_children()))
+        self.assertFalse(any(isinstance(item, discord.ui.Select) and item is not view.page_menu for item in view.walk_children()))
         self.assertFalse(any(isinstance(item, discord.ui.Button) and ':team_role:' in item.custom_id for item in view.walk_children()))
         for callback in (lambda: journal_team.select_role(view, '1'),
                          lambda: journal_team.select_candidate(view, f'1:{ids[2]}'),
@@ -156,7 +156,7 @@ class ExplorationTeamPanel(DatabaseCase):
             with self.assertRaisesRegex(ValueError, 'healthy, unlisted'):
                 journal_team.assignment(view, f'1:{row_id}')
         self.render(view)
-        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select))
+        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select) and item is not view.page_menu)
         self.assertTrue(any('Listed' in option.description for option in picker.options))
 
     async def test_large_roster_paginates_without_changing_other_slots_or_message_limits(self):
@@ -168,11 +168,11 @@ class ExplorationTeamPanel(DatabaseCase):
         journal_team.select_role(view, '2')
         self.render(view)
         self.assert_valid(view)
-        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select))
+        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select) and item is not view.page_menu)
         self.assertEqual(len(picker.options), 25)
         journal_team.page_candidates(view, 1)
         self.render(view)
-        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select))
+        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select) and item is not view.page_menu)
         self.assertEqual(len(picker.options), 4)
         self.assertIn('Collection page 2/2', self.text(view))
         self.assertEqual(view.state.team_slots, {1: ids[1], 2: ids[2]})
@@ -216,11 +216,11 @@ class ExplorationTeamPanel(DatabaseCase):
             await control.callback(interaction)
             interaction.response.defer.assert_awaited_once()
 
-        await click(view.nav_buttons['team'])
+        await click(view.page_menu, 'team')
         self.assertEqual(view.page, 'team')
         edit = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button) and item.label == 'Edit reserve 2')
         await click(edit)
-        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select))
+        picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select) and item is not view.page_menu)
         await click(picker, f'2:{other}')
         confirm = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button) and item.label == 'Assign reserve 2')
         self.assertFalse(confirm.disabled)
@@ -246,5 +246,5 @@ class ExplorationTeamPanel(DatabaseCase):
         await confirm.callback(interaction)
         self.assertEqual(await adventure_party.assignments(42), {1: ids[1], 2: ids[2]})
         self.assertIn('Return from your saved expedition', self.text(view))
-        self.assertFalse(any(isinstance(item, discord.ui.Select) for item in view.walk_children()))
+        self.assertFalse(any(isinstance(item, discord.ui.Select) and item is not view.page_menu for item in view.walk_children()))
         self.assert_valid(view)
