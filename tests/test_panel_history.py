@@ -23,9 +23,11 @@ class SharedHistory(DatabaseCase):
 
     async def test_pending_battle_is_not_labelled_a_draw(self):
         await self.execute("INSERT INTO battles(challenger_id,opponent_id,status,battle_type) VALUES(42,43,'pending','pvp')")
+        await self.execute('UPDATE battles SET battle_type=NULL')
         _, _, rows = await journal_history.load(42, 'battles', 0)
         text = journal_history.text(42, 'battles', rows[0], safe)
         self.assertIn('Pending', text)
+        self.assertIn('vs ', text)
         self.assertNotIn('Draw', text)
 
     async def test_trade_history_preserves_missing_beast_records_and_owner_scope(self):

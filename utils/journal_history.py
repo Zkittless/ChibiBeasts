@@ -49,7 +49,8 @@ def text(user_id, kind, row, safe):
         other = row['opponent_name'] if row['challenger_id'] == user_id else row['challenger_name']
         status = row.get('status', '')
         outcome = 'Win' if row['winner_id'] == user_id else 'Loss' if row['winner_id'] is not None else 'Draw' if status in {'completed', 'finished'} else status.title()
-        name = 'vs ' + safe(other or 'Unknown trainer') if row.get('battle_type') == 'pvp' else 'NPC spar' if row.get('battle_type') == 'sparr' else 'Wild battle'
+        battle_type = row.get('battle_type') or 'pvp'
+        name = 'vs ' + safe(other or 'Unknown trainer') if battle_type == 'pvp' else 'NPC spar' if battle_type == 'sparr' else 'Wild battle'
         return f"**{outcome} · {name}**\n{timestamp(row['created_at'])}"
     if kind == 'raids':
         return f"**{safe(row['boss_name'])} · {safe(row['status'].title())}**\n{row['damage_dealt']:,} damage · {timestamp(row['started_at'])}"
