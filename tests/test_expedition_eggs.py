@@ -239,7 +239,7 @@ class ExpeditionEggs(DatabaseCase):
         events.page(payload, 'woods', 'discovery')
         self.assertEqual(trips.options(trip), ('map', 'watch', 'return_early'))
 
-    async def test_completed_journal_summary_names_egg_and_no_ungranted_material(self):
+    async def test_completed_log_summary_names_egg_and_no_ungranted_material(self):
         import discord
         from utils import journal_state
         from utils.catalog import load_catalog
@@ -247,13 +247,15 @@ class ExpeditionEggs(DatabaseCase):
 
         await self.ready()
         trip = await self.pick(await self.sheltered(), 'return')
-        view = JournalView(42, await journal_state.snapshot(42), page='adventure')
+        view = JournalView(42, await journal_state.snapshot(42), page='battle_log')
         self.addCleanup(view.stop)
         view.art_enabled = False
         view.trip = trip
+        view.log_selected_id = trip['id']
+        await view.load_page()
         view.render()
         summary = next(item.content for item in view.walk_children()
-                       if isinstance(item, discord.ui.TextDisplay) and item.content.startswith('### Back from'))
+                       if isinstance(item, discord.ui.TextDisplay) and item.content.startswith('**Rewards received**'))
         loot_line = summary.splitlines()[1]
         material = load_catalog('materials.json')['materials'][trip['payload']['material']]['name']
         self.assertIn(definition(trip['payload']['egg_reward'])['name'], loot_line)

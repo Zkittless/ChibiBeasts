@@ -8,7 +8,7 @@ from uuid import uuid4
 import aiosqlite
 import discord
 
-from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art
+from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art, journal_log
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
@@ -49,6 +49,9 @@ class JournalView(discord.ui.LayoutView):
         self.story_scene = ''
         self.story_lock = ''
         self.dailies = []
+        self.log_page, self.log_total = 0, 0
+        self.log_entries = []
+        self.log_selected_id, self.log_selected = None, None
         self.reviewing = False
         self.awakening_scene = ''
         self.message = None
@@ -152,39 +155,25 @@ class JournalView(discord.ui.LayoutView):
 
     def render_adventure(self):
         trip = self.trip
+        self.row(self.button('Battle log', 'page:battle_log'))
         if not trip or trip['status'] == 'complete':
             if trip:
-                p = trip['payload']
-                material = load_catalog('materials.json')['materials'][p['material']]['name']
-                quantity = int(p.get('material_granted', 1))
-                loot = f" · {quantity} {material}" if quantity else ''
-                if p.get('egg_granted') and p.get('egg_reward'):
-                    from utils.nursery_catalog import definition
-                    loot += ' · ' + definition(p['egg_reward'])['name']
-                self.text(f"### Back from {REALMS[trip['realm']]['name']}\n**{p['gold']:,} gold · {p.get('exp_granted', p['exp']):,} trainer EXP{loot}**\n" + '\n'.join(safe(n) for n in p['notes'][-5:]))
-                if p.get('party_xp'):
-                    self.text('**Team progress**\n' + '\n'.join(f"{safe(row['name'])}: +{row['amount']} EXP" + (f" · Lv.{row['level']}" if row['leveled'] else '') for row in p['party_xp']))
-                if p['caught']:
-                    beast = storage.get_beast_data(p['encounter'])
-                    self.portrait(f"**{beast['name']} joined your collection.**\n{beast['description']}", beast['id'])
-                if p.get('leveled'):
-                    self.text(f"Trainer level up! You reached Lv.{p['new_level']}.")
+                self.text(f"**Back from {REALMS[trip['realm']]['name']}** · Results in Battle log.")
             e = self.state.energy
             self.text(f"### Choose an expedition\n{e.charges}/{expeditions.CAPACITY} exploration charges · Regenerates every {wait_text(e.interval)}\n"
-                      'Choose a route, help travellers and discover linked events. Take up to three companions; swaps and assists spend an action. Your team and every choice are saved.')
-            self.render_team_summary()
+                      'Confirm your destination to set out with your saved team.')
+            self.render_compact_team()
             self.realm_select.options = [discord.SelectOption(label=(b['name'] + (f" · Locked Lv.{b['min_level']}" if self.state.player['level'] < b['min_level'] else ''))[:100],
                 value=k, default=k == self.realm,
                 description=f"Trainer Lv.{b['min_level']}+ required; companion Lv.{b['level_range'][0]}–{b['level_range'][1]} recommended") for k, b in REALMS.items()]
             self.row(self.realm_select)
             destination = REALMS[self.realm]
             low, high = destination['level_range']
-            self.text(f"**{destination['name']}** · Trainer Lv.{destination['min_level']} required · Recommended companion Lv.{low}–{high}.\n"
-                      'Wild levels stay in this range. Earlier paths become easy gathering trips and grant less combat EXP to stronger companions.')
+            self.text(f"**{destination['name']}** · Trainer Lv.{destination['min_level']} required · Companion Lv.{low}–{high} recommended.")
             locked = self.state.player['level'] < REALMS[self.realm]['min_level']
             saved = self.state.explore_default
             saved_name = REALMS[saved]['name'] if saved in REALMS else 'Unavailable destination' if saved else 'None'
-            self.text(f'**Saved destination · {saved_name}**\nOpening /explore asks you to confirm before spending a charge. Your current exploration team stays saved.')
+            self.text(f'**Saved destination · {saved_name}**')
             self.row(self.button('Save destination', 'save_destination:' + self.realm,
                                  disabled=locked or saved == self.realm),
                      self.button('Clear default', 'clear_destination', disabled=saved is None))
@@ -192,9 +181,7 @@ class JournalView(discord.ui.LayoutView):
             if traveller:
                 training = starter_training_destination(storage.get_beast_data(traveller['beast_id']), traveller['level'], self.state.player['level'])
                 if training:
-                    self.text(f"**Suggested starter training: {REALMS[training]['name']}**\n"
-                              'Train in the Woods through companion Lv.7, then use the Depths from Lv.8 until your first awakening. '
-                              'Ember creatures can resist your starter’s type; prepare an awakened companion or suitable gear before pushing onward.')
+                    self.text(f"Suggested starter training: **{REALMS[training]['name']}**")
             healthy = traveller and traveller['hp'] > 0 and not storage.is_knocked_out(traveller) and not traveller['listed']
             self.row(self.button('Begin expedition · 1 charge', 'begin', discord.ButtonStyle.success,
                                  disabled=not e.charges or locked or not healthy))
@@ -212,23 +199,23 @@ class JournalView(discord.ui.LayoutView):
         e = self.state.energy
         recharge = 'Bank full' if not e.next_in else 'Next charge in ' + wait_text(e.next_in)
         self.text(f"### {REALMS[trip['realm']]['name']}\nStep {p['stage'] + 1}/3 · Supplies saved\n"
-                  f"**Exploration {e.charges}/{expeditions.CAPACITY}** · {recharge}\n{flavor}")
+                  f"**Exploration {e.charges}/{expeditions.CAPACITY}** · {recharge}")
+        self.render_compact_team(trip)
         if trip['status'] == 'battle':
-            self.text('**Your encounter is in progress.** Use its battle controls below, then return to this page. You can reopen the journal without losing this trip.')
+            self.text('**Encounter in progress.** Use the battle controls below. Your route is saved.')
             if not p.get('battle_started'):
                 self.row(self.button('Continue encounter', 'battle_continue', discord.ButtonStyle.primary))
             return
         if p['stage'] == 0:
-            self.text(f'**Follow tracks** · Meet a wild creature; battle, befriend or observe.\n**Gather supplies** · Pick one of the materials you uncover.\n**Visit {landmark}** · Restore it, study it or rest together.')
+            self.text(flavor)
         elif p['stage'] == 1 and p['route'] == 'tracks':
             beast = storage.get_beast_data(p['encounter'])
-            self.portrait(f"### {beast['name']} · Lv.{p.get('encounter_level', REALMS[trip['realm']]['level_range'][0])} appears\n{beast['description']}\n**Challenge** to earn its trust in battle, **approach** for a chance to befriend it, or **observe** to gain 1 bond. A failed approach ends this encounter.", beast['id'])
+            self.portrait(f"### {beast['name']} · Lv.{p.get('encounter_level', REALMS[trip['realm']]['level_range'][0])} appears", beast['id'])
         elif p['stage'] == 1 and p['route'] == 'gather':
-            self.text('**A promising gathering spot**\nChoose one material to bring back. Missing supplies for an active story commission are offered here in their region. The other finds stay here for the next visitor.')
+            self.text('**A promising gathering spot**\nChoose one material to bring home.')
         elif p['stage'] == 1:
             self.text(f'**You reach {landmark}.**\n**Repair together:** +2 bond, +5 happiness.\n**Study its markings:** a little extra trainer EXP.\n**Share a rest:** recover 5% max HP, +3 happiness. Recovery cannot revive a fallen companion.')
         else:
-            self.text('\n'.join(safe(n) for n in p['notes']) or 'Your supplies are packed.')
             self.text('**The trail home**\nReturn to bank your rewards.' + (' A nearby rustle offers one optional creature encounter.' if not p['encounter'] else ''))
         labels = {'tracks': ('Follow the tracks', 'Discover a wild creature'), 'gather': ('Gather supplies', 'Choose a material to bring home'),
                   'shrine': ('Visit the landmark', 'Bond, study or rest'), 'challenge': ('Challenge in battle', 'A win lets this creature join you'),
@@ -249,6 +236,18 @@ class JournalView(discord.ui.LayoutView):
             options.append(discord.SelectOption(label=label[:100], description=description, value=f"{trip['id']}:{trip['version']}:{choice}"))
         self.path_select.options = options
         self.row(self.path_select)
+
+    def render_battle_log(self):
+        journal_log.render(self)
+
+    def render_compact_team(self, trip=None):
+        rows = {row['id']: row for row in self.state.workshop.companions}
+        lead = next((row['id'] for row in rows.values() if row['is_active']), None)
+        ids = trip['payload'].get('party_ids', [trip['companion_id']]) if trip else list(dict.fromkeys(
+            ([lead] if lead else []) + list(self.state.team_slots.values())))[:3]
+        names = [safe(rows[key]['nickname'] or storage.get_beast_data(rows[key]['beast_id'])['name']) for key in ids if key in rows]
+        team = ' · '.join([names[0] + ' (lead)', *names[1:]]) if names else 'Choose a healthy lead in the Team tab.'
+        self.text('**Team** · ' + team)
 
     def render_team_summary(self, trip=None):
         all_rows = {row['id']: row for row in self.state.workshop.companions}
@@ -276,7 +275,7 @@ class JournalView(discord.ui.LayoutView):
         recharge = 'Bank full' if not energy.next_in else 'Next charge in ' + wait_text(energy.next_in)
         self.text(f"### {safe(page['title'])}\n{REALMS[trip['realm']]['name']} · {progress.get('completed', 0)}/{progress.get('total', 3)} stops completed\n"
                   f"**Exploration {energy.charges}/{expeditions.CAPACITY}** · {recharge}")
-        self.render_team_summary(trip)
+        self.render_compact_team(trip)
         if trip['status'] == 'battle':
             self.text('**Encounter in progress.** Use the battle controls below. Your route and team are saved.')
             if not p.get('battle_started'):
@@ -284,10 +283,8 @@ class JournalView(discord.ui.LayoutView):
             return
         if p.get('encounter') and any(choice['value'] == 'challenge' for choice in page['choices']):
             beast = storage.get_beast_data(p['encounter'])
-            self.portrait(f"**{safe(beast['name'])} · Lv.{p.get('encounter_level', 1)}**\n{safe(beast['description'])}", beast['id'])
+            self.portrait(f"**{safe(beast['name'])} · Lv.{p.get('encounter_level', 1)}**", beast['id'])
         self.text(page['body'])
-        if page.get('footer'):
-            self.text(page['footer'])
         self.path_select.options = [discord.SelectOption(label=choice['label'][:100], description=choice['description'][:100],
             value=f"{trip['id']}:{trip['version']}:{choice['value']}") for choice in page['choices']]
         if self.path_select.options:
@@ -440,7 +437,8 @@ class JournalView(discord.ui.LayoutView):
         if self.notice:
             self.text(self.notice[:750])
         for key, button in self.nav_buttons.items():
-            button.style = discord.ButtonStyle.primary if self.page == key else discord.ButtonStyle.secondary
+            active = self.page == key or (self.page == 'battle_log' and key == 'adventure')
+            button.style = discord.ButtonStyle.primary if active else discord.ButtonStyle.secondary
         render = getattr(self, 'render_' + self.page, self.render_home)
         render()
         if self.closed:
@@ -531,6 +529,8 @@ class JournalView(discord.ui.LayoutView):
         if self.page == 'activities':
             from utils.progress import get_daily_quests
             self.dailies = await get_daily_quests(self.user_id)
+        if self.page == 'battle_log':
+            await journal_log.load(self)
 
     async def launch(self, interaction, name):
         command = self.bot.tree.get_command(name) if self.bot else None
@@ -609,10 +609,25 @@ class JournalView(discord.ui.LayoutView):
                         self.page = action.split(':', 1)[1]
                         if self.page == 'team':
                             self.team_role, self.team_candidate_id, self.team_page = None, None, 0
+                        if self.page == 'battle_log':
+                            self.log_page, self.log_selected_id = 0, None
                         self.reviewing = False
                         self.awakening_scene = ''
                         if self.page == 'adventure':
                             self.trip = self.state.trip or self.trip
+                    elif action in {'log_prev', 'log_next', 'log_entry', 'log_back'}:
+                        if self.page != 'battle_log':
+                            raise ValueError('Open the Battle log before choosing a past trip.')
+                        if action == 'log_entry':
+                            selected = interaction.data['values'][0]
+                            if selected not in {trip['id'] for trip in self.log_entries}:
+                                raise ValueError('Choose a trip from the current log page.')
+                            self.log_selected_id = selected
+                        elif action == 'log_back':
+                            self.log_selected_id = None
+                        else:
+                            self.log_page += -1 if action == 'log_prev' else 1
+                            self.log_selected_id = None
                     elif action == 'realm':
                         key = interaction.data['values'][0]
                         if key not in REALMS:
