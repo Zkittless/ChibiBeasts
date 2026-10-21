@@ -8,15 +8,20 @@ Begin with `/start`, then `/journal`. The [Field Journal](docs/FIELD-JOURNAL.md)
 
 `/start` shows all four starter portraits and lets you browse each companion's play style, moves and base stats before pressing **Choose**. `/codex` opens an illustrated overview, with separate **Moves & stats** and **Lore** tabs. Artwork is packaged with the bot and attached directly to Discord messages; enable **Attach Files** and **Embed Links** in the bot's channel permissions. See the [interactive layout preview](docs/artwork-preview.html), [desktop screenshot](docs/artwork-preview/desktop.png), and [implementation notes](docs/ARTWORK-CARDS.txt).
 
-| Destination | Trainer level | Main inhabitants |
-|---|---:|---|
-| Whispering Woods | 1 | Nature, earth, arcane, light |
-| Ember Wastes | 6 | Fire, earth, shadow |
-| Glacial Hollows | 12 | Ice, wind |
-| Sunken Abyssal Trenches | 20 | Water, shadow |
-| Celestial Loom | 30 | Cosmic, arcane, light |
+| Destination | Trainer level | Wild companion levels |
+|---|---:|---:|
+| Whispering Woods | 1 | 1–5 |
+| Moonveil Marsh | 3 | 6–10 |
+| Ember Wastes | 6 | 11–15 |
+| Sunforge Dunes | 9 | 16–20 |
+| Glacial Hollows | 12 | 21–25 |
+| Stormglass Peaks | 16 | 26–30 |
+| Sunken Abyssal Trenches | 20 | 31–35 |
+| Cinderreef Caldera | 25 | 36–40 |
+| Celestial Loom | 30 | 41–45 |
+| Starfall Gardens | 38 | 46–50 |
 
-Each region has a deeper destination, giving ten fixed encounter bands from companion levels 1–50. Trainer level grants access; the journal separately shows enemy levels and recommends Woods through companion level 7, then Woods Depths until the first awakening. See [progression rules](docs/PROGRESSION-WORLD.md) for the complete ladder and migration behavior.
+Each band has its own biome, background and exploration scenery. Trainer level grants access; the journal separately shows enemy levels and recommends Woods through companion level 7, then Moonveil Marsh until the first awakening. Read the Marsh's waterline, align a Dunes sun mirror, follow the Peaks' windsock, adjust a Caldera vent or recall your route through the Gardens. Sheltered paths stay available to every team. Existing encounter odds, rewards, resource families and saved trips retain their rules. See the [actual journal, team and battle gallery](docs/biome-preview/index.html) and [progression rules](docs/PROGRESSION-WORLD.md).
 
 Exploration regenerates **one charge every 30 minutes**, banking up to **three**. `/explore` opens the Field Journal's destination selector; check your saved team and press **Begin expedition · 1 charge** to set out. Opening the selector spends nothing. **Save destination** remembers an unlocked habitat for future visits; an explicit command destination overrides only that opening, and **Clear default** restores the Woods. An existing trip resumes its saved route and travelling roster without spending another charge. Remaining charges and the next recharge stay visible while you follow tracks, choose a gathering find, or visit a landmark for bond, study or rest. Trips save after every choice; reopen `/explore` or `/journal` to resume. Return home to bank the trip's single reward bundle. The legacy `expedition` option uses this same flow for either value. `/challenge` retains its 20-minute timer and `/play` its two hours. Equipped time perks reduce the relevant timers. Encounters use regional species pools and exclude starter and evolution-only forms.
 
@@ -61,7 +66,7 @@ All 16 armor sets have [distinct fitted appearances](docs/ARMOR-APPEARANCES.md) 
 
 Wild battles, NPC spars, `/battle` and `/ranked` use the same interactive combat runner. Every beast has three different move roles: a reliable attack that restores mana, a typed skill or healing skill, and a guard that prepares a stronger strike. Attacks, skills and guards each earn one ultimate charge; an ultimate spends three charges and 50 mana. Automatic bonus strikes earn no extra charge. Wild opponents build charges under the same rules. Armor, evasion, shields, passives, bonds, gear and equipped perks affect the actual hit before HP is removed. Items affect the live battle state.
 
-Duels show both companions on a matching realm battlefield in the [Field Journal UI](docs/FIELD-JOURNAL-UI.md), with framed portraits, fitted HP/MP values, separated ultimate charges and a lower battle journal. The [move animation overhaul](docs/MOVE-ANIMATIONS.md) assigns effects to all 334 distinct move names: threads snap, clockwork rewinds, roots rise, fire breath forms a cone, and healing follows each companion's theme. Defeated creatures turn and retreat offstage. All 86 portraits and five backgrounds ship with the bot. See [number spacing](docs/field-journal/number-spacing.png) and [runtime notes](docs/ANIMATED-BATTLES.md). Discord's GIF autoplay setting controls client playback; text fallback and a final still remain available. Reward/result messages omit the redundant post-fight battle logs and HP summaries.
+Duels show both companions on a matching realm battlefield in the [Field Journal UI](docs/FIELD-JOURNAL-UI.md), with framed portraits, fitted HP/MP values, separated ultimate charges and a lower battle journal. The [move animation overhaul](docs/MOVE-ANIMATIONS.md) assigns effects to all 334 distinct move names: threads snap, clockwork rewinds, roots rise, fire breath forms a cone, and healing follows each companion's theme. Defeated creatures turn and retreat offstage. All 86 portraits and ten backgrounds ship with the bot. See [number spacing](docs/field-journal/number-spacing.png) and [runtime notes](docs/ANIMATED-BATTLES.md). Discord's GIF autoplay setting controls client playback; text fallback and a final still remain available. Reward/result messages omit the redundant post-fight battle logs and HP summaries.
 
 Guild `/raid` and `/ancient` share a cooperative system with a lobby, three companions per trainer, swapping, tending allies, guarding and boss-specific Weave responses. Guild raids require a level-five guild, 50 guild tokens, and a leader or officer to host. Trainers need level 15 and three healthy assigned companions of at least level 15. Ancient raids spend their summon item when the lobby starts.
 

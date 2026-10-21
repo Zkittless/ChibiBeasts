@@ -19,14 +19,17 @@ from PIL import Image, ImageFont
 
 from utils.artwork import PROJECT_ROOT, card_artwork_path
 from utils import field_journal as ui
+from utils.habitats import BIOMES, DESTINATION_ALIASES
 
 WIDTH, HUD, HEIGHT, JOURNAL = 640, 208, 248, 72
 TOTAL_HEIGHT = HUD + HEIGHT + JOURNAL
-REALMS = {
-    'woods': 'The Whispering Woods', 'ember': 'The Ember Wastes',
-    'glacial': 'The Glacial Hollows', 'trenches': 'The Sunken Abyssal Trenches',
-    'loom': 'The Celestial Loom',
-}
+def _plain_name(value):
+    """Native Discord names may start with an emoji unsupported by bitmap fonts."""
+    name = str(value).strip()
+    return name[next((i for i, char in enumerate(name) if char.isalnum()), len(name)):]
+
+
+REALMS = {key: _plain_name(region['name']) for key, region in BIOMES.items()}
 TYPE_REALMS = {'fire': 'ember', 'ice': 'glacial', 'wind': 'glacial',
                'water': 'trenches', 'shadow': 'trenches', 'cosmic': 'loom',
                'arcane': 'loom', 'light': 'loom'}
@@ -47,10 +50,22 @@ logger = logging.getLogger('chibibeasts.battle.art')
 def realm_key(value=None, states=()):
     """Explicit destination/NPC home first; PvP uses the host beast's element."""
     if value:
-        normalized = str(value).casefold()
+        normalized = ' '.join(_plain_name(value).casefold().split())
+        aliases = {_plain_name(alias): key for alias, key in DESTINATION_ALIASES.items()}
         for key, name in REALMS.items():
-            if normalized == key or name.removeprefix('The ').casefold() in normalized:
-                return key
+            label = name.casefold()
+            for alias in (key, label, label.removeprefix('the ')):
+                aliases[alias] = key
+        # Saved IDs and old labels still identify the same destination after a
+        # rename. Resolve every exact alias before considering a family name
+        # contained inside a legacy "Whispering Woods · Depths" label.
+        aliases.update({alias.replace(' · ', ' '): key for alias, key in list(aliases.items())
+                        if alias.endswith(' · depths')})
+        if normalized in aliases:
+            return aliases[normalized]
+        for alias in sorted(aliases, key=len, reverse=True):
+            if alias not in REALMS and alias in normalized:
+                return aliases[alias]
     return TYPE_REALMS.get(states[0].get('beast_type'), 'woods') if states else 'woods'
 
 
@@ -122,13 +137,13 @@ class Artwork:
     seconds: float = 0
 
 
-@lru_cache(maxsize=5)
+@lru_cache(maxsize=len(REALMS))
 def background(realm):
     with Image.open(ASSETS / f'{realm}.png') as source:
         return source.convert('RGBA').resize((WIDTH, 360), Image.Resampling.NEAREST)
 
 
-@lru_cache(maxsize=10)
+@lru_cache(maxsize=len(REALMS) * 2)
 def field_background(realm, height):
     return ui.backdrop(background(realm), (WIDTH, height))
 

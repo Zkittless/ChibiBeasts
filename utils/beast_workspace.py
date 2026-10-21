@@ -212,7 +212,8 @@ class BeastTeamView(discord.ui.View):
 
     async def publish(self, click):
         embed = self.render()
-        art = await journal_team_art.render_team([row for _, row in journal_team.roster(self)], 'woods') if self.navigator.art_enabled else None
+        realm = self.state.trip['realm'] if self.state.trip else journal_state.explore_destination(self.state)[0]
+        art = await journal_team_art.render_team([row for _, row in journal_team.roster(self)], realm) if self.navigator.art_enabled else None
         if not art:
             return await self.navigator.publish_embed(click, self, embed)
         with io.BytesIO(art.data) as buffer:

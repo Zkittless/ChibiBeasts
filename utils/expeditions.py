@@ -139,7 +139,7 @@ async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0
                             for member in party:
                                 data = storage.get_beast_data(member['beast_id'])
                                 member.update(type=data['type'], name=data['name'])
-                            expedition_events.initialize(payload, biome_key(realm), rng.getrandbits(64), party)
+                            expedition_events.initialize(payload, realm, rng.getrandbits(64), party)
                             expedition_events.prepare_nest(payload, biome_key(realm))
                     trip_id = uuid4().hex
                     await db.execute('INSERT INTO expeditions(id,user_id,realm,status,companion_id,payload,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)', (trip_id, user_id, realm, 'quick' if quick else 'active', companion['id'], json.dumps(payload), now, now))
@@ -319,7 +319,7 @@ async def _choose_v2(db, trip, choice, rng):
         available = await adventure_party.rows(uid, db=db, ids=p['party_ids'])
         if not any(member['hp'] > 1 for member in available):
             raise ValueError('Your team is too exhausted to risk going deeper. Head home or sketch from the safe entrance.')
-    effects = expedition_events.resolve(p, biome_key(trip['realm']), choice)
+    effects = expedition_events.resolve(p, trip['realm'], choice)
     if effects.get('encounter'):
         await _encounter(db, uid, trip['realm'], p, rng)
     if effects.get('battle'):
@@ -467,7 +467,7 @@ async def battle_result(user_id, trip_id, token, won, *, interrupted=False, only
         p = trip['payload']
         if p.get('adventure_version') == 2:
             from utils import expedition_events
-            expedition_events.finish_battle(p, biome_key(trip['realm']), won, interrupted)
+            expedition_events.finish_battle(p, trip['realm'], won, interrupted)
             # Conservatively treat a launched runner as rewarded: never add a
             # second activity budget after cancellation during result playback.
             p['battle_awarded'] = bool(p.get('battle_started'))
@@ -546,7 +546,7 @@ async def run_battle(interaction, trip, *, receipt=None):
                 latest['payload']['battle_difficulty'] = adventure_party.encounter_difficulty(prepared, enemy)
                 await db.execute('UPDATE expeditions SET payload=? WHERE id=?', (json.dumps(latest['payload']), trip['id']))
                 await db.commit()
-            kwargs = dict(reserved=True, realm=biome_key(latest['realm']), party_rows=party)
+            kwargs = dict(reserved=True, realm=latest['realm'], party_rows=party)
             await run_pve_battle(interaction, row, storage.get_beast_data(row['beast_id']), perks, enemy, 'aggressive', 'Wild ' + beast['name'], win, loss, **kwargs)
     finally:
         if claimed:
@@ -568,7 +568,7 @@ async def recover_interrupted(db):
                 from utils import expedition_events
                 async with db.execute('SELECT realm FROM expeditions WHERE id=?', (trip_id,)) as cursor:
                     realm = (await cursor.fetchone())[0]
-                expedition_events.finish_battle(p, biome_key(realm), False, True)
+                expedition_events.finish_battle(p, realm, False, True)
                 p['battle_awarded'] = bool(p.get('battle_started'))
             else:
                 p.update(stage=2, caught=False, encounter_result='interrupted')

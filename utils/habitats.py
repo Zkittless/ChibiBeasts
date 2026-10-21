@@ -5,6 +5,21 @@ from utils.catalog import catalog_revision
 from utils.db import get_beast_data
 from utils.db import load_beasts
 BIOMES = {}
+DESTINATION_ALIASES = {}
+_DISTINCT_DESTINATIONS = {
+    'woods': '🌙 The Moonveil Marsh',
+    'ember': '🏜️ The Sunforge Dunes',
+    'glacial': '⛰️ The Stormglass Peaks',
+    'trenches': '🌋 The Cinderreef Caldera',
+    'loom': '✨ The Starfall Gardens',
+}
+
+
+def _plain_name(value):
+    value = str(value)
+    return value[next((i for i, char in enumerate(value) if char.isalnum()), len(value)):]
+
+
 for _key, _name, _types, _gate, _deep_gate, _low, _weights, _deep_weights in (
     ('woods', '🌲 The Whispering Woods', {'nature', 'earth', 'arcane', 'light'}, 1, 3, 1,
      {'common': .85, 'uncommon': .15}, {'common': .65, 'uncommon': .30, 'rare': .05}),
@@ -19,8 +34,12 @@ for _key, _name, _types, _gate, _deep_gate, _low, _weights, _deep_weights in (
 ):
     BIOMES[_key] = dict(name=_name, min_level=_gate, types=_types,
                         level_range=(_low, _low + 4), weights=_weights, base=_key)
-    BIOMES[_key + '_deep'] = dict(name=_name + ' · Depths', min_level=_deep_gate, types=_types,
+    BIOMES[_key + '_deep'] = dict(name=_DISTINCT_DESTINATIONS[_key], min_level=_deep_gate, types=_types,
                                  level_range=(_low + 5, _low + 9), weights=_deep_weights, base=_key)
+    # Saved command labels and old journal links still identify the same band.
+    for _alias in (_name + ' · Depths', _plain_name(_name) + ' · Depths',
+                   _plain_name(_name).removeprefix('The ') + ' · Depths'):
+        DESTINATION_ALIASES[_alias.casefold()] = _key + '_deep'
 
 BASE_BIOMES = tuple(key for key, value in BIOMES.items() if key == value['base'])
 # The forest edges shelter the low-tier species of colder and wetter regions;
@@ -33,11 +52,19 @@ BIOMES['trenches_deep']['types'] = BIOMES['trenches_deep']['types'] | {'fire'}
 def destination_key(value):
     if value in BIOMES:
         return value
-    return next((k for k, b in BIOMES.items() if b['name'] == value or
-                 value and str(value).casefold() in b['name'].casefold()), 'woods')
+    normalized = str(value or '').strip().casefold()
+    if normalized in DESTINATION_ALIASES:
+        return DESTINATION_ALIASES[normalized]
+    # Resolve exact names before partial names (especially old Depths labels).
+    for key, region in BIOMES.items():
+        plain = _plain_name(region['name']).casefold()
+        if normalized in (region['name'].casefold(), plain, plain.removeprefix('the ')):
+            return key
+    return next((key for key, region in BIOMES.items()
+                 if normalized and normalized in region['name'].casefold()), 'woods')
 
 def biome_key(value):
-    """The original five region IDs remain the material, story and art IDs."""
+    """The original five region IDs remain the material and story families."""
     return BIOMES[destination_key(value)]['base']
 
 

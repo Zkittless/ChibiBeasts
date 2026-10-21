@@ -5,6 +5,8 @@ selector varies trips without making reopening a journal a new random roll.
 """
 import hashlib
 
+from utils.habitats import biome_key, destination_key
+
 # Discoveries deliberately trail the region's wild encounters. Even the Loom
 # cannot give away Epic/Legendary/Divine incubators or the story-only seed.
 REGIONAL_NEST_EGGS = {
@@ -30,7 +32,7 @@ def prepare_nest(p, realm):
     from utils.economy_balance import RELEASE_VALUES, item_sell_price
     from utils.nursery_catalog import definition, rarity_pool
 
-    candidates = [definition(egg_id) for egg_id in REGIONAL_NEST_EGGS[realm]]
+    candidates = [definition(egg_id) for egg_id in REGIONAL_NEST_EGGS[biome_key(realm)]]
     candidates = [egg for egg in candidates if egg['min_level'] <= p['level']]
     p.update(nest_version=1, nest_chance=0., egg_offer=None,
              egg_reward=None, egg_granted=False)
@@ -91,6 +93,132 @@ REGIONS = {
                  deep='A passing constellation opens an ancient stargazer chamber.'),
 }
 
+# Regional families above remain stable for old trips. New trips save a distinct
+# destination version, keeping already-saved pages and their choices untouched.
+DESTINATION_REGIONS = {
+    'woods_deep': dict(trail='fork among silver reeds', tracks='tiny ripples beside moonlit lily pads',
+                       gather='a lantern-moss hummock', landmark='a half-sunken reedkeeper bell',
+                       obstacle='The marsh water has shifted beneath two marked crossings.',
+                       ability={'water': 'read the shallow channels', 'earth': 'brace the copper-topped posts',
+                                'nature': 'weave a floating reed mat', 'wind': 'scout the dry hummocks'},
+                       rescue='A hatchling is caught in loose reeds beside a drifting nest.',
+                       deep='The moon reveals a little pavilion beneath the still water.',
+                       merchant='A mapmaker is fishing a soggy chart out of the silver reeds.',
+                       camp='A dry hummock shelters the team above the moonlit pools.',
+                       discovery='Bell markings lead to a lantern grove reflected twice in the still water.'),
+    'ember_deep': dict(trail='fork between amber dunes', tracks='small prints around heat-glass arches',
+                       gather='a shaded sunforge seam', landmark='a buried mirror shrine',
+                       obstacle='A sun mirror marks two routes through the glass dunes.',
+                       ability={'fire': 'read the heat-glass without disturbing it', 'earth': 'steady the buried mirror',
+                                'water': 'cool the mirror housing', 'wind': 'clear sand from the old markers'},
+                       rescue='A hatchling has slipped into a cool hollow beneath a glass arch.',
+                       deep='The setting sun outlines a buried glass conservatory.',
+                       merchant='A mapmaker is trying to free a chart pinned beneath a little sand drift.',
+                       camp='A broad glass arch casts a quiet patch of cinnamon-scented shade.',
+                       discovery='The shrine reflects a sheltered path through a garden of weathered glass.'),
+    'glacial_deep': dict(trail='fork along an aurora-lit ridge', tracks='fresh prints beside a stormglass cairn',
+                         gather='a sheltered cloud-pine ledge', landmark='an old windsock station',
+                         obstacle='A gust sweeps across the two paths beside a rope bridge.',
+                         ability={'wind': 'read the gust before the crossing', 'ice': 'brace the frosted handrail',
+                                  'earth': 'anchor the bridge rope', 'fire': 'thaw the sheltered railing'},
+                         rescue='A hatchling is huddled behind a rattling trail flag.',
+                         deep='An aurora lights the terraces of a long-quiet weather observatory.',
+                         merchant='A mapmaker is untangling a route chart from a stormglass cairn.',
+                         camp='Cloud pines shelter the team while the aurora moves above the ridge.',
+                         discovery='Old wind records reveal a balcony above a sea of clouds.'),
+    'trenches_deep': dict(trail='fork beside a crimson coral shelf', tracks='warm bubbles around black basalt arches',
+                          gather='a cooled vent garden', landmark='a coral-covered vent regulator',
+                          obstacle='Two vent channels pass beneath a warm coral nursery.',
+                          ability={'water': 'guide cool water around the nursery', 'light': 'reveal the old vent diagram',
+                                   'shadow': 'find the sheltered basalt channel', 'earth': 'brace the old regulator'},
+                          rescue='A hatchling is stranded between two gently bubbling vents.',
+                          deep='A quiet vent opens a window into an ancient coral greenhouse.',
+                          merchant='A mapmaker is rescuing a waterproof chart from a bubbling vent ring.',
+                          camp='A cool basalt shelf shelters the team beside softly glowing coral.',
+                          discovery='Regulator marks reveal an untouched garden of red fan coral.'),
+    'loom_deep': dict(trail='fork between floating garden terraces', tracks='starlit prints beneath luminous fruit trees',
+                      gather='a fallen-star orchard', landmark='a silver branch bearing little memory bells',
+                      obstacle='Two branches unfold between the floating terraces.',
+                      ability={'cosmic': 'read the stable orbit of the branches', 'arcane': 'steady a memory branch',
+                               'light': 'reveal the old orchard path', 'wind': 'scout the next steady branch'},
+                      rescue='A hatchling is tangled in a loose ribbon beneath a starfruit tree.',
+                      deep='A drifting blossom reveals a tiny seed library between the stars.',
+                      merchant='A mapmaker is gathering chart pages from the branches of a luminous tree.',
+                      camp='The team rests beneath a tree whose starfruit glows like small lanterns.',
+                      discovery='The memory bells reveal a terrace where old paths bloom as constellations.'),
+}
+
+
+def _region(p, realm):
+    destination = destination_key(p.get('destination', realm))
+    if p.get('destination_version') == 1 and destination in DESTINATION_REGIONS:
+        return DESTINATION_REGIONS[destination]
+    return REGIONS[biome_key(destination)]
+
+
+def _crossing(p, realm):
+    """Save one readable clue and exactly the original detour/shortcut outcomes."""
+    destination = destination_key(p.get('destination', realm))
+    if p.get('destination_version') != 1 or destination not in DESTINATION_REGIONS:
+        return None
+    if 'biome_crossing' in p:
+        return p['biome_crossing']
+    flip = _variant(p, (False, True), 'destination-crossing')
+    if destination == 'woods_deep':
+        title = 'Read the waterline'
+        markers = ('blue-plank boardwalk', 'copper-post walkway')
+        safe = int(flip)
+        clue = (f"Moonlight shows fresh water lapping over the {markers[1-safe]}. "
+                f"The {markers[safe]} stands above the wet reeds.")
+        labels = ['Take the blue boardwalk', 'Take the copper walkway']
+        note = 'Your team followed the dry waterline markers through Moonveil Marsh.'
+    elif destination == 'ember_deep':
+        title = 'Turn the sun mirror'
+        markers = ('crescent', 'star')
+        safe = int(flip)
+        clue = (f"The old plaque reads: ‘Follow the shade.’ The mirror's {markers[safe]} mark "
+                f"casts a cool shadow through the dunes; the {markers[1-safe]} mark lights a short, hot ridge.")
+        labels = ['Turn toward the crescent', 'Turn toward the star']
+        note = 'Your team aligned the sun mirror and followed its shaded path through Sunforge Dunes.'
+    elif destination == 'glacial_deep':
+        title = 'Read the ridge wind'
+        safe = int(flip)
+        direction = ('east', 'west')[safe]
+        clue = (f"The windsock and blowing snow show gusts arriving from the {direction}. "
+                "The cairn's sketch marks the opposite side as sheltered: "
+                f"the {('west', 'east')[safe]} ledge. The exposed span is shorter.")
+        labels = ['Follow the west ledge', 'Follow the east ledge']
+        note = 'Your team read the windsock and crossed the sheltered side of Stormglass Peaks.'
+    elif destination == 'trenches_deep':
+        title = 'Keep the nursery warm'
+        safe = int(flip)
+        markers = ('shell', 'coral')
+        clue = (f"The regulator diagram joins the {markers[safe]} valve to a cool side passage. "
+                f"The {markers[1-safe]} valve opens the shorter bubbling channel beside the nursery. "
+                'Both leave its warm pool undisturbed.')
+        labels = ['Open the shell valve', 'Open the coral valve']
+        note = 'Your team opened the cool side passage and left the Cinderreef nursery undisturbed.'
+    else:
+        title = 'Remember your first path'
+        remembered = {'tracks': 'little footprints', 'gather': 'a bundle of leaves',
+                      'shrine': 'a ringing bell'}.get(p.get('route'), 'a ringing bell')
+        safe = int(flip)
+        clue = (f"A memory bell repeats your first choice: {remembered}. The branch bearing that sign "
+                'holds steady. The other is a shorter ribbon of shifting starlight.')
+        labels = ['Follow the shifting ribbon', 'Follow the shifting ribbon']
+        labels[safe] = {'tracks': 'Follow the footprint branch', 'gather': 'Follow the leaf branch',
+                        'shrine': 'Follow the bell branch'}.get(p.get('route'), 'Follow the bell branch')
+        note = 'Your team remembered its first trail and followed the steady branch through Starfall Gardens.'
+    actions = [_choice('crossing:' + str(index), label,
+                       'Sheltered route: no HP cost; keeps your saved bundle.' if index == safe else
+                       'Short route: up to 3% max HP cost; adds 5% to your one bundle.')
+               for index, label in enumerate(labels)]
+    result = dict(destination=destination, title=title, clue=clue, choices=actions,
+                  safe='crossing:' + str(safe), risky='crossing:' + str(1-safe),
+                  safe_note=note)
+    p['biome_crossing'] = result
+    return result
+
 
 def _variant(p, values, salt):
     value = hashlib.sha256(f"{p['seed']}:{salt}".encode()).digest()
@@ -102,7 +230,8 @@ def _choice(value, label, description):
 
 
 def initialize(p, realm, seed, party):
-    p.update(adventure_version=2, seed=str(seed), event='trailhead', completed=0,
+    p.update(adventure_version=2, destination_version=1, destination=destination_key(realm),
+             seed=str(seed), event='trailhead', completed=0,
              target_stops=3, history=[], flags={}, camp_used=False, push_used=False,
              bonus=0, base_gold=p['gold'], party_ids=[r['id'] for r in party],
              party=[dict(id=r['id'], name=r.get('nickname') or r.get('name') or r['beast_id'],
@@ -112,7 +241,7 @@ def initialize(p, realm, seed, party):
 
 
 def page(p, realm, event):
-    r = REGIONS[realm]
+    r = _region(p, realm)
     choices = []
     if event == 'trailhead':
         title = 'Choose your trail'
@@ -139,10 +268,15 @@ def page(p, realm, event):
             choices.append(_choice('rest', 'Make a short camp', 'Restore 5% max HP to healthy teammates; once per trip, no revives.'))
     elif event == 'obstacle':
         title, body = 'A crossing to solve', r['obstacle']
+        crossing = _crossing(p, realm)
+        if crossing:
+            title, body = crossing['title'], crossing['clue']
         if p['flags'].get('directions'):
             body += ' Your earlier discovery marks a sheltered way across.'
         choices = [_choice('detour', 'Take the marked detour', 'A safe route for every team; your saved supplies stay secure.'),
                    _choice('cross', 'Cross carefully', 'Scout together, then cross; costs up to 3% max HP to healthy teammates.')]
+        if crossing:
+            choices = [dict(choice) for choice in crossing['choices']]
         for member in p['party']:
             ability = r['ability'].get(member['type'])
             if ability:
@@ -156,17 +290,18 @@ def page(p, realm, event):
                    _choice('calm', 'Calm it from a distance', 'Learn safely; its calls reveal a trail clue.'),
                    _choice('leave', 'Leave it space', 'Avoid disturbing the nest and continue home.')]
     elif event == 'merchant':
-        title, body = 'A travelling mapmaker', 'A stranded mapmaker is trying to recover a windblown route chart.'
+        title = 'A travelling mapmaker'
+        body = r.get('merchant', 'A stranded mapmaker is trying to recover a windblown route chart.')
         choices = [_choice('assist', 'Help recover the chart', 'Build bond and mark a safer route deeper in.'),
                    _choice('listen', 'Trade trail stories', 'Learn a little and hear about a hidden landmark.')]
     elif event == 'camp':
-        title, body = 'A sheltered clearing', 'Your earlier choice leads the team to a quiet shelter beside the trail.'
+        title, body = 'A sheltered clearing', r.get('camp', 'Your earlier choice leads the team to a quiet shelter beside the trail.')
         choices = [_choice('practice', 'Practise as a team', 'Build bond and prepare for the journey home.'),
                    _choice('survey', 'Survey the way ahead', 'Record a useful trail clue for a deeper stop.')]
         if not p['camp_used']:
             choices.insert(0, _choice('camp', 'Share a short camp', 'Restore 5% max HP to healthy teammates; once per trip, no revives.'))
     elif event == 'discovery':
-        title, body = 'A forgotten trail', 'The old markings lead to a hidden lookout with a view of the region.'
+        title, body = 'A forgotten trail', r.get('discovery', 'The old markings lead to a hidden lookout with a view of the region.')
         choices = [_choice('map', 'Map the hidden trail', 'Record a small expedition reward bonus and a safer deep route.'),
                    _choice('watch', 'Watch the wildlife', 'Build bond together; this is not a second catch encounter.')]
     elif event == 'deep':
@@ -213,6 +348,10 @@ def _complete(p, choice):
 def resolve(p, realm, choice):
     """Advance a validated action and return bounded effects for the DB writer."""
     event, effects = p['event'], {}
+    crossing = p.get('biome_crossing') if event == 'obstacle' else None
+    route_choice = choice
+    if crossing and choice in (crossing['safe'], crossing['risky']):
+        route_choice = 'detour' if choice == crossing['safe'] else 'cross'
     if choice == 'push':
         p.update(push_used=True, target_stops=4)
         p['history'].append(dict(event=event, choice=choice))
@@ -222,6 +361,7 @@ def resolve(p, realm, choice):
     if choice == 'challenge':
         return dict(battle=True)
     _complete(p, choice)
+    choice = route_choice
     if event == 'trailhead':
         p['route'] = choice
         next_event = {'tracks': 'creature', 'gather': 'gathering', 'shrine': 'landmark'}[choice]
@@ -275,6 +415,8 @@ def resolve(p, realm, choice):
             effects['damage'] = 3
             p['bonus'] += 5
             p['notes'].append('The team crossed carefully, picking up a few scrapes.')
+        elif choice == 'detour' and crossing:
+            p['notes'].append(crossing['safe_note'])
         elif choice in ('rescue', 'assist'):
             p['bond'] += 1
             p['flags']['sanctuary' if choice == 'rescue' else 'directions'] = True
