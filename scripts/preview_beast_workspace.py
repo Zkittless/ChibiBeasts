@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT))
 
 from tests.test_gameplay import interaction
 from tests.test_interactions import component
-from utils import adventure_party, db as storage
+from utils import adventure_party, db as storage, owned_roster
 from utils.roster_view import open_roster
 
 
@@ -24,11 +24,15 @@ RENDERER = r"""
   let current = 'beast';
   const routes = {beast:'beast',care:'care',gear:'gear',train:'train',evolve:'evolve',team:'team'};
   const names = {beast:'Beast card',care:'Care',care_item:'Care item preview',gear:'Gear',gear_edit:'Armor editor',train:'Training',evolve:'Evolution',team:'Exploration team',raid:'Raid team',roster:'Collection'};
+  for (const [key, panel] of Object.entries(data)) if (key.startsWith('rarity_')) names[key]=panel.picker_mode==='rarities'?'Rarity choices · '+panel.rarity:'Beasts · '+panel.rarity;
   const links = {'care:Choose an owned care item':'care_item','gear:Change armor':'gear_edit','gear_edit:Done':'gear','team:Raids':'raid','raid:Exploration':'team','beast:Back to roster':'roster'};
   function html(text) { const span=document.createElement('span'); span.textContent=String(text); return span.innerHTML; }
   function md(text) { return html(text).replace(/\\([_~*`])/g,'$1').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'); }
   function show(name) { if (!data[name]) return; current=name; render(); }
   function action(label,value) {
+    if (value==='rarities') return show('rarity_menu_'+data[current].rarity);
+    if (value==='beasts') return show('rarity_'+data[current].rarity);
+    if (value?.startsWith('rarity:')) return show('rarity_'+value.slice(7));
     if (label==='Back to beast') return show('beast');
     if (['Companion actions','Beast workspace'].includes(label) && routes[value]) return show(routes[value]);
     if (label.startsWith('Open a companion') || label.startsWith('Choose a companion')) return show('beast');
@@ -88,7 +92,8 @@ async def export(output):
             views.append(view)
             assert view.message.id == 8181
             assert len(view.to_components()) <= 5
-            data[name] = dict(embed=payload['embed'].to_dict(), components=view.to_components(), wide_art=view.workspace_route == 'team')
+            data[name] = dict(embed=payload['embed'].to_dict(), components=view.to_components(), wide_art=view.workspace_route == 'team',
+                              rarity=getattr(getattr(view, 'picker', None), 'rarity', None), picker_mode=getattr(view, 'picker_mode', None))
             attachments = payload.get('files', payload.get('attachments', []))
             for file in attachments:
                 assert file.filename in art
@@ -122,6 +127,11 @@ async def export(output):
 
         try:
             await step('beast', root.refresh_button.callback)
+            for rarity in owned_roster.RARITIES:
+                await step('rarity_menu_' + root.picker.rarity, root.beast_select.callback, 'rarities')
+                await step('rarity_' + rarity, root.beast_select.callback, 'rarity:' + rarity)
+            await step('rarity_menu_' + root.picker.rarity, root.beast_select.callback, 'rarities')
+            await step('beast', root.beast_select.callback, 'rarity:common')
             await route('care')
             await step('care_item', nav.active.item_select.callback, 'pixie_dust_potion')
             await press('Back to beast', 'beast')
@@ -165,7 +175,7 @@ async def capture(path, output):
         page.on('pageerror', lambda error: errors.append(str(error)))
         await page.goto(path.resolve().as_uri())
         await page.wait_for_selector('#cb-beast-workspace[data-ready="true"]')
-        screens = ['beast', 'care', 'care_item', 'gear', 'gear_edit', 'train', 'evolve', 'team', 'raid', 'roster']
+        screens = ['beast', 'care', 'care_item', 'gear', 'gear_edit', 'train', 'evolve', 'team', 'raid', 'roster', 'rarity_menu_common', 'rarity_rare']
         for width in (1100, 390, 320):
             await page.set_viewport_size(dict(width=width, height=1000))
             for screen in screens:
@@ -173,7 +183,7 @@ async def capture(path, output):
                 await page.wait_for_function('Array.from(document.images).every(img=>img.complete && img.naturalWidth>0)')
                 assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 assert await page.locator('[data-message="8181"]').count() == 1
-                if screen not in {'beast', 'roster'}:
+                if screen not in {'beast', 'roster', 'rarity_menu_common', 'rarity_rare'}:
                     await page.get_by_role('button', name='Back to beast', exact=True).click()
                     assert await page.locator('#cb-beast-workspace').get_attribute('data-screen') == 'beast'
                     await page.locator('#cj-screen').select_option(screen)
@@ -185,9 +195,18 @@ async def capture(path, output):
             assert await page.get_by_role('button', name='Back to beast', exact=True).count() == 1
             await page.get_by_role('button', name='Back to beast', exact=True).click()
             assert await page.locator('#cb-beast-workspace').get_attribute('data-screen') == 'beast'
+        await page.locator('#cj-screen').select_option('beast')
+        for rarity in owned_roster.RARITIES:
+            await page.locator('.cj-card select').last.select_option('rarities')
+            assert await page.locator('.cj-card select').count() == 2
+            await page.locator('.cj-card select').last.select_option('rarity:' + rarity)
+            assert await page.locator('#cb-beast-workspace').get_attribute('data-screen') == 'rarity_' + rarity
+            assert await page.locator('[data-message="8181"]').count() == 1
+            assert await page.get_by_role('combobox', name='Filter by rarity', exact=True).count() == 0
         await browser.close()
     assert not errors, errors
-    (output / 'browser-validation.json').write_text(json.dumps(dict(status='passed', javascript_errors=errors, checks=checks), indent=2) + '\n', encoding='utf-8')
+    (output / 'browser-validation.json').write_text(json.dumps(dict(status='passed', javascript_errors=errors, checks=checks,
+        integrated_rarity_navigation=True, rarity_routes=list(owned_roster.RARITIES)), indent=2) + '\n', encoding='utf-8')
     print(f'Browser QA passed: {len(checks)} screen/viewport combinations and all five action/Back round trips.')
 
 

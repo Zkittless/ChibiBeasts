@@ -31,73 +31,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "88d1bcbc9211f3a3382058220bab7482",
-            "min_values": 1,
-            "max_values": 1,
-            "disabled": false,
-            "required": true,
-            "placeholder": "Filter by rarity",
-            "options": [
-              {
-                "label": "Common",
-                "value": "common",
-                "default": true
-              },
-              {
-                "label": "Uncommon",
-                "value": "uncommon",
-                "default": false
-              },
-              {
-                "label": "Rare",
-                "value": "rare",
-                "default": false
-              },
-              {
-                "label": "Epic",
-                "value": "epic",
-                "default": false
-              },
-              {
-                "label": "Legendary",
-                "value": "legendary",
-                "default": false
-              },
-              {
-                "label": "Divine",
-                "value": "divine",
-                "default": false
-              },
-              {
-                "label": "Altered Divine",
-                "value": "altered_divine",
-                "default": false
-              },
-              {
-                "label": "Corrupted",
-                "value": "corrupted",
-                "default": false
-              },
-              {
-                "label": "Ancient",
-                "value": "ancient",
-                "default": false
-              },
-              {
-                "label": "Dev",
-                "value": "dev",
-                "default": false
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": 1,
-        "components": [
-          {
-            "type": 3,
-            "custom_id": "1243f2065730eb9eab90507184e051aa",
+            "custom_id": "c809eaaf24ff1862ef22e81a092dfca7",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -148,13 +82,19 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "62e05c2226b9dd6ad73a9785908e33c1",
+            "custom_id": "514adebcca1d28a291c20fa80767f7b4",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
             "required": true,
             "placeholder": "Common beasts · Page 1/1",
             "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Common beasts"
+              },
               {
                 "label": "#1 · Twine · Lv.8",
                 "value": "1",
@@ -185,28 +125,28 @@
             "style": 2,
             "disabled": true,
             "label": "◀",
-            "custom_id": "ab5167abaaa52e42d4eafa5aa15e417c"
+            "custom_id": "66a5f9d026e875609b5016b76d94f4ef"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Back to roster",
-            "custom_id": "edb9db8d51cf8bb8e782e12dcfd5a3f4"
+            "custom_id": "208ab5d20aa7848767a022cf57e5ed09"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "#2 ▶",
-            "custom_id": "658cd4cbfd006292cdf4557fbf9cd204"
+            "custom_id": "07a09e86ed8a1b03bb0acd6d914877b8"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Field Journal",
-            "custom_id": "5072ae42f823d9e660ab1e3290f2a7bb"
+            "custom_id": "646d72272523e948d046828e5a033e77"
           }
         ]
       },
@@ -218,33 +158,3707 @@
             "style": 1,
             "disabled": false,
             "label": "Search",
-            "custom_id": "313223a9dad29d0965df2eb3cc4d2844"
+            "custom_id": "8ea365ff8dc0de1335de70ee782f6964"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "cf9a61ef377c51db292576358db76b32"
+            "custom_id": "4e9499be764b6c50e78f535638b06c81"
           },
           {
             "type": 2,
             "style": 3,
             "disabled": false,
             "label": "Care & items",
-            "custom_id": "055d2f76e0004db046e100557708491c"
+            "custom_id": "898b53e4181a30564c6989b4bade2966"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Details",
-            "custom_id": "5a23f03046437c113bf5e9eb8fb86801"
+            "custom_id": "aecb279c0c078d6c5422628e3ae10cdc"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": "common",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_common": {
+    "embed": {
+      "footer": {
+        "text": "Beast #1 · Companion actions for care, gear and growth. Details shows moves and lore."
+      },
+      "image": {
+        "url": "attachment://equipped-4b7db6bc3a3541fa9940.png"
+      },
+      "fields": [
+        {
+          "inline": false,
+          "name": "Stats",
+          "value": "❤️ **HP:** 35/113\n⚔️ **ATK:** 52\n🛡️ **DEF:** 42\n💨 **SPD:** 87\n💠 **MANA:** 79/79"
+        },
+        {
+          "inline": false,
+          "name": "Evolution → Timestitch",
+          "value": "Reach beast level 15 first.\nNo item needed · Bond: 0/40\nTrainer: 8/8 · Happiness: 100/70"
+        }
+      ],
+      "flags": 0,
+      "color": 9807270,
+      "type": "rich",
+      "description": "Lv.8 · Bond 0/100 · Happiness 100/100\n**Active lead**",
+      "title": "Twine · #1"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "57328bed55532142c7c87355c15a829d",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Companion actions",
+            "options": [
+              {
+                "label": "Care & items",
+                "value": "care",
+                "default": false
+              },
+              {
+                "label": "Gear",
+                "value": "gear",
+                "default": false
+              },
+              {
+                "label": "Make active lead",
+                "value": "lead",
+                "default": false
+              },
+              {
+                "label": "Train",
+                "value": "train",
+                "default": false
+              },
+              {
+                "label": "Rename",
+                "value": "rename",
+                "default": false
+              },
+              {
+                "label": "Evolve / awaken",
+                "value": "evolve",
+                "default": false
+              },
+              {
+                "label": "Team panel",
+                "value": "team",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Common",
+            "options": [
+              {
+                "label": "Back to Common beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "◀",
+            "custom_id": "646b9c07d3a2b5d1925e86eb60e437af"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Back to roster",
+            "custom_id": "09d0b0c2ce39d2713cc409251b6e7723"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "#2 ▶",
+            "custom_id": "e6b2bc03548b1cee672e0da8837bb895"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 3,
+            "disabled": false,
+            "label": "Care & items",
+            "custom_id": "c41a3919f09804f6e1d2865b6f5f3448"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Details",
+            "custom_id": "26dafb42ca9cd0a8b9eb912e1d6b9c2a"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "common",
+    "picker_mode": "rarities"
+  },
+  "rarity_common": {
+    "embed": {
+      "footer": {
+        "text": "Beast #1 · Companion actions for care, gear and growth. Details shows moves and lore."
+      },
+      "image": {
+        "url": "attachment://equipped-4b7db6bc3a3541fa9940.png"
+      },
+      "fields": [
+        {
+          "inline": false,
+          "name": "Stats",
+          "value": "❤️ **HP:** 35/113\n⚔️ **ATK:** 52\n🛡️ **DEF:** 42\n💨 **SPD:** 87\n💠 **MANA:** 79/79"
+        },
+        {
+          "inline": false,
+          "name": "Evolution → Timestitch",
+          "value": "Reach beast level 15 first.\nNo item needed · Bond: 0/40\nTrainer: 8/8 · Happiness: 100/70"
+        }
+      ],
+      "flags": 0,
+      "color": 9807270,
+      "type": "rich",
+      "description": "Lv.8 · Bond 0/100 · Happiness 100/100\n**Active lead**",
+      "title": "Twine · #1"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "120b904855ee6224ef17ed1dda264fb2",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Companion actions",
+            "options": [
+              {
+                "label": "Care & items",
+                "value": "care",
+                "default": false
+              },
+              {
+                "label": "Gear",
+                "value": "gear",
+                "default": false
+              },
+              {
+                "label": "Make active lead",
+                "value": "lead",
+                "default": false
+              },
+              {
+                "label": "Train",
+                "value": "train",
+                "default": false
+              },
+              {
+                "label": "Rename",
+                "value": "rename",
+                "default": false
+              },
+              {
+                "label": "Evolve / awaken",
+                "value": "evolve",
+                "default": false
+              },
+              {
+                "label": "Team panel",
+                "value": "team",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Common beasts · Page 1/1",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Common beasts"
+              },
+              {
+                "label": "#1 · Twine · Lv.8",
+                "value": "1",
+                "default": true,
+                "description": "Twine · HP 35/113 · Active"
+              },
+              {
+                "label": "#2 · Gloop · Lv.8",
+                "value": "2",
+                "default": false,
+                "description": "Gloop · HP 123/123"
+              },
+              {
+                "label": "#3 · Barkley · Lv.8",
+                "value": "3",
+                "default": false,
+                "description": "Barkley · HP 128/128"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "◀",
+            "custom_id": "646b9c07d3a2b5d1925e86eb60e437af"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Back to roster",
+            "custom_id": "09d0b0c2ce39d2713cc409251b6e7723"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "#2 ▶",
+            "custom_id": "e6b2bc03548b1cee672e0da8837bb895"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 3,
+            "disabled": false,
+            "label": "Care & items",
+            "custom_id": "c41a3919f09804f6e1d2865b6f5f3448"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Details",
+            "custom_id": "26dafb42ca9cd0a8b9eb912e1d6b9c2a"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "common",
+    "picker_mode": "beasts"
+  },
+  "rarity_uncommon": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Uncommon\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Uncommon beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "uncommon",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_uncommon": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Uncommon\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Uncommon",
+            "options": [
+              {
+                "label": "Back to Uncommon beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "uncommon",
+    "picker_mode": "rarities"
+  },
+  "rarity_rare": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Rare\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Rare beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "rare",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_rare": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Rare\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Rare",
+            "options": [
+              {
+                "label": "Back to Rare beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "rare",
+    "picker_mode": "rarities"
+  },
+  "rarity_epic": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Epic\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Epic beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "epic",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_epic": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Epic\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Epic",
+            "options": [
+              {
+                "label": "Back to Epic beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "epic",
+    "picker_mode": "rarities"
+  },
+  "rarity_legendary": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Legendary\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Legendary beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "legendary",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_legendary": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Legendary\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Legendary",
+            "options": [
+              {
+                "label": "Back to Legendary beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "legendary",
+    "picker_mode": "rarities"
+  },
+  "rarity_divine": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Divine\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Divine beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "divine",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_divine": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Divine\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Divine",
+            "options": [
+              {
+                "label": "Back to Divine beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "divine",
+    "picker_mode": "rarities"
+  },
+  "rarity_altered_divine": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Altered Divine\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Altered Divine beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "altered_divine",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_altered_divine": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Altered Divine\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Altered Divine",
+            "options": [
+              {
+                "label": "Back to Altered Divine beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "altered_divine",
+    "picker_mode": "rarities"
+  },
+  "rarity_corrupted": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Corrupted\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Corrupted beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "corrupted",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_corrupted": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Corrupted\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Corrupted",
+            "options": [
+              {
+                "label": "Back to Corrupted beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "corrupted",
+    "picker_mode": "rarities"
+  },
+  "rarity_ancient": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Ancient\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Ancient beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "ancient",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_ancient": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Ancient\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Ancient",
+            "options": [
+              {
+                "label": "Back to Ancient beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "ancient",
+    "picker_mode": "rarities"
+  },
+  "rarity_dev": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Dev\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Open a companion’s details",
+            "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Dev beasts"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "dev",
+    "picker_mode": "beasts"
+  },
+  "rarity_menu_dev": {
+    "embed": {
+      "footer": {
+        "text": "Browse without changing your lead · /journal → Team to choose who travels"
+      },
+      "flags": 0,
+      "color": 16740039,
+      "type": "rich",
+      "description": "**0 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Dev\n\nNo companions match this rarity and search. Choose another rarity or change the search.",
+      "title": "🐾 Trainer’s collection"
+    },
+    "components": [
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1d9be7f4210f053b8b56f25f04f0c356",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Sort companions",
+            "options": [
+              {
+                "label": "Collection number",
+                "value": "number",
+                "default": true
+              },
+              {
+                "label": "Highest level",
+                "value": "level",
+                "default": false
+              },
+              {
+                "label": "Highest rarity",
+                "value": "rarity",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "993d960e8de4ff8eff4d75a8c805239f",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Choose rarity · Dev",
+            "options": [
+              {
+                "label": "Back to Dev beasts",
+                "value": "beasts",
+                "default": false
+              },
+              {
+                "label": "Common",
+                "value": "rarity:common",
+                "default": false,
+                "description": "3 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚪"
+                }
+              },
+              {
+                "label": "Uncommon",
+                "value": "rarity:uncommon",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟢"
+                }
+              },
+              {
+                "label": "Rare",
+                "value": "rarity:rare",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🔵"
+                }
+              },
+              {
+                "label": "Epic",
+                "value": "rarity:epic",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟣"
+                }
+              },
+              {
+                "label": "Legendary",
+                "value": "rarity:legendary",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🟡"
+                }
+              },
+              {
+                "label": "Divine",
+                "value": "rarity:divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🌸"
+                }
+              },
+              {
+                "label": "Altered Divine",
+                "value": "rarity:altered_divine",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "⚠️"
+                }
+              },
+              {
+                "label": "Corrupted",
+                "value": "rarity:corrupted",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🖤"
+                }
+              },
+              {
+                "label": "Ancient",
+                "value": "rarity:ancient",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "🏛️"
+                }
+              },
+              {
+                "label": "Dev",
+                "value": "rarity:dev",
+                "default": false,
+                "description": "0 owned",
+                "emoji": {
+                  "id": null,
+                  "name": "👑"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Previous page",
+            "custom_id": "45fc4a368c382fa7a91b210111626144"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "1/1",
+            "custom_id": "5af67e317e35ae927e3a8ad52a8d9f4e"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": true,
+            "label": "Next page",
+            "custom_id": "0b7e35aee68b60804e978d2aa3b861a0"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Field Journal",
+            "custom_id": "8910aeaabea74089149b9aae374f3a70"
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 2,
+            "style": 1,
+            "disabled": false,
+            "label": "Search",
+            "custom_id": "00657e26340c1faa90ba62301d99dc9f"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Refresh",
+            "custom_id": "53b79b00c4b66727d7dd44d9e8eb7e60"
+          },
+          {
+            "type": 2,
+            "style": 2,
+            "disabled": false,
+            "label": "Clear filters",
+            "custom_id": "ae8a8830b468359014375149f5c77145"
+          }
+        ]
+      }
+    ],
+    "wide_art": false,
+    "rarity": "dev",
+    "picker_mode": "rarities"
   },
   "care": {
     "embed": {
@@ -273,7 +3887,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "3843500cde15a9004a93f87066da96ff",
+            "custom_id": "6b329485cfa390abd8a2385dc59efb72",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -319,7 +3933,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "care:c062aad260e84cff98990e1fd9820460:0:item",
+            "custom_id": "care:181c47d565cd4c4b8f5ae0d31dc93df2:0:item",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -344,14 +3958,14 @@
             "style": 1,
             "disabled": true,
             "label": "Use 1",
-            "custom_id": "care:c062aad260e84cff98990e1fd9820460:0:use"
+            "custom_id": "care:181c47d565cd4c4b8f5ae0d31dc93df2:0:use"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "care:c062aad260e84cff98990e1fd9820460:0:refresh"
+            "custom_id": "care:181c47d565cd4c4b8f5ae0d31dc93df2:0:refresh"
           }
         ]
       },
@@ -363,12 +3977,14 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "cf7a7e0a73463fd4cc7685ab02afe9f4"
+            "custom_id": "8b5f0068b7309bac7d078a809bd9f980"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": "all",
+    "picker_mode": null
   },
   "care_item": {
     "embed": {
@@ -402,7 +4018,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "57a20338ec6db7f0cfe13e5c524e9adb",
+            "custom_id": "63c61ddebfe0fbced04cc35fa6b7dc45",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -448,7 +4064,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "care:c062aad260e84cff98990e1fd9820460:1:item",
+            "custom_id": "care:181c47d565cd4c4b8f5ae0d31dc93df2:1:item",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -473,14 +4089,14 @@
             "style": 1,
             "disabled": false,
             "label": "Use 1",
-            "custom_id": "care:c062aad260e84cff98990e1fd9820460:1:use"
+            "custom_id": "care:181c47d565cd4c4b8f5ae0d31dc93df2:1:use"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "care:c062aad260e84cff98990e1fd9820460:1:refresh"
+            "custom_id": "care:181c47d565cd4c4b8f5ae0d31dc93df2:1:refresh"
           }
         ]
       },
@@ -492,12 +4108,14 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "8d20aeeda3510ce7189993452bff23fc"
+            "custom_id": "d891e07f29c23c3237061c86cf1ff8ce"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": "all",
+    "picker_mode": null
   },
   "gear": {
     "embed": {
@@ -531,7 +4149,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "0d3efb35ab3febcaade112d125bd72d4",
+            "custom_id": "80e50299ee58ae60bcd9b724597f06c2",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -580,14 +4198,14 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "32b7b606b7a977c956805d048891b30c"
+            "custom_id": "fa52bc5238957ac5ea62863aaec68d24"
           },
           {
             "type": 2,
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "1b2173242e8197eb82c12056677eae7c"
+            "custom_id": "086c0918f8d0f42e6692be9471833afb"
           }
         ]
       },
@@ -599,26 +4217,28 @@
             "style": 1,
             "disabled": false,
             "label": "Care",
-            "custom_id": "54a6a5aedb6be6943e155869e0d4075e"
+            "custom_id": "f7d9a075d481f5247a23183ced4bbdd5"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change armor",
-            "custom_id": "a9769c7f01351b073ca039de6fa64b50"
+            "custom_id": "5691d053d925277f513c3845b56de420"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change rune",
-            "custom_id": "d5683bce36724e70d773c4a6912a0708"
+            "custom_id": "e0826e5a07bbdf2fe217ae6b3d68c2a5"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": "all",
+    "picker_mode": null
   },
   "gear_edit": {
     "embed": {
@@ -657,7 +4277,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "25e5974b80b12e6e9dd6805e3a292bcb",
+            "custom_id": "c81179621760d280a5bd00e6a5ac9e9c",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -706,14 +4326,14 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "32b7b606b7a977c956805d048891b30c"
+            "custom_id": "fa52bc5238957ac5ea62863aaec68d24"
           },
           {
             "type": 2,
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "be9e8e820230a8a0d8dcca2f887c4aef"
+            "custom_id": "af6519c9ae8075f315d31d43c4630aac"
           }
         ]
       },
@@ -725,21 +4345,21 @@
             "style": 1,
             "disabled": false,
             "label": "Care",
-            "custom_id": "54a6a5aedb6be6943e155869e0d4075e"
+            "custom_id": "f7d9a075d481f5247a23183ced4bbdd5"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change armor",
-            "custom_id": "a9769c7f01351b073ca039de6fa64b50"
+            "custom_id": "5691d053d925277f513c3845b56de420"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change rune",
-            "custom_id": "d5683bce36724e70d773c4a6912a0708"
+            "custom_id": "e0826e5a07bbdf2fe217ae6b3d68c2a5"
           }
         ]
       },
@@ -748,7 +4368,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "3895b1061043e709312206760c86a3a5",
+            "custom_id": "16c1858bda800d96dce80fa30b62e883",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -773,26 +4393,28 @@
             "style": 3,
             "disabled": false,
             "label": "Equip selected",
-            "custom_id": "0de6c8bddffb01a60d238654e7bca173"
+            "custom_id": "5322e42e127f4f497710da42f2f3fdd6"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Remove armor",
-            "custom_id": "7e33bfc6b8f5bec507f5cd0d9746d955"
+            "custom_id": "507039ec6d3d779f6518f39116d17fd0"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Done",
-            "custom_id": "a1446babfb6abf9f84c70092b4810df2"
+            "custom_id": "fef04f4da57978726b55ec420ecc6600"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": "all",
+    "picker_mode": null
   },
   "train": {
     "embed": {
@@ -808,7 +4430,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "88f58c8542f5ff56625c5eded1aaff45",
+            "custom_id": "cea8c250646698e78c57cbcdd1ec64f2",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -854,7 +4476,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "edc6f712ca5b59c55a8e6493fe7ba7b9",
+            "custom_id": "1158ed14c1ca51d62c68c9cd14c5c886",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -893,7 +4515,7 @@
             "style": 3,
             "disabled": false,
             "label": "Train attack · 50 gold",
-            "custom_id": "f9d74315f1a4cc4006c458963e731820"
+            "custom_id": "5ac6f73507fc2e16897b8d91cc23e1f4"
           }
         ]
       },
@@ -905,12 +4527,14 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "2c3013a71043c334db2d1d44c4271e2f"
+            "custom_id": "fefa9678692dc08d57d142001cbcee66"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": null,
+    "picker_mode": null
   },
   "evolve": {
     "embed": {
@@ -933,7 +4557,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "9f424f096c88cbc2169a2e7ff4af93fb",
+            "custom_id": "73728b2f5d5e4485bd6b08d14723fc1a",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -982,7 +4606,7 @@
             "style": 3,
             "disabled": true,
             "label": "Evolve into Timestitch",
-            "custom_id": "04edc7ad9fbaff89ea7c556105a44c4e"
+            "custom_id": "41e00c4338de499174405e3c56727141"
           }
         ]
       },
@@ -994,12 +4618,14 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "ef59f87da6052b8a631251235bac1156"
+            "custom_id": "51863c45453c6f5e9d505d4baacdd653"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": null,
+    "picker_mode": null
   },
   "team": {
     "embed": {
@@ -1038,7 +4664,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "99a39fe798cc9716f79eb9871dc17502",
+            "custom_id": "466a78d60a7c15bfc2befdeaa39ee20a",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1087,14 +4713,14 @@
             "style": 1,
             "disabled": false,
             "label": "Exploration",
-            "custom_id": "902d16fffc770b64f31a30a136dbb982"
+            "custom_id": "b1c83792f2316705e82ccb0d5e9d05e8"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Raids",
-            "custom_id": "677f2139bed8f88f674a2a157ab3c057"
+            "custom_id": "fc0a29a5d13f1b6f9519d6d5a1a7aff6"
           }
         ]
       },
@@ -1106,21 +4732,21 @@
             "style": 2,
             "disabled": true,
             "label": "Assign lead",
-            "custom_id": "ce4a8890d707f613385ef790a3647616"
+            "custom_id": "6ebee9dca416c7db410604d4e92de0bf"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "Assign reserve 1",
-            "custom_id": "9e374fb1d74745a1291bfcf0af130d42"
+            "custom_id": "75ee153b442184066bf297f750b39ca4"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "Assign reserve 2",
-            "custom_id": "627f65fdbf3fe8a9052c1a653ef5cc4e"
+            "custom_id": "95e323d9e901482a5c0fcd7fc3096286"
           }
         ]
       },
@@ -1132,7 +4758,7 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "0fcd7f102a63d34cc9a1ebc225c2067c"
+            "custom_id": "d5a634de0c53fe277ebb2fd68adcea9e"
           }
         ]
       },
@@ -1144,12 +4770,14 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "a0ed62e968ca42aa95182f7776c12be8"
+            "custom_id": "0d8002b895c78a49d4d5c40137867c4d"
           }
         ]
       }
     ],
-    "wide_art": true
+    "wide_art": true,
+    "rarity": null,
+    "picker_mode": null
   },
   "raid": {
     "embed": {
@@ -1188,7 +4816,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "b4940174951d3a856402d8142d415f44",
+            "custom_id": "7be5fda18420da1fe8b411d2975dd3c9",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1237,14 +4865,14 @@
             "style": 2,
             "disabled": false,
             "label": "Exploration",
-            "custom_id": "6a9c7de4223c79fe957843b3dd47ebd4"
+            "custom_id": "826667314a607f931bf5c9530a5e5b74"
           },
           {
             "type": 2,
             "style": 1,
             "disabled": false,
             "label": "Raids",
-            "custom_id": "6941ec34672f3b4135e5aac975dacdaf"
+            "custom_id": "d7189c2d98665836584634b61a62030e"
           }
         ]
       },
@@ -1256,21 +4884,21 @@
             "style": 2,
             "disabled": false,
             "label": "Assign front",
-            "custom_id": "c4c4ee1379393f68ee6805b2c21bf8e4"
+            "custom_id": "6a2ba742edb87276f1d0657866f81d3a"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Assign mid",
-            "custom_id": "d130978a8c6290655349bf9be9d89571"
+            "custom_id": "b1a0ec5e7afc48113edf8c123a8d3d05"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Assign bench",
-            "custom_id": "9411de70e5e11b7267bb51faf1f3f4e1"
+            "custom_id": "586a23381c3a8d2e260ada8b8bdb9347"
           }
         ]
       },
@@ -1282,7 +4910,7 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "3e5803a01d43f5fbdb0a4bd380139b52"
+            "custom_id": "c45f16eba06e193d6e5d693137345c10"
           }
         ]
       },
@@ -1294,12 +4922,14 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "134e90cbe4f35ded52fa9880a809863d"
+            "custom_id": "2dc9300ba08cc227f378985e2e252847"
           }
         ]
       }
     ],
-    "wide_art": true
+    "wide_art": true,
+    "rarity": null,
+    "picker_mode": null
   },
   "roster": {
     "embed": {
@@ -1335,73 +4965,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "88d1bcbc9211f3a3382058220bab7482",
-            "min_values": 1,
-            "max_values": 1,
-            "disabled": false,
-            "required": true,
-            "placeholder": "Filter by rarity",
-            "options": [
-              {
-                "label": "Common",
-                "value": "common",
-                "default": true
-              },
-              {
-                "label": "Uncommon",
-                "value": "uncommon",
-                "default": false
-              },
-              {
-                "label": "Rare",
-                "value": "rare",
-                "default": false
-              },
-              {
-                "label": "Epic",
-                "value": "epic",
-                "default": false
-              },
-              {
-                "label": "Legendary",
-                "value": "legendary",
-                "default": false
-              },
-              {
-                "label": "Divine",
-                "value": "divine",
-                "default": false
-              },
-              {
-                "label": "Altered Divine",
-                "value": "altered_divine",
-                "default": false
-              },
-              {
-                "label": "Corrupted",
-                "value": "corrupted",
-                "default": false
-              },
-              {
-                "label": "Ancient",
-                "value": "ancient",
-                "default": false
-              },
-              {
-                "label": "Dev",
-                "value": "dev",
-                "default": false
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": 1,
-        "components": [
-          {
-            "type": 3,
-            "custom_id": "9117db7f0148025221489559d279ca6f",
+            "custom_id": "72ca8d6f4b91c5e7b3add2cc0f518a9d",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1432,13 +4996,19 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "62e05c2226b9dd6ad73a9785908e33c1",
+            "custom_id": "514adebcca1d28a291c20fa80767f7b4",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
             "required": true,
             "placeholder": "Open a companion’s details",
             "options": [
+              {
+                "label": "Change rarity…",
+                "value": "rarities",
+                "default": false,
+                "description": "Currently browsing Common beasts"
+              },
               {
                 "label": "#1 · Twine · Lv.8",
                 "value": "1",
@@ -1469,28 +5039,28 @@
             "style": 2,
             "disabled": true,
             "label": "Previous page",
-            "custom_id": "d82ae2e2cf09a2070d6ab248e0626279"
+            "custom_id": "c0bbfff08640eff35ee051a9c5238355"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "1/1",
-            "custom_id": "5a0b5a77734e17609979ac875d0b2ce5"
+            "custom_id": "a17e4511fc9a0f5cb187f36e7c699367"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "Next page",
-            "custom_id": "c9ec9cc4c5de29f1ff792a3a208e4da2"
+            "custom_id": "32147a2bd2913e8b881d9038888779c3"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Field Journal",
-            "custom_id": "5072ae42f823d9e660ab1e3290f2a7bb"
+            "custom_id": "646d72272523e948d046828e5a033e77"
           }
         ]
       },
@@ -1502,18 +5072,20 @@
             "style": 1,
             "disabled": false,
             "label": "Search",
-            "custom_id": "313223a9dad29d0965df2eb3cc4d2844"
+            "custom_id": "8ea365ff8dc0de1335de70ee782f6964"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "cf9a61ef377c51db292576358db76b32"
+            "custom_id": "4e9499be764b6c50e78f535638b06c81"
           }
         ]
       }
     ],
-    "wide_art": false
+    "wide_art": false,
+    "rarity": "common",
+    "picker_mode": "beasts"
   }
 }

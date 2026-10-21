@@ -12,6 +12,138 @@
     },
     {
       "source": "beast",
+      "destination": "rarity_menu_common",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_common",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_common",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_uncommon",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_uncommon",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_rare",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_rare",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_epic",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_epic",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_legendary",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_legendary",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_divine",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_divine",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_altered_divine",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_altered_divine",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_corrupted",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_corrupted",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_ancient",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_ancient",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_dev",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "rarity_menu_dev",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "beast",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
       "destination": "care",
       "message_id": 8181,
       "followups": 0
