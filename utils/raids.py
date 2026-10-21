@@ -68,7 +68,8 @@ class RaidLobby(RaidControls):
         player = await storage.get_player(uid)
         if not player or player['level'] < MIN_TRAINER_LEVEL:
             raise ValueError(f'Reach trainer level {MIN_TRAINER_LEVEL} before joining a raid.')
-        if uid in active_fighters:
+        from utils import trial_locks
+        if uid in active_fighters or trial_locks.locked(uid):
             raise ValueError('Finish your current battle first.')
         if self.guild_id:
             async with storage.connect() as db:
@@ -213,13 +214,17 @@ class RaidSession:
         # Keep this check and reservation together: another trainer may enter a
         # battle while the player lookups above yield to the event loop.
         for uid in self.users:
-            if uid in active_fighters:
+            from utils import trial_locks
+            if uid in active_fighters or trial_locks.locked(uid):
                 raise ValueError('A trainer has entered another battle; nothing was spent.')
         active_fighters.update(self.users)
         try:
             rows = {uid: await party_rows(uid) for uid in self.users}
             async with storage.connect() as db:
                 await db.execute('BEGIN IMMEDIATE')
+                from utils.trials import assert_available
+                for uid in self.users:
+                    await assert_available(db, uid)
                 if self.guild_id:
                     cur = await db.execute('UPDATE guilds SET guild_tokens=guild_tokens-? WHERE id=? AND level>=5 AND guild_tokens>=?', (GUILD_ENTRY_TOKENS, self.guild_id, GUILD_ENTRY_TOKENS))
                     if not cur.rowcount:
@@ -764,6 +769,10 @@ class RaidSession:
 
     async def _settle_rewards(self, server_id):
         from utils.progress import track_quest_event, record_bestiary_sighting
+        from utils.trials import assert_available
+        async with storage.connect() as db:
+            for uid in self.users:
+                await assert_available(db, uid)
         lines = []
         for uid in self.users:
             if self.damage[uid] + self.support[uid] <= 0:
@@ -775,13 +784,16 @@ class RaidSession:
             lines.append(f"<@{uid}> · {self.damage[uid]} damage / {self.support[uid]} support · forging materials + gold + shards · " + ('a companion joins!' if caught else f'catch progress {clears}/{8 if self.guild_id else 12}'))
         async with storage.connect() as db:
             await db.execute('BEGIN IMMEDIATE')
+            for uid in self.users:
+                await assert_available(db, uid)
             completed = await db.execute('UPDATE raid_settlements SET completed=1 WHERE raid_id=? AND completed=0', (self.id,))
             if completed.rowcount and self.guild_id:
                 await db.execute('UPDATE guilds SET guild_tokens=guild_tokens+? WHERE id=?', (GUILD_VICTORY_TOKENS, self.guild_id))
-            for uid in self.users:
-                for state in self.party[uid]:
-                    if state['hp'] > 0:
-                        await db.execute('UPDATE player_beasts SET hp=max_hp WHERE user_id=? AND id=?', (uid, state['id']))
+            if completed.rowcount:
+                for uid in self.users:
+                    for state in self.party[uid]:
+                        if state['hp'] > 0:
+                            await db.execute('UPDATE player_beasts SET hp=max_hp WHERE user_id=? AND id=?', (uid, state['id']))
             await db.execute("UPDATE raids SET status='completed',ended_at=CURRENT_TIMESTAMP WHERE id=?", (self.id,))
             await db.commit()
         return lines
@@ -801,6 +813,8 @@ class RaidSession:
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute('BEGIN IMMEDIATE')
+            from utils.trials import assert_available
+            await assert_available(db, uid)
             async with db.execute('SELECT caught FROM raid_rewards WHERE raid_id=? AND user_id=?', (self.id, uid)) as c:
                 old = await c.fetchone()
             if old:
@@ -887,15 +901,33 @@ async def refund_raid(raid_id):
         await db.execute("UPDATE raids SET status='abandoned',ended_at=CURRENT_TIMESTAMP WHERE id=? AND status='active'", (raid_id,))
         await db.commit()
 
-async def recover_raids():
+async def recover_raids(*, user_id=None):
     # Replay recorded victories before refunding interrupted active sessions.
     async with storage.connect() as db:
-        async with db.execute('SELECT raid_id,payload FROM raid_settlements WHERE completed=0') as c:
+        query = 'SELECT raid_id,payload FROM raid_settlements WHERE completed=0'
+        parameters = ()
+        if user_id is not None:
+            query += " AND EXISTS(SELECT 1 FROM json_each(raid_settlements.payload,'$.users') WHERE CAST(value AS INTEGER)=?)"
+            parameters = (user_id,)
+        async with db.execute(query, parameters) as c:
             pending = await c.fetchall()
     for raid_id, serialized in pending:
         if raid_id in active_raids:
             continue
         payload = json.loads(serialized)
+        # A saved trial from before an interrupted settlement must retain its
+        # exact resources. Leave this receipt pending for the next recovery.
+        from utils.trials import assert_available
+        blocked = False
+        async with storage.connect() as db:
+            for uid in payload['users']:
+                try:
+                    await assert_available(db, int(uid))
+                except ValueError:
+                    blocked = True
+                    break
+        if blocked:
+            continue
         session = RaidSession(None, payload['boss'], payload['users'], payload['guild_id'])
         session.id = raid_id
         session.raid_level = payload.get('raid_level', 10)
@@ -903,6 +935,10 @@ async def recover_raids():
         session.damage = {int(uid): amount for uid, amount in payload['damage'].items()}
         session.support = {int(uid): amount for uid, amount in payload['support'].items()}
         await session._settle_rewards(payload['server_id'])
+    if user_id is not None:
+        # A post-trial claim only replays this trainer's recorded victories.
+        # The global interrupted-session refund belongs to startup recovery.
+        return
     async with storage.connect() as db:
         async with db.execute("SELECT id FROM raids WHERE status='active'") as c:
             ids = [r[0] for r in await c.fetchall()]

@@ -30,6 +30,7 @@ class CareState:
     in_battle: bool = False
     live_target: bool = False
     feed_earned: int = 0
+    trial_locked: bool = False
 
 
 @dataclass(frozen=True)
@@ -69,11 +70,13 @@ async def snapshot(user_id, selected_id=None):
                 listed = {row[0] for row in await cursor.fetchall()}
             recovery = await party_recovery_targets(db, user_id, party)
             earned = await growth_treat_earned(db, beast['id']) if beast else 0
+            from utils.trial_locks import member_ids
+            frozen = await member_ids(db, user_id)
         live_target = next((row for row in party if beast and row['id'] == beast['id']), None)
         return CareState(rows, player, inventory, selected_id, beast, live_target or beast,
                          recovery, listed,
                          bool(live and live.get('closed') or user_id in active_fighters and live is None),
-                         bool(live), live_target is not None, earned)
+                         bool(live), live_target is not None, earned, bool(beast and beast['id'] in frozen))
 
 
 def supported_items(state):
@@ -109,6 +112,8 @@ def preview(state, item_id, choice=None):
         reasons.append('This companion is no longer in your collection. Choose another companion.')
     if state.preparing:
         reasons.append('Your battle or transfer is preparing or settling. Refresh in a moment.')
+    if state.trial_locked:
+        reasons.append('This companion is on a tower trial. Use its between-wave care panel, or retreat and bank before other care.')
     affected_ids = {row['id'] for row in members} if effect.get('revive_party') else {state.selected_id}
     if affected_ids.intersection(state.listed_ids):
         reasons.append('Delist the affected companion before using items.')

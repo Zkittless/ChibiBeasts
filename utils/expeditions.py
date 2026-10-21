@@ -109,6 +109,8 @@ async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0
                     db.row_factory = aiosqlite.Row
                     await storage.recover_beasts(user_id, db)
                     await db.execute('BEGIN IMMEDIATE')
+                    from utils.trials import assert_available
+                    await assert_available(db, user_id)
                     player, companion = await _trainer(db, user_id, realm)
                     async with db.execute("SELECT status FROM expeditions WHERE user_id=? AND status IN ('active','battle','quick')", (user_id,)) as cursor:
                         active = await cursor.fetchone()

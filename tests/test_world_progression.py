@@ -96,11 +96,8 @@ class WorldRewardFlow(DatabaseCase):
     async def pick(self, trip, choice):
         return await expeditions.choose(42, trip['id'], trip['version'], choice)
 
-    async def test_both_public_encounter_paths_supply_the_actual_companion_level(self):
-        # Extension lifecycle tests replace cog modules; patch the exact live
-        # class's globals rather than a class retained from test collection.
-        from importlib import import_module
-        battle_module = import_module('cogs.battle')
+    async def test_exploration_uses_visitor_level_while_tower_saves_fixed_band_ramp(self):
+        from utils import trials
         row_id = await self.ready(trainer=3)
         await self.execute('UPDATE player_beasts SET level=6 WHERE id=?', (row_id,))
         trip = await expeditions.begin(42, 'woods_deep')
@@ -108,12 +105,13 @@ class WorldRewardFlow(DatabaseCase):
             trip = await self.pick(trip, 'tracks')
         self.assertEqual(roll.call_args.args[:2], ('woods_deep', 6))
         self.assertIn(trip['payload']['encounter_level'], (6, 7))
-        with patch.object(battle_module, 'encounter_level', wraps=encounter_level) as roll, \
-                patch('utils.gear_art.send_owned_portrait', new=AsyncMock()), \
-                patch.object(battle_module, 'run_pve_battle', new=AsyncMock()) as battle:
-            await battle_module.Battle(None)._challenge(interaction(), 'woods_deep')
-        roll.assert_called_once_with('woods_deep', 6)
-        self.assertIn(battle.call_args.args[4]['level'], (6, 7))
+        await self.pick(trip, 'return_early')
+        tower = await trials.begin(42, 'woods_deep', seed=14)
+        levels = [wave['level'] for wave in tower['payload']['plan']['waves']]
+        self.assertEqual(levels, [6, 6, 7, 8, 9, 10])
+        self.assertEqual((await trials.read(42, tower['id']))['payload']['plan']['waves'],
+                         tower['payload']['plan']['waves'])
+        await trials.retreat(42, tower['id'], tower['version'])
 
     async def test_depth_capture_retains_rolled_level_and_base_story_region(self):
         await self.ready()

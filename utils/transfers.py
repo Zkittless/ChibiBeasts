@@ -6,6 +6,8 @@ from utils.duels import reserve_fighters
 
 
 async def _transferable(db, owner, row_id, *, listing_id=None, allow_soulbound=False):
+    from utils.trials import assert_available
+    await assert_available(db, owner, [row_id])
     async with db.execute('SELECT * FROM player_beasts WHERE id=? AND user_id=?', (row_id, owner)) as cursor:
         row = await cursor.fetchone()
     if not row:

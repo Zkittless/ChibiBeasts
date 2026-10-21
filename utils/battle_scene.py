@@ -22,13 +22,22 @@ def timing(before, after, action, t):
             fx.clamp((elapsed-action.milliseconds)/fx.RETREAT_MS) if retreating else 0)
 
 
+def entering_pose(home, side, t):
+    """Bring the next opponent from outside the field into its settled pose."""
+    progress = fx.smooth((t - .08) / .72)
+    edge = art.WIDTH + 110 if side else -110
+    return replace(home, x=fx.mix(edge, home.x, progress),
+                   feet=home.feet - abs(math.sin(progress * math.pi * 3)) * 6)
+
+
 def draw_frame(before, after, realm, action=None, t=1, journal=()):
     if any(f.party for f in before + after):
         return draw_team_frame(before, after, realm, action, t, journal)
     image = art.field_background(realm, art.TOTAL_HEIGHT).copy()
     move_t, departure_t = timing(before, after, action, t)
+    entering = bool(action and action.kind == 'enter')
     complete = any(f.hp <= 0 for f in after)
-    title = 'BATTLE COMPLETE' if complete and (not action or t >= 1 or any(f.hp <= 0 for f in before)) else 'RETREAT' if departure_t else 'ULTIMATE' if action and action.ultimate else 'IN BATTLE' if action else 'YOUR TURN'
+    title = 'BATTLE COMPLETE' if complete and (not action or t >= 1 or any(f.hp <= 0 for f in before)) else 'RETREAT' if departure_t else 'NEXT OPPONENT' if entering else 'ULTIMATE' if action and action.ultimate else 'IN BATTLE' if action else 'YOUR TURN'
     ui.heading(image, title, art.REALMS[realm])
     for i, (old, new) in enumerate(zip(before, after)):
         visible = new if move_t >= fx.IMPACT else old
@@ -39,8 +48,8 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
              for i,fighter in enumerate(after) for source in (art.sprite(fighter.species, fighter.armor_id),)]
     poses = list(homes)
     actor = action.actor if action else 0
-    animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action else None
-    if action:
+    animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action and not entering else None
+    if animation:
         poses[actor] = fx.motion(animation, homes[actor], homes[1-actor], move_t)
         if .48<=move_t<.76 and after[1-actor].hp<before[1-actor].hp:
             sign = 1 if actor==0 else -1
@@ -58,6 +67,8 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
     visible_poses=[]
     for i,(old,new) in enumerate(zip(before,after)):
         pose=poses[i]
+        if entering and i == actor:
+            pose = entering_pose(homes[i], i, move_t)
         # An already defeated fighter stays offstage in every later prompt,
         # final PNG and status clip. A newly defeated fighter first takes the
         # hit, recovers its normal pose, turns, then leaves in its own segment.
@@ -84,7 +95,7 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
         else:
             fx.paint_sprite(field,source,pose)
     front=fx.Effects(field.size)
-    if action and not departure_t:
+    if animation and not departure_t:
         front.effect(animation,poses[actor],poses[1-actor],move_t,scale=1.12 if action.ultimate else 1)
     for i,(old,new) in enumerate(zip(before,after)):
         pose=visible_poses[i]
@@ -250,9 +261,10 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
     move_t, departure_t = timing(before, after, action, t)
     switching = bool(action and action.kind == 'swap')
     assisting = bool(action and action.kind == 'assist')
+    entering = bool(action and action.kind == 'enter')
     complete = after[1].hp <= 0 or not any(f.hp > 0 for f in after[0].party)
     title = ('BATTLE COMPLETE' if complete and (not action or t >= 1 or before[1].hp <= 0)
-             else 'RETREAT' if departure_t else 'TAG SWITCH' if switching else 'TEAM ASSIST' if assisting
+             else 'RETREAT' if departure_t else 'NEXT OPPONENT' if entering else 'TAG SWITCH' if switching else 'TEAM ASSIST' if assisting
              else 'ULTIMATE' if action and action.ultimate else 'IN BATTLE' if action else
              'CHOOSE A COMPANION' if after[0].hp <= 0 else 'YOUR TURN')
     ui.heading(image, title, art.REALMS[realm])
@@ -268,7 +280,7 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
         homes.append(fx.Pose(x, feet, size=size, flip=bool(i), height=height))
     poses = list(homes)
     actor = action.actor if action else 0
-    animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action and not (switching or assisting) else None
+    animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action and not (switching or assisting or entering) else None
     if animation:
         poses[actor] = fx.motion(animation, homes[actor], homes[1-actor], move_t)
         if .48 <= move_t < .76 and after[1-actor].hp < before[1-actor].hp:
@@ -310,6 +322,8 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
             continue
         hidden = new.hp <= 0 and (old.hp <= 0 or not action or t >= 1)
         pose = poses[i]
+        if entering and i == actor:
+            pose = entering_pose(homes[i], i, move_t)
         if new.hp <= 0 < old.hp and departure_t:
             pose = fx.retreat(homes[i], departure_t, new.species)
         if old.hp <= 0 < new.hp and action:

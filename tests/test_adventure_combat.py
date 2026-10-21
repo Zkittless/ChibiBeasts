@@ -427,22 +427,12 @@ class AdventureCombat(DatabaseCase):
         self.assertEqual(adventure_party.encounter_difficulty(party, enemy), 'trivial')
         self.assertEqual(adventure_party.encounter_difficulty(list(reversed(party)), enemy), 'trivial')
 
-    async def test_real_challenge_weak_lead_cannot_inflate_rewards_above_powerful_reserve(self):
+    async def test_tower_weak_lead_cannot_inflate_rewards_above_powerful_reserve(self):
+        from utils import trials
         await self.party(('twine', 'imp'))
         rows = await self.rows('SELECT * FROM player_beasts ORDER BY id')
         weak_id, strong_id = [row['id'] for row in rows]
-
-        class TagThenAttack(TeamMoveView):
-            async def wait(view):
-                if view.battle.active['id'] == weak_id:
-                    view.chosen_move = 'swap', strong_id
-                else:
-                    view.chosen_move = view.battle.active['moves'][0], False
-
-        async def automatic(*args, **kwargs):
-            return await team_duel(*args, **kwargs, view_class=TagThenAttack)
-
-        trainer_awards, companion_awards = [], []
+        trainer_awards, companion_bases = [], []
         for lead, reserve in ((weak_id, strong_id), (strong_id, weak_id)):
             await self.execute('UPDATE player_beasts SET is_active=(id=?),level=1,exp=0,mana=max_mana WHERE user_id=42', (lead,))
             await self.execute('UPDATE player_beasts SET hp=20,max_hp=20,attack=1,defense=1,speed=50 WHERE id=?', (weak_id,))
@@ -450,21 +440,26 @@ class AdventureCombat(DatabaseCase):
             await self.execute('DELETE FROM adventure_team WHERE user_id=42')
             await adventure_party.set_slot(42, reserve, 1)
             await storage.update_player(42, level=1, exp=0, challenge_last_at=0)
-            with patch('cogs.battle.pick_encounter', return_value=storage.get_beast_data('slime')), \
-                 patch('cogs.battle.encounter_level', return_value=5), \
-                 patch('utils.gear_art.send_owned_portrait', new=AsyncMock()), \
-                 patch('cogs.battle.check_achievements', new=AsyncMock(return_value=[])), \
-                 patch('utils.team_combat.team_duel', side_effect=automatic), \
-                 patch('cogs.battle.encounter_trainer_xp', wraps=encounter_trainer_xp) as trainer_xp, \
-                 patch('cogs.battle.encounter_beast_xp', wraps=encounter_beast_xp) as beast_xp, \
-                 patch('cogs.battle.award_player_exp', wraps=award_player_exp) as award, \
-                 patch('utils.combat.random.random', return_value=.99):
-                await Battle.challenge.callback(Battle(None), self.fake(), 'woods')
+            await self.execute('DELETE FROM trial_cooldowns WHERE user_id=42')
+            with patch('utils.trials.encounter_trainer_xp', wraps=encounter_trainer_xp) as trainer_xp, \
+                 patch('utils.trials.encounter_beast_xp', wraps=encounter_beast_xp) as beast_xp:
+                run = await trials.begin(42, 'woods', seed=14)
             self.assertEqual(trainer_xp.call_count, 1)
             self.assertEqual(trainer_xp.call_args.kwargs['difficulty'], 'trivial')
             self.assertEqual(beast_xp.call_args.kwargs['difficulty'], 'trivial')
-            trainer_awards.append(award.call_args.args[1])
-            companion_awards.append(encounter_beast_xp(*beast_xp.call_args.args, **beast_xp.call_args.kwargs))
-        self.assertEqual(trainer_awards, [encounter_trainer_xp(1, 5, difficulty='trivial')] * 2)
-        self.assertEqual(companion_awards[0], companion_awards[1])
-        self.assertEqual(len(await self.rows('SELECT * FROM battles WHERE winner_id=42')), 2)
+            companion_bases.append(run['payload']['reward_baseline']['party'][0]['idle'])
+            for _ in range(60):
+                if run['status'] == 'complete':
+                    break
+                if run['status'] == 'between':
+                    run = await trials.next_wave(42, run['id'], run['version'])
+                else:
+                    active = run['payload']['party'][run['payload']['slot']]
+                    choice = ['swap', strong_id] if active['id'] == weak_id else [active['moves'][0], False]
+                    run = await trials.act(42, run['id'], run['version'], choice)
+            self.assertEqual(run['payload']['outcome'], 'won')
+            trainer_awards.append(run['payload']['settlement']['trainer_xp'])
+        self.assertEqual(trainer_awards, [int(encounter_trainer_xp(1, 5, difficulty='trivial') * 1.5)] * 2)
+        self.assertEqual(companion_bases[0], companion_bases[1])
+        self.assertEqual(len(await self.rows("SELECT * FROM trial_runs WHERE status='complete'")), 2)
+        self.assertEqual((await storage.get_player(42))['wins'], 2)

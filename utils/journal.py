@@ -162,7 +162,7 @@ class JournalView(discord.ui.LayoutView):
 
     def render_adventure(self):
         trip = self.trip
-        self.row(self.button('Battle log', 'page:battle_log'))
+        self.row(self.button('Battle log', 'page:battle_log'), self.button('Tower Trials', 'launch:challenge'))
         if not trip or trip['status'] == 'complete':
             if trip:
                 self.text(f"**Back from {REALMS[trip['realm']]['name']}** · Results in Battle log.")
@@ -435,7 +435,7 @@ class JournalView(discord.ui.LayoutView):
                                       f"Reward · {q['reward_gold']:,} gold · {q['reward_exp']} EXP" for q in self.dailies))
         self.row(self.button('Claim daily', 'launch:daily', discord.ButtonStyle.success, disabled=not daily_ready), self.button('Shop', 'launch:shop'), self.button('Hide objectives' if self.show_daily_details else 'Daily objectives', 'daily_details'))
         self.text('**Battles and community**')
-        self.row(self.button('Wild challenge', 'launch:challenge'), self.button('Guild', 'launch:guild'), self.button('Guild raid', 'launch:raid'))
+        self.row(self.button('Tower Trials', 'launch:challenge'), self.button('Guild', 'launch:guild'), self.button('Guild raid', 'launch:raid'))
         self.row(self.button('Nursery', 'page:nursery'), self.button('Perks', 'panel:perks'), self.button('Command guide', 'commands'))
 
     def render(self):
@@ -546,6 +546,10 @@ class JournalView(discord.ui.LayoutView):
             await journal_log.load(self)
 
     async def launch(self, interaction, name):
+        if name == 'challenge':
+            from utils.trial_panel import open_trials
+            async with self.lock:
+                return await open_trials(interaction, bot=self.bot, destination=self.realm, source=self)
         command = self.bot.tree.get_command(name) if self.bot else None
         if not command:
             return await interaction.response.send_message('This activity is unavailable. Open the journal again after the bot finishes loading.', ephemeral=True)
@@ -885,6 +889,8 @@ class JournalView(discord.ui.LayoutView):
     async def on_timeout(self):
         self.closed = True
         async with self.lock:
+            if self.message_repurposed:
+                return
             self.render()
             if self.message:
                 try:

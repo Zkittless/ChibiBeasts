@@ -97,6 +97,14 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None,
             target = updated or beast
             recovery_targets = await party_recovery_targets(db, user_id, updated_party) if effect.get('revive_party') else []
             target_ids = [row['id'] for row in recovery_targets] if effect.get('revive_party') else [beast['id']] if beast else []
+            from utils.trials import assert_available
+            if {'status_ward', 'grant_ultimate_charge', 'defense_boost_percent',
+                    'speed_boost_percent', 'reset_challenge', 'reset_explore'}.intersection(effect):
+                await assert_available(db, user_id)
+            elif {'revive', 'revive_party', 'heal_percent', 'happiness',
+                    'damage_multiplier_permanent', 'exp', 'instant_levels',
+                    'stat_boost', 'rename'}.intersection(effect):
+                await assert_available(db, user_id, target_ids)
             if target_ids:
                 placeholders = ','.join('?' for _ in target_ids)
                 async with db.execute(f'SELECT 1 FROM beast_market WHERE beast_row_id IN ({placeholders}) LIMIT 1', target_ids) as cursor:
@@ -247,6 +255,7 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None,
                     messages.append(f"+{effect[key]}% {stat} in {('this' if updated else 'your next')} battle.")
             if effect.get('reset_explore') or effect.get('reset_challenge'):
                 await db.execute('UPDATE players SET explore_last_at=0,challenge_last_at=0 WHERE user_id=?', (user_id,))
+                await db.execute('UPDATE trial_cooldowns SET ready_at=0 WHERE user_id=?', (user_id,))
                 messages.append('Exploration and challenge cooldowns reset.')
             flags = [('encounter_boost', 'incense_charges', effect.get('charges', 3)), ('raid_damage_boost', 'raid_totem_charges', 1), ('catch_boost_charges', 'catch_boost_charges', effect.get('catch_boost_charges', 0)), ('guaranteed_rare_charges', 'ancient_compass_charges', effect.get('guaranteed_rare_charges', 0))]
             for key, column, amount in flags:

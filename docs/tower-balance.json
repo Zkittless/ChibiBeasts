@@ -1,0 +1,830 @@
+{
+  "kind": "synthetic production-core replay; no Discord/network timing",
+  "assumptions": [
+    "Entry bare and prepared fixtures are separate, not simulated acquisition timelines.",
+    "Prepared gear obeys trainer gates and checked wild-material reachability.",
+    "Prepared training: 4 attack + 4 HP sessions per companion, at most 4/day over 2 days.",
+    "Prepared care: at most 3 existing Pixie Dust Potions (20% HP), between waves only.",
+    "No other perks, consumables, permanent-stat items or passive overrides."
+  ],
+  "biomes": [
+    {
+      "destination": "woods",
+      "total": 5,
+      "trainer": 1,
+      "species": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "prepared_gear": [
+        "mossbark_wrapping",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 1,
+          "trials": 30,
+          "wins": 13,
+          "mean_cleared": 4.23,
+          "mean_actions": 13.77
+        },
+        {
+          "label": "entry_prepared",
+          "level": 1,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 5.0,
+          "mean_actions": 8.83
+        },
+        {
+          "label": "upper_prepared",
+          "level": 5,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 5.0,
+          "mean_actions": 7.83
+        }
+      ]
+    },
+    {
+      "destination": "woods_deep",
+      "total": 6,
+      "trainer": 3,
+      "species": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "prepared_gear": [
+        "mossbark_wrapping",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 6,
+          "trials": 30,
+          "wins": 14,
+          "mean_cleared": 4.87,
+          "mean_actions": 15.27
+        },
+        {
+          "label": "entry_prepared",
+          "level": 6,
+          "trials": 30,
+          "wins": 29,
+          "mean_cleared": 5.87,
+          "mean_actions": 13.17
+        },
+        {
+          "label": "upper_prepared",
+          "level": 10,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 6.0,
+          "mean_actions": 12.43
+        }
+      ]
+    },
+    {
+      "destination": "ember",
+      "total": 7,
+      "trainer": 6,
+      "species": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "prepared_gear": [
+        "emberstone_vest",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 11,
+          "trials": 30,
+          "wins": 3,
+          "mean_cleared": 4.5,
+          "mean_actions": 16.17
+        },
+        {
+          "label": "entry_prepared",
+          "level": 11,
+          "trials": 30,
+          "wins": 23,
+          "mean_cleared": 6.77,
+          "mean_actions": 16.27
+        },
+        {
+          "label": "upper_prepared",
+          "level": 15,
+          "trials": 30,
+          "wins": 27,
+          "mean_cleared": 6.9,
+          "mean_actions": 15.73
+        }
+      ]
+    },
+    {
+      "destination": "ember_deep",
+      "total": 8,
+      "trainer": 9,
+      "species": [
+        "timestitch",
+        "unicorn",
+        "wyvern"
+      ],
+      "prepared_gear": [
+        "emberstone_vest",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 16,
+          "trials": 30,
+          "wins": 0,
+          "mean_cleared": 3.63,
+          "mean_actions": 15.73
+        },
+        {
+          "label": "entry_prepared",
+          "level": 16,
+          "trials": 30,
+          "wins": 13,
+          "mean_cleared": 6.8,
+          "mean_actions": 21.3
+        },
+        {
+          "label": "upper_prepared",
+          "level": 20,
+          "trials": 30,
+          "wins": 27,
+          "mean_cleared": 7.9,
+          "mean_actions": 19.7
+        }
+      ]
+    },
+    {
+      "destination": "glacial",
+      "total": 9,
+      "trainer": 12,
+      "species": [
+        "timestitch",
+        "unicorn",
+        "griffin"
+      ],
+      "prepared_gear": [
+        "unicorn_healer_vestments",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 21,
+          "trials": 30,
+          "wins": 0,
+          "mean_cleared": 2.7,
+          "mean_actions": 13.63
+        },
+        {
+          "label": "entry_prepared",
+          "level": 21,
+          "trials": 30,
+          "wins": 19,
+          "mean_cleared": 8.2,
+          "mean_actions": 26.13
+        },
+        {
+          "label": "upper_prepared",
+          "level": 25,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 9.0,
+          "mean_actions": 22.4
+        }
+      ]
+    },
+    {
+      "destination": "glacial_deep",
+      "total": 10,
+      "trainer": 16,
+      "species": [
+        "timestitch",
+        "yeti",
+        "thunderbird"
+      ],
+      "prepared_gear": [
+        "unicorn_healer_vestments",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 26,
+          "trials": 30,
+          "wins": 0,
+          "mean_cleared": 5.17,
+          "mean_actions": 19.93
+        },
+        {
+          "label": "entry_prepared",
+          "level": 26,
+          "trials": 30,
+          "wins": 28,
+          "mean_cleared": 9.47,
+          "mean_actions": 25.1
+        },
+        {
+          "label": "upper_prepared",
+          "level": 30,
+          "trials": 30,
+          "wins": 26,
+          "mean_cleared": 9.1,
+          "mean_actions": 22.4
+        }
+      ]
+    },
+    {
+      "destination": "trenches",
+      "total": 11,
+      "trainer": 20,
+      "species": [
+        "timestitch",
+        "hydra",
+        "abyssal_eel"
+      ],
+      "prepared_gear": [
+        "unicorn_healer_vestments",
+        "thunderbird_feathers"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 31,
+          "trials": 30,
+          "wins": 0,
+          "mean_cleared": 3.97,
+          "mean_actions": 20.73
+        },
+        {
+          "label": "entry_prepared",
+          "level": 31,
+          "trials": 30,
+          "wins": 21,
+          "mean_cleared": 10.5,
+          "mean_actions": 40.97
+        },
+        {
+          "label": "upper_prepared",
+          "level": 35,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 11.0,
+          "mean_actions": 34.8
+        }
+      ]
+    },
+    {
+      "destination": "trenches_deep",
+      "total": 12,
+      "trainer": 25,
+      "species": [
+        "timestitch",
+        "hydra",
+        "dragon"
+      ],
+      "prepared_gear": [
+        "unicorn_healer_vestments",
+        "thunderbird_feathers"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 36,
+          "trials": 30,
+          "wins": 0,
+          "mean_cleared": 2.97,
+          "mean_actions": 18.17
+        },
+        {
+          "label": "entry_prepared",
+          "level": 36,
+          "trials": 30,
+          "wins": 22,
+          "mean_cleared": 11.17,
+          "mean_actions": 40.03
+        },
+        {
+          "label": "upper_prepared",
+          "level": 40,
+          "trials": 30,
+          "wins": 29,
+          "mean_cleared": 11.67,
+          "mean_actions": 36.73
+        }
+      ]
+    },
+    {
+      "destination": "loom",
+      "total": 13,
+      "trainer": 30,
+      "species": [
+        "chronos",
+        "sphinx",
+        "kitsune_9"
+      ],
+      "prepared_gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 41,
+          "trials": 30,
+          "wins": 2,
+          "mean_cleared": 12.07,
+          "mean_actions": 32.53
+        },
+        {
+          "label": "entry_prepared",
+          "level": 41,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 13.0,
+          "mean_actions": 29.27
+        },
+        {
+          "label": "upper_prepared",
+          "level": 45,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 13.0,
+          "mean_actions": 26.97
+        }
+      ]
+    },
+    {
+      "destination": "loom_deep",
+      "total": 15,
+      "trainer": 38,
+      "species": [
+        "chronos",
+        "zodiac",
+        "sphinx"
+      ],
+      "prepared_gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "modes": [
+        {
+          "label": "entry_bare",
+          "level": 46,
+          "trials": 30,
+          "wins": 3,
+          "mean_cleared": 13.3,
+          "mean_actions": 42.53
+        },
+        {
+          "label": "entry_prepared",
+          "level": 46,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 15.0,
+          "mean_actions": 43.23
+        },
+        {
+          "label": "upper_prepared",
+          "level": 50,
+          "trials": 30,
+          "wins": 30,
+          "mean_cleared": 15.0,
+          "mean_actions": 40.8
+        }
+      ]
+    }
+  ],
+  "status": "passed",
+  "scope": "Seed/serialization/rate invariants and the stated strategy fixtures; not live pacing.",
+  "plan_count": 10000,
+  "combat_trials": 900,
+  "plan_seeds_per_biome": 1000,
+  "strategy_seeds_per_mode": 30,
+  "config": {
+    "version": 1,
+    "wave_counts": {
+      "woods": 5,
+      "woods_deep": 6,
+      "ember": 7,
+      "ember_deep": 8,
+      "glacial": 9,
+      "glacial_deep": 10,
+      "trenches": 11,
+      "trenches_deep": 12,
+      "loom": 13,
+      "loom_deep": 15
+    },
+    "profiles": {
+      "normal": {
+        "hp": 0.45,
+        "attack": 0.65,
+        "defense": 0.85,
+        "round_limit": 6
+      },
+      "miniboss": {
+        "hp": 0.8,
+        "attack": 0.85,
+        "defense": 1.0,
+        "round_limit": 10
+      },
+      "guardian": {
+        "hp": 1.0,
+        "attack": 1.0,
+        "defense": 1.0,
+        "round_limit": 16
+      }
+    },
+    "guardian_pools": {
+      "woods": [
+        "slime",
+        "goblin"
+      ],
+      "woods_deep": [
+        "will_o_wisp",
+        "kelpie"
+      ],
+      "ember": [
+        "hellhound",
+        "wyvern"
+      ],
+      "ember_deep": [
+        "basilisk",
+        "cerberus"
+      ],
+      "glacial": [
+        "glacius",
+        "yeti"
+      ],
+      "glacial_deep": [
+        "thunderbird",
+        "yeti"
+      ],
+      "trenches": [
+        "hydra",
+        "kraken"
+      ],
+      "trenches_deep": [
+        "leviathan",
+        "dragon"
+      ],
+      "loom": [
+        "astraea",
+        "terminus"
+      ],
+      "loom_deep": [
+        "zodiac",
+        "chronos"
+      ]
+    },
+    "miniboss_pools": {
+      "woods": [],
+      "woods_deep": [],
+      "ember": [],
+      "ember_deep": [
+        "wyvern",
+        "basilisk",
+        "cerberus"
+      ],
+      "glacial": [
+        "glacius",
+        "pegasus",
+        "griffin",
+        "rukh"
+      ],
+      "glacial_deep": [
+        "thunderbird",
+        "yeti"
+      ],
+      "trenches": [
+        "abyssal_eel",
+        "wendigo"
+      ],
+      "trenches_deep": [
+        "hydra",
+        "kraken"
+      ],
+      "loom": [
+        "sphinx",
+        "kitsune_9"
+      ],
+      "loom_deep": [
+        "astraea",
+        "horizon",
+        "nirvana"
+      ]
+    },
+    "ordinary_divines": [
+      "astraea",
+      "horizon",
+      "karma",
+      "nebula",
+      "nirvana",
+      "singularity"
+    ],
+    "power_ceiling": {
+      "normal": 1.35,
+      "miniboss": 1.25,
+      "guardian": 1.25
+    },
+    "camp": {
+      "claims": 1,
+      "hp_fraction": 0.25,
+      "mana_fraction": 0.25,
+      "clear_condition": true,
+      "revive": false
+    },
+    "item_policy": {
+      "maximum": 3,
+      "fixture_item": "pixie_dust_potion",
+      "hp_fraction": 0.2
+    },
+    "training": {
+      "attack_sessions": 4,
+      "hp_sessions": 4,
+      "minimum_days": 2,
+      "max_sessions_per_day": 4,
+      "gains": {
+        "common": 1,
+        "uncommon": 1,
+        "rare": 2,
+        "epic": 2,
+        "legendary": 3,
+        "divine": 3,
+        "altered_divine": 4,
+        "corrupted": 4,
+        "ancient": 5,
+        "dev": 5
+      },
+      "hp_multiplier": 3
+    },
+    "fixtures": {
+      "bare_happiness": 70,
+      "bare_bond": 0,
+      "prepared_happiness": 100,
+      "prepared_bond": 100,
+      "initial_ultimate_charges": 0,
+      "initial_health": "full",
+      "initial_mana": "production build_state entry cap, not a refill"
+    },
+    "strategy": "Basic attack; heal below55% when available, otherwise use an affordable ultimate if enemy is unguarded; swap below25% to a reserve with more than twice current HP; an available healing Assist below55% takes precedence. Three20%HP potions between waves, one25%HP/MP midpoint camp. No optimal-play claim.",
+    "rewards": [
+      {
+        "waves": [
+          5,
+          7
+        ],
+        "multiplier": 1.5,
+        "cooldown_seconds": 1800
+      },
+      {
+        "waves": [
+          8,
+          11
+        ],
+        "multiplier": 2,
+        "cooldown_seconds": 2400
+      },
+      {
+        "waves": [
+          12,
+          15
+        ],
+        "multiplier": 3,
+        "cooldown_seconds": 3600
+      }
+    ],
+    "data_sha256": {
+      "beasts.json": "7c5a8ca53f750a23c6c7a9c7f2910366d2a4e864b5e46bb68f452330d503b25b",
+      "equipment.json": "99760ebe36ca43c9bc1769ced7119f35f15598c1cdfb8a4655ebf71eea9cb0e7",
+      "items.json": "00e01dc4b12ffedc86763cd50af722f60325e0833f088bc4672e170c0ffacd59"
+    },
+    "destination_pools": {
+      "woods": {
+        "types": [
+          "arcane",
+          "earth",
+          "ice",
+          "light",
+          "nature"
+        ],
+        "weights": {
+          "common": 0.85,
+          "uncommon": 0.15
+        },
+        "levels": [
+          1,
+          5
+        ]
+      },
+      "woods_deep": {
+        "types": [
+          "arcane",
+          "earth",
+          "ice",
+          "light",
+          "nature",
+          "shadow",
+          "water",
+          "wind"
+        ],
+        "weights": {
+          "common": 0.65,
+          "uncommon": 0.3,
+          "rare": 0.05
+        },
+        "levels": [
+          6,
+          10
+        ]
+      },
+      "ember": {
+        "types": [
+          "earth",
+          "fire",
+          "shadow"
+        ],
+        "weights": {
+          "common": 0.2,
+          "uncommon": 0.65,
+          "rare": 0.15
+        },
+        "levels": [
+          11,
+          15
+        ]
+      },
+      "ember_deep": {
+        "types": [
+          "earth",
+          "fire",
+          "shadow"
+        ],
+        "weights": {
+          "uncommon": 0.25,
+          "rare": 0.6,
+          "epic": 0.15
+        },
+        "levels": [
+          16,
+          20
+        ]
+      },
+      "glacial": {
+        "types": [
+          "ice",
+          "wind"
+        ],
+        "weights": {
+          "rare": 0.7,
+          "epic": 0.3
+        },
+        "levels": [
+          21,
+          25
+        ]
+      },
+      "glacial_deep": {
+        "types": [
+          "ice",
+          "wind"
+        ],
+        "weights": {
+          "rare": 0.35,
+          "epic": 0.6,
+          "legendary": 0.05
+        },
+        "levels": [
+          26,
+          30
+        ]
+      },
+      "trenches": {
+        "types": [
+          "shadow",
+          "water"
+        ],
+        "weights": {
+          "epic": 0.75,
+          "legendary": 0.25
+        },
+        "levels": [
+          31,
+          35
+        ]
+      },
+      "trenches_deep": {
+        "types": [
+          "fire",
+          "shadow",
+          "water"
+        ],
+        "weights": {
+          "epic": 0.35,
+          "legendary": 0.65
+        },
+        "levels": [
+          36,
+          40
+        ]
+      },
+      "loom": {
+        "types": [
+          "arcane",
+          "cosmic",
+          "light"
+        ],
+        "weights": {
+          "rare": 0.05,
+          "epic": 0.7,
+          "divine": 0.25
+        },
+        "levels": [
+          41,
+          45
+        ]
+      },
+      "loom_deep": {
+        "types": [
+          "arcane",
+          "cosmic",
+          "light"
+        ],
+        "weights": {
+          "epic": 0.4,
+          "divine": 0.6
+        },
+        "levels": [
+          46,
+          50
+        ]
+      }
+    }
+  },
+  "config_fingerprint": "7ff230aa3ae0a034451b69c2dffd7f0b628c3b38d5703a01935dbb1f69be312e",
+  "verification_note": "900 executed production-core replays retained. Subsequent frozen-template storage refactor verified numerically identical to the profiled-at-entry builder across all10000 seeded plans; no new balance tuning."
+}

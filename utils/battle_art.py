@@ -127,7 +127,7 @@ class Action:
         if self.ultimate:
             return 2650
         return {'status': 1100, 'guard': 2100, 'heal': 2100, 'skill': 1950,
-                'swap': 1900, 'assist': 2400}.get(self.kind, 1650)
+                'swap': 1900, 'assist': 2400, 'enter': 1200}.get(self.kind, 1650)
 
 
 @dataclass(frozen=True)

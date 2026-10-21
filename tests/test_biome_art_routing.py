@@ -135,15 +135,25 @@ class BiomeArtworkFlows(DatabaseCase):
             await view.publish(interaction())
             self.assertEqual(render.await_args.args[1], 'glacial_deep')
 
-    async def test_challenge_passes_every_distinct_destination_to_battle_presentation(self):
+    async def test_tower_keeps_every_distinct_destination_in_battle_presentation(self):
+        from utils import trials
+        from utils.trial_panel import TrialPanel
         await self.ready()
-        battle_module = importlib.import_module('cogs.battle')
+        await self.execute('UPDATE player_beasts SET hp=10000,max_hp=10000,defense=10000 WHERE user_id=42')
         for key in DISTINCT:
             await storage.update_player(42, challenge_last_at=0)
-            with self.subTest(biome=key), patch('utils.gear_art.send_owned_portrait', new=AsyncMock()), \
-                    patch.object(battle_module, 'run_pve_battle', new=AsyncMock()) as runner:
-                await battle_module.Battle(None)._challenge(interaction(), key)
-            self.assertEqual(runner.await_args.kwargs['realm'], key)
+            await self.execute('DELETE FROM trial_cooldowns WHERE user_id=42')
+            run = await trials.begin(42, key, seed=14)
+            run = await trials.next_wave(42, run['id'], run['version'])
+            panel = TrialPanel(42, destination='woods')
+            self.addCleanup(panel.stop)
+            panel.mode, panel.run = 'run', run
+            with self.subTest(biome=key), patch.object(art.BattlePresentation, 'art', new=AsyncMock(return_value=None)) as renderer:
+                await panel.prepare_media()
+            self.assertEqual(panel.presentation.realm, key)
+            self.assertEqual(panel.destination, key)
+            self.assertEqual(renderer.await_args.args[0][1].species, run['payload']['enemy']['beast_id'])
+            await trials.retreat(42, run['id'], run['version'])
 
     async def test_saved_expedition_passes_full_destination_to_battle_presentation(self):
         await self.ready()

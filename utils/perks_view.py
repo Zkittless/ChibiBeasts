@@ -15,6 +15,8 @@ from utils.theme import COLORS
 async def unequip_perk(user_id, perk_id):
     async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
+        from utils.trials import assert_available
+        await assert_available(db, user_id)
         async with db.execute('SELECT equipped FROM player_perks WHERE user_id=? AND perk_id=?', (user_id, perk_id)) as c:
             row = await c.fetchone()
         if not row:

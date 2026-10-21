@@ -372,6 +372,20 @@ async def _run_migrations():
             CREATE UNIQUE INDEX IF NOT EXISTS ix_expedition_active ON expeditions(user_id)
                 WHERE status IN ('active','battle','quick');
             CREATE INDEX IF NOT EXISTS ix_expedition_history ON expeditions(user_id,updated_at);
+            CREATE TABLE IF NOT EXISTS trial_runs (
+                id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, destination TEXT NOT NULL,
+                status TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0, payload TEXT NOT NULL,
+                created_at REAL NOT NULL, updated_at REAL NOT NULL, expires_at REAL NOT NULL,
+                reported INTEGER NOT NULL DEFAULT 0);
+            CREATE UNIQUE INDEX IF NOT EXISTS ix_trial_active ON trial_runs(user_id)
+                WHERE status IN ('between','fighting','paused');
+            CREATE INDEX IF NOT EXISTS ix_trial_history ON trial_runs(user_id,updated_at);
+            CREATE TABLE IF NOT EXISTS trial_cooldowns (
+                user_id INTEGER PRIMARY KEY, ready_at REAL NOT NULL);
+            CREATE TABLE IF NOT EXISTS trial_stamps (
+                user_id INTEGER NOT NULL, destination TEXT NOT NULL, first_run_id TEXT NOT NULL,
+                cleared_at REAL NOT NULL, best_actions INTEGER NOT NULL,
+                PRIMARY KEY(user_id,destination));
             CREATE TABLE IF NOT EXISTS journal_goals (
                 user_id INTEGER PRIMARY KEY, kind TEXT NOT NULL, target TEXT NOT NULL,
                 expected_species TEXT NOT NULL DEFAULT '');
@@ -431,6 +445,8 @@ async def _run_migrations():
         await apply_progression_balance(db)
         from utils.expeditions import recover_interrupted
         await recover_interrupted(db)
+        from utils import trials
+        await trials.recover_interrupted(db)
         # Recover the old personal raid currency into the spendable Guild Tickets.
         claim = await db.execute("INSERT OR IGNORE INTO game_meta(key,value) VALUES('economy-tickets-2026-10','applied')")
         if claim.rowcount:
@@ -446,6 +462,9 @@ async def _run_migrations():
             )
         """)
         await db.commit()
+
+        from utils import trial_locks
+        await trial_locks.reload(db)
 
 async def get_or_create_player(user_id: int, username: str):
     async with connect(DB_PATH) as db:
@@ -525,6 +544,8 @@ async def set_raid_slot(user_id: int, beast_row_id: int, slot: int):
     with reserve_fighters([user_id]):
         async with connect() as db:
             await db.execute('BEGIN IMMEDIATE')
+            from utils.trials import assert_available
+            await assert_available(db, user_id)
             async with db.execute('SELECT 1 FROM player_beasts WHERE user_id=? AND id=?', (user_id, beast_row_id)) as c:
                 if not await c.fetchone():
                     raise ValueError('That companion is no longer in your collection.')
@@ -541,6 +562,9 @@ async def clear_raid_slot(user_id: int, slot: int):
         raise ValueError('Choose raid slot 1, 2 or 3.')
     with reserve_fighters([user_id]):
         async with connect() as db:
+            await db.execute('BEGIN IMMEDIATE')
+            from utils.trials import assert_available
+            await assert_available(db, user_id)
             await db.execute('UPDATE player_beasts SET raid_slot=NULL WHERE user_id=? AND raid_slot=?', (user_id, slot))
             await db.commit()
 
@@ -551,6 +575,8 @@ async def set_active_companion(user_id, number, *, expected_row_id=None):
             db.row_factory = aiosqlite.Row
             await recover_beasts(user_id, db)
             await db.execute('BEGIN IMMEDIATE')
+            from utils.trials import assert_available
+            await assert_available(db, user_id)
             async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND (player_number=? OR (player_number IS NULL AND id=?))', (user_id, number, number)) as c:
                 row = await c.fetchone()
             if not row:
@@ -613,20 +639,26 @@ async def recover_beasts(user_id,db=None):
     from datetime import datetime,timezone
     if db is None:
         async with connect() as connection:return await recover_beasts(user_id,connection)
+    from utils.trial_locks import member_ids
+    frozen = await member_ids(db, user_id)
+    exclude = ' AND id NOT IN (' + ','.join('?' for _ in frozen) + ')' if frozen else ''
     now=datetime.now(timezone.utc).isoformat()
-    async with db.execute("SELECT 1 FROM player_beasts WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?) LIMIT 1",(user_id,now)) as c:
+    async with db.execute("SELECT 1 FROM player_beasts WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?)" + exclude + " LIMIT 1",(user_id,now,*frozen)) as c:
         expired=await c.fetchone()
     if not expired:return
-    await db.execute("UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?)",(user_id,now))
+    await db.execute("UPDATE player_beasts SET hp=max_hp,knocked_out_until=NULL WHERE user_id=? AND knocked_out_until IS NOT NULL AND julianday(knocked_out_until)<=julianday(?)" + exclude,(user_id,now,*frozen))
     await db.commit()
 
 async def revive_beast(beast_row_id: int):
     """Clear KO timer and restore HP to full."""
     async with connect(DB_PATH) as db:
         db.row_factory = aiosqlite.Row
-        async with db.execute("SELECT max_hp FROM player_beasts WHERE id = ?", (beast_row_id,)) as c:
+        await db.execute('BEGIN IMMEDIATE')
+        async with db.execute("SELECT user_id,max_hp FROM player_beasts WHERE id = ?", (beast_row_id,)) as c:
             row = await c.fetchone()
         if row:
+            from utils.trials import assert_available
+            await assert_available(db, row['user_id'], [beast_row_id])
             await db.execute(
                 "UPDATE player_beasts SET knocked_out_until = NULL, hp = ? WHERE id = ?",
                 (row["max_hp"], beast_row_id)

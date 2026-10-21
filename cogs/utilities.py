@@ -668,7 +668,7 @@ class Utilities(commands.Cog):
         embed=discord.Embed(title="🌱 Your next step",description=("Choose your first companion with /start." if not player.get("starter_claimed") else f"Story: {next_ch['name'] if next_ch else 'The hollow is restored'} · /journal → Story.\n/journal → Companions shows bonds, active selection and awakening milestones."),color=COLORS["info"])
         categories={
             "Your Field Journal": "/journal — Adventure, Team, Companions, Workshop, Story and Activities\nTeam switches between exploration and raid assignments. Companions opens your searchable roster. Workshop includes your material bag.",
-        "Adventure": "/explore — choose or save a destination; confirm Begin to spend one charge, or resume your saved trip\n/challenge — wild battle, every 20 minutes\n/sparr — one spar per NPC per day\n/npc · /meet · /lore",
+        "Adventure": "/explore — choose or save a destination; confirm Begin to spend one charge, or resume your saved trip\n/challenge — saved team tower; randomized waves, camp and guardian\n/sparr — one spar per NPC per day\n/npc · /meet · /lore",
         "Companions": "/collection — search, filter and open your beasts\nUse Companion actions for Care, Gear, lead selection, training, rename and evolution. Details shows moves and lore.\n/play · /codex · /bestiary · /typeinfo",
             "Eggs and items": "/nursery — egg guarantees, hatch choices, incubators and optional care\n/shop — eggs, consumables and shard purchases\n/care — preview and use healing items or treats\n/inventory · /use [beast_number]",
             "Builds and trade": "/craft — recipes, materials and crafting\n/gear — preview and change armor or runes\n/perks — equip, remove or activate an owned perk\n/market · /list · /delist · /appraise · /sell · /release · /trade",
@@ -714,6 +714,8 @@ class Utilities(commands.Cog):
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
+            from utils.trials import assert_available
+            await assert_available(db, interaction.user.id)
 
             # 2 hour cooldown on /play (tracked via play_last_at)
             import time as _t
