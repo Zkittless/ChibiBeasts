@@ -560,7 +560,7 @@ class Battle(commands.Cog):
             enemy_state,
             enemy_personality="wild",
             battle_title=f"Wild {wild_beast_data['name']}",
-            realm=biome_key(biome),
+            realm=biome,
             on_win=on_win,
             on_loss=on_loss,
             reserved=True,

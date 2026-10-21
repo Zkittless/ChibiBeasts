@@ -1,6 +1,6 @@
 # World progression integration
 
-The world has ten fixed difficulty bands inside the existing five regions. The original destination IDs continue to work. A destination's trainer requirement controls access; its companion range describes the enemies. Within that fixed band, encounters roll within one level of the visiting companion where possible. An advanced region never falls below its floor, and an old region never rises above its ceiling.
+The world has ten distinct biomes across ten fixed difficulty bands. The original destination IDs continue to work, including the five former `*_deep` routes. Each biome has its own background and exploration scenery. A destination's trainer requirement controls access; its companion range describes the enemies. Within that fixed band, encounters roll within one level of the visiting companion where possible. An advanced region never falls below its floor, and an old region never rises above its ceiling.
 
 ## Overall balance
 
@@ -11,24 +11,28 @@ The world has ten fixed difficulty bands inside the existing five regions. The o
 - Instant Common/Rare/Celestial/Abyssal eggs require trainer 1/12/30/40 for both purchase and hatching. Hatch checkout rechecks the current trainer level inside the consumption transaction, so an old owned egg or stale quantity modal cannot bypass its gate. Starting an owned incubation egg uses the same current incubation tier gate; already-started schedules and earned World-Tree Seeds remain usable.
 - PvP's shared daily growth budget, destination difficulty, raid/story gates, daily rewards, food and training form one progression system; expensive items and repeat battles cannot bypass the level and daily limits.
 
-| Destination ID | Trainer requirement | Wild companion levels | Rarity weights |
-| --- | ---: | --- | --- |
-| `woods` | 1 | 1–5 | Common 85%, Uncommon 15% |
-| `woods_deep` | 3 | 6–10 | Common 65%, Uncommon 30%, Rare 5% |
-| `ember` | 6 | 11–15 | Common 20%, Uncommon 65%, Rare 15% |
-| `ember_deep` | 9 | 16–20 | Uncommon 25%, Rare 60%, Epic 15% |
-| `glacial` | 12 | 21–25 | Rare 70%, Epic 30% |
-| `glacial_deep` | 16 | 26–30 | Rare 35%, Epic 60%, Legendary 5% |
-| `trenches` | 20 | 31–35 | Epic 75%, Legendary 25% |
-| `trenches_deep` | 25 | 36–40 | Epic 35%, Legendary 65% |
-| `loom` | 30 | 41–45 | Rare 5%, Epic 70%, Divine 25% |
-| `loom_deep` | 38 | 46–50 | Epic 40%, Divine 60% |
+| Destination ID | Biome | Trainer requirement | Wild companion levels | Rarity weights |
+| --- | --- | ---: | --- | --- |
+| `woods` | Whispering Woods | 1 | 1–5 | Common 85%, Uncommon 15% |
+| `woods_deep` | Moonveil Marsh | 3 | 6–10 | Common 65%, Uncommon 30%, Rare 5% |
+| `ember` | Ember Wastes | 6 | 11–15 | Common 20%, Uncommon 65%, Rare 15% |
+| `ember_deep` | Sunforge Dunes | 9 | 16–20 | Uncommon 25%, Rare 60%, Epic 15% |
+| `glacial` | Glacial Hollows | 12 | 21–25 | Rare 70%, Epic 30% |
+| `glacial_deep` | Stormglass Peaks | 16 | 26–30 | Rare 35%, Epic 60%, Legendary 5% |
+| `trenches` | Sunken Abyssal Trenches | 20 | 31–35 | Epic 75%, Legendary 25% |
+| `trenches_deep` | Cinderreef Caldera | 25 | 36–40 | Epic 35%, Legendary 65% |
+| `loom` | Celestial Loom | 30 | 41–45 | Rare 5%, Epic 70%, Divine 25% |
+| `loom_deep` | Starfall Gardens | 38 | 46–50 | Epic 40%, Divine 60% |
 
-`utils.habitats.BIOMES` is the authoritative destination catalog. `BASE_BIOMES` contains the original five IDs. Use `destination_key()` for encounters and `biome_key()` for regional materials, story counts and existing artwork. Deep paths reuse the base region's art and resource list. The journal and `/explore` and `/challenge` choices read the shared definitions.
+`utils.habitats.BIOMES` is the authoritative destination catalog. `BASE_BIOMES` contains the original five regional family IDs. Use `destination_key()` for encounters, event scenery and artwork, and `biome_key()` for regional materials, nest families and story counts. Moonveil retains the Woods' resource family; Sunforge retains Ember's; Stormglass retains Glacial's; Cinderreef retains the Trenches'; Starfall retains the Loom's. Existing encounter type pools, rarity odds, numerical gates and reward budgets are unchanged. Old display labels such as `The Whispering Woods · Depths` resolve to their original destination IDs before partial-name matching. The journal and `/explore` and `/challenge` choices read the shared definitions.
 
-The journal recommends Common starter training in the Woods through companion level 7, then the deeper Woods from level 8 until the first awakening. `starter_training_destination()` supplies this visible recommendation; it does not lock other destinations. Ember's Fire/Shadow matchups can resist a starter's type, so a newly unlocked numeric range does not imply that every build is ready for it.
+New expeditions save `destination_version=1` and their destination ID alongside the existing adventure payload. The five new biomes use distinct landmarks, tracks, gathering places, rescues, camps and discoveries. Their crossing stop adds one themed decision: read Moonveil's waterline, align Sunforge's sun mirror, read Stormglass's windsock, redirect Cinderreef's vent regulator, or remember the team's earlier route in Starfall. A saved clue describes the sheltered route and the shorter risky alternative. Both are available to every team; suitable companion abilities remain optional.
 
-Every advertised rarity has an eligible species. Forest edges also shelter low-tier shadow, ice, wind and water creatures; the volcanic depths of the Trenches shelter fire creatures. This retains a normal wild habitat for every eligible catalog species, including Dragon and Loom Fragment. A saved hunt goal remains readable if future catalog changes remove its habitat.
+The crossing outcomes exactly match the existing obstacle budget: a sheltered route has no damage or added reward; a shortcut costs up to 3% max HP and adds 5% to the single reward bundle; an eligible healthy helper adds the existing 5% and route clue without HP cost. There are no timed inputs, extra catches, added material bundles or new payouts. Crossing variants and displayed choices are persisted, and reopening the journal reads the saved page without rolling again. In-flight expeditions without the destination version retain their old regional page text and original buttons as they continue; their destination artwork uses the new background. The three-stop route, optional fourth stop, once-per-trip camp and 25% bonus cap remain unchanged.
+
+The journal recommends Common starter training in the Woods through companion level 7, then Moonveil Marsh from level 8 until the first awakening. `starter_training_destination()` supplies this visible recommendation; it does not lock other destinations. Ember's Fire/Shadow matchups can resist a starter's type, so a newly unlocked numeric range does not imply that every build is ready for it.
+
+Every advertised rarity has an eligible species. The forest edge and Moonveil also shelter low-tier shadow, ice, wind and water creatures; the volcanic Cinderreef shelters fire creatures. This retains a normal wild habitat for every eligible catalog species, including Dragon and Loom Fragment. A saved hunt goal remains readable if future catalog changes remove its habitat.
 
 ## Battle and reward interfaces
 
@@ -72,6 +76,6 @@ The first awakening UI reads the catalog requirements: companion 15, trainer 8, 
 
 ## Validation and pacing assumptions
 
-`tests.test_world_progression` checks ten complete bands, nonempty weighted tiers, every eligible wild species retaining a habitat, base resource compatibility, relative power/overlevel rewards, actual-knockout rewards/captures, aligned wild/expedition companion EXP, preserved catch levels, NPC access and promotion/compass edge cases. Database cases use disposable databases.
+`tests.test_world_progression` checks ten complete bands, nonempty weighted tiers, every eligible wild species retaining a habitat, base resource compatibility, relative power/overlevel rewards, actual-knockout rewards/captures, aligned wild/expedition companion EXP, preserved catch levels, NPC access and promotion/compass edge cases. `tests.test_distinct_biomes` adds legacy label resolution, unchanged budgets and resource families, ten distinct saved scenes, crossing outcome parity, route-memory clues, old in-flight buttons, restart persistence, stale-click damage protection, optional helper safety and regional story notifications. Database cases use disposable databases.
 
 The earlier reward-only route check assumed clean victories and is not a calendar-pacing benchmark. Actual battle journeys in `scripts/audit_progression.py` use production combat, prepared stats, legal earned gear, encounter sampling and reward helpers. Use their measured win rates and elapsed-day distributions to evaluate pacing; a count of hypothetical clean wins does not establish a casual awakening schedule.

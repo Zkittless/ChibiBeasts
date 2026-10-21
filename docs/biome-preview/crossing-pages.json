@@ -1,0 +1,1220 @@
+{
+  "woods_deep": {
+    "page": {
+      "title": "Read the waterline",
+      "body": "Moonlight shows fresh water lapping over the copper-post walkway. The blue-plank boardwalk stands above the wet reeds. Your earlier discovery marks a sheltered way across.",
+      "choices": [
+        {
+          "value": "help:103",
+          "label": "Ask Barkley",
+          "description": "Weave a floating reed mat; no HP cost, a small teamwork bonus."
+        },
+        {
+          "value": "help:102",
+          "label": "Ask Gloop",
+          "description": "Weave a floating reed mat; no HP cost, a small teamwork bonus."
+        },
+        {
+          "value": "crossing:0",
+          "label": "Take the blue boardwalk",
+          "description": "Sheltered route: no HP cost; keeps your saved bundle."
+        },
+        {
+          "value": "crossing:1",
+          "label": "Take the copper walkway",
+          "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+        },
+        {
+          "value": "return_early",
+          "label": "Head home now",
+          "description": "Bank the earned fraction of your one reward bundle."
+        }
+      ],
+      "progress": {
+        "completed": 2,
+        "total": 3
+      },
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+    },
+    "saved_payload": {
+      "gold": 100,
+      "exp": 100,
+      "base_exp": 100,
+      "level": 8,
+      "offered": [
+        "pixie_silk"
+      ],
+      "material": "pixie_silk",
+      "bond": 2,
+      "happiness": 5,
+      "notes": [
+        "Restored trail markers revealed a safe way across."
+      ],
+      "adventure_version": 2,
+      "destination_version": 1,
+      "destination": "woods_deep",
+      "seed": "73",
+      "event": "obstacle",
+      "completed": 2,
+      "target_stops": 3,
+      "history": [
+        {
+          "event": "trailhead",
+          "choice": "shrine"
+        },
+        {
+          "event": "landmark",
+          "choice": "repair"
+        }
+      ],
+      "flags": {
+        "directions": true
+      },
+      "camp_used": false,
+      "push_used": false,
+      "bonus": 0,
+      "base_gold": 100,
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "party": [
+        {
+          "id": 101,
+          "name": "Twine",
+          "type": "cosmic"
+        },
+        {
+          "id": 102,
+          "name": "Gloop",
+          "type": "nature"
+        },
+        {
+          "id": 103,
+          "name": "Barkley",
+          "type": "nature"
+        }
+      ],
+      "participations": {
+        "101": 2
+      },
+      "party_xp": [],
+      "material_granted": false,
+      "battle_awarded": false,
+      "page": {
+        "title": "Read the waterline",
+        "body": "Moonlight shows fresh water lapping over the copper-post walkway. The blue-plank boardwalk stands above the wet reeds. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "help:103",
+            "label": "Ask Barkley",
+            "description": "Weave a floating reed mat; no HP cost, a small teamwork bonus."
+          },
+          {
+            "value": "help:102",
+            "label": "Ask Gloop",
+            "description": "Weave a floating reed mat; no HP cost, a small teamwork bonus."
+          },
+          {
+            "value": "crossing:0",
+            "label": "Take the blue boardwalk",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Take the copper walkway",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ]
+      },
+      "stage": 2,
+      "route": "shrine",
+      "biome_crossing": {
+        "destination": "woods_deep",
+        "title": "Read the waterline",
+        "clue": "Moonlight shows fresh water lapping over the copper-post walkway. The blue-plank boardwalk stands above the wet reeds.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Take the blue boardwalk",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Take the copper walkway",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ],
+        "safe": "crossing:0",
+        "risky": "crossing:1",
+        "safe_note": "Your team followed the dry waterline markers through Moonveil Marsh."
+      }
+    },
+    "outcomes": {
+      "help:103": {
+        "effects": {
+          "helper_id": 103
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "A teammate found a safe crossing with its natural ability."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      },
+      "help:102": {
+        "effects": {
+          "helper_id": 102
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "A teammate found a safe crossing with its natural ability."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      },
+      "crossing:0": {
+        "effects": {},
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "Your team followed the dry waterline markers through Moonveil Marsh."
+        ],
+        "bonus": 0,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 0%"
+        }
+      },
+      "crossing:1": {
+        "effects": {
+          "damage": 3
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "The team crossed carefully, picking up a few scrapes."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      }
+    },
+    "transitions": [
+      "initialize",
+      "shrine",
+      "repair"
+    ],
+    "seed": 73
+  },
+  "ember_deep": {
+    "page": {
+      "title": "Turn the sun mirror",
+      "body": "The old plaque reads: ‘Follow the shade.’ The mirror's crescent mark casts a cool shadow through the dunes; the star mark lights a short, hot ridge. Your earlier discovery marks a sheltered way across.",
+      "choices": [
+        {
+          "value": "crossing:0",
+          "label": "Turn toward the crescent",
+          "description": "Sheltered route: no HP cost; keeps your saved bundle."
+        },
+        {
+          "value": "crossing:1",
+          "label": "Turn toward the star",
+          "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+        },
+        {
+          "value": "return_early",
+          "label": "Head home now",
+          "description": "Bank the earned fraction of your one reward bundle."
+        }
+      ],
+      "progress": {
+        "completed": 2,
+        "total": 3
+      },
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+    },
+    "saved_payload": {
+      "gold": 100,
+      "exp": 100,
+      "base_exp": 100,
+      "level": 18,
+      "offered": [
+        "gnome_iron_ore"
+      ],
+      "material": "gnome_iron_ore",
+      "bond": 2,
+      "happiness": 5,
+      "notes": [
+        "Restored trail markers revealed a safe way across."
+      ],
+      "adventure_version": 2,
+      "destination_version": 1,
+      "destination": "ember_deep",
+      "seed": "73",
+      "event": "obstacle",
+      "completed": 2,
+      "target_stops": 3,
+      "history": [
+        {
+          "event": "trailhead",
+          "choice": "shrine"
+        },
+        {
+          "event": "landmark",
+          "choice": "repair"
+        }
+      ],
+      "flags": {
+        "directions": true
+      },
+      "camp_used": false,
+      "push_used": false,
+      "bonus": 0,
+      "base_gold": 100,
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "party": [
+        {
+          "id": 101,
+          "name": "Twine",
+          "type": "cosmic"
+        },
+        {
+          "id": 102,
+          "name": "Gloop",
+          "type": "nature"
+        },
+        {
+          "id": 103,
+          "name": "Barkley",
+          "type": "nature"
+        }
+      ],
+      "participations": {
+        "101": 2
+      },
+      "party_xp": [],
+      "material_granted": false,
+      "battle_awarded": false,
+      "page": {
+        "title": "Turn the sun mirror",
+        "body": "The old plaque reads: ‘Follow the shade.’ The mirror's crescent mark casts a cool shadow through the dunes; the star mark lights a short, hot ridge. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Turn toward the crescent",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Turn toward the star",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ]
+      },
+      "stage": 2,
+      "route": "shrine",
+      "biome_crossing": {
+        "destination": "ember_deep",
+        "title": "Turn the sun mirror",
+        "clue": "The old plaque reads: ‘Follow the shade.’ The mirror's crescent mark casts a cool shadow through the dunes; the star mark lights a short, hot ridge.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Turn toward the crescent",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Turn toward the star",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ],
+        "safe": "crossing:0",
+        "risky": "crossing:1",
+        "safe_note": "Your team aligned the sun mirror and followed its shaded path through Sunforge Dunes."
+      }
+    },
+    "outcomes": {
+      "crossing:0": {
+        "effects": {},
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "Your team aligned the sun mirror and followed its shaded path through Sunforge Dunes."
+        ],
+        "bonus": 0,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 0%"
+        }
+      },
+      "crossing:1": {
+        "effects": {
+          "damage": 3
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "The team crossed carefully, picking up a few scrapes."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      }
+    },
+    "transitions": [
+      "initialize",
+      "shrine",
+      "repair"
+    ],
+    "seed": 73
+  },
+  "glacial_deep": {
+    "page": {
+      "title": "Read the ridge wind",
+      "body": "The windsock and blowing snow show gusts arriving from the east. The cairn's sketch marks the opposite side as sheltered: the west ledge. The exposed span is shorter. Your earlier discovery marks a sheltered way across.",
+      "choices": [
+        {
+          "value": "crossing:0",
+          "label": "Follow the west ledge",
+          "description": "Sheltered route: no HP cost; keeps your saved bundle."
+        },
+        {
+          "value": "crossing:1",
+          "label": "Follow the east ledge",
+          "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+        },
+        {
+          "value": "return_early",
+          "label": "Head home now",
+          "description": "Bank the earned fraction of your one reward bundle."
+        }
+      ],
+      "progress": {
+        "completed": 2,
+        "total": 3
+      },
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+    },
+    "saved_payload": {
+      "gold": 100,
+      "exp": 100,
+      "base_exp": 100,
+      "level": 28,
+      "offered": [
+        "enchanted_bark"
+      ],
+      "material": "enchanted_bark",
+      "bond": 2,
+      "happiness": 5,
+      "notes": [
+        "Restored trail markers revealed a safe way across."
+      ],
+      "adventure_version": 2,
+      "destination_version": 1,
+      "destination": "glacial_deep",
+      "seed": "73",
+      "event": "obstacle",
+      "completed": 2,
+      "target_stops": 3,
+      "history": [
+        {
+          "event": "trailhead",
+          "choice": "shrine"
+        },
+        {
+          "event": "landmark",
+          "choice": "repair"
+        }
+      ],
+      "flags": {
+        "directions": true
+      },
+      "camp_used": false,
+      "push_used": false,
+      "bonus": 0,
+      "base_gold": 100,
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "party": [
+        {
+          "id": 101,
+          "name": "Twine",
+          "type": "cosmic"
+        },
+        {
+          "id": 102,
+          "name": "Gloop",
+          "type": "nature"
+        },
+        {
+          "id": 103,
+          "name": "Barkley",
+          "type": "nature"
+        }
+      ],
+      "participations": {
+        "101": 2
+      },
+      "party_xp": [],
+      "material_granted": false,
+      "battle_awarded": false,
+      "page": {
+        "title": "Read the ridge wind",
+        "body": "The windsock and blowing snow show gusts arriving from the east. The cairn's sketch marks the opposite side as sheltered: the west ledge. The exposed span is shorter. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Follow the west ledge",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Follow the east ledge",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ]
+      },
+      "stage": 2,
+      "route": "shrine",
+      "biome_crossing": {
+        "destination": "glacial_deep",
+        "title": "Read the ridge wind",
+        "clue": "The windsock and blowing snow show gusts arriving from the east. The cairn's sketch marks the opposite side as sheltered: the west ledge. The exposed span is shorter.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Follow the west ledge",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Follow the east ledge",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ],
+        "safe": "crossing:0",
+        "risky": "crossing:1",
+        "safe_note": "Your team read the windsock and crossed the sheltered side of Stormglass Peaks."
+      }
+    },
+    "outcomes": {
+      "crossing:0": {
+        "effects": {},
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "Your team read the windsock and crossed the sheltered side of Stormglass Peaks."
+        ],
+        "bonus": 0,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 0%"
+        }
+      },
+      "crossing:1": {
+        "effects": {
+          "damage": 3
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "The team crossed carefully, picking up a few scrapes."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      }
+    },
+    "transitions": [
+      "initialize",
+      "shrine",
+      "repair"
+    ],
+    "seed": 73
+  },
+  "trenches_deep": {
+    "page": {
+      "title": "Keep the nursery warm",
+      "body": "The regulator diagram joins the shell valve to a cool side passage. The coral valve opens the shorter bubbling channel beside the nursery. Both leave its warm pool undisturbed. Your earlier discovery marks a sheltered way across.",
+      "choices": [
+        {
+          "value": "crossing:0",
+          "label": "Open the shell valve",
+          "description": "Sheltered route: no HP cost; keeps your saved bundle."
+        },
+        {
+          "value": "crossing:1",
+          "label": "Open the coral valve",
+          "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+        },
+        {
+          "value": "return_early",
+          "label": "Head home now",
+          "description": "Bank the earned fraction of your one reward bundle."
+        }
+      ],
+      "progress": {
+        "completed": 2,
+        "total": 3
+      },
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+    },
+    "saved_payload": {
+      "gold": 100,
+      "exp": 100,
+      "base_exp": 100,
+      "level": 38,
+      "offered": [
+        "kelpie_scale"
+      ],
+      "material": "kelpie_scale",
+      "bond": 2,
+      "happiness": 5,
+      "notes": [
+        "Restored trail markers revealed a safe way across."
+      ],
+      "adventure_version": 2,
+      "destination_version": 1,
+      "destination": "trenches_deep",
+      "seed": "73",
+      "event": "obstacle",
+      "completed": 2,
+      "target_stops": 3,
+      "history": [
+        {
+          "event": "trailhead",
+          "choice": "shrine"
+        },
+        {
+          "event": "landmark",
+          "choice": "repair"
+        }
+      ],
+      "flags": {
+        "directions": true
+      },
+      "camp_used": false,
+      "push_used": false,
+      "bonus": 0,
+      "base_gold": 100,
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "party": [
+        {
+          "id": 101,
+          "name": "Twine",
+          "type": "cosmic"
+        },
+        {
+          "id": 102,
+          "name": "Gloop",
+          "type": "nature"
+        },
+        {
+          "id": 103,
+          "name": "Barkley",
+          "type": "nature"
+        }
+      ],
+      "participations": {
+        "101": 2
+      },
+      "party_xp": [],
+      "material_granted": false,
+      "battle_awarded": false,
+      "page": {
+        "title": "Keep the nursery warm",
+        "body": "The regulator diagram joins the shell valve to a cool side passage. The coral valve opens the shorter bubbling channel beside the nursery. Both leave its warm pool undisturbed. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Open the shell valve",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Open the coral valve",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ]
+      },
+      "stage": 2,
+      "route": "shrine",
+      "biome_crossing": {
+        "destination": "trenches_deep",
+        "title": "Keep the nursery warm",
+        "clue": "The regulator diagram joins the shell valve to a cool side passage. The coral valve opens the shorter bubbling channel beside the nursery. Both leave its warm pool undisturbed.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Open the shell valve",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Open the coral valve",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ],
+        "safe": "crossing:0",
+        "risky": "crossing:1",
+        "safe_note": "Your team opened the cool side passage and left the Cinderreef nursery undisturbed."
+      }
+    },
+    "outcomes": {
+      "crossing:0": {
+        "effects": {},
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "Your team opened the cool side passage and left the Cinderreef nursery undisturbed."
+        ],
+        "bonus": 0,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 0%"
+        }
+      },
+      "crossing:1": {
+        "effects": {
+          "damage": 3
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "The team crossed carefully, picking up a few scrapes."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      }
+    },
+    "transitions": [
+      "initialize",
+      "shrine",
+      "repair"
+    ],
+    "seed": 73
+  },
+  "loom_deep": {
+    "page": {
+      "title": "Remember your first path",
+      "body": "A memory bell repeats your first choice: a ringing bell. The branch bearing that sign holds steady. The other is a shorter ribbon of shifting starlight. Your earlier discovery marks a sheltered way across.",
+      "choices": [
+        {
+          "value": "help:101",
+          "label": "Ask Twine",
+          "description": "Read the stable orbit of the branches; no HP cost, a small teamwork bonus."
+        },
+        {
+          "value": "crossing:0",
+          "label": "Follow the bell branch",
+          "description": "Sheltered route: no HP cost; keeps your saved bundle."
+        },
+        {
+          "value": "crossing:1",
+          "label": "Follow the shifting ribbon",
+          "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+        },
+        {
+          "value": "return_early",
+          "label": "Head home now",
+          "description": "Bank the earned fraction of your one reward bundle."
+        }
+      ],
+      "progress": {
+        "completed": 2,
+        "total": 3
+      },
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+    },
+    "saved_payload": {
+      "gold": 100,
+      "exp": 100,
+      "base_exp": 100,
+      "level": 48,
+      "offered": [
+        "spirit_crystal"
+      ],
+      "material": "spirit_crystal",
+      "bond": 2,
+      "happiness": 5,
+      "notes": [
+        "Restored trail markers revealed a safe way across."
+      ],
+      "adventure_version": 2,
+      "destination_version": 1,
+      "destination": "loom_deep",
+      "seed": "73",
+      "event": "obstacle",
+      "completed": 2,
+      "target_stops": 3,
+      "history": [
+        {
+          "event": "trailhead",
+          "choice": "shrine"
+        },
+        {
+          "event": "landmark",
+          "choice": "repair"
+        }
+      ],
+      "flags": {
+        "directions": true
+      },
+      "camp_used": false,
+      "push_used": false,
+      "bonus": 0,
+      "base_gold": 100,
+      "party_ids": [
+        101,
+        102,
+        103
+      ],
+      "party": [
+        {
+          "id": 101,
+          "name": "Twine",
+          "type": "cosmic"
+        },
+        {
+          "id": 102,
+          "name": "Gloop",
+          "type": "nature"
+        },
+        {
+          "id": 103,
+          "name": "Barkley",
+          "type": "nature"
+        }
+      ],
+      "participations": {
+        "101": 2
+      },
+      "party_xp": [],
+      "material_granted": false,
+      "battle_awarded": false,
+      "page": {
+        "title": "Remember your first path",
+        "body": "A memory bell repeats your first choice: a ringing bell. The branch bearing that sign holds steady. The other is a shorter ribbon of shifting starlight. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "help:101",
+            "label": "Ask Twine",
+            "description": "Read the stable orbit of the branches; no HP cost, a small teamwork bonus."
+          },
+          {
+            "value": "crossing:0",
+            "label": "Follow the bell branch",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Follow the shifting ribbon",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ]
+      },
+      "stage": 2,
+      "route": "shrine",
+      "biome_crossing": {
+        "destination": "loom_deep",
+        "title": "Remember your first path",
+        "clue": "A memory bell repeats your first choice: a ringing bell. The branch bearing that sign holds steady. The other is a shorter ribbon of shifting starlight.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Follow the bell branch",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Follow the shifting ribbon",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          }
+        ],
+        "safe": "crossing:0",
+        "risky": "crossing:1",
+        "safe_note": "Your team remembered its first trail and followed the steady branch through Starfall Gardens."
+      }
+    },
+    "outcomes": {
+      "help:101": {
+        "effects": {
+          "helper_id": 101
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "A teammate found a safe crossing with its natural ability."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      },
+      "crossing:0": {
+        "effects": {},
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "Your team remembered its first trail and followed the steady branch through Starfall Gardens."
+        ],
+        "bonus": 0,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 0%"
+        }
+      },
+      "crossing:1": {
+        "effects": {
+          "damage": 3
+        },
+        "notes": [
+          "Restored trail markers revealed a safe way across.",
+          "The team crossed carefully, picking up a few scrapes."
+        ],
+        "bonus": 5,
+        "page": {
+          "title": "The path home",
+          "body": "Your team has finished its planned stops. Bank the journey, or risk one final discovery.",
+          "choices": [
+            {
+              "value": "return",
+              "label": "Return and bank rewards",
+              "description": "Claim the single earned reward bundle for this trip."
+            },
+            {
+              "value": "push",
+              "label": "Push a little deeper",
+              "description": "One more stop; costs up to 4% max HP, up to 25% total bonus, no extra catch or material."
+            }
+          ],
+          "progress": {
+            "completed": 3,
+            "total": 3
+          },
+          "party_ids": [
+            101,
+            102,
+            103
+          ],
+          "footer": "3/3 stops · one material bundle · one possible catch · bonus 5%"
+        }
+      }
+    },
+    "transitions": [
+      "initialize",
+      "shrine",
+      "repair"
+    ],
+    "seed": 73
+  }
+}

@@ -8,7 +8,7 @@ from uuid import uuid4
 import aiosqlite
 import discord
 
-from utils import adventure_party, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art, journal_log, journal_history
+from utils import adventure_party, battle_art, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art, journal_log, journal_history
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
@@ -24,6 +24,11 @@ LANDMARKS = {
     'glacial': ('a frostbound cairn', 'Blue light travels through the ice. Three trails branch into the stillness.'),
     'trenches': ('a drowned waystone', 'Lantern algae light the seafloor. Three currents carry signs of life.'),
     'loom': ('a fraying star loom', 'Loose threads of starlight drift past. Three possibilities wait to be followed.'),
+    'woods_deep': ('a lantern-lit marsh shrine', 'Moonlight glimmers in the reeds. Three paths wind across the still water.'),
+    'ember_deep': ('a half-buried sunforge marker', 'Warm wind traces the dunes. Three paths lead between the sandstone ridges.'),
+    'glacial_deep': ('a stormglass summit cairn', 'Distant thunder rolls across the peaks. Three trails follow the sheltered ridgelines.'),
+    'trenches_deep': ('a coral-wrapped caldera beacon', 'Warm currents stir above dark volcanic stone. Three channels weave between the reefs.'),
+    'loom_deep': ('a starfall garden waystone', 'Fallen starlight settles among luminous blooms. Three paths cross the floating gardens.'),
 }
 
 
@@ -197,7 +202,7 @@ class JournalView(discord.ui.LayoutView):
         if p.get('adventure_version', 0) >= 2:
             self.render_branching_trip(trip)
             return
-        landmark, flavor = LANDMARKS[biome_key(trip['realm'])]
+        landmark, flavor = LANDMARKS.get(trip['realm'], LANDMARKS[biome_key(trip['realm'])])
         e = self.state.energy
         recharge = 'Bank full' if not e.next_in else 'Next charge in ' + wait_text(e.next_in)
         self.text(f"### {REALMS[trip['realm']]['name']}\nStep {p['stage'] + 1}/3 · Supplies saved\n"
@@ -458,7 +463,7 @@ class JournalView(discord.ui.LayoutView):
 
     @property
     def art_realm(self):
-        return biome_key(self.trip['realm'] if self.page in {'adventure', 'team'} and self.trip and self.trip['status'] != 'complete' else self.realm)
+        return battle_art.realm_key(self.trip['realm'] if self.page in {'adventure', 'team'} and self.trip and self.trip['status'] != 'complete' else self.realm)
 
     @property
     def header(self):

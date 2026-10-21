@@ -1,0 +1,362 @@
+{
+  "woods": {
+    "name": "The Whispering Woods",
+    "level_range": [
+      1,
+      5
+    ],
+    "min_level": 1,
+    "new": false,
+    "header": "media/journal-woods.png",
+    "team": "media/woods-team.png",
+    "still": "media/woods-final.png"
+  },
+  "woods_deep": {
+    "name": "The Moonveil Marsh",
+    "level_range": [
+      6,
+      10
+    ],
+    "min_level": 3,
+    "new": true,
+    "header": "media/journal-woods_deep.png",
+    "team": "media/woods_deep-team.png",
+    "still": "media/woods_deep-final.png",
+    "clip": "media/woods_deep.gif",
+    "clip_info": {
+      "bytes": 782846,
+      "frames": 34,
+      "size": [
+        640,
+        528
+      ],
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.485
+    },
+    "crossing": {
+      "page": {
+        "title": "Read the waterline",
+        "body": "Moonlight shows fresh water lapping over the copper-post walkway. The blue-plank boardwalk stands above the wet reeds. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "help:103",
+            "label": "Ask Barkley",
+            "description": "Weave a floating reed mat; no HP cost, a small teamwork bonus."
+          },
+          {
+            "value": "help:102",
+            "label": "Ask Gloop",
+            "description": "Weave a floating reed mat; no HP cost, a small teamwork bonus."
+          },
+          {
+            "value": "crossing:0",
+            "label": "Take the blue boardwalk",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Take the copper walkway",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          },
+          {
+            "value": "return_early",
+            "label": "Head home now",
+            "description": "Bank the earned fraction of your one reward bundle."
+          }
+        ],
+        "progress": {
+          "completed": 2,
+          "total": 3
+        },
+        "party_ids": [
+          101,
+          102,
+          103
+        ],
+        "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+      }
+    }
+  },
+  "ember": {
+    "name": "The Ember Wastes",
+    "level_range": [
+      11,
+      15
+    ],
+    "min_level": 6,
+    "new": false,
+    "header": "media/journal-ember.png",
+    "team": "media/ember-team.png",
+    "still": "media/ember-final.png"
+  },
+  "ember_deep": {
+    "name": "The Sunforge Dunes",
+    "level_range": [
+      16,
+      20
+    ],
+    "min_level": 9,
+    "new": true,
+    "header": "media/journal-ember_deep.png",
+    "team": "media/ember_deep-team.png",
+    "still": "media/ember_deep-final.png",
+    "clip": "media/ember_deep.gif",
+    "clip_info": {
+      "bytes": 699102,
+      "frames": 34,
+      "size": [
+        640,
+        528
+      ],
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.556
+    },
+    "crossing": {
+      "page": {
+        "title": "Turn the sun mirror",
+        "body": "The old plaque reads: ‘Follow the shade.’ The mirror's crescent mark casts a cool shadow through the dunes; the star mark lights a short, hot ridge. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Turn toward the crescent",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Turn toward the star",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          },
+          {
+            "value": "return_early",
+            "label": "Head home now",
+            "description": "Bank the earned fraction of your one reward bundle."
+          }
+        ],
+        "progress": {
+          "completed": 2,
+          "total": 3
+        },
+        "party_ids": [
+          101,
+          102,
+          103
+        ],
+        "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+      }
+    }
+  },
+  "glacial": {
+    "name": "The Glacial Hollows",
+    "level_range": [
+      21,
+      25
+    ],
+    "min_level": 12,
+    "new": false,
+    "header": "media/journal-glacial.png",
+    "team": "media/glacial-team.png",
+    "still": "media/glacial-final.png"
+  },
+  "glacial_deep": {
+    "name": "The Stormglass Peaks",
+    "level_range": [
+      26,
+      30
+    ],
+    "min_level": 16,
+    "new": true,
+    "header": "media/journal-glacial_deep.png",
+    "team": "media/glacial_deep-team.png",
+    "still": "media/glacial_deep-final.png",
+    "clip": "media/glacial_deep.gif",
+    "clip_info": {
+      "bytes": 796482,
+      "frames": 34,
+      "size": [
+        640,
+        528
+      ],
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.625
+    },
+    "crossing": {
+      "page": {
+        "title": "Read the ridge wind",
+        "body": "The windsock and blowing snow show gusts arriving from the east. The cairn's sketch marks the opposite side as sheltered: the west ledge. The exposed span is shorter. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Follow the west ledge",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Follow the east ledge",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          },
+          {
+            "value": "return_early",
+            "label": "Head home now",
+            "description": "Bank the earned fraction of your one reward bundle."
+          }
+        ],
+        "progress": {
+          "completed": 2,
+          "total": 3
+        },
+        "party_ids": [
+          101,
+          102,
+          103
+        ],
+        "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+      }
+    }
+  },
+  "trenches": {
+    "name": "The Sunken Abyssal Trenches",
+    "level_range": [
+      31,
+      35
+    ],
+    "min_level": 20,
+    "new": false,
+    "header": "media/journal-trenches.png",
+    "team": "media/trenches-team.png",
+    "still": "media/trenches-final.png"
+  },
+  "trenches_deep": {
+    "name": "The Cinderreef Caldera",
+    "level_range": [
+      36,
+      40
+    ],
+    "min_level": 25,
+    "new": true,
+    "header": "media/journal-trenches_deep.png",
+    "team": "media/trenches_deep-team.png",
+    "still": "media/trenches_deep-final.png",
+    "clip": "media/trenches_deep.gif",
+    "clip_info": {
+      "bytes": 793142,
+      "frames": 34,
+      "size": [
+        640,
+        528
+      ],
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.588
+    },
+    "crossing": {
+      "page": {
+        "title": "Keep the nursery warm",
+        "body": "The regulator diagram joins the shell valve to a cool side passage. The coral valve opens the shorter bubbling channel beside the nursery. Both leave its warm pool undisturbed. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "crossing:0",
+            "label": "Open the shell valve",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Open the coral valve",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          },
+          {
+            "value": "return_early",
+            "label": "Head home now",
+            "description": "Bank the earned fraction of your one reward bundle."
+          }
+        ],
+        "progress": {
+          "completed": 2,
+          "total": 3
+        },
+        "party_ids": [
+          101,
+          102,
+          103
+        ],
+        "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+      }
+    }
+  },
+  "loom": {
+    "name": "The Celestial Loom",
+    "level_range": [
+      41,
+      45
+    ],
+    "min_level": 30,
+    "new": false,
+    "header": "media/journal-loom.png",
+    "team": "media/loom-team.png",
+    "still": "media/loom-final.png"
+  },
+  "loom_deep": {
+    "name": "The Starfall Gardens",
+    "level_range": [
+      46,
+      50
+    ],
+    "min_level": 38,
+    "new": true,
+    "header": "media/journal-loom_deep.png",
+    "team": "media/loom_deep-team.png",
+    "still": "media/loom_deep-final.png",
+    "clip": "media/loom_deep.gif",
+    "clip_info": {
+      "bytes": 784344,
+      "frames": 34,
+      "size": [
+        640,
+        528
+      ],
+      "milliseconds": 3050,
+      "one_shot": true,
+      "render_seconds": 0.506
+    },
+    "crossing": {
+      "page": {
+        "title": "Remember your first path",
+        "body": "A memory bell repeats your first choice: a ringing bell. The branch bearing that sign holds steady. The other is a shorter ribbon of shifting starlight. Your earlier discovery marks a sheltered way across.",
+        "choices": [
+          {
+            "value": "help:101",
+            "label": "Ask Twine",
+            "description": "Read the stable orbit of the branches; no HP cost, a small teamwork bonus."
+          },
+          {
+            "value": "crossing:0",
+            "label": "Follow the bell branch",
+            "description": "Sheltered route: no HP cost; keeps your saved bundle."
+          },
+          {
+            "value": "crossing:1",
+            "label": "Follow the shifting ribbon",
+            "description": "Short route: up to 3% max HP cost; adds 5% to your one bundle."
+          },
+          {
+            "value": "return_early",
+            "label": "Head home now",
+            "description": "Bank the earned fraction of your one reward bundle."
+          }
+        ],
+        "progress": {
+          "completed": 2,
+          "total": 3
+        },
+        "party_ids": [
+          101,
+          102,
+          103
+        ],
+        "footer": "2/3 stops · one material bundle · one possible catch · bonus 0%"
+      }
+    }
+  }
+}

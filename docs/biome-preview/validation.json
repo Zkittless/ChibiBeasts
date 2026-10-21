@@ -1,0 +1,328 @@
+{
+  "status": "passed",
+  "destinations": 10,
+  "new_destinations": 5,
+  "scope": "Packaged journal headers, actual equipped three-member team renderer, normal move resolver and battle renderer, production seeded saved expedition pages; no live game state.",
+  "records": {
+    "woods": {
+      "files": {
+        "media/journal-woods.png": {
+          "bytes": 91799,
+          "sha256": "07aebb52ba713c9e447b73b9807493a433851a4e4109c29d5979252c477a68a6"
+        },
+        "media/woods-team.png": {
+          "bytes": 244053,
+          "sha256": "9c0710dfca1fdf06862c5159ce462131ed2856422c6f802ef6ad91e7ca0e48a8"
+        },
+        "media/woods-final.png": {
+          "bytes": 181585,
+          "sha256": "6c84f589914025017b5524ec4c82e093f8dae89c52dc056f75c47e1001ccff65"
+        }
+      },
+      "level_range": [
+        1,
+        5
+      ],
+      "trainer_gate": 1,
+      "clip": null,
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "woods_deep": {
+      "files": {
+        "media/journal-woods_deep.png": {
+          "bytes": 99903,
+          "sha256": "cd0fbc8cdadc33d429fe345d05e2e59d35ef864233493a87f40849ad6a2c3a14"
+        },
+        "media/woods_deep-team.png": {
+          "bytes": 248178,
+          "sha256": "d56456c79a947b02957c40235582291fb5c99acc96467f9dbe4353eba94cdeec"
+        },
+        "media/woods_deep-final.png": {
+          "bytes": 186700,
+          "sha256": "2c9c792d80cc5d1d018eeb3a18cd5d06b05a425f02398103bec2fc6515189d4d"
+        },
+        "media/woods_deep.gif": {
+          "bytes": 782846,
+          "sha256": "8a4c065de7c84b21fc769c35f038d56d2a1f28d199014a9cdd0a6f007a838aaa"
+        }
+      },
+      "level_range": [
+        6,
+        10
+      ],
+      "trainer_gate": 3,
+      "clip": {
+        "bytes": 782846,
+        "frames": 34,
+        "size": [
+          640,
+          528
+        ],
+        "milliseconds": 3050,
+        "one_shot": true,
+        "render_seconds": 0.485
+      },
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "ember": {
+      "files": {
+        "media/journal-ember.png": {
+          "bytes": 72127,
+          "sha256": "6360ae46f03aab33bb3052d044cb0556887ea48450d67468fae1afe9254a3a50"
+        },
+        "media/ember-team.png": {
+          "bytes": 211763,
+          "sha256": "c65cea5e6532ad1a51f98ebdbc8e492fb39f8b88f8d00317f3d4b1d1b69df9b4"
+        },
+        "media/ember-final.png": {
+          "bytes": 153623,
+          "sha256": "62cc1214bb0c55a5726705200d5676de9ab32e07d49655078b7d5daa97ad0416"
+        }
+      },
+      "level_range": [
+        11,
+        15
+      ],
+      "trainer_gate": 6,
+      "clip": null,
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "ember_deep": {
+      "files": {
+        "media/journal-ember_deep.png": {
+          "bytes": 82139,
+          "sha256": "6246aa7aa295195b34eefdc2168ec5fce1ccb0a81f0621ce5c6dfa12436c104b"
+        },
+        "media/ember_deep-team.png": {
+          "bytes": 238711,
+          "sha256": "2aaf4fcd884f53d7dc52fef7988eb7b65c96145e67caa6c08bfa64bc85cce60b"
+        },
+        "media/ember_deep-final.png": {
+          "bytes": 163330,
+          "sha256": "0d76aad59b4eaa03ee42835f424aa48e858e2629fa8484c7a9a34734702ff902"
+        },
+        "media/ember_deep.gif": {
+          "bytes": 699102,
+          "sha256": "e4658d7434d564abf7cccf6d3f87a983cb84b93b180a3651404b54d9e8c202f8"
+        }
+      },
+      "level_range": [
+        16,
+        20
+      ],
+      "trainer_gate": 9,
+      "clip": {
+        "bytes": 699102,
+        "frames": 34,
+        "size": [
+          640,
+          528
+        ],
+        "milliseconds": 3050,
+        "one_shot": true,
+        "render_seconds": 0.556
+      },
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "glacial": {
+      "files": {
+        "media/journal-glacial.png": {
+          "bytes": 88316,
+          "sha256": "9ff0dca4e0ff294a6138ff9447cf8849ba13b9dd1797a37dc7aaf1dae25a5dc0"
+        },
+        "media/glacial-team.png": {
+          "bytes": 235419,
+          "sha256": "c75e3a44211c033cd107060256f02554d56a72a08440b64fb4b0013051b0f51a"
+        },
+        "media/glacial-final.png": {
+          "bytes": 171233,
+          "sha256": "31e3e2af3b82d993b4f12f052795ef4c9491703df561f7e9410fedc21c039817"
+        }
+      },
+      "level_range": [
+        21,
+        25
+      ],
+      "trainer_gate": 12,
+      "clip": null,
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "glacial_deep": {
+      "files": {
+        "media/journal-glacial_deep.png": {
+          "bytes": 101801,
+          "sha256": "12efe2139cca31897db271fca87db0f0776d92b2efe4bcb0ae0f47bd85d04d83"
+        },
+        "media/glacial_deep-team.png": {
+          "bytes": 267374,
+          "sha256": "ceec7904e164f3fad087d95388a0f861102781f151f522173d7b4b3158cbdcda"
+        },
+        "media/glacial_deep-final.png": {
+          "bytes": 196479,
+          "sha256": "aca09a007a8ba9fd2c9f0ed14f3efcba99c5946f717de0f62d0b3c841b470c44"
+        },
+        "media/glacial_deep.gif": {
+          "bytes": 796482,
+          "sha256": "9be9d98233aea47e2f72266e6723accb1136485b399b74e51fa6c2b275db5c7d"
+        }
+      },
+      "level_range": [
+        26,
+        30
+      ],
+      "trainer_gate": 16,
+      "clip": {
+        "bytes": 796482,
+        "frames": 34,
+        "size": [
+          640,
+          528
+        ],
+        "milliseconds": 3050,
+        "one_shot": true,
+        "render_seconds": 0.625
+      },
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "trenches": {
+      "files": {
+        "media/journal-trenches.png": {
+          "bytes": 80472,
+          "sha256": "41832240f92b5ba4d9a569da124594ec7ebd63bd0370c13fef38e4232964fbb1"
+        },
+        "media/trenches-team.png": {
+          "bytes": 232894,
+          "sha256": "2830f547720465ad0b315925cdd5b80c6917fbf06d0a2bcd29baa6cbe166c6a7"
+        },
+        "media/trenches-final.png": {
+          "bytes": 160504,
+          "sha256": "bb2c9706e6a692abb88ca1945216ca16e105e0fdc98b2d479f2eca955a73846d"
+        }
+      },
+      "level_range": [
+        31,
+        35
+      ],
+      "trainer_gate": 20,
+      "clip": null,
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "trenches_deep": {
+      "files": {
+        "media/journal-trenches_deep.png": {
+          "bytes": 94085,
+          "sha256": "220edefb1c1ad9293f5845072fa48a9474e1cfd276522c1509386de7f9e47e23"
+        },
+        "media/trenches_deep-team.png": {
+          "bytes": 252968,
+          "sha256": "cba99894a2e666c0d20b5bcb2c0e2a64077f87edb5201006561e29af8abfcf7f"
+        },
+        "media/trenches_deep-final.png": {
+          "bytes": 185631,
+          "sha256": "74a9a123bd782ef211511247657524da6b7277ace15e0407b12333a302b44f55"
+        },
+        "media/trenches_deep.gif": {
+          "bytes": 793142,
+          "sha256": "d0e48c864590e9a2aa419e734ef98a478e916bad2443d060df3308b783204b34"
+        }
+      },
+      "level_range": [
+        36,
+        40
+      ],
+      "trainer_gate": 25,
+      "clip": {
+        "bytes": 793142,
+        "frames": 34,
+        "size": [
+          640,
+          528
+        ],
+        "milliseconds": 3050,
+        "one_shot": true,
+        "render_seconds": 0.588
+      },
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "loom": {
+      "files": {
+        "media/journal-loom.png": {
+          "bytes": 87925,
+          "sha256": "a2ff1d8651ab8c991b8505c8e46dea060bbea7208298795fa4c40145e83c03a7"
+        },
+        "media/loom-team.png": {
+          "bytes": 254259,
+          "sha256": "4d0e5784c2bb25ff3266078a312d0b6a596c840d39e069ec2fdceb01545756ec"
+        },
+        "media/loom-final.png": {
+          "bytes": 175305,
+          "sha256": "3a379f944c243f4857505a02ef8c31ad4265434beb3bbf117730e44e16e855c2"
+        }
+      },
+      "level_range": [
+        41,
+        45
+      ],
+      "trainer_gate": 30,
+      "clip": null,
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    },
+    "loom_deep": {
+      "files": {
+        "media/journal-loom_deep.png": {
+          "bytes": 105820,
+          "sha256": "78db5cb19608c45574cbf0abe2dcb28c88872a4a8f536ac007127d71b5a719cb"
+        },
+        "media/loom_deep-team.png": {
+          "bytes": 276760,
+          "sha256": "7f08cd0ae9378f715bd5542d3ab772eb8f3da58fc854fdb8b8063a072aef6019"
+        },
+        "media/loom_deep-final.png": {
+          "bytes": 192891,
+          "sha256": "a6badb90470aa3692f0d96301fc9e4e7d5f12a1dd4ec50f53b161705262b8bf5"
+        },
+        "media/loom_deep.gif": {
+          "bytes": 784344,
+          "sha256": "b8d8d1f1e51d52e73a2a639c8428f20a388d24370a4d00a098c8a7f1de2d2c16"
+        }
+      },
+      "level_range": [
+        46,
+        50
+      ],
+      "trainer_gate": 38,
+      "clip": {
+        "bytes": 784344,
+        "frames": 34,
+        "size": [
+          640,
+          528
+        ],
+        "milliseconds": 3050,
+        "one_shot": true,
+        "render_seconds": 0.506
+      },
+      "combat_log": [
+        "Twine uses Tick Bite → 1 damage."
+      ]
+    }
+  }
+}

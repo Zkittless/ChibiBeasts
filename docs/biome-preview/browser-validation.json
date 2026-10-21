@@ -1,0 +1,249 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "missing_requests": [],
+  "checks": [
+    {
+      "width": 1100,
+      "destination": "woods",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 1100,
+      "destination": "woods_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 1100,
+      "destination": "ember",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 1100,
+      "destination": "ember_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 1100,
+      "destination": "glacial",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 1100,
+      "destination": "glacial_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 1100,
+      "destination": "trenches",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 1100,
+      "destination": "trenches_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 1100,
+      "destination": "loom",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 1100,
+      "destination": "loom_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 390,
+      "destination": "woods",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 390,
+      "destination": "woods_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 390,
+      "destination": "ember",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 390,
+      "destination": "ember_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 390,
+      "destination": "glacial",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 390,
+      "destination": "glacial_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 390,
+      "destination": "trenches",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 390,
+      "destination": "trenches_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 390,
+      "destination": "loom",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 390,
+      "destination": "loom_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 320,
+      "destination": "woods",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 320,
+      "destination": "woods_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 320,
+      "destination": "ember",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 320,
+      "destination": "ember_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 320,
+      "destination": "glacial",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 320,
+      "destination": "glacial_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 320,
+      "destination": "trenches",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 320,
+      "destination": "trenches_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    },
+    {
+      "width": 320,
+      "destination": "loom",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": false,
+      "replay_checked": false
+    },
+    {
+      "width": 320,
+      "destination": "loom_deep",
+      "no_overflow": true,
+      "all_images_loaded": true,
+      "crossing_visible": true,
+      "replay_checked": true
+    }
+  ],
+  "selector_and_previous_next": true,
+  "screenshots": 6
+}
