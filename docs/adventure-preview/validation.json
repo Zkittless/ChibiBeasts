@@ -1,0 +1,3364 @@
+{
+  "status": "passed",
+  "initial_messages": 1,
+  "additional_messages": 0,
+  "deletions": 0,
+  "scope": "Production JournalView callbacks and saved v3 service state in a disposable prepared QA account; real equipped battle renderer. Playback sleep skipped offline. Native Discord delivery and live balance were not tested.",
+  "example_seed": 15032,
+  "source_sha256": {
+    "data/adventures/woods.json": "23360e6dd1325abc3efd0ea0501eff60e68ca227def3dedb38b70c603a979f3f",
+    "data/adventures/woods_deep.json": "2108b2cd5511e72fd76cbbfbe051f103e163ac6f7e067ebf98f0c4c569d36260",
+    "data/adventures/ember.json": "a862e4cd53714847af80e4fd6db2e188f0997170e3af454e775aad9d70ed14f3",
+    "data/adventures/ember_deep.json": "a5ced96e3b1003609e31dcd2bed7b5f89b559bd1cadb7c745b525d2228f64ac0",
+    "data/adventures/glacial.json": "47ba0d42eb51d88b943cb4e7a867cf5b05d13ec891c6e53c7837ba1ef991249e",
+    "data/adventures/glacial_deep.json": "89638e79cfc38a5635d9d17bc386902007268d3ffa1b493e44edaf76b092fc64",
+    "data/adventures/trenches.json": "4543ecb9ba75e0fdb2b5550bcdaaccbfacfe44eb06fa252f2a7bbd5a875f8b78",
+    "data/adventures/trenches_deep.json": "8c3b5db8b9783da8ae77df046b64deca75a1beedb2feb47d3a62ae007aeb402a",
+    "data/adventures/loom.json": "9f23318adf1436ff754920657d65d2eaba81267910f587eaccd22c36d15ce00d",
+    "data/adventures/loom_deep.json": "ffcd8b218b48eadc8ccf23b6d9f6c47ea799184260016b89b4b034cda9a2e5a4",
+    "utils/adventure_content.py": "83322a3b05387cf380d672c478e80f31efae9912d662d6cd2b199f37a501367c",
+    "utils/journeys.py": "486511409e8051f57c88e8e8dc99fefd618d0ecbf7fe85bc54d78592cd60eb50",
+    "utils/journey_service.py": "4fcea4dfdbc789f4987795a6462358e952b56962f3e8f5168425779e12e79dd6",
+    "utils/journey_combat.py": "6cce34580af190f97d17d57c9eeb138277e394a5456e0c03ac615d804d696fbb",
+    "utils/journal.py": "6b391777695d04121f29afdee9d43f7e1174a4aab6071d45832806fc140d1376",
+    "utils/journal_adventure.py": "ba4047e358e84f127759bc876fbb395b7aabd610e2fa60645abe0b5f8cbc3f33",
+    "utils/journal_team_art.py": "661b5dd67c288925bf5d857d428518a7dde0b6b1ff776d732cb631cd64d78f0a"
+  },
+  "stages": [
+    "selector",
+    "bridge",
+    "boon",
+    "landing",
+    "pack_offer",
+    "enter",
+    "battle",
+    "swap",
+    "action",
+    "battle_swapped",
+    "battle_after_action",
+    "knockout",
+    "pack_between",
+    "assist",
+    "pack_victory",
+    "later_discovery",
+    "homeward",
+    "returned",
+    "log",
+    "recap"
+  ],
+  "uploads": [
+    {
+      "stage": "selector",
+      "revision": 0,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "bridge",
+      "revision": 0,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "boon",
+      "revision": 1,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "landing",
+      "revision": 2,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "pack_offer",
+      "revision": 3,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "enter",
+      "revision": 4,
+      "message_id": 8181,
+      "media": [
+        "adventure-3cfbcbacf1fdd0.gif"
+      ]
+    },
+    {
+      "stage": "battle",
+      "revision": 4,
+      "message_id": 8181,
+      "media": [
+        "adventure-30965e39753f57.png"
+      ]
+    },
+    {
+      "stage": "swap",
+      "revision": 5,
+      "message_id": 8181,
+      "media": [
+        "adventure-9b4e37e202dbfe.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 5,
+      "message_id": 8181,
+      "media": [
+        "adventure-184a5a9bd614cd.gif"
+      ]
+    },
+    {
+      "stage": "battle_swapped",
+      "revision": 5,
+      "message_id": 8181,
+      "media": [
+        "adventure-ddf6859c017d27.png"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 6,
+      "message_id": 8181,
+      "media": [
+        "adventure-c4bd9aa448bdae.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 6,
+      "message_id": 8181,
+      "media": [
+        "adventure-7ce9254a05b7c7.gif"
+      ]
+    },
+    {
+      "stage": "battle_after_action",
+      "revision": 6,
+      "message_id": 8181,
+      "media": [
+        "adventure-68933d1cbbd593.png"
+      ]
+    },
+    {
+      "stage": "knockout",
+      "revision": 7,
+      "message_id": 8181,
+      "media": [
+        "adventure-6b795d64876fa0.gif"
+      ]
+    },
+    {
+      "stage": "battle_after_action",
+      "revision": 7,
+      "message_id": 8181,
+      "media": [
+        "adventure-3d1e8ec74f6489.png"
+      ]
+    },
+    {
+      "stage": "enter",
+      "revision": 8,
+      "message_id": 8181,
+      "media": [
+        "adventure-7526ffcb2da44d.gif"
+      ]
+    },
+    {
+      "stage": "pack_between",
+      "revision": 8,
+      "message_id": 8181,
+      "media": [
+        "adventure-6b07690e3d049f.png"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 9,
+      "message_id": 8181,
+      "media": [
+        "adventure-c9743995661336.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 9,
+      "message_id": 8181,
+      "media": [
+        "adventure-6becedbd81a811.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 9,
+      "message_id": 8181,
+      "media": [
+        "adventure-1d0a9dd8280987.gif"
+      ]
+    },
+    {
+      "stage": "battle_after_action",
+      "revision": 9,
+      "message_id": 8181,
+      "media": [
+        "adventure-395a7faeeba3d1.png"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 10,
+      "message_id": 8181,
+      "media": [
+        "adventure-dc0a7027cc5ea9.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 10,
+      "message_id": 8181,
+      "media": [
+        "adventure-eca8f2e71bd99d.gif"
+      ]
+    },
+    {
+      "stage": "battle_after_action",
+      "revision": 10,
+      "message_id": 8181,
+      "media": [
+        "adventure-53761e9909f8f0.png"
+      ]
+    },
+    {
+      "stage": "assist",
+      "revision": 11,
+      "message_id": 8181,
+      "media": [
+        "adventure-bf93ce7e0bf6ac.gif"
+      ]
+    },
+    {
+      "stage": "battle_after_action",
+      "revision": 11,
+      "message_id": 8181,
+      "media": [
+        "adventure-327d5c58e3273d.png"
+      ]
+    },
+    {
+      "stage": "enter",
+      "revision": 12,
+      "message_id": 8181,
+      "media": [
+        "adventure-664d350829dabd.gif"
+      ]
+    },
+    {
+      "stage": "pack_between",
+      "revision": 12,
+      "message_id": 8181,
+      "media": [
+        "adventure-091c79a4108e99.png"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 13,
+      "message_id": 8181,
+      "media": [
+        "adventure-2bbba3b92260c5.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 13,
+      "message_id": 8181,
+      "media": [
+        "adventure-047084266e1d74.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "revision": 13,
+      "message_id": 8181,
+      "media": [
+        "adventure-4a287205dda7b8.gif"
+      ]
+    },
+    {
+      "stage": "battle_after_action",
+      "revision": 13,
+      "message_id": 8181,
+      "media": [
+        "adventure-71e421ac57bd8f.png"
+      ]
+    },
+    {
+      "stage": "knockout",
+      "revision": 14,
+      "message_id": 8181,
+      "media": [
+        "adventure-bf02261b40d362.gif"
+      ]
+    },
+    {
+      "stage": "battle_after_action",
+      "revision": 14,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "pack_victory",
+      "revision": 14,
+      "message_id": 8181,
+      "media": []
+    },
+    {
+      "stage": "later_discovery",
+      "revision": 15,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "later_discovery",
+      "revision": 16,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "later_discovery",
+      "revision": 17,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "homeward",
+      "revision": 17,
+      "message_id": 8181,
+      "media": []
+    },
+    {
+      "stage": "returned",
+      "revision": 18,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "log",
+      "revision": 18,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png"
+      ]
+    },
+    {
+      "stage": "recap",
+      "revision": 18,
+      "message_id": 8181,
+      "media": [
+        "journal-loom.png",
+        "equipped-97efd164e51953c2738a.png"
+      ]
+    }
+  ],
+  "clips": [
+    {
+      "file": "media/adventure-047084266e1d74.gif",
+      "bytes": 357397,
+      "frames": 21,
+      "milliseconds": 1100,
+      "durations": [
+        50,
+        40,
+        50,
+        40,
+        50,
+        50,
+        40,
+        50,
+        40,
+        50,
+        40,
+        50,
+        50,
+        40,
+        50,
+        40,
+        50,
+        40,
+        50,
+        50,
+        180
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-184a5a9bd614cd.gif",
+      "bytes": 647704,
+      "frames": 24,
+      "milliseconds": 1950,
+      "durations": [
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-1d0a9dd8280987.gif",
+      "bytes": 598127,
+      "frames": 24,
+      "milliseconds": 1950,
+      "durations": [
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-2bbba3b92260c5.gif",
+      "bytes": 718854,
+      "frames": 24,
+      "milliseconds": 1650,
+      "durations": [
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-3cfbcbacf1fdd0.gif",
+      "bytes": 209668,
+      "frames": 15,
+      "milliseconds": 1200,
+      "durations": [
+        300,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        250
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-4a287205dda7b8.gif",
+      "bytes": 607851,
+      "frames": 24,
+      "milliseconds": 1950,
+      "durations": [
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        80,
+        80
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-664d350829dabd.gif",
+      "bytes": 245024,
+      "frames": 15,
+      "milliseconds": 1200,
+      "durations": [
+        300,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        250
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-6b795d64876fa0.gif",
+      "bytes": 811473,
+      "frames": 33,
+      "milliseconds": 3050,
+      "durations": [
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        160,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        400,
+        80
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-6becedbd81a811.gif",
+      "bytes": 361536,
+      "frames": 21,
+      "milliseconds": 1100,
+      "durations": [
+        50,
+        40,
+        50,
+        40,
+        50,
+        50,
+        40,
+        50,
+        40,
+        50,
+        40,
+        50,
+        50,
+        40,
+        50,
+        40,
+        50,
+        40,
+        50,
+        50,
+        180
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-7526ffcb2da44d.gif",
+      "bytes": 243972,
+      "frames": 15,
+      "milliseconds": 1200,
+      "durations": [
+        300,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        250
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-7ce9254a05b7c7.gif",
+      "bytes": 603307,
+      "frames": 24,
+      "milliseconds": 1650,
+      "durations": [
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-9b4e37e202dbfe.gif",
+      "bytes": 266091,
+      "frames": 17,
+      "milliseconds": 1900,
+      "durations": [
+        240,
+        80,
+        80,
+        80,
+        70,
+        80,
+        80,
+        240,
+        80,
+        80,
+        80,
+        80,
+        80,
+        70,
+        80,
+        80,
+        320
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-bf02261b40d362.gif",
+      "bytes": 809297,
+      "frames": 34,
+      "milliseconds": 3050,
+      "durations": [
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        90,
+        80,
+        160,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        320,
+        80
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-bf93ce7e0bf6ac.gif",
+      "bytes": 708154,
+      "frames": 32,
+      "milliseconds": 3800,
+      "durations": [
+        300,
+        100,
+        100,
+        100,
+        100,
+        200,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        200,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        300,
+        100
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-c4bd9aa448bdae.gif",
+      "bytes": 710004,
+      "frames": 24,
+      "milliseconds": 1650,
+      "durations": [
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-c9743995661336.gif",
+      "bytes": 552831,
+      "frames": 23,
+      "milliseconds": 1650,
+      "durations": [
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        140,
+        70
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-dc0a7027cc5ea9.gif",
+      "bytes": 723718,
+      "frames": 24,
+      "milliseconds": 1650,
+      "durations": [
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "file": "media/adventure-eca8f2e71bd99d.gif",
+      "bytes": 603548,
+      "frames": 24,
+      "milliseconds": 1650,
+      "durations": [
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        70,
+        60,
+        70,
+        70,
+        70
+      ],
+      "one_shot": true,
+      "dimensions": [
+        640,
+        528
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ]
+    }
+  ],
+  "authored_pages": [
+    {
+      "biome": "woods",
+      "node": "woods_bellhouse_entry",
+      "characters": 368,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_bellhouse_cellar",
+      "characters": 367,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_bellhouse_belfry",
+      "characters": 393,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_reedwheel_entry",
+      "characters": 354,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_reedwheel_race",
+      "characters": 371,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_reedwheel_loft",
+      "characters": 369,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_crooked_bridge_entry",
+      "characters": 374,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_crooked_bridge_middle",
+      "characters": 356,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_crooked_bridge_farbank",
+      "characters": 361,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_toast_basket_entry",
+      "characters": 352,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_blue_chalk_entry",
+      "characters": 370,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_copper_stump_entry",
+      "characters": 363,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_moth_press_entry",
+      "characters": 361,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_raincoat_entry",
+      "characters": 352,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_tree_letters_entry",
+      "characters": 356,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_stone_calendar_entry",
+      "characters": 366,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_teapot_entry",
+      "characters": 364,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_crooked_race_entry",
+      "characters": 372,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_root_classroom_entry",
+      "characters": 404,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_pool_bell_entry",
+      "characters": 380,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_seedling_score_entry",
+      "characters": 380,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_borrowed_shadow_entry",
+      "characters": 374,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_log_raft_entry",
+      "characters": 375,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_worn_collar_entry",
+      "characters": 365,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_chalk_path_entry",
+      "characters": 368,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_late_breakfast_entry",
+      "characters": 360,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_familiar_leaf_drift_entry",
+      "characters": 419,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_familiar_ring_entry",
+      "characters": 421,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_familiar_fern_shelf_entry",
+      "characters": 398,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_familiar_windfalls_entry",
+      "characters": 431,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_familiar_sun_patch_entry",
+      "characters": 412,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods",
+      "node": "woods_familiar_rain_measure_entry",
+      "characters": 405,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_floating_post_entry",
+      "characters": 383,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_floating_post_sorting",
+      "characters": 385,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_floating_post_roof",
+      "characters": 398,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_fen_beacon_entry",
+      "characters": 397,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_fen_beacon_lens",
+      "characters": 387,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_fen_beacon_hood",
+      "characters": 389,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_peat_archive_entry",
+      "characters": 385,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_peat_archive_silt",
+      "characters": 380,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_peat_archive_rack",
+      "characters": 365,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_floating_pantry_entry",
+      "characters": 378,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_kelpie_reflection_entry",
+      "characters": 391,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_boot_garden_entry",
+      "characters": 377,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_drifting_reply_entry",
+      "characters": 410,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_gnat_orchestra_entry",
+      "characters": 388,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_low_window_entry",
+      "characters": 377,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_beacon_reply_entry",
+      "characters": 363,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_reed_scribe_entry",
+      "characters": 388,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_folded_map_entry",
+      "characters": 374,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_mud_gauge_entry",
+      "characters": 370,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_narrowboat_entry",
+      "characters": 377,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_harpy_weather_entry",
+      "characters": 366,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_cold_guest_entry",
+      "characters": 398,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_small_wake_entry",
+      "characters": 402,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_archive_names_entry",
+      "characters": 404,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_white_hooves_entry",
+      "characters": 383,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_muddy_ambassador_entry",
+      "characters": 388,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_familiar_fog_line_entry",
+      "characters": 413,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_familiar_reed_roof_entry",
+      "characters": 403,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_familiar_reed_bundle_entry",
+      "characters": 436,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_familiar_quiet_wakes_entry",
+      "characters": 439,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_familiar_deep_tracks_entry",
+      "characters": 433,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "woods_deep",
+      "node": "woods_deep_familiar_scent_posts_entry",
+      "characters": 412,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_ashbread_oven_entry",
+      "characters": 387,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_ashbread_oven_flue",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_ashbread_oven_rack",
+      "characters": 394,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_pressure_house_entry",
+      "characters": 367,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_pressure_house_valves",
+      "characters": 382,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_pressure_house_garden",
+      "characters": 381,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_charred_orchard_entry",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_charred_orchard_roots",
+      "characters": 379,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_charred_orchard_seedtable",
+      "characters": 396,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_soot_laundry_entry",
+      "characters": 392,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_cinder_loom_entry",
+      "characters": 404,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_hellhound_whistle_entry",
+      "characters": 423,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_borrowed_mittens_entry",
+      "characters": 354,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_cooled_footprints_entry",
+      "characters": 405,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_cracked_jar_entry",
+      "characters": 392,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_listening_stone_entry",
+      "characters": 407,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_manticore_shade_entry",
+      "characters": 395,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_shared_tongs_entry",
+      "characters": 383,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_bread_handover_entry",
+      "characters": 401,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_pressure_routine_entry",
+      "characters": 400,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_orchard_visitors_entry",
+      "characters": 423,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_goblin_boots_entry",
+      "characters": 353,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_wyvern_post_entry",
+      "characters": 421,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_three_doorways_entry",
+      "characters": 391,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_warm_creche_entry",
+      "characters": 405,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_ash_compass_entry",
+      "characters": 388,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_familiar_ash_path_entry",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_familiar_quarry_ring_entry",
+      "characters": 437,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_familiar_warm_shelf_entry",
+      "characters": 434,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_familiar_cooled_gatherings_entry",
+      "characters": 443,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_familiar_vent_notes_entry",
+      "characters": 430,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember",
+      "node": "ember_familiar_sunstone_guest_entry",
+      "characters": 422,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_glass_sail_house_entry",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_glass_sail_house_cistern",
+      "characters": 412,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_glass_sail_house_courtyard",
+      "characters": 445,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_horizon_station_entry",
+      "characters": 421,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_horizon_station_weights",
+      "characters": 391,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_horizon_station_bench",
+      "characters": 413,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_buried_theatre_entry",
+      "characters": 381,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_buried_theatre_stage",
+      "characters": 415,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_buried_theatre_wings",
+      "characters": 416,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_sail_patch_entry",
+      "characters": 383,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_cooling_pots_entry",
+      "characters": 430,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_behemoth_distance_entry",
+      "characters": 421,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_crossing_message_entry",
+      "characters": 399,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_fourth_tower_entry",
+      "characters": 424,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_theatre_bill_entry",
+      "characters": 423,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_sand_copies_entry",
+      "characters": 402,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_basilisk_mirror_entry",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_three_shadows_entry",
+      "characters": 393,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_glass_buttons_entry",
+      "characters": 397,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_stacked_luggage_entry",
+      "characters": 429,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_sand_sculptor_entry",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_slow_route_entry",
+      "characters": 420,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_phoenix_arc_entry",
+      "characters": 419,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_unfinished_labyrinth_entry",
+      "characters": 417,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_public_shade_entry",
+      "characters": 416,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_unused_maps_entry",
+      "characters": 417,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_familiar_sand_ledge_entry",
+      "characters": 449,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_familiar_glass_gathering_entry",
+      "characters": 427,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_familiar_dune_ring_entry",
+      "characters": 460,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_familiar_night_screen_entry",
+      "characters": 425,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_familiar_heat_marks_entry",
+      "characters": 446,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "ember_deep",
+      "node": "ember_deep_familiar_watchful_track_entry",
+      "characters": 467,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_warm_porch_entry",
+      "characters": 432,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_warm_porch_spring",
+      "characters": 408,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_warm_porch_lamps",
+      "characters": 408,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_ice_library_entry",
+      "characters": 414,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_ice_library_index",
+      "characters": 433,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_ice_library_table",
+      "characters": 427,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_ropeway_station_entry",
+      "characters": 423,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_ropeway_station_counterweight",
+      "characters": 420,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_ropeway_station_lookout",
+      "characters": 392,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_yeti_mitten_entry",
+      "characters": 412,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_glacius_route_entry",
+      "characters": 414,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_rukh_distance_entry",
+      "characters": 426,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_route_correction_entry",
+      "characters": 440,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_shelter_followup_entry",
+      "characters": 407,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_station_walkers_entry",
+      "characters": 420,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_muffled_stall_entry",
+      "characters": 409,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_lake_bubbles_entry",
+      "characters": 399,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_pegasus_drinking_entry",
+      "characters": 379,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_bread_shelf_entry",
+      "characters": 425,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_warm_stitch_entry",
+      "characters": 373,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_frost_flowers_entry",
+      "characters": 400,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_griffin_ledge_entry",
+      "characters": 388,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_two_echoes_entry",
+      "characters": 404,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_simurgh_horizon_entry",
+      "characters": 410,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_borrowed_courage_entry",
+      "characters": 407,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_snow_marker_entry",
+      "characters": 410,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_familiar_snow_lip_entry",
+      "characters": 447,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_familiar_ice_ring_entry",
+      "characters": 443,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_familiar_dry_alcove_entry",
+      "characters": 423,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_familiar_frost_gatherings_entry",
+      "characters": 438,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_familiar_echo_arch_entry",
+      "characters": 447,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial",
+      "node": "glacial_familiar_high_track_entry",
+      "characters": 463,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.weather_house.entry",
+      "characters": 426,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.weather_house.records",
+      "characters": 387,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.weather_house.roof",
+      "characters": 446,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.bellspan.entry",
+      "characters": 404,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.bellspan.underside",
+      "characters": 398,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.bellspan.crossing",
+      "characters": 438,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.cloud_station.entry",
+      "characters": 413,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.cloud_station.shelter",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.cloud_station.platform",
+      "characters": 390,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.tea_cup.entry",
+      "characters": 392,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.wool_lines.entry",
+      "characters": 409,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.ice_steps.entry",
+      "characters": 398,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.flag_rookery.entry",
+      "characters": 419,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.sliding_bench.entry",
+      "characters": 410,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.cairn_apology.entry",
+      "characters": 387,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.cloud_sketch.entry",
+      "characters": 429,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.glass_roots.entry",
+      "characters": 434,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.sail_mill.entry",
+      "characters": 416,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.frost_window.entry",
+      "characters": 444,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.weather_letter.entry",
+      "characters": 418,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.bell_answer.entry",
+      "characters": 412,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.dye_house.entry",
+      "characters": 387,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.wind_shadow.entry",
+      "characters": 406,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.practice_yard.entry",
+      "characters": 434,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.thunder_feather.entry",
+      "characters": 451,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.cloud_census.entry",
+      "characters": 414,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.mica_slide.entry",
+      "characters": 455,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.ice_buds.entry",
+      "characters": 453,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.cloud_breath.entry",
+      "characters": 464,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.harpy_draft.entry",
+      "characters": 501,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.rukh_stones.entry",
+      "characters": 520,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "glacial_deep",
+      "node": "glacial_deep.squall_shelter.entry",
+      "characters": 450,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.post_house.entry",
+      "characters": 433,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.post_house.sorting",
+      "characters": 434,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.post_house.roof",
+      "characters": 451,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.window_school.entry",
+      "characters": 458,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.window_school.lesson",
+      "characters": 437,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.window_school.courtyard",
+      "characters": 433,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.anchor_house.entry",
+      "characters": 451,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.anchor_house.pantry",
+      "characters": 447,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.anchor_house.doorstep",
+      "characters": 447,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.kelpie_channel.entry",
+      "characters": 473,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.ink_notice.entry",
+      "characters": 447,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.sponge_music.entry",
+      "characters": 450,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.empty_helmet.entry",
+      "characters": 429,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.loose_net.entry",
+      "characters": 419,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.current_drill.entry",
+      "characters": 437,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.lantern_check.entry",
+      "characters": 457,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.salt_archive.entry",
+      "characters": 441,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.west_window.entry",
+      "characters": 424,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.outside_pupil.entry",
+      "characters": 433,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.kitchen_visitors.entry",
+      "characters": 403,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.hydra_reflections.entry",
+      "characters": 444,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.echo_stair.entry",
+      "characters": 422,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.floating_market.entry",
+      "characters": 455,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.gate_practice.entry",
+      "characters": 464,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.leviathan_lane.entry",
+      "characters": 453,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.beacon_keeper.entry",
+      "characters": 439,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.bubble_lane.entry",
+      "characters": 526,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.sand_cradle.entry",
+      "characters": 479,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.courier_shelter.entry",
+      "characters": 449,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.kelpie_reeds.entry",
+      "characters": 533,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.ink_fall.entry",
+      "characters": 456,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches",
+      "node": "trenches.stone_signal.entry",
+      "characters": 482,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.glasshouse.entry",
+      "characters": 435,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.glasshouse.beds",
+      "characters": 437,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.glasshouse.roof",
+      "characters": 466,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.regulator_house.entry",
+      "characters": 449,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.regulator_house.valves",
+      "characters": 457,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.regulator_house.nursery",
+      "characters": 507,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.coral_baths.entry",
+      "characters": 450,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.coral_baths.shelter",
+      "characters": 442,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.coral_baths.terrace",
+      "characters": 441,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.dragon_nursery.entry",
+      "characters": 457,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.shed_scale.entry",
+      "characters": 462,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.bubble_count.entry",
+      "characters": 431,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.basalt_buttons.entry",
+      "characters": 458,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.vent_flute.entry",
+      "characters": 432,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.eel_passage.entry",
+      "characters": 415,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.fan_shadow.entry",
+      "characters": 435,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.drill_room.entry",
+      "characters": 447,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.second_bloom.entry",
+      "characters": 448,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.public_diagram.entry",
+      "characters": 470,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.cool_bath_guest.entry",
+      "characters": 427,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.phoenix_glimmer.entry",
+      "characters": 439,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.basalt_circle.entry",
+      "characters": 433,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.black_sand.entry",
+      "characters": 415,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.shelf_challenger.entry",
+      "characters": 442,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.warm_memory.entry",
+      "characters": 431,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.valve_course.entry",
+      "characters": 444,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.vent_pulse.entry",
+      "characters": 450,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.coral_fall.entry",
+      "characters": 446,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.cinnamon_current.entry",
+      "characters": 468,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.bubble_arch.entry",
+      "characters": 469,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.basalt_rest.entry",
+      "characters": 465,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "trenches_deep",
+      "node": "trenches_deep.practice_bubbles.entry",
+      "characters": 522,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.question_index.entry",
+      "characters": 425,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.question_index.aisle",
+      "characters": 459,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.question_index.desk",
+      "characters": 431,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.hour_landing.entry",
+      "characters": 434,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.hour_landing.clocks",
+      "characters": 430,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.hour_landing.stairs",
+      "characters": 434,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.unfinished_bridge.entry",
+      "characters": 455,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.unfinished_bridge.gap",
+      "characters": 404,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.unfinished_bridge.landing",
+      "characters": 417,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.book_rest.entry",
+      "characters": 443,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.unicorn_question.entry",
+      "characters": 422,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.gravity_rail.entry",
+      "characters": 451,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.tomorrow_window.entry",
+      "characters": 416,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.sphinx_margin.entry",
+      "characters": 454,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.blank_atlas.entry",
+      "characters": 443,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.thread_mender.entry",
+      "characters": 461,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.witness_notice.entry",
+      "characters": 437,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.margin_reply.entry",
+      "characters": 417,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.late_arrival.entry",
+      "characters": 459,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.returned_knot.entry",
+      "characters": 392,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.practice_library.entry",
+      "characters": 466,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.starsteps.entry",
+      "characters": 450,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.paradox_cup.entry",
+      "characters": 469,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.chronos_pause.entry",
+      "characters": 444,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.zodiac_circle.entry",
+      "characters": 455,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.open_annex.entry",
+      "characters": 436,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.loose_thread.entry",
+      "characters": 464,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.margin_light.entry",
+      "characters": 469,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.wide_stair.entry",
+      "characters": 454,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.bookmark_route.entry",
+      "characters": 467,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.tilted_path.entry",
+      "characters": 471,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom",
+      "node": "loom.quiet_circle.entry",
+      "characters": 514,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.visitor_tree.entry",
+      "characters": 429,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.visitor_tree.bells",
+      "characters": 446,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.visitor_tree.chair",
+      "characters": 412,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.seed_library.entry",
+      "characters": 455,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.seed_library.drawers",
+      "characters": 466,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.seed_library.beds",
+      "characters": 417,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.night_tea.entry",
+      "characters": 433,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.night_tea.table",
+      "characters": 446,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.night_tea.terrace",
+      "characters": 427,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.atlas_distance.entry",
+      "characters": 452,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.borrowed_can.entry",
+      "characters": 421,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.starfruit_shade.entry",
+      "characters": 442,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.blossom_bowl.entry",
+      "characters": 439,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.fruit_labels.entry",
+      "characters": 456,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.constellation_braid.entry",
+      "characters": 421,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.root_bench.entry",
+      "characters": 434,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.leaf_pages.entry",
+      "characters": 423,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.returning_visitor.entry",
+      "characters": 445,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.seed_reply.entry",
+      "characters": 459,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.tea_return.entry",
+      "characters": 449,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.orchard_practice.entry",
+      "characters": 484,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.terrace_sequence.entry",
+      "characters": 450,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.astraea_bloom.entry",
+      "characters": 448,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.terminus_bed.entry",
+      "characters": 445,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.garden_invitation.entry",
+      "characters": 450,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.unripe_lantern.entry",
+      "characters": 451,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.dew_route.entry",
+      "characters": 488,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.petal_drift.entry",
+      "characters": 506,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.vine_support.entry",
+      "characters": 454,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.fruit_shadow.entry",
+      "characters": 483,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.starlit_drill.entry",
+      "characters": 509,
+      "components": 15,
+      "max_option_value": 67
+    },
+    {
+      "biome": "loom_deep",
+      "node": "loom_deep.drifting_blossom.entry",
+      "characters": 519,
+      "components": 15,
+      "max_option_value": 67
+    }
+  ],
+  "biome_count": 10,
+  "max_characters": 533,
+  "max_components": 15,
+  "max_option_value": 67,
+  "settled": {
+    "gold": 361,
+    "trainer_exp": 750,
+    "material": false,
+    "egg": "prism_sphere",
+    "completed": 7,
+    "total": 7
+  }
+}

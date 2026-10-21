@@ -1,0 +1,1121 @@
+{
+  "version": 1,
+  "biome": "trenches_deep",
+  "encounters": [
+    {
+      "id": "trenches_deep.glasshouse",
+      "title": "The Greenhouse with Closed Windows",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "trenches_deep.glasshouse.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.glasshouse.entry": {
+          "body": "A glass greenhouse stands between two quiet vents, its windows filmed with red mineral dust. Gardener Kelm has kept them closed to protect the young coral inside. The plants now lean toward the same narrow crack. He asks your team to help him decide which kind of shelter has begun to feel like a wall.",
+          "choices": [
+            {
+              "id": "clean",
+              "label": "Clean one window without scraping its living edges",
+              "description": "Use the research allowance; enter the greenhouse.",
+              "outcome": "Clear glass reveals where the young branches are seeking the moving water.",
+              "effects": {
+                "study": 1
+              },
+              "next": "trenches_deep.glasshouse.beds"
+            },
+            {
+              "id": "prop",
+              "label": "Prop the door open with bare basalt",
+              "description": "Gain 5% temporary defense; enter the greenhouse.",
+              "outcome": "Your companions make a stable opening while Kelm watches the gentler current arrive.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "trenches_deep.glasshouse.beds"
+            }
+          ]
+        },
+        "trenches_deep.glasshouse.beds": {
+          "body": "Inside, nursery trays are sorted by the year Kelm expected them to flourish. The oldest tray has outgrown its label and begun sheltering smaller visitors. He thought this meant he had missed the right planting season. Your companions can see that the crowded tray is already doing useful work of its own.",
+          "choices": [
+            {
+              "id": "new_label",
+              "label": "Label the tray by what it shelters now",
+              "description": "Remember the greenhouse’s second season.",
+              "outcome": "Kelm writes a new purpose beneath the old date, leaving both legible.",
+              "effects": {
+                "set_flags": [
+                  "trenches_deep.second_season"
+                ]
+              },
+              "next": "trenches_deep.glasshouse.roof"
+            },
+            {
+              "id": "loosen",
+              "label": "Loosen the crowded tray’s supporting cords",
+              "description": "Build team bond; reach the upper windows.",
+              "outcome": "Your team supports the living branches while Kelm gives them room to spread.",
+              "effects": {
+                "bond": 1
+              },
+              "next": "trenches_deep.glasshouse.roof"
+            }
+          ]
+        },
+        "trenches_deep.glasshouse.roof": {
+          "body": "Kelm opens the upper windows toward a slow stream of warm bubbles. He uses the clear view and your observations to judge the opening rather than waiting for a dramatic bloom. The young branches stop leaning against the glass; small shadows move comfortably between them. He laughs at how quietly a greenhouse can begin working again.",
+          "choices": [
+            {
+              "id": "watch",
+              "label": "Rest while the branches find their new space",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions settle beneath the unhurried movement of the reopened windows.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "sample",
+              "label": "Inspect the loose collection shelf above the beds",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "Kelm indicates a gathering place for the journey's material selection, clear of every living branch.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.regulator_house",
+      "title": "Instructions for a Changing Vent",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "trenches_deep.regulator_house.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.regulator_house.entry": {
+          "body": "A regulator house keeps one warm current moving around a nursery shelf. Its keeper, Idra, has followed the same diagram for years. The vent has shifted sideways, and the diagram’s perfectly straight arrows now point through a coral wall. Three old chalk erasers hang untouched beside the carefully framed instructions.",
+          "choices": [
+            {
+              "id": "measure",
+              "label": "Measure the new current before touching a valve",
+              "description": "Use the research allowance; enter the valve room.",
+              "outcome": "Idra adds your measured curve beside the old straight arrow instead of calling it a mistake.",
+              "effects": {
+                "study": 1
+              },
+              "next": "trenches_deep.regulator_house.valves"
+            },
+            {
+              "id": "brace",
+              "label": "Brace the loose rail beside the control wheel",
+              "description": "Gain 5% temporary defense; enter the valve room.",
+              "outcome": "The steady rail gives every companion a secure place around the unfamiliar controls.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "trenches_deep.regulator_house.valves"
+            }
+          ]
+        },
+        "trenches_deep.regulator_house.valves": {
+          "body": "The valve room has one wheel marked safe and another marked never. Idra admits nobody remembers which event gave them those names. A clear inspection tube shows warm water flowing through the forbidden side, while the approved channel has cooled. The actual nursery temperature is written on a small slate beneath both labels.",
+          "choices": [
+            {
+              "id": "rename",
+              "label": "Name the channels by the water they carry today",
+              "description": "Remember the revised public instructions.",
+              "outcome": "Idra replaces certainty with two clear descriptions that another keeper can check.",
+              "effects": {
+                "set_flags": [
+                  "trenches_deep.vent_instructions"
+                ]
+              },
+              "next": "trenches_deep.regulator_house.nursery"
+            },
+            {
+              "id": "crawl",
+              "label": "Reach the side inspection tube along the rough shelf",
+              "description": "Lose up to 3% HP; gain a 5% reward bonus.",
+              "outcome": "The rough shelf leaves a few scrapes, but the close reading reveals the easier service route.",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "next": "trenches_deep.regulator_house.nursery"
+            }
+          ]
+        },
+        "trenches_deep.regulator_house.nursery": {
+          "body": "Idra tests the regulator against the actual nursery temperature before settling on a gentler current. From the nursery shelf, the house looks much smaller than its importance suggested. Warm water passes beside the coral rather than straight at it. She places a fresh chalkboard within reach, wanting the next correction before anyone becomes worried enough to ask permission.",
+          "choices": [
+            {
+              "id": "leave_notes",
+              "label": "Add a clear note for the next keeper",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "Your team leaves the useful service route beside Idra’s newly adjustable instructions.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "practice",
+              "label": "Practise steady turns around the nursery posts",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "The current offers resistance without forcing your companions into a hurried contest.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.coral_baths",
+      "title": "The Public Baths at Low Heat",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "trenches_deep.coral_baths.entry",
+      "tags": [
+        "camp",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.coral_baths.entry": {
+          "body": "The public baths are three basalt hollows warmed by a single gentle vent. Bathkeeper Nessa has closed the smallest hollow because she cannot make all three equally warm. A low bench beside it is covered in footprints from visitors who preferred that cooler place. She has mistaken their comfort for a maintenance complaint.",
+          "choices": [
+            {
+              "id": "listen",
+              "label": "Ask Nessa about the footprints on the cool bench",
+              "description": "Build bond; enter the bath shelter.",
+              "outcome": "She recognizes several regular visitors who had never asked for warmer water.",
+              "effects": {
+                "bond": 1
+              },
+              "next": "trenches_deep.coral_baths.shelter"
+            },
+            {
+              "id": "measure",
+              "label": "Compare the three hollows without changing them",
+              "description": "Use the research allowance; enter the bath shelter.",
+              "outcome": "The measurements show three different comfortable places rather than one failed standard.",
+              "effects": {
+                "study": 1
+              },
+              "next": "trenches_deep.coral_baths.shelter"
+            }
+          ]
+        },
+        "trenches_deep.coral_baths.shelter": {
+          "body": "The shelter holds towels folded into sizes ranging from a leaf to a blanket. Nessa remembers every regular’s preferred fold but hesitates over newcomers. A small notice still says suitable visitors only. Your companions make the empty words look particularly unhelpful beside so much practical, careful preparation.",
+          "choices": [
+            {
+              "id": "welcome",
+              "label": "Rewrite the notice around choosing a comfortable place",
+              "description": "Remember the baths’ open invitation.",
+              "outcome": "Nessa replaces the vague warning with clear descriptions of the three hollows.",
+              "effects": {
+                "set_flags": [
+                  "trenches_deep.baths_open"
+                ]
+              },
+              "next": "trenches_deep.coral_baths.terrace"
+            },
+            {
+              "id": "fold",
+              "label": "Help fold the remaining towels by useful size",
+              "description": "Gain 5% temporary defense; reach the terrace.",
+              "outcome": "The team learns to pack a shared shelter around different bodies rather than one ideal shape.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "trenches_deep.coral_baths.terrace"
+            }
+          ]
+        },
+        "trenches_deep.coral_baths.terrace": {
+          "body": "After watching the different visitors, Nessa reopens the smallest hollow. A new guest approaches, tests the cooler edge and settles without needing an explanation. Nessa sits on the bench instead of watching the heat gauge. The vent continues its quiet work beneath three baths that no longer need to be identical.",
+          "choices": [
+            {
+              "id": "bathe",
+              "label": "Choose a comfortable hollow for each companion",
+              "description": "Recover up to 10% surviving-team HP.",
+              "outcome": "Your companions find their own warm or cool edges while Nessa leaves them room.",
+              "effects": {
+                "heal": 10
+              }
+            },
+            {
+              "id": "route",
+              "label": "Mark the accessible terrace approach",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The route note makes the reopened baths easier for slower travellers to reach.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.dragon_nursery",
+      "title": "The Nursery’s Large Visitor",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "trenches_deep.dragon_nursery.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.dragon_nursery.entry": {
+          "body": "A Dragon rests well beyond the nursery boundary, its breath warming a stretch of otherwise cold water. The young coral leans toward the gentle current, but the visitor keeps a respectful distance. A nursery attendant has placed observation marks on the sheltered side so nobody needs to crowd the Dragon to learn from its patience.",
+          "choices": [
+            {
+              "id": "observe",
+              "label": "Watch from the attendant’s sheltered marks",
+              "description": "Use the research allowance.",
+              "outcome": "You record the space the visitor leaves between its warmth and the fragile nursery.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "settle",
+              "label": "Let your companions share the distant warmth",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The team rests where the warm current arrives softly, without approaching its source.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.shed_scale",
+      "title": "A Scale with Nobody Attached",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "trenches_deep.shed_scale.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.shed_scale.entry": {
+          "body": "A shed scale catches orange light beneath a bare basalt arch. A sign warns against pulling anything from a resting creature; another, smaller sign points out that this piece was already loose when the arch was inspected. Several ordinary mineral deposits share the same shelf, giving your team a choice of what to mark for its journey.",
+          "choices": [
+            {
+              "id": "source",
+              "label": "Mark the detached shelf as your material source",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You choose loose material and leave every living visitor beyond the arch undisturbed.",
+              "effects": {
+                "material": true
+              }
+            },
+            {
+              "id": "light",
+              "label": "Study how the loose scale catches vent light",
+              "description": "Use the research allowance.",
+              "outcome": "Your drawing records a shed surface without turning the creature that wore it into a resource.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.bubble_count",
+      "title": "A Hundred Bubbles Too Many",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches_deep.bubble_count.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.bubble_count.entry": {
+          "body": "An apprentice named Bo is counting vent bubbles with alarming determination. His teacher asked him to notice when the vent changed, but he has decided a larger count must mean better work. Beside his slate, one slow bubble takes a different path around a newly growing coral branch. He has not seen it yet.",
+          "choices": [
+            {
+              "id": "one",
+              "label": "Point out the single bubble taking a new route",
+              "description": "Use the research allowance.",
+              "outcome": "Bo circles the changed path and finally stops adding unrelated numbers.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "pause",
+              "label": "Share a quiet counting break with the apprentice",
+              "description": "Build team bond.",
+              "outcome": "Your companions demonstrate that paying attention can include putting the slate down.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.basalt_buttons",
+      "title": "The Mender’s Unmatched Buttons",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches_deep.basalt_buttons.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.basalt_buttons.entry": {
+          "body": "A mender named Dru has laid a coat across a warm stone and arranged its buttons by shade. One replacement button is noticeably pale. He worries that its owner will think the repair careless. The coat’s fastening holes, however, were made by many different hands, and the pale button fits the most stretched one particularly well.",
+          "choices": [
+            {
+              "id": "fit",
+              "label": "Test the pale button in the worn fastening",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Dru demonstrates the secure fit while your team practises fastening its own travelling straps.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "history",
+              "label": "Record the coat’s different repairs with Dru",
+              "description": "Build team bond.",
+              "outcome": "He begins telling the story of the coat instead of apologizing for its newest useful piece.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.vent_flute",
+      "title": "The Soup Keeper’s Whistle",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "trenches_deep.vent_flute.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.vent_flute.entry": {
+          "body": "A soup keeper has fitted a little whistle above a cooking vent so the broth cannot overheat unnoticed. Today the whistle is silent because it has filled with mineral dust. The keeper is listening for it so intently that she has forgotten to check the broth itself, which smells reassuringly of warm cinnamon.",
+          "choices": [
+            {
+              "id": "broth",
+              "label": "Check the broth together before cleaning the whistle",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "A shared tasting break becomes a better check than waiting anxiously for a perfect warning.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "dust",
+              "label": "Inspect the detached cap and its collection shelf",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You check the detached cap, clear its loose debris and mark a gathering place without touching the working vent.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.eel_passage",
+      "title": "The Cool Side of the Arch",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "trenches_deep.eel_passage.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.eel_passage.entry": {
+          "body": "An Abyssal Eel slides through the cool shadow beneath a heated basalt arch. Its route follows a narrow seam where warm and cold water meet without mixing quickly. Your companions could cross above the arch, but a low series of pale stones shows a quieter path around the eel’s resting place.",
+          "choices": [
+            {
+              "id": "stones",
+              "label": "Follow the pale stones around the resting seam",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The route gives your team an easy crossing and leaves the eel its cool passage.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "seam",
+              "label": "Sketch the boundary from the observation ledge",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes follow the moving temperature seam without testing it on the visitor.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.fan_shadow",
+      "title": "A Red Fan’s Changing Shadow",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "trenches_deep.fan_shadow.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.fan_shadow.entry": {
+          "body": "A great fan of crimson coral casts a patterned shadow across the path. A gardener has been trimming nearby supports to keep the pattern unchanged, although the fan itself is steadily growing. Your companions notice that the newest shadow marks a smoother stepping route than the older chalk outline beside it.",
+          "choices": [
+            {
+              "id": "new_path",
+              "label": "Follow the new shadow across the smooth stones",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "The growing fan supplies a useful route that the old outline no longer describes.",
+              "effects": {
+                "bonus": 5
+              }
+            },
+            {
+              "id": "compare",
+              "label": "Record the old outline beside the living shadow",
+              "description": "Use the research allowance.",
+              "outcome": "You keep the comparison as a record of growth rather than a demand to reverse it.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.drill_room",
+      "title": "The Drill with a Teacup Cover",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "trenches_deep.drill_room.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.drill_room.entry": {
+          "body": "An old mineral drill stands in a room now used for quiet tea breaks. Its maker covered the sharp fittings with upside-down cups before retiring it. A later visitor has labelled the whole machine dangerous, then crossed that out and written not needed here. The unused handle still turns a small, useful ventilation fan.",
+          "choices": [
+            {
+              "id": "fan",
+              "label": "Turn the retired drill’s ventilation handle gently",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions enjoy the fresh current while the old machine serves its quieter purpose.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "fittings",
+              "label": "Study the protective cup covers",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The simple covers teach your team to make useful room around something awkward.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.second_bloom",
+      "title": "Kelm’s Second Season",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches_deep.second_bloom.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.second_bloom.entry": {
+          "body": "Kelm’s newly labelled greenhouse tray has attracted a neighbour who remembers planting its oldest branch. She thought he had thrown it away when it stopped flowering as expected. He thought she had lost interest. Between them, the same branch is now sheltering a whole little nursery, with its old label still hanging underneath.",
+          "choices": [
+            {
+              "id": "together",
+              "label": "Help the two gardeners name the nursery together",
+              "description": "Build bond; preserve the renewed partnership.",
+              "outcome": "They leave both their names on a label that describes the branch’s present work.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "trenches_deep.gardeners_reunited"
+                ]
+              }
+            },
+            {
+              "id": "plan",
+              "label": "Mark a clear visiting path beside the nursery",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "The visiting route gives the renewed partnership somewhere practical to begin.",
+              "effects": {
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "trenches_deep.second_season"
+      ]
+    },
+    {
+      "id": "trenches_deep.public_diagram",
+      "title": "A Correction in Small Handwriting",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "trenches_deep.public_diagram.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.public_diagram.entry": {
+          "body": "Idra’s public vent instructions have gained a correction written almost at floor level. The line traces a cool approach beneath the nursery shelf, where short companions can travel more easily. The original author has left room for someone else to add the height of the lowest arch. Your team is almost exactly the right size to check it.",
+          "choices": [
+            {
+              "id": "height",
+              "label": "Add the arch height from the safe approach",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The corrected diagram becomes useful to travellers who cannot reach its upper writing space.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "listen",
+              "label": "Read all the newer corrections before moving on",
+              "description": "Use the research allowance.",
+              "outcome": "Several small observations explain the working vent better than one large confident arrow.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "trenches_deep.vent_instructions"
+      ]
+    },
+    {
+      "id": "trenches_deep.cool_bath_guest",
+      "title": "A Guest Who Likes the Cool Bath",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "trenches_deep.cool_bath_guest.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.cool_bath_guest.entry": {
+          "body": "The reopened bath notice has drawn a Kelpie to the smallest hollow. Nessa nearly apologizes for its low temperature, then notices that the visitor has chosen it quite deliberately. Your companions have room on the adjacent bench. A fresh towel is waiting at a height the Kelpie can actually reach.",
+          "choices": [
+            {
+              "id": "company",
+              "label": "Keep the guest quiet company from the bench",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Nessa lets the chosen comfort speak for itself while your companions rest nearby.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "arrange",
+              "label": "Move the towel stand to suit its new visitor",
+              "description": "Build team bond.",
+              "outcome": "The little adjustment turns an invitation into something the visitor can use.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "trenches_deep.baths_open"
+      ]
+    },
+    {
+      "id": "trenches_deep.phoenix_glimmer",
+      "title": "A Phoenix Across the Vent Water",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "trenches_deep.phoenix_glimmer.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.phoenix_glimmer.entry": {
+          "body": "Beyond a thick column of warm water, a Phoenix glimmers like a small sunrise seen through old glass. It has settled where the vent opens into a broad, uncrowded hollow. An attendant asks visitors to keep the approach clear. The most remarkable part of the scene is how little anyone needs to do to improve it.",
+          "choices": [
+            {
+              "id": "distance",
+              "label": "Observe without filling the visitor’s approach",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes preserve the changing light while the Phoenix keeps its peaceful hollow.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "quiet",
+              "label": "Practise quiet waiting with your team",
+              "description": "Build team bond.",
+              "outcome": "The companions learn to share a wonderful sight without needing to move closer.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.basalt_circle",
+      "title": "The Warmstone Practice Ring",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "trenches_deep.basalt_circle.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.basalt_circle.entry": {
+          "body": "A broad ring of cool basalt lies beside the warm vents, used by neighbours who enjoy testing their footwork. Several wild companions have gathered for a friendly session. The host offers your team a place in the ring or a simple balancing exercise along its outside wall, where no challenger will interrupt.",
+          "choices": [
+            {
+              "id": "balance",
+              "label": "Practise on the outside balancing wall",
+              "description": "Gain 5% temporary defense without combat.",
+              "outcome": "Your team learns to stay close on uneven stone before adding an opponent.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "ring",
+              "label": "Accept the group’s paired practice invitation",
+              "description": "Begin a two-opponent encounter.",
+              "outcome": "The host clears the ring and invites the first waiting companion to step forward.",
+              "effects": {
+                "battle": "pack2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.black_sand",
+      "title": "The Warm Line in Black Sand",
+      "kind": "hazard",
+      "repeatable": false,
+      "entry": "trenches_deep.black_sand.entry",
+      "tags": [
+        "hazard",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.black_sand.entry": {
+          "body": "A narrow orange line crosses a black sand shelf, outlining a newly opened warm seep. The seep is mild, but the sand beside it has loosened around old paving stones. A wider cool path stays firm. The detached grit on the far side would make a useful material source if approached with care.",
+          "choices": [
+            {
+              "id": "cool",
+              "label": "Take the wide cool path over firm stone",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The team gives the new seep room while keeping every paw on reliable paving.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "grit",
+              "label": "Inspect the rough outer collection edge",
+              "description": "Lose up to 3% HP; replace your material selection.",
+              "outcome": "Your team picks up a few scrapes on the outer edge; you mark the clear gathering spot for the journey's one regional bundle.",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.shelf_challenger",
+      "title": "A Ripple Behind the Coral Screen",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "trenches_deep.shelf_challenger.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.shelf_challenger.entry": {
+          "body": "Something energetic is making repeated ripples behind a screen of red coral. A small painted practice marker stands on bare stone beside it, while a second marker points to a quiet observation shelf. The resident appears interested in a respectful test rather than in visitors pushing through its living screen.",
+          "choices": [
+            {
+              "id": "watch",
+              "label": "Study the ripples from the observation shelf",
+              "description": "Use the research allowance.",
+              "outcome": "The screen remains undisturbed while your team learns the resident’s patient invitation signals.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "answer",
+              "label": "Answer the practice marker from the bare stone",
+              "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
+              "outcome": "You give a clear ready signal and wait for the resident to approach the open stone.",
+              "effects": {
+                "battle": "rare"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.warm_memory",
+      "title": "The Stone That Stayed Warm",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "trenches_deep.warm_memory.entry",
+      "tags": [
+        "shrine",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.warm_memory.entry": {
+          "body": "A small shrine contains a cooling stone wrapped in old cloth. The note beside it thanks a neighbour for bringing warmth during a long repair shift. No one has replaced the cloth with something grander. The stone now warms only a little, but the sheltered alcove is still an excellent place to sit together.",
+          "choices": [
+            {
+              "id": "rest",
+              "label": "Sit together without trying to improve the gift",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions find enough comfort in the small warmth and the good shelter around it.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "record",
+              "label": "Record the ordinary repair shift named in the note",
+              "description": "Use the research allowance.",
+              "outcome": "The shrine’s story remains about a neighbour showing up with something useful.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.valve_course",
+      "title": "The Three-Valve Exercise",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "trenches_deep.valve_course.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "trenches_deep.valve_course.entry": {
+          "body": "A decommissioned valve yard has become a public movement course. Three open gates each favour a different approach, and several wild companions are waiting to demonstrate. A retired keeper offers a full practice sequence or a slow inspection of the handrails. Neither route asks your team to touch a working vent control.",
+          "choices": [
+            {
+              "id": "rails",
+              "label": "Learn the keeper’s handrail sequence",
+              "description": "Gain 10% temporary defense without combat.",
+              "outcome": "The old keeper teaches where to stop and steady a teammate before each gate.",
+              "effects": {
+                "defense_boon": 10
+              }
+            },
+            {
+              "id": "sequence",
+              "label": "Enter the full sequence with your team",
+              "description": "Begin a three-opponent encounter.",
+              "outcome": "The gathered companions take their waiting places as you signal readiness for the first test.",
+              "effects": {
+                "battle": "pack3"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.vent_pulse",
+      "title": "Familiar Ground: A Gentle Vent Pulse",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "trenches_deep.vent_pulse.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches_deep.vent_pulse.entry": {
+          "body": "The familiar vent shelf breathes warm water in slow pulses. The low handrail marks a clear route between them, while a sheltered notch remains comfortable throughout the cycle. Your companions can practise reading the pulse or settle into the notch until the travelling current becomes gentler.",
+          "choices": [
+            {
+              "id": "timing",
+              "label": "Practise moving together between the pulses",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "The team learns the vent’s patient rhythm without trying to overpower the current.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "notch",
+              "label": "Rest in the sheltered notch",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The notch holds a steady little pocket of comfort while the pulses pass outside.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.coral_fall",
+      "title": "Familiar Ground: A Loose Coral Fragment",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "trenches_deep.coral_fall.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches_deep.coral_fall.entry": {
+          "body": "A small coral fragment has washed onto the familiar maintenance shelf, well away from the living fan beds. Its surface shows where a new branch had begun to grow before it detached. Nearby gardeners have left a clear mark distinguishing the loose collection area from the living nursery.",
+          "choices": [
+            {
+              "id": "collection",
+              "label": "Choose the marked loose collection area",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You leave the nursery untouched and mark detached material for the single journey bundle.",
+              "effects": {
+                "material": true
+              }
+            },
+            {
+              "id": "surface",
+              "label": "Study the fragment where it lies",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes preserve the small unfinished branch without needing to carry it away.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.cinnamon_current",
+      "title": "Familiar Ground: The Cinnamon Current",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "trenches_deep.cinnamon_current.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches_deep.cinnamon_current.entry": {
+          "body": "The familiar cooking hollow carries a faint cinnamon smell whenever the public soup vent is in use. A warm bench stands outside the kitchen’s busy route, with enough room for several small companions. The kitchen sign asks travellers to leave the doorway clear, not to prove that they are hungry enough to stop.",
+          "choices": [
+            {
+              "id": "bench",
+              "label": "Take a short break on the warm bench",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions settle comfortably without blocking the cooks or the passing current.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "room",
+              "label": "Arrange the loose seats for smaller visitors",
+              "description": "Build team bond.",
+              "outcome": "The next short traveller will find a place that was deliberately made usable.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.bubble_arch",
+      "title": "Familiar Ground: Bubbles Beneath the Arch",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "trenches_deep.bubble_arch.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches_deep.bubble_arch.entry": {
+          "body": "Warm bubbles collect beneath the familiar basalt arch before sliding out along its lower rim. Their path changes slightly as the mineral surface grows. The old route marks still work, but a wider new gap has appeared beside them. Your companions can compare the two without approaching the hotter vent mouth.",
+          "choices": [
+            {
+              "id": "gap",
+              "label": "Use the wider gap shown by the bubble path",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The passing bubbles point your team toward an easier approach around the arch.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "compare",
+              "label": "Record the mineral growth beside the old marks",
+              "description": "Use the research allowance.",
+              "outcome": "Your drawing keeps the change visible without treating the earlier route as a mistake.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.basalt_rest",
+      "title": "Familiar Ground: Warm Basalt Steps",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "trenches_deep.basalt_rest.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches_deep.basalt_rest.entry": {
+          "body": "The familiar basalt steps hold warmth long after the nearest vent quiets. The lowest step is comfortable for small companions, while the higher ones offer a better view of the red coral beds. A loose travelling strap has caught on the handrail, reminding your team to check its own fastenings before continuing.",
+          "choices": [
+            {
+              "id": "rest",
+              "label": "Let each companion choose a comfortable step",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The steps offer different resting places without separating the team.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "straps",
+              "label": "Check the team’s straps beside the handrail",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The companions leave with their travelling gear sitting more securely against their bodies.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches_deep.practice_bubbles",
+      "title": "Familiar Ground: The Practice Bubbles",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "trenches_deep.practice_bubbles.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches_deep.practice_bubbles.entry": {
+          "body": "The familiar practice shelf has a fresh stream of small bubbles rising through its stone markers. A lively resident uses their rhythm to invite passing teams into a test. Another waits beside the far marker, ready to join a paired contest if asked. The outside markers remain open for travellers who prefer learning the movement without answering either challenger.",
+          "choices": [
+            {
+              "id": "markers",
+              "label": "Practise the marked movement outside the circle",
+              "description": "Gain 5% temporary attack without combat.",
+              "outcome": "Your team follows the bubble rhythm while leaving the resident its open practice space.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "challenge",
+              "label": "Signal readiness for a friendly test",
+              "description": "Begin a single-opponent encounter.",
+              "outcome": "The resident notices your ready signal and approaches the bare practice shelf.",
+              "effects": {
+                "battle": "single"
+              }
+            },
+            {
+              "id": "paired_bubbles",
+              "label": "Invite both residents into a two-opponent bubble drill",
+              "description": "Begin a two-opponent friendly contest.",
+              "outcome": "The two residents move to separate markers along the bare shelf. Your team signals readiness for the first bout while the second challenger waits clear.",
+              "effects": {
+                "battle": "pack2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

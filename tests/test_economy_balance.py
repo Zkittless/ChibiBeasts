@@ -9,7 +9,6 @@ from utils.equipment import effect_summary
 from utils.items import use_item
 from utils.shops import purchase_gold, purchase_guild, purchase_shard, gold_catalog
 from tests.test_gameplay import DatabaseCase, interaction
-from tests.test_interactions import component
 
 
 class CatalogBalance(unittest.TestCase):
@@ -71,23 +70,21 @@ class CatalogBalance(unittest.TestCase):
 
 
 class EconomyTransactions(DatabaseCase):
-    async def begin_exploration(self, view):
-        import discord
+    async def begin_legacy_exploration(self, realm='woods'):
+        from cogs.hatch import Hatch
         from utils import expeditions
-        # Every fixture starts with one charge. Merely opening the selection
-        # must leave it available and must not create an active expedition.
+        # These economy checks intentionally retain the saved v2 route and
+        # reward budget. New adventures start through the v3 journal flow.
         self.assertIsNone(await expeditions.current(42))
         self.assertEqual((await expeditions.energy(42)).charges, 1)
         before = len(await self.rows('SELECT id FROM expeditions'))
-        begin = next(item for item in view.walk_children()
-                     if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
-        self.assertFalse(begin.disabled)
-        click = component()
-        click.edit_original_response.return_value = view.message
-        await begin.callback(click)
-        click.response.defer.assert_awaited_once()
+        saved = await expeditions.begin(42, realm, adventure_version=2)
+        view = await Hatch.explore.callback(Hatch(None), interaction(), realm)
+        self.addCleanup(view.stop)
         self.assertEqual((await expeditions.energy(42)).charges, 0)
         self.assertEqual(len(await self.rows('SELECT id FROM expeditions')), before + 1)
+        self.assertEqual(view.trip['id'], saved['id'])
+        self.assertEqual(view.trip['payload']['adventure_version'], 2)
         self.assertEqual(view.trip['status'], 'active')
         return view.trip
 
@@ -234,7 +231,6 @@ class EconomyTransactions(DatabaseCase):
         self.assertEqual(crafted,len(RECIPES))
 
     async def test_exploration_grants_exactly_one_material_on_quiet_win_and_loss(self):
-        from cogs.hatch import Hatch
         from utils import expeditions
         import discord
         row_id=await self.beast()
@@ -248,9 +244,7 @@ class EconomyTransactions(DatabaseCase):
             await storage.update_player(42,explore_last_at=0)
             await self.execute('DELETE FROM exploration_energy WHERE user_id=42')
             before=sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials'))
-            view = await Hatch.explore.callback(Hatch(None), interaction())
-            self.addCleanup(view.stop)
-            trip = await self.begin_exploration(view)
+            trip = await self.begin_legacy_exploration()
             self.assertEqual(trip['payload']['adventure_version'], 2)
             if outcome == 'quiet':
                 for choice in ('shrine', 'repair', 'detour'):
@@ -332,29 +326,23 @@ class EconomyTransactions(DatabaseCase):
         self.assertEqual((row['beast_id'],row['stat_treats_used']),('prismara',12))
 
     async def test_rare_only_habitat_keeps_the_ancient_compass_charge(self):
-        from cogs.hatch import Hatch
         from utils import expeditions
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
         await storage.update_player(42,level=30,ancient_compass_charges=1)
-        view = await Hatch.explore.callback(Hatch(None), interaction(), 'loom')
-        self.addCleanup(view.stop)
-        trip = await self.begin_exploration(view)
+        trip = await self.begin_legacy_exploration('loom')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('genesis')):
             await expeditions.choose(42, trip['id'], trip['version'], 'tracks')
         self.assertEqual((await storage.get_player(42))['ancient_compass_charges'],1)
 
     async def test_exploration_library_bonus_is_applied_once(self):
-        from cogs.hatch import Hatch
         from utils import expeditions, rewards
         row_id=await self.beast()
         await storage.set_active_companion(42,row_id)
         await self.execute("INSERT INTO guilds(id,name) VALUES(3,'Library')")
         await self.execute('INSERT INTO guild_members(guild_id,user_id) VALUES(3,42)')
         await self.execute('INSERT INTO guild_sanctuary(guild_id,arcane_library) VALUES(3,1)')
-        view = await Hatch.explore.callback(Hatch(None), interaction())
-        self.addCleanup(view.stop)
-        trip = await self.begin_exploration(view)
+        trip = await self.begin_legacy_exploration()
         self.assertEqual(trip['payload']['adventure_version'], 2)
         for choice in ('shrine', 'repair', 'detour'):
             trip = await expeditions.choose(42, trip['id'], trip['version'], choice)

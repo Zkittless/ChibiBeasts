@@ -1,0 +1,1159 @@
+{
+  "version": 1,
+  "biome": "woods",
+  "encounters": [
+    {
+      "id": "woods_bellhouse",
+      "title": "The Bell That Rings Underground",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "woods_bellhouse_entry",
+      "tags": [
+        "woods",
+        "ruin"
+      ],
+      "nodes": {
+        "woods_bellhouse_entry": {
+          "body": "The old path bell hangs above a cottage whose doorstep has sunk beneath the roots. Someone is ringing it from below. A Fairy on the lintel points at a loose floorboard, then puts a finger to its lips; the occupant has finally fallen asleep.",
+          "choices": [
+            {
+              "label": "Lift the board without waking anyone",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion steadies the board while you ease it free. A warm draught smells of bread and wet wool.",
+              "next": "woods_bellhouse_cellar",
+              "id": "woods_bellhouse_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Sound the bell once to announce yourself",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "One careful note answers from underneath the house. The Fairy shows you which floorboards carry the sound.",
+              "next": "woods_bellhouse_cellar",
+              "id": "woods_bellhouse_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "woods_bellhouse_cellar": {
+          "body": "Below the cottage, a bellkeeper has built shelves around a tree root instead of cutting it. The root is tapping the bell rope whenever water reaches an old drainage bowl. Her kettle is balanced on a history book, and both are getting damp.",
+          "choices": [
+            {
+              "label": "Move the bowl and brace its channel",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "Mud fills your sleeves, but the bowl settles under a stone brace. The tapping stops long enough for the keeper to find her boots.",
+              "next": "woods_bellhouse_belfry",
+              "id": "woods_bellhouse_cellar_c1",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            },
+            {
+              "label": "Trace the root before moving anything",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You mark the places where the root drinks. A shallow groove can lead the water away without stripping its bark.",
+              "next": "woods_bellhouse_belfry",
+              "id": "woods_bellhouse_cellar_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "woods_bellhouse_belfry": {
+          "body": "A ladder reaches the belfry through the cottage chimney. From here, you can see that the bell rope brushes three nesting cups, each woven by a different Fairy. The keeper offers a choice: a louder warning for travellers, or a quieter house for its smallest tenants.",
+          "choices": [
+            {
+              "label": "Pad the rope around the nests",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "woods_bellhouse_seen"
+                ]
+              },
+              "outcome": "The bell gives a soft, clear note. The keeper writes your name beside the nests in her maintenance book.",
+              "id": "woods_bellhouse_belfry_c1",
+              "description": "Temporary team defense +5%; World remembers."
+            },
+            {
+              "label": "Move the pull to the public path",
+              "effects": {
+                "bonus": 5,
+                "set_flags": [
+                  "woods_bellhouse_seen"
+                ]
+              },
+              "outcome": "Travellers can reach the pull without crossing the roof. The keeper promises to mention who made the change.",
+              "id": "woods_bellhouse_belfry_c2",
+              "description": "+5% of the run reward; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_reedwheel",
+      "title": "A Mill Built for Listening",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_reedwheel_entry",
+      "tags": [
+        "woods",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_reedwheel_entry": {
+          "body": "A wooden mill turns although the stream beside it is almost dry. Small cups on the wheel catch falling leaves, and each cup knocks a different note from the spokes. A Goblin miller is listening with both hands over his floury ears.",
+          "choices": [
+            {
+              "label": "Help him separate the notes",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your companion waits beside each spoke as you tap it. The miller finds the note that keeps getting lost.",
+              "next": "woods_reedwheel_race",
+              "id": "woods_reedwheel_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Catch the leaves before they jam the wheel",
+              "effects": {
+                "attack_boon": 5
+              },
+              "outcome": "You clear a path through the cups. The wheel finds a steady rhythm and the miller finally uncovers his ears.",
+              "next": "woods_reedwheel_race",
+              "id": "woods_reedwheel_entry_c2",
+              "description": "Temporary team attack +5%."
+            }
+          ]
+        },
+        "woods_reedwheel_race": {
+          "body": "Behind the mill, a split water race feeds a kitchen garden on one side and a muddy Slime nursery on the other. A fallen branch has diverted everything toward the cabbages. Tiny round faces watch from a puddle that is becoming more flour than water.",
+          "choices": [
+            {
+              "label": "Reopen both channels by hand",
+              "effects": {
+                "hp_cost": 3,
+                "bond": 1
+              },
+              "outcome": "Cold water runs up your sleeves. Your companion settles beside the smallest Slime until the returning trickle reaches it.",
+              "next": "woods_reedwheel_loft",
+              "id": "woods_reedwheel_race_c1",
+              "description": "Pay 3% HP; no knockouts; Lead bond +1."
+            },
+            {
+              "label": "Build a temporary leaf spillway",
+              "effects": {
+                "material": true
+              },
+              "outcome": "The broad leaves carry water around the blockage. Sorting their supports leaves you a modest choice of useful woodland gatherings.",
+              "next": "woods_reedwheel_loft",
+              "id": "woods_reedwheel_race_c2",
+              "description": "Select the run's one material bundle."
+            }
+          ]
+        },
+        "woods_reedwheel_loft": {
+          "body": "The loft holds the miller's real project: shelves of labelled bird calls, rain rhythms and wind notes, written as marks on bark. He cannot decide whether the repaired wheel belongs in his archive or beside the path where other people can hear it.",
+          "choices": [
+            {
+              "label": "Write instructions for the next keeper",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "woods_mill_open"
+                ]
+              },
+              "outcome": "You leave clear directions instead of a grand explanation. The miller hangs them where a shorter reader can reach.",
+              "id": "woods_reedwheel_loft_c1",
+              "description": "Use this run's research allowance; World remembers."
+            },
+            {
+              "label": "Turn the listening bench toward the path",
+              "effects": {
+                "heal": 5,
+                "set_flags": [
+                  "woods_mill_open"
+                ]
+              },
+              "outcome": "You rest together while the wheel plays through its cups. The miller opens the shutters to anyone walking past.",
+              "id": "woods_reedwheel_loft_c2",
+              "description": "Heal surviving team 5%; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_crooked_bridge",
+      "title": "The Bridge with Two Owners",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_crooked_bridge_entry",
+      "tags": [
+        "woods",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_crooked_bridge_entry": {
+          "body": "A narrow bridge has a neat railing on its left side and an extravagant railing on its right. Two neighbours stand at opposite ends, each holding the last plank. Their companions have already crossed, met in the middle and decided to sit down together.",
+          "choices": [
+            {
+              "label": "Ask the companions where they crossed",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Following their muddy pawprints reveals a solid strip between the disputed railings. Neither neighbour can argue with the evidence.",
+              "next": "woods_crooked_bridge_middle",
+              "id": "woods_crooked_bridge_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Measure the bridge before choosing a side",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The left posts are straight and the right joints are strong. You draw a design that needs both neighbours.",
+              "next": "woods_crooked_bridge_middle",
+              "id": "woods_crooked_bridge_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "woods_crooked_bridge_middle": {
+          "body": "The missing plank lies above a shallow patch of nettles. From the gap, you can see that one neighbour has been leaving tools beneath the other's railing, where rain cannot reach them. Both call this an accident when you point it out.",
+          "choices": [
+            {
+              "label": "Hold the plank while they fit its ends",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "The nettles catch your ankles, but both neighbours take the weight before your arms tire. The joint seats cleanly.",
+              "next": "woods_crooked_bridge_farbank",
+              "id": "woods_crooked_bridge_middle_c1",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            },
+            {
+              "label": "Sort the sheltered tools into shared bundles",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You keep their working tools together and separate only loose, useful offcuts. Cooperation suddenly looks less like surrender.",
+              "next": "woods_crooked_bridge_farbank",
+              "id": "woods_crooked_bridge_middle_c2",
+              "description": "Select the run's one material bundle."
+            }
+          ]
+        },
+        "woods_crooked_bridge_farbank": {
+          "body": "The last task is a sign. Each neighbour has brought a name for the bridge, written in letters too large for the available board. Their companions remain shoulder to shoulder beneath it, perfectly content to wait while the humans catch up.",
+          "choices": [
+            {
+              "label": "Name the bridge after the meeting place",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "woods_bridge_seen"
+                ]
+              },
+              "outcome": "You write Middle in small letters. Both neighbours find room for their names underneath, as builders rather than owners.",
+              "id": "woods_crooked_bridge_farbank_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Leave the name blank and mark safe footing",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "woods_bridge_seen"
+                ]
+              },
+              "outcome": "The sign explains where to step in heavy rain. The neighbours agree that a useful sign can wait for a name.",
+              "id": "woods_crooked_bridge_farbank_c2",
+              "description": "Temporary team defense +5%; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_toast_basket",
+      "title": "Breakfast on a Branch",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "woods_toast_basket_entry",
+      "tags": [
+        "woods",
+        "camp"
+      ],
+      "nodes": {
+        "woods_toast_basket_entry": {
+          "body": "A covered basket hangs just beyond reach, suspended from a branch bent by last night's rain. A Goblin cook has left a note asking whoever finds it to save the toast from the ants. Your companion can smell warm herbs beneath the cloth.",
+          "choices": [
+            {
+              "label": "Lower the basket and share a quiet break",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You lower it slowly enough to keep the cups upright. The cook has packed more food than one traveller could reasonably need.",
+              "id": "woods_toast_basket_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Return the basket to the dry stone table",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "woods_breakfast_returned"
+                ]
+              },
+              "outcome": "Your companion guards the table while you straighten the cloth. You leave the cook a dry place to begin again.",
+              "id": "woods_toast_basket_entry_c2",
+              "description": "Lead bond +1; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_blue_chalk",
+      "title": "A Lesson That Walked Away",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_blue_chalk_entry",
+      "tags": [
+        "woods",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_blue_chalk_entry": {
+          "body": "Blue chalk footprints cross the path, climb a tree and end halfway up empty air. A Pixie schoolmaster is searching the ground for the rest of his lesson. He insists it was a very ordinary lesson about directions until his pupils began improving it.",
+          "choices": [
+            {
+              "label": "Draw a route everyone can follow",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You connect the wandering marks with arrows at ground level. The schoolmaster admits that directions should account for the person receiving them.",
+              "id": "woods_blue_chalk_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Follow the prints into a practice clearing",
+              "effects": {
+                "battle": "single"
+              },
+              "outcome": "The pupils gather at the clearing's edge and call for a friendly demonstration. Your team has time to prepare before the lesson begins.",
+              "id": "woods_blue_chalk_entry_c2",
+              "description": "Begin one wild battle."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_copper_stump",
+      "title": "The Stump That Kept Receipts",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "woods_copper_stump_entry",
+      "tags": [
+        "woods",
+        "ruin"
+      ],
+      "nodes": {
+        "woods_copper_stump_entry": {
+          "body": "Copper nails cover a stump beside the path. Each holds a scrap recording a small borrowed thing: a cup, a ribbon, half an afternoon. A new scrap bears your companion's pawprint, although neither of you remembers agreeing to lend anything.",
+          "choices": [
+            {
+              "label": "Read the earliest receipts together",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The oldest entries record help rather than debt. You copy the system before rain turns the remaining ink green.",
+              "id": "woods_copper_stump_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Add one hour of freely given help",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "woods_stump_help_offered"
+                ]
+              },
+              "outcome": "You pull weeds around the stump without adding a price. A loose receipt flutters down, leaving your companion's pawprint unencumbered.",
+              "id": "woods_copper_stump_entry_c2",
+              "description": "Lead bond +1; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_moth_press",
+      "title": "The Ranger's Flower Press",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_moth_press_entry",
+      "tags": [
+        "woods",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_moth_press_entry": {
+          "body": "A ranger kneels beside a flower press full of very patient moths. She opened it to show a visitor some leaves, and the moths mistook its warm pages for shelter. Now a pressing appointment is approaching, but she refuses to close the cover.",
+          "choices": [
+            {
+              "label": "Make a shady shelter beside the press",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You fold broad leaves into a roof. The moths move of their own accord, leaving the pages free and the ranger visibly relieved.",
+              "id": "woods_moth_press_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Study the leaves while everyone waits",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The ranger shows you how each leaf records its growing season. The moths eventually wander out across your notes.",
+              "id": "woods_moth_press_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_raincoat",
+      "title": "A Coat with Room for Two",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_raincoat_entry",
+      "tags": [
+        "woods",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_raincoat_entry": {
+          "body": "A child has stretched a raincoat between two roots to shelter a Wisp. The Wisp does not appear troubled by water, but it stays under the coat whenever the child checks. Both are reluctant to admit that the storm has already passed.",
+          "choices": [
+            {
+              "label": "Sit with them until the last drops stop",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion settles beneath the edge of the coat. The child finds room for everyone without being asked.",
+              "id": "woods_raincoat_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Improve the little shelter before leaving",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You secure the coat where a new shower will not pull it loose. The Wisp marks the entrance with a gentle glow.",
+              "id": "woods_raincoat_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_tree_letters",
+      "title": "The Letter Under the Bark",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_tree_letters_entry",
+      "tags": [
+        "woods",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_tree_letters_entry": {
+          "body": "A loose flap of bark conceals a letter addressed to the next person who bothers to look. Its writer asks only whether the footpath still reaches the river. A pencilled return address points to a house that has become part of the tree.",
+          "choices": [
+            {
+              "label": "Write a careful description of the present path",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "woods_letter_pending"
+                ]
+              },
+              "outcome": "You describe the turn by the white stone and the place where the roots rise. There is finally something honest to send.",
+              "id": "woods_tree_letters_entry_c1",
+              "description": "Use this run's research allowance; World remembers."
+            },
+            {
+              "label": "Draw the river instead of giving directions",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "woods_letter_pending"
+                ]
+              },
+              "outcome": "Your companion leaves a muddy mark beside your drawing. It looks enough like a greeting that you keep it.",
+              "id": "woods_tree_letters_entry_c2",
+              "description": "Lead bond +1; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_stone_calendar",
+      "title": "The Calendar after the Rain",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "woods_stone_calendar_entry",
+      "tags": [
+        "woods",
+        "shrine"
+      ],
+      "nodes": {
+        "woods_stone_calendar_entry": {
+          "body": "Flat stones around a spring carry notches for days of sunshine. None has a mark for rain, though every fern nearby has flourished in it. An old caretaker offers you the chisel, then admits that the missing category has troubled him for years.",
+          "choices": [
+            {
+              "label": "Add a small mark for useful rain",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "woods_rain_remembered"
+                ]
+              },
+              "outcome": "The first new notch fills immediately with clear water. The caretaker begins counting the garden's good days again.",
+              "id": "woods_stone_calendar_entry_c1",
+              "description": "Use this run's research allowance; World remembers."
+            },
+            {
+              "label": "Clear the spring's buried overflow",
+              "effects": {
+                "hp_cost": 3,
+                "heal": 10
+              },
+              "outcome": "Wet grit works into your sleeves before the overflow clears. After washing, the team rests beside water that can move freely.",
+              "id": "woods_stone_calendar_entry_c2",
+              "description": "Pay 3% HP; no knockouts; Heal surviving team 10%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_teapot",
+      "title": "Steam from an Empty Teapot",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "woods_teapot_entry",
+      "tags": [
+        "woods",
+        "shrine"
+      ],
+      "nodes": {
+        "woods_teapot_entry": {
+          "body": "A chipped teapot steams on a mossy altar, though its lid reveals nothing inside. The steam smells faintly different to each member of your team. A nearby inscription asks visitors to leave the smell of a place they would like to reach again.",
+          "choices": [
+            {
+              "label": "Remember home together",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You sit long enough for the steam to smell like a familiar doorway. Even your most watchful companion lets its shoulders relax.",
+              "id": "woods_teapot_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Describe the scent in your journal",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The words are less precise than the smell, but they preserve what each companion noticed. You leave the lid properly seated.",
+              "id": "woods_teapot_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_crooked_race",
+      "title": "The Race with No Finish Line",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "woods_crooked_race_entry",
+      "tags": [
+        "woods",
+        "wild"
+      ],
+      "nodes": {
+        "woods_crooked_race_entry": {
+          "body": "Several woodland beasts wait beside a line of fallen petals. Their course circles a stump, crosses the path and loops back into its own starting place. A spectator has brought an enormous ribbon and no convincing explanation of where it should go.",
+          "choices": [
+            {
+              "label": "Volunteer your team for the opening heat",
+              "effects": {
+                "battle": "pack2"
+              },
+              "outcome": "Two eager challengers take their places. The others clear the course and wait for your signal before the friendly contest begins.",
+              "id": "woods_crooked_race_entry_c1",
+              "description": "Begin a two-beast battle."
+            },
+            {
+              "label": "Help the spectators mark a proper finish",
+              "effects": {
+                "bonus": 2
+              },
+              "outcome": "You lay the ribbon across a straight stretch of ground. The cheering becomes much easier to understand.",
+              "id": "woods_crooked_race_entry_c2",
+              "description": "+2% of the run reward."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_root_classroom",
+      "title": "Seats for the Smallest Pupils",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_root_classroom_entry",
+      "tags": [
+        "woods",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_root_classroom_entry": {
+          "body": "A Dryad teaches beneath a tree whose roots form rows of benches. The smallest seats have disappeared under summer growth, leaving the younger pupils peering between their elders. The teacher has stopped the lesson rather than let anyone spend it staring at somebody else's back.",
+          "choices": [
+            {
+              "label": "Rearrange the class into a circle",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion takes the lowest place beside the smallest pupil. Suddenly everyone can see the leaf the teacher is holding.",
+              "id": "woods_root_classroom_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Observe how the roots share their space",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The roots bend around old stones instead of breaking them. You sketch a lesson the teacher had not planned to give.",
+              "id": "woods_root_classroom_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_pool_bell",
+      "title": "An Answer for the Bellkeeper",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_pool_bell_entry",
+      "tags": [
+        "woods",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_pool_bell_entry": {
+          "body": "The bellkeeper you met beneath the cottage is washing cups at the pool. She recognizes your companion before she recognizes you. A traveller has heard the improved bell but wants to know whether it means welcome, warning, or simply that somebody is awake.",
+          "choices": [
+            {
+              "label": "Help her write a clear signal guide",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You choose three short patterns that cannot be mistaken for one another. She hangs the guide beside the public path.",
+              "id": "woods_pool_bell_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Carry the welcome signal to the nearest crossing",
+              "effects": {
+                "bonus": 5
+              },
+              "outcome": "Your companion keeps pace while you explain the note at each turning. Travellers begin answering it with raised hands.",
+              "id": "woods_pool_bell_entry_c2",
+              "description": "+5% of the run reward."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_bellhouse_seen"
+      ]
+    },
+    {
+      "id": "woods_seedling_score",
+      "title": "The Mill's First Audience",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_seedling_score_entry",
+      "tags": [
+        "woods",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_seedling_score_entry": {
+          "body": "Beside the reopened listening mill, seedlings lean toward the sound of the wheel. The miller has arranged his pots in rows and is taking the experiment much too seriously. He asks whether music helps them grow, or whether this window simply has better light.",
+          "choices": [
+            {
+              "label": "Compare the sunny and shaded rows",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You move only the labels, leaving the seedlings undisturbed. The miller agrees to keep useful notes rather than announce a miracle.",
+              "id": "woods_seedling_score_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help carry the crowded pots outside",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              },
+              "outcome": "The pots are heavier than they look. You sort loose woodland gatherings while making room for the roots to spread.",
+              "id": "woods_seedling_score_entry_c2",
+              "description": "Pay 3% HP; no knockouts; Select the run's one material bundle."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_mill_open"
+      ]
+    },
+    {
+      "id": "woods_borrowed_shadow",
+      "title": "The Shadow That Stayed for Lunch",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "woods_borrowed_shadow_entry",
+      "tags": [
+        "woods",
+        "wild"
+      ],
+      "nodes": {
+        "woods_borrowed_shadow_entry": {
+          "body": "Your companion's shadow remains seated when the rest of the team moves on. A Pixie is holding its edge beneath a picnic cloth to keep the plates from sliding. It looks embarrassed when it realizes the practical arrangement has acquired an owner.",
+          "choices": [
+            {
+              "label": "Trade a flat stone for the shadow",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "The Pixie tests the stone twice before letting go. Your companion's shadow hurries back without commenting on its afternoon.",
+              "id": "woods_borrowed_shadow_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Invite the Pixie to explain the trick",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "It demonstrates using its own shadow this time. You note where the light falls and leave the picnic upright.",
+              "id": "woods_borrowed_shadow_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_log_raft",
+      "title": "The Boat That Grew a Branch",
+      "kind": "hazard",
+      "repeatable": false,
+      "entry": "woods_log_raft_entry",
+      "tags": [
+        "woods",
+        "hazard"
+      ],
+      "nodes": {
+        "woods_log_raft_entry": {
+          "body": "A makeshift raft has become a small floating garden. The branch used as its steering pole has rooted in the deck, trapping it against a bend. A courier on the bank must choose between delivering dry letters and keeping this stubborn little tree alive.",
+          "choices": [
+            {
+              "label": "Guide the raft around the bend from shore",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "A wet rope rubs your palms, but the rooted deck moves into open water. The courier can continue without cutting the branch.",
+              "id": "woods_log_raft_entry_c1",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Move the letters to the sheltered footpath",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You show the courier where the bank stays high. The raft can remain a garden without becoming a failed delivery.",
+              "id": "woods_log_raft_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_worn_collar",
+      "title": "A Name That Was Sewn Twice",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_worn_collar_entry",
+      "tags": [
+        "woods",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_worn_collar_entry": {
+          "body": "A retired trail guide has brought a worn collar to the bridge you helped inspect. Two names are sewn inside it, one above the other. She cannot remember which belonged to her first companion and which was the name the neighbours used for her.",
+          "choices": [
+            {
+              "label": "Listen while she follows the old route in memory",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "At the familiar turn, she remembers who used to answer which name. She keeps both stitches where they are.",
+              "id": "woods_worn_collar_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Record her route before the details wander",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You sketch the crossings as she describes them. She corrects the direction of a hill and signs both names underneath.",
+              "id": "woods_worn_collar_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_bridge_seen"
+      ]
+    },
+    {
+      "id": "woods_chalk_path",
+      "title": "Directions for a Stranger",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_chalk_path_entry",
+      "tags": [
+        "woods",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_chalk_path_entry": {
+          "body": "A messenger sits beside the tree that held the hidden letter. Your reply has been copied onto a sheet large enough to survive the journey. The messenger needs either a clear route through the roots or a sheltered place to wait out another shower.",
+          "choices": [
+            {
+              "label": "Show the messenger the river turning",
+              "effects": {
+                "bonus": 5,
+                "clear_flags": [
+                  "woods_letter_pending"
+                ],
+                "set_flags": [
+                  "woods_letter_delivered"
+                ]
+              },
+              "outcome": "You walk as far as the white stone. The messenger leaves with the reply folded safely inside a dry sleeve.",
+              "id": "woods_chalk_path_entry_c1",
+              "description": "+5% of the run reward; World remembers."
+            },
+            {
+              "label": "Prepare a covered resting place",
+              "effects": {
+                "defense_boon": 5,
+                "clear_flags": [
+                  "woods_letter_pending"
+                ],
+                "set_flags": [
+                  "woods_letter_delivered"
+                ]
+              },
+              "outcome": "You finish the shelter while the messenger wraps the letter. The reply will travel after the rain instead of through it.",
+              "id": "woods_chalk_path_entry_c2",
+              "description": "Temporary team defense +5%; World remembers."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_letter_pending"
+      ]
+    },
+    {
+      "id": "woods_late_breakfast",
+      "title": "The Cook's Missing Place",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "woods_late_breakfast_entry",
+      "tags": [
+        "woods",
+        "camp"
+      ],
+      "nodes": {
+        "woods_late_breakfast_entry": {
+          "body": "The cook whose basket you returned has laid a breakfast table beside the path. One place remains empty because nobody knows how much room to leave for your companion. He has tried a cushion, a crate and a very dignified upturned flowerpot.",
+          "choices": [
+            {
+              "label": "Let your companion choose its own place",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "The choice surprises the cook, who moves the entire table rather than disturb a comfortable guest. Breakfast finally begins.",
+              "id": "woods_late_breakfast_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Share a slow meal before the next turn",
+              "effects": {
+                "heal": 10
+              },
+              "outcome": "The cook brings warm water and a sensible portion for each traveller. Nobody is hurried away from the table.",
+              "id": "woods_late_breakfast_entry_c2",
+              "description": "Heal surviving team 10%."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_breakfast_returned"
+      ]
+    },
+    {
+      "id": "woods_familiar_leaf_drift",
+      "title": "Familiar Territory · Leaf Drift",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "woods_familiar_leaf_drift_entry",
+      "tags": [
+        "woods",
+        "hazard"
+      ],
+      "nodes": {
+        "woods_familiar_leaf_drift_entry": {
+          "body": "New leaves collect at the familiar stepping stones after every shower. Nothing here needs rescuing forever; the current simply changes its mind about where to carry them. Today a thick mat hides the middle stone, and your companion is considering a very optimistic jump.",
+          "choices": [
+            {
+              "label": "Clear a narrow channel through the leaves",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "Cold water reaches your knees before the channel opens. The middle stone emerges with enough room for careful feet.",
+              "id": "woods_familiar_leaf_drift_entry_c1",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Take the marked bank path together",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You give the optimistic jumper time to reconsider. The bank path offers a dry crossing and an excellent view of the leaves.",
+              "id": "woods_familiar_leaf_drift_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_familiar_ring",
+      "title": "Familiar Territory · The Practice Ring",
+      "kind": "pack",
+      "repeatable": true,
+      "entry": "woods_familiar_ring_entry",
+      "tags": [
+        "woods",
+        "pack"
+      ],
+      "nodes": {
+        "woods_familiar_ring_entry": {
+          "body": "Fresh pawprints circle the familiar woodland practice ring. Its usual residents come and go, and today's challengers have arranged fallen cones along the boundary. They pause when they see your team, leaving the entrance open and the decision plainly in your hands.",
+          "choices": [
+            {
+              "label": "Accept a two-beast friendly challenge",
+              "effects": {
+                "battle": "pack2"
+              },
+              "outcome": "Two challengers step into the ring and wait. Your companions have space to take their places before the first move.",
+              "id": "woods_familiar_ring_entry_c1",
+              "description": "Begin a two-beast battle."
+            },
+            {
+              "label": "Help reset the cones for the next visitors",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You straighten the widest gaps in the boundary. Watching the residents check your work sharpens the team's sense of spacing.",
+              "id": "woods_familiar_ring_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_familiar_fern_shelf",
+      "title": "Familiar Territory · The Fern Shelf",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "woods_familiar_fern_shelf_entry",
+      "tags": [
+        "woods",
+        "camp"
+      ],
+      "nodes": {
+        "woods_familiar_fern_shelf_entry": {
+          "body": "The familiar fern shelf stays dry even when the path is damp. Somebody has left a new layer of soft leaves beneath its overhang, while the old ones have become part of the soil. Your companions recognize the spot and slow down without a command.",
+          "choices": [
+            {
+              "label": "Rest beneath the overhang",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You settle where the ground is firm. The small shelter gives everyone a chance to ease the journey out of tired limbs.",
+              "id": "woods_familiar_fern_shelf_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Tidy the shelter for the next team",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companions hold the loose leaves while you sweep wet twigs away. You leave the entrance easier to find.",
+              "id": "woods_familiar_fern_shelf_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_familiar_windfalls",
+      "title": "Familiar Territory · Useful Windfalls",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "woods_familiar_windfalls_entry",
+      "tags": [
+        "woods",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_familiar_windfalls_entry": {
+          "body": "A fresh windfall has scattered twigs, bark and tangled fibres across the familiar gathering path. The heap looks promising until movement beneath it reveals a patient Slime using the underside as a roof. Enough loose material remains outside its chosen room for careful hands.",
+          "choices": [
+            {
+              "label": "Gather only from the uncovered edges",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You sort useful pieces without shifting the roof. The Slime watches the pile grow tidier around its doorway.",
+              "id": "woods_familiar_windfalls_entry_c1",
+              "description": "Select the run's one material bundle."
+            },
+            {
+              "label": "Study how the fibres hold together",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Their crossings make a stronger mesh than their size suggests. You sketch the pattern and leave the shelter intact.",
+              "id": "woods_familiar_windfalls_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_familiar_sun_patch",
+      "title": "Familiar Territory · A Moving Sun Patch",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "woods_familiar_sun_patch_entry",
+      "tags": [
+        "woods",
+        "wild"
+      ],
+      "nodes": {
+        "woods_familiar_sun_patch_entry": {
+          "body": "The familiar sunny clearing has shifted its warmest patch to the far side of a fallen tree. A wild resident has claimed it for the afternoon and stamps a small challenge into the dust. There is plenty of shaded room to pass without disturbing the dispute.",
+          "choices": [
+            {
+              "label": "Offer a single friendly contest",
+              "effects": {
+                "battle": "single"
+              },
+              "outcome": "The resident leaves the warm patch and faces your team in the open clearing. Both sides have room to prepare.",
+              "id": "woods_familiar_sun_patch_entry_c1",
+              "description": "Begin one wild battle."
+            },
+            {
+              "label": "Lead the team through the cooler shade",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You watch the narrow gaps between roots as you pass. The team settles into a careful, compact travelling order.",
+              "id": "woods_familiar_sun_patch_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_familiar_rain_measure",
+      "title": "Familiar Territory · Marks on the Rain Stone",
+      "kind": "shrine",
+      "repeatable": true,
+      "entry": "woods_familiar_rain_measure_entry",
+      "tags": [
+        "woods",
+        "shrine"
+      ],
+      "nodes": {
+        "woods_familiar_rain_measure_entry": {
+          "body": "Rain has climbed a little higher on the familiar measuring stone. Fresh wet marks cross old dry ones, making last week's confident predictions look rather foolish. The spring beside it is clear, and a small cup remains on its usual flat ledge.",
+          "choices": [
+            {
+              "label": "Measure today instead of correcting yesterday",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You add one honest observation beneath the others. The disagreement between marks becomes useful information instead of a mistake.",
+              "id": "woods_familiar_rain_measure_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Wash the dust from the team's feet",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You use the cup without muddying the spring. Clean feet make the next stretch feel less like an argument with the path.",
+              "id": "woods_familiar_rain_measure_entry_c2",
+              "description": "Heal surviving team 5%."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

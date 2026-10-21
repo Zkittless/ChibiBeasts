@@ -66,6 +66,8 @@ class JournalView(discord.ui.LayoutView):
         self.message_repurposed = False
         self._returned_battles = set()
         self.team_art = None
+        self.journey_media, self.journey_presentation = None, None
+        self.journey_playing = False
         self.team_mode = 'exploration'
         self.lock = asyncio.Lock()
         self.last_input = 0
@@ -162,6 +164,10 @@ class JournalView(discord.ui.LayoutView):
 
     def render_adventure(self):
         trip = self.trip
+        if self.journey_playing and trip and trip['payload'].get('adventure_version') == 3:
+            from utils import journal_adventure
+            journal_adventure.render(self, trip)
+            return
         self.row(self.button('Battle log', 'page:battle_log'), self.button('Tower Trials', 'launch:challenge'))
         if not trip or trip['status'] == 'complete':
             if trip:
@@ -190,7 +196,7 @@ class JournalView(discord.ui.LayoutView):
                 if training:
                     self.text(f"Suggested starter training: **{REALMS[training]['name']}**")
             healthy = traveller and traveller['hp'] > 0 and not storage.is_knocked_out(traveller) and not traveller['listed']
-            self.row(self.button('Begin expedition · 1 charge', 'begin', discord.ButtonStyle.success,
+            self.row(self.button('Start adventure · 1 charge', 'begin', discord.ButtonStyle.success,
                                  disabled=not e.charges or locked or not healthy))
             if not healthy:
                 self.text('Choose a healthy active companion before setting out.')
@@ -199,6 +205,10 @@ class JournalView(discord.ui.LayoutView):
                 self.text('Next charge in ' + wait_text(e.next_in) + '. Up to three charges wait for you between visits.')
             return
         p = trip['payload']
+        if p.get('adventure_version') == 3:
+            from utils import journal_adventure
+            journal_adventure.render(self, trip)
+            return
         if p.get('adventure_version', 0) >= 2:
             self.render_branching_trip(trip)
             return
@@ -439,10 +449,13 @@ class JournalView(discord.ui.LayoutView):
         self.row(self.button('Nursery', 'page:nursery'), self.button('Perks', 'panel:perks'), self.button('Command guide', 'commands'))
 
     def render(self):
+        self.page_menu.disabled = self.path_select.disabled = False
+        for control in self.tools.children:
+            control.disabled = False
         self._button_serial = self._static_button_count
         self.portraits = {}
         self.container.clear_items()
-        if self.art_enabled and not (self.page == 'team' and self.team_art):
+        if self.art_enabled and not (self.page == 'team' and self.team_art) and not (self.page == 'adventure' and self.journey_media):
             self.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(f'attachment://{self.header.name}', description='Field Journal · ' + REALMS[self.art_realm]['name'])))
         current = 'adventure' if self.page == 'battle_log' else self.page
         self.page_menu.options = [discord.SelectOption(label=key.title(), value=key, default=key == current)
@@ -454,7 +467,7 @@ class JournalView(discord.ui.LayoutView):
             self.text(self.notice[:750])
         render = getattr(self, 'render_' + self.page, self.render_home)
         render()
-        if self.closed:
+        if self.closed or self.journey_playing:
             for item in self.walk_children():
                 if isinstance(item, (discord.ui.Button, discord.ui.Select)):
                     item.disabled = True
@@ -488,7 +501,7 @@ class JournalView(discord.ui.LayoutView):
             attachments, files = [], []
             if self.art_enabled:
                 # Only send artwork actually referenced on this page.
-                stage = self.team_art if self.page == 'team' else None
+                stage = self.team_art if self.page == 'team' else self.journey_media if self.page == 'adventure' else None
                 paths = {} if stage else {self.header.name: self.header}
                 for name, path in paths.items():
                     if name in previous:
@@ -595,7 +608,7 @@ class JournalView(discord.ui.LayoutView):
                 if interaction.response.is_done():
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
-        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:'))
+        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination', 'journey_action'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:', 'journey_next:', 'journey_return:'))
         duplicate = mutation and (self.mutating or self.lock.locked())
         if mutation and not duplicate:
             self.mutating = True
@@ -677,7 +690,7 @@ class JournalView(discord.ui.LayoutView):
                             raise ValueError('Choose a destination from this journal.')
                         self.realm = key
                     elif action == 'begin':
-                        self.trip = await expeditions.begin(self.user_id, self.realm, guild_id=getattr(interaction.guild, 'id', 0))
+                        self.trip = await expeditions.begin(self.user_id, self.realm, guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
                     elif action.startswith('save_destination:'):
                         realm = action.split(':', 1)[1]
                         if self.state.trip or realm != self.realm:
@@ -690,11 +703,26 @@ class JournalView(discord.ui.LayoutView):
                     elif action == 'path':
                         trip_id, version, choice = interaction.data['values'][0].split(':', 2)
                         self.trip = await expeditions.choose(self.user_id, trip_id, int(version), choice)
-                        if self.trip['status'] == 'battle':
+                        if self.trip['status'] == 'battle' and self.trip['payload'].get('adventure_version') != 3:
                             battle = self.trip
                         elif self.trip['status'] == 'complete' and self.trip['payload']['caught']:
                             from cogs.hatch import check_collection_completion
                             await check_collection_completion(interaction, storage.get_beast_data(self.trip['payload']['encounter']), storage.load_beasts())
+                    elif action == 'journey_action' or action.startswith(('journey_next:', 'journey_return:')):
+                        from utils import journey_service, trial_combat
+                        if action == 'journey_action':
+                            trip_id, version, index = interaction.data['values'][0].split(':')
+                            current = self.state.trip
+                            if not current or current['id'] != trip_id or current['version'] != int(version):
+                                raise ValueError('Use the refreshed adventure controls.')
+                            actions = trial_combat.legal_actions(current['payload']['combat'])
+                            if not 0 <= int(index) < len(actions):
+                                raise ValueError('Choose a current combat action.')
+                            choice = actions[int(index)]['choice']
+                        else:
+                            verb, trip_id, version = action.split(':')
+                            choice = 'next' if verb == 'journey_next' else 'return'
+                        self.trip = await journey_service.battle_action(self.user_id, trip_id, int(version), choice)
                     elif action == 'battle_continue':
                         if not self.state.trip or self.state.trip['status'] != 'battle':
                             raise ValueError('This encounter has already ended. Refresh your saved trip.')
@@ -840,8 +868,14 @@ class JournalView(discord.ui.LayoutView):
                     self.notice = safe(error)
                     self.state = await journal_state.snapshot(self.user_id)
                     self.trip = self.state.trip or self.trip
-                self.render()
-                await self.publish(interaction)
+                if self.page == 'adventure' and self.trip and self.trip['payload'].get('adventure_version') == 3:
+                    from utils import journal_adventure
+                    animate = not self.notice and (action == 'journey_action' or action.startswith('journey_next:')
+                        or action == 'path' and self.trip['status'] == 'battle')
+                    await journal_adventure.present(self, interaction, animate=animate)
+                else:
+                    self.render()
+                    await self.publish(interaction)
             if battle:
                 receipt = {}
                 try:
@@ -924,7 +958,7 @@ async def open_journal(interaction, *, bot=None, page='home', realm=None, notice
         async with db.execute("SELECT * FROM expeditions WHERE user_id=? AND status='complete' AND reported=0 ORDER BY updated_at LIMIT 5", (interaction.user.id,)) as c:
             pending = [expeditions.decode(r) for r in await c.fetchall()]
     for trip in pending:
-        await expeditions.report(trip)
+        await expeditions.report_safely(trip)
     if pending:
         state = await journal_state.snapshot(interaction.user.id)
     requested_realm = realm
@@ -932,7 +966,7 @@ async def open_journal(interaction, *, bot=None, page='home', realm=None, notice
     notice = realm_notice or notice
     if begin_expedition and not state.trip:
         try:
-            await expeditions.begin(interaction.user.id, realm, guild_id=getattr(interaction.guild, 'id', 0))
+            await expeditions.begin(interaction.user.id, realm, guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
         except ValueError as error:
             # Missing charges, recovery, locked realms and a simultaneous
             # opener all remain visible in the journal instead of a dead end.
@@ -955,6 +989,8 @@ async def open_journal(interaction, *, bot=None, page='home', realm=None, notice
                 view.notice = realm_notice or view.notice
             view.trip = view.state.trip or await expeditions.latest(view.user_id)
             await view.load_page()
+            from utils import journal_adventure
+            await journal_adventure.prepare_still(view)
             view.render()
             await view.publish(interaction, opening=not replace_message, channel_send=channel_send)
             return view.message

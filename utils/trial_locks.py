@@ -30,9 +30,14 @@ def unlock(user_id):
 async def reload(db):
     async with db.execute("SELECT user_id FROM trial_runs WHERE status IN ('between','fighting','paused')") as cursor:
         _users[_key()] = {row[0] for row in await cursor.fetchall()}
+    async with db.execute("SELECT user_id FROM expeditions WHERE status IN ('active','battle') AND json_extract(payload,'$.adventure_version')=3") as cursor:
+        _users[_key()].update(row[0] for row in await cursor.fetchall())
 
 
 async def member_ids(db, user_id):
     async with db.execute("SELECT payload FROM trial_runs WHERE user_id=? AND status IN ('between','fighting','paused')", (user_id,)) as cursor:
         run = await cursor.fetchone()
+    if not run:
+        async with db.execute("SELECT payload FROM expeditions WHERE user_id=? AND status IN ('active','battle') AND json_extract(payload,'$.adventure_version')=3", (user_id,)) as cursor:
+            run = await cursor.fetchone()
     return tuple(json.loads(run[0]).get('party_ids', ())) if run else ()

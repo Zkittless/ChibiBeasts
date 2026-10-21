@@ -1,0 +1,1140 @@
+{
+  "version": 1,
+  "biome": "woods_deep",
+  "encounters": [
+    {
+      "id": "woods_deep_floating_post",
+      "title": "The Post Office below the Waterline",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "woods_deep_floating_post_entry",
+      "tags": [
+        "woods_deep",
+        "ruin"
+      ],
+      "nodes": {
+        "woods_deep_floating_post_entry": {
+          "body": "The marsh post office floats above its own front steps. A clerk leans out of the upper window, lowering a tray instead of opening the submerged door. Today's letters have arrived in three baskets, and the basket marked Dry contains the loudest dripping.",
+          "choices": [
+            {
+              "label": "Steady the tray while the clerk climbs down",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion braces beside the mooring rope. The clerk reaches the landing without adding her boots to the wet correspondence.",
+              "next": "woods_deep_floating_post_sorting",
+              "id": "woods_deep_floating_post_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Read the painted flood marks on the wall",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The old marks show which room stays dry longest. You help the clerk move the sorting work there first.",
+              "next": "woods_deep_floating_post_sorting",
+              "id": "woods_deep_floating_post_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "woods_deep_floating_post_sorting": {
+          "body": "Inside, strips of reed divide letters by destination rather than owner. Half the addresses name places that move with the water: the third island, the old bend, the willow that is no longer leaning. The clerk refuses to guess where somebody ought to live.",
+          "choices": [
+            {
+              "label": "Ask each waiting neighbour to identify a landmark",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "People recognize turns that the written addresses no longer describe. You leave room beside each name for corrections.",
+              "next": "woods_deep_floating_post_roof",
+              "id": "woods_deep_floating_post_sorting_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Carry the sorting table onto the upper landing",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "The table catches against the doorframe before it comes free. Its legs now stand above the highest fresh water mark.",
+              "next": "woods_deep_floating_post_roof",
+              "id": "woods_deep_floating_post_sorting_c2",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            }
+          ]
+        },
+        "woods_deep_floating_post_roof": {
+          "body": "The roof has become a temporary dispatch yard. A folded reply awaits a household whose garden has drifted beyond the usual ferry stop. The clerk can send a light signal or trust a traveller; she wants the reply to arrive without turning the family into a rescue story.",
+          "choices": [
+            {
+              "label": "Copy the route and take responsibility for the reply",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "woods_deep_reply_pending"
+                ]
+              },
+              "outcome": "You learn the garden's current mooring before folding the reply into your dry journal. The clerk records a delivery rather than a rescue.",
+              "id": "woods_deep_floating_post_roof_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Prepare the signal and carry a copy of the reply",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "woods_deep_reply_pending"
+                ]
+              },
+              "outcome": "You agree on a signal that means correspondence. The clerk folds a copy of the reply into your dry journal beside the route notes.",
+              "id": "woods_deep_floating_post_roof_c2",
+              "description": "Use this run's research allowance; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_fen_beacon",
+      "title": "A Lighthouse for Very Small Boats",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "woods_deep_fen_beacon_entry",
+      "tags": [
+        "woods_deep",
+        "shrine"
+      ],
+      "nodes": {
+        "woods_deep_fen_beacon_entry": {
+          "body": "A lantern tower rises only a little higher than the reeds. Its keeper measures visibility at a seated traveller's eye level, which he says most towers neglect. Tonight a Will-o-Wisp has become fascinated by the beam and is enthusiastically guiding it around in circles.",
+          "choices": [
+            {
+              "label": "Walk beside the Wisp instead of chasing it",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion keeps a patient pace. The Wisp pauses long enough for the keeper to lower the lantern safely.",
+              "next": "woods_deep_fen_beacon_lens",
+              "id": "woods_deep_fen_beacon_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Record where the beam crosses the channel",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You find a pattern in its wandering arcs. The keeper can work between them without mistaking a turn for a signal.",
+              "next": "woods_deep_fen_beacon_lens",
+              "id": "woods_deep_fen_beacon_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "woods_deep_fen_beacon_lens": {
+          "body": "The lantern's coloured panes have been cleaned on only one side. Through one pane the marsh looks blue and safe; through another the same channel seems full of red rocks. The keeper admits that nobody wrote down which colours meant danger and which meant tea.",
+          "choices": [
+            {
+              "label": "Test every pane against the same bank marker",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "A dependable comparison separates old staining from deliberate colour. You label the panes where the keeper can actually see them.",
+              "next": "woods_deep_fen_beacon_hood",
+              "id": "woods_deep_fen_beacon_lens_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Scrub the smoke from the ventilation hood",
+              "effects": {
+                "hp_cost": 3,
+                "attack_boon": 5
+              },
+              "outcome": "Soot clings to your hands before the air begins to move. The lantern burns with a clean, steady light.",
+              "next": "woods_deep_fen_beacon_hood",
+              "id": "woods_deep_fen_beacon_lens_c2",
+              "description": "Pay 3% HP; no knockouts; Temporary team attack +5%."
+            }
+          ]
+        },
+        "woods_deep_fen_beacon_hood": {
+          "body": "At the top, the keeper offers the Wisp a choice between leaving and helping. It settles beside the lamp with surprising dignity. Below, two boats wait for an agreed signal; the tower must speak plainly before its new assistant begins improving the instructions.",
+          "choices": [
+            {
+              "label": "Set a simple signal for a clear crossing",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "woods_deep_beacon_agreed"
+                ]
+              },
+              "outcome": "Three slow flashes pass across the reeds. Both boats answer before moving, and the Wisp follows their example.",
+              "id": "woods_deep_fen_beacon_hood_c1",
+              "description": "Temporary team defense +5%; World remembers."
+            },
+            {
+              "label": "Write a guide for the next fog keeper",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "woods_deep_beacon_agreed"
+                ]
+              },
+              "outcome": "You record what a traveller actually needs to know. The keeper hangs the guide below the window, away from the smoke.",
+              "id": "woods_deep_fen_beacon_hood_c2",
+              "description": "Use this run's research allowance; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_peat_archive",
+      "title": "Records That Can Still Breathe",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "woods_deep_peat_archive_entry",
+      "tags": [
+        "woods_deep",
+        "ruin"
+      ],
+      "nodes": {
+        "woods_deep_peat_archive_entry": {
+          "body": "A reed pavilion stands above a square cut in the peat. Its caretaker has raised a shelf of waterlogged records, but will not bring them straight into the sun. Each page remembers a different bend in the marsh, and some are holding together mainly out of habit.",
+          "choices": [
+            {
+              "label": "Help shade the recovered pages",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion steadies the reed screen as you lift it. The pages can dry without curling into unreadable little tubes.",
+              "next": "woods_deep_peat_archive_silt",
+              "id": "woods_deep_peat_archive_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Read the caretaker's notes before touching anything",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "She has marked which pages tolerate air and which must stay damp. The patient part of the work becomes clearer.",
+              "next": "woods_deep_peat_archive_silt",
+              "id": "woods_deep_peat_archive_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "woods_deep_peat_archive_silt": {
+          "body": "Beneath the pavilion, rows of cut peat preserve the outlines of vanished channels. Someone has pressed a child's hand beside each survey date to show how quickly the banks changed. A loose slab blocks the newest row, hiding names the caretaker recognizes.",
+          "choices": [
+            {
+              "label": "Shift the slab with the broad wooden lever",
+              "effects": {
+                "hp_cost": 5,
+                "material": true
+              },
+              "outcome": "The lever bites into the soft bank before the slab moves. You separate useful loose gatherings from the records that must stay here.",
+              "next": "woods_deep_peat_archive_rack",
+              "id": "woods_deep_peat_archive_silt_c1",
+              "description": "Pay 5% HP; no knockouts; Select the run's one material bundle."
+            },
+            {
+              "label": "Trace the visible channel outlines without disturbing them",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your companion remains still beside the fragile edges. The caretaker can compare the new drawing with the covered row later.",
+              "next": "woods_deep_peat_archive_rack",
+              "id": "woods_deep_peat_archive_silt_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "woods_deep_peat_archive_rack": {
+          "body": "The drying rack has room for only a few records at once. The caretaker can begin with the oldest map or the recent names from a household still waiting for news. Neither choice destroys the other pages, but someone will have to wait longer.",
+          "choices": [
+            {
+              "label": "Prepare the recent names for the waiting household",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "woods_deep_archive_seen"
+                ]
+              },
+              "outcome": "You help keep the delicate sheets in order. The caretaker promises to preserve the map next, rather than quietly forget it.",
+              "id": "woods_deep_peat_archive_rack_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Stabilize the oldest map and list the waiting names",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "woods_deep_archive_seen"
+                ]
+              },
+              "outcome": "The map receives a firm support. Beside it, you leave a clear list of people who still need an answer.",
+              "id": "woods_deep_peat_archive_rack_c2",
+              "description": "Use this run's research allowance; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_floating_pantry",
+      "title": "The Pantry That Followed the Tide",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "woods_deep_floating_pantry_entry",
+      "tags": [
+        "woods_deep",
+        "camp"
+      ],
+      "nodes": {
+        "woods_deep_floating_pantry_entry": {
+          "body": "A small pantry has floated clear of its house and lodged against the reeds. Its owner has reached it by boat, but the door opens outward into the water. Every passing ripple rattles a collection of cups that have survived far too much to be lost now.",
+          "choices": [
+            {
+              "label": "Hold the boat while the owner secures the cups",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion takes the sheltered place beside the rope. Each cup reaches the boat without another alarming clink.",
+              "id": "woods_deep_floating_pantry_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Help prepare a dry meal on the pantry roof",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "The owner opens a sensible parcel instead of the trapped door. Lunch improves everyone's opinion of the situation.",
+              "id": "woods_deep_floating_pantry_entry_c2",
+              "description": "Heal surviving team 5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_kelpie_reflection",
+      "title": "The Reflection with Its Own Opinion",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "woods_deep_kelpie_reflection_entry",
+      "tags": [
+        "woods_deep",
+        "wild"
+      ],
+      "nodes": {
+        "woods_deep_kelpie_reflection_entry": {
+          "body": "A Kelpie stands beside a pool whose surface reflects a different stretch of sky. It watches the reflection rather than your team, lifting one hoof whenever a cloud passes beneath it. A well-used bank path makes it clear that nobody needs to accept its interest.",
+          "choices": [
+            {
+              "label": "Observe the water from the safe bank",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You note which ripples belong to the breeze and which follow the Kelpie. It leaves you a respectable amount of room.",
+              "id": "woods_deep_kelpie_reflection_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Leave the pool quietly with your companion",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits until the narrow bank is clear before following. The Kelpie returns its attention to the impossible cloud.",
+              "id": "woods_deep_kelpie_reflection_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_boot_garden",
+      "title": "A Garden in Borrowed Boots",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_deep_boot_garden_entry",
+      "tags": [
+        "woods_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_deep_boot_garden_entry": {
+          "body": "Rows of boots hang from a marsh hut, each holding a young reed. The gardener has promised to return them before winter and is now worried about roots passing through the soles. A pair on the lowest rail has already joined itself together beneath the water.",
+          "choices": [
+            {
+              "label": "Move the rooted pair into a wider basket",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              },
+              "outcome": "You support the roots while the gardener eases the boots free. Loose useful gatherings remain after the planting is settled.",
+              "id": "woods_deep_boot_garden_entry_c1",
+              "description": "Pay 3% HP; no knockouts; Select the run's one material bundle."
+            },
+            {
+              "label": "Help write planting dates on the higher rails",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The gardener can see which reeds must move next. No one has to discover the problem by trying to put a foot inside it.",
+              "id": "woods_deep_boot_garden_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_drifting_reply",
+      "title": "The Household beyond the Ferry Stop",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_deep_drifting_reply_entry",
+      "tags": [
+        "woods_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_deep_drifting_reply_entry": {
+          "body": "The drifting garden from the post office notes lies beside a quiet side channel. Its household has not been stranded; they moved the mooring to let young reeds grow. Someone waves from the bean frame, interested in whether you have brought news or simply found the prettier route.",
+          "choices": [
+            {
+              "label": "Deliver the reply beside the bean frame",
+              "effects": {
+                "bond": 1,
+                "clear_flags": [
+                  "woods_deep_reply_pending"
+                ],
+                "set_flags": [
+                  "woods_deep_reply_arrived"
+                ]
+              },
+              "outcome": "The reply is read aloud to the household. They ask you to tell the clerk that the garden has a perfectly good address now.",
+              "id": "woods_deep_drifting_reply_entry_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Help make a lasting address marker",
+              "effects": {
+                "bonus": 5,
+                "clear_flags": [
+                  "woods_deep_reply_pending"
+                ],
+                "set_flags": [
+                  "woods_deep_reply_arrived"
+                ]
+              },
+              "outcome": "You leave the reply in safe hands and fix a clear marker above the tide. Future messengers need not guess which garden is meant.",
+              "id": "woods_deep_drifting_reply_entry_c2",
+              "description": "+5% of the run reward; World remembers."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_deep_reply_pending"
+      ]
+    },
+    {
+      "id": "woods_deep_gnat_orchestra",
+      "title": "Rehearsal in a Broken Bowl",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_deep_gnat_orchestra_entry",
+      "tags": [
+        "woods_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_deep_gnat_orchestra_entry": {
+          "body": "A cracked washbowl rests in a ring of reeds, humming whenever insects pass over its rim. A musician has arranged smaller bowls around it but cannot reproduce the low note. She suspects that the crack matters more than the size, which makes her reluctant to repair it.",
+          "choices": [
+            {
+              "label": "Compare the sound at different water levels",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You change one bowl at a time while your companion listens. The low note follows the depth beneath the crack.",
+              "id": "woods_deep_gnat_orchestra_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Brace the bowl without closing the crack",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "A careful support keeps the rim from spreading. The musician can play without holding her breath through every note.",
+              "id": "woods_deep_gnat_orchestra_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_low_window",
+      "title": "The Window Open Only at Low Water",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "woods_deep_low_window_entry",
+      "tags": [
+        "woods_deep",
+        "ruin"
+      ],
+      "nodes": {
+        "woods_deep_low_window_entry": {
+          "body": "A round window appears in the bank as the marsh level falls. Through it you can see a dry ledge covered with reed drawings. The room beyond has another exit above the path, so this is a convenient opening rather than an invitation to become trapped.",
+          "choices": [
+            {
+              "label": "Enter by the upper door and read the drawings",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The upper steps are sound. The drawings show where earlier neighbours moved their homes when the channel widened.",
+              "id": "woods_deep_low_window_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Secure the loose stones around the lower opening",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "Wet grit slides through your fingers before the stones sit squarely. The next curious visitor will find a firmer edge.",
+              "id": "woods_deep_low_window_entry_c2",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_beacon_reply",
+      "title": "A Signal Returned",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_deep_beacon_reply_entry",
+      "tags": [
+        "woods_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_deep_beacon_reply_entry": {
+          "body": "A boat crew is practising the signal you agreed at the little beacon. They have built a shutter from a biscuit tin, and the hinge squeaks louder than their conversation. The crew wants the message to stay clear even if the proper lantern goes missing.",
+          "choices": [
+            {
+              "label": "Test the signal from the far bank",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your team waits at a useful distance while the crew repeats the sequence. You correct one ambiguous pause before anyone relies on it.",
+              "id": "woods_deep_beacon_reply_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help fit the shutter to a sturdier support",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "The shutter moves without wobbling. The crew keeps the biscuit tin as a backup rather than pretending the first attempt never existed.",
+              "id": "woods_deep_beacon_reply_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_deep_beacon_agreed"
+      ]
+    },
+    {
+      "id": "woods_deep_reed_scribe",
+      "title": "The Scribe Who Wrote in Water",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_deep_reed_scribe_entry",
+      "tags": [
+        "woods_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_deep_reed_scribe_entry": {
+          "body": "A scribe draws directions across a shallow tray of water. Each mark lasts long enough for a waiting visitor to understand it, then disappears before the next person arrives. She has run out of dry places to set the trays and is balancing the last one on her knees.",
+          "choices": [
+            {
+              "label": "Prepare a level place for the waiting trays",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion lies beside the stand so nobody catches a foot underneath. The scribe can set both hands back to work.",
+              "id": "woods_deep_reed_scribe_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study the order in which the marks fade",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The fading arrows preserve the nearest turn longest. You record the useful idea without trying to keep somebody else's private directions.",
+              "id": "woods_deep_reed_scribe_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_folded_map",
+      "title": "A Map Designed to Float",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_deep_folded_map_entry",
+      "tags": [
+        "woods_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_deep_folded_map_entry": {
+          "body": "A surveyor has folded a marsh map into a little boat. It floats beautifully but hides the only line showing where the channel narrows. She has already built a second boat to carry the explanation for unfolding the first, and can see the difficulty herself.",
+          "choices": [
+            {
+              "label": "Draw the essential turn on the outside",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The surveyor tests your mark from a seated traveller's angle. The boat can now deliver something more useful than a folding problem.",
+              "id": "woods_deep_folded_map_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Walk the bank to check the narrow passage",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "The bank is softer than it looks, but the passage remains open. You return with a practical correction for the map.",
+              "id": "woods_deep_folded_map_entry_c2",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_mud_gauge",
+      "title": "The Warmth under the Mud",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "woods_deep_mud_gauge_entry",
+      "tags": [
+        "woods_deep",
+        "shrine"
+      ],
+      "nodes": {
+        "woods_deep_mud_gauge_entry": {
+          "body": "A row of wooden pegs records the temperature of the marsh at different depths. A caretaker presses each peg against her cheek, then offers one to your companion. The shallowest peg is cold, but the lowest has kept a little warmth from yesterday's sun.",
+          "choices": [
+            {
+              "label": "Compare the pegs and record their depths",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You leave each peg in its own marked hole. The caretaker adds your observations instead of replacing hers.",
+              "id": "woods_deep_mud_gauge_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Rest the team on the warmed reed mat",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "The mat holds its warmth without feeling hot. Your companions settle with the pleased surprise of finding something prepared for them.",
+              "id": "woods_deep_mud_gauge_entry_c2",
+              "description": "Heal surviving team 5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_narrowboat",
+      "title": "A Boat Too Proud to Turn",
+      "kind": "hazard",
+      "repeatable": false,
+      "entry": "woods_deep_narrowboat_entry",
+      "tags": [
+        "woods_deep",
+        "hazard"
+      ],
+      "nodes": {
+        "woods_deep_narrowboat_entry": {
+          "body": "A narrowboat has wedged itself across a channel just wide enough for its hull. Its owner insists the channel has become narrower since breakfast. A Harpy on the bank has collected the loose mooring rope into a neat pile and is waiting for somebody to use it.",
+          "choices": [
+            {
+              "label": "Pull the bow gently from the open bank",
+              "effects": {
+                "hp_cost": 5,
+                "bonus": 5
+              },
+              "outcome": "The rope strains against your shoulders before the bow turns. The owner thanks the channel for becoming reasonable, then remembers to thank you.",
+              "id": "woods_deep_narrowboat_entry_c1",
+              "description": "Pay 5% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Find the wider turning pool on the bank map",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The old turning pool lies one bend away. The owner can reach it by moving backwards, which is accepted after a thoughtful silence.",
+              "id": "woods_deep_narrowboat_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_harpy_weather",
+      "title": "The Weather Post Nobody Reads",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_deep_harpy_weather_entry",
+      "tags": [
+        "woods_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_deep_harpy_weather_entry": {
+          "body": "A Harpy has arranged strips of cloth along a weather post, sorted by how sharply they pull in the wind. Travellers keep mistaking them for laundry. Beside the post, an exhausted keeper has crossed out the word laundry on three separate signs.",
+          "choices": [
+            {
+              "label": "Help make the warning readable without words",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You arrange the stiffest strip beside a clear picture of the open channel. The Harpy tests it with a satisfied shake of its wings.",
+              "id": "woods_deep_harpy_weather_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Study how the strips respond before a gust",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The upper cloth tightens just before the reeds bend. You copy the timing rather than another explanation nobody stops to read.",
+              "id": "woods_deep_harpy_weather_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_cold_guest",
+      "title": "A Cold Patch in Warm Water",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "woods_deep_cold_guest_entry",
+      "tags": [
+        "woods_deep",
+        "wild"
+      ],
+      "nodes": {
+        "woods_deep_cold_guest_entry": {
+          "body": "A Permafrost rests in a shallow pool with a ring of cool water around its shell. Small marsh residents gather nearby during the warm afternoon without climbing on it. The owner of a reed shelter is wondering whether moving the shade closer would be kind or simply presumptuous.",
+          "choices": [
+            {
+              "label": "Move the shade slowly and watch its response",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You stop when the Permafrost lifts its head. It settles again after the shade reaches the water's edge.",
+              "id": "woods_deep_cold_guest_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Observe the boundary between warm and cool water",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Floating reed fragments reveal the small circulating current. You leave the patient creature's resting place undisturbed.",
+              "id": "woods_deep_cold_guest_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_small_wake",
+      "title": "Three Ripples on the Causeway",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "woods_deep_small_wake_entry",
+      "tags": [
+        "woods_deep",
+        "pack"
+      ],
+      "nodes": {
+        "woods_deep_small_wake_entry": {
+          "body": "Three separate wakes reach the causeway before their makers appear among the reeds. The local beasts have been testing who can move without disturbing the others' reflections. They notice your team and leave a clear place to join their contest, as well as a dry route around it.",
+          "choices": [
+            {
+              "label": "Let the team enter the three-beast contest",
+              "effects": {
+                "battle": "pack3"
+              },
+              "outcome": "The challengers spread out along the shallow practice ground. Each waits until your companions are ready before the contest begins.",
+              "id": "woods_deep_small_wake_entry_c1",
+              "description": "Begin a three-beast battle."
+            },
+            {
+              "label": "Watch their spacing from the dry causeway",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You notice how each traveller leaves room for the next. The team carries that patient spacing onto the narrow path.",
+              "id": "woods_deep_small_wake_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_archive_names",
+      "title": "The Names above the Waterline",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "woods_deep_archive_names_entry",
+      "tags": [
+        "woods_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "woods_deep_archive_names_entry": {
+          "body": "The archive caretaker has posted the recovered household names beneath the pavilion roof. Someone has brought fresh corrections in a careful hand: a changed mooring, a new neighbour, a name somebody prefers now. There is room for all of them without scraping the old writing away.",
+          "choices": [
+            {
+              "label": "Help add the corrections beside the earlier entries",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You keep the dates with the changes. The list becomes a record of living people rather than a test of whether they stayed still.",
+              "id": "woods_deep_archive_names_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Carry copies to the people who asked for news",
+              "effects": {
+                "bonus": 5
+              },
+              "outcome": "Your companion waits at each landing while the household checks its entry. The caretaker receives useful answers instead of guesses.",
+              "id": "woods_deep_archive_names_entry_c2",
+              "description": "+5% of the run reward."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "woods_deep_archive_seen"
+      ]
+    },
+    {
+      "id": "woods_deep_white_hooves",
+      "title": "A Crossing Left Clear",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "woods_deep_white_hooves_entry",
+      "tags": [
+        "woods_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_deep_white_hooves_entry": {
+          "body": "Pale hoofprints stop at the edge of the reeds where a Unicorn has recently crossed. A loose reed screen caught on the bank would have tangled its next step. The creature is already distant; what remains is a clear decision about the next traveller through this place.",
+          "choices": [
+            {
+              "label": "Move the screen away from the crossing",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion keeps the narrow path clear while you lower the screen onto firm ground. Nothing needs to return for the help to matter.",
+              "id": "woods_deep_white_hooves_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study the safe line through the soft bank",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The hoofprints follow buried roots rather than the shortest route. You mark that useful line without following the distant creature.",
+              "id": "woods_deep_white_hooves_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_muddy_ambassador",
+      "title": "The Ambassador of a Small Puddle",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "woods_deep_muddy_ambassador_entry",
+      "tags": [
+        "woods_deep",
+        "wild"
+      ],
+      "nodes": {
+        "woods_deep_muddy_ambassador_entry": {
+          "body": "A Mudpup has planted itself between two puddles that are slowly joining. Each time the water touches, it stamps the connection apart and seems proud of the result. A nearby gardener would rather keep the drainage channel open, but has no wish to spoil the game.",
+          "choices": [
+            {
+              "label": "Make a separate little pool for the game",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You shape a harmless rim beside the channel. The Mudpup relocates its important work with great ceremony.",
+              "id": "woods_deep_muddy_ambassador_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Clear the real drain while it is distracted",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              },
+              "outcome": "The mud pulls at your hands before the current opens. You sort a few useful loose gatherings without disturbing either puddle.",
+              "id": "woods_deep_muddy_ambassador_entry_c2",
+              "description": "Pay 3% HP; no knockouts; Select the run's one material bundle."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_familiar_fog_line",
+      "title": "Familiar Territory · The Low Fog Line",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "woods_deep_familiar_fog_line_entry",
+      "tags": [
+        "woods_deep",
+        "hazard"
+      ],
+      "nodes": {
+        "woods_deep_familiar_fog_line_entry": {
+          "body": "Fog lies across the familiar causeway at ankle height today. The marker posts remain visible, but a low gap has filled with water since the last crossing. Your companions can see the safe bank path, though the shorter route is tempting through the white strip.",
+          "choices": [
+            {
+              "label": "Probe and clear the short crossing carefully",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "The probe finds the submerged edge before a foot does. You guide the team across without leaving the marked line.",
+              "id": "woods_deep_familiar_fog_line_entry_c1",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Keep to the raised bank markers",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "The longer turn gives everyone room to watch the posts. Your team reaches open ground in a tidy travelling order.",
+              "id": "woods_deep_familiar_fog_line_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_familiar_reed_roof",
+      "title": "Familiar Territory · Under the Reed Roof",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "woods_deep_familiar_reed_roof_entry",
+      "tags": [
+        "woods_deep",
+        "camp"
+      ],
+      "nodes": {
+        "woods_deep_familiar_reed_roof_entry": {
+          "body": "The familiar reed roof has collected a new layer of rain beads. Its bench is dry, and somebody has pushed the mooring pole back into firm ground. Nothing here asks for a promise; it is simply a place the marsh keeps offering between wet stretches.",
+          "choices": [
+            {
+              "label": "Rest on the dry bench",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You loosen the team's travelling bundles and let the bench carry their weight. Rain taps the roof without finding its way underneath.",
+              "id": "woods_deep_familiar_reed_roof_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Reset the loose pole before moving on",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion stands close while you push the pole into firmer mud. The roof remains ready for whoever arrives next.",
+              "id": "woods_deep_familiar_reed_roof_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_familiar_reed_bundle",
+      "title": "Familiar Territory · Gatherings after High Water",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "woods_deep_familiar_reed_bundle_entry",
+      "tags": [
+        "woods_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "woods_deep_familiar_reed_bundle_entry": {
+          "body": "High water has left a fresh tangle along the familiar gathering bank. Useful fibres lie beside the little channels that carry young marsh residents back to deeper pools. Careless sorting would close those channels, but the high edge has room to work without blocking them.",
+          "choices": [
+            {
+              "label": "Sort a bundle on the high edge",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You keep every returning channel open while separating useful pieces. The marsh can finish emptying its shallow pools around your work.",
+              "id": "woods_deep_familiar_reed_bundle_entry_c1",
+              "description": "Select the run's one material bundle."
+            },
+            {
+              "label": "Map the channels before the next rise",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You note which small paths reach open water. The drawing explains why the apparently messy bank should not be flattened.",
+              "id": "woods_deep_familiar_reed_bundle_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_familiar_quiet_wakes",
+      "title": "Familiar Territory · Quiet-Water Challengers",
+      "kind": "pack",
+      "repeatable": true,
+      "entry": "woods_deep_familiar_quiet_wakes_entry",
+      "tags": [
+        "woods_deep",
+        "pack"
+      ],
+      "nodes": {
+        "woods_deep_familiar_quiet_wakes_entry": {
+          "body": "Fresh wakes cross the familiar practice pool, overlapping without colliding. Its visitors change from day to day, but the boundary poles still mark a friendly contest rather than a claim on the channel. Two local challengers pause beside the nearest pole as your team approaches.",
+          "choices": [
+            {
+              "label": "Accept their two-beast challenge",
+              "effects": {
+                "battle": "pack2"
+              },
+              "outcome": "The challengers move into the marked shallows. Your team can settle its footing before either side makes a move.",
+              "id": "woods_deep_familiar_quiet_wakes_entry_c1",
+              "description": "Begin a two-beast battle."
+            },
+            {
+              "label": "Study the gaps between their wakes",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You watch where the water stays calm between crossings. The team learns to leave each other useful room on a narrow path.",
+              "id": "woods_deep_familiar_quiet_wakes_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_familiar_deep_tracks",
+      "title": "Familiar Territory · Tracks in Soft Peat",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "woods_deep_familiar_deep_tracks_entry",
+      "tags": [
+        "woods_deep",
+        "wild"
+      ],
+      "nodes": {
+        "woods_deep_familiar_deep_tracks_entry": {
+          "body": "The familiar soft bank carries fresh prints, their long grooves broken by reed stems dragged from the water. Most lead safely toward the shallows, but one trail reaches the open practice ground. A wild watcher remains there, attentive to your team without blocking its passage.",
+          "choices": [
+            {
+              "label": "Accept the watcher's friendly challenge",
+              "effects": {
+                "battle": "rare"
+              },
+              "outcome": "The watcher leaves the bank for the open ground. Your team has time to prepare before the friendly contest begins.",
+              "id": "woods_deep_familiar_deep_tracks_entry_c1",
+              "description": "Begin a one-beast wild battle."
+            },
+            {
+              "label": "Record the prints and leave the visitor room",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You compare the deepest impressions without stepping into them. The watcher can return through the reeds without squeezing past your team.",
+              "id": "woods_deep_familiar_deep_tracks_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "woods_deep_familiar_scent_posts",
+      "title": "Familiar Territory · The Windward Posts",
+      "kind": "shrine",
+      "repeatable": true,
+      "entry": "woods_deep_familiar_scent_posts_entry",
+      "tags": [
+        "woods_deep",
+        "shrine"
+      ],
+      "nodes": {
+        "woods_deep_familiar_scent_posts_entry": {
+          "body": "The familiar channel posts smell different after a change in the wind. Wet reed, peat and wood smoke reach them in separate bands, each pointing toward a different piece of shore. The symbols remain sound; today the marsh has added another way to read them.",
+          "choices": [
+            {
+              "label": "Compare the scents with the marked bearings",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You record where each scent arrives rather than guessing its source. The team has a more careful sense of the windward bank.",
+              "id": "woods_deep_familiar_scent_posts_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Share a quiet stop beside the sheltered post",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion chooses the side away from the smoke. You wait together until the next stretch of channel is clear.",
+              "id": "woods_deep_familiar_scent_posts_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1139 @@
+{
+  "version": 1,
+  "biome": "glacial",
+  "encounters": [
+    {
+      "id": "glacial_warm_porch",
+      "title": "The Shelter with the Coldest Front Door",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "glacial_warm_porch_entry",
+      "tags": [
+        "glacial",
+        "camp"
+      ],
+      "nodes": {
+        "glacial_warm_porch_entry": {
+          "body": "The shelter's front door opens onto a porch deliberately kept cold. Its tender explains that snow carried inside melts into everyone's bedding, so guests leave wet bundles here before entering. A tired traveller is apologizing to each companion in turn for making them wait in a room with no fire.",
+          "choices": [
+            {
+              "label": "Help make the cold porch comfortable enough to use",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion tests the dry mat while you move the bundles off the floor. The traveller can stop apologizing and start settling in.",
+              "next": "glacial_warm_porch_spring",
+              "id": "glacial_warm_porch_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study how the porch keeps damp away from the warm rooms",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The simple shelves interrupt every dripping path. You note the arrangement before following the tender toward the spring.",
+              "next": "glacial_warm_porch_spring",
+              "id": "glacial_warm_porch_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "glacial_warm_porch_spring": {
+          "body": "Behind the shelter, a warm spring feeds separate washing and resting basins. A snow slide has lowered one divider, mixing the muddy washing channel with water meant for tired feet. The tender has closed both rather than offer guests a comforting description of dirty water.",
+          "choices": [
+            {
+              "label": "Reset the divider from the cooled side",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "The wet stones resist your hands before they sit properly. The tender checks both channels before reopening either basin.",
+              "next": "glacial_warm_porch_lamps",
+              "id": "glacial_warm_porch_spring_c1",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            },
+            {
+              "label": "Map a temporary clean route for the resting water",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You trace the clear flow without stepping into it. The tender can keep the resting side useful while the divider waits for repair.",
+              "next": "glacial_warm_porch_lamps",
+              "id": "glacial_warm_porch_spring_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "glacial_warm_porch_lamps": {
+          "body": "The warm room has a lamp beside every sleeping mat, each with a small shutter so its neighbour can rest. One lamp has been left uncovered for a guest afraid of waking in darkness. The tender would like a kinder arrangement than asking somebody else to keep their eyes shut.",
+          "choices": [
+            {
+              "label": "Shape a low screen around the uncovered lamp",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "glacial_shelter_seen"
+                ]
+              },
+              "outcome": "The light stays close to the guest's mat without crossing the room. The tender keeps a clear path around the screen.",
+              "id": "glacial_warm_porch_lamps_c1",
+              "description": "Temporary team defense +5%; World remembers."
+            },
+            {
+              "label": "Share a quiet rest before taking the next path",
+              "effects": {
+                "heal": 10,
+                "set_flags": [
+                  "glacial_shelter_seen"
+                ]
+              },
+              "outcome": "You settle with the team while the room finds its evening rhythm. Nobody is asked to explain why they need a light.",
+              "id": "glacial_warm_porch_lamps_c2",
+              "description": "Heal surviving team 10%; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_ice_library",
+      "title": "The Library That Thaws One Page at a Time",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "glacial_ice_library_entry",
+      "tags": [
+        "glacial",
+        "ruin"
+      ],
+      "nodes": {
+        "glacial_ice_library_entry": {
+          "body": "A library has grown around a frozen window rather than removing it. Trapped bubbles make useful shelves, and the keeper can date a book by remembering which winter first held it. A returned volume is resting against the warmest pane, still too brittle to open without patience.",
+          "choices": [
+            {
+              "label": "Help support the returned book while it warms",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits beside the padded stand. The keeper can free both hands without asking the old binding to carry its own weight.",
+              "next": "glacial_ice_library_index",
+              "id": "glacial_ice_library_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Read the winter marks on the surrounding shelves",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The marks separate what the keeper knows from what she only remembers approximately. You copy the useful distinction before entering the index room.",
+              "next": "glacial_ice_library_index",
+              "id": "glacial_ice_library_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "glacial_ice_library_index": {
+          "body": "The index room sorts books by where readers left questions in them. A request about safe ice has landed among recipes because its writer mentioned a cooking pot. The keeper thinks the mistake is understandable, but the next traveller asking the same question should not have to browse every soup.",
+          "choices": [
+            {
+              "label": "Trace the question to the right shelf",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You follow the writer's actual concern instead of its most memorable word. The keeper adds a cross-reference rather than erasing the recipe connection.",
+              "next": "glacial_ice_library_table",
+              "id": "glacial_ice_library_index_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Carry the crowded index trays to a wider stand",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "The wooden trays are heavier than their labels suggest. The new stand leaves a clear place to sort without dropping loose questions.",
+              "next": "glacial_ice_library_table",
+              "id": "glacial_ice_library_index_c2",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            }
+          ]
+        },
+        "glacial_ice_library_table": {
+          "body": "At the thawing table, the returned volume finally opens to a note from its reader. It asks the next visitor to pass a correction to the outlying route keeper: a familiar ice crossing has changed. The book can stay here, but the correction needs to travel before habit overtakes observation.",
+          "choices": [
+            {
+              "label": "Copy the correction for the outlying keeper",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "glacial_library_seen",
+                  "glacial_route_note_pending"
+                ]
+              },
+              "outcome": "You keep the date and the writer's uncertainty beside the warning. The book can return to its shelf without losing its useful news.",
+              "id": "glacial_ice_library_table_c1",
+              "description": "Use this run's research allowance; World remembers."
+            },
+            {
+              "label": "Draw the changed crossing for a lower signboard",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "glacial_library_seen",
+                  "glacial_route_note_pending"
+                ]
+              },
+              "outcome": "Your companion helps test whether the drawing makes sense from a small traveller's height. You keep the copy ready for the keeper.",
+              "id": "glacial_ice_library_table_c2",
+              "description": "Lead bond +1; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_ropeway_station",
+      "title": "The Station Whose Sled Has Gone Home",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "glacial_ropeway_station_entry",
+      "tags": [
+        "glacial",
+        "ruin"
+      ],
+      "nodes": {
+        "glacial_ropeway_station_entry": {
+          "body": "An old ropeway station stands above the ice hollow. Its passenger sled has been moved to shelter during the thaw, leaving a platform full of people wondering whether waiting counts as a plan. The attendant is offering the safe footpath, but its sign points through a pile of stored cushions.",
+          "choices": [
+            {
+              "label": "Clear the sign and help the waiting group read it",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits beside the first marker while you move the cushions. The alternative becomes a route rather than a polite suggestion.",
+              "next": "glacial_ropeway_station_counterweight",
+              "id": "glacial_ropeway_station_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study which parts of the station remain in use",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The carrying rope still serves the supply basket, not passengers. You mark the distinction before following the attendant downstairs.",
+              "next": "glacial_ropeway_station_counterweight",
+              "id": "glacial_ropeway_station_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "glacial_ropeway_station_counterweight": {
+          "body": "Below the platform, a counterweight basket holds stones wrapped in old blankets to stop them striking the shaft. One blanket has slipped against a guide rail. The attendant can free it safely only after the basket is steadied, and is quite prepared to leave the system stopped until then.",
+          "choices": [
+            {
+              "label": "Brace the basket from the marked safe recess",
+              "effects": {
+                "hp_cost": 5,
+                "attack_boon": 5
+              },
+              "outcome": "The weight presses hard against the brace before the attendant frees the cloth. The basket can move without scraping the rail.",
+              "next": "glacial_ropeway_station_lookout",
+              "id": "glacial_ropeway_station_counterweight_c1",
+              "description": "Pay 5% HP; no knockouts; Temporary team attack +5%."
+            },
+            {
+              "label": "Document the safe stopped position for the next attendant",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You mark where the basket rests without putting anyone under it. The attendant gains a clear instruction instead of a remembered precaution.",
+              "next": "glacial_ropeway_station_lookout",
+              "id": "glacial_ropeway_station_counterweight_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "glacial_ropeway_station_lookout": {
+          "body": "At the lookout, the footpath is visible as a line of dark stones through the snow. The attendant wants to add a marker for the shortest turn, while a slower traveller asks for the route with places to rest. Both can fit on the board if someone draws carefully.",
+          "choices": [
+            {
+              "label": "Mark the resting places as clearly as the turns",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "glacial_station_seen"
+                ]
+              },
+              "outcome": "Your companion tests the board from beside the lowest post. The slower route becomes a first choice rather than a footnote.",
+              "id": "glacial_ropeway_station_lookout_c1",
+              "description": "Temporary team defense +5%; World remembers."
+            },
+            {
+              "label": "Check the nearest sheltered turn on foot",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5,
+                "set_flags": [
+                  "glacial_station_seen"
+                ]
+              },
+              "outcome": "The snow pulls at your boots, but the shelter is where the map promises. You return with a useful confirmation for the waiting group.",
+              "id": "glacial_ropeway_station_lookout_c2",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_yeti_mitten",
+      "title": "A Mitten Hanging Higher than Expected",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "glacial_yeti_mitten_entry",
+      "tags": [
+        "glacial",
+        "wild"
+      ],
+      "nodes": {
+        "glacial_yeti_mitten_entry": {
+          "body": "An enormous mitten hangs from a branch beside the path. Below it, a Yeti is patiently turning over much smaller pieces of dropped clothing. A passing mender has stopped guessing who owns what and arranged the collection where nobody has to reach near the Yeti to reclaim a scarf.",
+          "choices": [
+            {
+              "label": "Help make the small garments easy to recognize",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits beside the collection while you spread the scarves apart. The Yeti continues its careful search without being crowded.",
+              "id": "glacial_yeti_mitten_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study how the wind gathered everything at this bend",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The caught fabric reveals a sheltered route below the branch. You note the pattern instead of reaching for the larger mitten.",
+              "id": "glacial_yeti_mitten_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_glacius_route",
+      "title": "The Footprint That Refused the Shorter Way",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "glacial_glacius_route_entry",
+      "tags": [
+        "glacial",
+        "wild"
+      ],
+      "nodes": {
+        "glacial_glacius_route_entry": {
+          "body": "Glacius has left a broad trail around a flat stretch of snow that looks perfectly safe. The patient creature is already far along the ridge. A pathkeeper has stopped before the shortcut, interested in whether a route chosen that slowly might contain advice worth listening to.",
+          "choices": [
+            {
+              "label": "Follow the longer prints from a respectful distance",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "The longer line stays over firm ground. Your team keeps clear of the snow that sounded hollow beneath the probe.",
+              "id": "glacial_glacius_route_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Study the edge without stepping onto the shortcut",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You find a narrow line where the snow changes texture. The pathkeeper marks the uncertainty rather than announcing a hidden disaster.",
+              "id": "glacial_glacius_route_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_rukh_distance",
+      "title": "A Feather Shadow over the Window",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "glacial_rukh_distance_entry",
+      "tags": [
+        "glacial",
+        "discovery"
+      ],
+      "nodes": {
+        "glacial_rukh_distance_entry": {
+          "body": "The library window darkens for a moment as a Rukh passes above the hollow. A young observer has been measuring the movement of cloud shadows and is delighted by this entirely different result. Her teacher asks her to keep the surprising observation without pretending it belongs in the same column.",
+          "choices": [
+            {
+              "label": "Help draw a separate place for unexpected visitors",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The new column preserves the observation without spoiling the weather record. The student gives it a title large enough to read.",
+              "id": "glacial_rukh_distance_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Share the quiet view with your companion",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You wait until the ordinary daylight returns. Your companion seems pleased that watching was enough of a task.",
+              "id": "glacial_rukh_distance_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_route_correction",
+      "title": "The Crossing That Habit Still Trusted",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_route_correction_entry",
+      "tags": [
+        "glacial",
+        "traveller"
+      ],
+      "nodes": {
+        "glacial_route_correction_entry": {
+          "body": "The outlying route keeper is repairing a sign beside the changed ice crossing from the library note. He has already stopped sending travellers across it, but needs a clear explanation before people will abandon a familiar habit. Your dated correction offers exactly that, without demanding a dramatic story.",
+          "choices": [
+            {
+              "label": "Deliver the dated correction and help post it",
+              "effects": {
+                "bonus": 5,
+                "clear_flags": [
+                  "glacial_route_note_pending"
+                ],
+                "set_flags": [
+                  "glacial_route_note_delivered"
+                ]
+              },
+              "outcome": "The keeper adds the date where travellers can see it. The warning becomes current information instead of a disagreement with somebody's memory.",
+              "id": "glacial_route_correction_entry_c1",
+              "description": "+5% of the run reward; World remembers."
+            },
+            {
+              "label": "Draw the safe alternative at the lower sightline",
+              "effects": {
+                "defense_boon": 5,
+                "clear_flags": [
+                  "glacial_route_note_pending"
+                ],
+                "set_flags": [
+                  "glacial_route_note_delivered"
+                ]
+              },
+              "outcome": "You put the copy in the keeper's hands and test the new drawing beside your companion. The detour is easier to understand.",
+              "id": "glacial_route_correction_entry_c2",
+              "description": "Temporary team defense +5%; World remembers."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "glacial_route_note_pending"
+      ]
+    },
+    {
+      "id": "glacial_shelter_followup",
+      "title": "A Screen with Its Own Place",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "glacial_shelter_followup_entry",
+      "tags": [
+        "glacial",
+        "camp"
+      ],
+      "nodes": {
+        "glacial_shelter_followup_entry": {
+          "body": "Since your visit, the shelter tender has built a lamp screen into the ordinary room plan. It stays beside the uncovered lamp rather than appearing only when a guest explains their fears. She wants to know whether the space beside it stays clear when several companions settle at once.",
+          "choices": [
+            {
+              "label": "Help test the room with the team",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companions choose their resting places without blocking the path. The tender adjusts the nearest mat rather than asking a guest to apologize.",
+              "id": "glacial_shelter_followup_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Stay for a patient, sheltered rest",
+              "effects": {
+                "heal": 10
+              },
+              "outcome": "You leave the travelling bundles on the cold porch and settle in the dry room. The light stays where each guest needs it.",
+              "id": "glacial_shelter_followup_entry_c2",
+              "description": "Heal surviving team 10%."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "glacial_shelter_seen"
+      ]
+    },
+    {
+      "id": "glacial_station_walkers",
+      "title": "The People Who Took the Footpath",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_station_walkers_entry",
+      "tags": [
+        "glacial",
+        "traveller"
+      ],
+      "nodes": {
+        "glacial_station_walkers_entry": {
+          "body": "Several travellers from the ropeway station have reached the sheltered turn. They are pleased to discover that choosing the footpath did not make their journey a lesser version of somebody else's. The attendant has followed with an empty notebook and wants to record what the signs got wrong.",
+          "choices": [
+            {
+              "label": "Compare the route with the travellers' real stops",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You mark the places they actually rested. The notebook gains information a fast inspection would never have collected.",
+              "id": "glacial_station_walkers_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help reset the lowest resting marker",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion waits where the post can be seen from the path. The next group will not have to guess which hollow offers shelter.",
+              "id": "glacial_station_walkers_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "glacial_station_seen"
+      ]
+    },
+    {
+      "id": "glacial_muffled_stall",
+      "title": "The Stall You Can Hear Only Nearby",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_muffled_stall_entry",
+      "tags": [
+        "glacial",
+        "traveller"
+      ],
+      "nodes": {
+        "glacial_muffled_stall_entry": {
+          "body": "A stall keeper has hung thick felt around her small outdoor counter. It keeps snow off the waiting place but muffles her welcome so thoroughly that travellers keep walking past. She has tried shouting once and decided that a quieter solution would be kinder to everyone involved.",
+          "choices": [
+            {
+              "label": "Help make the entrance visible from the path",
+              "effects": {
+                "bonus": 2
+              },
+              "outcome": "You arrange the felt to frame the counter rather than hide it. The keeper can greet visitors in her ordinary voice.",
+              "id": "glacial_muffled_stall_entry_c1",
+              "description": "+2% of the run reward."
+            },
+            {
+              "label": "Study how the hanging layers catch the wind",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The narrow opening shelters the counter without silencing it. You record where the gap belongs before moving on.",
+              "id": "glacial_muffled_stall_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_lake_bubbles",
+      "title": "A Winter Kept in Small Bubbles",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "glacial_lake_bubbles_entry",
+      "tags": [
+        "glacial",
+        "shrine"
+      ],
+      "nodes": {
+        "glacial_lake_bubbles_entry": {
+          "body": "A clear patch of safe shore ice holds a row of trapped bubbles beneath its surface. A keeper has been drawing their shapes before sunlight makes them difficult to see. She calls them the lake's punctuation and is careful never to claim that she can read the whole sentence.",
+          "choices": [
+            {
+              "label": "Compare the bubble layers from the marked bank",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your companion stays on the firm shore while you record the separate lines. The drawing preserves their differences without inventing a message.",
+              "id": "glacial_lake_bubbles_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Clear loose snow from the safe viewing marker",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You work from the bank and leave the ice untouched. The next observer can find a sensible place to stand.",
+              "id": "glacial_lake_bubbles_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_pegasus_drinking",
+      "title": "The Shore Left Wide Enough",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "glacial_pegasus_drinking_entry",
+      "tags": [
+        "glacial",
+        "wild"
+      ],
+      "nodes": {
+        "glacial_pegasus_drinking_entry": {
+          "body": "A Pegasus drinks from an opening close to the firm bank. A rope marker has sagged into the space it needs to turn, so it keeps pausing instead of leaving. The keeper of the shore path can reach the marker from dry ground if somebody steadies its loose post.",
+          "choices": [
+            {
+              "label": "Steady the post while the keeper raises the rope",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion keeps a respectful distance. The Pegasus has room to turn without stepping toward the path.",
+              "id": "glacial_pegasus_drinking_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Take the upper route and observe the bank",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You leave the drinking place quiet and record where the firm shore widens. The keeper can adjust the marker after the visitor moves.",
+              "id": "glacial_pegasus_drinking_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_bread_shelf",
+      "title": "A Loaf Too Close to the Warm Wall",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "glacial_bread_shelf_entry",
+      "tags": [
+        "glacial",
+        "camp"
+      ],
+      "nodes": {
+        "glacial_bread_shelf_entry": {
+          "body": "A shelter cook has left bread beside a warm wall and discovered that the damp underneath is making its crust soft. The same shelf is excellent for drying gloves, which explains the mistake. She has a second loaf safely wrapped and would rather share it than keep defending her storage experiment.",
+          "choices": [
+            {
+              "label": "Share the wrapped loaf during a quiet stop",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You settle the team away from the damp shelf. The cook serves a sensible portion and puts the experimental loaf aside for another use.",
+              "id": "glacial_bread_shelf_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Help separate the food and drying shelves",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion waits while you move the labels to eye level. The next visitor will not have to discover the difference by touch.",
+              "id": "glacial_bread_shelf_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_warm_stitch",
+      "title": "A Patch Sewn from the Inside",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_warm_stitch_entry",
+      "tags": [
+        "glacial",
+        "traveller"
+      ],
+      "nodes": {
+        "glacial_warm_stitch_entry": {
+          "body": "A mender is repairing a winter coat from its inner lining. She wants the warm patch where its owner can feel it, rather than where other people can admire the workmanship. A gust keeps turning the coat right side out just as she finds the next seam.",
+          "choices": [
+            {
+              "label": "Hold the coat steady while she follows the lining",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion keeps the hanging sleeve from dragging in snow. The mender finishes without moving the patch to a more impressive place.",
+              "id": "glacial_warm_stitch_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study the little gaps that let warmth escape",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The smallest seam matters more than the largest visible tear. You record the useful difference while the mender works.",
+              "id": "glacial_warm_stitch_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_frost_flowers",
+      "title": "The Flowers That Leave No Stalks",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "glacial_frost_flowers_entry",
+      "tags": [
+        "glacial",
+        "discovery"
+      ],
+      "nodes": {
+        "glacial_frost_flowers_entry": {
+          "body": "Frost has grown small white shapes across a sheltered pane. A child has labelled them flowers, though none has a stalk or a place for a root. Her older neighbour is helping her compare them with yesterday's drawings instead of insisting that the first label must be wrong.",
+          "choices": [
+            {
+              "label": "Draw the shapes before the pane warms",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You keep the differences between the new marks and the older ones. The child decides that a name can begin a question rather than end it.",
+              "id": "glacial_frost_flowers_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help set a shade above the viewing place",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion waits clear of the pane as you secure the shade. The little observation lasts long enough for another careful look.",
+              "id": "glacial_frost_flowers_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_griffin_ledge",
+      "title": "A Guard at an Empty Nest",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "glacial_griffin_ledge_entry",
+      "tags": [
+        "glacial",
+        "wild"
+      ],
+      "nodes": {
+        "glacial_griffin_ledge_entry": {
+          "body": "A Griffin watches an empty ledge above the route. Its nest has shifted to a safer shelf, but it still checks the old place whenever travellers pass. A pathkeeper has marked a generous detour rather than require the creature to forget its habits on the road's schedule.",
+          "choices": [
+            {
+              "label": "Follow the marked detour without approaching the ledge",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion stays close while you pass. The Griffin can finish its inspection without deciding whether your team belongs in the nest.",
+              "id": "glacial_griffin_ledge_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study the sheltered features of the newer shelf",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "From the safe route, you can see why the new ledge holds less snow. You note the improvement without turning it into a destination.",
+              "id": "glacial_griffin_ledge_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_two_echoes",
+      "title": "Two Answers from the Same Cavern",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "glacial_two_echoes_entry",
+      "tags": [
+        "glacial",
+        "ruin"
+      ],
+      "nodes": {
+        "glacial_two_echoes_entry": {
+          "body": "A cavern entrance returns two echoes at different delays. A route keeper has been using the later one to judge whether fresh snow is closing the upper opening. Today a visitor keeps interrupting the test by answering the first echo with an enthusiastic and unhelpful greeting.",
+          "choices": [
+            {
+              "label": "Help everyone listen through the full quiet interval",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your companion settles beside the marker until the later echo arrives. The visitor hears why waiting was part of the measurement.",
+              "id": "glacial_two_echoes_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Mark a sheltered waiting place outside the entrance",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You set the marker where no one stands beneath loose snow. The next test can be heard without crowding the cavern mouth.",
+              "id": "glacial_two_echoes_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_simurgh_horizon",
+      "title": "A Witness on the Far Ridge",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "glacial_simurgh_horizon_entry",
+      "tags": [
+        "glacial",
+        "legendary"
+      ],
+      "nodes": {
+        "glacial_simurgh_horizon_entry": {
+          "body": "A distant Simurgh settles beyond the hollow's last marked ridge. Its light reaches the snow before its shape becomes clear. The observer beside you closes her notebook for a moment, then opens it again on a fresh page rather than crowding this quiet visit into yesterday's weather report.",
+          "choices": [
+            {
+              "label": "Observe from the marked shelter without following",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You record only what the distance allows you to know. The great bird keeps the unmarked ridge and the direction of its own journey.",
+              "id": "glacial_simurgh_horizon_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Share the stillness with the team",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companions settle beside the shelter wall. No one has to approach the far ridge for the meeting to remain memorable.",
+              "id": "glacial_simurgh_horizon_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_borrowed_courage",
+      "title": "The Lantern Held at the Smallest Height",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_borrowed_courage_entry",
+      "tags": [
+        "glacial",
+        "traveller"
+      ],
+      "nodes": {
+        "glacial_borrowed_courage_entry": {
+          "body": "A novice pathkeeper is practising the evening route with a lantern held much too high. Her smallest companion keeps walking into the shadow of her coat. She has plenty of courage and a very clear map, but neither has yet shown her what the path looks like from down there.",
+          "choices": [
+            {
+              "label": "Walk beside the smallest companion and compare the view",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "The pathkeeper lowers the lantern before anyone asks her to be braver. The next turn becomes visible to everyone at once.",
+              "id": "glacial_borrowed_courage_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Help adjust the lantern's carrying loop",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion waits at the first dark patch while you test the new height. The novice can keep both the light and her balance.",
+              "id": "glacial_borrowed_courage_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_snow_marker",
+      "title": "The Marker Wearing an Old Blanket",
+      "kind": "hazard",
+      "repeatable": false,
+      "entry": "glacial_snow_marker_entry",
+      "tags": [
+        "glacial",
+        "hazard"
+      ],
+      "nodes": {
+        "glacial_snow_marker_entry": {
+          "body": "An old blanket has caught around a route marker, making it look like a person waiting beside the snowfield. The marker itself is secure, but several travellers have already stepped off the firm path to offer help. A keeper is approaching from the safe side with a long wooden hook.",
+          "choices": [
+            {
+              "label": "Help free the blanket from the marked safe footing",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              },
+              "outcome": "The stiff cloth resists before it comes loose. You sort useful loose gatherings from the snag while the keeper leaves the marker plainly visible.",
+              "id": "glacial_snow_marker_entry_c1",
+              "description": "Pay 3% HP; no knockouts; Select the run's one material bundle."
+            },
+            {
+              "label": "Guide passing travellers along the firm route",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion waits beside the true path while you explain the shape. Nobody needs to step onto uncertain snow to resolve it.",
+              "id": "glacial_snow_marker_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_familiar_snow_lip",
+      "title": "Familiar Territory · Fresh Snow on the Low Steps",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "glacial_familiar_snow_lip_entry",
+      "tags": [
+        "glacial",
+        "hazard"
+      ],
+      "nodes": {
+        "glacial_familiar_snow_lip_entry": {
+          "body": "A fresh lip of snow covers the familiar low steps. The marker posts still show the line of the route, but the shallow gutters have disappeared again beneath the powder. A sheltered bank path offers the longer crossing for teams that would rather keep their footing entirely visible.",
+          "choices": [
+            {
+              "label": "Clear the gutters from the marked side",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "Snow presses into your sleeves before the grooves appear. The team crosses along a line that can actually be seen.",
+              "id": "glacial_familiar_snow_lip_entry_c1",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Use the sheltered bank path",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companions keep close to the visible posts. The longer route gives everyone an unhurried place for the next step.",
+              "id": "glacial_familiar_snow_lip_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_familiar_ice_ring",
+      "title": "Familiar Territory · The Hollow Practice Ring",
+      "kind": "pack",
+      "repeatable": true,
+      "entry": "glacial_familiar_ice_ring_entry",
+      "tags": [
+        "glacial",
+        "pack"
+      ],
+      "nodes": {
+        "glacial_familiar_ice_ring_entry": {
+          "body": "Fresh tracks surround the familiar practice ring beneath the ice wall. Its visitors have chosen ground clear of hanging snow, and today's local challengers wait beside the outer stones. The marked path remains open for travellers who want to watch the gathering without joining it.",
+          "choices": [
+            {
+              "label": "Accept a two-beast friendly contest",
+              "effects": {
+                "battle": "pack2"
+              },
+              "outcome": "Two challengers enter the firm ring and wait. Your companions have room to settle before the first move begins.",
+              "id": "glacial_familiar_ice_ring_entry_c1",
+              "description": "Begin a two-beast battle."
+            },
+            {
+              "label": "Study the ring's safe spacing from the marked edge",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You watch where each visitor leaves a clear turning place. The team carries that careful spacing onto the narrower path ahead.",
+              "id": "glacial_familiar_ice_ring_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_familiar_dry_alcove",
+      "title": "Familiar Territory · The Dry Alcove",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "glacial_familiar_dry_alcove_entry",
+      "tags": [
+        "glacial",
+        "camp"
+      ],
+      "nodes": {
+        "glacial_familiar_dry_alcove_entry": {
+          "body": "The familiar alcove has stayed dry behind its angled stone lip. Someone has brushed new snow off the resting mat and placed the drinking cup beneath a cover. Your companions recognize the little pause between the hollow's exposed turns and its quieter sheltered passages.",
+          "choices": [
+            {
+              "label": "Rest where the mat stays dry",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You loosen the travelling bundles and share the sheltered pause. The team eases down without having to keep watch over the next gust.",
+              "id": "glacial_familiar_dry_alcove_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Clear the alcove's lower entrance for the next team",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits beside the dry mat while you brush the loose snow away. The shelter remains easy to recognize from the route.",
+              "id": "glacial_familiar_dry_alcove_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_familiar_frost_gatherings",
+      "title": "Familiar Territory · Gatherings at the Thaw Edge",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "glacial_familiar_frost_gatherings_entry",
+      "tags": [
+        "glacial",
+        "discovery"
+      ],
+      "nodes": {
+        "glacial_familiar_frost_gatherings_entry": {
+          "body": "A new scatter of loose fragments and tough fibres lies beside the familiar thaw edge. Water still needs its shallow route back into the hollow, and small tracks cross the nearest clear patch. The upper bank offers a dry sorting place that need not interrupt either journey.",
+          "choices": [
+            {
+              "label": "Select useful pieces on the upper bank",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You leave both the water groove and the small crossing open. A modest bundle is chosen without breaking into the frozen bank.",
+              "id": "glacial_familiar_frost_gatherings_entry_c1",
+              "description": "Select the run's one material bundle."
+            },
+            {
+              "label": "Study how the thaw sorts the loose layers",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The finer pieces have travelled farther than the heavier ones. You record the order without flattening the edges that show it.",
+              "id": "glacial_familiar_frost_gatherings_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_familiar_echo_arch",
+      "title": "Familiar Territory · The Echo after New Snow",
+      "kind": "shrine",
+      "repeatable": true,
+      "entry": "glacial_familiar_echo_arch_entry",
+      "tags": [
+        "glacial",
+        "shrine"
+      ],
+      "nodes": {
+        "glacial_familiar_echo_arch_entry": {
+          "body": "The familiar testing arch returns a softer echo after the latest snow. Its safe listening marker remains visible outside the opening, and no one needs to enter the passage to compare the sound. The difference offers a small observation rather than a complete explanation of the weather.",
+          "choices": [
+            {
+              "label": "Record the changed delay from the safe marker",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your companion waits while the quieter answer returns. You add the fresh observation beside the earlier one instead of correcting it away.",
+              "id": "glacial_familiar_echo_arch_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Check the sheltered route beyond the marker",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You keep the team beneath the firm stone edge, clear of loose snow. The next turning is easier to judge from that steady footing.",
+              "id": "glacial_familiar_echo_arch_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_familiar_high_track",
+      "title": "Familiar Territory · A Watcher on the Firm Snow",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "glacial_familiar_high_track_entry",
+      "tags": [
+        "glacial",
+        "wild"
+      ],
+      "nodes": {
+        "glacial_familiar_high_track_entry": {
+          "body": "A fresh trail reaches the familiar practice ground, with loose snow kicked into little fans at each turn. The watcher pauses where the footing is firm, attentive to your team but clear of the travelling route. A sheltered marker behind you offers a place to observe without accepting its invitation.",
+          "choices": [
+            {
+              "label": "Accept a friendly contest on the firm snow",
+              "effects": {
+                "battle": "rare"
+              },
+              "outcome": "The watcher moves into the open ground and waits. Your team has a clear place to prepare before the first move.",
+              "id": "glacial_familiar_high_track_entry_c1",
+              "description": "Begin a one-beast wild battle."
+            },
+            {
+              "label": "Study the tracks from the sheltered marker",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You compare the turning prints without leaving the firm route. The visitor keeps its space while your companions continue through the hollow.",
+              "id": "glacial_familiar_high_track_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

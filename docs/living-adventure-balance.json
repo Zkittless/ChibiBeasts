@@ -1,0 +1,769 @@
+{
+  "kind": "Synthetic production combat replays; no live Discord timing or universal win-rate claim.",
+  "content": [
+    {
+      "biome": "woods",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "woods_deep",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "ember",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "ember_deep",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "glacial",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "glacial_deep",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "trenches",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "trenches_deep",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "loom",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    },
+    {
+      "biome": "loom_deep",
+      "one_time": 20,
+      "repeatable": 6,
+      "nodes": 32,
+      "chains": 3
+    }
+  ],
+  "fixtures": [
+    {
+      "biome": "woods",
+      "mode": "entry_bare",
+      "level": 1,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 13.45,
+      "capture_tiers": {
+        "common": 18,
+        "uncommon": 2
+      }
+    },
+    {
+      "biome": "woods",
+      "mode": "entry_prepared",
+      "level": 1,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [
+        "mossbark_wrapping",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 7.45,
+      "capture_tiers": {
+        "common": 18,
+        "uncommon": 2
+      }
+    },
+    {
+      "biome": "woods",
+      "mode": "upper_prepared",
+      "level": 5,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [
+        "mossbark_wrapping",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 9.2,
+      "capture_tiers": {
+        "common": 18,
+        "uncommon": 2
+      }
+    },
+    {
+      "biome": "woods_deep",
+      "mode": "entry_bare",
+      "level": 6,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 18,
+      "mean_fights": 2.85,
+      "mean_actions": 14.1,
+      "capture_tiers": {
+        "uncommon": 3,
+        "common": 16,
+        "rare": 1
+      }
+    },
+    {
+      "biome": "woods_deep",
+      "mode": "entry_prepared",
+      "level": 6,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [
+        "mossbark_wrapping",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 9.55,
+      "capture_tiers": {
+        "uncommon": 3,
+        "common": 16,
+        "rare": 1
+      }
+    },
+    {
+      "biome": "woods_deep",
+      "mode": "upper_prepared",
+      "level": 10,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [
+        "mossbark_wrapping",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 11.05,
+      "capture_tiers": {
+        "uncommon": 3,
+        "common": 16,
+        "rare": 1
+      }
+    },
+    {
+      "biome": "ember",
+      "mode": "entry_bare",
+      "level": 11,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 18,
+      "mean_fights": 2.9,
+      "mean_actions": 15.25,
+      "capture_tiers": {
+        "uncommon": 12,
+        "rare": 3,
+        "common": 5
+      }
+    },
+    {
+      "biome": "ember",
+      "mode": "entry_prepared",
+      "level": 11,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [
+        "emberstone_vest",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 13.15,
+      "capture_tiers": {
+        "uncommon": 12,
+        "rare": 3,
+        "common": 5
+      }
+    },
+    {
+      "biome": "ember",
+      "mode": "upper_prepared",
+      "level": 15,
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "gear": [
+        "emberstone_vest",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 13.95,
+      "capture_tiers": {
+        "uncommon": 12,
+        "rare": 3,
+        "common": 5
+      }
+    },
+    {
+      "biome": "ember_deep",
+      "mode": "entry_bare",
+      "level": 16,
+      "team": [
+        "timestitch",
+        "unicorn",
+        "wyvern"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 10,
+      "mean_fights": 1.9,
+      "mean_actions": 13.8,
+      "capture_tiers": {
+        "rare": 12,
+        "uncommon": 3,
+        "epic": 5
+      }
+    },
+    {
+      "biome": "ember_deep",
+      "mode": "entry_prepared",
+      "level": 16,
+      "team": [
+        "timestitch",
+        "unicorn",
+        "wyvern"
+      ],
+      "gear": [
+        "emberstone_vest",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 17,
+      "mean_fights": 2.7,
+      "mean_actions": 9.6,
+      "capture_tiers": {
+        "rare": 12,
+        "uncommon": 3,
+        "epic": 5
+      }
+    },
+    {
+      "biome": "ember_deep",
+      "mode": "upper_prepared",
+      "level": 20,
+      "team": [
+        "timestitch",
+        "unicorn",
+        "wyvern"
+      ],
+      "gear": [
+        "emberstone_vest",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 17,
+      "mean_fights": 2.6,
+      "mean_actions": 10.3,
+      "capture_tiers": {
+        "rare": 12,
+        "uncommon": 3,
+        "epic": 5
+      }
+    },
+    {
+      "biome": "glacial",
+      "mode": "entry_bare",
+      "level": 21,
+      "team": [
+        "timestitch",
+        "unicorn",
+        "griffin"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 19.1,
+      "capture_tiers": {
+        "epic": 6,
+        "rare": 14
+      }
+    },
+    {
+      "biome": "glacial",
+      "mode": "entry_prepared",
+      "level": 21,
+      "team": [
+        "timestitch",
+        "unicorn",
+        "griffin"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 12.05,
+      "capture_tiers": {
+        "epic": 6,
+        "rare": 14
+      }
+    },
+    {
+      "biome": "glacial",
+      "mode": "upper_prepared",
+      "level": 25,
+      "team": [
+        "timestitch",
+        "unicorn",
+        "griffin"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 11.7,
+      "capture_tiers": {
+        "epic": 6,
+        "rare": 14
+      }
+    },
+    {
+      "biome": "glacial_deep",
+      "mode": "entry_bare",
+      "level": 26,
+      "team": [
+        "timestitch",
+        "yeti",
+        "thunderbird"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 19,
+      "mean_fights": 2.9,
+      "mean_actions": 14.85,
+      "capture_tiers": {
+        "epic": 12,
+        "legendary": 1,
+        "rare": 7
+      }
+    },
+    {
+      "biome": "glacial_deep",
+      "mode": "entry_prepared",
+      "level": 26,
+      "team": [
+        "timestitch",
+        "yeti",
+        "thunderbird"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 11.8,
+      "capture_tiers": {
+        "epic": 12,
+        "legendary": 1,
+        "rare": 7
+      }
+    },
+    {
+      "biome": "glacial_deep",
+      "mode": "upper_prepared",
+      "level": 30,
+      "team": [
+        "timestitch",
+        "yeti",
+        "thunderbird"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "iron_dust_chip"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 12.4,
+      "capture_tiers": {
+        "epic": 12,
+        "legendary": 1,
+        "rare": 7
+      }
+    },
+    {
+      "biome": "trenches",
+      "mode": "entry_bare",
+      "level": 31,
+      "team": [
+        "timestitch",
+        "hydra",
+        "abyssal_eel"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 21.15,
+      "capture_tiers": {
+        "legendary": 4,
+        "epic": 16
+      }
+    },
+    {
+      "biome": "trenches",
+      "mode": "entry_prepared",
+      "level": 31,
+      "team": [
+        "timestitch",
+        "hydra",
+        "abyssal_eel"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "thunderbird_feathers"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 15.6,
+      "capture_tiers": {
+        "legendary": 4,
+        "epic": 16
+      }
+    },
+    {
+      "biome": "trenches",
+      "mode": "upper_prepared",
+      "level": 35,
+      "team": [
+        "timestitch",
+        "hydra",
+        "abyssal_eel"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "thunderbird_feathers"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 14.9,
+      "capture_tiers": {
+        "legendary": 4,
+        "epic": 16
+      }
+    },
+    {
+      "biome": "trenches_deep",
+      "mode": "entry_bare",
+      "level": 36,
+      "team": [
+        "timestitch",
+        "hydra",
+        "dragon"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 17.6,
+      "capture_tiers": {
+        "legendary": 18,
+        "epic": 2
+      }
+    },
+    {
+      "biome": "trenches_deep",
+      "mode": "entry_prepared",
+      "level": 36,
+      "team": [
+        "timestitch",
+        "hydra",
+        "dragon"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "thunderbird_feathers"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 14.1,
+      "capture_tiers": {
+        "legendary": 18,
+        "epic": 2
+      }
+    },
+    {
+      "biome": "trenches_deep",
+      "mode": "upper_prepared",
+      "level": 40,
+      "team": [
+        "timestitch",
+        "hydra",
+        "dragon"
+      ],
+      "gear": [
+        "unicorn_healer_vestments",
+        "thunderbird_feathers"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 14.05,
+      "capture_tiers": {
+        "legendary": 18,
+        "epic": 2
+      }
+    },
+    {
+      "biome": "loom",
+      "mode": "entry_bare",
+      "level": 41,
+      "team": [
+        "chronos",
+        "sphinx",
+        "kitsune_9"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 10.35,
+      "capture_tiers": {
+        "epic": 8,
+        "rare": 2,
+        "divine": 10
+      }
+    },
+    {
+      "biome": "loom",
+      "mode": "entry_prepared",
+      "level": 41,
+      "team": [
+        "chronos",
+        "sphinx",
+        "kitsune_9"
+      ],
+      "gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 9.4,
+      "capture_tiers": {
+        "epic": 8,
+        "rare": 2,
+        "divine": 10
+      }
+    },
+    {
+      "biome": "loom",
+      "mode": "upper_prepared",
+      "level": 45,
+      "team": [
+        "chronos",
+        "sphinx",
+        "kitsune_9"
+      ],
+      "gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 9.5,
+      "capture_tiers": {
+        "epic": 8,
+        "rare": 2,
+        "divine": 10
+      }
+    },
+    {
+      "biome": "loom_deep",
+      "mode": "entry_bare",
+      "level": 46,
+      "team": [
+        "chronos",
+        "zodiac",
+        "sphinx"
+      ],
+      "gear": [],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 13.95,
+      "capture_tiers": {
+        "epic": 10,
+        "divine": 10
+      }
+    },
+    {
+      "biome": "loom_deep",
+      "mode": "entry_prepared",
+      "level": 46,
+      "team": [
+        "chronos",
+        "zodiac",
+        "sphinx"
+      ],
+      "gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 12.7,
+      "capture_tiers": {
+        "epic": 10,
+        "divine": 10
+      }
+    },
+    {
+      "biome": "loom_deep",
+      "mode": "upper_prepared",
+      "level": 50,
+      "team": [
+        "chronos",
+        "zodiac",
+        "sphinx"
+      ],
+      "gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "trials": 20,
+      "completes": 20,
+      "mean_fights": 3.0,
+      "mean_actions": 13.65,
+      "capture_tiers": {
+        "epic": 10,
+        "divine": 10
+      }
+    }
+  ],
+  "strategy": "Affordable healing below55%, ultimate if unguarded, swap below25%, healing assist below55%, otherwise basic attack.",
+  "assumptions": [
+    "Three fights per run: single, pack2, pack3, with current HP/MP/status/meter carried.",
+    "First fight uses one seeded base-habitat-weighted capture species; later fillers use ordinary eligible tiers. No capture consumables or story overrides in these fixtures.",
+    "No potions or revives. +10% attack and defense once before combat; 10% surviving-team recovery after fight two.",
+    "Prepared means four attack and four HP training sessions plus trainer-gated existing gear; acquisition time is not simulated.",
+    "Every pack and individual fight pays zero separate gold/XP/material/capture; settlement owns one bundle."
+  ],
+  "economy": {
+    "gold_level_multiple": [
+      6,
+      10
+    ],
+    "bonus_cap_percent": 25,
+    "trainer_effort": 0.8,
+    "combat_team_effort": 0.85,
+    "noncombat_team_effort": 0.2,
+    "max_material_or_egg": 1,
+    "max_catches": 1,
+    "charges": 3,
+    "base_regeneration_seconds": 1800,
+    "max_boon_percent": 20,
+    "max_recovery_percent": 20
+  },
+  "data_sha256": {
+    "woods": "23360e6dd1325abc3efd0ea0501eff60e68ca227def3dedb38b70c603a979f3f",
+    "woods_deep": "2108b2cd5511e72fd76cbbfbe051f103e163ac6f7e067ebf98f0c4c569d36260",
+    "ember": "a862e4cd53714847af80e4fd6db2e188f0997170e3af454e775aad9d70ed14f3",
+    "ember_deep": "a5ced96e3b1003609e31dcd2bed7b5f89b559bd1cadb7c745b525d2228f64ac0",
+    "glacial": "47ba0d42eb51d88b943cb4e7a867cf5b05d13ec891c6e53c7837ba1ef991249e",
+    "glacial_deep": "89638e79cfc38a5635d9d17bc386902007268d3ffa1b493e44edaf76b092fc64",
+    "trenches": "4543ecb9ba75e0fdb2b5550bcdaaccbfacfe44eb06fa252f2a7bbd5a875f8b78",
+    "trenches_deep": "8c3b5db8b9783da8ae77df046b64deca75a1beedb2feb47d3a62ae007aeb402a",
+    "loom": "9f23318adf1436ff754920657d65d2eaba81267910f587eaccd22c36d15ce00d",
+    "loom_deep": "ffcd8b218b48eadc8ccf23b6d9f6c47ea799184260016b89b4b034cda9a2e5a4"
+  },
+  "source_sha256": {
+    "utils/journey_combat.py": "6cce34580af190f97d17d57c9eeb138277e394a5456e0c03ac615d804d696fbb",
+    "utils/trial_combat.py": "3e424d65ee68b14c48cda2ca1032286b885bd55d393e9bf3ef015ff49a6b4e68",
+    "utils/combat.py": "a55ca6d2b203c227984cdc7643d536fa69bf18044a29cdcfc882b60fbdcc91d7",
+    "utils/team_combat.py": "3c1a2ceb73333b6ec1d89ff357f0756c52485c1316bab30b56d372c6e522d687",
+    "data/beasts.json": "7c5a8ca53f750a23c6c7a9c7f2910366d2a4e864b5e46bb68f452330d503b25b",
+    "data/equipment.json": "99760ebe36ca43c9bc1769ced7119f35f15598c1cdfb8a4655ebf71eea9cb0e7",
+    "scripts/audit_living_adventures.py": "bf9a410a01de9f6b1c29a79d7d3445d3721771055b91ac712ebddb001213bbf6"
+  },
+  "status": "passed",
+  "replays": 600
+}

@@ -1,0 +1,2275 @@
+{
+  "version": 1,
+  "review": "Independent editorial review A",
+  "reviewer": "challenge_rework",
+  "reviewed_biomes": [
+    "glacial_deep",
+    "trenches",
+    "trenches_deep",
+    "loom",
+    "loom_deep"
+  ],
+  "scope": "Full manual reading of all 130 roots and all 160 nodes in the other author's five catalogs, including every choice, continuation, outcome and follow-up; prose-only corrections followed by global schema and distinctness checks.",
+  "reviewed_counts": {
+    "one_time_roots": 100,
+    "repeatable_roots": 30,
+    "nodes": 160,
+    "choices": 327,
+    "connected_locations": 15
+  },
+  "authored_counts": {
+    "biomes": [
+      "woods",
+      "woods_deep",
+      "ember",
+      "ember_deep",
+      "glacial"
+    ],
+    "one_time_roots": 100,
+    "repeatable_roots": 30,
+    "nodes": 160,
+    "choices": 320,
+    "connected_locations": 15
+  },
+  "packs": {
+    "glacial_deep": {
+      "path": "data/adventures/glacial_deep.json",
+      "sha256": "89638e79cfc38a5635d9d17bc386902007268d3ffa1b493e44edaf76b092fc64",
+      "graph_and_mechanics_sha256": "62521a284642b07570945514233626967be3081f5b518d857514cd99174e57d0",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 66,
+        "connected_locations": 3
+      },
+      "body_word_range": [
+        45,
+        59
+      ],
+      "read_all_roots_and_nodes": true,
+      "reviewed_roots": [
+        {
+          "id": "glacial_deep.weather_house",
+          "title": "The House That Kept Yesterday",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.weather_house.entry",
+            "glacial_deep.weather_house.records",
+            "glacial_deep.weather_house.roof"
+          ]
+        },
+        {
+          "id": "glacial_deep.bellspan",
+          "title": "The Bell Beneath the Bridge",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.bellspan.entry",
+            "glacial_deep.bellspan.underside",
+            "glacial_deep.bellspan.crossing"
+          ]
+        },
+        {
+          "id": "glacial_deep.cloud_station",
+          "title": "The Empty Cloud Platform",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.cloud_station.entry",
+            "glacial_deep.cloud_station.shelter",
+            "glacial_deep.cloud_station.platform"
+          ]
+        },
+        {
+          "id": "glacial_deep.tea_cup",
+          "title": "A Cup on Its Side",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.tea_cup.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.wool_lines",
+          "title": "Laundry Above the Clouds",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.wool_lines.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.ice_steps",
+          "title": "Footprints Kept in Ice",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.ice_steps.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.flag_rookery",
+          "title": "The Wrong Colour of Flag",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.flag_rookery.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.sliding_bench",
+          "title": "The Picnic Bench with Runners",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.sliding_bench.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.cairn_apology",
+          "title": "Seven Stones and an Eighth Place",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.cairn_apology.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.cloud_sketch",
+          "title": "Neri’s Unfinished Mountain",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.cloud_sketch.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.glass_roots",
+          "title": "A Stormglass Nursery",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.glass_roots.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.sail_mill",
+          "title": "The Mill That Ground Nothing",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.sail_mill.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.frost_window",
+          "title": "A Window Full of Corrections",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.frost_window.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.weather_letter",
+          "title": "The Blanket Maker’s Answer",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.weather_letter.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.bell_answer",
+          "title": "An Answer from the Lower Span",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.bell_answer.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.dye_house",
+          "title": "The Rope Dyer’s Hands",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.dye_house.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.wind_shadow",
+          "title": "The Shadow Moving Uphill",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.wind_shadow.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.practice_yard",
+          "title": "The Wheelbarrow Training Yard",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.practice_yard.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.thunder_feather",
+          "title": "A Quiet Thunderbird Morning",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.thunder_feather.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.cloud_census",
+          "title": "The Bent Pine Terrace",
+          "repeatable": false,
+          "nodes": [
+            "glacial_deep.cloud_census.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.mica_slide",
+          "title": "Familiar Ground: Loose Mica",
+          "repeatable": true,
+          "nodes": [
+            "glacial_deep.mica_slide.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.ice_buds",
+          "title": "Familiar Ground: Cloud Pine Buds",
+          "repeatable": true,
+          "nodes": [
+            "glacial_deep.ice_buds.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.cloud_breath",
+          "title": "Familiar Ground: A Cloud at Ankle Height",
+          "repeatable": true,
+          "nodes": [
+            "glacial_deep.cloud_breath.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.harpy_draft",
+          "title": "Familiar Ground: The Updraft Lesson",
+          "repeatable": true,
+          "nodes": [
+            "glacial_deep.harpy_draft.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.rukh_stones",
+          "title": "Familiar Ground: Warm Landing Stones",
+          "repeatable": true,
+          "nodes": [
+            "glacial_deep.rukh_stones.entry"
+          ]
+        },
+        {
+          "id": "glacial_deep.squall_shelter",
+          "title": "Familiar Ground: A Short Squall",
+          "repeatable": true,
+          "nodes": [
+            "glacial_deep.squall_shelter.entry"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "glacial_deep.weather_letter",
+          "requires_flags": [
+            "glacial_deep.weather_records"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "glacial_deep.weather_records": [
+              {
+                "root": "glacial_deep.weather_house",
+                "node": "glacial_deep.weather_house.records",
+                "choice": "copy_square"
+              }
+            ]
+          }
+        },
+        {
+          "root": "glacial_deep.bell_answer",
+          "requires_flags": [
+            "glacial_deep.bell_tuned"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "glacial_deep.bell_tuned": [
+              {
+                "root": "glacial_deep.bellspan",
+                "node": "glacial_deep.bellspan.underside",
+                "choice": "retie"
+              }
+            ]
+          }
+        },
+        {
+          "root": "glacial_deep.cloud_census",
+          "requires_flags": [
+            "glacial_deep.cloud_route"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "glacial_deep.cloud_route": [
+              {
+                "root": "glacial_deep.cloud_station",
+                "node": "glacial_deep.cloud_station.shelter",
+                "choice": "pine"
+              }
+            ]
+          }
+        }
+      ],
+      "catalog_species_mentions": [
+        {
+          "id": "harpy",
+          "name": "Harpy"
+        },
+        {
+          "id": "griffin",
+          "name": "Griffin"
+        },
+        {
+          "id": "thunderbird",
+          "name": "Thunderbird"
+        },
+        {
+          "id": "yeti",
+          "name": "Yeti"
+        },
+        {
+          "id": "rukh",
+          "name": "Rukh"
+        },
+        {
+          "id": "frost_sprite",
+          "name": "Frost Sprite"
+        }
+      ],
+      "assessment": {
+        "identity": "Wind instruments, moving clouds, rope work and ridge crossings create a weather-shaped community above the cold woodland.",
+        "examples": [
+          "glacial_deep.weather_house",
+          "glacial_deep.bellspan",
+          "glacial_deep.cloud_station",
+          "glacial_deep.cloud_sketch"
+        ],
+        "note": "All room paths and follow-ups read. The weather and bridge endings now name the NPC action that completes work after either observation or practical help. Thunderbird and other named locals are sightings, not promised opponents."
+      }
+    },
+    "trenches": {
+      "path": "data/adventures/trenches.json",
+      "sha256": "4543ecb9ba75e0fdb2b5550bcdaaccbfacfe44eb06fa252f2a7bbd5a875f8b78",
+      "graph_and_mechanics_sha256": "36f2cc25c96127c08ca677ea54c2ff546abc19a87980ac273c485e2bdf59d488",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 66,
+        "connected_locations": 3
+      },
+      "body_word_range": [
+        48,
+        59
+      ],
+      "read_all_roots_and_nodes": true,
+      "reviewed_roots": [
+        {
+          "id": "trenches.post_house",
+          "title": "The Post House Below the Tide",
+          "repeatable": false,
+          "nodes": [
+            "trenches.post_house.entry",
+            "trenches.post_house.sorting",
+            "trenches.post_house.roof"
+          ]
+        },
+        {
+          "id": "trenches.window_school",
+          "title": "Lessons Written on the Outside",
+          "repeatable": false,
+          "nodes": [
+            "trenches.window_school.entry",
+            "trenches.window_school.lesson",
+            "trenches.window_school.courtyard"
+          ]
+        },
+        {
+          "id": "trenches.anchor_house",
+          "title": "The House Held by a Kitchen",
+          "repeatable": false,
+          "nodes": [
+            "trenches.anchor_house.entry",
+            "trenches.anchor_house.pantry",
+            "trenches.anchor_house.doorstep"
+          ]
+        },
+        {
+          "id": "trenches.kelpie_channel",
+          "title": "A Nursery with Two Entrances",
+          "repeatable": false,
+          "nodes": [
+            "trenches.kelpie_channel.entry"
+          ]
+        },
+        {
+          "id": "trenches.ink_notice",
+          "title": "The Notice Nobody Could Read",
+          "repeatable": false,
+          "nodes": [
+            "trenches.ink_notice.entry"
+          ]
+        },
+        {
+          "id": "trenches.sponge_music",
+          "title": "The Softest Note in the Choir",
+          "repeatable": false,
+          "nodes": [
+            "trenches.sponge_music.entry"
+          ]
+        },
+        {
+          "id": "trenches.empty_helmet",
+          "title": "An Empty Helmet on a Bench",
+          "repeatable": false,
+          "nodes": [
+            "trenches.empty_helmet.entry"
+          ]
+        },
+        {
+          "id": "trenches.loose_net",
+          "title": "A Net with No Catch",
+          "repeatable": false,
+          "nodes": [
+            "trenches.loose_net.entry"
+          ]
+        },
+        {
+          "id": "trenches.current_drill",
+          "title": "The Couriers’ Turning Circle",
+          "repeatable": false,
+          "nodes": [
+            "trenches.current_drill.entry"
+          ]
+        },
+        {
+          "id": "trenches.lantern_check",
+          "title": "The Diver’s Unlit Lantern",
+          "repeatable": false,
+          "nodes": [
+            "trenches.lantern_check.entry"
+          ]
+        },
+        {
+          "id": "trenches.salt_archive",
+          "title": "The Salt Line Under the Picture",
+          "repeatable": false,
+          "nodes": [
+            "trenches.salt_archive.entry"
+          ]
+        },
+        {
+          "id": "trenches.west_window",
+          "title": "Whoever Opens the West Window",
+          "repeatable": false,
+          "nodes": [
+            "trenches.west_window.entry"
+          ]
+        },
+        {
+          "id": "trenches.outside_pupil",
+          "title": "The Pupil Beyond the Glass",
+          "repeatable": false,
+          "nodes": [
+            "trenches.outside_pupil.entry"
+          ]
+        },
+        {
+          "id": "trenches.kitchen_visitors",
+          "title": "The First Unlabelled Bowls",
+          "repeatable": false,
+          "nodes": [
+            "trenches.kitchen_visitors.entry"
+          ]
+        },
+        {
+          "id": "trenches.hydra_reflections",
+          "title": "Three Reflections and One Ripple",
+          "repeatable": false,
+          "nodes": [
+            "trenches.hydra_reflections.entry"
+          ]
+        },
+        {
+          "id": "trenches.echo_stair",
+          "title": "The Stair That Answers Late",
+          "repeatable": false,
+          "nodes": [
+            "trenches.echo_stair.entry"
+          ]
+        },
+        {
+          "id": "trenches.floating_market",
+          "title": "A Market Stall Selling Directions",
+          "repeatable": false,
+          "nodes": [
+            "trenches.floating_market.entry"
+          ]
+        },
+        {
+          "id": "trenches.gate_practice",
+          "title": "The Three-Gate Welcome",
+          "repeatable": false,
+          "nodes": [
+            "trenches.gate_practice.entry"
+          ]
+        },
+        {
+          "id": "trenches.leviathan_lane",
+          "title": "A Very Wide Right of Way",
+          "repeatable": false,
+          "nodes": [
+            "trenches.leviathan_lane.entry"
+          ]
+        },
+        {
+          "id": "trenches.beacon_keeper",
+          "title": "The Beacon with a Small Voice",
+          "repeatable": false,
+          "nodes": [
+            "trenches.beacon_keeper.entry"
+          ]
+        },
+        {
+          "id": "trenches.bubble_lane",
+          "title": "Familiar Ground: The Slow Bubble Lane",
+          "repeatable": true,
+          "nodes": [
+            "trenches.bubble_lane.entry"
+          ]
+        },
+        {
+          "id": "trenches.sand_cradle",
+          "title": "Familiar Ground: The Sand Cradle",
+          "repeatable": true,
+          "nodes": [
+            "trenches.sand_cradle.entry"
+          ]
+        },
+        {
+          "id": "trenches.courier_shelter",
+          "title": "Familiar Ground: The Courier’s Overhang",
+          "repeatable": true,
+          "nodes": [
+            "trenches.courier_shelter.entry"
+          ]
+        },
+        {
+          "id": "trenches.kelpie_reeds",
+          "title": "Familiar Ground: Kelpie Reed Rings",
+          "repeatable": true,
+          "nodes": [
+            "trenches.kelpie_reeds.entry"
+          ]
+        },
+        {
+          "id": "trenches.ink_fall",
+          "title": "Familiar Ground: A Fading Ink Cloud",
+          "repeatable": true,
+          "nodes": [
+            "trenches.ink_fall.entry"
+          ]
+        },
+        {
+          "id": "trenches.stone_signal",
+          "title": "Familiar Ground: The Turning Marker",
+          "repeatable": true,
+          "nodes": [
+            "trenches.stone_signal.entry"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "trenches.west_window",
+          "requires_flags": [
+            "trenches.post_ledger"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "trenches.post_ledger": [
+              {
+                "root": "trenches.post_house",
+                "node": "trenches.post_house.sorting",
+                "choice": "ledger"
+              }
+            ]
+          }
+        },
+        {
+          "root": "trenches.outside_pupil",
+          "requires_flags": [
+            "trenches.window_letters"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "trenches.window_letters": [
+              {
+                "root": "trenches.window_school",
+                "node": "trenches.window_school.lesson",
+                "choice": "many"
+              }
+            ]
+          }
+        },
+        {
+          "root": "trenches.kitchen_visitors",
+          "requires_flags": [
+            "trenches.ballast_shared"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "trenches.ballast_shared": [
+              {
+                "root": "trenches.anchor_house",
+                "node": "trenches.anchor_house.pantry",
+                "choice": "share"
+              }
+            ]
+          }
+        }
+      ],
+      "catalog_species_mentions": [
+        {
+          "id": "kraken",
+          "name": "Kraken"
+        },
+        {
+          "id": "hydra",
+          "name": "Hydra"
+        },
+        {
+          "id": "leviathan",
+          "name": "Leviathan"
+        },
+        {
+          "id": "kelpie",
+          "name": "Kelpie"
+        }
+      ],
+      "assessment": {
+        "identity": "Underwater post, current-facing school windows and a kitchen used as ballast put tide and buoyancy into everyday social problems.",
+        "examples": [
+          "trenches.post_house",
+          "trenches.window_school",
+          "trenches.anchor_house",
+          "trenches.leviathan_lane"
+        ],
+        "note": "Read both routes through all three locations and all three gated returns. The kitchen ending now lets Oru finish the balancing and meal after either pantry choice. The shelf choice no longer promises food as a material reward; Leviathan remains a peaceful distant presence."
+      }
+    },
+    "trenches_deep": {
+      "path": "data/adventures/trenches_deep.json",
+      "sha256": "8c3b5db8b9783da8ae77df046b64deca75a1beedb2feb47d3a62ae007aeb402a",
+      "graph_and_mechanics_sha256": "22cd4486477f965f25939dcfa6a0bc468ca11cfd4f3f1ac41c61626c34488ec3",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 65,
+        "connected_locations": 3
+      },
+      "body_word_range": [
+        46,
+        59
+      ],
+      "read_all_roots_and_nodes": true,
+      "reviewed_roots": [
+        {
+          "id": "trenches_deep.glasshouse",
+          "title": "The Greenhouse with Closed Windows",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.glasshouse.entry",
+            "trenches_deep.glasshouse.beds",
+            "trenches_deep.glasshouse.roof"
+          ]
+        },
+        {
+          "id": "trenches_deep.regulator_house",
+          "title": "Instructions for a Changing Vent",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.regulator_house.entry",
+            "trenches_deep.regulator_house.valves",
+            "trenches_deep.regulator_house.nursery"
+          ]
+        },
+        {
+          "id": "trenches_deep.coral_baths",
+          "title": "The Public Baths at Low Heat",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.coral_baths.entry",
+            "trenches_deep.coral_baths.shelter",
+            "trenches_deep.coral_baths.terrace"
+          ]
+        },
+        {
+          "id": "trenches_deep.dragon_nursery",
+          "title": "The Nursery’s Large Visitor",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.dragon_nursery.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.shed_scale",
+          "title": "A Scale with Nobody Attached",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.shed_scale.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.bubble_count",
+          "title": "A Hundred Bubbles Too Many",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.bubble_count.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.basalt_buttons",
+          "title": "The Mender’s Unmatched Buttons",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.basalt_buttons.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.vent_flute",
+          "title": "The Soup Keeper’s Whistle",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.vent_flute.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.eel_passage",
+          "title": "The Cool Side of the Arch",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.eel_passage.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.fan_shadow",
+          "title": "A Red Fan’s Changing Shadow",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.fan_shadow.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.drill_room",
+          "title": "The Drill with a Teacup Cover",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.drill_room.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.second_bloom",
+          "title": "Kelm’s Second Season",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.second_bloom.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.public_diagram",
+          "title": "A Correction in Small Handwriting",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.public_diagram.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.cool_bath_guest",
+          "title": "A Guest Who Likes the Cool Bath",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.cool_bath_guest.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.phoenix_glimmer",
+          "title": "A Phoenix Across the Vent Water",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.phoenix_glimmer.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.basalt_circle",
+          "title": "The Warmstone Practice Ring",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.basalt_circle.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.black_sand",
+          "title": "The Warm Line in Black Sand",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.black_sand.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.shelf_challenger",
+          "title": "A Ripple Behind the Coral Screen",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.shelf_challenger.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.warm_memory",
+          "title": "The Stone That Stayed Warm",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.warm_memory.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.valve_course",
+          "title": "The Three-Valve Exercise",
+          "repeatable": false,
+          "nodes": [
+            "trenches_deep.valve_course.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.vent_pulse",
+          "title": "Familiar Ground: A Gentle Vent Pulse",
+          "repeatable": true,
+          "nodes": [
+            "trenches_deep.vent_pulse.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.coral_fall",
+          "title": "Familiar Ground: A Loose Coral Fragment",
+          "repeatable": true,
+          "nodes": [
+            "trenches_deep.coral_fall.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.cinnamon_current",
+          "title": "Familiar Ground: The Cinnamon Current",
+          "repeatable": true,
+          "nodes": [
+            "trenches_deep.cinnamon_current.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.bubble_arch",
+          "title": "Familiar Ground: Bubbles Beneath the Arch",
+          "repeatable": true,
+          "nodes": [
+            "trenches_deep.bubble_arch.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.basalt_rest",
+          "title": "Familiar Ground: Warm Basalt Steps",
+          "repeatable": true,
+          "nodes": [
+            "trenches_deep.basalt_rest.entry"
+          ]
+        },
+        {
+          "id": "trenches_deep.practice_bubbles",
+          "title": "Familiar Ground: The Practice Bubbles",
+          "repeatable": true,
+          "nodes": [
+            "trenches_deep.practice_bubbles.entry"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "trenches_deep.second_bloom",
+          "requires_flags": [
+            "trenches_deep.second_season"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "trenches_deep.second_season": [
+              {
+                "root": "trenches_deep.glasshouse",
+                "node": "trenches_deep.glasshouse.beds",
+                "choice": "new_label"
+              }
+            ]
+          }
+        },
+        {
+          "root": "trenches_deep.public_diagram",
+          "requires_flags": [
+            "trenches_deep.vent_instructions"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "trenches_deep.vent_instructions": [
+              {
+                "root": "trenches_deep.regulator_house",
+                "node": "trenches_deep.regulator_house.valves",
+                "choice": "rename"
+              }
+            ]
+          }
+        },
+        {
+          "root": "trenches_deep.cool_bath_guest",
+          "requires_flags": [
+            "trenches_deep.baths_open"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "trenches_deep.baths_open": [
+              {
+                "root": "trenches_deep.coral_baths",
+                "node": "trenches_deep.coral_baths.shelter",
+                "choice": "welcome"
+              }
+            ]
+          }
+        }
+      ],
+      "catalog_species_mentions": [
+        {
+          "id": "phoenix",
+          "name": "Phoenix"
+        },
+        {
+          "id": "dragon",
+          "name": "Dragon"
+        },
+        {
+          "id": "kelpie",
+          "name": "Kelpie"
+        },
+        {
+          "id": "abyssal_eel",
+          "name": "Abyssal Eel"
+        }
+      ],
+      "assessment": {
+        "identity": "Vent temperature, coral nurseries, glasshouse air and uneven public baths distinguish this region from the cooler trench settlements.",
+        "examples": [
+          "trenches_deep.glasshouse",
+          "trenches_deep.regulator_house",
+          "trenches_deep.coral_baths",
+          "trenches_deep.phoenix_glimmer"
+        ],
+        "note": "Three terminal-room assumptions were repaired by explicitly attributing window, regulator and bath work to Kelm, Idra and Nessa. The single opponent behind the coral screen has no rarity promise. Phoenix is observed across the vent water without a capture guarantee."
+      }
+    },
+    "loom": {
+      "path": "data/adventures/loom.json",
+      "sha256": "9f23318adf1436ff754920657d65d2eaba81267910f587eaccd22c36d15ce00d",
+      "graph_and_mechanics_sha256": "ba0e969fb616753fa138be9e2e4885e4e6d3bf2e394821bd195b8f7d229f329a",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 65,
+        "connected_locations": 3
+      },
+      "body_word_range": [
+        49,
+        59
+      ],
+      "read_all_roots_and_nodes": true,
+      "reviewed_roots": [
+        {
+          "id": "loom.question_index",
+          "title": "The Index of Unasked Questions",
+          "repeatable": false,
+          "nodes": [
+            "loom.question_index.entry",
+            "loom.question_index.aisle",
+            "loom.question_index.desk"
+          ]
+        },
+        {
+          "id": "loom.hour_landing",
+          "title": "The Landing Between Two Hours",
+          "repeatable": false,
+          "nodes": [
+            "loom.hour_landing.entry",
+            "loom.hour_landing.clocks",
+            "loom.hour_landing.stairs"
+          ]
+        },
+        {
+          "id": "loom.unfinished_bridge",
+          "title": "The Bridge with an Open End",
+          "repeatable": false,
+          "nodes": [
+            "loom.unfinished_bridge.entry",
+            "loom.unfinished_bridge.gap",
+            "loom.unfinished_bridge.landing"
+          ]
+        },
+        {
+          "id": "loom.book_rest",
+          "title": "A Book Rest for a Very Small Reader",
+          "repeatable": false,
+          "nodes": [
+            "loom.book_rest.entry"
+          ]
+        },
+        {
+          "id": "loom.unicorn_question",
+          "title": "The Question at the Water Bowl",
+          "repeatable": false,
+          "nodes": [
+            "loom.unicorn_question.entry"
+          ]
+        },
+        {
+          "id": "loom.gravity_rail",
+          "title": "The Handrail Around a Small Impossible Thing",
+          "repeatable": false,
+          "nodes": [
+            "loom.gravity_rail.entry"
+          ]
+        },
+        {
+          "id": "loom.tomorrow_window",
+          "title": "The Window Reserved for Tomorrow",
+          "repeatable": false,
+          "nodes": [
+            "loom.tomorrow_window.entry"
+          ]
+        },
+        {
+          "id": "loom.sphinx_margin",
+          "title": "The Sphinx’s Practical Riddle",
+          "repeatable": false,
+          "nodes": [
+            "loom.sphinx_margin.entry"
+          ]
+        },
+        {
+          "id": "loom.blank_atlas",
+          "title": "An Atlas with Room for a Visitor",
+          "repeatable": false,
+          "nodes": [
+            "loom.blank_atlas.entry"
+          ]
+        },
+        {
+          "id": "loom.thread_mender",
+          "title": "Tess and the Unmatched Thread",
+          "repeatable": false,
+          "nodes": [
+            "loom.thread_mender.entry"
+          ]
+        },
+        {
+          "id": "loom.witness_notice",
+          "title": "A Notice Asking for One Witness",
+          "repeatable": false,
+          "nodes": [
+            "loom.witness_notice.entry"
+          ]
+        },
+        {
+          "id": "loom.margin_reply",
+          "title": "A Reply Beside Your Answer",
+          "repeatable": false,
+          "nodes": [
+            "loom.margin_reply.entry"
+          ]
+        },
+        {
+          "id": "loom.late_arrival",
+          "title": "The Visitor Who Came Without an Excuse",
+          "repeatable": false,
+          "nodes": [
+            "loom.late_arrival.entry"
+          ]
+        },
+        {
+          "id": "loom.returned_knot",
+          "title": "A Knot Held from the Other Side",
+          "repeatable": false,
+          "nodes": [
+            "loom.returned_knot.entry"
+          ]
+        },
+        {
+          "id": "loom.practice_library",
+          "title": "The Reading Room Practice Circle",
+          "repeatable": false,
+          "nodes": [
+            "loom.practice_library.entry"
+          ]
+        },
+        {
+          "id": "loom.starsteps",
+          "title": "Three Lessons on the Star Steps",
+          "repeatable": false,
+          "nodes": [
+            "loom.starsteps.entry"
+          ]
+        },
+        {
+          "id": "loom.paradox_cup",
+          "title": "A Cup on Both Sides of the Table",
+          "repeatable": false,
+          "nodes": [
+            "loom.paradox_cup.entry"
+          ]
+        },
+        {
+          "id": "loom.chronos_pause",
+          "title": "Chronos at an Unwound Clock",
+          "repeatable": false,
+          "nodes": [
+            "loom.chronos_pause.entry"
+          ]
+        },
+        {
+          "id": "loom.zodiac_circle",
+          "title": "A Constellation Close to the Ground",
+          "repeatable": false,
+          "nodes": [
+            "loom.zodiac_circle.entry"
+          ]
+        },
+        {
+          "id": "loom.open_annex",
+          "title": "The Open Annex Challenge",
+          "repeatable": false,
+          "nodes": [
+            "loom.open_annex.entry"
+          ]
+        },
+        {
+          "id": "loom.loose_thread",
+          "title": "Familiar Ground: A Thread Across the Path",
+          "repeatable": true,
+          "nodes": [
+            "loom.loose_thread.entry"
+          ]
+        },
+        {
+          "id": "loom.margin_light",
+          "title": "Familiar Ground: Light in the Margin",
+          "repeatable": true,
+          "nodes": [
+            "loom.margin_light.entry"
+          ]
+        },
+        {
+          "id": "loom.wide_stair",
+          "title": "Familiar Ground: The Broad Stair",
+          "repeatable": true,
+          "nodes": [
+            "loom.wide_stair.entry"
+          ]
+        },
+        {
+          "id": "loom.bookmark_route",
+          "title": "Familiar Ground: A Drifting Bookmark",
+          "repeatable": true,
+          "nodes": [
+            "loom.bookmark_route.entry"
+          ]
+        },
+        {
+          "id": "loom.tilted_path",
+          "title": "Familiar Ground: A Tilting Platform",
+          "repeatable": true,
+          "nodes": [
+            "loom.tilted_path.entry"
+          ]
+        },
+        {
+          "id": "loom.quiet_circle",
+          "title": "Familiar Ground: The Quiet Practice Circle",
+          "repeatable": true,
+          "nodes": [
+            "loom.quiet_circle.entry"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "loom.margin_reply",
+          "requires_flags": [
+            "loom.index_margin"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "loom.index_margin": [
+              {
+                "root": "loom.question_index",
+                "node": "loom.question_index.aisle",
+                "choice": "margin"
+              }
+            ]
+          }
+        },
+        {
+          "root": "loom.late_arrival",
+          "requires_flags": [
+            "loom.hour_invitation"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "loom.hour_invitation": [
+              {
+                "root": "loom.hour_landing",
+                "node": "loom.hour_landing.clocks",
+                "choice": "invite"
+              }
+            ]
+          }
+        },
+        {
+          "root": "loom.returned_knot",
+          "requires_flags": [
+            "loom.bridge_request"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "loom.bridge_request": [
+              {
+                "root": "loom.unfinished_bridge",
+                "node": "loom.unfinished_bridge.gap",
+                "choice": "signal"
+              }
+            ]
+          }
+        }
+      ],
+      "catalog_species_mentions": [
+        {
+          "id": "pixie",
+          "name": "Pixie"
+        },
+        {
+          "id": "unicorn",
+          "name": "Unicorn"
+        },
+        {
+          "id": "sphinx",
+          "name": "Sphinx"
+        },
+        {
+          "id": "singularity",
+          "name": "Singularity"
+        },
+        {
+          "id": "chronos",
+          "name": "Chronos"
+        },
+        {
+          "id": "paradox",
+          "name": "Paradox"
+        },
+        {
+          "id": "zodiac",
+          "name": "Zodiac"
+        },
+        {
+          "id": "atlas",
+          "name": "Atlas"
+        }
+      ],
+      "assessment": {
+        "identity": "Question cards, an hourly landing and an unfinished light bridge turn celestial oddities into usable public places and personal invitations.",
+        "examples": [
+          "loom.question_index",
+          "loom.hour_landing",
+          "loom.unfinished_bridge",
+          "loom.paradox_cup"
+        ],
+        "note": "Read every room and follow-up, including branch-gated replies and returned knots. Venn now chooses to move the cards after either investigation route. Named celestial beasts stay outside the random battle promise; the annex challenge promises only one wild encounter."
+      }
+    },
+    "loom_deep": {
+      "path": "data/adventures/loom_deep.json",
+      "sha256": "ffcd8b218b48eadc8ccf23b6d9f6c47ea799184260016b89b4b034cda9a2e5a4",
+      "graph_and_mechanics_sha256": "aa5fa93b6bc989b0cdecb0429da8e7addad2e2d7d86d23d1a31a3583230d0645",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 65,
+        "connected_locations": 3
+      },
+      "body_word_range": [
+        50,
+        58
+      ],
+      "read_all_roots_and_nodes": true,
+      "reviewed_roots": [
+        {
+          "id": "loom_deep.visitor_tree",
+          "title": "The Tree That Kept a Place",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.visitor_tree.entry",
+            "loom_deep.visitor_tree.bells",
+            "loom_deep.visitor_tree.chair"
+          ]
+        },
+        {
+          "id": "loom_deep.seed_library",
+          "title": "The Library of Unfamiliar Seeds",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.seed_library.entry",
+            "loom_deep.seed_library.drawers",
+            "loom_deep.seed_library.beds"
+          ]
+        },
+        {
+          "id": "loom_deep.night_tea",
+          "title": "Tea Before the Garden Opens",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.night_tea.entry",
+            "loom_deep.night_tea.table",
+            "loom_deep.night_tea.terrace"
+          ]
+        },
+        {
+          "id": "loom_deep.atlas_distance",
+          "title": "A Garden in a Passing Shadow",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.atlas_distance.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.borrowed_can",
+          "title": "The Watering Can That Waited",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.borrowed_can.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.starfruit_shade",
+          "title": "The Apprentice’s Brightest Fruit",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.starfruit_shade.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.blossom_bowl",
+          "title": "A Bowl Full of Fallen Light",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.blossom_bowl.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.fruit_labels",
+          "title": "The Orchard’s Unreliable Names",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.fruit_labels.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.constellation_braid",
+          "title": "A Braid Left Long Enough",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.constellation_braid.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.root_bench",
+          "title": "The Bench Around a Growing Root",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.root_bench.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.leaf_pages",
+          "title": "Tru’s Pages in the Orchard Wind",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.leaf_pages.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.returning_visitor",
+          "title": "A Visitor Before the Garden Is Finished",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.returning_visitor.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.seed_reply",
+          "title": "The Gardener Who Recognized the Unknown Tray",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.seed_reply.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.tea_return",
+          "title": "Someone Else at the Old Table",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.tea_return.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.orchard_practice",
+          "title": "The Orchard Turning Circle",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.orchard_practice.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.terrace_sequence",
+          "title": "Three Terraces of Footwork",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.terrace_sequence.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.astraea_bloom",
+          "title": "Astraea Beside an Unremarkable Flower",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.astraea_bloom.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.terminus_bed",
+          "title": "Terminus at the Last Bloom",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.terminus_bed.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.garden_invitation",
+          "title": "An Invitation Beyond the Silver Screen",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.garden_invitation.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.unripe_lantern",
+          "title": "The Lantern That Was Still Growing",
+          "repeatable": false,
+          "nodes": [
+            "loom_deep.unripe_lantern.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.dew_route",
+          "title": "Familiar Ground: Dew on the Low Cords",
+          "repeatable": true,
+          "nodes": [
+            "loom_deep.dew_route.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.petal_drift",
+          "title": "Familiar Ground: Fallen Petals on Bare Stone",
+          "repeatable": true,
+          "nodes": [
+            "loom_deep.petal_drift.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.vine_support",
+          "title": "Familiar Ground: A Loose Guide Vine",
+          "repeatable": true,
+          "nodes": [
+            "loom_deep.vine_support.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.fruit_shadow",
+          "title": "Familiar Ground: Shade Beneath Starfruit",
+          "repeatable": true,
+          "nodes": [
+            "loom_deep.fruit_shadow.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.starlit_drill",
+          "title": "Familiar Ground: The Clear Garden Court",
+          "repeatable": true,
+          "nodes": [
+            "loom_deep.starlit_drill.entry"
+          ]
+        },
+        {
+          "id": "loom_deep.drifting_blossom",
+          "title": "Familiar Ground: A Blossom Above the Steps",
+          "repeatable": true,
+          "nodes": [
+            "loom_deep.drifting_blossom.entry"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "loom_deep.returning_visitor",
+          "requires_flags": [
+            "loom_deep.orchard_invitation"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "loom_deep.orchard_invitation": [
+              {
+                "root": "loom_deep.visitor_tree",
+                "node": "loom_deep.visitor_tree.bells",
+                "choice": "invite"
+              }
+            ]
+          }
+        },
+        {
+          "root": "loom_deep.seed_reply",
+          "requires_flags": [
+            "loom_deep.seed_history"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "loom_deep.seed_history": [
+              {
+                "root": "loom_deep.seed_library",
+                "node": "loom_deep.seed_library.drawers",
+                "choice": "label"
+              }
+            ]
+          }
+        },
+        {
+          "root": "loom_deep.tea_return",
+          "requires_flags": [
+            "loom_deep.tea_place"
+          ],
+          "forbid_flags": [],
+          "sources": {
+            "loom_deep.tea_place": [
+              {
+                "root": "loom_deep.night_tea",
+                "node": "loom_deep.night_tea.table",
+                "choice": "places"
+              }
+            ]
+          }
+        }
+      ],
+      "catalog_species_mentions": [
+        {
+          "id": "astraea",
+          "name": "Astraea"
+        },
+        {
+          "id": "terminus",
+          "name": "Terminus"
+        },
+        {
+          "id": "atlas",
+          "name": "Atlas"
+        }
+      ],
+      "assessment": {
+        "identity": "A living visitor tree, unfamiliar seed records, fruit shade and an opening cafe make the gardens change through care and returning guests.",
+        "examples": [
+          "loom_deep.visitor_tree",
+          "loom_deep.seed_library",
+          "loom_deep.night_tea",
+          "loom_deep.terminus_bed"
+        ],
+        "note": "Read all locations, visitor returns and familiar paths. Pem now clears the path after either drawer route, and the cafe bell records a shared table rather than an optional cup-moving action. Material choices avoid guaranteeing petals or a named item; Astraea and Terminus remain peaceful sightings."
+      }
+    }
+  },
+  "findings": [
+    {
+      "node": "glacial_deep.weather_house.roof",
+      "choice": null,
+      "severity": "minor",
+      "issue": "Make Ves perform the instrument adjustment explicitly after either entry branch.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "On the roof, a little brass vane turns freely for the first time in years. Ves reads the cloud line without consulting a slip. She admits the forecasts were meant to help people prepare, not prove that she could be right. Your companions settle behind the newly sheltered chimney.",
+          "after": "Ves moves the little brass vane onto a free bracket above the wall. From the roof she reads the cloud line without consulting a slip. She admits the forecasts were meant to help people prepare, not prove she could be right. Your companions settle behind the chimney while the newly exposed instrument turns in clear air."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "glacial_deep.bellspan.crossing",
+      "choice": null,
+      "severity": "minor",
+      "issue": "Listening or locating the rubbing point did not itself repair the bridge; make the mender finish the work.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "The repaired bridge has stopped humming, but the little bell still whistles through its crack. Tal decides it may warn people without pretending to hold the whole span together. Across the gap, someone has placed a pot of hot barley water beside three cups of very different sizes.",
+          "after": "Tal finishes the necessary knots before inviting you across. The little bell still whistles through its crack, but no longer rubs the rope. He decides a warning need not pretend to hold the whole span together. Across the gap, someone has placed a pot of hot barley water beside three cups of very different sizes."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "trenches.anchor_house.doorstep",
+      "choice": null,
+      "severity": "minor",
+      "issue": "Both pantry paths now lead honestly to a meal and balanced house; Oru completes the work, rather than crediting an unchosen player action.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "The house sits level enough for its front door to close without a rope. Oru serves the simple meal on the step, where a passing neighbour can choose whether to stop. The anchor is still visible through the kitchen floor. It looks less like something holding the house down and more like something letting it stay.",
+          "after": "Oru finishes balancing the cupboards and puts a simple meal on the step. The front door can now close without a rope, and a passing neighbour can choose whether to stop. The anchor remains visible through the kitchen floor. It looks less like something holding the house down and more like something letting it stay."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "trenches_deep.glasshouse.roof",
+      "choice": null,
+      "severity": "minor",
+      "issue": "Clarify that Kelm opens the windows after either inspection or door-bracing route.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "The upper windows open toward a slow stream of warm bubbles. Kelm expected a dramatic bloom, but the first change is simply that the branches stop leaning against the glass. Small shadows move comfortably between them. He laughs at how quietly a greenhouse can begin working again.",
+          "after": "Kelm opens the upper windows toward a slow stream of warm bubbles. He uses the clear view and your observations to judge the opening rather than waiting for a dramatic bloom. The young branches stop leaning against the glass; small shadows move comfortably between them. He laughs at how quietly a greenhouse can begin working again."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "trenches_deep.regulator_house.nursery",
+      "choice": null,
+      "severity": "minor",
+      "issue": "Inspection and relabelling alone did not redirect the vent; Idra makes the measured adjustment explicitly.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "From the nursery shelf, the regulator looks much smaller than its importance suggested. Warm water now passes beside the coral rather than straight at it. Idra places a fresh chalkboard where any visitor can reach it. She wants the next correction to arrive before someone has to become worried enough to ask permission.",
+          "after": "Idra tests the regulator against the actual nursery temperature before settling on a gentler current. From the nursery shelf, the house looks much smaller than its importance suggested. Warm water passes beside the coral rather than straight at it. She places a fresh chalkboard within reach, wanting the next correction before anyone becomes worried enough to ask permission."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "trenches_deep.coral_baths.terrace",
+      "choice": null,
+      "severity": "minor",
+      "issue": "Make the bathkeeper responsible for reopening the hollow, including when the player folded towels instead of rewriting the notice.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "On the outer terrace, the smallest hollow is open again. A new visitor approaches, tests the cooler edge and settles without needing an explanation. Nessa sits on the bench instead of watching the heat gauge. The vent continues its quiet work beneath three baths that no longer need to be identical.",
+          "after": "After watching the different visitors, Nessa reopens the smallest hollow. A new guest approaches, tests the cooler edge and settles without needing an explanation. Nessa sits on the bench instead of watching the heat gauge. The vent continues its quiet work beneath three baths that no longer need to be identical."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "loom.question_index.desk",
+      "choice": null,
+      "severity": "minor",
+      "issue": "Avoid implying that reading the sorting history already moved the cards; show Venn making the change.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+          "after": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "loom_deep.seed_library.beds",
+      "choice": null,
+      "severity": "minor",
+      "issue": "The plant-label inspection route did not clear the path; Pem now does so explicitly.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "Outside, Pem stops comparing the unfamiliar beds to the pictures on their drawers. A low branch already shelters a tiny patch of young growth, and the open visiting path gives him a good place to watch. He begins a fresh label with what the plant does today, leaving room beneath it for tomorrow.",
+          "after": "Pem opens a low visiting path and stops comparing the unfamiliar beds to the pictures on their drawers. A branch already shelters a tiny patch of young growth, giving him a useful place to watch. He begins a fresh label with what the plant does today, leaving room beneath it for tomorrow."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "loom_deep.night_tea.terrace",
+      "choice": null,
+      "severity": "minor",
+      "issue": "The canopy route did not move the old cups, so the memory should record the shared table instead.",
+      "changed_fields": [
+        {
+          "field": "body",
+          "before": "From the café terrace, the unfinished paths look like possibilities rather than delays. Sol turns the opening sign around and writes that one table is ready. Warm tea waits at a height your companions can reach. A small memory bell records the cups being moved, which turns out to be a pleasant sound.",
+          "after": "From the café terrace, the unfinished paths look like possibilities rather than delays. Sol turns the opening sign around and writes that one table is ready. Warm tea waits at a height your companions can reach. A small memory bell records the first shared table, which turns out to be a pleasant sound."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "branch continuity"
+    },
+    {
+      "node": "glacial_deep.wool_lines.entry",
+      "choice": "collect",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Choose loose fibers away from the instruments",
+          "after": "Inspect loose gatherings beyond the measuring line"
+        },
+        {
+          "field": "outcome",
+          "before": "You mark a patch of wind-shed fibers, leaving every measuring strip in place.",
+          "after": "The measuring strips stay in place while you mark a safe gathering area for the journey's one material selection."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "glacial_deep.glass_roots.entry",
+      "choice": "fallen",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Choose an already fallen fragment",
+          "after": "Check the loose collection area beyond the root fence"
+        },
+        {
+          "field": "outcome",
+          "before": "You identify a loose fragment that no longer supports the living root.",
+          "after": "You mark the detached gathering area, leaving every bright seam that still supports the tree untouched."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "glacial_deep.mica_slide.entry",
+      "choice": "fragments",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Mark a loose fragment for your one bundle",
+          "after": "Inspect the loose collection edge beyond the slope"
+        },
+        {
+          "field": "outcome",
+          "before": "You identify a piece already separated from the slope and leave the supporting layers intact.",
+          "after": "You choose a safe gathering area away from the supporting layers; the journey still carries only one material bundle."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "glacial_deep.harpy_draft.entry",
+      "choice": "collect",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Choose fallen down outside the updraft",
+          "after": "Check the sheltered gathering edge outside the updraft"
+        },
+        {
+          "field": "outcome",
+          "before": "You mark loose down on the sheltered side, away from the lesson space.",
+          "after": "You mark a gathering spot on the sheltered side, leaving the lesson space and every living visitor alone."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "trenches.anchor_house.pantry",
+      "choice": "samples",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Choose a practical pantry sample for the journey",
+          "after": "Sort the loose pieces on Oru's repair shelf"
+        },
+        {
+          "field": "outcome",
+          "before": "Oru points out the useful odds and ends already loose on the repair shelf.",
+          "after": "You inspect the repair shelf without taking pantry food, marking a source for the journey's one regional material selection."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "trenches.sand_cradle.entry",
+      "choice": "sample",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Mark detached pieces in the collecting hollow",
+          "after": "Inspect the gathering sources below the resting ridge"
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "trenches.ink_fall.entry",
+      "choice": "grains",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Choose loose grains from the bare shelf",
+          "after": "Inspect the clear collecting shelf beside the ink"
+        },
+        {
+          "field": "outcome",
+          "before": "You mark a detached deposit instead of scraping the neighbouring coral.",
+          "after": "You mark the clear gathering area and leave the living coral alone; the run still selects only one material bundle."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "trenches_deep.glasshouse.roof",
+      "choice": "sample",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Choose detached dust from the maintenance shelf",
+          "after": "Inspect the loose collection shelf above the beds"
+        },
+        {
+          "field": "outcome",
+          "before": "Kelm points out a useful loose deposit without disturbing the newly comfortable beds.",
+          "after": "Kelm indicates a gathering place for the journey's material selection, clear of every living branch."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "trenches_deep.vent_flute.entry",
+      "choice": "dust",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Choose loose dust from the detached whistle cap",
+          "after": "Inspect the detached cap and its collection shelf"
+        },
+        {
+          "field": "outcome",
+          "before": "You mark the cleaned maintenance deposit while leaving the working vent undisturbed.",
+          "after": "You check the detached cap, clear its loose debris and mark a gathering place without touching the working vent."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "trenches_deep.black_sand.entry",
+      "choice": "grit",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Reach the loose grit along the rough outer edge",
+          "after": "Inspect the rough outer collection edge"
+        },
+        {
+          "field": "outcome",
+          "before": "A few scrapes mark the awkward approach, and you note the detached deposit for the one bundle.",
+          "after": "Your team picks up a few scrapes on the outer edge; you mark the clear gathering spot for the journey's one regional bundle."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "loom.loose_thread.entry",
+      "choice": "trim",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Mark the detached repair fibers for your bundle",
+          "after": "Inspect the loose gathering area beside the spool"
+        },
+        {
+          "field": "outcome",
+          "before": "You choose loose trimmings and leave the supporting weave in place.",
+          "after": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "loom.tilted_path.entry",
+      "choice": "brace",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Inspect the rough service brace and loose deposit",
+          "after": "Inspect the rough service brace and collection shelf"
+        },
+        {
+          "field": "outcome",
+          "before": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+          "after": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "loom_deep.blossom_bowl.entry",
+      "choice": "source",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "outcome",
+          "before": "You choose a loose collection source without disturbing the flowering branches.",
+          "after": "You inspect the collecting place beside the fallen petals; the journey's material choice does not require plucking a living blossom."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "loom_deep.petal_drift.entry",
+      "choice": "source",
+      "severity": "minor",
+      "issue": "Material selection has no item ID; avoid promising a specific material.",
+      "changed_fields": [
+        {
+          "field": "label",
+          "before": "Mark the loose drift for the one journey bundle",
+          "after": "Inspect the bare-stone collection mark"
+        },
+        {
+          "field": "outcome",
+          "before": "You leave the living beds untouched and choose a detached collection source.",
+          "after": "You keep to the marked gathering area and leave the live beds untouched; the journey still selects one regional material bundle."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "material honesty"
+    },
+    {
+      "node": "trenches_deep.shelf_challenger.entry",
+      "choice": "answer",
+      "severity": "minor",
+      "issue": "The rare effect does not guarantee an uncommon opponent, upgraded stats or another capture roll.",
+      "changed_fields": [
+        {
+          "field": "description",
+          "before": "Begin a rare-opponent encounter.",
+          "after": "Begin one wild encounter; rarity follows this habitat's normal rules."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "battle honesty"
+    },
+    {
+      "node": "loom.open_annex.entry",
+      "choice": "ready",
+      "severity": "minor",
+      "issue": "The rare effect does not guarantee an uncommon opponent, upgraded stats or another capture roll.",
+      "changed_fields": [
+        {
+          "field": "description",
+          "before": "Begin a rare-opponent encounter.",
+          "after": "Begin one wild encounter; rarity follows this habitat's normal rules."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "battle honesty"
+    },
+    {
+      "node": "loom_deep.garden_invitation.entry",
+      "choice": "ready",
+      "severity": "minor",
+      "issue": "The rare effect does not guarantee an uncommon opponent, upgraded stats or another capture roll.",
+      "changed_fields": [
+        {
+          "field": "description",
+          "before": "Begin a rare-opponent encounter.",
+          "after": "Begin one wild encounter; rarity follows this habitat's normal rules."
+        }
+      ],
+      "status": "fixed",
+      "structural_or_mechanical_change": false,
+      "category": "battle honesty"
+    }
+  ],
+  "change_summary": {
+    "text_fields_corrected": 38,
+    "affected_node_choice_groups": 26,
+    "continuity_bodies": 9,
+    "material_choices": 14,
+    "battle_descriptions": 3,
+    "encoding_cleanup": "Corrected nine accidentally substituted apostrophes in these edits before validation."
+  },
+  "unresolved_findings": [],
+  "mechanical_honesty": {
+    "battles": "Named creatures in reviewed prose are local sightings or noncombat interactions. Battle choices promise a generic wild opponent or practice group, never a specific species, victory, guaranteed capture or additional catch ticket.",
+    "rare_token": "Read current journey_combat/journey_service behavior: rare is one normally scaled opponent and uses the shared run encounter/capture policy. Three misleading rare-opponent descriptions were changed to one wild encounter with normal habitat rarity rules.",
+    "materials": "The run has one material-or-nest reward slot. Material selection can replace its saved bundle with a same-rarity offered alternative; where no alternative exists the runtime supplies a capped bundle bonus. Content now avoids fixed material IDs, additional bundles and pantry-food inventory promises.",
+    "bounded_effects": "All effects are schema-whitelisted and bounded. Descriptions do not invent permanent stats, extra currency streams, resurrection or consumable rewards. Runtime-effective descriptions communicate already-used research/recovery/bonus limits.",
+    "choices": "Every node has two or three distinct consequences and an unconditional noncombat, no-damage option. Practical help, investigation, preparation, social response and bounded risk occur in specific local contexts; choices are not one global four-button menu.",
+    "persistent_world": "Gated follow-ups have authored flag producers. Branch flags and root completion are separate; no effect resets encounter completion. Some later invitations deliberately depend on the earlier branch, while unfinished locations remain resumable."
+  },
+  "distinctness": {
+    "exact_duplicate_bodies_all_ten": 0,
+    "exact_duplicate_outcomes_all_ten": 0,
+    "method": "Compared normalized full body and outcome strings across all ten catalogs; manually read every reviewed root to compare stakes, ecological details, voices and branch causality.",
+    "editorial_note": "Accessible public routes, quiet care and imperfect repairs recur as the game tone. Concrete situations differ across ridge weather, submerged households, warm coral infrastructure, celestial civic spaces and living gardens. No noun-substitution body template was found in the reviewed set."
+  },
+  "verification": {
+    "validate_all_errors": [],
+    "global_catalog_counts": {
+      "biomes": 10,
+      "one_time_roots": 200,
+      "repeatable_roots": 60,
+      "nodes": 320,
+      "choices": 647
+    },
+    "strict_body_range": "All 320 authored node bodies are 35-80 whitespace-separated words.",
+    "applied_edit_check": "All 38 final after-values in the editorial change log match the current catalogs; every changed field is body, label, description or outcome.",
+    "tests": [
+      {
+        "command": "python -m unittest discover -s tests -p test_adventure_content.py -q",
+        "passed": 7
+      },
+      {
+        "command": "python -m unittest discover -s tests -p test_living_catalog.py -q",
+        "passed": 3
+      }
+    ],
+    "limits": "This is a content and graph review, not a claim that every possible world-history combination or combat balance has been simulated. Runtime persistence, reward settlement and battle pacing are covered by their separate test/audit work."
+  },
+  "coverage_addendum": {
+    "issue": "Stormglass Peaks and Abyssal Trenches originally had no repeatable battle choice; the remaining later biomes offered only a single opponent. After one-time content was finished, those catalogs could remove battle/catch opportunities or lose pack variation.",
+    "resolution": "The content author added seven contextual third choices to existing repeatable roots. Independent review verified every prior root, node, choice, effect, flag and continuation edge is preserved; the new terminal choices add only battle intentions.",
+    "reviewed_changes": [
+      {
+        "biome": "glacial_deep",
+        "root": "glacial_deep.harpy_draft",
+        "node": "glacial_deep.harpy_draft.entry",
+        "choice": "ridge_test",
+        "kind": "single",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "glacial_deep",
+        "root": "glacial_deep.rukh_stones",
+        "node": "glacial_deep.rukh_stones.entry",
+        "choice": "ledge_pair",
+        "kind": "pack2",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "trenches",
+        "root": "trenches.bubble_lane",
+        "node": "trenches.bubble_lane.entry",
+        "choice": "resident_test",
+        "kind": "single",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "trenches",
+        "root": "trenches.kelpie_reeds",
+        "node": "trenches.kelpie_reeds.entry",
+        "choice": "channel_relay",
+        "kind": "pack3",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "trenches_deep",
+        "root": "trenches_deep.practice_bubbles",
+        "node": "trenches_deep.practice_bubbles.entry",
+        "choice": "paired_bubbles",
+        "kind": "pack2",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "loom",
+        "root": "loom.quiet_circle",
+        "node": "loom.quiet_circle.entry",
+        "choice": "paired_rehearsal",
+        "kind": "pack2",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "loom_deep",
+        "root": "loom_deep.starlit_drill",
+        "node": "loom_deep.starlit_drill.entry",
+        "choice": "orchard_relay",
+        "kind": "pack3",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      }
+    ],
+    "all_ten_repeatable_battle_kinds": {
+      "woods": [
+        "pack2",
+        "single"
+      ],
+      "woods_deep": [
+        "pack2",
+        "rare"
+      ],
+      "ember": [
+        "pack2",
+        "single"
+      ],
+      "ember_deep": [
+        "pack3",
+        "rare"
+      ],
+      "glacial": [
+        "pack2",
+        "rare"
+      ],
+      "glacial_deep": [
+        "pack2",
+        "single"
+      ],
+      "trenches": [
+        "pack3",
+        "single"
+      ],
+      "trenches_deep": [
+        "pack2",
+        "single"
+      ],
+      "loom": [
+        "pack2",
+        "single"
+      ],
+      "loom_deep": [
+        "pack3",
+        "single"
+      ]
+    },
+    "review_note": "Ridge feathers and distant Rukh marks remain observations, not guaranteed opponents. Local residents are unnamed. Pair/relay outcomes explicitly meet opponents in turn and leave the original observation, rehearsal or rest routes open. No consumable use, reward multiplier or capture guarantee was added.",
+    "scope": "Independently reread all seven changed bodies, all original choices and all seven added choices. No catalog edits were made by this reviewer during the addendum.",
+    "memory_replay": {
+      "path": "docs/adventure-memory-audit.json",
+      "status": "passed",
+      "source_hashes_match": true,
+      "totals": {
+        "visits": 3000,
+        "steps": 9444,
+        "root_starts": 9286,
+        "familiar_root_starts": 8687,
+        "continuation_resumptions": 22,
+        "explicit_continuation_resume_probes": 180,
+        "exhausted_visits": 2856,
+        "shortened_visits": 2856,
+        "battle_intentions_assumed_won": 767,
+        "familiar_battle_intentions_assumed_won": 741,
+        "published_scene_choices_resolved_in_rollback": 19907,
+        "published_familiar_battle_choices_resolved_in_rollback": 2895
+      },
+      "scope": "Actual planner persistence with wins assumed for battle intentions; no combat or reward-settlement claim."
+    },
+    "verification": {
+      "validate_all_errors": [],
+      "content_tests_passed": 7,
+      "catalog_tests_passed": 3,
+      "zero_duplicate_bodies_or_outcomes": true,
+      "all_old_choices_unchanged": true
+    }
+  }
+}

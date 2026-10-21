@@ -1,0 +1,1054 @@
+{
+  "version": 1,
+  "review": "Independent editorial review B",
+  "reviewer": "biome_art_audit",
+  "reviewed_biomes": [
+    "woods",
+    "woods_deep",
+    "ember",
+    "ember_deep",
+    "glacial"
+  ],
+  "scope": "Full manual reading of all 130 roots and all 160 nodes in the other author's five packs, followed by focused prose-only corrections and complete catalog validation.",
+  "reviewed_counts": {
+    "one_time_roots": 100,
+    "repeatable_roots": 30,
+    "nodes": 160,
+    "choices": 320,
+    "connected_locations": 15
+  },
+  "packs": {
+    "woods": {
+      "path": "data/adventures/woods.json",
+      "sha256": "23360e6dd1325abc3efd0ea0501eff60e68ca227def3dedb38b70c603a979f3f",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 64,
+        "three_to_five_node_locations": 3
+      },
+      "read_all_roots": true,
+      "reviewed_root_ids": [
+        "woods_bellhouse",
+        "woods_reedwheel",
+        "woods_crooked_bridge",
+        "woods_toast_basket",
+        "woods_blue_chalk",
+        "woods_copper_stump",
+        "woods_moth_press",
+        "woods_raincoat",
+        "woods_tree_letters",
+        "woods_stone_calendar",
+        "woods_teapot",
+        "woods_crooked_race",
+        "woods_root_classroom",
+        "woods_pool_bell",
+        "woods_seedling_score",
+        "woods_borrowed_shadow",
+        "woods_log_raft",
+        "woods_worn_collar",
+        "woods_chalk_path",
+        "woods_late_breakfast",
+        "woods_familiar_leaf_drift",
+        "woods_familiar_ring",
+        "woods_familiar_fern_shelf",
+        "woods_familiar_windfalls",
+        "woods_familiar_sun_patch",
+        "woods_familiar_rain_measure"
+      ],
+      "reviewed_node_ids": [
+        "woods_bellhouse_entry",
+        "woods_bellhouse_cellar",
+        "woods_bellhouse_belfry",
+        "woods_reedwheel_entry",
+        "woods_reedwheel_race",
+        "woods_reedwheel_loft",
+        "woods_crooked_bridge_entry",
+        "woods_crooked_bridge_middle",
+        "woods_crooked_bridge_farbank",
+        "woods_toast_basket_entry",
+        "woods_blue_chalk_entry",
+        "woods_copper_stump_entry",
+        "woods_moth_press_entry",
+        "woods_raincoat_entry",
+        "woods_tree_letters_entry",
+        "woods_stone_calendar_entry",
+        "woods_teapot_entry",
+        "woods_crooked_race_entry",
+        "woods_root_classroom_entry",
+        "woods_pool_bell_entry",
+        "woods_seedling_score_entry",
+        "woods_borrowed_shadow_entry",
+        "woods_log_raft_entry",
+        "woods_worn_collar_entry",
+        "woods_chalk_path_entry",
+        "woods_late_breakfast_entry",
+        "woods_familiar_leaf_drift_entry",
+        "woods_familiar_ring_entry",
+        "woods_familiar_fern_shelf_entry",
+        "woods_familiar_windfalls_entry",
+        "woods_familiar_sun_patch_entry",
+        "woods_familiar_rain_measure_entry"
+      ],
+      "body_word_range": [
+        40,
+        46
+      ],
+      "connected_locations": [
+        {
+          "root": "woods_bellhouse",
+          "entry": "woods_bellhouse_entry",
+          "nodes": [
+            "woods_bellhouse_entry",
+            "woods_bellhouse_cellar",
+            "woods_bellhouse_belfry"
+          ]
+        },
+        {
+          "root": "woods_reedwheel",
+          "entry": "woods_reedwheel_entry",
+          "nodes": [
+            "woods_reedwheel_entry",
+            "woods_reedwheel_race",
+            "woods_reedwheel_loft"
+          ]
+        },
+        {
+          "root": "woods_crooked_bridge",
+          "entry": "woods_crooked_bridge_entry",
+          "nodes": [
+            "woods_crooked_bridge_entry",
+            "woods_crooked_bridge_middle",
+            "woods_crooked_bridge_farbank"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "woods_pool_bell",
+          "requires_flags": [
+            "woods_bellhouse_seen"
+          ],
+          "sources": {
+            "woods_bellhouse_seen": [
+              {
+                "root": "woods_bellhouse",
+                "node": "woods_bellhouse_belfry",
+                "choice": "woods_bellhouse_belfry_c1"
+              },
+              {
+                "root": "woods_bellhouse",
+                "node": "woods_bellhouse_belfry",
+                "choice": "woods_bellhouse_belfry_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "woods_seedling_score",
+          "requires_flags": [
+            "woods_mill_open"
+          ],
+          "sources": {
+            "woods_mill_open": [
+              {
+                "root": "woods_reedwheel",
+                "node": "woods_reedwheel_loft",
+                "choice": "woods_reedwheel_loft_c1"
+              },
+              {
+                "root": "woods_reedwheel",
+                "node": "woods_reedwheel_loft",
+                "choice": "woods_reedwheel_loft_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "woods_worn_collar",
+          "requires_flags": [
+            "woods_bridge_seen"
+          ],
+          "sources": {
+            "woods_bridge_seen": [
+              {
+                "root": "woods_crooked_bridge",
+                "node": "woods_crooked_bridge_farbank",
+                "choice": "woods_crooked_bridge_farbank_c1"
+              },
+              {
+                "root": "woods_crooked_bridge",
+                "node": "woods_crooked_bridge_farbank",
+                "choice": "woods_crooked_bridge_farbank_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "woods_chalk_path",
+          "requires_flags": [
+            "woods_letter_pending"
+          ],
+          "sources": {
+            "woods_letter_pending": [
+              {
+                "root": "woods_tree_letters",
+                "node": "woods_tree_letters_entry",
+                "choice": "woods_tree_letters_entry_c1"
+              },
+              {
+                "root": "woods_tree_letters",
+                "node": "woods_tree_letters_entry",
+                "choice": "woods_tree_letters_entry_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "woods_late_breakfast",
+          "requires_flags": [
+            "woods_breakfast_returned"
+          ],
+          "sources": {
+            "woods_breakfast_returned": [
+              {
+                "root": "woods_toast_basket",
+                "node": "woods_toast_basket_entry",
+                "choice": "woods_toast_basket_entry_c2"
+              }
+            ]
+          }
+        }
+      ],
+      "assessment": {
+        "identity": "Root paths, small workshops, shared breakfasts and woodland correspondence make this a lived-in starting region.",
+        "examples": [
+          "woods_bellhouse",
+          "woods_reedwheel",
+          "woods_crooked_bridge",
+          "woods_tree_letters"
+        ],
+        "review_note": "Read all three room chains and every terminal/repeatable root. Branches preserve either practical work or observation, and letter follow-up now covers text and drawings. No named species is promised by a battle choice."
+      }
+    },
+    "woods_deep": {
+      "path": "data/adventures/woods_deep.json",
+      "sha256": "2108b2cd5511e72fd76cbbfbe051f103e163ac6f7e067ebf98f0c4c569d36260",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 64,
+        "three_to_five_node_locations": 3
+      },
+      "read_all_roots": true,
+      "reviewed_root_ids": [
+        "woods_deep_floating_post",
+        "woods_deep_fen_beacon",
+        "woods_deep_peat_archive",
+        "woods_deep_floating_pantry",
+        "woods_deep_kelpie_reflection",
+        "woods_deep_boot_garden",
+        "woods_deep_drifting_reply",
+        "woods_deep_gnat_orchestra",
+        "woods_deep_low_window",
+        "woods_deep_beacon_reply",
+        "woods_deep_reed_scribe",
+        "woods_deep_folded_map",
+        "woods_deep_mud_gauge",
+        "woods_deep_narrowboat",
+        "woods_deep_harpy_weather",
+        "woods_deep_cold_guest",
+        "woods_deep_small_wake",
+        "woods_deep_archive_names",
+        "woods_deep_white_hooves",
+        "woods_deep_muddy_ambassador",
+        "woods_deep_familiar_fog_line",
+        "woods_deep_familiar_reed_roof",
+        "woods_deep_familiar_reed_bundle",
+        "woods_deep_familiar_quiet_wakes",
+        "woods_deep_familiar_deep_tracks",
+        "woods_deep_familiar_scent_posts"
+      ],
+      "reviewed_node_ids": [
+        "woods_deep_floating_post_entry",
+        "woods_deep_floating_post_sorting",
+        "woods_deep_floating_post_roof",
+        "woods_deep_fen_beacon_entry",
+        "woods_deep_fen_beacon_lens",
+        "woods_deep_fen_beacon_hood",
+        "woods_deep_peat_archive_entry",
+        "woods_deep_peat_archive_silt",
+        "woods_deep_peat_archive_rack",
+        "woods_deep_floating_pantry_entry",
+        "woods_deep_kelpie_reflection_entry",
+        "woods_deep_boot_garden_entry",
+        "woods_deep_drifting_reply_entry",
+        "woods_deep_gnat_orchestra_entry",
+        "woods_deep_low_window_entry",
+        "woods_deep_beacon_reply_entry",
+        "woods_deep_reed_scribe_entry",
+        "woods_deep_folded_map_entry",
+        "woods_deep_mud_gauge_entry",
+        "woods_deep_narrowboat_entry",
+        "woods_deep_harpy_weather_entry",
+        "woods_deep_cold_guest_entry",
+        "woods_deep_small_wake_entry",
+        "woods_deep_archive_names_entry",
+        "woods_deep_white_hooves_entry",
+        "woods_deep_muddy_ambassador_entry",
+        "woods_deep_familiar_fog_line_entry",
+        "woods_deep_familiar_reed_roof_entry",
+        "woods_deep_familiar_reed_bundle_entry",
+        "woods_deep_familiar_quiet_wakes_entry",
+        "woods_deep_familiar_deep_tracks_entry",
+        "woods_deep_familiar_scent_posts_entry"
+      ],
+      "body_word_range": [
+        42,
+        49
+      ],
+      "connected_locations": [
+        {
+          "root": "woods_deep_floating_post",
+          "entry": "woods_deep_floating_post_entry",
+          "nodes": [
+            "woods_deep_floating_post_entry",
+            "woods_deep_floating_post_sorting",
+            "woods_deep_floating_post_roof"
+          ]
+        },
+        {
+          "root": "woods_deep_fen_beacon",
+          "entry": "woods_deep_fen_beacon_entry",
+          "nodes": [
+            "woods_deep_fen_beacon_entry",
+            "woods_deep_fen_beacon_lens",
+            "woods_deep_fen_beacon_hood"
+          ]
+        },
+        {
+          "root": "woods_deep_peat_archive",
+          "entry": "woods_deep_peat_archive_entry",
+          "nodes": [
+            "woods_deep_peat_archive_entry",
+            "woods_deep_peat_archive_silt",
+            "woods_deep_peat_archive_rack"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "woods_deep_drifting_reply",
+          "requires_flags": [
+            "woods_deep_reply_pending"
+          ],
+          "sources": {
+            "woods_deep_reply_pending": [
+              {
+                "root": "woods_deep_floating_post",
+                "node": "woods_deep_floating_post_roof",
+                "choice": "woods_deep_floating_post_roof_c1"
+              },
+              {
+                "root": "woods_deep_floating_post",
+                "node": "woods_deep_floating_post_roof",
+                "choice": "woods_deep_floating_post_roof_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "woods_deep_beacon_reply",
+          "requires_flags": [
+            "woods_deep_beacon_agreed"
+          ],
+          "sources": {
+            "woods_deep_beacon_agreed": [
+              {
+                "root": "woods_deep_fen_beacon",
+                "node": "woods_deep_fen_beacon_hood",
+                "choice": "woods_deep_fen_beacon_hood_c1"
+              },
+              {
+                "root": "woods_deep_fen_beacon",
+                "node": "woods_deep_fen_beacon_hood",
+                "choice": "woods_deep_fen_beacon_hood_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "woods_deep_archive_names",
+          "requires_flags": [
+            "woods_deep_archive_seen"
+          ],
+          "sources": {
+            "woods_deep_archive_seen": [
+              {
+                "root": "woods_deep_peat_archive",
+                "node": "woods_deep_peat_archive_rack",
+                "choice": "woods_deep_peat_archive_rack_c1"
+              },
+              {
+                "root": "woods_deep_peat_archive",
+                "node": "woods_deep_peat_archive_rack",
+                "choice": "woods_deep_peat_archive_rack_c2"
+              }
+            ]
+          }
+        }
+      ],
+      "assessment": {
+        "identity": "Floating addresses, flood marks, reed sorting and a peat archive turn changing water levels into local social problems.",
+        "examples": [
+          "woods_deep_floating_post",
+          "woods_deep_fen_beacon",
+          "woods_deep_peat_archive"
+        ],
+        "review_note": "The reply, beacon and archive follow-ups have authored flag sources. Physical reply continuity is repaired; peaceful Kelpie/Permafrost/Unicorn appearances remain observation scenes. The repeatable watcher no longer promises rarity."
+      }
+    },
+    "ember": {
+      "path": "data/adventures/ember.json",
+      "sha256": "a862e4cd53714847af80e4fd6db2e188f0997170e3af454e775aad9d70ed14f3",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 64,
+        "three_to_five_node_locations": 3
+      },
+      "read_all_roots": true,
+      "reviewed_root_ids": [
+        "ember_ashbread_oven",
+        "ember_pressure_house",
+        "ember_charred_orchard",
+        "ember_soot_laundry",
+        "ember_cinder_loom",
+        "ember_hellhound_whistle",
+        "ember_borrowed_mittens",
+        "ember_cooled_footprints",
+        "ember_cracked_jar",
+        "ember_listening_stone",
+        "ember_manticore_shade",
+        "ember_shared_tongs",
+        "ember_bread_handover",
+        "ember_pressure_routine",
+        "ember_orchard_visitors",
+        "ember_goblin_boots",
+        "ember_wyvern_post",
+        "ember_three_doorways",
+        "ember_warm_creche",
+        "ember_ash_compass",
+        "ember_familiar_ash_path",
+        "ember_familiar_quarry_ring",
+        "ember_familiar_warm_shelf",
+        "ember_familiar_cooled_gatherings",
+        "ember_familiar_vent_notes",
+        "ember_familiar_sunstone_guest"
+      ],
+      "reviewed_node_ids": [
+        "ember_ashbread_oven_entry",
+        "ember_ashbread_oven_flue",
+        "ember_ashbread_oven_rack",
+        "ember_pressure_house_entry",
+        "ember_pressure_house_valves",
+        "ember_pressure_house_garden",
+        "ember_charred_orchard_entry",
+        "ember_charred_orchard_roots",
+        "ember_charred_orchard_seedtable",
+        "ember_soot_laundry_entry",
+        "ember_cinder_loom_entry",
+        "ember_hellhound_whistle_entry",
+        "ember_borrowed_mittens_entry",
+        "ember_cooled_footprints_entry",
+        "ember_cracked_jar_entry",
+        "ember_listening_stone_entry",
+        "ember_manticore_shade_entry",
+        "ember_shared_tongs_entry",
+        "ember_bread_handover_entry",
+        "ember_pressure_routine_entry",
+        "ember_orchard_visitors_entry",
+        "ember_goblin_boots_entry",
+        "ember_wyvern_post_entry",
+        "ember_three_doorways_entry",
+        "ember_warm_creche_entry",
+        "ember_ash_compass_entry",
+        "ember_familiar_ash_path_entry",
+        "ember_familiar_quarry_ring_entry",
+        "ember_familiar_warm_shelf_entry",
+        "ember_familiar_cooled_gatherings_entry",
+        "ember_familiar_vent_notes_entry",
+        "ember_familiar_sunstone_guest_entry"
+      ],
+      "body_word_range": [
+        44,
+        51
+      ],
+      "connected_locations": [
+        {
+          "root": "ember_ashbread_oven",
+          "entry": "ember_ashbread_oven_entry",
+          "nodes": [
+            "ember_ashbread_oven_entry",
+            "ember_ashbread_oven_flue",
+            "ember_ashbread_oven_rack"
+          ]
+        },
+        {
+          "root": "ember_pressure_house",
+          "entry": "ember_pressure_house_entry",
+          "nodes": [
+            "ember_pressure_house_entry",
+            "ember_pressure_house_valves",
+            "ember_pressure_house_garden"
+          ]
+        },
+        {
+          "root": "ember_charred_orchard",
+          "entry": "ember_charred_orchard_entry",
+          "nodes": [
+            "ember_charred_orchard_entry",
+            "ember_charred_orchard_roots",
+            "ember_charred_orchard_seedtable"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "ember_bread_handover",
+          "requires_flags": [
+            "ember_bread_pending"
+          ],
+          "sources": {
+            "ember_bread_pending": [
+              {
+                "root": "ember_ashbread_oven",
+                "node": "ember_ashbread_oven_rack",
+                "choice": "ember_ashbread_oven_rack_c1"
+              },
+              {
+                "root": "ember_ashbread_oven",
+                "node": "ember_ashbread_oven_rack",
+                "choice": "ember_ashbread_oven_rack_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "ember_pressure_routine",
+          "requires_flags": [
+            "ember_pressure_seen"
+          ],
+          "sources": {
+            "ember_pressure_seen": [
+              {
+                "root": "ember_pressure_house",
+                "node": "ember_pressure_house_garden",
+                "choice": "ember_pressure_house_garden_c1"
+              },
+              {
+                "root": "ember_pressure_house",
+                "node": "ember_pressure_house_garden",
+                "choice": "ember_pressure_house_garden_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "ember_orchard_visitors",
+          "requires_flags": [
+            "ember_orchard_seen"
+          ],
+          "sources": {
+            "ember_orchard_seen": [
+              {
+                "root": "ember_charred_orchard",
+                "node": "ember_charred_orchard_seedtable",
+                "choice": "ember_charred_orchard_seedtable_c1"
+              },
+              {
+                "root": "ember_charred_orchard",
+                "node": "ember_charred_orchard_seedtable",
+                "choice": "ember_charred_orchard_seedtable_c2"
+              }
+            ]
+          }
+        }
+      ],
+      "assessment": {
+        "identity": "Bread ovens, steam channels, pressure maintenance, hot stone tools and an orchard trying another season define a working volcanic settlement.",
+        "examples": [
+          "ember_ashbread_oven",
+          "ember_pressure_house",
+          "ember_charred_orchard"
+        ],
+        "review_note": "Both orchard entry routes continue to its roots after the author fixed an accidental early exit. Parcel and laundry branches now stand independently. Material selections use loose regional gatherings rather than promising a second bundle or taking working tools."
+      }
+    },
+    "ember_deep": {
+      "path": "data/adventures/ember_deep.json",
+      "sha256": "a5ced96e3b1003609e31dcd2bed7b5f89b559bd1cadb7c745b525d2228f64ac0",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 64,
+        "three_to_five_node_locations": 3
+      },
+      "read_all_roots": true,
+      "reviewed_root_ids": [
+        "ember_deep_glass_sail_house",
+        "ember_deep_horizon_station",
+        "ember_deep_buried_theatre",
+        "ember_deep_sail_patch",
+        "ember_deep_cooling_pots",
+        "ember_deep_behemoth_distance",
+        "ember_deep_crossing_message",
+        "ember_deep_fourth_tower",
+        "ember_deep_theatre_bill",
+        "ember_deep_sand_copies",
+        "ember_deep_basilisk_mirror",
+        "ember_deep_three_shadows",
+        "ember_deep_glass_buttons",
+        "ember_deep_stacked_luggage",
+        "ember_deep_sand_sculptor",
+        "ember_deep_slow_route",
+        "ember_deep_phoenix_arc",
+        "ember_deep_unfinished_labyrinth",
+        "ember_deep_public_shade",
+        "ember_deep_unused_maps",
+        "ember_deep_familiar_sand_ledge",
+        "ember_deep_familiar_glass_gathering",
+        "ember_deep_familiar_dune_ring",
+        "ember_deep_familiar_night_screen",
+        "ember_deep_familiar_heat_marks",
+        "ember_deep_familiar_watchful_track"
+      ],
+      "reviewed_node_ids": [
+        "ember_deep_glass_sail_house_entry",
+        "ember_deep_glass_sail_house_cistern",
+        "ember_deep_glass_sail_house_courtyard",
+        "ember_deep_horizon_station_entry",
+        "ember_deep_horizon_station_weights",
+        "ember_deep_horizon_station_bench",
+        "ember_deep_buried_theatre_entry",
+        "ember_deep_buried_theatre_stage",
+        "ember_deep_buried_theatre_wings",
+        "ember_deep_sail_patch_entry",
+        "ember_deep_cooling_pots_entry",
+        "ember_deep_behemoth_distance_entry",
+        "ember_deep_crossing_message_entry",
+        "ember_deep_fourth_tower_entry",
+        "ember_deep_theatre_bill_entry",
+        "ember_deep_sand_copies_entry",
+        "ember_deep_basilisk_mirror_entry",
+        "ember_deep_three_shadows_entry",
+        "ember_deep_glass_buttons_entry",
+        "ember_deep_stacked_luggage_entry",
+        "ember_deep_sand_sculptor_entry",
+        "ember_deep_slow_route_entry",
+        "ember_deep_phoenix_arc_entry",
+        "ember_deep_unfinished_labyrinth_entry",
+        "ember_deep_public_shade_entry",
+        "ember_deep_unused_maps_entry",
+        "ember_deep_familiar_sand_ledge_entry",
+        "ember_deep_familiar_glass_gathering_entry",
+        "ember_deep_familiar_dune_ring_entry",
+        "ember_deep_familiar_night_screen_entry",
+        "ember_deep_familiar_heat_marks_entry",
+        "ember_deep_familiar_watchful_track_entry"
+      ],
+      "body_word_range": [
+        43,
+        57
+      ],
+      "connected_locations": [
+        {
+          "root": "ember_deep_glass_sail_house",
+          "entry": "ember_deep_glass_sail_house_entry",
+          "nodes": [
+            "ember_deep_glass_sail_house_entry",
+            "ember_deep_glass_sail_house_cistern",
+            "ember_deep_glass_sail_house_courtyard"
+          ]
+        },
+        {
+          "root": "ember_deep_horizon_station",
+          "entry": "ember_deep_horizon_station_entry",
+          "nodes": [
+            "ember_deep_horizon_station_entry",
+            "ember_deep_horizon_station_weights",
+            "ember_deep_horizon_station_bench"
+          ]
+        },
+        {
+          "root": "ember_deep_buried_theatre",
+          "entry": "ember_deep_buried_theatre_entry",
+          "nodes": [
+            "ember_deep_buried_theatre_entry",
+            "ember_deep_buried_theatre_stage",
+            "ember_deep_buried_theatre_wings"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "ember_deep_crossing_message",
+          "requires_flags": [
+            "ember_deep_crossing_note_pending"
+          ],
+          "sources": {
+            "ember_deep_crossing_note_pending": [
+              {
+                "root": "ember_deep_glass_sail_house",
+                "node": "ember_deep_glass_sail_house_courtyard",
+                "choice": "ember_deep_glass_sail_house_courtyard_c1"
+              },
+              {
+                "root": "ember_deep_glass_sail_house",
+                "node": "ember_deep_glass_sail_house_courtyard",
+                "choice": "ember_deep_glass_sail_house_courtyard_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "ember_deep_fourth_tower",
+          "requires_flags": [
+            "ember_deep_horizon_seen"
+          ],
+          "sources": {
+            "ember_deep_horizon_seen": [
+              {
+                "root": "ember_deep_horizon_station",
+                "node": "ember_deep_horizon_station_bench",
+                "choice": "ember_deep_horizon_station_bench_c1"
+              },
+              {
+                "root": "ember_deep_horizon_station",
+                "node": "ember_deep_horizon_station_bench",
+                "choice": "ember_deep_horizon_station_bench_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "ember_deep_theatre_bill",
+          "requires_flags": [
+            "ember_deep_theatre_seen"
+          ],
+          "sources": {
+            "ember_deep_theatre_seen": [
+              {
+                "root": "ember_deep_buried_theatre",
+                "node": "ember_deep_buried_theatre_wings",
+                "choice": "ember_deep_buried_theatre_wings_c1"
+              },
+              {
+                "root": "ember_deep_buried_theatre",
+                "node": "ember_deep_buried_theatre_wings",
+                "choice": "ember_deep_buried_theatre_wings_c2"
+              }
+            ]
+          }
+        }
+      ],
+      "assessment": {
+        "identity": "Movable shade, caravan water ledgers, false horizons, glass sand and an uncovered theatre distinguish Sunforge from the volcanic base region.",
+        "examples": [
+          "ember_deep_glass_sail_house",
+          "ember_deep_horizon_station",
+          "ember_deep_buried_theatre"
+        ],
+        "review_note": "Read both alternatives at every room. Porters explicitly complete the sail work; the crossing reply has a carried copy from both branches. Distant Behemoth/Phoenix and resting Basilisk/Cerberus scenes do not initiate named-species battles or offer captures."
+      }
+    },
+    "glacial": {
+      "path": "data/adventures/glacial.json",
+      "sha256": "47ba0d42eb51d88b943cb4e7a867cf5b05d13ec891c6e53c7837ba1ef991249e",
+      "counts": {
+        "one_time_roots": 20,
+        "repeatable_roots": 6,
+        "nodes": 32,
+        "choices": 64,
+        "three_to_five_node_locations": 3
+      },
+      "read_all_roots": true,
+      "reviewed_root_ids": [
+        "glacial_warm_porch",
+        "glacial_ice_library",
+        "glacial_ropeway_station",
+        "glacial_yeti_mitten",
+        "glacial_glacius_route",
+        "glacial_rukh_distance",
+        "glacial_route_correction",
+        "glacial_shelter_followup",
+        "glacial_station_walkers",
+        "glacial_muffled_stall",
+        "glacial_lake_bubbles",
+        "glacial_pegasus_drinking",
+        "glacial_bread_shelf",
+        "glacial_warm_stitch",
+        "glacial_frost_flowers",
+        "glacial_griffin_ledge",
+        "glacial_two_echoes",
+        "glacial_simurgh_horizon",
+        "glacial_borrowed_courage",
+        "glacial_snow_marker",
+        "glacial_familiar_snow_lip",
+        "glacial_familiar_ice_ring",
+        "glacial_familiar_dry_alcove",
+        "glacial_familiar_frost_gatherings",
+        "glacial_familiar_echo_arch",
+        "glacial_familiar_high_track"
+      ],
+      "reviewed_node_ids": [
+        "glacial_warm_porch_entry",
+        "glacial_warm_porch_spring",
+        "glacial_warm_porch_lamps",
+        "glacial_ice_library_entry",
+        "glacial_ice_library_index",
+        "glacial_ice_library_table",
+        "glacial_ropeway_station_entry",
+        "glacial_ropeway_station_counterweight",
+        "glacial_ropeway_station_lookout",
+        "glacial_yeti_mitten_entry",
+        "glacial_glacius_route_entry",
+        "glacial_rukh_distance_entry",
+        "glacial_route_correction_entry",
+        "glacial_shelter_followup_entry",
+        "glacial_station_walkers_entry",
+        "glacial_muffled_stall_entry",
+        "glacial_lake_bubbles_entry",
+        "glacial_pegasus_drinking_entry",
+        "glacial_bread_shelf_entry",
+        "glacial_warm_stitch_entry",
+        "glacial_frost_flowers_entry",
+        "glacial_griffin_ledge_entry",
+        "glacial_two_echoes_entry",
+        "glacial_simurgh_horizon_entry",
+        "glacial_borrowed_courage_entry",
+        "glacial_snow_marker_entry",
+        "glacial_familiar_snow_lip_entry",
+        "glacial_familiar_ice_ring_entry",
+        "glacial_familiar_dry_alcove_entry",
+        "glacial_familiar_frost_gatherings_entry",
+        "glacial_familiar_echo_arch_entry",
+        "glacial_familiar_high_track_entry"
+      ],
+      "body_word_range": [
+        44,
+        51
+      ],
+      "connected_locations": [
+        {
+          "root": "glacial_warm_porch",
+          "entry": "glacial_warm_porch_entry",
+          "nodes": [
+            "glacial_warm_porch_entry",
+            "glacial_warm_porch_spring",
+            "glacial_warm_porch_lamps"
+          ]
+        },
+        {
+          "root": "glacial_ice_library",
+          "entry": "glacial_ice_library_entry",
+          "nodes": [
+            "glacial_ice_library_entry",
+            "glacial_ice_library_index",
+            "glacial_ice_library_table"
+          ]
+        },
+        {
+          "root": "glacial_ropeway_station",
+          "entry": "glacial_ropeway_station_entry",
+          "nodes": [
+            "glacial_ropeway_station_entry",
+            "glacial_ropeway_station_counterweight",
+            "glacial_ropeway_station_lookout"
+          ]
+        }
+      ],
+      "flag_followups": [
+        {
+          "root": "glacial_route_correction",
+          "requires_flags": [
+            "glacial_route_note_pending"
+          ],
+          "sources": {
+            "glacial_route_note_pending": [
+              {
+                "root": "glacial_ice_library",
+                "node": "glacial_ice_library_table",
+                "choice": "glacial_ice_library_table_c1"
+              },
+              {
+                "root": "glacial_ice_library",
+                "node": "glacial_ice_library_table",
+                "choice": "glacial_ice_library_table_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "glacial_shelter_followup",
+          "requires_flags": [
+            "glacial_shelter_seen"
+          ],
+          "sources": {
+            "glacial_shelter_seen": [
+              {
+                "root": "glacial_warm_porch",
+                "node": "glacial_warm_porch_lamps",
+                "choice": "glacial_warm_porch_lamps_c1"
+              },
+              {
+                "root": "glacial_warm_porch",
+                "node": "glacial_warm_porch_lamps",
+                "choice": "glacial_warm_porch_lamps_c2"
+              }
+            ]
+          }
+        },
+        {
+          "root": "glacial_station_walkers",
+          "requires_flags": [
+            "glacial_station_seen"
+          ],
+          "sources": {
+            "glacial_station_seen": [
+              {
+                "root": "glacial_ropeway_station",
+                "node": "glacial_ropeway_station_lookout",
+                "choice": "glacial_ropeway_station_lookout_c1"
+              },
+              {
+                "root": "glacial_ropeway_station",
+                "node": "glacial_ropeway_station_lookout",
+                "choice": "glacial_ropeway_station_lookout_c2"
+              }
+            ]
+          }
+        }
+      ],
+      "assessment": {
+        "identity": "Cold entry porches, thawing books, public route signs, interrupted ropeway service and layered ice observations centre patience and practical warmth.",
+        "examples": [
+          "glacial_warm_porch",
+          "glacial_ice_library",
+          "glacial_ropeway_station"
+        ],
+        "review_note": "Both ropeway counterweight choices advance to the lookout after the author fixed an early exit. Library corrections can be text or a drawing and both reach the keeper. The shelter follow-up now attributes optional screen work to the tender."
+      }
+    }
+  },
+  "findings": [
+    {
+      "node": "woods_chalk_path_entry",
+      "severity": "minor",
+      "issue": "The predecessor can send a written description or a drawing, but the follow-up called both a description.",
+      "resolution": "Changed the follow-up to your reply, preserving either authored branch.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "woods_deep_floating_post_roof",
+      "choice": "woods_deep_floating_post_roof_c2",
+      "severity": "minor",
+      "issue": "The signal branch set reply_pending but kept only route notes; the follow-up required carrying the physical reply.",
+      "resolution": "The clerk now puts a reply copy beside the route notes, and the choice label states that it is carried.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "ember_ashbread_oven_rack",
+      "severity": "minor",
+      "issue": "One branch left the parcel at the bakery, while both later handover options assumed the trainer carried it.",
+      "resolution": "The alternatives are now direct carrying or a shaded handover route. Both explicitly entrust the parcel to the team; it remains a story prop, not an inventory reward.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "ember_soot_laundry_entry",
+      "choice": "ember_soot_laundry_entry_c2",
+      "severity": "minor",
+      "issue": "The heavy-carry option assumed the sheltered new line had been discovered by the mutually exclusive first choice.",
+      "resolution": "The carry option now finds the clean-air pocket during its own action.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "glacial_shelter_followup_entry",
+      "severity": "minor",
+      "issue": "The follow-up assumed the trainer built a lamp screen, though the predecessor also allowed a quiet rest.",
+      "resolution": "The tender explicitly installed the screen since the visit, so either earlier choice remains coherent.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "ember_deep_glass_sail_house_courtyard",
+      "severity": "minor",
+      "issue": "The final room assumed the sail had been repaired after an observation-only entrance branch.",
+      "resolution": "The porters now explicitly free the sail while the trainer works below.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "woods_deep_familiar_deep_tracks_entry",
+      "severity": "minor",
+      "issue": "The rare battle token was described as a guaranteed less-common and more demanding encounter, which the shared encounter planner does not promise.",
+      "resolution": "Replaced rarity/difficulty promises with local track details and a one-beast friendly wild contest; the rare token and weighted ticket rules are unchanged.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "ember_deep_familiar_watchful_track_entry",
+      "severity": "minor",
+      "issue": "The rare battle token was described as a guaranteed uncommon and harder encounter.",
+      "resolution": "The watcher now circles firm ground and invites a one-beast contest, without a rarity or difficulty guarantee.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    },
+    {
+      "node": "glacial_familiar_high_track_entry",
+      "severity": "minor",
+      "issue": "The rare battle token promised a less-common visitor and a more demanding test.",
+      "resolution": "Fresh snow tracks and firm footing establish the scene; the choice promises only one wild opponent.",
+      "status": "fixed",
+      "structural_or_mechanical_change": false
+    }
+  ],
+  "unresolved_findings": [],
+  "mechanical_honesty": {
+    "battle_species": "No battle choice in the reviewed packs guarantees a named species. Named local/legendary sightings are peaceful or distant, and combat opponents remain the runtime destination draw.",
+    "battle_resolution": "Battle outcomes announce preparation and entry, without claiming a win before combat resolution.",
+    "rare_token": "Read production utils/journey_combat.py and utils/journey_service.py: rare is one opponent, uses the same scaling as single, and shares the run's first weighted capture ticket. Prose was corrected accordingly.",
+    "materials": "Material choices select or replace the single preseeded regional bundle. The reviewed prose does not promise an additional inventory bundle or a particular material ID.",
+    "bounded_effects": "Only schema-supported effects are present. UI-effective caps and once-per-run research are runtime responsibilities; descriptions do not invent permanent buffs, revives, currencies or captures.",
+    "safe_choices": "Validator confirms every node has an unconditional noncombat, no-damage choice; no species ownership, purchase or timing prerequisite was introduced."
+  },
+  "distinctness": {
+    "exact_duplicate_bodies": 0,
+    "exact_duplicate_outcomes": 0,
+    "method": "Compared normalized body and outcome strings across all ten packs, then manually compared local stakes, props, ecology and continuity in the five reviewed packs.",
+    "editorial_note": "Two concise choices are used throughout. Observation and practical care recur as the game's tone, but each reviewed root has a different concrete local problem, location or social consequence; no noun-swapped body template was found."
+  },
+  "verification": {
+    "validate_all_errors": [],
+    "strict_body_range": "All 320 nodes across ten packs are35-80 words.",
+    "tests": [
+      {
+        "command": "python -m unittest discover -s tests -p test_adventure_content.py -q",
+        "passed": 7
+      },
+      {
+        "command": "python -m unittest discover -s tests -p test_living_catalog.py -q",
+        "passed": 2
+      }
+    ],
+    "preserved": "All encounter/node/choice IDs, effects, flags and next edges remained unchanged by this editorial pass."
+  }
+}

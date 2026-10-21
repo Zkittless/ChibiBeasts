@@ -1,0 +1,1140 @@
+{
+  "version": 1,
+  "biome": "ember",
+  "encounters": [
+    {
+      "id": "ember_ashbread_oven",
+      "title": "The Oven That Would Not Cool",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_ashbread_oven_entry",
+      "tags": [
+        "ember",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_ashbread_oven_entry": {
+          "body": "Bread is rising on every windowsill of the ash bakery, including the one marked Please Leave Clear. The oven has kept its heat since yesterday, and the baker is cooling the next batch by waving a ledger at it. A Hellhound sleeps very innocently beside the warm flue.",
+          "choices": [
+            {
+              "label": "Make room for the cooling loaves",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion settles where nobody can trip over a tray. The baker gains a clear surface and a little room to think.",
+              "next": "ember_ashbread_oven_flue",
+              "id": "ember_ashbread_oven_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Compare the oven marks with the baker's ledger",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Yesterday's firing needed less fuel than the ledger records. The baker realizes the hillside has been contributing heat of its own.",
+              "next": "ember_ashbread_oven_flue",
+              "id": "ember_ashbread_oven_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_ashbread_oven_flue": {
+          "body": "The flue opens onto a terrace where an old stone shutter controls the hillside draught. It has stuck halfway, trapping hot air beneath the oven. The Hellhound has followed at a careful distance and is watching the shutter with the interest of somebody whose bed may be about to change.",
+          "choices": [
+            {
+              "label": "Ease the shutter along its cooled edge",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "Grit scrapes your hands before the shutter moves. The hot draught begins taking its proper route above the roof.",
+              "next": "ember_ashbread_oven_rack",
+              "id": "ember_ashbread_oven_flue_c1",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            },
+            {
+              "label": "Mark the safe draught positions for the baker",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You trace the stone's worn stops without reaching into the hot opening. The baker can adjust it after the terrace cools.",
+              "next": "ember_ashbread_oven_rack",
+              "id": "ember_ashbread_oven_flue_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_ashbread_oven_rack": {
+          "body": "On the cooling terrace, the baker has set aside a small covered parcel for a work crew beyond the steam channel. It is not payment for fixing the oven; she would have sent it anyway. The question is whether to carry it directly or arrange a shaded handover above the steam.",
+          "choices": [
+            {
+              "label": "Carry the warm parcel with clear route notes",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "ember_bakery_seen",
+                  "ember_bread_pending"
+                ]
+              },
+              "outcome": "The baker wraps it for a walk rather than a feast. Your companion waits while you learn where the crew is resting.",
+              "id": "ember_ashbread_oven_rack_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Arrange a shaded handover point for the crew",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "ember_bakery_seen",
+                  "ember_bread_pending"
+                ]
+              },
+              "outcome": "The baker wraps the parcel for that shaded handover and entrusts it to your team. You mark a shelf above the steam channel before setting off.",
+              "id": "ember_ashbread_oven_rack_c2",
+              "description": "Temporary team defense +5%; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_pressure_house",
+      "title": "The House of Borrowed Steam",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "ember_pressure_house_entry",
+      "tags": [
+        "ember",
+        "ruin"
+      ],
+      "nodes": {
+        "ember_pressure_house_entry": {
+          "body": "A low stone building breathes through three copper vents. Outside, a keeper has arranged cups beneath the leaks so she can hear which pipe is changing pressure. One cup has stopped ringing, and she is more worried by the silence than by the noise.",
+          "choices": [
+            {
+              "label": "Listen to the cups before opening the door",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The quiet pipe still carries water, but its note has shifted below the others. You mark the change for the keeper.",
+              "next": "ember_pressure_house_valves",
+              "id": "ember_pressure_house_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Clear the keeper's route across the terrace",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your team moves the cool loose stones away from her footing. She can reach each vent without stepping over the leak.",
+              "next": "ember_pressure_house_valves",
+              "id": "ember_pressure_house_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        },
+        "ember_pressure_house_valves": {
+          "body": "Inside, the valve floor is warm enough to dry your boots without asking. An old pressure wheel has slipped against a brace, leaving a side channel open to a garden below. The keeper needs either room to turn the wheel or a reliable record of its present setting.",
+          "choices": [
+            {
+              "label": "Hold the cooled brace while she turns the wheel",
+              "effects": {
+                "hp_cost": 5,
+                "attack_boon": 5
+              },
+              "outcome": "The weight presses into your shoulders before the brace seats. The keeper closes the unwanted channel a little at a time.",
+              "next": "ember_pressure_house_garden",
+              "id": "ember_pressure_house_valves_c1",
+              "description": "Pay 5% HP; no knockouts; Temporary team attack +5%."
+            },
+            {
+              "label": "Copy the worn marks before she adjusts anything",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your companion stands clear while you trace the old settings. The keeper can return to this point if the new position proves wrong.",
+              "next": "ember_pressure_house_garden",
+              "id": "ember_pressure_house_valves_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_pressure_house_garden": {
+          "body": "The garden below the house contains winter greens sheltering between warm pipes. Its owner has been blaming the heat for poor growth, while the keeper has been blaming the seeds. A shallow trench shows that the roots are getting steam instead of ordinary water.",
+          "choices": [
+            {
+              "label": "Separate the drinking trench from the warm pipes",
+              "effects": {
+                "hp_cost": 3,
+                "material": true,
+                "set_flags": [
+                  "ember_pressure_seen"
+                ]
+              },
+              "outcome": "You shift cool stones into a divider and sort the loose useful gatherings aside. The roots receive water without losing their sheltered warmth.",
+              "id": "ember_pressure_house_garden_c1",
+              "description": "Pay 3% HP; no knockouts; Select the run's one material bundle; World remembers."
+            },
+            {
+              "label": "Help the neighbours agree on a shared inspection",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "ember_pressure_seen"
+                ]
+              },
+              "outcome": "They choose a clear water check before either buys new seeds. The keeper adds the garden to her ordinary morning route.",
+              "id": "ember_pressure_house_garden_c2",
+              "description": "Lead bond +1; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_charred_orchard",
+      "title": "The Orchard under the Black Bark",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_charred_orchard_entry",
+      "tags": [
+        "ember",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_charred_orchard_entry": {
+          "body": "Blackened trunks stand in straight rows above a sheltered hollow. From the road the orchard looks finished, but green shoots are pushing through each rough coat of bark. An orchard keeper has tied little cloth flags to the branches she is afraid visitors will mistake for deadwood.",
+          "choices": [
+            {
+              "label": "Help make the living shoots easier to see",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits beside the new growth while you move each flag into view. The keeper can stop explaining the same hopeful fact.",
+              "next": "ember_charred_orchard_roots",
+              "id": "ember_charred_orchard_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Look beneath the bark without breaking it",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "A loose edge shows the living layer sheltered underneath. You record the boundary before following the keeper into the hollow.",
+              "next": "ember_charred_orchard_roots",
+              "id": "ember_charred_orchard_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_charred_orchard_roots": {
+          "body": "Below the rows, a root cellar holds baskets of ash from several old fires. The keeper treats each basket as a different soil ingredient, not as a record of damage. One damp batch has grown a hard crust, and she needs room to compare what lies underneath.",
+          "choices": [
+            {
+              "label": "Break the cooled crust beside the sorting mat",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              },
+              "outcome": "Your sleeves become grey before the crust gives way. You separate useful loose gatherings while the keeper protects her labelled samples.",
+              "next": "ember_charred_orchard_seedtable",
+              "id": "ember_charred_orchard_roots_c1",
+              "description": "Pay 3% HP; no knockouts; Select the run's one material bundle."
+            },
+            {
+              "label": "Read the dates and compare the surviving roots",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The oldest roots have grown around the hardest ground. You add that patient route to the keeper's notes.",
+              "next": "ember_charred_orchard_seedtable",
+              "id": "ember_charred_orchard_roots_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_charred_orchard_seedtable": {
+          "body": "The seed table holds two plans for the next season: restore the neat rows, or leave strips of wild growth between them. The keeper wants fruit, but the little residents of the hollow need shelter too. She will try either plan if somebody helps explain how to care for it.",
+          "choices": [
+            {
+              "label": "Plan sheltered strips between the fruit rows",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "ember_orchard_seen"
+                ]
+              },
+              "outcome": "You leave room for shade and small travelling paths. The keeper marks a trial strip instead of promising to transform the whole orchard at once.",
+              "id": "ember_charred_orchard_seedtable_c1",
+              "description": "Temporary team defense +5%; World remembers."
+            },
+            {
+              "label": "Map a careful restoration of the oldest rows",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "ember_orchard_seen"
+                ]
+              },
+              "outcome": "The plan protects the strongest living roots. You add a separate margin for the hollow's sheltered residents.",
+              "id": "ember_charred_orchard_seedtable_c2",
+              "description": "Use this run's research allowance; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_soot_laundry",
+      "title": "Laundry on the Cool Side of the Hill",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_soot_laundry_entry",
+      "tags": [
+        "ember",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_soot_laundry_entry": {
+          "body": "A laundry line stretches between two cooled stone posts. Its owner has washed the same white cloth twice, only to discover that the afternoon wind carries ash straight across it. She is now using it as a wind marker while deciding whether to laugh or start again.",
+          "choices": [
+            {
+              "label": "Find a sheltered line beyond the ash drift",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You compare the cloth's pull with the movement above the vents. A quiet pocket behind the terrace stays clear.",
+              "id": "ember_soot_laundry_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help find clean air for the heavy wet washing",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "The heavy basket presses against your arms as you find a quiet pocket behind the terrace. The cloth reaches clean air, and its owner can put away the tub.",
+              "id": "ember_soot_laundry_entry_c2",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_cinder_loom",
+      "title": "A Weaver with Stone Weights",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_cinder_loom_entry",
+      "tags": [
+        "ember",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_cinder_loom_entry": {
+          "body": "A weaver has hung stone weights from a loom built against the warm hillside. They keep the fibres taut until passing tremors make them knock together. Her unfinished cloth has begun recording the tremors as small uneven bands, which may be useful if she can stop apologizing for them.",
+          "choices": [
+            {
+              "label": "Read the bands as observations rather than mistakes",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The weaver labels the first clear pattern with a date. The cloth keeps its unevenness and gains a purpose.",
+              "id": "ember_cinder_loom_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Space the hanging weights farther apart",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion holds each fibre still while you reset its weight. The loom moves more gently when the next tremor passes.",
+              "id": "ember_cinder_loom_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_hellhound_whistle",
+      "title": "A Whistle Reserved for Supper",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "ember_hellhound_whistle_entry",
+      "tags": [
+        "ember",
+        "wild"
+      ],
+      "nodes": {
+        "ember_hellhound_whistle_entry": {
+          "body": "A Hellhound waits beside a cold cooking ring while a camp tender searches through several nearly identical whistles. One calls for supper, another warns about a vent, and the third apparently means something the Hellhound considers extremely funny. The tender would prefer not to experiment in public.",
+          "choices": [
+            {
+              "label": "Help compare the marks on the whistle handles",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The handles carry tiny use marks where the tender holds them. You sort the warnings before anybody sounds a note.",
+              "id": "ember_hellhound_whistle_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Keep the waiting Hellhound company",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion settles outside the cooking ring. The patient guest accepts the company without deciding it has been promised supper twice.",
+              "id": "ember_hellhound_whistle_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_borrowed_mittens",
+      "title": "The Mittens Kept Warm",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "ember_borrowed_mittens_entry",
+      "tags": [
+        "ember",
+        "camp"
+      ],
+      "nodes": {
+        "ember_borrowed_mittens_entry": {
+          "body": "A pair of thick mittens rests on a warm stone beside the path. A note asks travellers to use them for the nearby hot latch and put them back facing the sun. The stone has room for your tired companions too, provided nobody blocks the latch.",
+          "choices": [
+            {
+              "label": "Rest beside the warming stone",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You settle clear of the working path. The steady warmth eases the cold that has stayed in the team's damp travelling gear.",
+              "id": "ember_borrowed_mittens_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Repair the little cover above the shared mittens",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You fasten the cover where ash cannot settle inside. The next traveller will find the mittens warm and usable.",
+              "id": "ember_borrowed_mittens_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_cooled_footprints",
+      "title": "Footprints Older than the Road",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "ember_cooled_footprints_entry",
+      "tags": [
+        "ember",
+        "ruin"
+      ],
+      "nodes": {
+        "ember_cooled_footprints_entry": {
+          "body": "A smooth sheet of cooled rock holds a row of bootprints pointing away from the present road. A surveyor has placed her own boot beside one and discovered that the older travellers used a much shorter stride. She is wondering what they were carrying that made them move so carefully.",
+          "choices": [
+            {
+              "label": "Trace the prints without stepping into them",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The deepest impressions fall on alternating sides. You record the rhythm of a shared load rather than inventing a hurried escape.",
+              "id": "ember_cooled_footprints_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Mark a safe viewing edge for other travellers",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion waits where the sheet is firm. You guide future curious feet away from the fragile impressions.",
+              "id": "ember_cooled_footprints_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_cracked_jar",
+      "title": "The Jar That Watered Its Own Path",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_cracked_jar_entry",
+      "tags": [
+        "ember",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_cracked_jar_entry": {
+          "body": "A water carrier's jar leaves a thin wet trail across the dry ground. Small green shoots follow older trails from the same crack. The carrier knows the jar wastes water, but the patch of living ground has become a useful resting place for travellers and small beasts.",
+          "choices": [
+            {
+              "label": "Help direct the leak into a covered drinking basin",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "The carrier can share the water without losing it across the whole road. Your companion tests the basin's sheltered edge first.",
+              "id": "ember_cracked_jar_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Sort the cooled supports for a narrower channel",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You leave the growing patch intact while separating useful loose gatherings. The carrier gains a steadier place to set the jar.",
+              "id": "ember_cracked_jar_entry_c2",
+              "description": "Select the run's one material bundle."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_listening_stone",
+      "title": "The Stone That Tells the Weather Early",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "ember_listening_stone_entry",
+      "tags": [
+        "ember",
+        "shrine"
+      ],
+      "nodes": {
+        "ember_listening_stone_entry": {
+          "body": "A broad stone beside the steam path hums when the pressure changes underground. Travellers have pressed so many ears to it that the surface shines. Today a keeper is asking people to listen one at a time; several confident predictions have been based on each other's stomachs.",
+          "choices": [
+            {
+              "label": "Compare the stone with the open vent",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You listen from a safe edge and record when each note changes. The keeper gains a useful comparison instead of another certainty.",
+              "id": "ember_listening_stone_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Quiet the waiting crowd with your companion",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion settles against the cool side of the shelter. The waiting travellers lower their voices until the stone can be heard.",
+              "id": "ember_listening_stone_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_manticore_shade",
+      "title": "One Shadow for Three Opinions",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "ember_manticore_shade_entry",
+      "tags": [
+        "ember",
+        "wild"
+      ],
+      "nodes": {
+        "ember_manticore_shade_entry": {
+          "body": "A Manticore stands beneath a narrow strip of shade. Its lion face wants to rest, its wings keep shifting toward the breeze, and its tail is carefully avoiding a hot rock. Nobody has quite enough space, and the neighbouring path remains broad enough for a respectful detour.",
+          "choices": [
+            {
+              "label": "Move a loose shade screen from the safe edge",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You stop well outside the creature's reach. The longer strip gives all three restless parts a place to settle.",
+              "id": "ember_manticore_shade_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Observe the wind before taking the detour",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The wings choose the cooler draught long before the dust changes direction. You note the clue and leave the resting place alone.",
+              "id": "ember_manticore_shade_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_shared_tongs",
+      "title": "The Tool with Two Handles",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_shared_tongs_entry",
+      "tags": [
+        "ember",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_shared_tongs_entry": {
+          "body": "Two workers have made a long pair of tongs for lifting cooled stones from a narrow channel. Each handle needs someone on a different bank. Their argument concerns who must get wet first, while the stone between them is becoming an excellent place for moss to begin.",
+          "choices": [
+            {
+              "label": "Take the shallow bank and help lift together",
+              "effects": {
+                "hp_cost": 3,
+                "attack_boon": 5
+              },
+              "outcome": "Cold water enters your boots before the stone leaves the channel. The workers discover that a shared count works better than an argument.",
+              "id": "ember_shared_tongs_entry_c1",
+              "description": "Pay 3% HP; no knockouts; Temporary team attack +5%."
+            },
+            {
+              "label": "Build a dry footing for the shorter worker",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You arrange the cool supports where both handles can be reached. The tongs finally become a tool instead of a conversation.",
+              "id": "ember_shared_tongs_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_bread_handover",
+      "title": "Warm Bread above the Steam Channel",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_bread_handover_entry",
+      "tags": [
+        "ember",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_bread_handover_entry": {
+          "body": "The work crew from the bakery notes is resting above the steam channel. Their first question is whether the baker remembered to eat something herself. A covered shelf is ready beside their tools, and your companion can smell the familiar parcel before you reach the landing.",
+          "choices": [
+            {
+              "label": "Deliver the parcel and take their reply",
+              "effects": {
+                "bond": 1,
+                "clear_flags": [
+                  "ember_bread_pending"
+                ],
+                "set_flags": [
+                  "ember_bread_delivered"
+                ]
+              },
+              "outcome": "The crew shares the parcel and writes a short, affectionate complaint about overworking. You leave with a message rather than another delivery obligation.",
+              "id": "ember_bread_handover_entry_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Set a reliable handover mark on the sheltered shelf",
+              "effects": {
+                "bonus": 5,
+                "clear_flags": [
+                  "ember_bread_pending"
+                ],
+                "set_flags": [
+                  "ember_bread_delivered"
+                ]
+              },
+              "outcome": "You place the parcel where the crew can find it without crossing the steam. Future handovers have a clear, dry home.",
+              "id": "ember_bread_handover_entry_c2",
+              "description": "+5% of the run reward; World remembers."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "ember_bread_pending"
+      ]
+    },
+    {
+      "id": "ember_pressure_routine",
+      "title": "A Garden on the Morning Route",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_pressure_routine_entry",
+      "tags": [
+        "ember",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_pressure_routine_entry": {
+          "body": "The garden below the pressure house has a new inspection board. Its neighbours have recorded heat, water and seed dates in different handwriting, leaving blank spaces where they are still unsure. A small bucket waits beneath the ordinary water channel instead of the steam pipe.",
+          "choices": [
+            {
+              "label": "Compare the first few honest observations",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You find a change worth watching without claiming to know its cause. Both neighbours add the next check to their shared route.",
+              "id": "ember_pressure_routine_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help fit a cooler handle to the inspection bucket",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion keeps the loose strap steady while you attach it. Checking the channel becomes less likely to mean a sore hand.",
+              "id": "ember_pressure_routine_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "ember_pressure_seen"
+      ]
+    },
+    {
+      "id": "ember_orchard_visitors",
+      "title": "Shade between the New Rows",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "ember_orchard_visitors_entry",
+      "tags": [
+        "ember",
+        "wild"
+      ],
+      "nodes": {
+        "ember_orchard_visitors_entry": {
+          "body": "In the orchard you helped survey, small residents are testing the spaces left between the trees. The keeper has resisted tidying every shelter away. A few local beasts gather on a firm patch of ground nearby, apparently interested in whether your team would like to demonstrate its own travelling habits.",
+          "choices": [
+            {
+              "label": "Offer a friendly two-beast demonstration",
+              "effects": {
+                "battle": "pack2"
+              },
+              "outcome": "Two challengers leave the saplings for the firm clearing. The keeper moves her tools aside before either team begins.",
+              "id": "ember_orchard_visitors_entry_c1",
+              "description": "Begin a two-beast battle."
+            },
+            {
+              "label": "Help the keeper mark the sheltered routes",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You leave the little paths wide enough to use without enlarging them into roads. The keeper records which shelters are already occupied.",
+              "id": "ember_orchard_visitors_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "ember_orchard_seen"
+      ]
+    },
+    {
+      "id": "ember_goblin_boots",
+      "title": "A Sole Sewn with Wire",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_goblin_boots_entry",
+      "tags": [
+        "ember",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_goblin_boots_entry": {
+          "body": "A Goblin sits on a cool doorstep, repairing a boot with wire pulled from an old carrying basket. The repair is sturdy but will not bend. He has made the second boot equally stiff out of fairness and is now finding it difficult to stand up.",
+          "choices": [
+            {
+              "label": "Help add a flexible joint at the toe",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You keep the strong outer stitching and free the place that needs to bend. The Goblin takes an experimental, delighted step.",
+              "id": "ember_goblin_boots_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Sort the basket's useful loose fibres",
+              "effects": {
+                "material": true
+              },
+              "outcome": "The Goblin keeps the wire he still needs. You choose among the loose regional gatherings without dismantling another working tool.",
+              "id": "ember_goblin_boots_entry_c2",
+              "description": "Select the run's one material bundle."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_wyvern_post",
+      "title": "A Perch beside the Wind Gauge",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "ember_wyvern_post_entry",
+      "tags": [
+        "ember",
+        "wild"
+      ],
+      "nodes": {
+        "ember_wyvern_post_entry": {
+          "body": "A Wyvern has chosen the wind gauge as a perch, making the whole instrument point wherever it looks. The keeper has stopped taking measurements rather than write down nonsense. A lower stone ledge would offer the same view without requiring anybody to persuade the Wyvern that it is an inconvenience.",
+          "choices": [
+            {
+              "label": "Clear the lower ledge and give it room",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You move the loose stones from a safe distance. The Wyvern notices the clear perch and makes its own unhurried decision.",
+              "id": "ember_wyvern_post_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Read the dust trails while the gauge is occupied",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The ground offers a less dramatic but dependable wind record. The keeper adds your method beneath the instrument's maintenance notes.",
+              "id": "ember_wyvern_post_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_three_doorways",
+      "title": "A Porch Built for Cerberus",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_three_doorways_entry",
+      "tags": [
+        "ember",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_three_doorways_entry": {
+          "body": "A shelter keeper has built three little doorways beside the same porch. Cerberus is trying each with a different head and becoming increasingly suspicious that all three lead to one room. The keeper explains that the extra doors were intended as courtesy, not as a puzzle.",
+          "choices": [
+            {
+              "label": "Help open the whole porch into one clear entrance",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You move the loose screens while the keeper holds the roof. Cerberus can see where everyone is going without three separate investigations.",
+              "id": "ember_three_doorways_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Sit outside until the visitor settles",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion chooses a respectful distance. The keeper stops explaining, and the three heads gradually agree about the room.",
+              "id": "ember_three_doorways_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_warm_creche",
+      "title": "The Warmest Stones Belong to Someone",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "ember_warm_creche_entry",
+      "tags": [
+        "ember",
+        "camp"
+      ],
+      "nodes": {
+        "ember_warm_creche_entry": {
+          "body": "A row of sun-warmed stones looks like an inviting resting place until you notice the tiny woodland insects sheltering in its cracks. A trail tender has laid a second row nearby, still warming slowly. She asks travellers to give the first row another hour of undisturbed peace.",
+          "choices": [
+            {
+              "label": "Rest beside the newer row instead",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "The stones are warm enough without being occupied. Your team eases down, leaving the sheltered cracks to their small residents.",
+              "id": "ember_warm_creche_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Help make the second row easier to recognize",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits while you mark a clear resting edge. The next tired traveller will not have to learn the distinction by accident.",
+              "id": "ember_warm_creche_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_ash_compass",
+      "title": "A Compass Drawn with Warm Ash",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_ash_compass_entry",
+      "tags": [
+        "ember",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_ash_compass_entry": {
+          "body": "A surveyor has drawn a circle of pale ash around a safe vent. Each drifting mark records which way the hillside has been breathing. The circle is much wider than a pocket compass, but she says the important advantage is that nobody can accidentally carry north away.",
+          "choices": [
+            {
+              "label": "Record the changing marks before the breeze returns",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You note the time beside each drift. The surveyor keeps the uncertainty in her drawing instead of smoothing it into a perfect circle.",
+              "id": "ember_ash_compass_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Mark the safer edge of the approaching draught",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion follows the cool footing while you place the markers. Other travellers can see the sheltered side without entering the ash circle.",
+              "id": "ember_ash_compass_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_familiar_ash_path",
+      "title": "Familiar Territory · Fresh Ash on the Steps",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "ember_familiar_ash_path_entry",
+      "tags": [
+        "ember",
+        "hazard"
+      ],
+      "nodes": {
+        "ember_familiar_ash_path_entry": {
+          "body": "A new dusting of ash covers the familiar stone steps. Their edges are sound, but the powder hides the shallow gutters that keep water away from the path. The team can take the longer cool terrace or clear the gutters before using the shorter ascent.",
+          "choices": [
+            {
+              "label": "Brush the gutters from the stable side",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "The ash works into your sleeves as the grooves reappear. Water will have somewhere to go when the next shower reaches the steps.",
+              "id": "ember_familiar_ash_path_entry_c1",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Take the cool terrace in a steady line",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your team keeps to the visible edges above the ash. The longer route rewards attention rather than a hurried jump.",
+              "id": "ember_familiar_ash_path_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_familiar_quarry_ring",
+      "title": "Familiar Territory · The Cooled Quarry Ring",
+      "kind": "pack",
+      "repeatable": true,
+      "entry": "ember_familiar_quarry_ring_entry",
+      "tags": [
+        "ember",
+        "pack"
+      ],
+      "nodes": {
+        "ember_familiar_quarry_ring_entry": {
+          "body": "Fresh tracks cross the familiar quarry practice ground. Its stones have cooled completely, and today's local challengers have pushed the loose chips outside the boundary. Two wait in the centre, leaving a clear entrance for your team and an equally clear route past the gathering.",
+          "choices": [
+            {
+              "label": "Accept a two-beast friendly challenge",
+              "effects": {
+                "battle": "pack2"
+              },
+              "outcome": "The challengers spread out on the firm stone. Your companions can find their footing before the contest begins.",
+              "id": "ember_familiar_quarry_ring_entry_c1",
+              "description": "Begin a two-beast battle."
+            },
+            {
+              "label": "Help check the boundary for loose edges",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You follow the edge before anyone uses it. The team carries that careful sense of footing onto the next stretch of path.",
+              "id": "ember_familiar_quarry_ring_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_familiar_warm_shelf",
+      "title": "Familiar Territory · The Warm Stone Shelf",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "ember_familiar_warm_shelf_entry",
+      "tags": [
+        "ember",
+        "camp"
+      ],
+      "nodes": {
+        "ember_familiar_warm_shelf_entry": {
+          "body": "The familiar resting shelf holds a gentle warmth after the vents have quieted. Someone has brushed fresh ash from the seating edge and left the drinking cup upside down beneath a cover. Your companions recognize the comfortable pause between hotter and colder parts of the route.",
+          "choices": [
+            {
+              "label": "Rest beside the covered drinking place",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You turn the cup upright and share a patient break. The shelf carries the weight the team has been carrying for itself.",
+              "id": "ember_familiar_warm_shelf_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Replace the cover where the ash cannot reach",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits until the little cover is secure. You leave the drinking place as usable as you found it.",
+              "id": "ember_familiar_warm_shelf_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_familiar_cooled_gatherings",
+      "title": "Familiar Territory · Loose Gatherings in the Runoff",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "ember_familiar_cooled_gatherings_entry",
+      "tags": [
+        "ember",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_familiar_cooled_gatherings_entry": {
+          "body": "The familiar runoff bend has collected a new scatter of cooled fragments and tough fibres. Water still needs a channel through the middle, where several small residents have been passing. The higher bank offers room to sort what the current has left without closing their route.",
+          "choices": [
+            {
+              "label": "Select useful pieces on the higher bank",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You keep the water moving through its central groove. A modest bundle is chosen from the loose gatherings the hillside has already released.",
+              "id": "ember_familiar_cooled_gatherings_entry_c1",
+              "description": "Select the run's one material bundle."
+            },
+            {
+              "label": "Study the layers left by the last runoff",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The order of the fragments shows which current arrived first. You leave the bank's small passages open while recording it.",
+              "id": "ember_familiar_cooled_gatherings_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_familiar_vent_notes",
+      "title": "Familiar Territory · A Different Note from the Vent",
+      "kind": "shrine",
+      "repeatable": true,
+      "entry": "ember_familiar_vent_notes_entry",
+      "tags": [
+        "ember",
+        "shrine"
+      ],
+      "nodes": {
+        "ember_familiar_vent_notes_entry": {
+          "body": "The familiar listening vent gives a lower note today. Its stone edge remains cool enough for a safe stop, and the old warning markers are still in place. The change offers something worth recording without pretending that a single sound explains the whole hillside.",
+          "choices": [
+            {
+              "label": "Compare the note with the direction of the draught",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Your companion waits away from the opening while you make the comparison. You add a date rather than a dramatic prediction.",
+              "id": "ember_familiar_vent_notes_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Guide the team along the sheltered side",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You choose the footing outside the moving warm air. The team keeps a compact line until the vent is behind you.",
+              "id": "ember_familiar_vent_notes_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_familiar_sunstone_guest",
+      "title": "Familiar Territory · The Sunstone Guest",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "ember_familiar_sunstone_guest_entry",
+      "tags": [
+        "ember",
+        "wild"
+      ],
+      "nodes": {
+        "ember_familiar_sunstone_guest_entry": {
+          "body": "A fresh wild visitor has claimed the familiar sunstone clearing for a rest. It notices your team, stretches and leaves the warm centre open as a challenge. The surrounding path is broad and cool, so nobody has to accept simply to continue travelling through the wastes.",
+          "choices": [
+            {
+              "label": "Offer one friendly battle on the firm ground",
+              "effects": {
+                "battle": "single"
+              },
+              "outcome": "The visitor moves clear of the resting hollow. Both sides have space to prepare before the first move is offered.",
+              "id": "ember_familiar_sunstone_guest_entry_c1",
+              "description": "Begin one wild battle."
+            },
+            {
+              "label": "Pass quietly along the cool outer path",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion resists an unnecessary argument over a pleasant stone. The visitor settles again while your team continues together.",
+              "id": "ember_familiar_sunstone_guest_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1124 @@
+{
+  "version": 1,
+  "biome": "loom",
+  "encounters": [
+    {
+      "id": "loom.question_index",
+      "title": "The Index of Unasked Questions",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "loom.question_index.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "loom.question_index.entry": {
+          "body": "A public reading room hangs beneath a shelf too long to see the end of. Clerk Venn is filing questions nobody felt ready to ask aloud. The smallest cards sit on the highest shelf because he thought important things belonged there. Your companions can barely see the little ladder, let alone climb it.",
+          "choices": [
+            {
+              "id": "lower",
+              "label": "Move the smallest cards within everyone’s reach",
+              "description": "Build bond; enter the index aisle.",
+              "outcome": "Venn discovers several questions he had forgotten while storing them somewhere impressive.",
+              "effects": {
+                "bond": 1
+              },
+              "next": "loom.question_index.aisle"
+            },
+            {
+              "id": "catalogue",
+              "label": "Read how the questions were originally sorted",
+              "description": "Use the research allowance; enter the index aisle.",
+              "outcome": "The oldest index was arranged by who needed an answer, not by how grand it sounded.",
+              "effects": {
+                "study": 1
+              },
+              "next": "loom.question_index.aisle"
+            }
+          ]
+        },
+        "loom.question_index.aisle": {
+          "body": "One card asks whether an unfinished promise can still be useful. Its margin contains several attempted answers in increasingly tiny handwriting. Venn says the writer stopped visiting after deciding the question was foolish. Beside the card is an empty space large enough for a reply that does not pretend to settle the matter forever.",
+          "choices": [
+            {
+              "id": "margin",
+              "label": "Leave a modest answer in the open margin",
+              "description": "Connect this question to a later discovery.",
+              "outcome": "You write that a promise may begin with one practical visit, then leave room for disagreement.",
+              "effects": {
+                "set_flags": [
+                  "loom.index_margin"
+                ]
+              },
+              "next": "loom.question_index.desk"
+            },
+            {
+              "id": "compare",
+              "label": "Compare the different attempts with your team",
+              "description": "Gain 5% temporary defense; continue to the desk.",
+              "outcome": "Your companions practise keeping several possibilities in view before choosing a direction.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "loom.question_index.desk"
+            }
+          ]
+        },
+        "loom.question_index.desk": {
+          "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+          "choices": [
+            {
+              "id": "company",
+              "label": "Keep the new reader quiet company",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions settle into the reading room’s newly comfortable pauses.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "route",
+              "label": "Mark the accessible aisle on the public index",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The next visitor will find a usable route without needing to ask for the ladder.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.hour_landing",
+      "title": "The Landing Between Two Hours",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "loom.hour_landing.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "loom.hour_landing.entry": {
+          "body": "A landing joins two staircases whose clocks disagree by exactly one unhurried minute. Keeper Orla has put a bench between them for travellers worried about choosing the wrong time. She used to explain the clocks at length. Now she first asks whether visitors would like somewhere comfortable to put their feet.",
+          "choices": [
+            {
+              "id": "sit",
+              "label": "Begin with the bench instead of the clocks",
+              "description": "Recover up to 5% HP; continue to the clock room.",
+              "outcome": "Orla lets your companions settle before offering an explanation they may not need.",
+              "effects": {
+                "heal": 5
+              },
+              "next": "loom.hour_landing.clocks"
+            },
+            {
+              "id": "compare",
+              "label": "Compare the hands without trying to synchronize them",
+              "description": "Use the research allowance; enter the clock room.",
+              "outcome": "The clocks measure two sensible approaches to the same crossing rather than a single broken minute.",
+              "effects": {
+                "study": 1
+              },
+              "next": "loom.hour_landing.clocks"
+            }
+          ]
+        },
+        "loom.hour_landing.clocks": {
+          "body": "Inside the clock room, a visitor has left a note saying they will return when they can explain why they were late. Orla has kept their seat clear through many ordinary afternoons. She cannot decide whether an invitation to stop explaining would be kindness or another demand the visitor might fail to meet.",
+          "choices": [
+            {
+              "id": "invite",
+              "label": "Write that the seat is open without an explanation",
+              "description": "Remember a later meeting at this landing.",
+              "outcome": "Orla pins the simple invitation where a returning traveller can read it before being noticed.",
+              "effects": {
+                "set_flags": [
+                  "loom.hour_invitation"
+                ]
+              },
+              "next": "loom.hour_landing.stairs"
+            },
+            {
+              "id": "handrail",
+              "label": "Make the approach handrail easier to follow",
+              "description": "Gain 5% temporary defense; reach the stairs.",
+              "outcome": "Your team leaves clear handholds that do not require understanding either clock.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "loom.hour_landing.stairs"
+            }
+          ]
+        },
+        "loom.hour_landing.stairs": {
+          "body": "At the far stair, both clocks chime softly, one after the other. Orla does not choose a winner. Your companions have found a steady pace between the sounds, and the bench is still available behind them. The crossing seems less concerned with arriving correctly than with leaving everyone enough room to arrive.",
+          "choices": [
+            {
+              "id": "pace",
+              "label": "Practise following the team’s shared pace",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "The companions learn to move together without taking either clock as an order.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "leave_space",
+              "label": "Leave the bench arranged for another small team",
+              "description": "Build team bond.",
+              "outcome": "Your team makes room for a group it has not met yet.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.unfinished_bridge",
+      "title": "The Bridge with an Open End",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "loom.unfinished_bridge.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "loom.unfinished_bridge.entry": {
+          "body": "A short bridge of woven light ends a few steps before a solid terrace. Volunteer binder Ada has left it unfinished rather than pull the far end tight enough to bow the handrails. Travellers have begun treating it as a lookout. Her workbench holds two plans: a perfect straight crossing and a slightly crooked one with room to settle.",
+          "choices": [
+            {
+              "id": "crooked",
+              "label": "Inspect the crooked plan with Ada",
+              "description": "Gain 5% temporary defense; approach the far end.",
+              "outcome": "The wider curve lets your companions keep their footing without fighting the handrails.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "loom.unfinished_bridge.gap"
+            },
+            {
+              "id": "lookout",
+              "label": "Study what travellers changed around the lookout",
+              "description": "Use the research allowance; approach the far end.",
+              "outcome": "Their useful additions reveal where the bridge already carries weight comfortably.",
+              "effects": {
+                "study": 1
+              },
+              "next": "loom.unfinished_bridge.gap"
+            }
+          ]
+        },
+        "loom.unfinished_bridge.gap": {
+          "body": "At the open end, a loose thread has caught around an old visitor’s walking mark. Ada remembers the visitor offering help, then leaving after she insisted on finishing alone. The thread is sound. It only needs someone on the terrace to hold a gentle curve while the near end is tied.",
+          "choices": [
+            {
+              "id": "signal",
+              "label": "Leave a clear request beside the walking mark",
+              "description": "Remember the invitation for another discovery.",
+              "outcome": "Ada writes exactly what sort of help would be useful, without promising to need nothing else.",
+              "effects": {
+                "set_flags": [
+                  "loom.bridge_request"
+                ]
+              },
+              "next": "loom.unfinished_bridge.landing"
+            },
+            {
+              "id": "brace",
+              "label": "Support the curve from the rough lower brace",
+              "description": "Lose up to 3% HP; gain a 5% reward bonus.",
+              "outcome": "Your team takes a few scrapes reaching the brace and reveals a practical service approach.",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "next": "loom.unfinished_bridge.landing"
+            }
+          ]
+        },
+        "loom.unfinished_bridge.landing": {
+          "body": "The bridge reaches a small resting platform, though its last crossing still awaits another pair of hands. Ada puts away the drawing of the perfectly straight span. Your companions can sit where the loose light no longer pulls against itself. A useful unfinished place has become easier to share.",
+          "choices": [
+            {
+              "id": "rest",
+              "label": "Rest on the part that is ready now",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The platform holds your team comfortably without pretending the whole project is finished.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "drill",
+              "label": "Practise careful movement along the settled curve",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "Ada calls the bends while your companions learn to move without tightening the light.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.book_rest",
+      "title": "A Book Rest for a Very Small Reader",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom.book_rest.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom.book_rest.entry": {
+          "body": "A bookbinder named Tess has made an elegant reading stand that is taller than its intended reader. She keeps adjusting the carved legs instead of noticing the low crate beside it. The reader, a patient Pixie, has already arranged a comfortable place on the crate and is waiting for the book rather than the stand.",
+          "choices": [
+            {
+              "id": "crate",
+              "label": "Put the book on the useful low crate",
+              "description": "Build team bond.",
+              "outcome": "Tess watches the reader settle and stops apologizing for the simple solution.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "stand",
+              "label": "Study the stand’s stable folding joints",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The careful joints give your team a practical lesson even though the stand is too tall here.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.unicorn_question",
+      "title": "The Question at the Water Bowl",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "loom.unicorn_question.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "loom.unicorn_question.entry": {
+          "body": "A Unicorn has paused beside a public water bowl whose sign asks visitors to leave everything as they found it. The bowl is nearly empty. A nearby jug waits beneath a second sign asking that it be used. Your companions have discovered a small disagreement between two perfectly polite instructions.",
+          "choices": [
+            {
+              "id": "fill",
+              "label": "Refill the bowl from the waiting jug",
+              "description": "Build team bond.",
+              "outcome": "The Unicorn drinks while your companions discover that useful care need not preserve an empty bowl.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "compare",
+              "label": "Record how the two instructions came to disagree",
+              "description": "Use the research allowance.",
+              "outcome": "You note the worn refill marks beneath the newer request to leave things unchanged.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.gravity_rail",
+      "title": "The Handrail Around a Small Impossible Thing",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "loom.gravity_rail.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "loom.gravity_rail.entry": {
+          "body": "A tiny Singularity turns slowly beyond a public observation rail. Loose starlight curves around it in a way your eyes keep trying to straighten. The rail has been fitted with low rests for small paws and tall ones for larger hands. A little notice advises visitors that holding on is not a failure to understand.",
+          "choices": [
+            {
+              "id": "hold",
+              "label": "Let your companions choose comfortable handholds",
+              "description": "Gain 10% temporary defense.",
+              "outcome": "The team learns to keep a secure point of contact while the view changes around it.",
+              "effects": {
+                "defense_boon": 10
+              }
+            },
+            {
+              "id": "observe",
+              "label": "Record the bent starlight from behind the rail",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes describe what you can safely see without pretending to contain the visitor’s whole meaning.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.tomorrow_window",
+      "title": "The Window Reserved for Tomorrow",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "loom.tomorrow_window.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "loom.tomorrow_window.entry": {
+          "body": "A window frame stands on a terrace with no wall around it. Its painted sign says tomorrow, but the view is an ordinary patch of sky. Someone has left a chair facing away from the frame. The polished armrests suggest many visitors found something worth noticing in the day they already had.",
+          "choices": [
+            {
+              "id": "turn",
+              "label": "Sit facing the present terrace with your team",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The companions settle into a useful pause without waiting for the frame to perform.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "compare",
+              "label": "Sketch both sides of the empty frame",
+              "description": "Use the research allowance.",
+              "outcome": "Your drawing records how the promise of tomorrow changed the way people used today’s chair.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.sphinx_margin",
+      "title": "The Sphinx’s Practical Riddle",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "loom.sphinx_margin.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "loom.sphinx_margin.entry": {
+          "body": "A Sphinx rests beside a riddle carved in a public table: what becomes easier to carry when someone else knows it? Several grand answers have been scratched around the edge. Underneath, in smaller writing, is a request for help moving the table out of the narrow walking lane. The Sphinx looks patiently toward the blocked passage.",
+          "choices": [
+            {
+              "id": "table",
+              "label": "Move the table before proposing an answer",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The shared lift makes both the table and the question easier to approach.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "question",
+              "label": "Compare the small request with the grand answers",
+              "description": "Use the research allowance.",
+              "outcome": "You record how the practical request completes the riddle without erasing its other answers.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.blank_atlas",
+      "title": "An Atlas with Room for a Visitor",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "loom.blank_atlas.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "loom.blank_atlas.entry": {
+          "body": "An open atlas shows each nearby terrace in exquisite detail except one blank margin. A note explains that the mapmaker stopped when she realized the path kept changing whenever someone made room for a newcomer. There is space for your team to add today’s useful route, provided it does not claim to be the final one.",
+          "choices": [
+            {
+              "id": "today",
+              "label": "Add the route your companions can use today",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "Your line ends with a small open space instead of a confident border.",
+              "effects": {
+                "bonus": 5
+              }
+            },
+            {
+              "id": "margins",
+              "label": "Study where older visitors corrected the edges",
+              "description": "Use the research allowance.",
+              "outcome": "The atlas’s most useful directions turn out to be its carefully preserved corrections.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.thread_mender",
+      "title": "Tess and the Unmatched Thread",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom.thread_mender.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom.thread_mender.entry": {
+          "body": "Tess is mending a public cushion with thread that changes colour each time she pulls it through. She keeps undoing the useful stitches because their colours do not match. Your companions have already found the half-mended cushion comfortable. A small bowl beside the workbench holds loose pieces that are no longer attached to the weave.",
+          "choices": [
+            {
+              "id": "leave",
+              "label": "Help Tess judge the stitches by their strength",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "She tests the sound seam and leaves its changing colours alone.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "loose",
+              "label": "Mark detached pieces from the workbench bowl",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "Tess points out the loose materials rather than pulling anything from the working cushion.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.witness_notice",
+      "title": "A Notice Asking for One Witness",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom.witness_notice.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom.witness_notice.entry": {
+          "body": "A notice asks for someone to witness the opening of an ordinary repaired door. Its maker, Lio, has spent years practising elaborate explanations and now cannot begin without one. The door opens easily. Beyond it is a small room with space for two chairs and a shallow dish for a companion who prefers the floor.",
+          "choices": [
+            {
+              "id": "witness",
+              "label": "Watch the door open without requesting a speech",
+              "description": "Build team bond.",
+              "outcome": "Lio opens the door, and the small shared room is finally being used.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "route",
+              "label": "Mark the accessible doorway for passing travellers",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The repaired door becomes part of the public route rather than a private unfinished announcement.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.margin_reply",
+      "title": "A Reply Beside Your Answer",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom.margin_reply.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom.margin_reply.entry": {
+          "body": "Venn’s question about unfinished promises has gained a reply beside the modest answer you left. Its original writer has returned with someone they promised to visit. Neither knows what the finished promise should look like. The low desk now holds two cups and a diagram of a very small next step.",
+          "choices": [
+            {
+              "id": "listen",
+              "label": "Listen while they choose the next practical visit",
+              "description": "Build bond; preserve the returned conversation.",
+              "outcome": "They agree on a small meeting neither needs to describe as forever.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "loom.question_answered"
+                ]
+              }
+            },
+            {
+              "id": "diagram",
+              "label": "Help make the next step easy to find",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "Your clear route mark gives the tentative promise somewhere useful to begin.",
+              "effects": {
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "loom.index_margin"
+      ]
+    },
+    {
+      "id": "loom.late_arrival",
+      "title": "The Visitor Who Came Without an Excuse",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom.late_arrival.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom.late_arrival.entry": {
+          "body": "At Orla’s landing, the long-empty seat now holds a traveller clutching an unwritten explanation. They read the invitation several times before sitting down. Orla has brought ordinary warm water rather than a special welcome speech. Your team arrives just as the traveller begins asking what has changed along the nearby paths.",
+          "choices": [
+            {
+              "id": "ordinary",
+              "label": "Join the ordinary conversation about the paths",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The unwritten explanation stays folded while everyone shares the present afternoon.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "show",
+              "label": "Show the visitor the low handrail route",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The traveller finds a practical next step that does not begin with making up for the last one.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "loom.hour_invitation"
+      ]
+    },
+    {
+      "id": "loom.returned_knot",
+      "title": "A Knot Held from the Other Side",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "loom.returned_knot.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "loom.returned_knot.entry": {
+          "body": "Ada’s request has reached the visitor who once offered to help. You find them on the far terrace, holding the bridge’s loose thread in a gentle curve. Ada is still explaining the entire plan from the near side. The helper asks only which knot needs to be tied first.",
+          "choices": [
+            {
+              "id": "first",
+              "label": "Help Ada name the first useful knot",
+              "description": "Build bond; remember the shared crossing.",
+              "outcome": "The bridge work begins with one clear request answered from the other side.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "loom.bridge_linked"
+                ]
+              }
+            },
+            {
+              "id": "steady",
+              "label": "Practise the new crossing while both binders hold it",
+              "description": "Gain 10% temporary defense.",
+              "outcome": "Your companions learn the settled curve without asking either binder to pull harder.",
+              "effects": {
+                "defense_boon": 10
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "loom.bridge_request"
+      ]
+    },
+    {
+      "id": "loom.practice_library",
+      "title": "The Reading Room Practice Circle",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "loom.practice_library.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "loom.practice_library.entry": {
+          "body": "A quiet annex contains a practice circle marked with removable book rests. Several curious wild companions are waiting to test movements learned from the public illustrations. The attendant offers your team the outside diagrams first, or a paired exercise in the circle. The books remain safely beyond the reach of every enthusiastic turn.",
+          "choices": [
+            {
+              "id": "diagrams",
+              "label": "Practise from the outside illustrations",
+              "description": "Gain 5% temporary attack without combat.",
+              "outcome": "The diagrams give your team a useful rhythm before an opponent adds uncertainty.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "paired",
+              "label": "Join the waiting companions’ paired exercise",
+              "description": "Begin a two-opponent encounter.",
+              "outcome": "The attendant clears the nearest book rests as the first challenger approaches.",
+              "effects": {
+                "battle": "pack2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.starsteps",
+      "title": "Three Lessons on the Star Steps",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "loom.starsteps.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "loom.starsteps.entry": {
+          "body": "Three broad steps float at different angles over a public exercise yard. Gathered wild companions use them to practise changing direction without abandoning a teammate. A steward can teach the handrail route slowly, or introduce the waiting challengers one after another. Both routes finish on the same wide, steady terrace.",
+          "choices": [
+            {
+              "id": "rails",
+              "label": "Learn the steward’s careful handrail sequence",
+              "description": "Gain 10% temporary defense without combat.",
+              "outcome": "Your companions practise finding a secure place before helping the next member move.",
+              "effects": {
+                "defense_boon": 10
+              }
+            },
+            {
+              "id": "sequence",
+              "label": "Meet the three waiting practice challengers",
+              "description": "Begin a three-opponent encounter.",
+              "outcome": "The steward signals the first companion to enter while your team gathers on the broad step.",
+              "effects": {
+                "battle": "pack3"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.paradox_cup",
+      "title": "A Cup on Both Sides of the Table",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "loom.paradox_cup.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "loom.paradox_cup.entry": {
+          "body": "Paradox rests beside a table where the same small cup seems to occupy two places at once. A public attendant has thoughtfully set out two coasters and stopped trying to settle which is correct. Your companions can reach the ordinary water bowl beneath the table, where one comfortable place remains more useful than an impressive explanation.",
+          "choices": [
+            {
+              "id": "coasters",
+              "label": "Observe the patient arrangement from a distance",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes keep both cup positions without demanding that the peaceful visitor choose one.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "bowl",
+              "label": "Share the ordinary bowl with your team",
+              "description": "Build team bond.",
+              "outcome": "Your companions find a simple point of agreement beneath the puzzling tabletop.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.chronos_pause",
+      "title": "Chronos at an Unwound Clock",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "loom.chronos_pause.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "loom.chronos_pause.entry": {
+          "body": "Chronos sits near a small clock whose spring has been allowed to unwind. A clockkeeper has left a repair key beside it, but the visitor seems content with the quiet. Beyond the clock, people continue their ordinary errands by the changing light. Your companions have no need to hurry the meeting toward a remarkable event.",
+          "choices": [
+            {
+              "id": "quiet",
+              "label": "Keep a respectful distance and share the pause",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The team settles into the quiet without treating the visitor’s stillness as something to repair.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "observe",
+              "label": "Record how the terrace measures its day without the clock",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes follow the people and light rather than inventing an answer for Chronos.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.zodiac_circle",
+      "title": "A Constellation Close to the Ground",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "loom.zodiac_circle.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "loom.zodiac_circle.entry": {
+          "body": "Zodiac moves along the far edge of a terrace, its small lights making shifting patterns among the stone posts. An observer has drawn a careful circle for visitors well outside the route. Within that circle, different companions find different parts of the pattern easiest to follow. Nobody needs to agree on a single picture.",
+          "choices": [
+            {
+              "id": "patterns",
+              "label": "Record the different patterns your team notices",
+              "description": "Use the research allowance.",
+              "outcome": "Your page preserves several honest views of the same peaceful passing lights.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "together",
+              "label": "Let each companion point out one light",
+              "description": "Build team bond.",
+              "outcome": "The team shares its separate discoveries without asking the distant visitor to repeat them.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.open_annex",
+      "title": "The Open Annex Challenge",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "loom.open_annex.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "loom.open_annex.entry": {
+          "body": "An annex door bears a sign inviting respectful tests of what travellers have learned. The inside is a broad practice space, not a locked treasure room. Something lively moves behind its soft curtain. A second sign offers observation seats for those who would rather learn how the invitation works before answering it.",
+          "choices": [
+            {
+              "id": "seats",
+              "label": "Take the observation seats with your team",
+              "description": "Gain 5% temporary defense without combat.",
+              "outcome": "Your companions study the calm preparations before anyone enters the practice space.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "ready",
+              "label": "Answer the invitation from the open threshold",
+              "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
+              "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
+              "effects": {
+                "battle": "rare"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.loose_thread",
+      "title": "Familiar Ground: A Thread Across the Path",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "loom.loose_thread.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom.loose_thread.entry": {
+          "body": "A loose strand of light has settled across the familiar path, attached at one end to a maintenance spool. The low handrail offers a clear way around it. Detached fibers lie beside the spool where earlier repairs were trimmed. Nothing requires your team to pull on the strand that still supports the terrace.",
+          "choices": [
+            {
+              "id": "rail",
+              "label": "Follow the clear handrail around the live strand",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The companions leave the working thread loose enough to settle without tripping over it.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "trim",
+              "label": "Inspect the loose gathering area beside the spool",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.margin_light",
+      "title": "Familiar Ground: Light in the Margin",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "loom.margin_light.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom.margin_light.entry": {
+          "body": "A familiar reading ledge catches a little changing light from the terraces above. Passing Pixies sometimes follow its edge, leaving the centre free for larger readers. Today the light forms a narrow bright margin around the blank stone. Your companions can watch the moving border or settle inside its quieter centre.",
+          "choices": [
+            {
+              "id": "watch",
+              "label": "Record the moving margin without following it away",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes keep the light’s route while your team stays comfortably together.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "centre",
+              "label": "Rest in the broad quiet centre",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The moving light passes around the companions’ comfortable resting places.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.wide_stair",
+      "title": "Familiar Ground: The Broad Stair",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "loom.wide_stair.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom.wide_stair.entry": {
+          "body": "The familiar broad stair has shallow steps that suit many different sizes of traveller. Its middle landing is worn smooth by people who stop halfway, sometimes to rest and sometimes to wait for a companion. Today a loose cushion has drifted neatly against the sheltered wall, leaving the walking lane open.",
+          "choices": [
+            {
+              "id": "rest",
+              "label": "Pause on the sheltered middle landing",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions use the pause as part of the journey rather than an interruption to it.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "wait",
+              "label": "Let the slowest member lead the next short section",
+              "description": "Build team bond.",
+              "outcome": "The team leaves the landing at a pace nobody needs to chase.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.bookmark_route",
+      "title": "Familiar Ground: A Drifting Bookmark",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "loom.bookmark_route.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom.bookmark_route.entry": {
+          "body": "A loose bookmark drifts between the familiar route posts, turning whenever it passes a gap in the starlight. Its paper is blank except for a reader’s small folded corner. The path beneath it is ordinary and secure. Following the changing gaps may reveal an easier approach without needing to chase the paper itself.",
+          "choices": [
+            {
+              "id": "gaps",
+              "label": "Read the gaps instead of chasing the bookmark",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "Your companions find a smoother approach along the changing patches of light.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "fold",
+              "label": "Sketch how the folded corner changes its drift",
+              "description": "Use the research allowance.",
+              "outcome": "The small fold explains the paper’s turning better than a grand theory of the whole terrace.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.tilted_path",
+      "title": "Familiar Ground: A Tilting Platform",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "loom.tilted_path.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom.tilted_path.entry": {
+          "body": "The familiar maintenance platform has tilted slightly beneath a settled coil of light. The handrail remains secure, and the wide outer route is clearly marked. A shorter service brace passes close to loose material at the far edge. Your companions can choose the reliable route or carefully inspect the rougher approach.",
+          "choices": [
+            {
+              "id": "outer",
+              "label": "Keep the team on the wide marked route",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The companions cross steadily while the platform’s loose coil finds its balance.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "brace",
+              "label": "Inspect the rough service brace and collection shelf",
+              "description": "Lose up to 3% HP; replace your material selection.",
+              "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom.quiet_circle",
+      "title": "Familiar Ground: The Quiet Practice Circle",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "loom.quiet_circle.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom.quiet_circle.entry": {
+          "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
+          "choices": [
+            {
+              "id": "rehearse",
+              "label": "Rehearse along the illustrated outside lane",
+              "description": "Gain 5% temporary attack without combat.",
+              "outcome": "Your team follows the clear movement marks while leaving the resident room to wait.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "accept",
+              "label": "Give the resident a clear ready signal",
+              "description": "Begin a single-opponent encounter.",
+              "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
+              "effects": {
+                "battle": "single"
+              }
+            },
+            {
+              "id": "paired_rehearsal",
+              "label": "Arrange a two-opponent rehearsal across both markers",
+              "description": "Begin a two-opponent friendly contest.",
+              "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+              "effects": {
+                "battle": "pack2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -31,7 +31,7 @@ class ExploreJournalFlow(DatabaseCase):
 
     async def begin(self, view):
         button = next(item for item in view.walk_children()
-                      if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
+                      if isinstance(item, discord.ui.Button) and item.label.startswith('Start adventure'))
         self.assertFalse(button.disabled)
         click = component()
         click.edit_original_response.return_value = view.message
@@ -65,17 +65,19 @@ class ExploreJournalFlow(DatabaseCase):
         await self.begin(view)
         trip_id = view.trip['id']
         self.assertEqual(view.trip['payload']['mode'], 'expedition')
-        self.assertEqual(view.trip['payload']['adventure_version'], 2)
+        self.assertEqual(view.trip['payload']['adventure_version'], 3)
         self.assertEqual(view.trip['payload']['stage'], 0)
-        self.assertIn('0/3 stops completed', self.text(view))
-        self.assertIn('Exploration 0/3', self.text(view))
-        self.assertIn('Next charge in', self.text(view))
-        self.assertEqual({o.value.rsplit(':', 1)[1] for o in view.path_select.options},
-                         {'tracks', 'gather', 'shrine', 'return_early'})
+        self.assertIn('0/5 stops', self.text(view))
+        self.assertIn('Progress saved', self.text(view))
+        offered=expeditions.options(view.trip)
+        self.assertIn('return_early',offered)
+        self.assertTrue(all(value.startswith('scene:') for value in offered if value!='return_early'))
+        frozen=expeditions.presentation(view.trip)
         for legacy in (None, False, True):
             _, resumed = await self.open('ember', expedition=legacy)
             self.assertEqual(resumed.trip['id'], trip_id)
             self.assertEqual(resumed.trip['realm'], 'woods')
+            self.assertEqual(expeditions.presentation(resumed.trip),frozen)
         self.assertEqual(len(await self.rows('SELECT * FROM expeditions')), 1)
         self.assertEqual((await expeditions.energy(42)).charges, 0)
 
@@ -83,25 +85,31 @@ class ExploreJournalFlow(DatabaseCase):
         await self.beast('twine', starter=True)
         _, view = await self.open()
         await self.begin(view)
-        await self.pick(view, 'gather')
+        async def safe_step(stage):
+            choice=next(item['value'] for item in stage.trip['payload']['page']['choices']
+                        if not item.get('effects',{}).get('battle') and not item.get('effects',{}).get('hp_cost'))
+            await self.pick(stage,choice)
+        await safe_step(view)
         saved = await expeditions.current(42)
-        self.assertEqual(saved['payload']['route'], 'gather')
+        self.assertEqual(saved['payload']['completed'], 1)
         self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
-        choice = view.path_select.options[0].value.split(':', 2)[2]
-        await self.pick(view, choice)
+        while view.trip['payload']['completed']<2:
+            await safe_step(view)
         self.assertEqual(view.trip['payload']['stage'], 2)
         _, resumed = await self.open('ember')
         self.assertEqual(resumed.trip['id'], saved['id'])
         self.assertEqual(resumed.trip['realm'], 'woods')
         self.assertEqual(resumed.trip['payload']['stage'], 2)
         self.assertEqual(resumed.trip['payload']['history'], view.trip['payload']['history'])
-        # Gathering leads to one saved, seeded consequence. Complete that third
-        # stop through its real UI controls before taking the normal path home.
-        followups = {'obstacle': 'detour', 'merchant': 'assist', 'rescue': 'rescue'}
-        self.assertIn(resumed.trip['payload']['event'], followups)
+        # Authored pages and an optional material picker remain saved; neither
+        # grants its bundle until the real return control is accepted.
         self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
-        await self.pick(resumed, followups[resumed.trip['payload']['event']])
-        self.assertEqual(resumed.trip['payload']['completed'], 3)
+        for _ in range(15):
+            if resumed.trip['payload']['journey_status']=='homeward':
+                break
+            await safe_step(resumed)
+        self.assertEqual(resumed.trip['payload']['journey_status'],'homeward')
+        self.assertEqual(resumed.trip['payload']['completed'],resumed.trip['payload']['total'])
         self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
         await self.pick(resumed, 'return')
         self.assertEqual(resumed.trip['status'], 'complete')
@@ -116,7 +124,7 @@ class ExploreJournalFlow(DatabaseCase):
         _, locked = await self.open('ember')
         self.assertEqual(locked.realm, 'ember')
         self.assertIn('Trainer Lv.6 required', self.text(locked))
-        begin = next(item for item in locked.walk_children() if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
+        begin = next(item for item in locked.walk_children() if isinstance(item, discord.ui.Button) and item.label.startswith('Start adventure'))
         self.assertTrue(begin.disabled)
         self.assertIsNone(await expeditions.current(42))
         self.assertEqual((await expeditions.energy(42)).charges, 1)
@@ -124,7 +132,7 @@ class ExploreJournalFlow(DatabaseCase):
         _, empty = await self.open()
         self.assertIn('0/3 exploration charges', self.text(empty))
         self.assertIn('Next charge in', self.text(empty))
-        begin = next(item for item in empty.walk_children() if isinstance(item, discord.ui.Button) and item.label.startswith('Begin expedition'))
+        begin = next(item for item in empty.walk_children() if isinstance(item, discord.ui.Button) and item.label.startswith('Start adventure'))
         self.assertTrue(begin.disabled)
         self.assertIsNone(await expeditions.current(42))
 

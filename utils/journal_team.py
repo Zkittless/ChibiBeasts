@@ -44,7 +44,19 @@ def roster(view):
         return [(role, next((row for row in rows.values() if row.get('raid_slot') == index), None))
                 for index, role in enumerate(RAID_ROLES, 1)]
     if frozen(view) and 'party_ids' in view.state.trip['payload']:
-        ids = view.state.trip['payload']['party_ids'][:3]
+        payload = view.state.trip['payload']
+        ids = payload['party_ids'][:3]
+        if payload.get('adventure_version') == 3:
+            states = payload.get('combat', {}).get('party', payload.get('prepared_party', []))
+            for state in states:
+                row = rows.get(state['id'])
+                if row is None:
+                    continue
+                hp = max(0, min(state['max_hp'], state['hp']))
+                origin, prepared = state.get('_pve_mana_origin', (row['mana'], state['mana']))
+                rows[state['id']] = {**row,
+                    'hp': max(1, row['max_hp'] * hp // max(1, state['max_hp'])) if hp else 0,
+                    'mana': max(0, min(row['max_mana'], int(origin + row['max_mana'] * (state['mana'] - prepared) / max(1, state['max_mana']))))}
         return [(role, rows.get(ids[index]) if index < len(ids) else None)
                 for index, role in enumerate(ROLES)]
     lead = next((row for row in rows.values() if row['is_active']), None)

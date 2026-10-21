@@ -1,0 +1,1143 @@
+{
+  "version": 1,
+  "biome": "ember_deep",
+  "encounters": [
+    {
+      "id": "ember_deep_glass_sail_house",
+      "title": "The Caravanserai with a Moving Roof",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_deep_glass_sail_house_entry",
+      "tags": [
+        "ember_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_deep_glass_sail_house_entry": {
+          "body": "The caravanserai wears a roof of pale glass sails. Porters turn them as the sun moves, carrying shade across the courtyard instead of asking travellers to chase it. One sail has jammed above an empty bench, while the busiest bench receives a perfectly measured square of heat.",
+          "choices": [
+            {
+              "label": "Help shift the waiting travellers into the safe shade",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion makes space beside the lowest bench. The porters can attend to the sail without asking tired guests to keep moving.",
+              "next": "ember_deep_glass_sail_house_cistern",
+              "id": "ember_deep_glass_sail_house_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Compare the jammed sail with its turning neighbours",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "One support is carrying the wrong part of the weight. You mark it before following a porter beneath the courtyard.",
+              "next": "ember_deep_glass_sail_house_cistern",
+              "id": "ember_deep_glass_sail_house_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_deep_glass_sail_house_cistern": {
+          "body": "Under the courtyard, the cistern ledger lists not how much each visitor drank, but how far they still had to travel. The keeper is deciding how much water to leave at an uncertain crossing. A careful note from the last caravan gives distance, shade and no promise of a working well.",
+          "choices": [
+            {
+              "label": "Check the crossing notes before making a recommendation",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You separate observations from hopeful guesses. The keeper can prepare a sensible reserve without pretending the route is easier than it is.",
+              "next": "ember_deep_glass_sail_house_courtyard",
+              "id": "ember_deep_glass_sail_house_cistern_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Move the reserve jars into a sheltered loading place",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "The jars weigh heavily, but the loading place stays out of the sun. The keeper can send them without carrying each one twice.",
+              "next": "ember_deep_glass_sail_house_courtyard",
+              "id": "ember_deep_glass_sail_house_cistern_c2",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            }
+          ]
+        },
+        "ember_deep_glass_sail_house_courtyard": {
+          "body": "While you worked below, the porters freed the jammed sail. Back in the courtyard, it moves a cool patch over the loading bench. The keeper has written a short message for the crossing tender: what is being sent, when to expect it, and which part of the report is still uncertain. Somebody should carry a clear copy.",
+          "choices": [
+            {
+              "label": "Take the message along the marked route",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "ember_deep_sail_house_seen",
+                  "ember_deep_crossing_note_pending"
+                ]
+              },
+              "outcome": "You fold the copy where it will stay dry. The keeper thanks you for carrying the uncertainty as carefully as the useful news.",
+              "id": "ember_deep_glass_sail_house_courtyard_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Prepare a visible handover mark and keep the copy",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "ember_deep_sail_house_seen",
+                  "ember_deep_crossing_note_pending"
+                ]
+              },
+              "outcome": "The handover place is easy to recognize from the road. You keep a copy in case you reach the tender before the jars.",
+              "id": "ember_deep_glass_sail_house_courtyard_c2",
+              "description": "Temporary team defense +5%; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_horizon_station",
+      "title": "An Observatory Looking Sideways",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "ember_deep_horizon_station_entry",
+      "tags": [
+        "ember_deep",
+        "ruin"
+      ],
+      "nodes": {
+        "ember_deep_horizon_station_entry": {
+          "body": "A buried observatory has left only its horizontal viewing slit above the sand. Its caretaker studies the horizon rather than the stars, comparing how far familiar landmarks appear to move in the heat. The entrance is marked by two plain stones, deliberately less impressive than its false doors.",
+          "choices": [
+            {
+              "label": "Follow the plain entrance markers with the caretaker",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits at each stone until everyone has found it. The impressive false doors remain somebody else's distraction.",
+              "next": "ember_deep_horizon_station_weights",
+              "id": "ember_deep_horizon_station_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Compare the real doorway with its reflected copies",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "A small shadow stays attached to the true lintel. You record a useful difference before descending the cool steps.",
+              "next": "ember_deep_horizon_station_weights",
+              "id": "ember_deep_horizon_station_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_deep_horizon_station_weights": {
+          "body": "The lower chamber holds the counterweights for a long viewing frame. Sand has entered one channel and tilted the frame toward the nearest bright surface. The caretaker can still make measurements, but only by remembering a correction nobody else knows how to apply.",
+          "choices": [
+            {
+              "label": "Clear the cool sand from the counterweight channel",
+              "effects": {
+                "hp_cost": 3,
+                "attack_boon": 5
+              },
+              "outcome": "Sand rasps across your hands before the weight settles. The viewing frame returns to a position another observer can understand.",
+              "next": "ember_deep_horizon_station_bench",
+              "id": "ember_deep_horizon_station_weights_c1",
+              "description": "Pay 3% HP; no knockouts; Temporary team attack +5%."
+            },
+            {
+              "label": "Write the correction beside the measuring scale",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The caretaker tests your explanation from a new visitor's point of view. The numbers no longer depend on knowing who wrote them.",
+              "next": "ember_deep_horizon_station_bench",
+              "id": "ember_deep_horizon_station_weights_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_deep_horizon_station_bench": {
+          "body": "At the horizon bench, three distant towers seem to become four whenever the ground warms. The caretaker could publish a beautifully simple map by ignoring the extra tower, but would rather show travellers where the view becomes unreliable. There is room for an honest margin on the page.",
+          "choices": [
+            {
+              "label": "Mark the uncertain stretch instead of inventing certainty",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "ember_deep_horizon_seen"
+                ]
+              },
+              "outcome": "You draw the margin where the apparent tower appears. The caretaker leaves it visible rather than polishing it out of the map.",
+              "id": "ember_deep_horizon_station_bench_c1",
+              "description": "Use this run's research allowance; World remembers."
+            },
+            {
+              "label": "Set a safe observation marker nearer the road",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "ember_deep_horizon_seen"
+                ]
+              },
+              "outcome": "Travellers can compare the towers without walking toward a reflection. Your companion helps test the marker from the lower sightline.",
+              "id": "ember_deep_horizon_station_bench_c2",
+              "description": "Temporary team defense +5%; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_buried_theatre",
+      "title": "The Theatre beneath the Dune",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "ember_deep_buried_theatre_entry",
+      "tags": [
+        "ember_deep",
+        "ruin"
+      ],
+      "nodes": {
+        "ember_deep_buried_theatre_entry": {
+          "body": "A dune has uncovered the top row of an old open-air theatre. Below, a travelling company is sweeping sand from seats that no longer face the stage. Their first audience consists of patient local beasts waiting in the only patch that has already been cleared.",
+          "choices": [
+            {
+              "label": "Help clear a broad entrance for the audience",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits beside the opening while the company moves the loose boards. The gathering can enter without squeezing between the seats.",
+              "next": "ember_deep_buried_theatre_stage",
+              "id": "ember_deep_buried_theatre_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study which seats still carry the actors' voices",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The curved walls return a whisper more clearly than a shout. You point the company toward the seats worth uncovering first.",
+              "next": "ember_deep_buried_theatre_stage",
+              "id": "ember_deep_buried_theatre_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        },
+        "ember_deep_buried_theatre_stage": {
+          "body": "The stage is a shallow mosaic, its tiles set to reflect evening light into the audience. A pile of removed tiles has become mixed with ordinary fragments from the dune. The actors want a readable stage more than a perfect restoration, and nobody wants their next performance to end in a slip.",
+          "choices": [
+            {
+              "label": "Reset the safest strip across the stage",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "The low work strains your knees before the tiles lie flat. The actors gain a clear route without pretending the whole mosaic has been restored.",
+              "next": "ember_deep_buried_theatre_wings",
+              "id": "ember_deep_buried_theatre_stage_c1",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            },
+            {
+              "label": "Sort loose gatherings without disturbing the original tiles",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You separate useful regional pieces from the theatre's own pattern. The company keeps every tile that still has a clear place.",
+              "next": "ember_deep_buried_theatre_wings",
+              "id": "ember_deep_buried_theatre_stage_c2",
+              "description": "Select the run's one material bundle."
+            }
+          ]
+        },
+        "ember_deep_buried_theatre_wings": {
+          "body": "Behind the stage, the company is choosing its opening scene. One actor wants to tell the theatre's history; another wants to let the local audience demonstrate the practice contests it has been holding in the cleared aisle. Both proposals leave room for visitors who would rather simply watch.",
+          "choices": [
+            {
+              "label": "Help write an introduction about the restored entrance",
+              "effects": {
+                "study": 1,
+                "set_flags": [
+                  "ember_deep_theatre_seen"
+                ]
+              },
+              "outcome": "The company begins with the small practical work that made an audience possible. You leave a clear account instead of a legend about discovering the place.",
+              "id": "ember_deep_buried_theatre_wings_c1",
+              "description": "Use this run's research allowance; World remembers."
+            },
+            {
+              "label": "Arrange a public practice demonstration",
+              "effects": {
+                "battle": "pack2",
+                "set_flags": [
+                  "ember_deep_theatre_seen"
+                ]
+              },
+              "outcome": "Two local challengers move into the clear aisle. The actors shift their props away and wait until your team is ready to begin.",
+              "id": "ember_deep_buried_theatre_wings_c2",
+              "description": "Begin a two-beast battle; World remembers."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_sail_patch",
+      "title": "A Patch That Must Let the Wind Through",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_deep_sail_patch_entry",
+      "tags": [
+        "ember_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_deep_sail_patch_entry": {
+          "body": "A sail mender holds a torn shade cloth against the light. A perfectly solid patch would pull the whole frame over in a gust, so she has been trying different woven gaps. Her apprentice has brought three beautiful patches that are all much too strong.",
+          "choices": [
+            {
+              "label": "Compare the gaps under a steady draught",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You test one patch at a time while the apprentice takes notes. Strength becomes a question of where the wind can go.",
+              "id": "ember_deep_sail_patch_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help brace the frame while the mender works",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 5
+              },
+              "outcome": "The frame presses against your shoulders before the new patch is secure. The mender leaves enough room for the sail to breathe.",
+              "id": "ember_deep_sail_patch_entry_c2",
+              "description": "Pay 3% HP; no knockouts; Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_cooling_pots",
+      "title": "The Pots Turned Upside Down",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "ember_deep_cooling_pots_entry",
+      "tags": [
+        "ember_deep",
+        "camp"
+      ],
+      "nodes": {
+        "ember_deep_cooling_pots_entry": {
+          "body": "A rest station keeps its clay water pots upside down beneath a raised shelf. New visitors complain until the keeper shows them the damp cooling cloths hanging underneath. The drinking water is elsewhere, properly covered; these pots are keeping the resting place pleasant rather than holding a secret supply.",
+          "choices": [
+            {
+              "label": "Share a quiet break beneath the cooling shelf",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "Your team settles in the cooler air without disturbing the cloths. The keeper offers the ordinary drinking cup from its proper place.",
+              "id": "ember_deep_cooling_pots_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Help replace the drying cloths from the spare rail",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits clear of the wet edges. You leave the cooling shelf ready for the next group of tired visitors.",
+              "id": "ember_deep_cooling_pots_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_behemoth_distance",
+      "title": "A Hill That Adjusted Its Footing",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "ember_deep_behemoth_distance_entry",
+      "tags": [
+        "ember_deep",
+        "legendary"
+      ],
+      "nodes": {
+        "ember_deep_behemoth_distance_entry": {
+          "body": "A distant ridge changes shape by the width of a foot. Through a surveyor's viewing frame, you can make out a Behemoth settling more comfortably against the sand. The surveyor is delighted to learn why yesterday's landmark no longer agrees with today's map, and has no intention of going closer.",
+          "choices": [
+            {
+              "label": "Record the moving landmark from the safe station",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You add the observation beside the earlier outline. The map gains a warning that its most impressive feature is entitled to move.",
+              "id": "ember_deep_behemoth_distance_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help redirect the nearest route markers",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your team checks the clear route away from the resting ridge. Travellers will not mistake a comfortable creature for a reliable shortcut.",
+              "id": "ember_deep_behemoth_distance_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_crossing_message",
+      "title": "What the Crossing Tender Needed to Hear",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_deep_crossing_message_entry",
+      "tags": [
+        "ember_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_deep_crossing_message_entry": {
+          "body": "The crossing tender has set a shaded place beside the uncertain well. She is not waiting to be rescued; she is waiting to know which caravan report is current. The copy you brought can settle that question without pretending the well has suddenly become dependable.",
+          "choices": [
+            {
+              "label": "Deliver the message with its uncertainties intact",
+              "effects": {
+                "bond": 1,
+                "clear_flags": [
+                  "ember_deep_crossing_note_pending"
+                ],
+                "set_flags": [
+                  "ember_deep_crossing_note_delivered"
+                ]
+              },
+              "outcome": "The tender reads the uncertain line twice and thanks you for keeping it. She can plan a reserve instead of trusting a rumour.",
+              "id": "ember_deep_crossing_message_entry_c1",
+              "description": "Lead bond +1; World remembers."
+            },
+            {
+              "label": "Help mark the reliable handover point",
+              "effects": {
+                "bonus": 5,
+                "clear_flags": [
+                  "ember_deep_crossing_note_pending"
+                ],
+                "set_flags": [
+                  "ember_deep_crossing_note_delivered"
+                ]
+              },
+              "outcome": "You place the copy in safe hands and check the visible marker. Future jars will reach a place that is actually ready for them.",
+              "id": "ember_deep_crossing_message_entry_c2",
+              "description": "+5% of the run reward; World remembers."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "ember_deep_crossing_note_pending"
+      ]
+    },
+    {
+      "id": "ember_deep_fourth_tower",
+      "title": "The Traveller Who Saw Four Towers",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_deep_fourth_tower_entry",
+      "tags": [
+        "ember_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_deep_fourth_tower_entry": {
+          "body": "A traveller stands at the road marker from the horizon station, convinced she has discovered an extra tower. Her map includes the honest uncertainty margin you helped preserve. She has read everything except that margin and is now listening while your companion waits in its useful little shadow.",
+          "choices": [
+            {
+              "label": "Show her how the extra tower changes with heat",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You compare the view from the marked station rather than leading her toward it. The margin finally becomes the most useful part of the map.",
+              "id": "ember_deep_fourth_tower_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Help her choose a sheltered route past the shimmer",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion tests the marker at a lower sightline. The traveller can keep moving without proving that the false tower exists.",
+              "id": "ember_deep_fourth_tower_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "ember_deep_horizon_seen"
+      ]
+    },
+    {
+      "id": "ember_deep_theatre_bill",
+      "title": "An Audience Listed by Where They Sit",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_deep_theatre_bill_entry",
+      "tags": [
+        "ember_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_deep_theatre_bill_entry": {
+          "body": "The theatre company has printed a bill with a picture of every cleared seating section. They have left the performers' names smaller than the directions for finding shade. A local visitor is examining it with evident approval, though the actors are still learning not to take that personally.",
+          "choices": [
+            {
+              "label": "Help add clear directions from the road",
+              "effects": {
+                "bonus": 5
+              },
+              "outcome": "You mark the plain entrance and the least steep descent. The company gains an audience that has enough energy left to enjoy the play.",
+              "id": "ember_deep_theatre_bill_entry_c1",
+              "description": "+5% of the run reward."
+            },
+            {
+              "label": "Record how the company shares the old space",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The bill makes room for watchers, performers and the creatures that used the dune first. You keep that practical arrangement in your notes.",
+              "id": "ember_deep_theatre_bill_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "ember_deep_theatre_seen"
+      ]
+    },
+    {
+      "id": "ember_deep_sand_copies",
+      "title": "Copies of the Same Footstep",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_deep_sand_copies_entry",
+      "tags": [
+        "ember_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_deep_sand_copies_entry": {
+          "body": "A line of prints repeats beside the dunes with almost mechanical precision. Their maker is a cartographer dragging a carved sole on a string to test how quickly wind erases tracks. He has accidentally drawn a much more convincing trail than the one he wanted travellers to follow.",
+          "choices": [
+            {
+              "label": "Help mark the experiment as an experiment",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your team stays on the real route while you set the warning. Nobody has to discover the false trail by following it into open sand.",
+              "id": "ember_deep_sand_copies_entry_c1",
+              "description": "Temporary team defense +5%."
+            },
+            {
+              "label": "Compare which impressions disappear first",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The shallow toe marks vanish before the heel. You record the result without treating a neat trail as proof of a recent traveller.",
+              "id": "ember_deep_sand_copies_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_basilisk_mirror",
+      "title": "A Mirror Facing the Ground",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "ember_deep_basilisk_mirror_entry",
+      "tags": [
+        "ember_deep",
+        "wild"
+      ],
+      "nodes": {
+        "ember_deep_basilisk_mirror_entry": {
+          "body": "A small inspection mirror lies face down beside a warm rock. A Basilisk rests beyond it, more interested in the stone's warmth than in passers-by. A careful keeper has marked a route around the resting place and left the mirror where nobody will accidentally flash light into its eyes.",
+          "choices": [
+            {
+              "label": "Follow the marked route without lifting the mirror",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion keeps pace beside you rather than investigating the reflected light. The resting creature is left with its pleasant stone.",
+              "id": "ember_deep_basilisk_mirror_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Study the shaded route from behind the marker",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You check each clear step before taking it. The detour offers a useful lesson in leaving enough room for another traveller.",
+              "id": "ember_deep_basilisk_mirror_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_three_shadows",
+      "title": "Shade for Three Heads",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "ember_deep_three_shadows_entry",
+      "tags": [
+        "ember_deep",
+        "wild"
+      ],
+      "nodes": {
+        "ember_deep_three_shadows_entry": {
+          "body": "Cerberus has found a patch of shade narrow enough for only two heads at once. It keeps moving around a stone post, politely inconveniencing itself. A nearby awning can be turned from outside the resting place, but nobody has wanted to disturb the creature merely to be helpful.",
+          "choices": [
+            {
+              "label": "Turn the awning slowly and watch for a response",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You stop when the heads look up. Cerberus settles beneath the wider shadow without having to decide which head deserved it first.",
+              "id": "ember_deep_three_shadows_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Take the outer path and leave the resting place alone",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your team keeps a broad, calm line around the post. The creature does not need to move for you to continue.",
+              "id": "ember_deep_three_shadows_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_glass_buttons",
+      "title": "The Tailor's Invisible Buttons",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_deep_glass_buttons_entry",
+      "tags": [
+        "ember_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_deep_glass_buttons_entry": {
+          "body": "A tailor has dropped a packet of clear glass buttons onto clear glass sand. She can find them by touch, but not safely while the afternoon light hides every sharp fragment. A strip of dark cloth in her basket would make a useful sorting surface if somebody held it steady.",
+          "choices": [
+            {
+              "label": "Hold the cloth while she sorts the useful pieces",
+              "effects": {
+                "material": true
+              },
+              "outcome": "The tailor keeps her buttons, and the safe sorting leaves a modest choice of loose regional gatherings. Nobody needs to sift the sand barehanded.",
+              "id": "ember_deep_glass_buttons_entry_c1",
+              "description": "Select the run's one material bundle."
+            },
+            {
+              "label": "Study how the low light reveals the different edges",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You watch from the marked safe side until the buttons stand out. The tailor gains a better time of day for this work.",
+              "id": "ember_deep_glass_buttons_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_stacked_luggage",
+      "title": "The Caravan That Packed the Shade Last",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_deep_stacked_luggage_entry",
+      "tags": [
+        "ember_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_deep_stacked_luggage_entry": {
+          "body": "A small caravan has stacked every awning pole beneath its heaviest luggage. The travellers are now sitting in the thin shadow of the stack, debating whose mistake should be unpacked first. Their companions have quietly made room around the lowest bundle, which is more useful than the discussion.",
+          "choices": [
+            {
+              "label": "Help lift a safe path through the lighter bundles",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "Your companion keeps the moving space clear. The first awning pole emerges before anybody has finished assigning responsibility.",
+              "id": "ember_deep_stacked_luggage_entry_c1",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Plan an unloading order everyone can follow",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You mark the bundles that support others and leave them until last. The caravan gains a method rather than another confident instruction.",
+              "id": "ember_deep_stacked_luggage_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_sand_sculptor",
+      "title": "The Sculpture with an Unfinished Ear",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "ember_deep_sand_sculptor_entry",
+      "tags": [
+        "ember_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_deep_sand_sculptor_entry": {
+          "body": "A sculptor is shaping a Minotaur from packed sand beside the public shade wall. One ear remains unfinished because the sculptor cannot remember how it sits when a Minotaur is listening. She is willing to leave the gap rather than invent a proud expression that means nothing.",
+          "choices": [
+            {
+              "label": "Help document the unfinished part honestly",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You mark the place that still needs observation. The sculptor keeps a question in the work instead of hiding it under a flourish.",
+              "id": "ember_deep_sand_sculptor_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Brace the temporary shade above the fragile face",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion waits outside the falling sand while you secure the shade. The sculptor gains time to find a better answer.",
+              "id": "ember_deep_sand_sculptor_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_slow_route",
+      "title": "Directions Written for the Last Traveller",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "ember_deep_slow_route_entry",
+      "tags": [
+        "ember_deep",
+        "traveller"
+      ],
+      "nodes": {
+        "ember_deep_slow_route_entry": {
+          "body": "A route keeper is replacing a sign that gives the crossing time for a fast, unburdened walker. Her new sign has three lines: shade, places to stop, and how far the longest open stretch actually is. A waiting family asks whether she could make the letters readable from a lower height.",
+          "choices": [
+            {
+              "label": "Help move the useful details to the lower board",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion provides a patient test reader's height. The keeper notices how much information was previously hidden above the smallest travellers.",
+              "id": "ember_deep_slow_route_entry_c1",
+              "description": "Lead bond +1."
+            },
+            {
+              "label": "Walk the longest stretch and check its markers",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "The open ground is tiring, but the distance matches the revised sign. You return with one missing shade marker clearly identified.",
+              "id": "ember_deep_slow_route_entry_c2",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_phoenix_arc",
+      "title": "A Warm Colour above the Dunes",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "ember_deep_phoenix_arc_entry",
+      "tags": [
+        "ember_deep",
+        "legendary"
+      ],
+      "nodes": {
+        "ember_deep_phoenix_arc_entry": {
+          "body": "A Phoenix passes high above the far dunes, its reflected colour briefly warming the observatory glass. Nobody nearby reaches for a net or promises that it will circle back. A travelling painter is trying to preserve the colour without turning the distance into a story about owning what she saw.",
+          "choices": [
+            {
+              "label": "Observe the light where it touches the glass",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You record the change in the ordinary surface near your hands. The distant bird continues on a route that belongs to it.",
+              "id": "ember_deep_phoenix_arc_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Share the quiet view with your companion",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You sit until the colour leaves the glass. Your companion seems satisfied to have been present without being asked to do anything.",
+              "id": "ember_deep_phoenix_arc_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_unfinished_labyrinth",
+      "title": "A Labyrinth Missing Its Last Wall",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "ember_deep_unfinished_labyrinth_entry",
+      "tags": [
+        "ember_deep",
+        "ruin"
+      ],
+      "nodes": {
+        "ember_deep_unfinished_labyrinth_entry": {
+          "body": "A low stone labyrinth ends in an open gap where its final wall was never built. Visitors have been carrying stones toward it for years without agreeing why it needs finishing. Today a waykeeper is using the gap as a sheltered entrance for people who cannot manage the narrow original turn.",
+          "choices": [
+            {
+              "label": "Help mark the open gap as an entrance",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "ember_deep_open_labyrinth"
+                ]
+              },
+              "outcome": "Your team tests the width before you set the marker. The unfinished wall gains a useful purpose by remaining unfinished.",
+              "id": "ember_deep_unfinished_labyrinth_entry_c1",
+              "description": "Temporary team defense +5%; World remembers."
+            },
+            {
+              "label": "Study the routes people actually use",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "Their prints have made a kinder map than the old plan. You record the crossings without closing them for the sake of a tidy drawing.",
+              "id": "ember_deep_unfinished_labyrinth_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_public_shade",
+      "title": "The Screen Nobody Owns",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "ember_deep_public_shade_entry",
+      "tags": [
+        "ember_deep",
+        "camp"
+      ],
+      "nodes": {
+        "ember_deep_public_shade_entry": {
+          "body": "A public shade screen stands where three caravan routes meet. Its keeper refuses to hang an owner's mark on it because visitors keep assuming that a mark means permission is required. He is repairing the lowest tie, where small companions can reach the cool ground without crossing anyone's luggage.",
+          "choices": [
+            {
+              "label": "Rest in the shared shade",
+              "effects": {
+                "heal": 10
+              },
+              "outcome": "Your team settles where there is room for another arrival. The keeper brings the ordinary cup without asking whose route you came from.",
+              "id": "ember_deep_public_shade_entry_c1",
+              "description": "Heal surviving team 10%."
+            },
+            {
+              "label": "Help secure the low entrance tie",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion waits beside the opening while you test the tie. The screen keeps its welcome even when the afternoon wind returns.",
+              "id": "ember_deep_public_shade_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_unused_maps",
+      "title": "The Shelf of Routes Not Taken",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "ember_deep_unused_maps_entry",
+      "tags": [
+        "ember_deep",
+        "shrine"
+      ],
+      "nodes": {
+        "ember_deep_unused_maps_entry": {
+          "body": "A small shelter holds maps of routes people chose not to attempt. Each map includes the reason: too little water, an injured companion, a crossing somebody simply did not trust that day. A keeper dusts them as carefully as successful journeys, leaving space for visitors to change their minds.",
+          "choices": [
+            {
+              "label": "Read the reasons without turning them into failures",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "The notes reveal which risks travellers could recognize in time. You leave the shelf with a clearer idea of when a detour is sensible.",
+              "id": "ember_deep_unused_maps_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Sit with your companion before choosing the next path",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "You give the decision time to become an agreement. Nobody at the shelter treats a slower departure as a lost journey.",
+              "id": "ember_deep_unused_maps_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_familiar_sand_ledge",
+      "title": "Familiar Territory · Sand on the Low Ledge",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "ember_deep_familiar_sand_ledge_entry",
+      "tags": [
+        "ember_deep",
+        "hazard"
+      ],
+      "nodes": {
+        "ember_deep_familiar_sand_ledge_entry": {
+          "body": "The familiar low ledge has collected fresh sand along its sheltered edge. Its marker stones remain visible, but the short crossing needs careful footing today. The longer route follows firm ground behind the shade wall, offering a clear alternative to proving that the ledge has not changed.",
+          "choices": [
+            {
+              "label": "Clear a narrow foothold along the ledge",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "outcome": "Sand pulls against your boots before the stone edge appears. Your team crosses in a patient line rather than testing the whole drift at once.",
+              "id": "ember_deep_familiar_sand_ledge_entry_c1",
+              "description": "Pay 3% HP; no knockouts; +5% of the run reward."
+            },
+            {
+              "label": "Use the firm route behind the wall",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You keep the team close to the visible footing. The longer turn gives everyone a clear place to put the next step.",
+              "id": "ember_deep_familiar_sand_ledge_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_familiar_glass_gathering",
+      "title": "Familiar Territory · Gatherings in the Glass Runnel",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "ember_deep_familiar_glass_gathering_entry",
+      "tags": [
+        "ember_deep",
+        "discovery"
+      ],
+      "nodes": {
+        "ember_deep_familiar_glass_gathering_entry": {
+          "body": "The familiar runnel has caught a new scatter of cooled fragments after the wind. Light makes the useful pieces look much like the sharp ones, but its shaded edge offers a safe sorting place. Small tracks leave the channel through a gap that should remain open.",
+          "choices": [
+            {
+              "label": "Select a bundle from the shaded sorting place",
+              "effects": {
+                "material": true
+              },
+              "outcome": "You leave the small exit clear while choosing useful loose gatherings. The rest stays where the next wind can move it.",
+              "id": "ember_deep_familiar_glass_gathering_entry_c1",
+              "description": "Select the run's one material bundle."
+            },
+            {
+              "label": "Compare the edges before touching the scatter",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You note how the low light separates worn surfaces from fresh breaks. The team gains a more careful eye for the path ahead.",
+              "id": "ember_deep_familiar_glass_gathering_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_familiar_dune_ring",
+      "title": "Familiar Territory · Three Challengers in the Hollow",
+      "kind": "pack",
+      "repeatable": true,
+      "entry": "ember_deep_familiar_dune_ring_entry",
+      "tags": [
+        "ember_deep",
+        "pack"
+      ],
+      "nodes": {
+        "ember_deep_familiar_dune_ring_entry": {
+          "body": "Fresh tracks circle the familiar practice hollow between the dunes. Its visitors have chosen ground firm enough for a friendly contest and pushed loose fragments to the outer edge. Three local challengers wait apart from one another, leaving both an entrance and a route around the gathering.",
+          "choices": [
+            {
+              "label": "Accept the three-beast practice challenge",
+              "effects": {
+                "battle": "pack3"
+              },
+              "outcome": "The challengers take their places in the open hollow. Your team has time to settle before the first move begins.",
+              "id": "ember_deep_familiar_dune_ring_entry_c1",
+              "description": "Begin a three-beast battle."
+            },
+            {
+              "label": "Check the safe outer route and leave them room",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "You guide the team along the firm edge without breaking the practice boundary. Everyone keeps enough room to change direction.",
+              "id": "ember_deep_familiar_dune_ring_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_familiar_night_screen",
+      "title": "Familiar Territory · The Evening Shade Screen",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "ember_deep_familiar_night_screen_entry",
+      "tags": [
+        "ember_deep",
+        "camp"
+      ],
+      "nodes": {
+        "ember_deep_familiar_night_screen_entry": {
+          "body": "The familiar shade screen now holds the day's last cool air. Its cloth has shifted with the wind, but the resting mat beneath remains dry and clear. Your companions recognize the place where the open dunes briefly give way to a space nobody needs to hurry through.",
+          "choices": [
+            {
+              "label": "Share a quiet rest on the clear mat",
+              "effects": {
+                "heal": 5
+              },
+              "outcome": "You loosen the team's travelling bundles and wait together. The simple shelter makes the distance already crossed feel less demanding.",
+              "id": "ember_deep_familiar_night_screen_entry_c1",
+              "description": "Heal surviving team 5%."
+            },
+            {
+              "label": "Test the loose ties before continuing",
+              "effects": {
+                "defense_boon": 5
+              },
+              "outcome": "Your companion stands clear while you reset the cloth. The screen will turn more gently when the wind reaches it again.",
+              "id": "ember_deep_familiar_night_screen_entry_c2",
+              "description": "Temporary team defense +5%."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_familiar_heat_marks",
+      "title": "Familiar Territory · The Heat Marks on the Posts",
+      "kind": "shrine",
+      "repeatable": true,
+      "entry": "ember_deep_familiar_heat_marks_entry",
+      "tags": [
+        "ember_deep",
+        "shrine"
+      ],
+      "nodes": {
+        "ember_deep_familiar_heat_marks_entry": {
+          "body": "The familiar route posts carry a new pattern of heat shimmer. Their bases stay sharply visible while the tops seem to move across the dunes. The marked observation patch is still firm, offering a way to read the change without walking toward whichever outline looks most convincing.",
+          "choices": [
+            {
+              "label": "Compare the bases with the moving outlines",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You record what remains dependable when the higher shapes wander. The posts keep their honest use as markers rather than promises about distance.",
+              "id": "ember_deep_familiar_heat_marks_entry_c1",
+              "description": "Use this run's research allowance."
+            },
+            {
+              "label": "Follow the lower markers with your companion",
+              "effects": {
+                "bond": 1
+              },
+              "outcome": "Your companion takes the clearer line and waits for you at each post. You reach the next shaded turn without following the shimmer.",
+              "id": "ember_deep_familiar_heat_marks_entry_c2",
+              "description": "Lead bond +1."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ember_deep_familiar_watchful_track",
+      "title": "Familiar Territory · A Watcher beyond the Tracks",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "ember_deep_familiar_watchful_track_entry",
+      "tags": [
+        "ember_deep",
+        "wild"
+      ],
+      "nodes": {
+        "ember_deep_familiar_watchful_track_entry": {
+          "body": "A fresh trail crosses the familiar open practice ground, circling the firm edge instead of the soft centre. The watcher at its end notices your team without blocking the route. It waits beside the boundary stones, while the shaded bank behind you remains open to travellers who would rather keep moving.",
+          "choices": [
+            {
+              "label": "Accept the invitation on the firm practice ground",
+              "effects": {
+                "battle": "rare"
+              },
+              "outcome": "The watcher moves onto the clear ground and waits. Your companions have room to settle before the contest begins.",
+              "id": "ember_deep_familiar_watchful_track_entry_c1",
+              "description": "Begin a one-beast wild battle."
+            },
+            {
+              "label": "Study the tracks from the shaded bank",
+              "effects": {
+                "study": 1
+              },
+              "outcome": "You compare the deeper turns without approaching the visitor. The watcher keeps its space while your team follows the marked route onward.",
+              "id": "ember_deep_familiar_watchful_track_entry_c2",
+              "description": "Use this run's research allowance."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

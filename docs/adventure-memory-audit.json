@@ -1,0 +1,2096 @@
+{
+  "status": "passed",
+  "kind": "Production story-planner persistence replay, not a combat simulation.",
+  "visits_per_biome_policy": 100,
+  "policies": [
+    "safe",
+    "last",
+    "seeded"
+  ],
+  "source_sha256": {
+    "utils/journeys.py": "486511409e8051f57c88e8e8dc99fefd618d0ecbf7fe85bc54d78592cd60eb50",
+    "utils/adventure_content.py": "83322a3b05387cf380d672c478e80f31efae9912d662d6cd2b199f37a501367c",
+    "utils/habitats.py": "c3a5dc1663f0c8b048d6bd4ce0b370dccb45eb878fe6828e9b6336d959b9b2fb",
+    "data/beasts.json": "7c5a8ca53f750a23c6c7a9c7f2910366d2a4e864b5e46bb68f452330d503b25b",
+    "scripts/audit_adventure_memory.py": "4d3d56e8c1ea5c4b991403808c8a654c443211446f68a435b4f5db70ca78caf2",
+    "data/adventures/woods.json": "23360e6dd1325abc3efd0ea0501eff60e68ca227def3dedb38b70c603a979f3f",
+    "data/adventures/woods_deep.json": "2108b2cd5511e72fd76cbbfbe051f103e163ac6f7e067ebf98f0c4c569d36260",
+    "data/adventures/ember.json": "a862e4cd53714847af80e4fd6db2e188f0997170e3af454e775aad9d70ed14f3",
+    "data/adventures/ember_deep.json": "a5ced96e3b1003609e31dcd2bed7b5f89b559bd1cadb7c745b525d2228f64ac0",
+    "data/adventures/glacial.json": "47ba0d42eb51d88b943cb4e7a867cf5b05d13ec891c6e53c7837ba1ef991249e",
+    "data/adventures/glacial_deep.json": "89638e79cfc38a5635d9d17bc386902007268d3ffa1b493e44edaf76b092fc64",
+    "data/adventures/trenches.json": "4543ecb9ba75e0fdb2b5550bcdaaccbfacfe44eb06fa252f2a7bbd5a875f8b78",
+    "data/adventures/trenches_deep.json": "8c3b5db8b9783da8ae77df046b64deca75a1beedb2feb47d3a62ae007aeb402a",
+    "data/adventures/loom.json": "9f23318adf1436ff754920657d65d2eaba81267910f587eaccd22c36d15ce00d",
+    "data/adventures/loom_deep.json": "ffcd8b218b48eadc8ccf23b6d9f6c47ea799184260016b89b4b034cda9a2e5a4"
+  },
+  "repeatable_battle_coverage": {
+    "woods": [
+      {
+        "root": "woods_familiar_ring",
+        "node": "woods_familiar_ring_entry",
+        "choice": "woods_familiar_ring_entry_c1",
+        "kind": "pack2"
+      },
+      {
+        "root": "woods_familiar_sun_patch",
+        "node": "woods_familiar_sun_patch_entry",
+        "choice": "woods_familiar_sun_patch_entry_c1",
+        "kind": "single"
+      }
+    ],
+    "woods_deep": [
+      {
+        "root": "woods_deep_familiar_quiet_wakes",
+        "node": "woods_deep_familiar_quiet_wakes_entry",
+        "choice": "woods_deep_familiar_quiet_wakes_entry_c1",
+        "kind": "pack2"
+      },
+      {
+        "root": "woods_deep_familiar_deep_tracks",
+        "node": "woods_deep_familiar_deep_tracks_entry",
+        "choice": "woods_deep_familiar_deep_tracks_entry_c1",
+        "kind": "rare"
+      }
+    ],
+    "ember": [
+      {
+        "root": "ember_familiar_quarry_ring",
+        "node": "ember_familiar_quarry_ring_entry",
+        "choice": "ember_familiar_quarry_ring_entry_c1",
+        "kind": "pack2"
+      },
+      {
+        "root": "ember_familiar_sunstone_guest",
+        "node": "ember_familiar_sunstone_guest_entry",
+        "choice": "ember_familiar_sunstone_guest_entry_c1",
+        "kind": "single"
+      }
+    ],
+    "ember_deep": [
+      {
+        "root": "ember_deep_familiar_dune_ring",
+        "node": "ember_deep_familiar_dune_ring_entry",
+        "choice": "ember_deep_familiar_dune_ring_entry_c1",
+        "kind": "pack3"
+      },
+      {
+        "root": "ember_deep_familiar_watchful_track",
+        "node": "ember_deep_familiar_watchful_track_entry",
+        "choice": "ember_deep_familiar_watchful_track_entry_c1",
+        "kind": "rare"
+      }
+    ],
+    "glacial": [
+      {
+        "root": "glacial_familiar_ice_ring",
+        "node": "glacial_familiar_ice_ring_entry",
+        "choice": "glacial_familiar_ice_ring_entry_c1",
+        "kind": "pack2"
+      },
+      {
+        "root": "glacial_familiar_high_track",
+        "node": "glacial_familiar_high_track_entry",
+        "choice": "glacial_familiar_high_track_entry_c1",
+        "kind": "rare"
+      }
+    ],
+    "glacial_deep": [
+      {
+        "root": "glacial_deep.harpy_draft",
+        "node": "glacial_deep.harpy_draft.entry",
+        "choice": "ridge_test",
+        "kind": "single"
+      },
+      {
+        "root": "glacial_deep.rukh_stones",
+        "node": "glacial_deep.rukh_stones.entry",
+        "choice": "ledge_pair",
+        "kind": "pack2"
+      }
+    ],
+    "trenches": [
+      {
+        "root": "trenches.bubble_lane",
+        "node": "trenches.bubble_lane.entry",
+        "choice": "resident_test",
+        "kind": "single"
+      },
+      {
+        "root": "trenches.kelpie_reeds",
+        "node": "trenches.kelpie_reeds.entry",
+        "choice": "channel_relay",
+        "kind": "pack3"
+      }
+    ],
+    "trenches_deep": [
+      {
+        "root": "trenches_deep.practice_bubbles",
+        "node": "trenches_deep.practice_bubbles.entry",
+        "choice": "challenge",
+        "kind": "single"
+      },
+      {
+        "root": "trenches_deep.practice_bubbles",
+        "node": "trenches_deep.practice_bubbles.entry",
+        "choice": "paired_bubbles",
+        "kind": "pack2"
+      }
+    ],
+    "loom": [
+      {
+        "root": "loom.quiet_circle",
+        "node": "loom.quiet_circle.entry",
+        "choice": "accept",
+        "kind": "single"
+      },
+      {
+        "root": "loom.quiet_circle",
+        "node": "loom.quiet_circle.entry",
+        "choice": "paired_rehearsal",
+        "kind": "pack2"
+      }
+    ],
+    "loom_deep": [
+      {
+        "root": "loom_deep.starlit_drill",
+        "node": "loom_deep.starlit_drill.entry",
+        "choice": "accept",
+        "kind": "single"
+      },
+      {
+        "root": "loom_deep.starlit_drill",
+        "node": "loom_deep.starlit_drill.entry",
+        "choice": "orchard_relay",
+        "kind": "pack3"
+      }
+    ]
+  },
+  "assumptions": [
+    "In-memory SQLite contains only the four real adventure memory tables.",
+    "Each biome/policy has independent trainer history; all visits reload persisted world state.",
+    "Safe chooses the first no-battle/no-HP-cost option; last chooses the final offered option; seeded uses a stable local RNG.",
+    "Every battle intention is finished as won=True; no combat, gear, HP, item use, catches or economic settlement is simulated.",
+    "Every published scene alternative is also resolved in a SQLite savepoint and rolled back; actual history retains only the chosen option.",
+    "After each chosen location transition, a rollback-protected fresh initialization explicitly probes early-departure resumption. Natural journey-boundary resumptions are counted separately.",
+    "Three existing beast identities are planner inputs only. Active trip payloads JSON-roundtrip after every step.",
+    "Not all 20 one-time roots must be reachable under one branch policy. Unmet flag gates are recorded, not counted as reset failures."
+  ],
+  "checks": [
+    "Completed one-time roots never restart; completion records never regress.",
+    "Unfinished locations have priority and resume at the exact saved unresolved node.",
+    "A root starts at most once per visit; familiar roots exclude the prior persisted recent window.",
+    "All published scene choices have legal flags/tokens and actually resolve; returned state matches durable progress, nodes, flags and recent history.",
+    "Every biome has authored familiar single/rare and pack2/pack3 battle choices; each replay actually resolves published familiar battle alternatives without removing its safe option.",
+    "Exhausted visits expose no eligible remaining root, shorten the denominator to earned steps and publish the explicit familiar-territory return page."
+  ],
+  "results": [
+    {
+      "biome": "woods",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 306,
+      "familiar_root_starts": 287,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 95,
+      "unique_completed_one_time_roots": 19,
+      "completed_root_ids": [
+        "woods_bellhouse",
+        "woods_blue_chalk",
+        "woods_borrowed_shadow",
+        "woods_chalk_path",
+        "woods_copper_stump",
+        "woods_crooked_bridge",
+        "woods_crooked_race",
+        "woods_log_raft",
+        "woods_moth_press",
+        "woods_pool_bell",
+        "woods_raincoat",
+        "woods_reedwheel",
+        "woods_root_classroom",
+        "woods_seedling_score",
+        "woods_stone_calendar",
+        "woods_teapot",
+        "woods_toast_basket",
+        "woods_tree_letters",
+        "woods_worn_collar"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "woods_familiar_fern_shelf": 48,
+        "woods_familiar_leaf_drift": 48,
+        "woods_familiar_rain_measure": 48,
+        "woods_familiar_ring": 47,
+        "woods_familiar_sun_patch": 48,
+        "woods_familiar_windfalls": 48
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 5,
+      "final_resolved_nodes": 31,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "woods_late_breakfast",
+          "requires_flags": [
+            "woods_breakfast_returned"
+          ],
+          "unmet_flags": [
+            "woods_breakfast_returned"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "woods",
+      "policy": "last",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 306,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 1,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 94,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "woods_bellhouse",
+        "woods_blue_chalk",
+        "woods_borrowed_shadow",
+        "woods_chalk_path",
+        "woods_copper_stump",
+        "woods_crooked_bridge",
+        "woods_crooked_race",
+        "woods_late_breakfast",
+        "woods_log_raft",
+        "woods_moth_press",
+        "woods_pool_bell",
+        "woods_raincoat",
+        "woods_reedwheel",
+        "woods_root_classroom",
+        "woods_seedling_score",
+        "woods_stone_calendar",
+        "woods_teapot",
+        "woods_toast_basket",
+        "woods_tree_letters",
+        "woods_worn_collar"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "woods_familiar_fern_shelf": 48,
+        "woods_familiar_leaf_drift": 48,
+        "woods_familiar_rain_measure": 48,
+        "woods_familiar_ring": 47,
+        "woods_familiar_sun_patch": 47,
+        "woods_familiar_windfalls": 48
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 6,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "woods",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 307,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 56,
+      "familiar_battle_intentions_assumed_won": 54,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "woods_bellhouse",
+        "woods_blue_chalk",
+        "woods_borrowed_shadow",
+        "woods_chalk_path",
+        "woods_copper_stump",
+        "woods_crooked_bridge",
+        "woods_crooked_race",
+        "woods_late_breakfast",
+        "woods_log_raft",
+        "woods_moth_press",
+        "woods_pool_bell",
+        "woods_raincoat",
+        "woods_reedwheel",
+        "woods_root_classroom",
+        "woods_seedling_score",
+        "woods_stone_calendar",
+        "woods_teapot",
+        "woods_toast_basket",
+        "woods_tree_letters",
+        "woods_worn_collar"
+      ],
+      "resumed_location_ids": [
+        "woods_crooked_bridge"
+      ],
+      "familiar_start_counts": {
+        "woods_familiar_fern_shelf": 47,
+        "woods_familiar_leaf_drift": 47,
+        "woods_familiar_rain_measure": 48,
+        "woods_familiar_ring": 48,
+        "woods_familiar_sun_patch": 48,
+        "woods_familiar_windfalls": 48
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 5,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "woods_deep",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 307,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "woods_deep_archive_names",
+        "woods_deep_beacon_reply",
+        "woods_deep_boot_garden",
+        "woods_deep_cold_guest",
+        "woods_deep_drifting_reply",
+        "woods_deep_fen_beacon",
+        "woods_deep_floating_pantry",
+        "woods_deep_floating_post",
+        "woods_deep_folded_map",
+        "woods_deep_gnat_orchestra",
+        "woods_deep_harpy_weather",
+        "woods_deep_kelpie_reflection",
+        "woods_deep_low_window",
+        "woods_deep_mud_gauge",
+        "woods_deep_muddy_ambassador",
+        "woods_deep_narrowboat",
+        "woods_deep_peat_archive",
+        "woods_deep_reed_scribe",
+        "woods_deep_small_wake",
+        "woods_deep_white_hooves"
+      ],
+      "resumed_location_ids": [
+        "woods_deep_peat_archive"
+      ],
+      "familiar_start_counts": {
+        "woods_deep_familiar_deep_tracks": 48,
+        "woods_deep_familiar_fog_line": 48,
+        "woods_deep_familiar_quiet_wakes": 48,
+        "woods_deep_familiar_reed_bundle": 47,
+        "woods_deep_familiar_reed_roof": 48,
+        "woods_deep_familiar_scent_posts": 47
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 3,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "woods_deep",
+      "policy": "last",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 307,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "woods_deep_archive_names",
+        "woods_deep_beacon_reply",
+        "woods_deep_boot_garden",
+        "woods_deep_cold_guest",
+        "woods_deep_drifting_reply",
+        "woods_deep_fen_beacon",
+        "woods_deep_floating_pantry",
+        "woods_deep_floating_post",
+        "woods_deep_folded_map",
+        "woods_deep_gnat_orchestra",
+        "woods_deep_harpy_weather",
+        "woods_deep_kelpie_reflection",
+        "woods_deep_low_window",
+        "woods_deep_mud_gauge",
+        "woods_deep_muddy_ambassador",
+        "woods_deep_narrowboat",
+        "woods_deep_peat_archive",
+        "woods_deep_reed_scribe",
+        "woods_deep_small_wake",
+        "woods_deep_white_hooves"
+      ],
+      "resumed_location_ids": [
+        "woods_deep_peat_archive"
+      ],
+      "familiar_start_counts": {
+        "woods_deep_familiar_deep_tracks": 48,
+        "woods_deep_familiar_fog_line": 48,
+        "woods_deep_familiar_quiet_wakes": 48,
+        "woods_deep_familiar_reed_bundle": 47,
+        "woods_deep_familiar_reed_roof": 47,
+        "woods_deep_familiar_scent_posts": 48
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 3,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "woods_deep",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 306,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 54,
+      "familiar_battle_intentions_assumed_won": 54,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 95,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "woods_deep_archive_names",
+        "woods_deep_beacon_reply",
+        "woods_deep_boot_garden",
+        "woods_deep_cold_guest",
+        "woods_deep_drifting_reply",
+        "woods_deep_fen_beacon",
+        "woods_deep_floating_pantry",
+        "woods_deep_floating_post",
+        "woods_deep_folded_map",
+        "woods_deep_gnat_orchestra",
+        "woods_deep_harpy_weather",
+        "woods_deep_kelpie_reflection",
+        "woods_deep_low_window",
+        "woods_deep_mud_gauge",
+        "woods_deep_muddy_ambassador",
+        "woods_deep_narrowboat",
+        "woods_deep_peat_archive",
+        "woods_deep_reed_scribe",
+        "woods_deep_small_wake",
+        "woods_deep_white_hooves"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "woods_deep_familiar_deep_tracks": 48,
+        "woods_deep_familiar_fog_line": 48,
+        "woods_deep_familiar_quiet_wakes": 47,
+        "woods_deep_familiar_reed_bundle": 47,
+        "woods_deep_familiar_reed_roof": 48,
+        "woods_deep_familiar_scent_posts": 48
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 3,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "ember",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 307,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "ember_ash_compass",
+        "ember_ashbread_oven",
+        "ember_borrowed_mittens",
+        "ember_bread_handover",
+        "ember_charred_orchard",
+        "ember_cinder_loom",
+        "ember_cooled_footprints",
+        "ember_cracked_jar",
+        "ember_goblin_boots",
+        "ember_hellhound_whistle",
+        "ember_listening_stone",
+        "ember_manticore_shade",
+        "ember_orchard_visitors",
+        "ember_pressure_house",
+        "ember_pressure_routine",
+        "ember_shared_tongs",
+        "ember_soot_laundry",
+        "ember_three_doorways",
+        "ember_warm_creche",
+        "ember_wyvern_post"
+      ],
+      "resumed_location_ids": [
+        "ember_ashbread_oven"
+      ],
+      "familiar_start_counts": {
+        "ember_familiar_ash_path": 47,
+        "ember_familiar_cooled_gatherings": 48,
+        "ember_familiar_quarry_ring": 48,
+        "ember_familiar_sunstone_guest": 48,
+        "ember_familiar_vent_notes": 48,
+        "ember_familiar_warm_shelf": 47
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "ember",
+      "policy": "last",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 308,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 2,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "ember_ash_compass",
+        "ember_ashbread_oven",
+        "ember_borrowed_mittens",
+        "ember_bread_handover",
+        "ember_charred_orchard",
+        "ember_cinder_loom",
+        "ember_cooled_footprints",
+        "ember_cracked_jar",
+        "ember_goblin_boots",
+        "ember_hellhound_whistle",
+        "ember_listening_stone",
+        "ember_manticore_shade",
+        "ember_orchard_visitors",
+        "ember_pressure_house",
+        "ember_pressure_routine",
+        "ember_shared_tongs",
+        "ember_soot_laundry",
+        "ember_three_doorways",
+        "ember_warm_creche",
+        "ember_wyvern_post"
+      ],
+      "resumed_location_ids": [
+        "ember_ashbread_oven",
+        "ember_pressure_house"
+      ],
+      "familiar_start_counts": {
+        "ember_familiar_ash_path": 48,
+        "ember_familiar_cooled_gatherings": 48,
+        "ember_familiar_quarry_ring": 48,
+        "ember_familiar_sunstone_guest": 48,
+        "ember_familiar_vent_notes": 47,
+        "ember_familiar_warm_shelf": 47
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "ember",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 312,
+      "root_starts": 306,
+      "familiar_root_starts": 286,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 94,
+      "shortened_visits": 94,
+      "battle_intentions_assumed_won": 45,
+      "familiar_battle_intentions_assumed_won": 45,
+      "published_scene_choices_resolved_in_rollback": 624,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "ember_ash_compass",
+        "ember_ashbread_oven",
+        "ember_borrowed_mittens",
+        "ember_bread_handover",
+        "ember_charred_orchard",
+        "ember_cinder_loom",
+        "ember_cooled_footprints",
+        "ember_cracked_jar",
+        "ember_goblin_boots",
+        "ember_hellhound_whistle",
+        "ember_listening_stone",
+        "ember_manticore_shade",
+        "ember_orchard_visitors",
+        "ember_pressure_house",
+        "ember_pressure_routine",
+        "ember_shared_tongs",
+        "ember_soot_laundry",
+        "ember_three_doorways",
+        "ember_warm_creche",
+        "ember_wyvern_post"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "ember_familiar_ash_path": 48,
+        "ember_familiar_cooled_gatherings": 48,
+        "ember_familiar_quarry_ring": 48,
+        "ember_familiar_sunstone_guest": 48,
+        "ember_familiar_vent_notes": 47,
+        "ember_familiar_warm_shelf": 47
+      },
+      "steps_per_visit": {
+        "3": 94,
+        "5": 6
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "ember_deep",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 309,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 630,
+      "published_familiar_battle_choices_resolved_in_rollback": 97,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "ember_deep_basilisk_mirror",
+        "ember_deep_behemoth_distance",
+        "ember_deep_buried_theatre",
+        "ember_deep_cooling_pots",
+        "ember_deep_crossing_message",
+        "ember_deep_fourth_tower",
+        "ember_deep_glass_buttons",
+        "ember_deep_glass_sail_house",
+        "ember_deep_horizon_station",
+        "ember_deep_phoenix_arc",
+        "ember_deep_public_shade",
+        "ember_deep_sail_patch",
+        "ember_deep_sand_copies",
+        "ember_deep_sand_sculptor",
+        "ember_deep_slow_route",
+        "ember_deep_stacked_luggage",
+        "ember_deep_theatre_bill",
+        "ember_deep_three_shadows",
+        "ember_deep_unfinished_labyrinth",
+        "ember_deep_unused_maps"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "ember_deep_familiar_dune_ring": 48,
+        "ember_deep_familiar_glass_gathering": 48,
+        "ember_deep_familiar_heat_marks": 48,
+        "ember_deep_familiar_night_screen": 48,
+        "ember_deep_familiar_sand_ledge": 48,
+        "ember_deep_familiar_watchful_track": 49
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 5,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "ember_deep",
+      "policy": "last",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 310,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 1,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 630,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "ember_deep_basilisk_mirror",
+        "ember_deep_behemoth_distance",
+        "ember_deep_buried_theatre",
+        "ember_deep_cooling_pots",
+        "ember_deep_crossing_message",
+        "ember_deep_fourth_tower",
+        "ember_deep_glass_buttons",
+        "ember_deep_glass_sail_house",
+        "ember_deep_horizon_station",
+        "ember_deep_phoenix_arc",
+        "ember_deep_public_shade",
+        "ember_deep_sail_patch",
+        "ember_deep_sand_copies",
+        "ember_deep_sand_sculptor",
+        "ember_deep_slow_route",
+        "ember_deep_stacked_luggage",
+        "ember_deep_theatre_bill",
+        "ember_deep_three_shadows",
+        "ember_deep_unfinished_labyrinth",
+        "ember_deep_unused_maps"
+      ],
+      "resumed_location_ids": [
+        "ember_deep_buried_theatre"
+      ],
+      "familiar_start_counts": {
+        "ember_deep_familiar_dune_ring": 48,
+        "ember_deep_familiar_glass_gathering": 48,
+        "ember_deep_familiar_heat_marks": 49,
+        "ember_deep_familiar_night_screen": 48,
+        "ember_deep_familiar_sand_ledge": 48,
+        "ember_deep_familiar_watchful_track": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "ember_deep",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 310,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 42,
+      "familiar_battle_intentions_assumed_won": 42,
+      "published_scene_choices_resolved_in_rollback": 630,
+      "published_familiar_battle_choices_resolved_in_rollback": 97,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "ember_deep_basilisk_mirror",
+        "ember_deep_behemoth_distance",
+        "ember_deep_buried_theatre",
+        "ember_deep_cooling_pots",
+        "ember_deep_crossing_message",
+        "ember_deep_fourth_tower",
+        "ember_deep_glass_buttons",
+        "ember_deep_glass_sail_house",
+        "ember_deep_horizon_station",
+        "ember_deep_phoenix_arc",
+        "ember_deep_public_shade",
+        "ember_deep_sail_patch",
+        "ember_deep_sand_copies",
+        "ember_deep_sand_sculptor",
+        "ember_deep_slow_route",
+        "ember_deep_stacked_luggage",
+        "ember_deep_theatre_bill",
+        "ember_deep_three_shadows",
+        "ember_deep_unfinished_labyrinth",
+        "ember_deep_unused_maps"
+      ],
+      "resumed_location_ids": [
+        "ember_deep_buried_theatre"
+      ],
+      "familiar_start_counts": {
+        "ember_deep_familiar_dune_ring": 49,
+        "ember_deep_familiar_glass_gathering": 48,
+        "ember_deep_familiar_heat_marks": 48,
+        "ember_deep_familiar_night_screen": 48,
+        "ember_deep_familiar_sand_ledge": 48,
+        "ember_deep_familiar_watchful_track": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "glacial",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 309,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 630,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "glacial_borrowed_courage",
+        "glacial_bread_shelf",
+        "glacial_frost_flowers",
+        "glacial_glacius_route",
+        "glacial_griffin_ledge",
+        "glacial_ice_library",
+        "glacial_lake_bubbles",
+        "glacial_muffled_stall",
+        "glacial_pegasus_drinking",
+        "glacial_ropeway_station",
+        "glacial_route_correction",
+        "glacial_rukh_distance",
+        "glacial_shelter_followup",
+        "glacial_simurgh_horizon",
+        "glacial_snow_marker",
+        "glacial_station_walkers",
+        "glacial_two_echoes",
+        "glacial_warm_porch",
+        "glacial_warm_stitch",
+        "glacial_yeti_mitten"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "glacial_familiar_dry_alcove": 49,
+        "glacial_familiar_echo_arch": 48,
+        "glacial_familiar_frost_gatherings": 48,
+        "glacial_familiar_high_track": 48,
+        "glacial_familiar_ice_ring": 48,
+        "glacial_familiar_snow_lip": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "glacial",
+      "policy": "last",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 310,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 630,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "glacial_borrowed_courage",
+        "glacial_bread_shelf",
+        "glacial_frost_flowers",
+        "glacial_glacius_route",
+        "glacial_griffin_ledge",
+        "glacial_ice_library",
+        "glacial_lake_bubbles",
+        "glacial_muffled_stall",
+        "glacial_pegasus_drinking",
+        "glacial_ropeway_station",
+        "glacial_route_correction",
+        "glacial_rukh_distance",
+        "glacial_shelter_followup",
+        "glacial_simurgh_horizon",
+        "glacial_snow_marker",
+        "glacial_station_walkers",
+        "glacial_two_echoes",
+        "glacial_warm_porch",
+        "glacial_warm_stitch",
+        "glacial_yeti_mitten"
+      ],
+      "resumed_location_ids": [
+        "glacial_ice_library"
+      ],
+      "familiar_start_counts": {
+        "glacial_familiar_dry_alcove": 48,
+        "glacial_familiar_echo_arch": 48,
+        "glacial_familiar_frost_gatherings": 49,
+        "glacial_familiar_high_track": 48,
+        "glacial_familiar_ice_ring": 48,
+        "glacial_familiar_snow_lip": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "glacial",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 310,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 53,
+      "familiar_battle_intentions_assumed_won": 53,
+      "published_scene_choices_resolved_in_rollback": 630,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "glacial_borrowed_courage",
+        "glacial_bread_shelf",
+        "glacial_frost_flowers",
+        "glacial_glacius_route",
+        "glacial_griffin_ledge",
+        "glacial_ice_library",
+        "glacial_lake_bubbles",
+        "glacial_muffled_stall",
+        "glacial_pegasus_drinking",
+        "glacial_ropeway_station",
+        "glacial_route_correction",
+        "glacial_rukh_distance",
+        "glacial_shelter_followup",
+        "glacial_simurgh_horizon",
+        "glacial_snow_marker",
+        "glacial_station_walkers",
+        "glacial_two_echoes",
+        "glacial_warm_porch",
+        "glacial_warm_stitch",
+        "glacial_yeti_mitten"
+      ],
+      "resumed_location_ids": [
+        "glacial_ice_library"
+      ],
+      "familiar_start_counts": {
+        "glacial_familiar_dry_alcove": 49,
+        "glacial_familiar_echo_arch": 48,
+        "glacial_familiar_frost_gatherings": 48,
+        "glacial_familiar_high_track": 48,
+        "glacial_familiar_ice_ring": 48,
+        "glacial_familiar_snow_lip": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "glacial_deep",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 310,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 726,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "glacial_deep.bell_answer",
+        "glacial_deep.bellspan",
+        "glacial_deep.cairn_apology",
+        "glacial_deep.cloud_census",
+        "glacial_deep.cloud_sketch",
+        "glacial_deep.cloud_station",
+        "glacial_deep.dye_house",
+        "glacial_deep.flag_rookery",
+        "glacial_deep.frost_window",
+        "glacial_deep.glass_roots",
+        "glacial_deep.ice_steps",
+        "glacial_deep.practice_yard",
+        "glacial_deep.sail_mill",
+        "glacial_deep.sliding_bench",
+        "glacial_deep.tea_cup",
+        "glacial_deep.thunder_feather",
+        "glacial_deep.weather_house",
+        "glacial_deep.weather_letter",
+        "glacial_deep.wind_shadow",
+        "glacial_deep.wool_lines"
+      ],
+      "resumed_location_ids": [
+        "glacial_deep.bellspan"
+      ],
+      "familiar_start_counts": {
+        "glacial_deep.cloud_breath": 48,
+        "glacial_deep.harpy_draft": 48,
+        "glacial_deep.ice_buds": 48,
+        "glacial_deep.mica_slide": 49,
+        "glacial_deep.rukh_stones": 48,
+        "glacial_deep.squall_shelter": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 5,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "glacial_deep",
+      "policy": "last",
+      "visits": 100,
+      "steps": 314,
+      "root_starts": 308,
+      "familiar_root_starts": 291,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 98,
+      "familiar_battle_intentions_assumed_won": 97,
+      "published_scene_choices_resolved_in_rollback": 725,
+      "published_familiar_battle_choices_resolved_in_rollback": 97,
+      "unique_completed_one_time_roots": 17,
+      "completed_root_ids": [
+        "glacial_deep.bellspan",
+        "glacial_deep.cairn_apology",
+        "glacial_deep.cloud_sketch",
+        "glacial_deep.cloud_station",
+        "glacial_deep.dye_house",
+        "glacial_deep.flag_rookery",
+        "glacial_deep.frost_window",
+        "glacial_deep.glass_roots",
+        "glacial_deep.ice_steps",
+        "glacial_deep.practice_yard",
+        "glacial_deep.sail_mill",
+        "glacial_deep.sliding_bench",
+        "glacial_deep.tea_cup",
+        "glacial_deep.thunder_feather",
+        "glacial_deep.weather_house",
+        "glacial_deep.wind_shadow",
+        "glacial_deep.wool_lines"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "glacial_deep.cloud_breath": 48,
+        "glacial_deep.harpy_draft": 49,
+        "glacial_deep.ice_buds": 49,
+        "glacial_deep.mica_slide": 49,
+        "glacial_deep.rukh_stones": 48,
+        "glacial_deep.squall_shelter": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "5": 1,
+        "6": 4
+      },
+      "final_flag_count": 0,
+      "final_resolved_nodes": 29,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "glacial_deep.weather_letter",
+          "requires_flags": [
+            "glacial_deep.weather_records"
+          ],
+          "unmet_flags": [
+            "glacial_deep.weather_records"
+          ]
+        },
+        {
+          "id": "glacial_deep.bell_answer",
+          "requires_flags": [
+            "glacial_deep.bell_tuned"
+          ],
+          "unmet_flags": [
+            "glacial_deep.bell_tuned"
+          ]
+        },
+        {
+          "id": "glacial_deep.cloud_census",
+          "requires_flags": [
+            "glacial_deep.cloud_route"
+          ],
+          "unmet_flags": [
+            "glacial_deep.cloud_route"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "glacial_deep",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 315,
+      "root_starts": 310,
+      "familiar_root_starts": 289,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 95,
+      "shortened_visits": 95,
+      "battle_intentions_assumed_won": 38,
+      "familiar_battle_intentions_assumed_won": 37,
+      "published_scene_choices_resolved_in_rollback": 727,
+      "published_familiar_battle_choices_resolved_in_rollback": 97,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "glacial_deep.bell_answer",
+        "glacial_deep.bellspan",
+        "glacial_deep.cairn_apology",
+        "glacial_deep.cloud_census",
+        "glacial_deep.cloud_sketch",
+        "glacial_deep.cloud_station",
+        "glacial_deep.dye_house",
+        "glacial_deep.flag_rookery",
+        "glacial_deep.frost_window",
+        "glacial_deep.glass_roots",
+        "glacial_deep.ice_steps",
+        "glacial_deep.practice_yard",
+        "glacial_deep.sail_mill",
+        "glacial_deep.sliding_bench",
+        "glacial_deep.tea_cup",
+        "glacial_deep.thunder_feather",
+        "glacial_deep.weather_house",
+        "glacial_deep.weather_letter",
+        "glacial_deep.wind_shadow",
+        "glacial_deep.wool_lines"
+      ],
+      "resumed_location_ids": [
+        "glacial_deep.bellspan"
+      ],
+      "familiar_start_counts": {
+        "glacial_deep.cloud_breath": 48,
+        "glacial_deep.harpy_draft": 49,
+        "glacial_deep.ice_buds": 48,
+        "glacial_deep.mica_slide": 48,
+        "glacial_deep.rukh_stones": 48,
+        "glacial_deep.squall_shelter": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "6": 5
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "trenches",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 317,
+      "root_starts": 312,
+      "familiar_root_starts": 291,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 731,
+      "published_familiar_battle_choices_resolved_in_rollback": 97,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "trenches.anchor_house",
+        "trenches.beacon_keeper",
+        "trenches.current_drill",
+        "trenches.echo_stair",
+        "trenches.empty_helmet",
+        "trenches.floating_market",
+        "trenches.gate_practice",
+        "trenches.hydra_reflections",
+        "trenches.ink_notice",
+        "trenches.kelpie_channel",
+        "trenches.kitchen_visitors",
+        "trenches.lantern_check",
+        "trenches.leviathan_lane",
+        "trenches.loose_net",
+        "trenches.outside_pupil",
+        "trenches.post_house",
+        "trenches.salt_archive",
+        "trenches.sponge_music",
+        "trenches.west_window",
+        "trenches.window_school"
+      ],
+      "resumed_location_ids": [
+        "trenches.post_house"
+      ],
+      "familiar_start_counts": {
+        "trenches.bubble_lane": 48,
+        "trenches.courier_shelter": 49,
+        "trenches.ink_fall": 48,
+        "trenches.kelpie_reeds": 49,
+        "trenches.sand_cradle": 48,
+        "trenches.stone_signal": 49
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "4": 1,
+        "7": 4
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "trenches",
+      "policy": "last",
+      "visits": 100,
+      "steps": 316,
+      "root_starts": 310,
+      "familiar_root_starts": 293,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 100,
+      "familiar_battle_intentions_assumed_won": 97,
+      "published_scene_choices_resolved_in_rollback": 729,
+      "published_familiar_battle_choices_resolved_in_rollback": 97,
+      "unique_completed_one_time_roots": 17,
+      "completed_root_ids": [
+        "trenches.anchor_house",
+        "trenches.beacon_keeper",
+        "trenches.current_drill",
+        "trenches.echo_stair",
+        "trenches.empty_helmet",
+        "trenches.floating_market",
+        "trenches.gate_practice",
+        "trenches.hydra_reflections",
+        "trenches.ink_notice",
+        "trenches.kelpie_channel",
+        "trenches.lantern_check",
+        "trenches.leviathan_lane",
+        "trenches.loose_net",
+        "trenches.post_house",
+        "trenches.salt_archive",
+        "trenches.sponge_music",
+        "trenches.window_school"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "trenches.bubble_lane": 49,
+        "trenches.courier_shelter": 49,
+        "trenches.ink_fall": 49,
+        "trenches.kelpie_reeds": 48,
+        "trenches.sand_cradle": 49,
+        "trenches.stone_signal": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "7": 4
+      },
+      "final_flag_count": 0,
+      "final_resolved_nodes": 29,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "trenches.west_window",
+          "requires_flags": [
+            "trenches.post_ledger"
+          ],
+          "unmet_flags": [
+            "trenches.post_ledger"
+          ]
+        },
+        {
+          "id": "trenches.outside_pupil",
+          "requires_flags": [
+            "trenches.window_letters"
+          ],
+          "unmet_flags": [
+            "trenches.window_letters"
+          ]
+        },
+        {
+          "id": "trenches.kitchen_visitors",
+          "requires_flags": [
+            "trenches.ballast_shared"
+          ],
+          "unmet_flags": [
+            "trenches.ballast_shared"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "trenches",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 316,
+      "root_starts": 311,
+      "familiar_root_starts": 291,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 31,
+      "familiar_battle_intentions_assumed_won": 29,
+      "published_scene_choices_resolved_in_rollback": 729,
+      "published_familiar_battle_choices_resolved_in_rollback": 97,
+      "unique_completed_one_time_roots": 19,
+      "completed_root_ids": [
+        "trenches.anchor_house",
+        "trenches.beacon_keeper",
+        "trenches.current_drill",
+        "trenches.echo_stair",
+        "trenches.empty_helmet",
+        "trenches.floating_market",
+        "trenches.gate_practice",
+        "trenches.hydra_reflections",
+        "trenches.ink_notice",
+        "trenches.kelpie_channel",
+        "trenches.kitchen_visitors",
+        "trenches.lantern_check",
+        "trenches.leviathan_lane",
+        "trenches.loose_net",
+        "trenches.outside_pupil",
+        "trenches.post_house",
+        "trenches.salt_archive",
+        "trenches.sponge_music",
+        "trenches.window_school"
+      ],
+      "resumed_location_ids": [
+        "trenches.anchor_house"
+      ],
+      "familiar_start_counts": {
+        "trenches.bubble_lane": 49,
+        "trenches.courier_shelter": 49,
+        "trenches.ink_fall": 48,
+        "trenches.kelpie_reeds": 48,
+        "trenches.sand_cradle": 48,
+        "trenches.stone_signal": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "7": 4
+      },
+      "final_flag_count": 2,
+      "final_resolved_nodes": 31,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "trenches.west_window",
+          "requires_flags": [
+            "trenches.post_ledger"
+          ],
+          "unmet_flags": [
+            "trenches.post_ledger"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "trenches_deep",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 317,
+      "root_starts": 312,
+      "familiar_root_starts": 291,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 683,
+      "published_familiar_battle_choices_resolved_in_rollback": 98,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "trenches_deep.basalt_buttons",
+        "trenches_deep.basalt_circle",
+        "trenches_deep.black_sand",
+        "trenches_deep.bubble_count",
+        "trenches_deep.cool_bath_guest",
+        "trenches_deep.coral_baths",
+        "trenches_deep.dragon_nursery",
+        "trenches_deep.drill_room",
+        "trenches_deep.eel_passage",
+        "trenches_deep.fan_shadow",
+        "trenches_deep.glasshouse",
+        "trenches_deep.phoenix_glimmer",
+        "trenches_deep.public_diagram",
+        "trenches_deep.regulator_house",
+        "trenches_deep.second_bloom",
+        "trenches_deep.shed_scale",
+        "trenches_deep.shelf_challenger",
+        "trenches_deep.valve_course",
+        "trenches_deep.vent_flute",
+        "trenches_deep.warm_memory"
+      ],
+      "resumed_location_ids": [
+        "trenches_deep.regulator_house"
+      ],
+      "familiar_start_counts": {
+        "trenches_deep.basalt_rest": 48,
+        "trenches_deep.bubble_arch": 49,
+        "trenches_deep.cinnamon_current": 49,
+        "trenches_deep.coral_fall": 48,
+        "trenches_deep.practice_bubbles": 49,
+        "trenches_deep.vent_pulse": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "4": 1,
+        "7": 4
+      },
+      "final_flag_count": 4,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "trenches_deep",
+      "policy": "last",
+      "visits": 100,
+      "steps": 316,
+      "root_starts": 312,
+      "familiar_root_starts": 293,
+      "continuation_resumptions": 2,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 52,
+      "familiar_battle_intentions_assumed_won": 49,
+      "published_scene_choices_resolved_in_rollback": 681,
+      "published_familiar_battle_choices_resolved_in_rollback": 98,
+      "unique_completed_one_time_roots": 17,
+      "completed_root_ids": [
+        "trenches_deep.basalt_buttons",
+        "trenches_deep.basalt_circle",
+        "trenches_deep.black_sand",
+        "trenches_deep.bubble_count",
+        "trenches_deep.coral_baths",
+        "trenches_deep.dragon_nursery",
+        "trenches_deep.drill_room",
+        "trenches_deep.eel_passage",
+        "trenches_deep.fan_shadow",
+        "trenches_deep.glasshouse",
+        "trenches_deep.phoenix_glimmer",
+        "trenches_deep.regulator_house",
+        "trenches_deep.shed_scale",
+        "trenches_deep.shelf_challenger",
+        "trenches_deep.valve_course",
+        "trenches_deep.vent_flute",
+        "trenches_deep.warm_memory"
+      ],
+      "resumed_location_ids": [
+        "trenches_deep.glasshouse",
+        "trenches_deep.regulator_house"
+      ],
+      "familiar_start_counts": {
+        "trenches_deep.basalt_rest": 49,
+        "trenches_deep.bubble_arch": 48,
+        "trenches_deep.cinnamon_current": 49,
+        "trenches_deep.coral_fall": 49,
+        "trenches_deep.practice_bubbles": 49,
+        "trenches_deep.vent_pulse": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "7": 4
+      },
+      "final_flag_count": 0,
+      "final_resolved_nodes": 29,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "trenches_deep.second_bloom",
+          "requires_flags": [
+            "trenches_deep.second_season"
+          ],
+          "unmet_flags": [
+            "trenches_deep.second_season"
+          ]
+        },
+        {
+          "id": "trenches_deep.public_diagram",
+          "requires_flags": [
+            "trenches_deep.vent_instructions"
+          ],
+          "unmet_flags": [
+            "trenches_deep.vent_instructions"
+          ]
+        },
+        {
+          "id": "trenches_deep.cool_bath_guest",
+          "requires_flags": [
+            "trenches_deep.baths_open"
+          ],
+          "unmet_flags": [
+            "trenches_deep.baths_open"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "trenches_deep",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 316,
+      "root_starts": 311,
+      "familiar_root_starts": 292,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 33,
+      "familiar_battle_intentions_assumed_won": 32,
+      "published_scene_choices_resolved_in_rollback": 680,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 18,
+      "completed_root_ids": [
+        "trenches_deep.basalt_buttons",
+        "trenches_deep.basalt_circle",
+        "trenches_deep.black_sand",
+        "trenches_deep.bubble_count",
+        "trenches_deep.coral_baths",
+        "trenches_deep.dragon_nursery",
+        "trenches_deep.drill_room",
+        "trenches_deep.eel_passage",
+        "trenches_deep.fan_shadow",
+        "trenches_deep.glasshouse",
+        "trenches_deep.phoenix_glimmer",
+        "trenches_deep.regulator_house",
+        "trenches_deep.second_bloom",
+        "trenches_deep.shed_scale",
+        "trenches_deep.shelf_challenger",
+        "trenches_deep.valve_course",
+        "trenches_deep.vent_flute",
+        "trenches_deep.warm_memory"
+      ],
+      "resumed_location_ids": [
+        "trenches_deep.glasshouse"
+      ],
+      "familiar_start_counts": {
+        "trenches_deep.basalt_rest": 49,
+        "trenches_deep.bubble_arch": 49,
+        "trenches_deep.cinnamon_current": 48,
+        "trenches_deep.coral_fall": 49,
+        "trenches_deep.practice_bubbles": 48,
+        "trenches_deep.vent_pulse": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "7": 4
+      },
+      "final_flag_count": 2,
+      "final_resolved_nodes": 30,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "trenches_deep.public_diagram",
+          "requires_flags": [
+            "trenches_deep.vent_instructions"
+          ],
+          "unmet_flags": [
+            "trenches_deep.vent_instructions"
+          ]
+        },
+        {
+          "id": "trenches_deep.cool_bath_guest",
+          "requires_flags": [
+            "trenches_deep.baths_open"
+          ],
+          "unmet_flags": [
+            "trenches_deep.baths_open"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "loom",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 317,
+      "root_starts": 311,
+      "familiar_root_starts": 291,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 683,
+      "published_familiar_battle_choices_resolved_in_rollback": 98,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "loom.blank_atlas",
+        "loom.book_rest",
+        "loom.chronos_pause",
+        "loom.gravity_rail",
+        "loom.hour_landing",
+        "loom.late_arrival",
+        "loom.margin_reply",
+        "loom.open_annex",
+        "loom.paradox_cup",
+        "loom.practice_library",
+        "loom.question_index",
+        "loom.returned_knot",
+        "loom.sphinx_margin",
+        "loom.starsteps",
+        "loom.thread_mender",
+        "loom.tomorrow_window",
+        "loom.unfinished_bridge",
+        "loom.unicorn_question",
+        "loom.witness_notice",
+        "loom.zodiac_circle"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "loom.bookmark_route": 48,
+        "loom.loose_thread": 48,
+        "loom.margin_light": 49,
+        "loom.quiet_circle": 49,
+        "loom.tilted_path": 49,
+        "loom.wide_stair": 48
+      },
+      "steps_per_visit": {
+        "3": 95,
+        "4": 1,
+        "7": 4
+      },
+      "final_flag_count": 5,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "loom",
+      "policy": "last",
+      "visits": 100,
+      "steps": 316,
+      "root_starts": 311,
+      "familiar_root_starts": 293,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 51,
+      "familiar_battle_intentions_assumed_won": 48,
+      "published_scene_choices_resolved_in_rollback": 680,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 17,
+      "completed_root_ids": [
+        "loom.blank_atlas",
+        "loom.book_rest",
+        "loom.chronos_pause",
+        "loom.gravity_rail",
+        "loom.hour_landing",
+        "loom.open_annex",
+        "loom.paradox_cup",
+        "loom.practice_library",
+        "loom.question_index",
+        "loom.sphinx_margin",
+        "loom.starsteps",
+        "loom.thread_mender",
+        "loom.tomorrow_window",
+        "loom.unfinished_bridge",
+        "loom.unicorn_question",
+        "loom.witness_notice",
+        "loom.zodiac_circle"
+      ],
+      "resumed_location_ids": [
+        "loom.unfinished_bridge"
+      ],
+      "familiar_start_counts": {
+        "loom.bookmark_route": 49,
+        "loom.loose_thread": 49,
+        "loom.margin_light": 49,
+        "loom.quiet_circle": 48,
+        "loom.tilted_path": 49,
+        "loom.wide_stair": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "7": 4
+      },
+      "final_flag_count": 0,
+      "final_resolved_nodes": 29,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "loom.margin_reply",
+          "requires_flags": [
+            "loom.index_margin"
+          ],
+          "unmet_flags": [
+            "loom.index_margin"
+          ]
+        },
+        {
+          "id": "loom.late_arrival",
+          "requires_flags": [
+            "loom.hour_invitation"
+          ],
+          "unmet_flags": [
+            "loom.hour_invitation"
+          ]
+        },
+        {
+          "id": "loom.returned_knot",
+          "requires_flags": [
+            "loom.bridge_request"
+          ],
+          "unmet_flags": [
+            "loom.bridge_request"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "loom",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 316,
+      "root_starts": 311,
+      "familiar_root_starts": 292,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 35,
+      "familiar_battle_intentions_assumed_won": 32,
+      "published_scene_choices_resolved_in_rollback": 680,
+      "published_familiar_battle_choices_resolved_in_rollback": 96,
+      "unique_completed_one_time_roots": 18,
+      "completed_root_ids": [
+        "loom.blank_atlas",
+        "loom.book_rest",
+        "loom.chronos_pause",
+        "loom.gravity_rail",
+        "loom.hour_landing",
+        "loom.late_arrival",
+        "loom.open_annex",
+        "loom.paradox_cup",
+        "loom.practice_library",
+        "loom.question_index",
+        "loom.sphinx_margin",
+        "loom.starsteps",
+        "loom.thread_mender",
+        "loom.tomorrow_window",
+        "loom.unfinished_bridge",
+        "loom.unicorn_question",
+        "loom.witness_notice",
+        "loom.zodiac_circle"
+      ],
+      "resumed_location_ids": [
+        "loom.question_index"
+      ],
+      "familiar_start_counts": {
+        "loom.bookmark_route": 49,
+        "loom.loose_thread": 48,
+        "loom.margin_light": 49,
+        "loom.quiet_circle": 48,
+        "loom.tilted_path": 49,
+        "loom.wide_stair": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "7": 4
+      },
+      "final_flag_count": 1,
+      "final_resolved_nodes": 30,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "loom.margin_reply",
+          "requires_flags": [
+            "loom.index_margin"
+          ],
+          "unmet_flags": [
+            "loom.index_margin"
+          ]
+        },
+        {
+          "id": "loom.returned_knot",
+          "requires_flags": [
+            "loom.bridge_request"
+          ],
+          "unmet_flags": [
+            "loom.bridge_request"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "loom_deep",
+      "policy": "safe",
+      "visits": 100,
+      "steps": 320,
+      "root_starts": 315,
+      "familiar_root_starts": 294,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 96,
+      "shortened_visits": 96,
+      "battle_intentions_assumed_won": 0,
+      "familiar_battle_intentions_assumed_won": 0,
+      "published_scene_choices_resolved_in_rollback": 689,
+      "published_familiar_battle_choices_resolved_in_rollback": 98,
+      "unique_completed_one_time_roots": 20,
+      "completed_root_ids": [
+        "loom_deep.astraea_bloom",
+        "loom_deep.atlas_distance",
+        "loom_deep.blossom_bowl",
+        "loom_deep.borrowed_can",
+        "loom_deep.constellation_braid",
+        "loom_deep.fruit_labels",
+        "loom_deep.garden_invitation",
+        "loom_deep.leaf_pages",
+        "loom_deep.night_tea",
+        "loom_deep.orchard_practice",
+        "loom_deep.returning_visitor",
+        "loom_deep.root_bench",
+        "loom_deep.seed_library",
+        "loom_deep.seed_reply",
+        "loom_deep.starfruit_shade",
+        "loom_deep.tea_return",
+        "loom_deep.terminus_bed",
+        "loom_deep.terrace_sequence",
+        "loom_deep.unripe_lantern",
+        "loom_deep.visitor_tree"
+      ],
+      "resumed_location_ids": [
+        "loom_deep.night_tea"
+      ],
+      "familiar_start_counts": {
+        "loom_deep.dew_route": 49,
+        "loom_deep.drifting_blossom": 49,
+        "loom_deep.fruit_shadow": 49,
+        "loom_deep.petal_drift": 49,
+        "loom_deep.starlit_drill": 49,
+        "loom_deep.vine_support": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "8": 4
+      },
+      "final_flag_count": 3,
+      "final_resolved_nodes": 32,
+      "uncompleted_one_time_roots": []
+    },
+    {
+      "biome": "loom_deep",
+      "policy": "last",
+      "visits": 100,
+      "steps": 317,
+      "root_starts": 312,
+      "familiar_root_starts": 294,
+      "continuation_resumptions": 1,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 97,
+      "shortened_visits": 97,
+      "battle_intentions_assumed_won": 52,
+      "familiar_battle_intentions_assumed_won": 49,
+      "published_scene_choices_resolved_in_rollback": 683,
+      "published_familiar_battle_choices_resolved_in_rollback": 98,
+      "unique_completed_one_time_roots": 17,
+      "completed_root_ids": [
+        "loom_deep.astraea_bloom",
+        "loom_deep.atlas_distance",
+        "loom_deep.blossom_bowl",
+        "loom_deep.borrowed_can",
+        "loom_deep.constellation_braid",
+        "loom_deep.fruit_labels",
+        "loom_deep.garden_invitation",
+        "loom_deep.leaf_pages",
+        "loom_deep.night_tea",
+        "loom_deep.orchard_practice",
+        "loom_deep.root_bench",
+        "loom_deep.seed_library",
+        "loom_deep.starfruit_shade",
+        "loom_deep.terminus_bed",
+        "loom_deep.terrace_sequence",
+        "loom_deep.unripe_lantern",
+        "loom_deep.visitor_tree"
+      ],
+      "resumed_location_ids": [
+        "loom_deep.visitor_tree"
+      ],
+      "familiar_start_counts": {
+        "loom_deep.dew_route": 49,
+        "loom_deep.drifting_blossom": 49,
+        "loom_deep.fruit_shadow": 49,
+        "loom_deep.petal_drift": 49,
+        "loom_deep.starlit_drill": 49,
+        "loom_deep.vine_support": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "5": 1,
+        "8": 3
+      },
+      "final_flag_count": 0,
+      "final_resolved_nodes": 29,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "loom_deep.returning_visitor",
+          "requires_flags": [
+            "loom_deep.orchard_invitation"
+          ],
+          "unmet_flags": [
+            "loom_deep.orchard_invitation"
+          ]
+        },
+        {
+          "id": "loom_deep.seed_reply",
+          "requires_flags": [
+            "loom_deep.seed_history"
+          ],
+          "unmet_flags": [
+            "loom_deep.seed_history"
+          ]
+        },
+        {
+          "id": "loom_deep.tea_return",
+          "requires_flags": [
+            "loom_deep.tea_place"
+          ],
+          "unmet_flags": [
+            "loom_deep.tea_place"
+          ]
+        }
+      ]
+    },
+    {
+      "biome": "loom_deep",
+      "policy": "seeded",
+      "visits": 100,
+      "steps": 318,
+      "root_starts": 312,
+      "familiar_root_starts": 294,
+      "continuation_resumptions": 0,
+      "explicit_continuation_resume_probes": 6,
+      "exhausted_visits": 97,
+      "shortened_visits": 97,
+      "battle_intentions_assumed_won": 25,
+      "familiar_battle_intentions_assumed_won": 23,
+      "published_scene_choices_resolved_in_rollback": 685,
+      "published_familiar_battle_choices_resolved_in_rollback": 98,
+      "unique_completed_one_time_roots": 18,
+      "completed_root_ids": [
+        "loom_deep.astraea_bloom",
+        "loom_deep.atlas_distance",
+        "loom_deep.blossom_bowl",
+        "loom_deep.borrowed_can",
+        "loom_deep.constellation_braid",
+        "loom_deep.fruit_labels",
+        "loom_deep.garden_invitation",
+        "loom_deep.leaf_pages",
+        "loom_deep.night_tea",
+        "loom_deep.orchard_practice",
+        "loom_deep.returning_visitor",
+        "loom_deep.root_bench",
+        "loom_deep.seed_library",
+        "loom_deep.starfruit_shade",
+        "loom_deep.terminus_bed",
+        "loom_deep.terrace_sequence",
+        "loom_deep.unripe_lantern",
+        "loom_deep.visitor_tree"
+      ],
+      "resumed_location_ids": [],
+      "familiar_start_counts": {
+        "loom_deep.dew_route": 49,
+        "loom_deep.drifting_blossom": 49,
+        "loom_deep.fruit_shadow": 49,
+        "loom_deep.petal_drift": 49,
+        "loom_deep.starlit_drill": 49,
+        "loom_deep.vine_support": 49
+      },
+      "steps_per_visit": {
+        "3": 96,
+        "6": 1,
+        "8": 3
+      },
+      "final_flag_count": 2,
+      "final_resolved_nodes": 30,
+      "uncompleted_one_time_roots": [
+        {
+          "id": "loom_deep.seed_reply",
+          "requires_flags": [
+            "loom_deep.seed_history"
+          ],
+          "unmet_flags": [
+            "loom_deep.seed_history"
+          ]
+        },
+        {
+          "id": "loom_deep.tea_return",
+          "requires_flags": [
+            "loom_deep.tea_place"
+          ],
+          "unmet_flags": [
+            "loom_deep.tea_place"
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "totals": {
+    "visits": 3000,
+    "steps": 9444,
+    "root_starts": 9286,
+    "familiar_root_starts": 8687,
+    "continuation_resumptions": 22,
+    "explicit_continuation_resume_probes": 180,
+    "exhausted_visits": 2856,
+    "shortened_visits": 2856,
+    "battle_intentions_assumed_won": 767,
+    "familiar_battle_intentions_assumed_won": 741,
+    "published_scene_choices_resolved_in_rollback": 19907,
+    "published_familiar_battle_choices_resolved_in_rollback": 2895
+  }
+}
