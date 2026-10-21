@@ -64,13 +64,17 @@ async def current(user_id):
     async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         async with db.execute("SELECT * FROM expeditions WHERE user_id=? AND status IN ('active','battle')", (user_id,)) as c:
-            return decode(await c.fetchone())
+            trip = decode(await c.fetchone())
+    from utils.journey_service import ensure_paced
+    return await ensure_paced(trip)
 
 async def read(user_id, trip_id):
     async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         async with db.execute('SELECT * FROM expeditions WHERE id=? AND user_id=?', (trip_id, user_id)) as c:
-            return decode(await c.fetchone())
+            trip = decode(await c.fetchone())
+    from utils.journey_service import ensure_paced
+    return await ensure_paced(trip)
 
 async def latest(user_id):
     async with storage.connect() as db:
@@ -98,10 +102,10 @@ async def _trainer(db, user_id, realm):
         raise ValueError('Your companion needs recovery. Choose a healthy companion or use a revive.')
     return (dict(player), dict(companion))
 
-async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0, legacy=False, adventure_version=2):
+async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0, legacy=False, adventure_version=2, combat_route=True):
     if adventure_version == 3 and not quick and not legacy:
         from utils import journey_service
-        return await journey_service.begin(user_id, realm, now=now, rng=rng, guild_id=guild_id)
+        return await journey_service.begin(user_id, realm, now=now, rng=rng, guild_id=guild_id, combat_route=combat_route)
     from utils.duels import reserve_fighters
     from utils import combat
     now = time.time() if now is None else now
@@ -430,7 +434,7 @@ async def report(trip):
     uid = trip['user_id']
     p = trip['payload']
     key = 'expedition:' + trip['id']
-    if p.get('adventure_version', 0) >= 2 and not p['completed']:
+    if p.get('adventure_version', 0) >= 2 and not p['completed'] and not p.get('inherited_completed'):
         # Leaving the trailhead spends its reserved charge, but is not a visit
         # for story, achievements, sightings or resource collection progress.
         async with storage.connect() as db:

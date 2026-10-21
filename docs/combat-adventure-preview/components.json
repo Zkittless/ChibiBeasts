@@ -1,0 +1,2092 @@
+{
+  "selector": {
+    "label": "Fresh /explore destination selection",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Choose an expedition\n1/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team."
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:realm",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your destination",
+                "options": [
+                  {
+                    "label": "🌲 The Whispering Woods",
+                    "value": "woods",
+                    "default": true,
+                    "description": "Trainer Lv.1+ required; companion Lv.1–5 recommended"
+                  },
+                  {
+                    "label": "🌙 The Moonveil Marsh",
+                    "value": "woods_deep",
+                    "default": false,
+                    "description": "Trainer Lv.3+ required; companion Lv.6–10 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes · Locked Lv.6",
+                    "value": "ember",
+                    "default": false,
+                    "description": "Trainer Lv.6+ required; companion Lv.11–15 recommended"
+                  },
+                  {
+                    "label": "🏜️ The Sunforge Dunes · Locked Lv.9",
+                    "value": "ember_deep",
+                    "default": false,
+                    "description": "Trainer Lv.9+ required; companion Lv.16–20 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows · Locked Lv.12",
+                    "value": "glacial",
+                    "default": false,
+                    "description": "Trainer Lv.12+ required; companion Lv.21–25 recommended"
+                  },
+                  {
+                    "label": "⛰️ The Stormglass Peaks · Locked Lv.16",
+                    "value": "glacial_deep",
+                    "default": false,
+                    "description": "Trainer Lv.16+ required; companion Lv.26–30 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches · Locked Lv.20",
+                    "value": "trenches",
+                    "default": false,
+                    "description": "Trainer Lv.20+ required; companion Lv.31–35 recommended"
+                  },
+                  {
+                    "label": "🌋 The Cinderreef Caldera · Locked Lv.25",
+                    "value": "trenches_deep",
+                    "default": false,
+                    "description": "Trainer Lv.25+ required; companion Lv.36–40 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom · Locked Lv.30",
+                    "value": "loom",
+                    "default": false,
+                    "description": "Trainer Lv.30+ required; companion Lv.41–45 recommended"
+                  },
+                  {
+                    "label": "✨ The Starfall Gardens · Locked Lv.38",
+                    "value": "loom_deep",
+                    "default": false,
+                    "description": "Trainer Lv.38+ required; companion Lv.46–50 recommended"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**🌲 The Whispering Woods** · Trainer Lv.1 required · Companion Lv.1–5 recommended."
+          },
+          {
+            "type": 10,
+            "content": "**Saved destination · None**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Save destination",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:save_destination:woods:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Clear default",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:clear_destination:5"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Suggested starter training: **🌲 The Whispering Woods**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Start adventure · 1 charge",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:begin:6"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 0,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 338,
+    "component_count": 22,
+    "recruitable": false,
+    "text": "### Choose an expedition\n1/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team.\n**Team** · Twine (lead) · Gloop · Barkley\n**🌲 The Whispering Woods** · Trainer Lv.1 required · Companion Lv.1–5 recommended.\n**Saved destination · None**\nSuggested starter training: **🌲 The Whispering Woods**"
+  },
+  "battle": {
+    "label": "Start adventure opens directly in combat",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 0/2 · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-e02bc3ae1c524f.png"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Wisp** · HP 62/62\nHostile encounter · Cannot be recruited\nAssist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 100/100\n**Gloop** · HP 1000/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_action",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a move, swap or assist",
+                "options": [
+                  {
+                    "label": "Tick Bite",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:0:0",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Thread Snap",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:0:1",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Rewind Nibble",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:0:2",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Swap: Gloop",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:0:4",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  },
+                  {
+                    "label": "Swap: Barkley",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:0:6",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Retreat & return",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_return:7e2c4588741a4090855e0e0cad6a0873:0:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 0,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 242,
+    "component_count": 17,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 0/2 · Progress saved\n**Wisp** · HP 62/62\nHostile encounter · Cannot be recruited\nAssist 0/3\n**Twine** · HP 1000/1000 · MP 100/100\n**Gloop** · HP 1000/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+  },
+  "swap": {
+    "label": "An equipped reserve swaps into battle",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 0/2 · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-cb42c418a81dc7.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Wisp** · HP 62/62\nHostile encounter · Cannot be recruited\nAssist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 100/100\n**Gloop** · HP 999/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 1,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 256,
+    "component_count": 11,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 0/2 · Progress saved\n**Wisp** · HP 62/62\nHostile encounter · Cannot be recruited\nAssist 0/3\n**Twine** · HP 1000/1000 · MP 100/100\n**Gloop** · HP 999/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100\nPlaying action…"
+  },
+  "assist": {
+    "label": "A reserve assists the active companion",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 0/2 · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-f356095a9dab2a.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Wisp** · HP 20/62\nHostile encounter · Cannot be recruited\nAssist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 993/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 5,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 255,
+    "component_count": 11,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 0/2 · Progress saved\n**Wisp** · HP 20/62\nHostile encounter · Cannot be recruited\nAssist 0/3\n**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 993/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100\nPlaying action…"
+  },
+  "knockout": {
+    "label": "The defeated opponent withdraws",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 2/2 · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-06f145b5339e14.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Dryad** · HP 0/58\nHostile encounter · Cannot be recruited\nPack 2/2 · Assist 3/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 996/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 18,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 266,
+    "component_count": 11,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 2/2 · Progress saved\n**Dryad** · HP 0/58\nHostile encounter · Cannot be recruited\nPack 2/2 · Assist 3/3\n**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 996/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100\nPlaying action…"
+  },
+  "interlude": {
+    "label": "One short authored decision between battles",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 1/2 · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "**Breakfast on a Branch**\nA covered basket hangs just beyond reach, suspended from a branch bent by last night's rain. A Goblin cook has left a note asking whoever finds it to save the toast from the ants."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Lower the basket and share a quiet break",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:7:scene:b8b2e35666ed1812456d",
+                    "default": false,
+                    "description": "Heal surviving team 5%."
+                  },
+                  {
+                    "label": "Return the basket to the dry stone table",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:7:scene:8eb56378ceb5d3db62ba",
+                    "default": false,
+                    "description": "Lead bond +1; World remembers."
+                  },
+                  {
+                    "label": "Retreat and return",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:7:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Read more",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_details:7e2c4588741a4090855e0e0cad6a0873:7:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 7,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 303,
+    "component_count": 17,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 1/2 · Progress saved\n**Team** · Twine (lead) · Gloop · Barkley\n**Breakfast on a Branch**\nA covered basket hangs just beyond reach, suspended from a branch bent by last night's rain. A Goblin cook has left a note asking whoever finds it to save the toast from the ants."
+  },
+  "details": {
+    "label": "Optional details expand inside the same journal",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 1/2 · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "**Breakfast on a Branch**\nA covered basket hangs just beyond reach, suspended from a branch bent by last night's rain. A Goblin cook has left a note asking whoever finds it to save the toast from the ants. Your companion can smell warm herbs beneath the cloth."
+          },
+          {
+            "type": 10,
+            "content": "**Last choice**\nThe encounter is won."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Lower the basket and share a quiet break",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:7:scene:b8b2e35666ed1812456d",
+                    "default": false,
+                    "description": "Heal surviving team 5%."
+                  },
+                  {
+                    "label": "Return the basket to the dry stone table",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:7:scene:8eb56378ceb5d3db62ba",
+                    "default": false,
+                    "description": "Lead bond +1; World remembers."
+                  },
+                  {
+                    "label": "Retreat and return",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:7:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Hide details",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_details:7e2c4588741a4090855e0e0cad6a0873:7:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 7,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 395,
+    "component_count": 18,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 1/2 · Progress saved\n**Team** · Twine (lead) · Gloop · Barkley\n**Breakfast on a Branch**\nA covered basket hangs just beyond reach, suspended from a branch bent by last night's rain. A Goblin cook has left a note asking whoever finds it to save the toast from the ants. Your companion can smell warm herbs beneath the cloth.\n**Last choice**\nThe encounter is won."
+  },
+  "pack_recruitable": {
+    "label": "Designated wild pack leader: one recruitment chance",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 1/2 · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-e728bcd5ba9abb.png"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Wisp** · HP 37/37\nWild encounter · Can join your team after victory\nPack 1/2 · Assist 2/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 1000/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_action",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a move, swap or assist",
+                "options": [
+                  {
+                    "label": "Galaxy Splash",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:9:0",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Glitter Bounce",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:9:1",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Shapeshift Slap",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:9:2",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Starlit Tide",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:9:3",
+                    "default": false,
+                    "description": "Ultimate"
+                  },
+                  {
+                    "label": "Swap: Twine",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:9:4",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  },
+                  {
+                    "label": "Swap: Barkley",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:9:6",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Retreat & return",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_return:7e2c4588741a4090855e0e0cad6a0873:9:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 9,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 262,
+    "component_count": 17,
+    "recruitable": true,
+    "text": "### The Whispering Woods\nBattles won 1/2 · Progress saved\n**Wisp** · HP 37/37\nWild encounter · Can join your team after victory\nPack 1/2 · Assist 2/3\n**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 1000/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+  },
+  "pack_entry": {
+    "label": "Hostile pack member enters; cannot be recruited",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 1/2 · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-34ba7e7c5a1054.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Dryad** · HP 58/58\nHostile encounter · Cannot be recruited\nPack 2/2 · Assist 3/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 999/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 13,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 267,
+    "component_count": 11,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 1/2 · Progress saved\n**Dryad** · HP 58/58\nHostile encounter · Cannot be recruited\nPack 2/2 · Assist 3/3\n**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 999/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100\nPlaying action…"
+  },
+  "pack_hostile": {
+    "label": "Remaining pack beast cannot be recruited",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 1/2 · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-6e704506a6a50f.png"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Dryad** · HP 58/58\nHostile encounter · Cannot be recruited\nPack 2/2 · Assist 3/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 999/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_action",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a move, swap or assist",
+                "options": [
+                  {
+                    "label": "Galaxy Splash",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:0",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Glitter Bounce",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:1",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Shapeshift Slap",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:2",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Starlit Tide",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:3",
+                    "default": false,
+                    "description": "Ultimate"
+                  },
+                  {
+                    "label": "Swap: Twine",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:4",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  },
+                  {
+                    "label": "Assist: Twine",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:5",
+                    "default": false,
+                    "description": "Uses this turn · Assist"
+                  },
+                  {
+                    "label": "Swap: Barkley",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:6",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  },
+                  {
+                    "label": "Assist: Barkley",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:13:7",
+                    "default": false,
+                    "description": "Uses this turn · Assist"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Retreat & return",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_return:7e2c4588741a4090855e0e0cad6a0873:13:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 13,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 252,
+    "component_count": 17,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 1/2 · Progress saved\n**Dryad** · HP 58/58\nHostile encounter · Cannot be recruited\nPack 2/2 · Assist 3/3\n**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 999/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+  },
+  "homeward": {
+    "label": "Two battles cleared; one earned bundle to bank",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Whispering Woods\nBattles won 2/2 · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "**The way home**\nYour team has finished the planned journey. Your choices and unfinished locations are saved."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Return and bank rewards",
+                    "value": "7e2c4588741a4090855e0e0cad6a0873:18:return",
+                    "default": false,
+                    "description": "Finish this journey and claim its one earned bundle."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Read more",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:journey_details:7e2c4588741a4090855e0e0cad6a0873:18:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 18,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 207,
+    "component_count": 17,
+    "recruitable": false,
+    "text": "### The Whispering Woods\nBattles won 2/2 · Progress saved\n**Team** · Twine (lead) · Gloop · Barkley\n**The way home**\nYour team has finished the planned journey. Your choices and unfinished locations are saved."
+  },
+  "returned": {
+    "label": "Return and bank one adventure reward bundle",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-woods.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌲 The Whispering Woods"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Back from 🌲 The Whispering Woods** · Results in Battle log."
+          },
+          {
+            "type": 10,
+            "content": "### Choose an expedition\n0/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team."
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:realm",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your destination",
+                "options": [
+                  {
+                    "label": "🌲 The Whispering Woods",
+                    "value": "woods",
+                    "default": true,
+                    "description": "Trainer Lv.1+ required; companion Lv.1–5 recommended"
+                  },
+                  {
+                    "label": "🌙 The Moonveil Marsh",
+                    "value": "woods_deep",
+                    "default": false,
+                    "description": "Trainer Lv.3+ required; companion Lv.6–10 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes · Locked Lv.6",
+                    "value": "ember",
+                    "default": false,
+                    "description": "Trainer Lv.6+ required; companion Lv.11–15 recommended"
+                  },
+                  {
+                    "label": "🏜️ The Sunforge Dunes · Locked Lv.9",
+                    "value": "ember_deep",
+                    "default": false,
+                    "description": "Trainer Lv.9+ required; companion Lv.16–20 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows · Locked Lv.12",
+                    "value": "glacial",
+                    "default": false,
+                    "description": "Trainer Lv.12+ required; companion Lv.21–25 recommended"
+                  },
+                  {
+                    "label": "⛰️ The Stormglass Peaks · Locked Lv.16",
+                    "value": "glacial_deep",
+                    "default": false,
+                    "description": "Trainer Lv.16+ required; companion Lv.26–30 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches · Locked Lv.20",
+                    "value": "trenches",
+                    "default": false,
+                    "description": "Trainer Lv.20+ required; companion Lv.31–35 recommended"
+                  },
+                  {
+                    "label": "🌋 The Cinderreef Caldera · Locked Lv.25",
+                    "value": "trenches_deep",
+                    "default": false,
+                    "description": "Trainer Lv.25+ required; companion Lv.36–40 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom · Locked Lv.30",
+                    "value": "loom",
+                    "default": false,
+                    "description": "Trainer Lv.30+ required; companion Lv.41–45 recommended"
+                  },
+                  {
+                    "label": "✨ The Starfall Gardens · Locked Lv.38",
+                    "value": "loom_deep",
+                    "default": false,
+                    "description": "Trainer Lv.38+ required; companion Lv.46–50 recommended"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**🌲 The Whispering Woods** · Trainer Lv.1 required · Companion Lv.1–5 recommended."
+          },
+          {
+            "type": 10,
+            "content": "**Saved destination · None**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Save destination",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:save_destination:woods:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Clear default",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:clear_destination:5"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Suggested starter training: **🌲 The Whispering Woods**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": true,
+                "label": "Start adventure · 1 charge",
+                "custom_id": "journal:a277de07fd7d4039b18cdb579595085b:begin:6"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Next charge in 29m 42s. Up to three charges wait for you between visits."
+          }
+        ]
+      }
+    ],
+    "version": 19,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 471,
+    "component_count": 24,
+    "recruitable": false,
+    "text": "**Back from 🌲 The Whispering Woods** · Results in Battle log.\n### Choose an expedition\n0/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team.\n**Team** · Twine (lead) · Gloop · Barkley\n**🌲 The Whispering Woods** · Trainer Lv.1 required · Companion Lv.1–5 recommended.\n**Saved destination · None**\nSuggested starter training: **🌲 The Whispering Woods**\nNext charge in 29m 42s. Up to three charges wait for you between visits."
+  }
+}

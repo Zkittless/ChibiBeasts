@@ -179,12 +179,13 @@ class JournalFlow(DatabaseCase):
 
     async def test_real_viewstore_keeps_nav_and_revision_checked_path_select_usable(self):
         await self.ready()
+        await expeditions.begin(42, 'woods', adventure_version=3, combat_route=False)
         view = await self.view()
         message, store = view.message, ViewStore(None)
         self.addCleanup(lambda: store.remove_view(view))
         store.add_view(view, message.id)
         stable = view.path_select.custom_id
-        for action in ('page:adventure', 'begin'):
+        for action in ('page:adventure',):
             button = next(i for i in view.walk_children() if isinstance(i, discord.ui.Button) and f':{action}:' in i.custom_id)
             edited = asyncio.Event()
 
@@ -214,8 +215,8 @@ class JournalFlow(DatabaseCase):
 
     async def test_expedition_survives_deleted_journal_and_new_view_can_finish(self):
         await self.ready()
+        await expeditions.begin(42, 'woods', adventure_version=3, combat_route=False)
         view = await self.view('adventure')
-        await self.click(view, 'begin')
         trip_id = view.trip['id']
         choice = next(c['value'] for c in view.trip['payload']['page']['choices'] if not c['effects'].get('battle'))
         await self.click(view, 'path', f'{trip_id}:0:{choice}')

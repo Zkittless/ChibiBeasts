@@ -9,11 +9,19 @@ import discord
 from cogs.hatch import Hatch
 from tests.test_gameplay import DatabaseCase, interaction
 from tests.test_interactions import component
-from utils import db as storage, expeditions
+from utils import db as storage, expeditions, trial_combat
 from utils.journal import JournalView
 
 
 class ExploreJournalFlow(DatabaseCase):
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
+        def presentation(realm):
+            return SimpleNamespace(realm=realm,art=AsyncMock(return_value=None),sleep=AsyncMock())
+        p=patch('utils.battle_art.BattlePresentation',side_effect=presentation)
+        p.start()
+        self.patches.append(p)
+
     async def open(self, destination=None, expedition=None, *, channel_id=999):
         command = interaction()
         command.channel.id = channel_id
@@ -67,11 +75,10 @@ class ExploreJournalFlow(DatabaseCase):
         self.assertEqual(view.trip['payload']['mode'], 'expedition')
         self.assertEqual(view.trip['payload']['adventure_version'], 3)
         self.assertEqual(view.trip['payload']['stage'], 0)
-        self.assertIn('0/5 stops', self.text(view))
+        self.assertEqual(view.trip['status'],'battle')
+        self.assertIn('Battles won 0/2', self.text(view))
         self.assertIn('Progress saved', self.text(view))
-        offered=expeditions.options(view.trip)
-        self.assertIn('return_early',offered)
-        self.assertTrue(all(value.startswith('scene:') for value in offered if value!='return_early'))
+        self.assertEqual(expeditions.options(view.trip),())
         frozen=expeditions.presentation(view.trip)
         for legacy in (None, False, True):
             _, resumed = await self.open('ember', expedition=legacy)
@@ -83,13 +90,30 @@ class ExploreJournalFlow(DatabaseCase):
 
     async def test_decisions_save_and_one_material_is_banked_only_on_return(self):
         await self.beast('twine', starter=True)
+        # Routing fixture: real moves and writes, deterministic quick victories.
+        await self.execute('UPDATE player_beasts SET attack=100000,speed=10000 WHERE user_id=42')
         _, view = await self.open()
         await self.begin(view)
         async def safe_step(stage):
             choice=next(item['value'] for item in stage.trip['payload']['page']['choices']
                         if not item.get('effects',{}).get('battle') and not item.get('effects',{}).get('hp_cost'))
             await self.pick(stage,choice)
-        await safe_step(view)
+        async def combat_step(stage):
+            state=stage.trip['payload']['combat']
+            click=component()
+            click.edit_original_response.return_value=stage.message
+            if state['status']=='between':
+                action=f"journey_next:{stage.trip['id']}:{stage.trip['version']}"
+            else:
+                actions=trial_combat.legal_actions(state)
+                index=next(i for i,a in enumerate(actions) if a['enabled'])
+                click.data={'values':[f"{stage.trip['id']}:{stage.trip['version']}:{index}"]}
+                action='journey_action'
+            await stage.handle(click,action)
+        for _ in range(20):
+            if view.trip['status']!='battle':
+                break
+            await combat_step(view)
         saved = await expeditions.current(42)
         self.assertEqual(saved['payload']['completed'], 1)
         self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
@@ -107,7 +131,12 @@ class ExploreJournalFlow(DatabaseCase):
         for _ in range(15):
             if resumed.trip['payload']['journey_status']=='homeward':
                 break
-            await safe_step(resumed)
+            if resumed.trip['status']=='battle':
+                await combat_step(resumed)
+            elif resumed.trip['payload']['page']['kind']=='battle':
+                await self.pick(resumed,expeditions.options(resumed.trip)[0])
+            else:
+                await safe_step(resumed)
         self.assertEqual(resumed.trip['payload']['journey_status'],'homeward')
         self.assertEqual(resumed.trip['payload']['completed'],resumed.trip['payload']['total'])
         self.assertEqual(await self.rows('SELECT * FROM player_materials'), [])
