@@ -31,7 +31,9 @@ PARTY = [dict(id=i, beast_id=species, name=BEASTS[species]['name'], type=BEASTS[
          for i, species in enumerate(('twine', 'gloop', 'barkley'), 1)]
 METRICS = ('visits', 'steps', 'root_starts', 'familiar_root_starts', 'continuation_resumptions',
            'explicit_continuation_resume_probes', 'exhausted_visits', 'shortened_visits',
-           'battle_intentions_assumed_won', 'published_scene_choices_resolved_in_rollback')
+           'battle_intentions_assumed_won', 'familiar_battle_intentions_assumed_won',
+           'published_scene_choices_resolved_in_rollback',
+           'published_familiar_battle_choices_resolved_in_rollback')
 
 
 def digest(path):
@@ -53,6 +55,8 @@ async def apply(db, trip, token, totals):
     result = await journeys.resolve(db, trip, token)
     if result.get('battle'):
         totals['battle_intentions_assumed_won'] += 1
+        if trip['payload']['page']['repeatable']:
+            totals['familiar_battle_intentions_assumed_won'] += 1
         await journeys.finish_battle(db, trip, won=True)
 
 
@@ -87,6 +91,8 @@ async def verify_choices(db, trip, totals):
             await assert_durable(db, probe)
             assert probe['payload']['completed'] == p['completed'] + 1
             totals['published_scene_choices_resolved_in_rollback'] += 1
+            if p['page']['repeatable'] and choice['effects'].get('battle'):
+                totals['published_familiar_battle_choices_resolved_in_rollback'] += 1
         finally:
             await db.execute('ROLLBACK TO published_choice')
             await db.execute('RELEASE published_choice')
@@ -198,6 +204,7 @@ async def replay(db, biome, policy, visits, uid, context):
                         unmet_flags=sorted(set(root.get('requires_flags', ())) - set(final['flags'])))
                    for rid, root in roots.items() if not root['repeatable'] and rid not in completed_once]
     assert totals['explicit_continuation_resume_probes'], 'No next-node resumption was tested.'
+    assert totals['published_familiar_battle_choices_resolved_in_rollback'], 'No familiar battle was offered.'
     return dict(biome=biome, policy=policy, **{key: totals[key] for key in METRICS},
                 unique_completed_one_time_roots=len(completed_once), completed_root_ids=sorted(completed_once),
                 resumed_location_ids=sorted(resumed),
@@ -209,12 +216,23 @@ async def replay(db, biome, policy, visits, uid, context):
 async def audit(output, visits):
     assert visits >= 10, 'At least ten visits are required to exercise return boundaries.'
     assert not adventure_content.validate_all(), 'The real authored catalog must validate first.'
+    battle_coverage = {}
+    for biome in BIOMES:
+        entries = [dict(root=root['id'], node=node_id, choice=choice['id'], kind=choice['effects']['battle'])
+                   for root in adventure_content.load(biome)['encounters'] if root['repeatable']
+                   for node_id, node in root['nodes'].items() for choice in node['choices']
+                   if choice['effects'].get('battle')]
+        kinds = {entry['kind'] for entry in entries}
+        assert kinds.intersection(('single', 'rare')), f'{biome}: no repeatable single battle.'
+        assert kinds.intersection(('pack2', 'pack3')), f'{biome}: no repeatable pack battle.'
+        battle_coverage[biome] = entries
     sources = [ROOT / 'utils' / (name + '.py') for name in ('journeys', 'adventure_content', 'habitats')]
     sources += [ROOT / 'data' / 'beasts.json', Path(__file__)] + [
         ROOT / 'data' / 'adventures' / f'{biome}.json' for biome in BIOMES]
     hashes = {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in sources}
     report = dict(status='running', kind='Production story-planner persistence replay, not a combat simulation.',
                   visits_per_biome_policy=visits, policies=['safe', 'last', 'seeded'], source_sha256=hashes,
+                  repeatable_battle_coverage=battle_coverage,
                   assumptions=['In-memory SQLite contains only the four real adventure memory tables.',
                                'Each biome/policy has independent trainer history; all visits reload persisted world state.',
                                'Safe chooses the first no-battle/no-HP-cost option; last chooses the final offered option; seeded uses a stable local RNG.',
@@ -227,6 +245,7 @@ async def audit(output, visits):
                           'Unfinished locations have priority and resume at the exact saved unresolved node.',
                           'A root starts at most once per visit; familiar roots exclude the prior persisted recent window.',
                           'All published scene choices have legal flags/tokens and actually resolve; returned state matches durable progress, nodes, flags and recent history.',
+                          'Every biome has authored familiar single/rare and pack2/pack3 battle choices; each replay actually resolves published familiar battle alternatives without removing its safe option.',
                           'Exhausted visits expose no eligible remaining root, shorten the denominator to earned steps and publish the explicit familiar-territory return page.'],
                   results=[], errors=[])
     context = {}

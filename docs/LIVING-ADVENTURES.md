@@ -21,7 +21,9 @@ This is finite authored content. When one-time discoveries run out, the journal
 calls repeatable encounters **Familiar territory**. A run never repeats a root;
 the last three familiar roots are excluded on the next visit. If fewer eligible
 scenes remain, the journey ends sooner. It never restarts a completed story or
-pretends a changed name is new content.
+pretends a changed name is new content. Every biome retains optional single wild
+encounters and packs in its repeatable pool, so clearing its stories never removes
+future capture opportunities.
 
 ## Combat and rewards
 

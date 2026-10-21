@@ -1017,7 +1017,7 @@
       ],
       "nodes": {
         "glacial_deep.harpy_draft.entry": {
-          "body": "A familiar updraft lifts loose feathers beside the outer ridge. Passing Harpies sometimes use this place to teach younger flyers when to fold their wings, but today only the rising feathers mark the lesson. Your grounded companions can practise the same timing between the gusts without needing to leave the path.",
+          "body": "A familiar updraft lifts loose feathers beside the outer ridge. Passing Harpies sometimes teach younger flyers here, but today the feathers are the only shapes rising. Your grounded companions can practise the timing between gusts. A local challenger waits beside the firm path's ready marker, offering a test that keeps every participant on stone.",
           "choices": [
             {
               "id": "time",
@@ -1036,6 +1036,15 @@
               "effects": {
                 "material": true
               }
+            },
+            {
+              "id": "ridge_test",
+              "label": "Answer the grounded challenger at the ready marker",
+              "description": "Begin a single-opponent encounter.",
+              "outcome": "The challenger steps onto the firm practice stones as your team signals readiness. The updraft carries the loose feathers beyond the open boundary.",
+              "effects": {
+                "battle": "single"
+              }
             }
           ]
         }
@@ -1053,7 +1062,7 @@
       ],
       "nodes": {
         "glacial_deep.rukh_stones.entry": {
-          "body": "Broad landing stones overlook the familiar valley route. A Rukh has recently rested here, leaving the central stones warmer than the surrounding snow. The visitor is already a distant speck, so the hollow belongs to ordinary travellers again. Three differently sized depressions offer your team a comfortable place to pause.",
+          "body": "Broad landing stones overlook the familiar valley route. A Rukh has recently rested here, leaving the central stones warmer than the surrounding snow. The visitor is already a distant speck, so ordinary travellers can use the hollows again. Two local challengers wait on a separate firm ledge, leaving the warm resting places clear for anyone who would rather watch.",
           "choices": [
             {
               "id": "warmth",
@@ -1071,6 +1080,15 @@
               "outcome": "The broad impressions show where the Rukh spread its weight before taking flight.",
               "effects": {
                 "study": 1
+              }
+            },
+            {
+              "id": "ledge_pair",
+              "label": "Meet the two challengers on the separate stone ledge",
+              "description": "Begin a two-opponent friendly contest.",
+              "outcome": "The pair take positions along the firm ledge, keeping the resting hollows outside their boundary. Your team has room to settle before facing them in turn.",
+              "effects": {
+                "battle": "pack2"
               }
             }
           ]

@@ -904,7 +904,7 @@
       ],
       "nodes": {
         "trenches.bubble_lane.entry": {
-          "body": "The familiar bubble lane rises beside an old stone rail. Some bubbles linger in its shallow grooves before continuing upward, making a useful rhythm for crossing the adjacent current. Today the larger bubbles take longer to leave. Your companions can follow their measured departures or study the patient little delays.",
+          "body": "The familiar bubble lane rises beside an old stone rail. Some bubbles linger in its shallow grooves before continuing upward, making a useful rhythm for crossing the adjacent current. Today the larger bubbles take longer to leave. A local resident waits at the rail's open practice marker, while the sheltered crossing stays clear for teams that prefer to observe.",
           "choices": [
             {
               "id": "pace",
@@ -922,6 +922,15 @@
               "outcome": "You note how the shallow stone shapes make the passing current visible.",
               "effects": {
                 "study": 1
+              }
+            },
+            {
+              "id": "resident_test",
+              "label": "Signal readiness to the resident beside the rail",
+              "description": "Begin a single-opponent encounter.",
+              "outcome": "The resident moves into the open practice lane as your team gives its ready signal. The crossing remains clear behind the boundary.",
+              "effects": {
+                "battle": "single"
               }
             }
           ]
@@ -1012,7 +1021,7 @@
       ],
       "nodes": {
         "trenches.kelpie_reeds.entry": {
-          "body": "Fresh reed rings float near the familiar channel where Kelpies practise tight turns. Their makers have moved on, leaving the exercise open to slower visitors. The widest ring has caught against a smooth stone, creating an easy practice target. Narrower rings drift freely and need not be chased to learn the lesson.",
+          "body": "Fresh reed rings float near the familiar channel where Kelpies practise tight turns. Their makers have moved on, leaving the exercise open to slower visitors. The widest ring has caught against a smooth stone, creating an easy practice target. Three local challengers wait beside the outer posts, offering a relay beyond the fixed ring without blocking its quieter exercise.",
           "choices": [
             {
               "id": "wide",
@@ -1030,6 +1039,15 @@
               "outcome": "You sketch how the broad ring stays stable while the narrower ones wander.",
               "effects": {
                 "study": 1
+              }
+            },
+            {
+              "id": "channel_relay",
+              "label": "Accept the three challengers' outer-channel relay",
+              "description": "Begin a three-opponent friendly contest.",
+              "outcome": "The challengers spread along the outer posts and wait for your team to settle. The fixed ring stays clear as you prepare to meet each opponent in turn.",
+              "effects": {
+                "battle": "pack3"
               }
             }
           ]

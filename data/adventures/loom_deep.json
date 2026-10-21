@@ -1046,7 +1046,7 @@
       ],
       "nodes": {
         "loom_deep.starlit_drill.entry": {
-          "body": "The familiar garden court has been swept clear of fallen fruit and drifting leaves. A resident waits by its ready marker, interested in a respectful test. The outside guide cords still offer a useful rehearsal route for companions who prefer practising together. The nearby growing beds remain beyond both exercise spaces.",
+          "body": "The familiar garden court has been swept clear of fallen fruit and drifting leaves. A resident waits by its ready marker, interested in a respectful test. Two others wait beside the outer gate for teams who want a three-opponent relay. The outside guide cords still offer a quieter rehearsal route, with the growing beds beyond every exercise boundary.",
           "choices": [
             {
               "id": "rehearse",
@@ -1064,6 +1064,15 @@
               "outcome": "The companion approaches the clear court while your team takes its practice place.",
               "effects": {
                 "battle": "single"
+              }
+            },
+            {
+              "id": "orchard_relay",
+              "label": "Accept the three residents' garden-court relay",
+              "description": "Begin a three-opponent friendly contest.",
+              "outcome": "The three residents choose separate waiting places around the cleared court. Your team has room to prepare before meeting the first of them.",
+              "effects": {
+                "battle": "pack3"
               }
             }
           ]

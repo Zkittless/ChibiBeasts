@@ -24,7 +24,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -78,14 +78,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -97,14 +97,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -121,7 +121,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:realm",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:realm",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -208,14 +208,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Save destination",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:save_destination:loom:4"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:save_destination:loom:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Clear default",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:clear_destination:5"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:clear_destination:5"
               }
             ]
           },
@@ -231,7 +231,7 @@
                 "style": 3,
                 "disabled": false,
                 "label": "Start adventure · 1 charge",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:begin:6"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:begin:6"
               }
             ]
           }
@@ -269,7 +269,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -323,14 +323,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -342,14 +342,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -370,7 +370,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -379,19 +379,19 @@
                 "options": [
                   {
                     "label": "Inspect the crooked plan with Ada",
-                    "value": "0e0188fe0af04607b92153884c8efb60:0:scene:23aa667c2d4f2e788a8f",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:0:scene:23aa667c2d4f2e788a8f",
                     "default": false,
                     "description": "Gain 5% temporary defense; approach the far end."
                   },
                   {
                     "label": "Study what travellers changed around the lookout",
-                    "value": "0e0188fe0af04607b92153884c8efb60:0:scene:ab2540e7e0029355c42f",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:0:scene:ab2540e7e0029355c42f",
                     "default": false,
                     "description": "Use the research allowance; approach the far end."
                   },
                   {
                     "label": "Head home now",
-                    "value": "0e0188fe0af04607b92153884c8efb60:0:return_early",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:0:return_early",
                     "default": false,
                     "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
                   }
@@ -433,7 +433,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -487,14 +487,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -506,14 +506,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -542,7 +542,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -551,19 +551,19 @@
                 "options": [
                   {
                     "label": "Leave a clear request beside the walking mark",
-                    "value": "0e0188fe0af04607b92153884c8efb60:1:scene:c96319d859cb20829a81",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:1:scene:c96319d859cb20829a81",
                     "default": false,
                     "description": "Remember the invitation for another discovery."
                   },
                   {
                     "label": "Support the curve from the rough lower brace",
-                    "value": "0e0188fe0af04607b92153884c8efb60:1:scene:b0915b46155094e5eedd",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:1:scene:b0915b46155094e5eedd",
                     "default": false,
                     "description": "Lose up to 3% HP; gain a 5% reward bonus."
                   },
                   {
                     "label": "Head home now",
-                    "value": "0e0188fe0af04607b92153884c8efb60:1:return_early",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:1:return_early",
                     "default": false,
                     "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
                   }
@@ -605,7 +605,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -659,14 +659,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -678,14 +678,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -714,7 +714,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -723,19 +723,19 @@
                 "options": [
                   {
                     "label": "Rest on the part that is ready now",
-                    "value": "0e0188fe0af04607b92153884c8efb60:2:scene:1cf622d506fdc89d15b1",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:2:scene:1cf622d506fdc89d15b1",
                     "default": false,
                     "description": "Recover up to 5% surviving-team HP."
                   },
                   {
                     "label": "Practise careful movement along the settled curve",
-                    "value": "0e0188fe0af04607b92153884c8efb60:2:scene:1a8fd5e0992a5792ee7c",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:2:scene:1a8fd5e0992a5792ee7c",
                     "default": false,
                     "description": "Gain 5% temporary attack."
                   },
                   {
                     "label": "Head home now",
-                    "value": "0e0188fe0af04607b92153884c8efb60:2:return_early",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:2:return_early",
                     "default": false,
                     "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
                   }
@@ -777,7 +777,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -831,14 +831,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -850,14 +850,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -886,7 +886,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -895,19 +895,19 @@
                 "options": [
                   {
                     "label": "Learn the steward’s careful handrail sequence",
-                    "value": "0e0188fe0af04607b92153884c8efb60:3:scene:ed8b79b1832eac55c353",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:3:scene:ed8b79b1832eac55c353",
                     "default": false,
                     "description": "Gain 10% temporary defense without combat."
                   },
                   {
                     "label": "Meet the three waiting practice challengers",
-                    "value": "0e0188fe0af04607b92153884c8efb60:3:scene:58abf5e144f59667c9b9",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:3:scene:58abf5e144f59667c9b9",
                     "default": false,
                     "description": "Begin a three-opponent encounter."
                   },
                   {
                     "label": "Head home now",
-                    "value": "0e0188fe0af04607b92153884c8efb60:3:return_early",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:3:return_early",
                     "default": false,
                     "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
                   }
@@ -937,7 +937,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": true,
@@ -991,14 +991,14 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -1011,7 +1011,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-268af6ee4e2eda.gif"
+                  "url": "attachment://adventure-664d350829dabd.gif"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -1024,7 +1024,7 @@
           },
           {
             "type": 10,
-            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 982/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 981/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
           },
           {
             "type": 10,
@@ -1052,7 +1052,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1106,14 +1106,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -1125,14 +1125,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -1145,7 +1145,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-55f24120847f31.png"
+                  "url": "attachment://adventure-30965e39753f57.png"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -1154,7 +1154,7 @@
           },
           {
             "type": 10,
-            "content": "**Sphinx** · HP 166/166\nPack 1/3 · Assist 0/3"
+            "content": "**Kitsune** · HP 167/167\nPack 1/3 · Assist 0/3"
           },
           {
             "type": 10,
@@ -1165,7 +1165,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_action",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:journey_action",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1174,31 +1174,31 @@
                 "options": [
                   {
                     "label": "Tick Bite",
-                    "value": "0e0188fe0af04607b92153884c8efb60:4:0",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:4:0",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Thread Snap",
-                    "value": "0e0188fe0af04607b92153884c8efb60:4:1",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:4:1",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Rewind Nibble",
-                    "value": "0e0188fe0af04607b92153884c8efb60:4:2",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:4:2",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Swap: Gloop",
-                    "value": "0e0188fe0af04607b92153884c8efb60:4:4",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:4:4",
                     "default": false,
                     "description": "Uses this turn · Swap"
                   },
                   {
                     "label": "Swap: Barkley",
-                    "value": "0e0188fe0af04607b92153884c8efb60:4:6",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:4:6",
                     "default": false,
                     "description": "Uses this turn · Swap"
                   }
@@ -1214,7 +1214,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Retreat & return",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_return:0e0188fe0af04607b92153884c8efb60:4:4"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:journey_return:118d7b40208d488cb0c0d8c91cba7fb0:4:4"
               }
             ]
           }
@@ -1224,7 +1224,7 @@
     "version": 4,
     "message_id": 8181,
     "playing": false,
-    "characters": 209,
+    "characters": 210,
     "component_count": 17
   },
   "swap": {
@@ -1240,7 +1240,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": true,
@@ -1294,14 +1294,14 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -1314,7 +1314,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-df92c03e4e82d3.gif"
+                  "url": "attachment://adventure-9b4e37e202dbfe.gif"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -1323,7 +1323,7 @@
           },
           {
             "type": 10,
-            "content": "**Sphinx** · HP 166/166\nPack 1/3 · Assist 0/3"
+            "content": "**Kitsune** · HP 167/167\nPack 1/3 · Assist 0/3"
           },
           {
             "type": 10,
@@ -1339,7 +1339,7 @@
     "version": 5,
     "message_id": 8181,
     "playing": true,
-    "characters": 223,
+    "characters": 224,
     "component_count": 11
   },
   "action": {
@@ -1355,7 +1355,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": true,
@@ -1409,14 +1409,14 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -1429,7 +1429,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-ea769eb558c999.gif"
+                  "url": "attachment://adventure-4a287205dda7b8.gif"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -1442,7 +1442,7 @@
           },
           {
             "type": 10,
-            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 979/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 978/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
           },
           {
             "type": 10,
@@ -1470,7 +1470,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1524,14 +1524,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -1543,14 +1543,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -1563,7 +1563,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-910b0ad65fc3ea.png"
+                  "url": "attachment://adventure-ddf6859c017d27.png"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -1572,7 +1572,7 @@
           },
           {
             "type": 10,
-            "content": "**Sphinx** · HP 166/166\nPack 1/3 · Assist 0/3"
+            "content": "**Kitsune** · HP 167/167\nPack 1/3 · Assist 0/3"
           },
           {
             "type": 10,
@@ -1583,7 +1583,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_action",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:journey_action",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1592,31 +1592,31 @@
                 "options": [
                   {
                     "label": "Galaxy Splash",
-                    "value": "0e0188fe0af04607b92153884c8efb60:5:0",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:5:0",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Glitter Bounce",
-                    "value": "0e0188fe0af04607b92153884c8efb60:5:1",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:5:1",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Shapeshift Slap",
-                    "value": "0e0188fe0af04607b92153884c8efb60:5:2",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:5:2",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Swap: Twine",
-                    "value": "0e0188fe0af04607b92153884c8efb60:5:4",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:5:4",
                     "default": false,
                     "description": "Uses this turn · Swap"
                   },
                   {
                     "label": "Swap: Barkley",
-                    "value": "0e0188fe0af04607b92153884c8efb60:5:6",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:5:6",
                     "default": false,
                     "description": "Uses this turn · Swap"
                   }
@@ -1632,7 +1632,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Retreat & return",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_return:0e0188fe0af04607b92153884c8efb60:5:4"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:journey_return:118d7b40208d488cb0c0d8c91cba7fb0:5:4"
               }
             ]
           }
@@ -1642,7 +1642,7 @@
     "version": 5,
     "message_id": 8181,
     "playing": false,
-    "characters": 208,
+    "characters": 209,
     "component_count": 17
   },
   "battle_after_action": {
@@ -1670,7 +1670,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1724,14 +1724,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -1743,14 +1743,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -1779,7 +1779,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1788,19 +1788,19 @@
                 "options": [
                   {
                     "label": "Practise from the outside illustrations",
-                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:264375c620e0a59b82b3",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:14:scene:264375c620e0a59b82b3",
                     "default": false,
                     "description": "Gain 5% temporary attack without combat."
                   },
                   {
                     "label": "Join the waiting companions’ paired exercise",
-                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:b344e5322a9b35d628e4",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:14:scene:b344e5322a9b35d628e4",
                     "default": false,
                     "description": "Begin a two-opponent encounter."
                   },
                   {
                     "label": "Head home now",
-                    "value": "0e0188fe0af04607b92153884c8efb60:14:return_early",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:14:return_early",
                     "default": false,
                     "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
                   }
@@ -1830,7 +1830,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": true,
@@ -1884,14 +1884,14 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -1904,7 +1904,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-cb9f4a640ca666.gif"
+                  "url": "attachment://adventure-bf02261b40d362.gif"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -1917,7 +1917,7 @@
           },
           {
             "type": 10,
-            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 979/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 978/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
           },
           {
             "type": 10,
@@ -1945,7 +1945,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -1999,14 +1999,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -2018,14 +2018,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -2038,7 +2038,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-a6fd5391a2d96a.png"
+                  "url": "attachment://adventure-091c79a4108e99.png"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -2051,14 +2051,14 @@
           },
           {
             "type": 10,
-            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 982/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 981/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
           },
           {
             "type": 1,
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_action",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:journey_action",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2067,37 +2067,37 @@
                 "options": [
                   {
                     "label": "Galaxy Splash",
-                    "value": "0e0188fe0af04607b92153884c8efb60:12:0",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:12:0",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Glitter Bounce",
-                    "value": "0e0188fe0af04607b92153884c8efb60:12:1",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:12:1",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Shapeshift Slap",
-                    "value": "0e0188fe0af04607b92153884c8efb60:12:2",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:12:2",
                     "default": false,
                     "description": "Uses this turn · Move"
                   },
                   {
                     "label": "Starlit Tide",
-                    "value": "0e0188fe0af04607b92153884c8efb60:12:3",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:12:3",
                     "default": false,
                     "description": "Ultimate"
                   },
                   {
                     "label": "Swap: Twine",
-                    "value": "0e0188fe0af04607b92153884c8efb60:12:4",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:12:4",
                     "default": false,
                     "description": "Uses this turn · Swap"
                   },
                   {
                     "label": "Swap: Barkley",
-                    "value": "0e0188fe0af04607b92153884c8efb60:12:6",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:12:6",
                     "default": false,
                     "description": "Uses this turn · Swap"
                   }
@@ -2113,7 +2113,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Retreat & return",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_return:0e0188fe0af04607b92153884c8efb60:12:4"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:journey_return:118d7b40208d488cb0c0d8c91cba7fb0:12:4"
               }
             ]
           }
@@ -2139,7 +2139,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": true,
@@ -2193,14 +2193,14 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -2213,7 +2213,7 @@
             "items": [
               {
                 "media": {
-                  "url": "attachment://adventure-0af965500b8d0d.gif"
+                  "url": "attachment://adventure-bf93ce7e0bf6ac.gif"
                 },
                 "spoiler": false,
                 "description": "Adventure encounter"
@@ -2226,7 +2226,7 @@
           },
           {
             "type": 10,
-            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 982/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 981/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
           },
           {
             "type": 10,
@@ -2266,7 +2266,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2320,14 +2320,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -2339,14 +2339,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -2375,7 +2375,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2384,19 +2384,19 @@
                 "options": [
                   {
                     "label": "Practise from the outside illustrations",
-                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:264375c620e0a59b82b3",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:14:scene:264375c620e0a59b82b3",
                     "default": false,
                     "description": "Gain 5% temporary attack without combat."
                   },
                   {
                     "label": "Join the waiting companions’ paired exercise",
-                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:b344e5322a9b35d628e4",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:14:scene:b344e5322a9b35d628e4",
                     "default": false,
                     "description": "Begin a two-opponent encounter."
                   },
                   {
                     "label": "Head home now",
-                    "value": "0e0188fe0af04607b92153884c8efb60:14:return_early",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:14:return_early",
                     "default": false,
                     "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
                   }
@@ -2438,7 +2438,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2492,14 +2492,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -2511,14 +2511,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -2547,7 +2547,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2556,13 +2556,13 @@
                 "options": [
                   {
                     "label": "Return and bank rewards",
-                    "value": "0e0188fe0af04607b92153884c8efb60:17:return",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:17:return",
                     "default": false,
                     "description": "Finish this journey and claim its one earned bundle."
                   },
                   {
                     "label": "Shelter the Prism Sphere",
-                    "value": "0e0188fe0af04607b92153884c8efb60:17:return_egg",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:17:return_egg",
                     "default": false,
                     "description": "Take the saved nest egg instead of the journey's one material bundle."
                   }
@@ -2604,7 +2604,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2658,14 +2658,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -2677,14 +2677,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -2713,7 +2713,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:path",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2722,13 +2722,13 @@
                 "options": [
                   {
                     "label": "Return and bank rewards",
-                    "value": "0e0188fe0af04607b92153884c8efb60:17:return",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:17:return",
                     "default": false,
                     "description": "Finish this journey and claim its one earned bundle."
                   },
                   {
                     "label": "Shelter the Prism Sphere",
-                    "value": "0e0188fe0af04607b92153884c8efb60:17:return_egg",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0:17:return_egg",
                     "default": false,
                     "description": "Take the saved nest egg instead of the journey's one material bundle."
                   }
@@ -2770,7 +2770,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2824,14 +2824,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -2843,14 +2843,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Battle log",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:battle_log:2"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Tower Trials",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:launch:challenge:3"
               }
             ]
           },
@@ -2871,7 +2871,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:realm",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:realm",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -2958,14 +2958,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Save destination",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:save_destination:loom:4"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:save_destination:loom:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Clear default",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:clear_destination:5"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:clear_destination:5"
               }
             ]
           },
@@ -2981,7 +2981,7 @@
                 "style": 3,
                 "disabled": true,
                 "label": "Start adventure · 1 charge",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:begin:6"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:begin:6"
               }
             ]
           },
@@ -3023,7 +3023,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3077,14 +3077,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -3093,7 +3093,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_kind",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3137,7 +3137,7 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:adventure:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:adventure:2"
               }
             ]
           },
@@ -3147,14 +3147,14 @@
           },
           {
             "type": 10,
-            "content": "**🌌 The Celestial Loom** · <t:1792563068:d>\nReturned · Victory"
+            "content": "**🌌 The Celestial Loom** · <t:1792563909:d>\nReturned · Victory"
           },
           {
             "type": 1,
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_entry",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:log_entry",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3162,8 +3162,8 @@
                 "placeholder": "Open an expedition recap",
                 "options": [
                   {
-                    "label": "🌌 The Celestial Loom · 21 Oct 06:11 UTC",
-                    "value": "0e0188fe0af04607b92153884c8efb60",
+                    "label": "🌌 The Celestial Loom · 21 Oct 06:25 UTC",
+                    "value": "118d7b40208d488cb0c0d8c91cba7fb0",
                     "default": false,
                     "description": "Returned · Victory"
                   }
@@ -3179,21 +3179,21 @@
                 "style": 2,
                 "disabled": true,
                 "label": "Newer trips",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_prev:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:log_prev:3"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "1/1",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_count:4"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:log_count:4"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": true,
                 "label": "Older trips",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_next:5"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:log_next:5"
               }
             ]
           }
@@ -3231,7 +3231,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page_menu",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3285,14 +3285,14 @@
                 "style": 2,
                 "disabled": false,
                 "label": "Pin a goal",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:goals:0"
               },
               {
                 "type": 2,
                 "style": 2,
                 "disabled": false,
                 "label": "Refresh",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:refresh:1"
               }
             ]
           },
@@ -3301,7 +3301,7 @@
             "components": [
               {
                 "type": 3,
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_kind",
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:log_kind",
                 "min_values": 1,
                 "max_values": 1,
                 "disabled": false,
@@ -3345,13 +3345,13 @@
                 "style": 1,
                 "disabled": false,
                 "label": "Back to Adventure",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:adventure:2"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:page:adventure:2"
               }
             ]
           },
           {
             "type": 10,
-            "content": "### Battle log · 🌌 The Celestial Loom\n<t:1792563068:f> · Returned · Victory"
+            "content": "### Battle log · 🌌 The Celestial Loom\n<t:1792563909:f> · Returned · Victory"
           },
           {
             "type": 10,
@@ -3366,16 +3366,16 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Sphinx · Lv.45**\nVictory · Joined your collection"
+                "content": "**Kitsune · Lv.45**\nVictory · Joined your collection"
               }
             ],
             "accessory": {
               "type": 11,
               "spoiler": false,
               "media": {
-                "url": "attachment://equipped-93344140f4319d486611.png"
+                "url": "attachment://equipped-97efd164e51953c2738a.png"
               },
-              "description": "Sphinx"
+              "description": "Kitsune"
             }
           },
           {
@@ -3398,7 +3398,7 @@
                 "style": 2,
                 "disabled": false,
                 "label": "All trips",
-                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_back:3"
+                "custom_id": "journal:4e0385946e1f4af687322df95ae1fa6e:log_back:3"
               }
             ]
           }
@@ -3408,7 +3408,7 @@
     "version": 18,
     "message_id": 8181,
     "playing": false,
-    "characters": 1081,
+    "characters": 1082,
     "component_count": 22
   }
 }

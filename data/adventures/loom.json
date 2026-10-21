@@ -1087,7 +1087,7 @@
       ],
       "nodes": {
         "loom.quiet_circle.entry": {
-          "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+          "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
           "choices": [
             {
               "id": "rehearse",
@@ -1105,6 +1105,15 @@
               "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
               "effects": {
                 "battle": "single"
+              }
+            },
+            {
+              "id": "paired_rehearsal",
+              "label": "Arrange a two-opponent rehearsal across both markers",
+              "description": "Begin a two-opponent friendly contest.",
+              "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+              "effects": {
+                "battle": "pack2"
               }
             }
           ]

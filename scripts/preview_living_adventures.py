@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT))
 from tests.test_gameplay import interaction
 from tests.test_interactions import component
 from utils import adventure_content, adventure_party, battle_art, db as storage, expedition_events
-from utils import expeditions, journal, journal_state, journeys, trial_combat
-from utils.habitats import BIOMES
+from utils import expeditions, journal, journal_state, journeys, journey_service, trial_combat
+from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key
 
 
 SCRIPT = r'''
@@ -48,6 +48,11 @@ def seed_for(biome, first, second=None, *, egg=False):
 
 
 async def export(output):
+    source_paths = [adventure_content.CONTENT_ROOT / (biome + '.json') for biome in BIOMES]
+    source_paths += [ROOT / 'utils' / (name + '.py') for name in
+                     ('adventure_content', 'journeys', 'journey_service', 'journey_combat', 'journal', 'journal_adventure', 'journal_team_art')]
+    source_hashes = {str(path.relative_to(ROOT)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest()
+                     for path in source_paths}
     media = output / 'media'
     media.mkdir(parents=True, exist_ok=True)
     screens, art, uploads, events, models = {}, {}, [], [], {}
@@ -208,6 +213,8 @@ async def export(output):
                         saved = dict(progress={location['id']: dict(node_id=node_id, completed=False, snapshot=location)},
                                      flags=[], nodes={}, recent=[])
                         payload = dict(prepared_party=deepcopy(models['bridge']['payload']['prepared_party']))
+                        payload['material'] = REGIONAL_MATERIALS[biome_key(biome)][0]
+                        payload['offered'] = journey_service._material_offers(payload['material'], biome, 73)
                         journeys.initialize(payload, biome, 73, payload['prepared_party'], saved)
                         trip = dict(id='f' * 32, user_id=42, status='active', version=1000000, realm=biome,
                                     companion_id=ids[0], payload=payload)
@@ -251,9 +258,10 @@ async def export(output):
             contact.paste(frame, (column * 320, row * 264 + 24))
             draw.text((column * 320 + 6, row * 264 + 6), f'{action.kind.upper()} {("START", "MIDPOINT", "END")[column]}', fill='#dbdee1', font=battle_art.font(12))
     contact.save(output / 'animation-contact.png')
+    assert all(hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == digest for path, digest in source_hashes.items()), 'Source changed during preview recording; regenerate after edits finish.'
     report = dict(status='passed', initial_messages=1, additional_messages=0, deletions=0,
                   scope='Production JournalView callbacks and saved v3 service state in a disposable prepared QA account; real equipped battle renderer. Playback sleep skipped offline. Native Discord delivery and live balance were not tested.',
-                  example_seed=selected_seed, stages=list(screens), uploads=uploads, clips=clips,
+                  example_seed=selected_seed, source_sha256=source_hashes, stages=list(screens), uploads=uploads, clips=clips,
                   authored_pages=page_checks, biome_count=len({p['biome'] for p in page_checks}),
                   max_characters=max(p['characters'] for p in page_checks),
                   max_components=max(p['components'] for p in page_checks),

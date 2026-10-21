@@ -749,11 +749,11 @@
     "ember": "a862e4cd53714847af80e4fd6db2e188f0997170e3af454e775aad9d70ed14f3",
     "ember_deep": "a5ced96e3b1003609e31dcd2bed7b5f89b559bd1cadb7c745b525d2228f64ac0",
     "glacial": "47ba0d42eb51d88b943cb4e7a867cf5b05d13ec891c6e53c7837ba1ef991249e",
-    "glacial_deep": "14c9ee0c0fe72279d810bb81add1560d02efc4721efee51561b2b7a2de3077e5",
-    "trenches": "ba83c4dac95a611ab006d1a4770192173a3b580c00b70d2d181d640f581aefa5",
-    "trenches_deep": "e96af93878e5993c3a1ba1935d25ae573a8f763f11f824b10acf9a4ac45127fa",
-    "loom": "9d008355d19d505f84e82ce5669d518f896b0ce73cfc198e363442438c4958df",
-    "loom_deep": "11cfd4716f9590dbd414ed7003bb2b987587776ff5842722cb960f92752d6b3e"
+    "glacial_deep": "89638e79cfc38a5635d9d17bc386902007268d3ffa1b493e44edaf76b092fc64",
+    "trenches": "4543ecb9ba75e0fdb2b5550bcdaaccbfacfe44eb06fa252f2a7bbd5a875f8b78",
+    "trenches_deep": "8c3b5db8b9783da8ae77df046b64deca75a1beedb2feb47d3a62ae007aeb402a",
+    "loom": "9f23318adf1436ff754920657d65d2eaba81267910f587eaccd22c36d15ce00d",
+    "loom_deep": "ffcd8b218b48eadc8ccf23b6d9f6c47ea799184260016b89b4b034cda9a2e5a4"
   },
   "source_sha256": {
     "utils/journey_combat.py": "6cce34580af190f97d17d57c9eeb138277e394a5456e0c03ac615d804d696fbb",

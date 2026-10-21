@@ -1084,7 +1084,7 @@
       ],
       "nodes": {
         "trenches_deep.practice_bubbles.entry": {
-          "body": "The familiar practice shelf has a fresh stream of small bubbles rising through its stone markers. A lively resident sometimes uses them to invite passing teams into a test. Today the invitation is clear, but the outside markers remain open for travellers who prefer learning the movement without answering a challenger.",
+          "body": "The familiar practice shelf has a fresh stream of small bubbles rising through its stone markers. A lively resident uses their rhythm to invite passing teams into a test. Another waits beside the far marker, ready to join a paired contest if asked. The outside markers remain open for travellers who prefer learning the movement without answering either challenger.",
           "choices": [
             {
               "id": "markers",
@@ -1102,6 +1102,15 @@
               "outcome": "The resident notices your ready signal and approaches the bare practice shelf.",
               "effects": {
                 "battle": "single"
+              }
+            },
+            {
+              "id": "paired_bubbles",
+              "label": "Invite both residents into a two-opponent bubble drill",
+              "description": "Begin a two-opponent friendly contest.",
+              "outcome": "The two residents move to separate markers along the bare shelf. Your team signals readiness for the first bout while the second challenger waits clear.",
+              "effects": {
+                "battle": "pack2"
               }
             }
           ]

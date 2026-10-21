@@ -38,3 +38,12 @@ class LivingCatalog(unittest.TestCase):
                 if old==(available,flags):
                     break
             self.assertEqual(available,{r['id'] for r in roots},key)
+
+    def test_familiar_wilderness_preserves_captures_and_pack_variety_after_stories_end(self):
+        for key in BIOMES:
+            modes={choice['effects']['battle'] for root in adventure_content.load(key)['encounters']
+                   if root['repeatable'] for node in root['nodes'].values() for choice in node['choices']
+                   if choice['effects'].get('battle')}
+            with self.subTest(biome=key):
+                self.assertTrue(modes.intersection({'single','rare'}), 'No repeatable capture encounter remains.')
+                self.assertTrue(modes.intersection({'pack2','pack3'}), 'No repeatable pack encounter remains.')

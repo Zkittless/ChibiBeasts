@@ -1,6 +1,6 @@
 {
   "bridge": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "active",
@@ -14,7 +14,9 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
       "encounter": "",
       "encounter_result": "",
@@ -328,7 +330,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -1146,7 +1148,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -1181,9 +1183,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -1325,9 +1327,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -1349,7 +1351,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -1367,6 +1369,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -1567,12 +1578,12 @@
       "egg_reward": null,
       "egg_granted": false
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563057.364077,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563898.743252,
     "reported": 0
   },
   "boon": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "active",
@@ -1586,7 +1597,9 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
       "encounter": "",
       "encounter_result": "",
@@ -1915,7 +1928,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -2733,7 +2746,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -2768,9 +2781,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -2912,9 +2925,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -2936,7 +2949,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -2954,6 +2967,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -3159,12 +3181,12 @@
       "egg_reward": null,
       "egg_granted": false
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563057.4944012,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563898.9016697,
     "reported": 0
   },
   "landing": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "active",
@@ -3178,7 +3200,9 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
       "encounter": "",
       "encounter_result": "",
@@ -3514,7 +3538,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -4332,7 +4356,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -4367,9 +4391,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -4511,9 +4535,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -4535,7 +4559,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -4553,6 +4577,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -4755,12 +4788,12 @@
       "egg_reward": null,
       "egg_granted": false
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563057.623927,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563899.0442328,
     "reported": 0
   },
   "pack_offer": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "active",
@@ -4774,7 +4807,9 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
       "encounter": "",
       "encounter_result": "",
@@ -5117,7 +5152,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -5935,7 +5970,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -5970,9 +6005,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -6114,9 +6149,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -6138,7 +6173,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -6156,6 +6191,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -6313,12 +6357,12 @@
       "egg_reward": null,
       "egg_granted": false
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563057.7395115,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563899.1661968,
     "reported": 0
   },
   "battle": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "battle",
@@ -6332,9 +6376,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "",
       "caught": false,
       "grant_id": null,
@@ -6675,7 +6721,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -7493,7 +7539,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -7528,9 +7574,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -7672,9 +7718,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -7696,7 +7742,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -7714,6 +7760,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -7890,39 +7945,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -7931,9 +7986,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -7941,20 +7996,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -8305,34 +8360,34 @@
         "enemy": {
           "id": -1,
           "rarity": "epic",
-          "name": "Sphinx",
+          "name": "Kitsune",
           "level": 45,
-          "hp": 166,
-          "max_hp": 166,
-          "attack": 132,
-          "defense": 170,
-          "speed": 155,
-          "mana": 114,
-          "max_mana": 286,
+          "hp": 167,
+          "max_hp": 167,
+          "attack": 138,
+          "defense": 165,
+          "speed": 190,
+          "mana": 118,
+          "max_mana": 296,
           "moves": [
-            "Riddle Curse",
-            "Arcane Swipe",
-            "Mind Shatter"
+            "Nine-Tail Storm",
+            "Grand Illusion",
+            "Soul Fox Fire"
           ],
           "move_effects": {
-            "Riddle Curse": {
+            "Nine-Tail Storm": {
               "power": 1,
               "mana_cost": 0,
               "mana_restore": 10,
               "description": "Reliable attack; restore 10 mana."
             },
-            "Arcane Swipe": {
+            "Grand Illusion": {
               "power": 0.65,
               "mana_cost": 15,
               "description": "A controlled strike that applies a condition.",
               "status": "blind"
             },
-            "Mind Shatter": {
+            "Soul Fox Fire": {
               "power": 0,
               "mana_cost": 0,
               "guard_percent": 55,
@@ -8341,9 +8396,9 @@
               "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
             }
           },
-          "ultimate": "Eternal Enigma",
+          "ultimate": "Fox God's Wrath",
           "beast_type": "arcane",
-          "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+          "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
           "status": null,
           "status_turns": 0,
           "ultimate_charges": 0,
@@ -8351,15 +8406,15 @@
           "perks": [],
           "action_count": 0,
           "dp_crit_charges": 0,
-          "beast_id": "sphinx",
+          "beast_id": "kitsune_9",
           "armor_id": "",
           "item_defense_boost_percent": 0,
           "item_speed_boost_percent": 0,
           "damage_multiplier": 1.0,
           "status_ward": false,
-          "base_speed": 155,
-          "base_attack": 132,
-          "base_defense": 170,
+          "base_speed": 190,
+          "base_attack": 138,
+          "base_defense": 165,
           "shield": 0,
           "_trial_heals": 0,
           "_trial_controls": 0
@@ -9096,13 +9151,13 @@
                 "assist_meter": 0
               },
               {
-                "species": "sphinx",
-                "name": "Sphinx",
+                "species": "kitsune_9",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "mana": 118,
+                "max_mana": 296,
                 "charges": 0,
                 "status": "",
                 "guard": false,
@@ -9117,7 +9172,7 @@
             ],
             "action": {
               "actor": 1,
-              "name": "Wave 1: Sphinx enters",
+              "name": "Wave 1: Kitsune enters",
               "kind": "enter",
               "damage": 0,
               "ultimate": false,
@@ -9209,13 +9264,13 @@
                 "assist_meter": 0
               },
               {
-                "species": "sphinx",
-                "name": "Sphinx",
+                "species": "kitsune_9",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "mana": 118,
+                "max_mana": 296,
                 "charges": 0,
                 "status": "",
                 "guard": false,
@@ -9235,12 +9290,12 @@
       },
       "fights_started": 1
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563057.9044573,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563899.3450038,
     "reported": 0
   },
   "battle_swapped": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "battle",
@@ -9254,9 +9309,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "",
       "caught": false,
       "grant_id": null,
@@ -9597,7 +9654,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -10415,7 +10472,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -10450,9 +10507,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -10594,9 +10651,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -10618,7 +10675,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -10636,6 +10693,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -10812,39 +10878,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -10853,9 +10919,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -10863,20 +10929,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -11229,34 +11295,34 @@
         "enemy": {
           "id": -1,
           "rarity": "epic",
-          "name": "Sphinx",
+          "name": "Kitsune",
           "level": 45,
-          "hp": 166,
-          "max_hp": 166,
-          "attack": 132,
-          "defense": 170,
-          "speed": 155,
-          "mana": 99,
-          "max_mana": 286,
+          "hp": 167,
+          "max_hp": 167,
+          "attack": 138,
+          "defense": 165,
+          "speed": 190,
+          "mana": 103,
+          "max_mana": 296,
           "moves": [
-            "Riddle Curse",
-            "Arcane Swipe",
-            "Mind Shatter"
+            "Nine-Tail Storm",
+            "Grand Illusion",
+            "Soul Fox Fire"
           ],
           "move_effects": {
-            "Riddle Curse": {
+            "Nine-Tail Storm": {
               "power": 1,
               "mana_cost": 0,
               "mana_restore": 10,
               "description": "Reliable attack; restore 10 mana."
             },
-            "Arcane Swipe": {
+            "Grand Illusion": {
               "power": 0.65,
               "mana_cost": 15,
               "description": "A controlled strike that applies a condition.",
               "status": "blind"
             },
-            "Mind Shatter": {
+            "Soul Fox Fire": {
               "power": 0,
               "mana_cost": 0,
               "guard_percent": 55,
@@ -11265,9 +11331,9 @@
               "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
             }
           },
-          "ultimate": "Eternal Enigma",
+          "ultimate": "Fox God's Wrath",
           "beast_type": "arcane",
-          "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+          "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
           "status": null,
           "status_turns": 0,
           "ultimate_charges": 1,
@@ -11275,15 +11341,15 @@
           "perks": [],
           "action_count": 1,
           "dp_crit_charges": 0,
-          "beast_id": "sphinx",
+          "beast_id": "kitsune_9",
           "armor_id": "",
           "item_defense_boost_percent": 0,
           "item_speed_boost_percent": 0,
           "damage_multiplier": 1.0,
           "status_ward": false,
-          "base_speed": 155,
-          "base_attack": 132,
-          "base_defense": 170,
+          "base_speed": 190,
+          "base_attack": 138,
+          "base_defense": 165,
           "shield": 0,
           "_trial_heals": 0,
           "_trial_controls": 0,
@@ -11944,7 +12010,7 @@
         ],
         "log": [
           "Gloop tags in for Twine.",
-          "Sphinx uses Arcane Swipe → 4 damage.",
+          "Kitsune uses Grand Illusion → 4 damage.",
           "👁️ Gloop is blinded."
         ],
         "events": [
@@ -12028,13 +12094,13 @@
                 "assist_meter": 0
               },
               {
-                "species": "sphinx",
-                "name": "Sphinx",
+                "species": "kitsune_9",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "mana": 118,
+                "max_mana": 296,
                 "charges": 0,
                 "status": "",
                 "guard": false,
@@ -12143,13 +12209,13 @@
                 "assist_meter": 0
               },
               {
-                "species": "sphinx",
-                "name": "Sphinx",
+                "species": "kitsune_9",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "mana": 118,
+                "max_mana": 296,
                 "charges": 0,
                 "status": "",
                 "guard": false,
@@ -12243,13 +12309,13 @@
                 "assist_meter": 0
               },
               {
-                "species": "sphinx",
-                "name": "Sphinx",
+                "species": "kitsune_9",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "mana": 118,
+                "max_mana": 296,
                 "charges": 0,
                 "status": "",
                 "guard": false,
@@ -12264,12 +12330,12 @@
             ],
             "action": {
               "actor": 1,
-              "name": "Arcane Swipe",
+              "name": "Grand Illusion",
               "kind": "skill",
               "damage": 4,
               "ultimate": false,
               "journal": [
-                "Sphinx uses Arcane Swipe → 4 damage.",
+                "Kitsune uses Grand Illusion → 4 damage.",
                 "👁️ Gloop is blinded."
               ],
               "incoming_id": "",
@@ -12359,13 +12425,13 @@
                 "assist_meter": 0
               },
               {
-                "species": "sphinx",
-                "name": "Sphinx",
+                "species": "kitsune_9",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "mana": 99,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "mana": 103,
+                "max_mana": 296,
                 "charges": 1,
                 "status": "",
                 "guard": false,
@@ -12385,12 +12451,12 @@
       },
       "fights_started": 1
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563058.5469527,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563899.990972,
     "reported": 0
   },
   "battle_after_action": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "active",
@@ -12404,9 +12470,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "won",
       "caught": true,
       "grant_id": null,
@@ -12755,7 +12823,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -13573,7 +13641,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -13608,9 +13676,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -13752,9 +13820,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -13776,7 +13844,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -13794,6 +13862,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -13971,39 +14048,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -14012,9 +14089,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -14022,20 +14099,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -14252,7 +14329,7 @@
             "rarity": "common",
             "name": "Gloop",
             "level": 46,
-            "hp": 979,
+            "hp": 978,
             "max_hp": 1000,
             "attack": 380,
             "defense": 1732,
@@ -15104,11 +15181,11 @@
         ],
         "log": [
           "Gloop tags in for Twine.",
-          "Sphinx uses Arcane Swipe → 4 damage.",
+          "Kitsune uses Grand Illusion → 4 damage.",
           "👁️ Gloop is blinded.",
-          "Gloop uses Galaxy Splash → 154 damage.",
-          "Sphinx uses Riddle Curse → 7 damage.",
-          "⭐ Gloop uses Galaxy Splash → 12 damage.",
+          "Gloop uses Galaxy Splash → 156 damage.",
+          "Kitsune uses Nine-Tail Storm → 8 damage.",
+          "⭐ Gloop uses Galaxy Splash → 11 damage.",
           "Gloop uses Galaxy Splash → 0 damage.",
           "Loom Fragment uses Loom Pulse → 3 damage.",
           "🔻 Gloop is weakened.",
@@ -15127,7 +15204,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -15163,7 +15240,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -15243,7 +15320,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -15279,7 +15356,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -15344,12 +15421,12 @@
       "fights_started": 1,
       "fights_won": 1
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563067.2416468,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563908.7363539,
     "reported": 0
   },
   "pack_between": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "battle",
@@ -15363,9 +15440,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "",
       "caught": false,
       "grant_id": null,
@@ -15706,7 +15785,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -16524,7 +16603,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -16559,9 +16638,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -16703,9 +16782,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -16727,7 +16806,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -16745,6 +16824,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -16921,39 +17009,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -16962,9 +17050,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -16972,20 +17060,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -17202,7 +17290,7 @@
             "rarity": "common",
             "name": "Gloop",
             "level": 46,
-            "hp": 982,
+            "hp": 981,
             "max_hp": 1000,
             "attack": 380,
             "defense": 1732,
@@ -18052,11 +18140,11 @@
         ],
         "log": [
           "Gloop tags in for Twine.",
-          "Sphinx uses Arcane Swipe → 4 damage.",
+          "Kitsune uses Grand Illusion → 4 damage.",
           "👁️ Gloop is blinded.",
-          "Gloop uses Galaxy Splash → 154 damage.",
-          "Sphinx uses Riddle Curse → 7 damage.",
-          "⭐ Gloop uses Galaxy Splash → 12 damage.",
+          "Gloop uses Galaxy Splash → 156 damage.",
+          "Kitsune uses Nine-Tail Storm → 8 damage.",
+          "⭐ Gloop uses Galaxy Splash → 11 damage.",
           "Gloop uses Galaxy Splash → 0 damage.",
           "Loom Fragment uses Loom Pulse → 3 damage.",
           "🔻 Gloop is weakened.",
@@ -18071,7 +18159,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 982,
+                "hp": 981,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -18107,7 +18195,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 982,
+                    "hp": 981,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -18184,7 +18272,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 982,
+                "hp": 981,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -18220,7 +18308,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 982,
+                    "hp": 981,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -18284,12 +18372,12 @@
       },
       "fights_started": 1
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563065.327657,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563906.6764832,
     "reported": 0
   },
   "later_discovery": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "active",
@@ -18303,9 +18391,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "won",
       "caught": true,
       "grant_id": null,
@@ -18675,7 +18765,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -19493,7 +19583,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -19528,9 +19618,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -19672,9 +19762,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -19696,7 +19786,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -19714,6 +19804,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -19857,39 +19956,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -19898,9 +19997,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -19908,20 +20007,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -20996,11 +21095,11 @@
         ],
         "log": [
           "Gloop tags in for Twine.",
-          "Sphinx uses Arcane Swipe → 4 damage.",
+          "Kitsune uses Grand Illusion → 4 damage.",
           "👁️ Gloop is blinded.",
-          "Gloop uses Galaxy Splash → 154 damage.",
-          "Sphinx uses Riddle Curse → 7 damage.",
-          "⭐ Gloop uses Galaxy Splash → 12 damage.",
+          "Gloop uses Galaxy Splash → 156 damage.",
+          "Kitsune uses Nine-Tail Storm → 8 damage.",
+          "⭐ Gloop uses Galaxy Splash → 11 damage.",
           "Gloop uses Galaxy Splash → 0 damage.",
           "Loom Fragment uses Loom Pulse → 3 damage.",
           "🔻 Gloop is weakened.",
@@ -21019,7 +21118,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -21055,7 +21154,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -21135,7 +21234,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -21171,7 +21270,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -21236,12 +21335,12 @@
       "fights_started": 1,
       "fights_won": 1
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563068.3818903,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563909.6773796,
     "reported": 0
   },
   "returned": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "complete",
@@ -21255,9 +21354,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "won",
       "caught": true,
       "grant_id": 4,
@@ -21628,7 +21729,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -22446,7 +22547,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -22481,9 +22582,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -22625,9 +22726,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -22649,7 +22750,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -22667,6 +22768,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -22810,39 +22920,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -22851,9 +22961,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -22861,20 +22971,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -23949,11 +24059,11 @@
         ],
         "log": [
           "Gloop tags in for Twine.",
-          "Sphinx uses Arcane Swipe → 4 damage.",
+          "Kitsune uses Grand Illusion → 4 damage.",
           "👁️ Gloop is blinded.",
-          "Gloop uses Galaxy Splash → 154 damage.",
-          "Sphinx uses Riddle Curse → 7 damage.",
-          "⭐ Gloop uses Galaxy Splash → 12 damage.",
+          "Gloop uses Galaxy Splash → 156 damage.",
+          "Kitsune uses Nine-Tail Storm → 8 damage.",
+          "⭐ Gloop uses Galaxy Splash → 11 damage.",
           "Gloop uses Galaxy Splash → 0 damage.",
           "Loom Fragment uses Loom Pulse → 3 damage.",
           "🔻 Gloop is weakened.",
@@ -23972,7 +24082,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -24008,7 +24118,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -24088,7 +24198,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -24124,7 +24234,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -24216,12 +24326,12 @@
       "new_level": 50,
       "leveled": false
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563068.5136764,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563909.811317,
     "reported": 0
   },
   "log": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "complete",
@@ -24235,9 +24345,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "won",
       "caught": true,
       "grant_id": 4,
@@ -24608,7 +24720,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -25426,7 +25538,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -25461,9 +25573,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -25605,9 +25717,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -25629,7 +25741,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -25647,6 +25759,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -25790,39 +25911,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -25831,9 +25952,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -25841,20 +25962,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -26929,11 +27050,11 @@
         ],
         "log": [
           "Gloop tags in for Twine.",
-          "Sphinx uses Arcane Swipe → 4 damage.",
+          "Kitsune uses Grand Illusion → 4 damage.",
           "👁️ Gloop is blinded.",
-          "Gloop uses Galaxy Splash → 154 damage.",
-          "Sphinx uses Riddle Curse → 7 damage.",
-          "⭐ Gloop uses Galaxy Splash → 12 damage.",
+          "Gloop uses Galaxy Splash → 156 damage.",
+          "Kitsune uses Nine-Tail Storm → 8 damage.",
+          "⭐ Gloop uses Galaxy Splash → 11 damage.",
           "Gloop uses Galaxy Splash → 0 damage.",
           "Loom Fragment uses Loom Pulse → 3 damage.",
           "🔻 Gloop is weakened.",
@@ -26952,7 +27073,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -26988,7 +27109,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -27068,7 +27189,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -27104,7 +27225,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -27196,12 +27317,12 @@
       "new_level": 50,
       "leveled": false
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563068.5136764,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563909.811317,
     "reported": 0
   },
   "recap": {
-    "id": "0e0188fe0af04607b92153884c8efb60",
+    "id": "118d7b40208d488cb0c0d8c91cba7fb0",
     "user_id": 42,
     "realm": "loom",
     "status": "complete",
@@ -27215,9 +27336,11 @@
       "base_exp": 682,
       "material": "spirit_crystal",
       "offered": [
-        "spirit_crystal"
+        "spirit_crystal",
+        "basilisk_eye",
+        "unicorn_hair"
       ],
-      "encounter": "sphinx",
+      "encounter": "kitsune_9",
       "encounter_result": "won",
       "caught": true,
       "grant_id": 4,
@@ -27588,7 +27711,7 @@
               ]
             },
             "loom.question_index.desk": {
-              "body": "Venn brings the returned cards to a low desk rather than restoring them to the unreachable shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
+              "body": "Venn decides to bring the cards to a low desk instead of restoring them to the high shelf. A small visitor immediately sits beside the question about promises. Nobody asks it to explain itself. The reading room feels less complete than before, but considerably more useful to the people actually inside it.",
               "choices": [
                 {
                   "id": "company",
@@ -28406,7 +28529,7 @@
                 {
                   "id": "ready",
                   "label": "Answer the invitation from the open threshold",
-                  "description": "Begin a rare-opponent encounter.",
+                  "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
                   "outcome": "You signal readiness and wait for a resident to approach the clear practice floor.",
                   "effects": {
                     "battle": "rare"
@@ -28441,9 +28564,9 @@
                 },
                 {
                   "id": "trim",
-                  "label": "Mark the detached repair fibers for your bundle",
+                  "label": "Inspect the loose gathering area beside the spool",
                   "description": "Replace the journey’s single material selection.",
-                  "outcome": "You choose loose trimmings and leave the supporting weave in place.",
+                  "outcome": "You mark the detached gathering area and leave the strand supporting the terrace in place; the journey selects only one material bundle.",
                   "effects": {
                     "material": true
                   }
@@ -28585,9 +28708,9 @@
                 },
                 {
                   "id": "brace",
-                  "label": "Inspect the rough service brace and loose deposit",
+                  "label": "Inspect the rough service brace and collection shelf",
                   "description": "Lose up to 3% HP; replace your material selection.",
-                  "outcome": "A few scrapes accompany the close inspection, and you mark only detached material for the bundle.",
+                  "outcome": "A few scrapes accompany the inspection. You mark a gathering place for the single bundle without disturbing the supporting weave.",
                   "effects": {
                     "hp_cost": 3,
                     "material": true
@@ -28609,7 +28732,7 @@
           ],
           "nodes": {
             "loom.quiet_circle.entry": {
-              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. The illustrated outside lane remains available for teams that prefer rehearsal. Neither route disturbs the reading terraces or asks anyone to turn a companion’s invitation into a capture promise.",
+              "body": "The familiar practice circle has been swept clear of drifting paper and loose thread. A resident waits beside its ready marker, interested in a respectful test. A second challenger rests at the far marker for teams seeking a two-opponent rehearsal. The illustrated outside lane remains open, and neither practice space disturbs the nearby reading terraces.",
               "choices": [
                 {
                   "id": "rehearse",
@@ -28627,6 +28750,15 @@
                   "outcome": "The waiting companion approaches the cleared circle as your team takes its place.",
                   "effects": {
                     "battle": "single"
+                  }
+                },
+                {
+                  "id": "paired_rehearsal",
+                  "label": "Arrange a two-opponent rehearsal across both markers",
+                  "description": "Begin a two-opponent friendly contest.",
+                  "outcome": "The residents take their places at the two markers, leaving the outside lane open. Your companions settle into the circle before the first challenger approaches.",
+                  "effects": {
+                    "battle": "pack2"
                   }
                 }
               ]
@@ -28770,39 +28902,39 @@
             {
               "index": 1,
               "kind": "normal",
-              "species": "sphinx",
+              "species": "kitsune_9",
               "level": 45,
               "enemy_template": {
                 "id": null,
                 "rarity": "epic",
-                "name": "Sphinx",
+                "name": "Kitsune",
                 "level": 45,
-                "hp": 166,
-                "max_hp": 166,
-                "attack": 132,
-                "defense": 170,
-                "speed": 155,
-                "mana": 114,
-                "max_mana": 286,
+                "hp": 167,
+                "max_hp": 167,
+                "attack": 138,
+                "defense": 165,
+                "speed": 190,
+                "mana": 118,
+                "max_mana": 296,
                 "moves": [
-                  "Riddle Curse",
-                  "Arcane Swipe",
-                  "Mind Shatter"
+                  "Nine-Tail Storm",
+                  "Grand Illusion",
+                  "Soul Fox Fire"
                 ],
                 "move_effects": {
-                  "Riddle Curse": {
+                  "Nine-Tail Storm": {
                     "power": 1,
                     "mana_cost": 0,
                     "mana_restore": 10,
                     "description": "Reliable attack; restore 10 mana."
                   },
-                  "Arcane Swipe": {
+                  "Grand Illusion": {
                     "power": 0.65,
                     "mana_cost": 15,
                     "description": "A controlled strike that applies a condition.",
                     "status": "blind"
                   },
-                  "Mind Shatter": {
+                  "Soul Fox Fire": {
                     "power": 0,
                     "mana_cost": 0,
                     "guard_percent": 55,
@@ -28811,9 +28943,9 @@
                     "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
                   }
                 },
-                "ultimate": "Eternal Enigma",
+                "ultimate": "Fox God's Wrath",
                 "beast_type": "arcane",
-                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/sphinx.png?v=bb571606fdb125d6",
+                "image_url": "https://raw.githubusercontent.com/Zkittless/ChibiBeasts/main/data/sprites/kitsune_9.png?v=8adf7187f70851c5",
                 "status": null,
                 "status_turns": 0,
                 "ultimate_charges": 0,
@@ -28821,20 +28953,20 @@
                 "perks": [],
                 "action_count": 0,
                 "dp_crit_charges": 0,
-                "beast_id": "sphinx",
+                "beast_id": "kitsune_9",
                 "armor_id": "",
                 "item_defense_boost_percent": 0,
                 "item_speed_boost_percent": 0,
                 "damage_multiplier": 1.0,
                 "status_ward": false,
-                "base_speed": 155,
-                "base_attack": 132,
-                "base_defense": 170,
+                "base_speed": 190,
+                "base_attack": 138,
+                "base_defense": 165,
                 "shield": 0
               },
               "round_limit": 16,
               "profile": {},
-              "name": "Sphinx"
+              "name": "Kitsune"
             },
             {
               "index": 2,
@@ -29909,11 +30041,11 @@
         ],
         "log": [
           "Gloop tags in for Twine.",
-          "Sphinx uses Arcane Swipe → 4 damage.",
+          "Kitsune uses Grand Illusion → 4 damage.",
           "👁️ Gloop is blinded.",
-          "Gloop uses Galaxy Splash → 154 damage.",
-          "Sphinx uses Riddle Curse → 7 damage.",
-          "⭐ Gloop uses Galaxy Splash → 12 damage.",
+          "Gloop uses Galaxy Splash → 156 damage.",
+          "Kitsune uses Nine-Tail Storm → 8 damage.",
+          "⭐ Gloop uses Galaxy Splash → 11 damage.",
           "Gloop uses Galaxy Splash → 0 damage.",
           "Loom Fragment uses Loom Pulse → 3 damage.",
           "🔻 Gloop is weakened.",
@@ -29932,7 +30064,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -29968,7 +30100,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -30048,7 +30180,7 @@
                 "species": "gloop",
                 "name": "Gloop",
                 "level": 46,
-                "hp": 979,
+                "hp": 978,
                 "max_hp": 1000,
                 "mana": 100,
                 "max_mana": 100,
@@ -30084,7 +30216,7 @@
                     "species": "gloop",
                     "name": "Gloop",
                     "level": 46,
-                    "hp": 979,
+                    "hp": 978,
                     "max_hp": 1000,
                     "mana": 100,
                     "max_mana": 100,
@@ -30176,8 +30308,8 @@
       "new_level": 50,
       "leveled": false
     },
-    "created_at": 1792563057.364077,
-    "updated_at": 1792563068.5136764,
+    "created_at": 1792563898.743252,
+    "updated_at": 1792563909.811317,
     "reported": 0
   }
 }

@@ -14,7 +14,7 @@
     "one_time_roots": 100,
     "repeatable_roots": 30,
     "nodes": 160,
-    "choices": 320,
+    "choices": 327,
     "connected_locations": 15
   },
   "authored_counts": {
@@ -34,18 +34,18 @@
   "packs": {
     "glacial_deep": {
       "path": "data/adventures/glacial_deep.json",
-      "sha256": "14c9ee0c0fe72279d810bb81add1560d02efc4721efee51561b2b7a2de3077e5",
-      "graph_and_mechanics_sha256": "4cb2ec0945bf233d59effd5570d52de5f6376dab98b07f7717218feb6f873ae5",
+      "sha256": "89638e79cfc38a5635d9d17bc386902007268d3ffa1b493e44edaf76b092fc64",
+      "graph_and_mechanics_sha256": "62521a284642b07570945514233626967be3081f5b518d857514cd99174e57d0",
       "counts": {
         "one_time_roots": 20,
         "repeatable_roots": 6,
         "nodes": 32,
-        "choices": 64,
+        "choices": 66,
         "connected_locations": 3
       },
       "body_word_range": [
         45,
-        56
+        59
       ],
       "read_all_roots_and_nodes": true,
       "reviewed_roots": [
@@ -353,18 +353,18 @@
     },
     "trenches": {
       "path": "data/adventures/trenches.json",
-      "sha256": "ba83c4dac95a611ab006d1a4770192173a3b580c00b70d2d181d640f581aefa5",
-      "graph_and_mechanics_sha256": "23e7ec43c8148f9eaac49743d3a35534ed8f1bce955eb0db906e74c6ec3132b4",
+      "sha256": "4543ecb9ba75e0fdb2b5550bcdaaccbfacfe44eb06fa252f2a7bbd5a875f8b78",
+      "graph_and_mechanics_sha256": "36f2cc25c96127c08ca677ea54c2ff546abc19a87980ac273c485e2bdf59d488",
       "counts": {
         "one_time_roots": 20,
         "repeatable_roots": 6,
         "nodes": 32,
-        "choices": 64,
+        "choices": 66,
         "connected_locations": 3
       },
       "body_word_range": [
         48,
-        57
+        59
       ],
       "read_all_roots_and_nodes": true,
       "reviewed_roots": [
@@ -664,18 +664,18 @@
     },
     "trenches_deep": {
       "path": "data/adventures/trenches_deep.json",
-      "sha256": "e96af93878e5993c3a1ba1935d25ae573a8f763f11f824b10acf9a4ac45127fa",
-      "graph_and_mechanics_sha256": "c81f4b40836ae31e5167b722f2ef42587f3f1766154782580b6f88859cc88956",
+      "sha256": "8c3b5db8b9783da8ae77df046b64deca75a1beedb2feb47d3a62ae007aeb402a",
+      "graph_and_mechanics_sha256": "22cd4486477f965f25939dcfa6a0bc468ca11cfd4f3f1ac41c61626c34488ec3",
       "counts": {
         "one_time_roots": 20,
         "repeatable_roots": 6,
         "nodes": 32,
-        "choices": 64,
+        "choices": 65,
         "connected_locations": 3
       },
       "body_word_range": [
         46,
-        58
+        59
       ],
       "read_all_roots_and_nodes": true,
       "reviewed_roots": [
@@ -975,13 +975,13 @@
     },
     "loom": {
       "path": "data/adventures/loom.json",
-      "sha256": "9d008355d19d505f84e82ce5669d518f896b0ce73cfc198e363442438c4958df",
-      "graph_and_mechanics_sha256": "2b5889e4e8e71b59795a7aa422d2eb289ecf06305c5a1ea7a322653000110dd1",
+      "sha256": "9f23318adf1436ff754920657d65d2eaba81267910f587eaccd22c36d15ce00d",
+      "graph_and_mechanics_sha256": "ba0e969fb616753fa138be9e2e4885e4e6d3bf2e394821bd195b8f7d229f329a",
       "counts": {
         "one_time_roots": 20,
         "repeatable_roots": 6,
         "nodes": 32,
-        "choices": 64,
+        "choices": 65,
         "connected_locations": 3
       },
       "body_word_range": [
@@ -1302,13 +1302,13 @@
     },
     "loom_deep": {
       "path": "data/adventures/loom_deep.json",
-      "sha256": "11cfd4716f9590dbd414ed7003bb2b987587776ff5842722cb960f92752d6b3e",
-      "graph_and_mechanics_sha256": "b3a4caff31b6841cf16e6369eac5937086511b8bc7ce61046bfdd8a6b4bc0779",
+      "sha256": "ffcd8b218b48eadc8ccf23b6d9f6c47ea799184260016b89b4b034cda9a2e5a4",
+      "graph_and_mechanics_sha256": "aa5fa93b6bc989b0cdecb0429da8e7addad2e2d7d86d23d1a31a3583230d0645",
       "counts": {
         "one_time_roots": 20,
         "repeatable_roots": 6,
         "nodes": 32,
-        "choices": 64,
+        "choices": 65,
         "connected_locations": 3
       },
       "body_word_range": [
@@ -2100,7 +2100,7 @@
     "rare_token": "Read current journey_combat/journey_service behavior: rare is one normally scaled opponent and uses the shared run encounter/capture policy. Three misleading rare-opponent descriptions were changed to one wild encounter with normal habitat rarity rules.",
     "materials": "The run has one material-or-nest reward slot. Material selection can replace its saved bundle with a same-rarity offered alternative; where no alternative exists the runtime supplies a capped bundle bonus. Content now avoids fixed material IDs, additional bundles and pantry-food inventory promises.",
     "bounded_effects": "All effects are schema-whitelisted and bounded. Descriptions do not invent permanent stats, extra currency streams, resurrection or consumable rewards. Runtime-effective descriptions communicate already-used research/recovery/bonus limits.",
-    "choices": "Every node has two distinct consequences and an unconditional noncombat, no-damage option. Practical help, investigation, preparation, social response and bounded risk occur in specific local contexts; choices are not one global four-button menu.",
+    "choices": "Every node has two or three distinct consequences and an unconditional noncombat, no-damage option. Practical help, investigation, preparation, social response and bounded risk occur in specific local contexts; choices are not one global four-button menu.",
     "persistent_world": "Gated follow-ups have authored flag producers. Branch flags and root completion are separate; no effect resets encounter completion. Some later invitations deliberately depend on the earlier branch, while unfinished locations remain resumable."
   },
   "distinctness": {
@@ -2116,7 +2116,7 @@
       "one_time_roots": 200,
       "repeatable_roots": 60,
       "nodes": 320,
-      "choices": 640
+      "choices": 647
     },
     "strict_body_range": "All 320 authored node bodies are 35-80 whitespace-separated words.",
     "applied_edit_check": "All 38 final after-values in the editorial change log match the current catalogs; every changed field is body, label, description or outcome.",
@@ -2127,9 +2127,149 @@
       },
       {
         "command": "python -m unittest discover -s tests -p test_living_catalog.py -q",
-        "passed": 2
+        "passed": 3
       }
     ],
     "limits": "This is a content and graph review, not a claim that every possible world-history combination or combat balance has been simulated. Runtime persistence, reward settlement and battle pacing are covered by their separate test/audit work."
+  },
+  "coverage_addendum": {
+    "issue": "Stormglass Peaks and Abyssal Trenches originally had no repeatable battle choice; the remaining later biomes offered only a single opponent. After one-time content was finished, those catalogs could remove battle/catch opportunities or lose pack variation.",
+    "resolution": "The content author added seven contextual third choices to existing repeatable roots. Independent review verified every prior root, node, choice, effect, flag and continuation edge is preserved; the new terminal choices add only battle intentions.",
+    "reviewed_changes": [
+      {
+        "biome": "glacial_deep",
+        "root": "glacial_deep.harpy_draft",
+        "node": "glacial_deep.harpy_draft.entry",
+        "choice": "ridge_test",
+        "kind": "single",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "glacial_deep",
+        "root": "glacial_deep.rukh_stones",
+        "node": "glacial_deep.rukh_stones.entry",
+        "choice": "ledge_pair",
+        "kind": "pack2",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "trenches",
+        "root": "trenches.bubble_lane",
+        "node": "trenches.bubble_lane.entry",
+        "choice": "resident_test",
+        "kind": "single",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "trenches",
+        "root": "trenches.kelpie_reeds",
+        "node": "trenches.kelpie_reeds.entry",
+        "choice": "channel_relay",
+        "kind": "pack3",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "trenches_deep",
+        "root": "trenches_deep.practice_bubbles",
+        "node": "trenches_deep.practice_bubbles.entry",
+        "choice": "paired_bubbles",
+        "kind": "pack2",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "loom",
+        "root": "loom.quiet_circle",
+        "node": "loom.quiet_circle.entry",
+        "choice": "paired_rehearsal",
+        "kind": "pack2",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      },
+      {
+        "biome": "loom_deep",
+        "root": "loom_deep.starlit_drill",
+        "node": "loom_deep.starlit_drill.entry",
+        "choice": "orchard_relay",
+        "kind": "pack3",
+        "safe_options_preserved": true,
+        "review": "Body establishes unnamed challengers beside the original activity; outcome prepares a sequential friendly contest without promising victory, species, rarity, capture or extra payout."
+      }
+    ],
+    "all_ten_repeatable_battle_kinds": {
+      "woods": [
+        "pack2",
+        "single"
+      ],
+      "woods_deep": [
+        "pack2",
+        "rare"
+      ],
+      "ember": [
+        "pack2",
+        "single"
+      ],
+      "ember_deep": [
+        "pack3",
+        "rare"
+      ],
+      "glacial": [
+        "pack2",
+        "rare"
+      ],
+      "glacial_deep": [
+        "pack2",
+        "single"
+      ],
+      "trenches": [
+        "pack3",
+        "single"
+      ],
+      "trenches_deep": [
+        "pack2",
+        "single"
+      ],
+      "loom": [
+        "pack2",
+        "single"
+      ],
+      "loom_deep": [
+        "pack3",
+        "single"
+      ]
+    },
+    "review_note": "Ridge feathers and distant Rukh marks remain observations, not guaranteed opponents. Local residents are unnamed. Pair/relay outcomes explicitly meet opponents in turn and leave the original observation, rehearsal or rest routes open. No consumable use, reward multiplier or capture guarantee was added.",
+    "scope": "Independently reread all seven changed bodies, all original choices and all seven added choices. No catalog edits were made by this reviewer during the addendum.",
+    "memory_replay": {
+      "path": "docs/adventure-memory-audit.json",
+      "status": "passed",
+      "source_hashes_match": true,
+      "totals": {
+        "visits": 3000,
+        "steps": 9444,
+        "root_starts": 9286,
+        "familiar_root_starts": 8687,
+        "continuation_resumptions": 22,
+        "explicit_continuation_resume_probes": 180,
+        "exhausted_visits": 2856,
+        "shortened_visits": 2856,
+        "battle_intentions_assumed_won": 767,
+        "familiar_battle_intentions_assumed_won": 741,
+        "published_scene_choices_resolved_in_rollback": 19907,
+        "published_familiar_battle_choices_resolved_in_rollback": 2895
+      },
+      "scope": "Actual planner persistence with wins assumed for battle intentions; no combat or reward-settlement claim."
+    },
+    "verification": {
+      "validate_all_errors": [],
+      "content_tests_passed": 7,
+      "catalog_tests_passed": 3,
+      "zero_duplicate_bodies_or_outcomes": true,
+      "all_old_choices_unchanged": true
+    }
   }
 }
