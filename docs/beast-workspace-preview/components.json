@@ -31,7 +31,73 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "110189b91df120ce4882c2a99da258e6",
+            "custom_id": "88d1bcbc9211f3a3382058220bab7482",
+            "min_values": 1,
+            "max_values": 1,
+            "disabled": false,
+            "required": true,
+            "placeholder": "Filter by rarity",
+            "options": [
+              {
+                "label": "Common",
+                "value": "common",
+                "default": true
+              },
+              {
+                "label": "Uncommon",
+                "value": "uncommon",
+                "default": false
+              },
+              {
+                "label": "Rare",
+                "value": "rare",
+                "default": false
+              },
+              {
+                "label": "Epic",
+                "value": "epic",
+                "default": false
+              },
+              {
+                "label": "Legendary",
+                "value": "legendary",
+                "default": false
+              },
+              {
+                "label": "Divine",
+                "value": "divine",
+                "default": false
+              },
+              {
+                "label": "Altered Divine",
+                "value": "altered_divine",
+                "default": false
+              },
+              {
+                "label": "Corrupted",
+                "value": "corrupted",
+                "default": false
+              },
+              {
+                "label": "Ancient",
+                "value": "ancient",
+                "default": false
+              },
+              {
+                "label": "Dev",
+                "value": "dev",
+                "default": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "components": [
+          {
+            "type": 3,
+            "custom_id": "1243f2065730eb9eab90507184e051aa",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -82,12 +148,12 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "f94da8d514939941dae3f424114f99e3",
+            "custom_id": "62e05c2226b9dd6ad73a9785908e33c1",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
             "required": true,
-            "placeholder": "Open a companion’s details",
+            "placeholder": "Common beasts · Page 1/1",
             "options": [
               {
                 "label": "#1 · Twine · Lv.8",
@@ -119,28 +185,28 @@
             "style": 2,
             "disabled": true,
             "label": "◀",
-            "custom_id": "79f5a742b4db7c56ad5dcea3fd2ccfb2"
+            "custom_id": "ab5167abaaa52e42d4eafa5aa15e417c"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Back to roster",
-            "custom_id": "7a65db947bf569fe5c934d59b819095e"
+            "custom_id": "edb9db8d51cf8bb8e782e12dcfd5a3f4"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "#2 ▶",
-            "custom_id": "2c27354bc8eab978e89c9003902d781a"
+            "custom_id": "658cd4cbfd006292cdf4557fbf9cd204"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Field Journal",
-            "custom_id": "982f0ee84e99d33582fdfee80b7861d6"
+            "custom_id": "5072ae42f823d9e660ab1e3290f2a7bb"
           }
         ]
       },
@@ -152,28 +218,28 @@
             "style": 1,
             "disabled": false,
             "label": "Search",
-            "custom_id": "ed8197348cb55dc9aab34b9cfb55aeb0"
+            "custom_id": "313223a9dad29d0965df2eb3cc4d2844"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "cfac9cd3f07984c3502893c3f1439be7"
+            "custom_id": "cf9a61ef377c51db292576358db76b32"
           },
           {
             "type": 2,
             "style": 3,
             "disabled": false,
             "label": "Care & items",
-            "custom_id": "ba026b5a46c175cf983b3b1dbab294aa"
+            "custom_id": "055d2f76e0004db046e100557708491c"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Details",
-            "custom_id": "d1197a8df3d3b6376ec21bc3c1e16140"
+            "custom_id": "5a23f03046437c113bf5e9eb8fb86801"
           }
         ]
       }
@@ -207,7 +273,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "412a3883b0e890be6a5099119d64f8cb",
+            "custom_id": "3843500cde15a9004a93f87066da96ff",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -253,7 +319,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "care:6b7425cbac6447f2875b7e6bbdbe31a6:0:item",
+            "custom_id": "care:c062aad260e84cff98990e1fd9820460:0:item",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -278,14 +344,14 @@
             "style": 1,
             "disabled": true,
             "label": "Use 1",
-            "custom_id": "care:6b7425cbac6447f2875b7e6bbdbe31a6:0:use"
+            "custom_id": "care:c062aad260e84cff98990e1fd9820460:0:use"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "care:6b7425cbac6447f2875b7e6bbdbe31a6:0:refresh"
+            "custom_id": "care:c062aad260e84cff98990e1fd9820460:0:refresh"
           }
         ]
       },
@@ -297,7 +363,7 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "e9ea041ba1a79532369d78195f6198c7"
+            "custom_id": "cf7a7e0a73463fd4cc7685ab02afe9f4"
           }
         ]
       }
@@ -336,7 +402,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "2103d50954fd8cede61d5a3d582acfa9",
+            "custom_id": "57a20338ec6db7f0cfe13e5c524e9adb",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -382,7 +448,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "care:6b7425cbac6447f2875b7e6bbdbe31a6:1:item",
+            "custom_id": "care:c062aad260e84cff98990e1fd9820460:1:item",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -407,14 +473,14 @@
             "style": 1,
             "disabled": false,
             "label": "Use 1",
-            "custom_id": "care:6b7425cbac6447f2875b7e6bbdbe31a6:1:use"
+            "custom_id": "care:c062aad260e84cff98990e1fd9820460:1:use"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "care:6b7425cbac6447f2875b7e6bbdbe31a6:1:refresh"
+            "custom_id": "care:c062aad260e84cff98990e1fd9820460:1:refresh"
           }
         ]
       },
@@ -426,7 +492,7 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "fb769853c34584fdcb621d60d122a093"
+            "custom_id": "8d20aeeda3510ce7189993452bff23fc"
           }
         ]
       }
@@ -465,7 +531,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "5b6562268f6330276cd650b327bed727",
+            "custom_id": "0d3efb35ab3febcaade112d125bd72d4",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -514,14 +580,14 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "c041b22c53095e0a71374d7f6629ce6a"
+            "custom_id": "32b7b606b7a977c956805d048891b30c"
           },
           {
             "type": 2,
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "e84a9b5094ee2f807f434c516a4e397a"
+            "custom_id": "1b2173242e8197eb82c12056677eae7c"
           }
         ]
       },
@@ -533,21 +599,21 @@
             "style": 1,
             "disabled": false,
             "label": "Care",
-            "custom_id": "8d7767b8e012fd712923a65bfed7c5e1"
+            "custom_id": "54a6a5aedb6be6943e155869e0d4075e"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change armor",
-            "custom_id": "1b109c856604850ce9ffb1cd80cbbe7b"
+            "custom_id": "a9769c7f01351b073ca039de6fa64b50"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change rune",
-            "custom_id": "2ccd5486b8c6f61cf227f88f6aea2332"
+            "custom_id": "d5683bce36724e70d773c4a6912a0708"
           }
         ]
       }
@@ -591,7 +657,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "c4a4b4da5059c163b96970ec7f21d337",
+            "custom_id": "25e5974b80b12e6e9dd6805e3a292bcb",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -640,14 +706,14 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "c041b22c53095e0a71374d7f6629ce6a"
+            "custom_id": "32b7b606b7a977c956805d048891b30c"
           },
           {
             "type": 2,
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "eef5c9b92236a37cb811f1d02e00fe31"
+            "custom_id": "be9e8e820230a8a0d8dcca2f887c4aef"
           }
         ]
       },
@@ -659,21 +725,21 @@
             "style": 1,
             "disabled": false,
             "label": "Care",
-            "custom_id": "8d7767b8e012fd712923a65bfed7c5e1"
+            "custom_id": "54a6a5aedb6be6943e155869e0d4075e"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change armor",
-            "custom_id": "1b109c856604850ce9ffb1cd80cbbe7b"
+            "custom_id": "a9769c7f01351b073ca039de6fa64b50"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Change rune",
-            "custom_id": "2ccd5486b8c6f61cf227f88f6aea2332"
+            "custom_id": "d5683bce36724e70d773c4a6912a0708"
           }
         ]
       },
@@ -682,7 +748,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "86ef44465d157809063f93aae05bfcef",
+            "custom_id": "3895b1061043e709312206760c86a3a5",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -707,21 +773,21 @@
             "style": 3,
             "disabled": false,
             "label": "Equip selected",
-            "custom_id": "12847b17b4710c841e8ebac29950662d"
+            "custom_id": "0de6c8bddffb01a60d238654e7bca173"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Remove armor",
-            "custom_id": "d8695ea3989b75102f7f289820b9bd5e"
+            "custom_id": "7e33bfc6b8f5bec507f5cd0d9746d955"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Done",
-            "custom_id": "5ec2e5674ece2bc0d11a0c63607ebeac"
+            "custom_id": "a1446babfb6abf9f84c70092b4810df2"
           }
         ]
       }
@@ -742,7 +808,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "3c1c970ab8f119c2b45343dbb5d59036",
+            "custom_id": "88f58c8542f5ff56625c5eded1aaff45",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -788,7 +854,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "8e24bee6dd1ac8f7457e768593239038",
+            "custom_id": "edc6f712ca5b59c55a8e6493fe7ba7b9",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -827,7 +893,7 @@
             "style": 3,
             "disabled": false,
             "label": "Train attack · 50 gold",
-            "custom_id": "94badf51c14f2b575192f0ef49bfb17b"
+            "custom_id": "f9d74315f1a4cc4006c458963e731820"
           }
         ]
       },
@@ -839,7 +905,7 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "e1b093acd991fa69998b3d403de2a5dd"
+            "custom_id": "2c3013a71043c334db2d1d44c4271e2f"
           }
         ]
       }
@@ -867,7 +933,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "1ca22c9af40dc3a39d1dc94e552a6710",
+            "custom_id": "9f424f096c88cbc2169a2e7ff4af93fb",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -916,7 +982,7 @@
             "style": 3,
             "disabled": true,
             "label": "Evolve into Timestitch",
-            "custom_id": "489e824c2419e82d53d2609d1c244fe6"
+            "custom_id": "04edc7ad9fbaff89ea7c556105a44c4e"
           }
         ]
       },
@@ -928,7 +994,7 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "1243e874a4ae10f403f060155c372c90"
+            "custom_id": "ef59f87da6052b8a631251235bac1156"
           }
         ]
       }
@@ -972,7 +1038,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "45a6642d940f9173349116a7d559cc96",
+            "custom_id": "99a39fe798cc9716f79eb9871dc17502",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1021,14 +1087,14 @@
             "style": 1,
             "disabled": false,
             "label": "Exploration",
-            "custom_id": "646134e2517e00f40cda36836126143d"
+            "custom_id": "902d16fffc770b64f31a30a136dbb982"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Raids",
-            "custom_id": "b6532b9f041d7cd294d4136471c0c6f5"
+            "custom_id": "677f2139bed8f88f674a2a157ab3c057"
           }
         ]
       },
@@ -1040,21 +1106,21 @@
             "style": 2,
             "disabled": true,
             "label": "Assign lead",
-            "custom_id": "8a01ac30a050019b7f24640851e1a8bf"
+            "custom_id": "ce4a8890d707f613385ef790a3647616"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "Assign reserve 1",
-            "custom_id": "ca65f1569819c84e1fcd8611c7bd02d7"
+            "custom_id": "9e374fb1d74745a1291bfcf0af130d42"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "Assign reserve 2",
-            "custom_id": "0825041a83aacc3b183745dbf12f1b8d"
+            "custom_id": "627f65fdbf3fe8a9052c1a653ef5cc4e"
           }
         ]
       },
@@ -1066,7 +1132,7 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "2bef0b9975b22884a54f328db522b4a4"
+            "custom_id": "0fcd7f102a63d34cc9a1ebc225c2067c"
           }
         ]
       },
@@ -1078,7 +1144,7 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "89d1a20fee3704dbcbc1f9c81fc28fd0"
+            "custom_id": "a0ed62e968ca42aa95182f7776c12be8"
           }
         ]
       }
@@ -1122,7 +1188,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "b61e1971cc4621e55ddbc35e84a252f7",
+            "custom_id": "b4940174951d3a856402d8142d415f44",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1171,14 +1237,14 @@
             "style": 2,
             "disabled": false,
             "label": "Exploration",
-            "custom_id": "2364e0fc1a4b84b79ef8e329084fe25f"
+            "custom_id": "6a9c7de4223c79fe957843b3dd47ebd4"
           },
           {
             "type": 2,
             "style": 1,
             "disabled": false,
             "label": "Raids",
-            "custom_id": "5d4cb8591d22630e53e3bed06f83559d"
+            "custom_id": "6941ec34672f3b4135e5aac975dacdaf"
           }
         ]
       },
@@ -1190,21 +1256,21 @@
             "style": 2,
             "disabled": false,
             "label": "Assign front",
-            "custom_id": "2f39f86d8464c034dbf12d56d6b0e4cb"
+            "custom_id": "c4c4ee1379393f68ee6805b2c21bf8e4"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Assign mid",
-            "custom_id": "c03ab22028924589cce3aa5024e8e827"
+            "custom_id": "d130978a8c6290655349bf9be9d89571"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Assign bench",
-            "custom_id": "7b98ef551267a62e8064a7bfb95ddcde"
+            "custom_id": "9411de70e5e11b7267bb51faf1f3f4e1"
           }
         ]
       },
@@ -1216,7 +1282,7 @@
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "8bd998f35f2f25ee91c7fdc1a02e95a7"
+            "custom_id": "3e5803a01d43f5fbdb0a4bd380139b52"
           }
         ]
       },
@@ -1228,7 +1294,7 @@
             "style": 1,
             "disabled": false,
             "label": "Back to beast",
-            "custom_id": "7ae0e6e8b98c48eabf5e7ffc476873a3"
+            "custom_id": "134e90cbe4f35ded52fa9880a809863d"
           }
         ]
       }
@@ -1260,7 +1326,7 @@
       "flags": 0,
       "color": 16740039,
       "type": "rich",
-      "description": "**3 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress.",
+      "description": "**3 of 3 companions** · Page 1/1\nSelect a companion below for their portrait, stats and evolution progress. · Common",
       "title": "🐾 Trainer’s collection"
     },
     "components": [
@@ -1269,7 +1335,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "471203f98b5e5dfc10f026de12a04f68",
+            "custom_id": "88d1bcbc9211f3a3382058220bab7482",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1277,14 +1343,9 @@
             "placeholder": "Filter by rarity",
             "options": [
               {
-                "label": "All rarities",
-                "value": "all",
-                "default": true
-              },
-              {
                 "label": "Common",
                 "value": "common",
-                "default": false
+                "default": true
               },
               {
                 "label": "Uncommon",
@@ -1330,11 +1391,6 @@
                 "label": "Dev",
                 "value": "dev",
                 "default": false
-              },
-              {
-                "label": "Special rarities",
-                "value": "special",
-                "default": false
               }
             ]
           }
@@ -1345,7 +1401,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "3879269024d3fa565348ddc5f149ec13",
+            "custom_id": "9117db7f0148025221489559d279ca6f",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1376,7 +1432,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "f94da8d514939941dae3f424114f99e3",
+            "custom_id": "62e05c2226b9dd6ad73a9785908e33c1",
             "min_values": 1,
             "max_values": 1,
             "disabled": false,
@@ -1413,28 +1469,28 @@
             "style": 2,
             "disabled": true,
             "label": "Previous page",
-            "custom_id": "8d9f7b51a9eb2ccb71b93511527e56f0"
+            "custom_id": "d82ae2e2cf09a2070d6ab248e0626279"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "1/1",
-            "custom_id": "5735c1978dbf2829351b06591e6109c3"
+            "custom_id": "5a0b5a77734e17609979ac875d0b2ce5"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": true,
             "label": "Next page",
-            "custom_id": "ab927ca7076b007ecf91690cd1dff3ca"
+            "custom_id": "c9ec9cc4c5de29f1ff792a3a208e4da2"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Field Journal",
-            "custom_id": "982f0ee84e99d33582fdfee80b7861d6"
+            "custom_id": "5072ae42f823d9e660ab1e3290f2a7bb"
           }
         ]
       },
@@ -1446,14 +1502,14 @@
             "style": 1,
             "disabled": false,
             "label": "Search",
-            "custom_id": "ed8197348cb55dc9aab34b9cfb55aeb0"
+            "custom_id": "313223a9dad29d0965df2eb3cc4d2844"
           },
           {
             "type": 2,
             "style": 2,
             "disabled": false,
             "label": "Refresh",
-            "custom_id": "cfac9cd3f07984c3502893c3f1439be7"
+            "custom_id": "cf9a61ef377c51db292576358db76b32"
           }
         ]
       }

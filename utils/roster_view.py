@@ -14,6 +14,7 @@ from utils.progression import awakening_requirements, evolution_blockers
 from utils.theme import COLORS, RARITY_EMOJI, TYPE_EMOJI, exp_bar, fmt_stats
 
 PAGE_SIZE = 10
+DETAIL_PAGE_SIZE = 23  # Two of Discord's 25 select options are reserved for paging.
 logger = logging.getLogger('chibibeasts.roster')
 
 
@@ -174,7 +175,8 @@ class OwnedRosterView(discord.ui.View):
         super().__init__(timeout=300)
         self.user_id, self.display_name = user_id, display_name
         self.mode = 'detail' if details else 'overview'
-        self.picker = owned_roster.PickerState()
+        self.detail_browsing = details
+        self.picker = owned_roster.PickerState(rarity='common')
         self.rows, self.player, self.inventory = [], {}, {}
         self.selected_id = None
         self.message = self.timeout_message = None
@@ -240,14 +242,15 @@ class OwnedRosterView(discord.ui.View):
         return await self.navigator.navigate(interaction, self, 'care', self.selected())
 
     async def choose_rarity(self, interaction):
-        await self.show(interaction, rarity=interaction.data['values'][0], mode='overview')
+        await self.show(interaction, rarity=interaction.data['values'][0],
+                        mode='detail' if self.detail_browsing else 'overview', first_match=self.detail_browsing)
 
     async def choose_sort(self, interaction):
         await self.show(interaction, sort=interaction.data['values'][0], mode='overview')
 
     async def choose_beast(self, interaction):
         try:
-            row_id = int(interaction.data['values'][0])
+            row_id = int(interaction.data['values'][0].removeprefix('page:'))
         except (KeyError, IndexError, ValueError, TypeError):
             if await self.permitted(interaction):
                 await interaction.response.send_message('Choose a companion from the current roster.', ephemeral=True)
@@ -273,7 +276,7 @@ class OwnedRosterView(discord.ui.View):
         if not self.rows:
             description += '\n\nNo companions yet. Visit `/nursery` or `/journal` to meet one.'
         elif not matches:
-            description += '\n\nNo companions match. Change the search or choose **Clear filters**.'
+            description += '\n\nNo companions match this rarity and search. Choose another rarity or change the search.'
         embed = discord.Embed(title=f"🐾 {safe(self.display_name)}’s collection", description=description,
                               color=COLORS['divine'])
         for row in visible:
@@ -300,18 +303,33 @@ class OwnedRosterView(discord.ui.View):
         visible, pages = owned_roster.visible(self.rows, self.picker, page_size=PAGE_SIZE)
         matches = self.matches()
         self.clear_items()
-        rarity_values = ('all',) + owned_roster.RARITIES + ('special',)
+        rarity_values = owned_roster.RARITIES
         self.rarity_select.options = [discord.SelectOption(
-            label='All rarities' if rarity == 'all' else 'Special rarities' if rarity == 'special' else rarity.replace('_', ' ').title(),
+            label=rarity.replace('_', ' ').title(),
             value=rarity, default=rarity == self.picker.rarity,
         ) for rarity in rarity_values]
         self.sort_select.options = [discord.SelectOption(label=label, value=value, default=value == self.picker.sort)
                                     for value, label in (('number', 'Collection number'), ('level', 'Highest level'), ('rarity', 'Highest rarity'))]
         row = self.selected() if self.mode == 'detail' else None
+        self.add_item(self.rarity_select)
         if not row:
-            self.add_item(self.rarity_select)
             self.add_item(self.sort_select)
+        self.beast_select.placeholder = 'Open a companion’s details'
+        if row:
+            index = next((index for index, item in enumerate(matches) if item['id'] == row['id']), 0)
+            menu_page = index // DETAIL_PAGE_SIZE
+            menu_pages = max(1, (len(matches) + DETAIL_PAGE_SIZE - 1) // DETAIL_PAGE_SIZE)
+            start = menu_page * DETAIL_PAGE_SIZE
+            visible = matches[start:start + DETAIL_PAGE_SIZE]
+            self.beast_select.placeholder = f'{self.picker.rarity.replace("_", " ").title()} beasts · Page {menu_page + 1}/{menu_pages}'
         self.beast_select.options = owned_roster.options(visible, self.selected_id if self.mode == 'detail' else None)
+        if row and menu_pages > 1:
+            if menu_page > 0:
+                self.beast_select.options.insert(0, discord.SelectOption(label='◀ Previous beasts',
+                    value=f"page:{matches[start - DETAIL_PAGE_SIZE]['id']}", description=f'Page {menu_page}/{menu_pages}'))
+            if menu_page + 1 < menu_pages:
+                self.beast_select.options.append(discord.SelectOption(label='Next beasts ▶',
+                    value=f"page:{matches[start + DETAIL_PAGE_SIZE]['id']}", description=f'Page {menu_page + 2}/{menu_pages}'))
         if self.beast_select.options:
             self.add_item(self.beast_select)
 
@@ -338,7 +356,7 @@ class OwnedRosterView(discord.ui.View):
             for item in (self.prev_page, self.page_button, self.next_page):
                 self.add_item(item)
             embed = self.overview_embed(visible, pages)
-        self.clear_button.disabled = not (self.picker.query or self.picker.rarity != 'all' or self.picker.sort != 'number')
+        self.clear_button.disabled = not (self.picker.query or self.picker.rarity != 'common' or self.picker.sort != 'number')
         self.add_item(self.journal_button)
         for item in (self.search_button, self.refresh_button):
             self.add_item(item)
@@ -393,7 +411,7 @@ class OwnedRosterView(discord.ui.View):
 
     async def show(self, click, *, delta=0, target_number=None, target_id=None, mode=None,
                    query=None, rarity=None, sort=None, page_delta=0, reset=False, opening=False,
-                   expanded=None, already_deferred=False, _lock_held=False, restore_target=False, notice=''):
+                   expanded=None, already_deferred=False, _lock_held=False, restore_target=False, notice='', first_match=False):
         if not await self.permitted(click):
             return
         if not opening and not already_deferred:
@@ -413,13 +431,13 @@ class OwnedRosterView(discord.ui.View):
             self.inventory = {}
             for item in await storage.get_inventory(self.user_id):
                 self.inventory[item['item_id']] = self.inventory.get(item['item_id'], 0) + item['quantity']
-            if rarity is not None and rarity not in ('all', 'special') + owned_roster.RARITIES:
+            if rarity is not None and rarity not in owned_roster.RARITIES:
                 return await click.followup.send('Choose a rarity from the current menu.', ephemeral=True)
             if sort is not None and sort not in {'number', 'level', 'rarity'}:
                 return await click.followup.send('Choose a sort order from the current menu.', ephemeral=True)
             if reset:
                 self.pinned_detail = False
-                self.picker = owned_roster.PickerState()
+                self.picker = owned_roster.PickerState(rarity='common')
                 self.mode = 'overview'
                 self.selected_id = None
             if query is not None or rarity is not None or sort is not None:
@@ -435,23 +453,30 @@ class OwnedRosterView(discord.ui.View):
                 self.mode = 'overview'
             if mode is not None:
                 self.mode = mode
+                self.detail_browsing = mode == 'detail'
             matches = self.matches()
             if target_number is not None:
                 # The internal-ID fallback belongs only to legacy, unnumbered rows.
                 target = next((row for row in self.rows if row.get('player_number') == target_number
                                or row.get('player_number') is None and row['id'] == target_number), None)
                 target_id = target['id'] if target else -1
+                if target:
+                    self.picker.rarity = target['rarity']
+                    matches = self.matches()
             if target_id is not None:
                 self.pinned_detail = restore_target
                 target = next((row for row in (self.rows if restore_target else matches) if row['id'] == target_id), None)
                 if target:
                     self.selected_id, self.mode = target['id'], 'detail'
+                    self.detail_browsing = True
                 else:
                     self.selected_id, self.mode = None, 'overview'
                     self.notice = (f'Companion #{target_number} was not found in your collection.' if target_number is not None
                                    else 'That companion is no longer on this roster. Choose another companion below.')
-            elif opening and self.mode == 'detail' and matches:
-                self.selected_id = next((row['id'] for row in matches if row['is_active']), matches[0]['id'])
+            elif first_match and self.mode == 'detail':
+                self.selected_id = matches[0]['id'] if matches else None
+            elif opening and self.mode == 'detail':
+                self.selected_id = next((row['id'] for row in matches if row['is_active']), matches[0]['id'] if matches else None)
             elif self.mode == 'detail' and self.selected_id not in {row['id'] for row in (self.rows if self.pinned_detail else matches)}:
                 self.selected_id, self.mode = None, 'overview'
                 self.notice = 'That companion is no longer on this roster. Your collection is up to date.'

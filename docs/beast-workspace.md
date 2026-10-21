@@ -6,6 +6,8 @@ The card and its actions now share a single Discord message and navigation lifet
 
 The workspace remembers the selected immutable beast ID, query, rarity, sorting, collection page and expanded-details setting. Returning loads fresh stats, appearance and inventory. Renaming or evolving outside the saved filter keeps that individual visible; Back to roster restores the filtered results. If the individual leaves the collection, the workspace reports it and returns to the roster without selecting a replacement.
 
+The browser starts at Common and offers each rarity individually; the combined All and Special filters are removed from this view. The rarity selector stays visible on beast cards and switches categories in the same message. Empty categories keep the selector available. An explicit beast number selects its rarity automatically. The detail dropdown has its own pages of up to 23 beasts, reserving two of Discord's 25 options for Previous/Next; it is independent of the ten-entry collection overview. Clear filters returns to Common. Gear and Care's standalone pickers still browse their full collections.
+
 Care and Gear stay focused on the selected beast inside this workspace. Their standalone commands retain their collection pickers. Team shows the equipped three-member stage and can assign the viewed beast to exploration or raid slots without leaving the message. The explicit Field Journal button remains an exit to the main hub.
 
 ## Interaction safety and balance

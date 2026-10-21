@@ -39,6 +39,81 @@ class RosterBrowser(DatabaseCase):
         click.edit_original_response.return_value = message
         return click
 
+    async def test_beastinfo_starts_common_with_rarity_on_the_card_and_no_all_view(self):
+        common = await self.beast('twine')
+        rare_species = next(key for key, row in storage.load_beasts().items() if row['rarity'] == 'rare')
+        rare = await self.beast(rare_species)
+        await self.execute('UPDATE player_beasts SET is_active=(id=?) WHERE user_id=42', (rare,))
+        view, message, _ = await self.open_roster(details=True)
+        self.assertEqual((view.picker.rarity, view.mode, view.selected_id), ('common', 'detail', common))
+        self.assertIn(view.rarity_select, view.children)
+        self.assertEqual(view.rarity_select.options[0].value, 'common')
+        self.assertEqual([option.value for option in view.rarity_select.options], list(owned_roster.RARITIES))
+        click = self.click(message, value='rare')
+        await view.rarity_select.callback(click)
+        self.assertEqual((view.picker.rarity, view.mode, view.selected_id), ('rare', 'detail', rare))
+        self.assertIn(view.rarity_select, view.children)
+        click.edit_original_response.assert_awaited_once()
+        click.followup.send.assert_not_awaited()
+        self.assertEqual((await storage.get_active_beast(42))['id'], rare)
+
+    async def test_detail_selector_reaches_every_beast_across_large_rarity_pages(self):
+        ids = [await self.beast('twine') for _ in range(52)]
+        before = await storage.get_player_beasts(42)
+        view, message, _ = await self.open_roster(details=True)
+        seen = []
+        while True:
+            self.assertLessEqual(len(view.beast_select.options), 25)
+            self.assertIn(view.rarity_select, view.children)
+            seen.extend(int(option.value) for option in view.beast_select.options if not option.value.startswith('page:'))
+            forward = next((option for option in view.beast_select.options if option.label.startswith('Next beasts')), None)
+            if not forward:
+                break
+            click = self.click(message, value=forward.value)
+            await view.beast_select.callback(click)
+            self.assertEqual(view.mode, 'detail')
+            click.edit_original_response.assert_awaited_once()
+            click.followup.send.assert_not_awaited()
+        self.assertEqual(seen, ids)
+        previous = next(option for option in view.beast_select.options if 'Previous beasts' in option.label)
+        await view.beast_select.callback(self.click(message, value=previous.value))
+        self.assertEqual(view.selected_id, ids[23])
+        await view.beast_select.callback(self.click(message, value=str(ids[30])))
+        self.assertEqual(view.selected_id, ids[30])
+        self.assertEqual(await storage.get_player_beasts(42), before)
+
+    async def test_empty_common_category_can_switch_directly_to_an_owned_rarity(self):
+        species = next(key for key, row in storage.load_beasts().items() if row['rarity'] == 'rare')
+        rare = await self.beast(species)
+        view, message, command = await self.open_roster(details=True)
+        self.assertEqual(view.picker.rarity, 'common')
+        self.assertIsNone(view.selected_id)
+        self.assertNotIn('no longer', command.followup.send.call_args.kwargs['embed'].description)
+        await view.rarity_select.callback(self.click(message, value='rare'))
+        self.assertEqual((view.mode, view.selected_id), ('detail', rare))
+        await view.rarity_select.callback(self.click(message, value='uncommon'))
+        self.assertIsNone(view.selected_id)
+        await view.rarity_select.callback(self.click(message, value='rare'))
+        self.assertEqual((view.mode, view.selected_id), ('detail', rare))
+
+    async def test_explicit_beast_number_opens_its_rarity_and_clear_returns_common(self):
+        species = next(key for key, row in storage.load_beasts().items() if row['rarity'] == 'ancient')
+        rare = await self.beast(species)
+        view, message, _ = await self.open_roster(number=1, details=True)
+        self.assertEqual((view.picker.rarity, view.selected_id), ('ancient', rare))
+        await view.clear_button.callback(self.click(message))
+        self.assertEqual(view.picker.rarity, 'common')
+        self.assertNotIn('all', [option.value for option in view.rarity_select.options])
+
+    async def test_obsolete_all_filter_cannot_reopen_the_combined_view(self):
+        await self.beast('twine')
+        view, message, _ = await self.open_roster(details=True)
+        click = self.click(message, value='all')
+        await view.rarity_select.callback(click)
+        self.assertEqual(view.picker.rarity, 'common')
+        click.edit_original_response.assert_not_awaited()
+        click.followup.send.assert_awaited_once()
+
     async def test_roster_larger_than_discord_menu_is_fully_reachable_without_mutation(self):
         ids = [await self.beast('twine', starter=index == 0) for index in range(27)]
         before = await storage.get_player_beasts(42)

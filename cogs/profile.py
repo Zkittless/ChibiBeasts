@@ -208,7 +208,7 @@ class Profile(commands.Cog):
         await open_roster(interaction)
 
     @app_commands.command(name="beastinfo", description="View detailed info about one of your beasts 🔍")
-    @app_commands.describe(beast_number="Search your companions by name or collection number (blank for active)")
+    @app_commands.describe(beast_number="Search by name or collection number (blank opens Common beasts)")
     @app_commands.autocomplete(beast_number=owned_roster.autocomplete)
     async def beastinfo(self, interaction: discord.Interaction, beast_number: int = None):
         from utils.roster_view import open_roster
