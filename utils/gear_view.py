@@ -31,9 +31,10 @@ class GearSearch(discord.ui.Modal, title='Find a beast'):
 
 
 class GearView(discord.ui.View):
-    def __init__(self, user_id):
-        super().__init__(timeout=180)
+    def __init__(self, user_id, *, navigator=None):
+        super().__init__(timeout=300 if navigator else 180)
         self.user_id = user_id
+        self.navigator, self.workspace_route = navigator, 'gear'
         self.picker = owned_roster.PickerState()
         self.rows = []
         self.selected_id = None
@@ -43,7 +44,7 @@ class GearView(discord.ui.View):
         self.message = None
         self.notice = ''
         self.closed = False
-        self.lock = asyncio.Lock()
+        self.lock = navigator.lock if navigator else asyncio.Lock()
         self.edit_slot, self.gear_choice, self.edit_target = None, None, None
         self.gear_page = 0
         self.editor_controls = []
@@ -136,6 +137,10 @@ class GearView(discord.ui.View):
         for button, slot in ((self.change_armor, 'armor'), (self.change_rune, 'rune')):
             button.disabled = self.closed or row is None
             button.callback = lambda interaction, slot=slot, target=selected_id: self.handle(interaction, 'edit:' + slot, target)
+        if self.navigator:
+            for control in (self.select, self.previous, self.next, self.search, self.clear, self.workshop):
+                self.remove_item(control)
+            self.navigator.decorate(self, back_row=1)
         if not row:
             if not self.rows:
                 description = 'Your collection is empty. Choose a starter or hatch a beast first.'
@@ -224,7 +229,7 @@ class GearView(discord.ui.View):
         embed = self.render()
         row = self.selected()
         armor, _ = self.armor_and_rune()
-        portrait = await gear_art.render_portrait(row['beast_id'], armor) if row else None
+        portrait = await gear_art.render_portrait(row['beast_id'], armor) if row and (not self.navigator or self.navigator.art_enabled) else None
         file = None
         buffer = None
         if portrait:
@@ -239,6 +244,7 @@ class GearView(discord.ui.View):
                     kwargs['file'] = file
                 return await interaction.followup.send(**kwargs, wait=True)
             kwargs['attachments'] = [file] if artwork else []
+            kwargs['content'] = None
             return await interaction.edit_original_response(**kwargs)
         try:
             async with asyncio.timeout(15):
@@ -256,12 +262,18 @@ class GearView(discord.ui.View):
                 buffer.close()
         if message is not None:
             self.message = message
+            if self.navigator:
+                self.navigator.message = message
 
     async def handle(self, interaction, action, value=None):
         if interaction.user.id != self.user_id:
             return await interaction.response.send_message('Open /gear to view your own beasts.', ephemeral=True)
         if self.closed:
             return await interaction.response.send_message('This gear panel has closed. Open /gear again.', ephemeral=True)
+        if self.navigator and not self.navigator.current(self):
+            return await interaction.response.send_message('Use the current beast workspace controls.', ephemeral=True)
+        if self.navigator and action in {'select', 'previous', 'next', 'search', 'clear', 'open_search', 'workshop'}:
+            return await interaction.response.send_message('Return to the beast card to choose another companion or activity.', ephemeral=True)
         if action == 'open_search':
             return await interaction.response.send_modal(GearSearch(self))
         if action == 'workshop':
@@ -351,6 +363,8 @@ class GearView(discord.ui.View):
             return await interaction.response.send_message('This gear panel has closed. Open /gear again.', ephemeral=True)
         if row_id is None:
             return await interaction.response.send_message('Choose a beast before opening its Care panel.', ephemeral=True)
+        if self.navigator:
+            return await self.navigator.navigate(interaction, self, 'care')
         # Care revalidates the captured identity before showing its private
         # preview; this never redirects a click to a renumbered companion.
         from utils.care_view import open_care
@@ -358,6 +372,8 @@ class GearView(discord.ui.View):
 
     async def on_timeout(self):
         async with self.lock:
+            if self.navigator and self.navigator.active is not self:
+                return
             self.closed = True
             self.clear_items()
             if self.message is not None:

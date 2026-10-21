@@ -62,9 +62,10 @@ class CareName(discord.ui.Modal, title='Name your companion'):
 
 
 class CareView(discord.ui.View):
-    def __init__(self, user_id, state):
-        super().__init__(timeout=180)
+    def __init__(self, user_id, state, *, navigator=None):
+        super().__init__(timeout=300 if navigator else 180)
         self.user_id, self.state = user_id, state
+        self.navigator, self.workspace_route = navigator, 'care'
         self.picker = owned_roster.PickerState()
         self.item_id = None
         self.choice = None
@@ -75,7 +76,7 @@ class CareView(discord.ui.View):
         self.notice = ''
         self.message = None
         self.closed = False
-        self.lock = asyncio.Lock()
+        self.lock = navigator.lock if navigator else asyncio.Lock()
         self.render()
 
     def page_rows(self):
@@ -165,14 +166,18 @@ class CareView(discord.ui.View):
                 embed.add_field(name='Confirm this item', value='Review the effects and affected companions above, then confirm to use one item.', inline=False)
         else:
             embed.add_field(name='Choose an item', value='Select an owned item to see its exact effect before using it. Your active beast stays the same.', inline=False)
-        embed.set_footer(text='Private care panel · One item per confirmed click · No automatic item selection or spending')
+        embed.set_footer(text=('Companion care' if self.navigator else 'Private care panel') + ' · One item per confirmed click · No automatic item selection or spending')
+        if self.navigator:
+            for control in (self.companion_select, self.previous_button, self.next_button, self.search_button, self.clear_button):
+                self.remove_item(control)
+            self.navigator.decorate(self)
         return embed
 
     async def publish(self, interaction, *, opening=False):
         embed = self.render()
         beast = self.state.beast
         artwork, attachment, file, buffer = None, None, None, None
-        if beast:
+        if beast and (not self.navigator or self.navigator.art_enabled):
             armor = (await gear_art.equipped_armor_ids(self.user_id)).get(beast['id'], '')
             filename = gear_art.portrait_filename(beast['beast_id'], armor)
             attachment = next((item for item in getattr(self.message, 'attachments', []) if item.filename == filename), None) if self.message else None
@@ -192,6 +197,7 @@ class CareView(discord.ui.View):
                     kwargs['file'] = file
                 return await interaction.followup.send(**kwargs, ephemeral=True, wait=True)
             kwargs['attachments'] = [attachment] if with_art and attachment else []
+            kwargs['content'] = None
             return await interaction.edit_original_response(**kwargs)
 
         try:
@@ -210,6 +216,8 @@ class CareView(discord.ui.View):
                 buffer.close()
         if message is not None:
             self.message = message
+            if self.navigator:
+                self.navigator.message = message
 
     async def reject(self, interaction, text):
         if interaction.response.is_done():
@@ -229,13 +237,17 @@ class CareView(discord.ui.View):
             return await self.reject(interaction, 'Open /care to use items on your own companions.')
         if self.closed:
             return await self.reject(interaction, 'This care panel has closed. Open /care again.')
+        if self.navigator and not self.navigator.current(self):
+            return await self.reject(interaction, 'Use the current beast workspace controls.')
+        if self.navigator and action in {'companion', 'previous', 'next', 'search', 'clear', 'open_search'}:
+            return await self.reject(interaction, 'Return to the beast card to choose another companion.')
         generation = self.generation if generation is None else generation
         if generation != self.generation:
             return await self.reject(interaction, 'This preview has changed. Use the latest care panel or reopen /care.')
         if action in {'open_search', 'open_name'}:
             modal = CareSearch(self, generation) if action == 'open_search' else CareName(self, generation)
             return await interaction.response.send_modal(modal)
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer(ephemeral=not bool(self.navigator))
         async with self.lock:
             if self.closed or generation != self.generation:
                 return await self.reject(interaction, 'This preview has changed. Use the latest care panel or reopen /care.')
@@ -315,6 +327,8 @@ class CareView(discord.ui.View):
 
     async def on_timeout(self):
         async with self.lock:
+            if self.navigator and self.navigator.active is not self:
+                return
             self.closed = True
             self.clear_items()
             if self.message is not None:

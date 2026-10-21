@@ -28,7 +28,9 @@ Open `/journal` → **Team** to see your lead standing in front of two reserves 
 
 `/collection` opens a searchable roster with rarity filters and number, level or rarity sorting. Choose a beast to open its detailed card; **Back to roster** keeps your browsing context. `/beastinfo` opens the same browser at your chosen or active companion, with name autocomplete. `/gear` now defaults to the active companion and lets you choose or search for another beast in the same message.
 
-Open `/care`, or choose **Care** from a beast card, Gear, or the journal's Team/Companions pages. Pick an owned item, review its exact effect and press **Use 1**. Health and remaining stock update in that private panel. Permanent upgrades and party recovery have a separate confirmation. Browsing and care never switch your active companion. See the [roster and care guide](docs/ROSTER-CARE.md) and [interactive preview](docs/roster-qol-preview/roster-qol.html).
+From the companion card, Care, Gear, training, evolution and Team now update that same message. **Back to beast** returns to the selected individual's refreshed card, retaining your roster search, filters and page. A shared action selector moves between these tools; training and evolution results keep the navigation too. Rename updates the card directly. See the [workspace walkthrough](docs/beast-workspace-preview/beast-workspace.html) and [navigation notes](docs/beast-workspace.md).
+
+Open `/care`, or choose **Care** from a beast card, Gear, or the journal's Team/Companions pages. Pick an owned item, review its exact effect and press **Use 1**. Health and remaining stock update in place; `/care` opens a private panel, while a beast card keeps care in its existing message. Permanent upgrades and party recovery have a separate confirmation. Browsing and care never switch your active companion. See the [roster and care guide](docs/ROSTER-CARE.md) and [interactive preview](docs/roster-qol-preview/roster-qol.html).
 
 ## Starter awakenings
 

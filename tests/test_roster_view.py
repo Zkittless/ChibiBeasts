@@ -1,6 +1,5 @@
 """Owned roster browsing uses fresh ownership and preserves search context."""
 import asyncio
-import sys
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
@@ -258,13 +257,13 @@ class RosterBrowser(DatabaseCase):
         lead = await self.beast('twine', starter=True)
         reserve = await self.beast('slime')
         view, message, _ = await self.open_roster(number=2, details=True)
-        care = AsyncMock()
-        with patch.dict(sys.modules, {'utils.care_view': SimpleNamespace(open_care=care)}):
+        with patch.object(view.navigator, 'navigate', new=AsyncMock()) as care:
             stranger = self.click(message, uid=43)
             await view.care_button.callback(stranger)
             care.assert_not_awaited()
             click = self.click(message)
             await view.care_button.callback(click)
-            care.assert_awaited_once_with(click, beast_row_id=reserve)
+            care.assert_awaited_once_with(click, view, 'care', view.selected())
+            self.assertEqual(view.selected()['id'], reserve)
         self.assertNotEqual(lead, reserve)
         self.assertEqual((await storage.get_active_beast(42))['id'], lead)

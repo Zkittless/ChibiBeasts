@@ -1,0 +1,99 @@
+{
+  "status": "passed",
+  "message_id": 8181,
+  "followups": 0,
+  "deletions": 0,
+  "actual_callback_transitions": [
+    {
+      "source": "beast",
+      "destination": "beast",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "care",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "care",
+      "destination": "care_item",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "care",
+      "destination": "beast",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "gear",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "gear",
+      "destination": "gear_edit",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "gear",
+      "destination": "beast",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "train",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "train",
+      "destination": "beast",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "evolve",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "evolve",
+      "destination": "beast",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "team",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "team",
+      "destination": "raid",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "team",
+      "destination": "beast",
+      "message_id": 8181,
+      "followups": 0
+    },
+    {
+      "source": "beast",
+      "destination": "roster",
+      "message_id": 8181,
+      "followups": 0
+    }
+  ],
+  "scope": "Real Discord view/edit payloads and packaged art. Offline navigation only; no live account or mutations."
+}
