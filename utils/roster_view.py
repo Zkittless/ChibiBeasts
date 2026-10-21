@@ -1,5 +1,6 @@
 """One searchable, read-only browser for owned companions and detailed cards."""
 import asyncio
+from contextlib import nullcontext
 import io
 import logging
 
@@ -169,7 +170,7 @@ class SearchModal(discord.ui.Modal, title='Find a companion'):
 
 class OwnedRosterView(discord.ui.View):
     """Search, roster pages and individual cards share one message and lock."""
-    def __init__(self, user_id, display_name, *, details=False):
+    def __init__(self, user_id, display_name, *, details=False, navigator=None):
         super().__init__(timeout=300)
         self.user_id, self.display_name = user_id, display_name
         self.mode = 'detail' if details else 'overview'
@@ -177,10 +178,15 @@ class OwnedRosterView(discord.ui.View):
         self.rows, self.player, self.inventory = [], {}, {}
         self.selected_id = None
         self.message = self.timeout_message = None
-        self.lock = asyncio.Lock()
         self.art_enabled = True
         self.notice = ''
         self.expanded = False
+        self.pinned_detail = False
+        self.workspace_route = 'beast'
+        if navigator is None:
+            from utils.beast_workspace import BeastWorkspace
+            navigator = BeastWorkspace(self)
+        self.navigator, self.lock = navigator, navigator.lock
 
         self.rarity_select = discord.ui.Select(placeholder='Filter by rarity', row=0)
         self.rarity_select.callback = self.choose_rarity
@@ -231,8 +237,7 @@ class OwnedRosterView(discord.ui.View):
             return
         if self.is_finished() or self.mode != 'detail' or self.selected_id is None:
             return await interaction.response.send_message('Open a current companion card before choosing care.', ephemeral=True)
-        from utils.care_view import open_care
-        await open_care(interaction, beast_row_id=self.selected_id)
+        return await self.navigator.navigate(interaction, self, 'care', self.selected())
 
     async def choose_rarity(self, interaction):
         await self.show(interaction, rarity=interaction.data['values'][0], mode='overview')
@@ -253,7 +258,7 @@ class OwnedRosterView(discord.ui.View):
         return owned_roster.filtered(self.rows, self.picker)
 
     def selected(self):
-        return next((row for row in self.matches() if row['id'] == self.selected_id), None)
+        return next((row for row in self.rows if row['id'] == self.selected_id), None)
 
     def overview_embed(self, visible, pages):
         matches = self.matches()
@@ -311,11 +316,11 @@ class OwnedRosterView(discord.ui.View):
             self.add_item(self.beast_select)
 
         if row:
-            index = next(index for index, item in enumerate(matches) if item['id'] == row['id'])
-            self.prev_btn.disabled = index == 0
-            self.next_btn.disabled = index == len(matches) - 1
-            self.prev_btn.label = f"◀ #{owned_roster.number(matches[index - 1])}" if index else '◀'
-            self.next_btn.label = f"#{owned_roster.number(matches[index + 1])} ▶" if index + 1 < len(matches) else '▶'
+            index = next((index for index, item in enumerate(matches) if item['id'] == row['id']), None)
+            self.prev_btn.disabled = index is None or index == 0
+            self.next_btn.disabled = index is None or index == len(matches) - 1
+            self.prev_btn.label = f"◀ #{owned_roster.number(matches[index - 1])}" if index is not None and index > 0 else '◀'
+            self.next_btn.label = f"#{owned_roster.number(matches[index + 1])} ▶" if index is not None and index + 1 < len(matches) else '▶'
             for item in (self.prev_btn, self.back_button, self.next_btn):
                 self.add_item(item)
             embed = detail_embed(row, self.player, self.inventory, self.rows) if self.expanded else compact_embed(row, self.player, self.inventory)
@@ -352,37 +357,24 @@ class OwnedRosterView(discord.ui.View):
             return
         if self.is_finished():
             return await click.response.send_message('This roster has closed. Open /collection again.', ephemeral=True)
-        from utils.companion_actions import current, open_growth, RenameModal
+        from utils.companion_actions import current, RenameModal
         action = click.data['values'][0]
         if action == 'rename':
-            return await click.response.send_modal(RenameModal(self.user_id, target))
-        if action in {'train', 'evolve'}:
-            return await open_growth(click, target, action)
-        if action == 'care':
-            from utils.care_view import open_care
-            return await open_care(click, beast_row_id=target['id'])
-        await click.response.defer(ephemeral=action == 'gear')
-        try:
-            row = await current(self.user_id, target)
-            if action == 'gear':
-                from utils.gear_view import open_gear
-                return await open_gear(click, beast_row_id=row['id'])
-            if action == 'lead':
-                await storage.set_active_companion(self.user_id, owned_roster.number(row), expected_row_id=row['id'])
-                await self.show(click, target_id=row['id'], already_deferred=True)
-                return
-            if action == 'team':
-                from utils.journal import open_journal
-                view = await open_journal(click, page='team', already_deferred=True)
-                if view and self.message:
-                    try:
-                        await self.message.delete()
-                    except discord.HTTPException:
-                        pass
-                    self.stop()
-                return view
-        except ValueError as error:
-            return await click.followup.send(str(error), ephemeral=True)
+            return await click.response.send_modal(RenameModal(self.user_id, target, navigator=self.navigator, source=self))
+        if action in {'care', 'gear', 'train', 'evolve', 'team'}:
+            return await self.navigator.navigate(click, self, action, target)
+        await click.response.defer()
+        async with self.lock:
+            if not self.navigator.current(self) or self.selected_id != target['id']:
+                return await click.followup.send('Use the current beast card.', ephemeral=True)
+            try:
+                row = await current(self.user_id, target)
+                if action == 'lead':
+                    await storage.set_active_companion(self.user_id, owned_roster.number(row), expected_row_id=row['id'])
+                    await self.show(click, target_id=row['id'], already_deferred=True, _lock_held=True,
+                                    restore_target=True, notice='Active lead saved.')
+            except ValueError as error:
+                await self.show(click, already_deferred=True, _lock_held=True, notice=str(error))
 
     async def return_journal(self, click):
         if not await self.permitted(click):
@@ -401,15 +393,17 @@ class OwnedRosterView(discord.ui.View):
 
     async def show(self, click, *, delta=0, target_number=None, target_id=None, mode=None,
                    query=None, rarity=None, sort=None, page_delta=0, reset=False, opening=False,
-                   expanded=None, already_deferred=False):
+                   expanded=None, already_deferred=False, _lock_held=False, restore_target=False, notice=''):
         if not await self.permitted(click):
             return
         if not opening and not already_deferred:
             await click.response.defer()
-        async with self.lock:
+        async with (nullcontext() if _lock_held else self.lock):
             if self.is_finished():
                 return await click.followup.send('This roster has closed. Open /collection again.', ephemeral=True)
-            self.notice = ''
+            self.notice = notice
+            if restore_target:
+                self.pinned_detail = True
             if expanded is not None:
                 self.expanded = expanded
             elif delta or target_id is not None or target_number is not None:
@@ -424,10 +418,12 @@ class OwnedRosterView(discord.ui.View):
             if sort is not None and sort not in {'number', 'level', 'rarity'}:
                 return await click.followup.send('Choose a sort order from the current menu.', ephemeral=True)
             if reset:
+                self.pinned_detail = False
                 self.picker = owned_roster.PickerState()
                 self.mode = 'overview'
                 self.selected_id = None
             if query is not None or rarity is not None or sort is not None:
+                self.pinned_detail = False
                 if query is not None:
                     self.picker.query = str(query).strip()[:100]
                 if rarity is not None:
@@ -446,7 +442,8 @@ class OwnedRosterView(discord.ui.View):
                                or row.get('player_number') is None and row['id'] == target_number), None)
                 target_id = target['id'] if target else -1
             if target_id is not None:
-                target = next((row for row in matches if row['id'] == target_id), None)
+                self.pinned_detail = restore_target
+                target = next((row for row in (self.rows if restore_target else matches) if row['id'] == target_id), None)
                 if target:
                     self.selected_id, self.mode = target['id'], 'detail'
                 else:
@@ -455,14 +452,15 @@ class OwnedRosterView(discord.ui.View):
                                    else 'That companion is no longer on this roster. Choose another companion below.')
             elif opening and self.mode == 'detail' and matches:
                 self.selected_id = next((row['id'] for row in matches if row['is_active']), matches[0]['id'])
-            elif self.mode == 'detail' and self.selected_id not in {row['id'] for row in matches}:
+            elif self.mode == 'detail' and self.selected_id not in {row['id'] for row in (self.rows if self.pinned_detail else matches)}:
                 self.selected_id, self.mode = None, 'overview'
                 self.notice = 'That companion is no longer on this roster. Your collection is up to date.'
             if self.mode == 'detail' and self.selected_id is not None:
-                index = next(index for index, row in enumerate(matches) if row['id'] == self.selected_id)
-                index = max(0, min(len(matches) - 1, index + delta))
-                self.selected_id = matches[index]['id']
-                self.picker.page = index // PAGE_SIZE
+                index = next((index for index, row in enumerate(matches) if row['id'] == self.selected_id), None)
+                if index is not None and (delta or not restore_target):
+                    index = max(0, min(len(matches) - 1, index + delta))
+                    self.selected_id = matches[index]['id']
+                    self.picker.page = index // PAGE_SIZE
             else:
                 self.picker.page += page_delta
             embed, row = self.render()
@@ -488,7 +486,7 @@ class OwnedRosterView(discord.ui.View):
                 if opening:
                     return await interaction.followup.send(embed=embed, view=self,
                                                            files=[file] if with_art and file else [], wait=True)
-                return await interaction.edit_original_response(embed=embed, view=self,
+                return await interaction.edit_original_response(content=None, embed=embed, view=self,
                                                                  attachments=attachments if with_art else [])
         try:
             try:
@@ -501,6 +499,7 @@ class OwnedRosterView(discord.ui.View):
                 embed.set_image(url=None)
                 result = await send(False)
             self.message = result or self.message
+            self.navigator.message = self.message
             if self.message and isinstance(getattr(self.message, 'id', None), int) and interaction.channel:
                 self.timeout_message = interaction.channel.get_partial_message(self.message.id)
             else:
@@ -513,6 +512,8 @@ class OwnedRosterView(discord.ui.View):
 
     async def on_timeout(self):
         async with self.lock:
+            if self.navigator.active is not self:
+                return
             for child in self.children:
                 child.disabled = True
             if self.timeout_message:

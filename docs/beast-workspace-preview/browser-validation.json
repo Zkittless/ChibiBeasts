@@ -1,0 +1,216 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "checks": [
+    {
+      "width": 1100,
+      "screen": "beast",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "care",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "care_item",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "gear",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "gear_edit",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "train",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "evolve",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "team",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "raid",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "roster",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "beast",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "care",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "care_item",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "gear",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "gear_edit",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "train",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "evolve",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "team",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "raid",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "roster",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "beast",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "care",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "care_item",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "gear",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "gear_edit",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "train",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "evolve",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "team",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "raid",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "roster",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    }
+  ]
+}
