@@ -7,6 +7,7 @@ at most one material or one discovered egg, and one companion, across retries.
 import asyncio
 from dataclasses import dataclass
 import json
+import logging
 import random
 import time
 from uuid import uuid4
@@ -97,7 +98,10 @@ async def _trainer(db, user_id, realm):
         raise ValueError('Your companion needs recovery. Choose a healthy companion or use a revive.')
     return (dict(player), dict(companion))
 
-async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0, legacy=False):
+async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0, legacy=False, adventure_version=2):
+    if adventure_version == 3 and not quick and not legacy:
+        from utils import journey_service
+        return await journey_service.begin(user_id, realm, now=now, rng=rng, guild_id=guild_id)
     from utils.duels import reserve_fighters
     from utils import combat
     now = time.time() if now is None else now
@@ -163,6 +167,8 @@ def options(trip):
     p = trip['payload']
     if trip['status'] != 'active':
         return ()
+    if p.get('adventure_version') == 3:
+        return tuple(c['value'] for c in presentation(trip)['choices'])
     if p.get('adventure_version') == 2:
         return tuple(c['value'] for c in presentation(trip)['choices'])
     if p['stage'] == 0:
@@ -174,6 +180,9 @@ def options(trip):
 def presentation(trip):
     """A pure presentation contract for the saved v2 journal page."""
     from utils import expedition_events
+    if trip['payload'].get('adventure_version') == 3:
+        from utils import journeys
+        return journeys.presentation(trip)
     if trip['payload'].get('adventure_version') != 2:
         return None
     return expedition_events.presentation(trip)
@@ -239,6 +248,10 @@ async def _encounter(db, user_id, realm, p, rng):
     p['encounter_level'] = encounter_level(realm, companion[0] if companion else None, rng)
 
 async def choose(user_id, trip_id, version, choice, *, rng=random):
+    saved = await read(user_id, trip_id)
+    if saved and saved['payload'].get('adventure_version') == 3:
+        from utils import journey_service
+        return await journey_service.choose(user_id, trip_id, version, choice)
     from utils.duels import reserve_fighters
     from utils import combat
     async with combat.lock_states([user_id]):
@@ -417,7 +430,7 @@ async def report(trip):
     uid = trip['user_id']
     p = trip['payload']
     key = 'expedition:' + trip['id']
-    if p.get('adventure_version') == 2 and not p['completed']:
+    if p.get('adventure_version', 0) >= 2 and not p['completed']:
         # Leaving the trailhead spends its reserved charge, but is not a visit
         # for story, achievements, sightings or resource collection progress.
         async with storage.connect() as db:
@@ -425,7 +438,7 @@ async def report(trip):
             await db.commit()
         return
     await record_event(uid, 'explore', biome=BIOMES[biome_key(trip['realm'])]['name'], event_key=key + ':explore')
-    material_granted = p.get('adventure_version') != 2 or p.get('material_granted', False)
+    material_granted = p.get('adventure_version', 0) < 2 or p.get('material_granted', False)
     if material_granted:
         await record_event(uid, 'material_collect', material_id=p['material'], event_key=key + ':material')
     from utils.progress import unlock_simple_achievement, record_bestiary_sighting
@@ -450,9 +463,32 @@ async def report(trip):
         if cursor.rowcount:
             from utils.progress import track_quest_event
             await track_quest_event(uid, 'beast_level_up')
+    if p.get('adventure_version') == 3:
+        from utils import progress
+        await progress._track_daily_event(uid, 'explore', event_key=key + ':daily-explore')
+        if material_granted:
+            await progress._track_daily_event(uid, 'material_collect', event_key=key + ':daily-material')
+        if biome_key(trip['realm']) == 'loom':
+            await unlock_simple_achievement(uid, 'first_celestial_loom')
+        if p.get('fights_won'):
+            await progress._track_daily_event(uid, 'battle_win', event_key=key + ':daily-win')
+        await progress.check_achievements(uid)
+        async with storage.connect() as db:
+            async with db.execute("SELECT 1 FROM raid_settlements s,json_each(s.payload,'$.users') member WHERE s.completed=0 AND CAST(member.value AS INTEGER)=? LIMIT 1", (uid,)) as cursor:
+                pending_raid = bool(await cursor.fetchone())
+        if pending_raid:
+            from utils.raids import recover_raids
+            await recover_raids(user_id=uid)
     async with storage.connect() as db:
         await db.execute('UPDATE expeditions SET reported=1 WHERE id=?', (trip['id'],))
         await db.commit()
+
+async def report_safely(trip):
+    """Auxiliary outages do not hide a committed return; journal open retries."""
+    try:
+        await report(trip)
+    except Exception:
+        logging.getLogger('chibibeasts.expeditions').exception('Expedition follow-up pending: %s', trip['id'])
 
 async def battle_result(user_id, trip_id, token, won, *, interrupted=False, only_unstarted=False, runner_id=None):
     async with storage.connect() as db:
@@ -565,6 +601,9 @@ async def recover_interrupted(db):
             await db.execute('DELETE FROM expeditions WHERE id=?', (trip_id,))
             continue
         p = json.loads(payload)
+        if p.get('adventure_version') == 3:
+            # Every combat cursor is committed before animation. Resume exactly.
+            continue
         if status == 'battle':
             if p.get('adventure_version') == 2:
                 from utils import expedition_events

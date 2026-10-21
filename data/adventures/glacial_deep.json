@@ -1,0 +1,1117 @@
+{
+  "version": 1,
+  "biome": "glacial_deep",
+  "encounters": [
+    {
+      "id": "glacial_deep.weather_house",
+      "title": "The House That Kept Yesterday",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "glacial_deep.weather_house.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.weather_house.entry": {
+          "body": "A weather house leans into the ridge, its windows patched with translucent mica. Inside, an elderly recorder named Ves is feeding damp forecast slips through a hand wringer. The newest sheet predicts yesterday perfectly. Outside, the windsock points toward a wall that was built after the instrument.",
+          "choices": [
+            {
+              "id": "move_sock",
+              "label": "Move the windsock beyond the wall",
+              "description": "Continue inside; gain 5% temporary defense.",
+              "outcome": "Ves watches the sock lift into clear air and quietly stops blaming her handwriting.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "glacial_deep.weather_house.records"
+            },
+            {
+              "id": "compare_dates",
+              "label": "Compare the old station dates",
+              "description": "Continue inside; use the research allowance.",
+              "outcome": "You find the wall on a building sketch, not on the instrument plan.",
+              "effects": {
+                "study": 1
+              },
+              "next": "glacial_deep.weather_house.records"
+            }
+          ]
+        },
+        "glacial_deep.weather_house.records": {
+          "body": "The record room smells of wool and pencil shavings. Forecasts are stitched into blankets so a traveller can carry a season home. One blanket has a deliberate blank square. Ves says its maker went downhill to apologize to someone and never sent back the weather.",
+          "choices": [
+            {
+              "id": "copy_square",
+              "label": "Trace the unfinished blanket square",
+              "description": "Remember its maker for a later discovery.",
+              "outcome": "Ves gives you the maker’s initials to remember, rather than a blanket to carry.",
+              "effects": {
+                "set_flags": [
+                  "glacial_deep.weather_records"
+                ]
+              },
+              "next": "glacial_deep.weather_house.roof"
+            },
+            {
+              "id": "sort_sheets",
+              "label": "Sort the loose forecasts by cloud shape",
+              "description": "Gain a 2% reward bonus; continue upstairs.",
+              "outcome": "The seasons fall into order, and a narrow stair appears behind the last stack.",
+              "effects": {
+                "bonus": 2
+              },
+              "next": "glacial_deep.weather_house.roof"
+            }
+          ]
+        },
+        "glacial_deep.weather_house.roof": {
+          "body": "Ves moves the little brass vane onto a free bracket above the wall. From the roof she reads the cloud line without consulting a slip. She admits the forecasts were meant to help people prepare, not prove she could be right. Your companions settle behind the chimney while the newly exposed instrument turns in clear air.",
+          "choices": [
+            {
+              "id": "leave_space",
+              "label": "Leave tomorrow’s square unwritten",
+              "description": "Build team bond; keep the station open.",
+              "outcome": "Ves draws a border around the empty square and calls it room for visitors.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "glacial_deep.weather_house_open"
+                ]
+              }
+            },
+            {
+              "id": "practice_turns",
+              "label": "Practise moving between the gusts",
+              "description": "Gain 5% temporary attack for the journey.",
+              "outcome": "Ves calls the changes in the wind while your team learns when to move.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.bellspan",
+      "title": "The Bell Beneath the Bridge",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "glacial_deep.bellspan.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.bellspan.entry": {
+          "body": "A rope bridge hums without anyone crossing it. Beneath the planks hangs a cracked ceramic bell, tied where a traveller’s foot should never reach it. A bridge mender named Tal insists the bell warns of bad wind. The bridge itself sounds a different warning through its loose knots.",
+          "choices": [
+            {
+              "id": "tighten",
+              "label": "Tighten the loose crossing knots",
+              "description": "Gain 5% temporary defense; reach the bell.",
+              "outcome": "Tal steadies the nearest rope while your companions hold the coils out of the snow.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "glacial_deep.bellspan.underside"
+            },
+            {
+              "id": "listen",
+              "label": "Listen from the sheltered bridge end",
+              "description": "Use the research allowance; reach the bell.",
+              "outcome": "The two notes separate: one belongs to the bell, the other to a rubbing rope.",
+              "effects": {
+                "study": 1
+              },
+              "next": "glacial_deep.bellspan.underside"
+            }
+          ]
+        },
+        "glacial_deep.bellspan.underside": {
+          "body": "The bell’s underside carries tiny fingerprints in the glaze. Tal made it as a child, before learning that a bridge needs maintenance as well as hope. Its crack has become a narrow whistle. He offers to cut it down, then hesitates with the knife resting against the old cord.",
+          "choices": [
+            {
+              "id": "retie",
+              "label": "Retie the bell where it cannot chafe",
+              "description": "Keep a lasting connection to the bell.",
+              "outcome": "Tal moves the cord to a smooth hook and recognizes his own careful work.",
+              "effects": {
+                "set_flags": [
+                  "glacial_deep.bell_tuned"
+                ]
+              },
+              "next": "glacial_deep.bellspan.crossing"
+            },
+            {
+              "id": "climb",
+              "label": "Reach the rubbing rope by the lower brace",
+              "description": "Lose up to 3% HP; gain a 5% reward bonus.",
+              "outcome": "Your team takes a few scrapes finding the old rubbing point beneath the boards.",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              },
+              "next": "glacial_deep.bellspan.crossing"
+            }
+          ]
+        },
+        "glacial_deep.bellspan.crossing": {
+          "body": "Tal finishes the necessary knots before inviting you across. The little bell still whistles through its crack, but no longer rubs the rope. He decides a warning need not pretend to hold the whole span together. Across the gap, someone has placed a pot of hot barley water beside three cups of very different sizes.",
+          "choices": [
+            {
+              "id": "share",
+              "label": "Share the bridge mender’s hot water",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Tal pours carefully and waits until every companion has found a comfortable cup.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "mark",
+              "label": "Mark the new sheltered crossing",
+              "description": "Gain a 2% reward bonus on the route.",
+              "outcome": "You draw the safe approach on Tal’s public board, where another traveller can find it.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.cloud_station",
+      "title": "The Empty Cloud Platform",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "glacial_deep.cloud_station.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.cloud_station.entry": {
+          "body": "Three enormous mooring hoops stand above a sea of cloud. Nothing is tied to them. A young keeper named Inne sweeps the platform anyway, explaining that the cloud ferries stopped when people began treating every clear morning as permission to cross. Her broom has worn a crescent in the frost.",
+          "choices": [
+            {
+              "id": "clear_marks",
+              "label": "Clear the old landing marks with Inne",
+              "description": "Build bond; enter the keeper’s shelter.",
+              "outcome": "Your team uncovers a broad waiting line well back from the edge.",
+              "effects": {
+                "bond": 1
+              },
+              "next": "glacial_deep.cloud_station.shelter"
+            },
+            {
+              "id": "read_board",
+              "label": "Read the suspended service notices",
+              "description": "Use the research allowance; enter the shelter.",
+              "outcome": "The notices describe patient weather watching, not a missing magical engine.",
+              "effects": {
+                "study": 1
+              },
+              "next": "glacial_deep.cloud_station.shelter"
+            }
+          ]
+        },
+        "glacial_deep.cloud_station.shelter": {
+          "body": "Inside the shelter, a drawer contains stones polished smooth by generations of worried thumbs. Each stone stands for a traveller who waited rather than taking an unsafe crossing. Inne wants to display the names. Her grandmother’s stone has no name, only a small drawing of a bent pine.",
+          "choices": [
+            {
+              "id": "pine",
+              "label": "Look for the bent pine in the station sketch",
+              "description": "Remember a route to another ridge discovery.",
+              "outcome": "Inne finds the pine beside a cloud-counting terrace that the station no longer uses.",
+              "effects": {
+                "set_flags": [
+                  "glacial_deep.cloud_route"
+                ]
+              },
+              "next": "glacial_deep.cloud_station.platform"
+            },
+            {
+              "id": "arrange",
+              "label": "Arrange the waiting stones within easy reach",
+              "description": "Gain 5% temporary defense; return outside.",
+              "outcome": "The smooth stones fit beneath your companions’ paws as you practise stopping together.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "glacial_deep.cloud_station.platform"
+            }
+          ]
+        },
+        "glacial_deep.cloud_station.platform": {
+          "body": "A low cloud brushes the platform and leaves silver droplets along the rail. Inne does not announce a departure. She sits down, and for once the swept waiting area is being used for waiting. The mooring hoops frame distant peaks like pictures that are allowed to change.",
+          "choices": [
+            {
+              "id": "wait",
+              "label": "Watch one cloud pass without chasing it",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The cloud moves on while your team rests comfortably behind the waiting line.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "measure",
+              "label": "Measure the gap between passing clouds",
+              "description": "Gain a 2% reward bonus from the route notes.",
+              "outcome": "Inne adds your measured interval beneath the old departure notices.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.tea_cup",
+      "title": "A Cup on Its Side",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_deep.tea_cup.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.tea_cup.entry": {
+          "body": "A blue enamel cup rolls in a circle inside a sheltered hollow. Its owner, a delivery walker named Pev, has been following it instead of picking it up. The handle points downhill every third turn. He wonders whether the wind is giving directions or simply enjoying his attention.",
+          "choices": [
+            {
+              "id": "shelter",
+              "label": "Make a small windbreak around the cup",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The cup stops rolling, and Pev discovers he can choose his own direction.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "watch",
+              "label": "Count the turns with your companions",
+              "description": "Build team bond.",
+              "outcome": "Your team waits for the third turn together, then follows Pev along the ordinary path.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.wool_lines",
+      "title": "Laundry Above the Clouds",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "glacial_deep.wool_lines.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.wool_lines.entry": {
+          "body": "A Yeti has hung strips of shed wool between two cloud pines. Each strip is knotted differently, and the longest keeps dragging in the snow. A nearby sign asks travellers not to tidy the line: the knots record wind strength, while the fallen end tells the Yeti when to bring everything in.",
+          "choices": [
+            {
+              "id": "observe",
+              "label": "Read the wool without disturbing it",
+              "description": "Use the research allowance.",
+              "outcome": "You sketch how the knots separate gentle gusts from the harder crosswind.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "collect",
+              "label": "Inspect loose gatherings beyond the measuring line",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "The measuring strips stay in place while you mark a safe gathering area for the journey's one material selection.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.ice_steps",
+      "title": "Footprints Kept in Ice",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "glacial_deep.ice_steps.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.ice_steps.entry": {
+          "body": "A clear slab beside the trail preserves two sets of footsteps: one long stride and one uneven shuffle. The shuffle repeatedly catches up where the long stride waits. Meltwater has begun softening the older prints. Someone has left a dry slate nearby, but has not copied them yet.",
+          "choices": [
+            {
+              "id": "copy",
+              "label": "Copy the places where the long stride waited",
+              "description": "Use the research allowance.",
+              "outcome": "Your drawing keeps the pauses, which say more than the distance between the feet.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "walk",
+              "label": "Let your slowest companion set the pace",
+              "description": "Build team bond.",
+              "outcome": "The team makes a new set of uneven prints without leaving anyone behind.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.flag_rookery",
+      "title": "The Wrong Colour of Flag",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "glacial_deep.flag_rookery.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.flag_rookery.entry": {
+          "body": "Harpy feathers catch on a row of bright trail flags. A nesting pair has mistaken the soft yellow cloth for unfinished nest lining. The flag keeper wants the route visible, but the stripped pole now points straight toward the nest. There is enough blue cloth in the repair basket to move the marker.",
+          "choices": [
+            {
+              "id": "move",
+              "label": "Move the blue route flags around the rookery",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The marked detour clears the nest without making the crossing harder to find.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "watch",
+              "label": "Study the pair’s approach from the lower ledge",
+              "description": "Use the research allowance.",
+              "outcome": "You record the wide landing circle and leave before the pair needs to warn you.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.sliding_bench",
+      "title": "The Picnic Bench with Runners",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "glacial_deep.sliding_bench.entry",
+      "tags": [
+        "camp",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.sliding_bench.entry": {
+          "body": "A picnic bench has short wooden runners instead of feet. A note calls it a successful solution to a problem nobody can identify. It has slid into a warm hollow, carrying a basket of empty cups and an old blanket. The handrail beside it is polished by people who wisely sat down first.",
+          "choices": [
+            {
+              "id": "sit",
+              "label": "Sit where the bench has chosen to stop",
+              "description": "Recover up to 10% surviving-team HP.",
+              "outcome": "Your companions settle into the blanket while the bench rests against a very solid boulder.",
+              "effects": {
+                "heal": 10
+              }
+            },
+            {
+              "id": "brace",
+              "label": "Practise bracing the bench against gusts",
+              "description": "Gain 10% temporary defense.",
+              "outcome": "The team learns to share the load instead of trying to stop the bench alone.",
+              "effects": {
+                "defense_boon": 10
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.cairn_apology",
+      "title": "Seven Stones and an Eighth Place",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_deep.cairn_apology.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.cairn_apology.entry": {
+          "body": "A mason named Edda is dismantling a cairn she built for someone else. They asked for a seat, she explains, and she kept making it taller because she was proud of her stonework. Seven stones now lie neatly in the snow. The eighth is a broad, comfortable slab.",
+          "choices": [
+            {
+              "id": "seat",
+              "label": "Help place the broad slab at sitting height",
+              "description": "Build team bond.",
+              "outcome": "Edda tests the finished seat before adding a single decorative stone.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "brace",
+              "label": "Use the spare stones to shelter the seat",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The low wall turns the wind aside without hiding the view Edda wanted to share.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.cloud_sketch",
+      "title": "Neri’s Unfinished Mountain",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_deep.cloud_sketch.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.cloud_sketch.entry": {
+          "body": "A cartographer named Neri has painted the mountain beautifully and left its paths blank. The cloud moves every time she tries to add them. Her Griffin companion keeps placing pebbles on the paper where its feet remember landing. Neri worries the resulting map will look childish beside her careful shading.",
+          "choices": [
+            {
+              "id": "pebbles",
+              "label": "Follow the Griffin’s pebble route",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "The pebble line finds a practical path beneath the painted cloud.",
+              "effects": {
+                "bonus": 5
+              }
+            },
+            {
+              "id": "record",
+              "label": "Add landing notes beside the mountain drawing",
+              "description": "Use the research allowance.",
+              "outcome": "Neri keeps her beautiful mountain and gives its useful little corrections their own margin.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.glass_roots",
+      "title": "A Stormglass Nursery",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "glacial_deep.glass_roots.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.glass_roots.entry": {
+          "body": "Thin stormglass seams grow between the roots of a cloud pine. A tiny wooden fence protects the brightest seam, while dull fragments cover the unprotected ground. The nursery label explains that the bright growth is still feeding the tree. A handprint beside the label has been crossed out with a carefully drawn leaf.",
+          "choices": [
+            {
+              "id": "fallen",
+              "label": "Check the loose collection area beyond the root fence",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You mark the detached gathering area, leaving every bright seam that still supports the tree untouched.",
+              "effects": {
+                "material": true
+              }
+            },
+            {
+              "id": "shade",
+              "label": "Prop the fallen fence away from the roots",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The repaired fence leaves space for the next stormglass seam to emerge.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.sail_mill",
+      "title": "The Mill That Ground Nothing",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "glacial_deep.sail_mill.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.sail_mill.entry": {
+          "body": "A windmill’s sails turn above an empty stone bowl. Its maker hoped to grind stormglass into harmless sand, but the gears were never installed. Instead, the sail shadows give resting companions a slow game to follow. A little sign now reads that the mill is working differently than expected.",
+          "choices": [
+            {
+              "id": "shadows",
+              "label": "Time short practice steps between the shadows",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "Your team learns a patient rhythm from the passing sails.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "bowl",
+              "label": "Rest inside the sheltered grinding bowl",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The unfinished bowl proves excellent at keeping a small team out of the wind.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.frost_window",
+      "title": "A Window Full of Corrections",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "glacial_deep.frost_window.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.frost_window.entry": {
+          "body": "A Frost Sprite is drawing snowflakes on the inside of an abandoned window. Every flake has one crooked branch, which the Sprite keeps carefully replacing after the frost smooths it away. The view through the pane becomes clearer around those little imperfections. Your companions can see the sheltered path beyond them.",
+          "choices": [
+            {
+              "id": "copy",
+              "label": "Copy one crooked branch in your notes",
+              "description": "Use the research allowance.",
+              "outcome": "The Sprite taps your copied imperfection as if checking that you noticed it on purpose.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "follow",
+              "label": "Follow the gaps the Sprite has left clear",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The clear patches lead your team around a patch of unstable snow.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.weather_letter",
+      "title": "The Blanket Maker’s Answer",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_deep.weather_letter.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.weather_letter.entry": {
+          "body": "Beyond the weather house, a walker has pinned a small cloth square inside a dry boot. The initials match Ves’s unfinished blanket. The maker explains that the apology went well, but she could not choose a forecast cheerful enough to send home. She offers to write what actually happened instead.",
+          "choices": [
+            {
+              "id": "truth",
+              "label": "Encourage the ordinary, unfinished account",
+              "description": "Build bond; remember the answer for Ves.",
+              "outcome": "The maker writes about a shared meal and an awkward silence that finally ended.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "glacial_deep.weather_answer"
+                ]
+              }
+            },
+            {
+              "id": "route",
+              "label": "Map a dry delivery route back to the station",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "Your route notes give the cloth square a practical way home.",
+              "effects": {
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "glacial_deep.weather_records"
+      ]
+    },
+    {
+      "id": "glacial_deep.bell_answer",
+      "title": "An Answer from the Lower Span",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "glacial_deep.bell_answer.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.bell_answer.entry": {
+          "body": "The retied bridge bell has an answering whistle down the valley. You find a second ceramic bell hanging outside a closed mender’s hut. Tal’s old teacher left a note beneath it: a repaired thing need not sound exactly as it did before. The two cracks make different but compatible notes.",
+          "choices": [
+            {
+              "id": "listen",
+              "label": "Listen until the two whistles overlap",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions settle to the unhurried conversation between the two bells.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "mark",
+              "label": "Mark the lower hut on Tal’s crossing board",
+              "description": "Gain a 2% reward bonus; preserve the connection.",
+              "outcome": "The lower span becomes a destination again rather than a place someone stopped visiting.",
+              "effects": {
+                "bonus": 2,
+                "set_flags": [
+                  "glacial_deep.bell_teacher_found"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "glacial_deep.bell_tuned"
+      ]
+    },
+    {
+      "id": "glacial_deep.dye_house",
+      "title": "The Rope Dyer’s Hands",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "glacial_deep.dye_house.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.dye_house.entry": {
+          "body": "A rope dyer named Sen is washing blue from her palms in a bowl of snow. She once coloured every rope by its owner, which was beautiful until fog hid the owners and their routes. Now the shortest line is plain white. The blue lines all lead to sheltered stopping places.",
+          "choices": [
+            {
+              "id": "blue",
+              "label": "Practise following the sheltered blue ropes",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Sen asks your team to stop at every blue knot, even when the next one looks close.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "sample",
+              "label": "Study the faded knots before the colours vanish",
+              "description": "Use the research allowance.",
+              "outcome": "You record how a useful route can survive even when its first colour does not.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.wind_shadow",
+      "title": "The Shadow Moving Uphill",
+      "kind": "hazard",
+      "repeatable": false,
+      "entry": "glacial_deep.wind_shadow.entry",
+      "tags": [
+        "hazard",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.wind_shadow.entry": {
+          "body": "A dark patch crawls uphill across otherwise bright snow. Beneath it, a shallow layer of powder is sliding against an older frozen crust. The motion looks invitingly smooth until a loose marker tilts sideways. A broad rock rib offers a slower crossing with room for all your companions.",
+          "choices": [
+            {
+              "id": "rib",
+              "label": "Cross along the broad rock rib",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The stone gives every paw a firm place while the moving powder passes below.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "trace",
+              "label": "Trace the sliding layer from a safe distance",
+              "description": "Use the research allowance.",
+              "outcome": "Your sketch records the uphill drift without asking anyone to step onto it.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.practice_yard",
+      "title": "The Wheelbarrow Training Yard",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "glacial_deep.practice_yard.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.practice_yard.entry": {
+          "body": "An overturned wheelbarrow marks a practice yard used by passing trainers. Today several restless wild companions are taking turns nudging its wheel and arguing over the rhythm. Their keeper has chalked two options on a stone: join the lively exercise, or help reset the wheel markers from outside the circle.",
+          "choices": [
+            {
+              "id": "markers",
+              "label": "Reset the wheel markers outside the circle",
+              "description": "Gain 5% temporary attack without a battle.",
+              "outcome": "The revised marks give your team a useful movement drill beside the noisy yard.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "join",
+              "label": "Enter the group’s practice circle",
+              "description": "Begin a two-opponent encounter.",
+              "outcome": "You signal that your team is ready, and the gathered companions make room for the first challenger.",
+              "effects": {
+                "battle": "pack2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.thunder_feather",
+      "title": "A Quiet Thunderbird Morning",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "glacial_deep.thunder_feather.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.thunder_feather.entry": {
+          "body": "A Thunderbird stands on a distant ridge while the whole sky remains clear. Its feathers lift once, then settle without thunder. Below it, small travellers continue their breakfast undisturbed. A weatherkeeper has left a blank observation slate, perhaps to remind visitors that a quiet morning is also something worth recording.",
+          "choices": [
+            {
+              "id": "record",
+              "label": "Record the absence of a storm",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes describe the clear sky without demanding a spectacle from its distant visitor.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "breakfast",
+              "label": "Keep breakfast quiet with your team",
+              "description": "Build team bond.",
+              "outcome": "Your companions finish their meal while the Thunderbird keeps its own peaceful morning.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.cloud_census",
+      "title": "The Bent Pine Terrace",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "glacial_deep.cloud_census.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "glacial_deep.cloud_census.entry": {
+          "body": "The pine from Inne’s old station sketch bends over a small counting terrace. Rows of notches record how many clouds passed, but a newer hand has added marks for the gaps between them. A note says those were the mornings when the keeper finally looked beyond the instruments toward the next ridge.",
+          "choices": [
+            {
+              "id": "gaps",
+              "label": "Count the open intervals with your companions",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "The team learns to move when the ridge opens rather than hurrying at every cloud.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "copy",
+              "label": "Copy both generations of cloud records",
+              "description": "Use the research allowance.",
+              "outcome": "Your record keeps the old counts beside the newer pauses, with neither erased.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "glacial_deep.cloud_route"
+      ]
+    },
+    {
+      "id": "glacial_deep.mica_slide",
+      "title": "Familiar Ground: Loose Mica",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "glacial_deep.mica_slide.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "glacial_deep.mica_slide.entry": {
+          "body": "The familiar mica slope has shed another thin layer overnight. Its glitter makes the old route difficult to read, although the broad stone ribs remain where they were. Your companions remember the sound of firm footing here. A sheltered edge also exposes loose fragments that no longer hold the slope together.",
+          "choices": [
+            {
+              "id": "ribs",
+              "label": "Keep each companion on the stone ribs",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Your team crosses in a steady line, listening for the reassuring tap of stone.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "fragments",
+              "label": "Inspect the loose collection edge beyond the slope",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You choose a safe gathering area away from the supporting layers; the journey still carries only one material bundle.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.ice_buds",
+      "title": "Familiar Ground: Cloud Pine Buds",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "glacial_deep.ice_buds.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "glacial_deep.ice_buds.entry": {
+          "body": "The cloud pines shelter a shallow pocket that regular walkers use for short rests. Today ice buds hang along its rim, each containing a dark seed still attached to the branch. The snow beneath the branches is dry. Your companions know this is a place to settle, rather than a shortcut through the roots.",
+          "choices": [
+            {
+              "id": "rest",
+              "label": "Settle in the dry pocket",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The branches take the wind while your team rests beneath them.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "buds",
+              "label": "Observe how the buds hold their seeds",
+              "description": "Use the research allowance.",
+              "outcome": "You note the little air gaps that keep the living seeds away from the ice.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.cloud_breath",
+      "title": "Familiar Ground: A Cloud at Ankle Height",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "glacial_deep.cloud_breath.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "glacial_deep.cloud_breath.entry": {
+          "body": "A passing cloud fills the familiar saddle from the ground upward. First the stones disappear, then your companions’ feet, while their ears remain in clear air. The old handline is still easy to reach. Small pauses let the cloud move between each member instead of pushing the whole team blindly through it.",
+          "choices": [
+            {
+              "id": "line",
+              "label": "Follow the handline one companion at a time",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The cloud passes through the spaces your patient formation leaves open.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "pause",
+              "label": "Let the slowest companion choose each pause",
+              "description": "Build team bond.",
+              "outcome": "No one needs to hurry to keep the others within reach.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.harpy_draft",
+      "title": "Familiar Ground: The Updraft Lesson",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "glacial_deep.harpy_draft.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "glacial_deep.harpy_draft.entry": {
+          "body": "A familiar updraft lifts loose feathers beside the outer ridge. Passing Harpies sometimes use this place to teach younger flyers when to fold their wings, but today only the rising feathers mark the lesson. Your grounded companions can practise the same timing between the gusts without needing to leave the path.",
+          "choices": [
+            {
+              "id": "time",
+              "label": "Practise short steps as each feather rises",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "The team finds a useful rhythm in the lift and its quiet return.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "collect",
+              "label": "Check the sheltered gathering edge outside the updraft",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You mark a gathering spot on the sheltered side, leaving the lesson space and every living visitor alone.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.rukh_stones",
+      "title": "Familiar Ground: Warm Landing Stones",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "glacial_deep.rukh_stones.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "glacial_deep.rukh_stones.entry": {
+          "body": "Broad landing stones overlook the familiar valley route. A Rukh has recently rested here, leaving the central stones warmer than the surrounding snow. The visitor is already a distant speck, so the hollow belongs to ordinary travellers again. Three differently sized depressions offer your team a comfortable place to pause.",
+          "choices": [
+            {
+              "id": "warmth",
+              "label": "Rest in the lingering warmth",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions fit themselves into the warm hollows without disturbing the landing edge.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "prints",
+              "label": "Compare the landing marks with your notes",
+              "description": "Use the research allowance.",
+              "outcome": "The broad impressions show where the Rukh spread its weight before taking flight.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "glacial_deep.squall_shelter",
+      "title": "Familiar Ground: A Short Squall",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "glacial_deep.squall_shelter.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "glacial_deep.squall_shelter.entry": {
+          "body": "The familiar windbreak disappears behind a quick curtain of sleet. Its entrance remains easy to find by the three low posts rather than the taller sign. Inside, previous travellers have stacked small stones around the dry floor. The sleet sounds much fiercer against the roof than it feels beneath it.",
+          "choices": [
+            {
+              "id": "wait",
+              "label": "Wait on the dry floor with your team",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The squall spends itself against the roof while everyone stays comfortably together.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "posts",
+              "label": "Improve the low approach markers",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The three posts become easier for the next short traveller to find in poor weather.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

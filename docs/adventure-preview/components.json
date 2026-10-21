@@ -1,0 +1,3414 @@
+{
+  "selector": {
+    "label": "Choose an adventure",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Choose an expedition\n1/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team."
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:realm",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your destination",
+                "options": [
+                  {
+                    "label": "🌲 The Whispering Woods",
+                    "value": "woods",
+                    "default": false,
+                    "description": "Trainer Lv.1+ required; companion Lv.1–5 recommended"
+                  },
+                  {
+                    "label": "🌙 The Moonveil Marsh",
+                    "value": "woods_deep",
+                    "default": false,
+                    "description": "Trainer Lv.3+ required; companion Lv.6–10 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes",
+                    "value": "ember",
+                    "default": false,
+                    "description": "Trainer Lv.6+ required; companion Lv.11–15 recommended"
+                  },
+                  {
+                    "label": "🏜️ The Sunforge Dunes",
+                    "value": "ember_deep",
+                    "default": false,
+                    "description": "Trainer Lv.9+ required; companion Lv.16–20 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows",
+                    "value": "glacial",
+                    "default": false,
+                    "description": "Trainer Lv.12+ required; companion Lv.21–25 recommended"
+                  },
+                  {
+                    "label": "⛰️ The Stormglass Peaks",
+                    "value": "glacial_deep",
+                    "default": false,
+                    "description": "Trainer Lv.16+ required; companion Lv.26–30 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches",
+                    "value": "trenches",
+                    "default": false,
+                    "description": "Trainer Lv.20+ required; companion Lv.31–35 recommended"
+                  },
+                  {
+                    "label": "🌋 The Cinderreef Caldera",
+                    "value": "trenches_deep",
+                    "default": false,
+                    "description": "Trainer Lv.25+ required; companion Lv.36–40 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom",
+                    "value": "loom",
+                    "default": true,
+                    "description": "Trainer Lv.30+ required; companion Lv.41–45 recommended"
+                  },
+                  {
+                    "label": "✨ The Starfall Gardens",
+                    "value": "loom_deep",
+                    "default": false,
+                    "description": "Trainer Lv.38+ required; companion Lv.46–50 recommended"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**🌌 The Celestial Loom** · Trainer Lv.30 required · Companion Lv.41–45 recommended."
+          },
+          {
+            "type": 10,
+            "content": "**Saved destination · None**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Save destination",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:save_destination:loom:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Clear default",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:clear_destination:5"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Suggested starter training: **🌙 The Moonveil Marsh**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": false,
+                "label": "Start adventure · 1 charge",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:begin:6"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 0,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 337,
+    "component_count": 22
+  },
+  "bridge": {
+    "label": "A connected authored location",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n0/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "**The Bridge with an Open End**\nA short bridge of woven light ends a few steps before a solid terrace. Volunteer binder Ada has left it unfinished rather than pull the far end tight enough to bow the handrails. Travellers have begun treating it as a lookout. Her workbench holds two plans: a perfect straight crossing and a slightly crooked one with room to settle."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Inspect the crooked plan with Ada",
+                    "value": "0e0188fe0af04607b92153884c8efb60:0:scene:23aa667c2d4f2e788a8f",
+                    "default": false,
+                    "description": "Gain 5% temporary defense; approach the far end."
+                  },
+                  {
+                    "label": "Study what travellers changed around the lookout",
+                    "value": "0e0188fe0af04607b92153884c8efb60:0:scene:ab2540e7e0029355c42f",
+                    "default": false,
+                    "description": "Use the research allowance; approach the far end."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "0e0188fe0af04607b92153884c8efb60:0:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 0,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 455,
+    "component_count": 15
+  },
+  "boon": {
+    "label": "A celestial defense boon",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n1/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "The wider curve lets your companions keep their footing without fighting the handrails."
+          },
+          {
+            "type": 10,
+            "content": "**Until return** · +5% defense"
+          },
+          {
+            "type": 10,
+            "content": "**The Bridge with an Open End**\nAt the open end, a loose thread has caught around an old visitor’s walking mark. Ada remembers the visitor offering help, then leaving after she insisted on finishing alone. The thread is sound. It only needs someone on the terrace to hold a gentle curve while the near end is tied."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Leave a clear request beside the walking mark",
+                    "value": "0e0188fe0af04607b92153884c8efb60:1:scene:c96319d859cb20829a81",
+                    "default": false,
+                    "description": "Remember the invitation for another discovery."
+                  },
+                  {
+                    "label": "Support the curve from the rough lower brace",
+                    "value": "0e0188fe0af04607b92153884c8efb60:1:scene:b0915b46155094e5eedd",
+                    "default": false,
+                    "description": "Lose up to 3% HP; gain a 5% reward bonus."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "0e0188fe0af04607b92153884c8efb60:1:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 1,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 521,
+    "component_count": 17
+  },
+  "landing": {
+    "label": "The connected landing",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n2/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "Your team takes a few scrapes reaching the brace and reveals a practical service approach."
+          },
+          {
+            "type": 10,
+            "content": "**Until return** · +5% defense"
+          },
+          {
+            "type": 10,
+            "content": "**The Bridge with an Open End**\nThe bridge reaches a small resting platform, though its last crossing still awaits another pair of hands. Ada puts away the drawing of the perfectly straight span. Your companions can sit where the loose light no longer pulls against itself. A useful unfinished place has become easier to share."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Rest on the part that is ready now",
+                    "value": "0e0188fe0af04607b92153884c8efb60:2:scene:1cf622d506fdc89d15b1",
+                    "default": false,
+                    "description": "Recover up to 5% surviving-team HP."
+                  },
+                  {
+                    "label": "Practise careful movement along the settled curve",
+                    "value": "0e0188fe0af04607b92153884c8efb60:2:scene:1a8fd5e0992a5792ee7c",
+                    "default": false,
+                    "description": "Gain 5% temporary attack."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "0e0188fe0af04607b92153884c8efb60:2:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 2,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 537,
+    "component_count": 17
+  },
+  "pack_offer": {
+    "label": "Three practice challengers",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "The platform holds your team comfortably without pretending the whole project is finished."
+          },
+          {
+            "type": 10,
+            "content": "**Until return** · +5% defense"
+          },
+          {
+            "type": 10,
+            "content": "**Three Lessons on the Star Steps**\nThree broad steps float at different angles over a public exercise yard. Gathered wild companions use them to practise changing direction without abandoning a teammate. A steward can teach the handrail route slowly, or introduce the waiting challengers one after another. Both routes finish on the same wide, steady terrace."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Learn the steward’s careful handrail sequence",
+                    "value": "0e0188fe0af04607b92153884c8efb60:3:scene:ed8b79b1832eac55c353",
+                    "default": false,
+                    "description": "Gain 10% temporary defense without combat."
+                  },
+                  {
+                    "label": "Meet the three waiting practice challengers",
+                    "value": "0e0188fe0af04607b92153884c8efb60:3:scene:58abf5e144f59667c9b9",
+                    "default": false,
+                    "description": "Begin a three-opponent encounter."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "0e0188fe0af04607b92153884c8efb60:3:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 3,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 570,
+    "component_count": 17
+  },
+  "enter": {
+    "label": "Pack opponent enters",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-268af6ee4e2eda.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Loom Fragment** · HP 134/134\nPack 3/3 · Assist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 982/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 12,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 229,
+    "component_count": 11
+  },
+  "battle": {
+    "label": "Choose a move, swap or assist",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-55f24120847f31.png"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Sphinx** · HP 166/166\nPack 1/3 · Assist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 100/100\n**Gloop** · HP 1000/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_action",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a move, swap or assist",
+                "options": [
+                  {
+                    "label": "Tick Bite",
+                    "value": "0e0188fe0af04607b92153884c8efb60:4:0",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Thread Snap",
+                    "value": "0e0188fe0af04607b92153884c8efb60:4:1",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Rewind Nibble",
+                    "value": "0e0188fe0af04607b92153884c8efb60:4:2",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Swap: Gloop",
+                    "value": "0e0188fe0af04607b92153884c8efb60:4:4",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  },
+                  {
+                    "label": "Swap: Barkley",
+                    "value": "0e0188fe0af04607b92153884c8efb60:4:6",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Retreat & return",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_return:0e0188fe0af04607b92153884c8efb60:4:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 4,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 209,
+    "component_count": 17
+  },
+  "swap": {
+    "label": "Swap companions",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-df92c03e4e82d3.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Sphinx** · HP 166/166\nPack 1/3 · Assist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 100/100\n**Gloop** · HP 996/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 5,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 223,
+    "component_count": 11
+  },
+  "action": {
+    "label": "Equipped combat action",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-ea769eb558c999.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Loom Fragment** · HP 15/134\nPack 3/3 · Assist 1/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 979/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 13,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 228,
+    "component_count": 11
+  },
+  "battle_swapped": {
+    "label": "The reserve takes the lead",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-910b0ad65fc3ea.png"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Sphinx** · HP 166/166\nPack 1/3 · Assist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 100/100\n**Gloop** · HP 996/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_action",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a move, swap or assist",
+                "options": [
+                  {
+                    "label": "Galaxy Splash",
+                    "value": "0e0188fe0af04607b92153884c8efb60:5:0",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Glitter Bounce",
+                    "value": "0e0188fe0af04607b92153884c8efb60:5:1",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Shapeshift Slap",
+                    "value": "0e0188fe0af04607b92153884c8efb60:5:2",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Swap: Twine",
+                    "value": "0e0188fe0af04607b92153884c8efb60:5:4",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  },
+                  {
+                    "label": "Swap: Barkley",
+                    "value": "0e0188fe0af04607b92153884c8efb60:5:6",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Retreat & return",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_return:0e0188fe0af04607b92153884c8efb60:5:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 5,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 208,
+    "component_count": 17
+  },
+  "battle_after_action": {
+    "label": "Committed action and next decision",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n4/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "The steward signals the first companion to enter while your team gathers on the broad step."
+          },
+          {
+            "type": 10,
+            "content": "**Until return** · +5% defense"
+          },
+          {
+            "type": 10,
+            "content": "**The Reading Room Practice Circle**\nA quiet annex contains a practice circle marked with removable book rests. Several curious wild companions are waiting to test movements learned from the public illustrations. The attendant offers your team the outside diagrams first, or a paired exercise in the circle. The books remain safely beyond the reach of every enthusiastic turn."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Practise from the outside illustrations",
+                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:264375c620e0a59b82b3",
+                    "default": false,
+                    "description": "Gain 5% temporary attack without combat."
+                  },
+                  {
+                    "label": "Join the waiting companions’ paired exercise",
+                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:b344e5322a9b35d628e4",
+                    "default": false,
+                    "description": "Begin a two-opponent encounter."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "0e0188fe0af04607b92153884c8efb60:14:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 14,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 587,
+    "component_count": 17
+  },
+  "knockout": {
+    "label": "Opponent withdraws",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n4/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-cb9f4a640ca666.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Loom Fragment** · HP 0/134\nPack 3/3 · Assist 2/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 979/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 14,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 227,
+    "component_count": 11
+  },
+  "pack_between": {
+    "label": "The next pack opponent",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-a6fd5391a2d96a.png"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Loom Fragment** · HP 134/134\nPack 3/3 · Assist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 982/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_action",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose a move, swap or assist",
+                "options": [
+                  {
+                    "label": "Galaxy Splash",
+                    "value": "0e0188fe0af04607b92153884c8efb60:12:0",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Glitter Bounce",
+                    "value": "0e0188fe0af04607b92153884c8efb60:12:1",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Shapeshift Slap",
+                    "value": "0e0188fe0af04607b92153884c8efb60:12:2",
+                    "default": false,
+                    "description": "Uses this turn · Move"
+                  },
+                  {
+                    "label": "Starlit Tide",
+                    "value": "0e0188fe0af04607b92153884c8efb60:12:3",
+                    "default": false,
+                    "description": "Ultimate"
+                  },
+                  {
+                    "label": "Swap: Twine",
+                    "value": "0e0188fe0af04607b92153884c8efb60:12:4",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  },
+                  {
+                    "label": "Swap: Barkley",
+                    "value": "0e0188fe0af04607b92153884c8efb60:12:6",
+                    "default": false,
+                    "description": "Uses this turn · Swap"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Retreat & return",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:journey_return:0e0188fe0af04607b92153884c8efb60:12:4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 12,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 214,
+    "component_count": 17
+  },
+  "assist": {
+    "label": "Reserve assist",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": true,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n3/7 stops · Progress saved"
+          },
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://adventure-0af965500b8d0d.gif"
+                },
+                "spoiler": false,
+                "description": "Adventure encounter"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Loom Fragment** · HP 0/134\nPack 3/3 · Assist 0/3"
+          },
+          {
+            "type": 10,
+            "content": "**Twine** · HP 1000/1000 · MP 88/100\n**Gloop** · HP 982/1000 · MP 100/100\n**Barkley** · HP 1000/1000 · MP 100/100"
+          },
+          {
+            "type": 10,
+            "content": "Playing action…"
+          }
+        ]
+      }
+    ],
+    "version": 11,
+    "message_id": 8181,
+    "playing": true,
+    "characters": 227,
+    "component_count": 11
+  },
+  "pack_victory": {
+    "label": "Pack complete; one reward bundle still pending",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n4/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "The steward signals the first companion to enter while your team gathers on the broad step."
+          },
+          {
+            "type": 10,
+            "content": "**Until return** · +5% defense"
+          },
+          {
+            "type": 10,
+            "content": "**The Reading Room Practice Circle**\nA quiet annex contains a practice circle marked with removable book rests. Several curious wild companions are waiting to test movements learned from the public illustrations. The attendant offers your team the outside diagrams first, or a paired exercise in the circle. The books remain safely beyond the reach of every enthusiastic turn."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Practise from the outside illustrations",
+                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:264375c620e0a59b82b3",
+                    "default": false,
+                    "description": "Gain 5% temporary attack without combat."
+                  },
+                  {
+                    "label": "Join the waiting companions’ paired exercise",
+                    "value": "0e0188fe0af04607b92153884c8efb60:14:scene:b344e5322a9b35d628e4",
+                    "default": false,
+                    "description": "Begin a two-opponent encounter."
+                  },
+                  {
+                    "label": "Head home now",
+                    "value": "0e0188fe0af04607b92153884c8efb60:14:return_early",
+                    "default": false,
+                    "description": "Bank the earned fraction; this location resumes at its next unresolved scene."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 14,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 587,
+    "component_count": 17
+  },
+  "later_discovery": {
+    "label": "Another authored discovery",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n7/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "Your page preserves several honest views of the same peaceful passing lights."
+          },
+          {
+            "type": 10,
+            "content": "**Until return** · +5% attack · +5% defense"
+          },
+          {
+            "type": 10,
+            "content": "**The way home**\nYour team has finished the planned journey. Your choices and unfinished locations are saved. Return to bank the one earned reward bundle."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Return and bank rewards",
+                    "value": "0e0188fe0af04607b92153884c8efb60:17:return",
+                    "default": false,
+                    "description": "Finish this journey and claim its one earned bundle."
+                  },
+                  {
+                    "label": "Shelter the Prism Sphere",
+                    "value": "0e0188fe0af04607b92153884c8efb60:17:return_egg",
+                    "default": false,
+                    "description": "Take the saved nest egg instead of the journey's one material bundle."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 17,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 364,
+    "component_count": 17
+  },
+  "homeward": {
+    "label": "A saved egg replaces the material bundle",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### The Celestial Loom\n7/7 stops · Progress saved"
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "Your page preserves several honest views of the same peaceful passing lights."
+          },
+          {
+            "type": 10,
+            "content": "**Until return** · +5% attack · +5% defense"
+          },
+          {
+            "type": 10,
+            "content": "**The way home**\nYour team has finished the planned journey. Your choices and unfinished locations are saved. Return to bank the one earned reward bundle."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:path",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your next step",
+                "options": [
+                  {
+                    "label": "Return and bank rewards",
+                    "value": "0e0188fe0af04607b92153884c8efb60:17:return",
+                    "default": false,
+                    "description": "Finish this journey and claim its one earned bundle."
+                  },
+                  {
+                    "label": "Shelter the Prism Sphere",
+                    "value": "0e0188fe0af04607b92153884c8efb60:17:return_egg",
+                    "default": false,
+                    "description": "Take the saved nest egg instead of the journey's one material bundle."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 17,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 364,
+    "component_count": 17
+  },
+  "returned": {
+    "label": "Return to destination selection",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Adventure",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Battle log",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:battle_log:2"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Tower Trials",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:launch:challenge:3"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**Back from 🌌 The Celestial Loom** · Results in Battle log."
+          },
+          {
+            "type": 10,
+            "content": "### Choose an expedition\n0/3 exploration charges · Regenerates every 30m 0s\nConfirm your destination to set out with your saved team."
+          },
+          {
+            "type": 10,
+            "content": "**Team** · Twine (lead) · Gloop · Barkley"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:realm",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Choose your destination",
+                "options": [
+                  {
+                    "label": "🌲 The Whispering Woods",
+                    "value": "woods",
+                    "default": false,
+                    "description": "Trainer Lv.1+ required; companion Lv.1–5 recommended"
+                  },
+                  {
+                    "label": "🌙 The Moonveil Marsh",
+                    "value": "woods_deep",
+                    "default": false,
+                    "description": "Trainer Lv.3+ required; companion Lv.6–10 recommended"
+                  },
+                  {
+                    "label": "🔥 The Ember Wastes",
+                    "value": "ember",
+                    "default": false,
+                    "description": "Trainer Lv.6+ required; companion Lv.11–15 recommended"
+                  },
+                  {
+                    "label": "🏜️ The Sunforge Dunes",
+                    "value": "ember_deep",
+                    "default": false,
+                    "description": "Trainer Lv.9+ required; companion Lv.16–20 recommended"
+                  },
+                  {
+                    "label": "❄️ The Glacial Hollows",
+                    "value": "glacial",
+                    "default": false,
+                    "description": "Trainer Lv.12+ required; companion Lv.21–25 recommended"
+                  },
+                  {
+                    "label": "⛰️ The Stormglass Peaks",
+                    "value": "glacial_deep",
+                    "default": false,
+                    "description": "Trainer Lv.16+ required; companion Lv.26–30 recommended"
+                  },
+                  {
+                    "label": "🌊 The Sunken Abyssal Trenches",
+                    "value": "trenches",
+                    "default": false,
+                    "description": "Trainer Lv.20+ required; companion Lv.31–35 recommended"
+                  },
+                  {
+                    "label": "🌋 The Cinderreef Caldera",
+                    "value": "trenches_deep",
+                    "default": false,
+                    "description": "Trainer Lv.25+ required; companion Lv.36–40 recommended"
+                  },
+                  {
+                    "label": "🌌 The Celestial Loom",
+                    "value": "loom",
+                    "default": true,
+                    "description": "Trainer Lv.30+ required; companion Lv.41–45 recommended"
+                  },
+                  {
+                    "label": "✨ The Starfall Gardens",
+                    "value": "loom_deep",
+                    "default": false,
+                    "description": "Trainer Lv.38+ required; companion Lv.46–50 recommended"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "**🌌 The Celestial Loom** · Trainer Lv.30 required · Companion Lv.41–45 recommended."
+          },
+          {
+            "type": 10,
+            "content": "**Saved destination · None**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Save destination",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:save_destination:loom:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Clear default",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:clear_destination:5"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Suggested starter training: **🌙 The Moonveil Marsh**"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 3,
+                "disabled": true,
+                "label": "Start adventure · 1 charge",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:begin:6"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "Next charge in 29m 49s. Up to three charges wait for you between visits."
+          }
+        ]
+      }
+    ],
+    "version": 18,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 468,
+    "component_count": 24
+  },
+  "log": {
+    "label": "Expedition notes stay in the Battle log",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Battle Log",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_kind",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "History · Expeditions",
+                "options": [
+                  {
+                    "label": "Expeditions",
+                    "value": "expeditions",
+                    "default": true
+                  },
+                  {
+                    "label": "Battles",
+                    "value": "battles",
+                    "default": false
+                  },
+                  {
+                    "label": "Raids",
+                    "value": "raids",
+                    "default": false
+                  },
+                  {
+                    "label": "Trades",
+                    "value": "trades",
+                    "default": false
+                  },
+                  {
+                    "label": "Altered divines",
+                    "value": "divines",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Back to Adventure",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:adventure:2"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Battle log\nPast encounters, expedition notes and rewards. Newest trips first."
+          },
+          {
+            "type": 10,
+            "content": "**🌌 The Celestial Loom** · <t:1792563068:d>\nReturned · Victory"
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_entry",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Open an expedition recap",
+                "options": [
+                  {
+                    "label": "🌌 The Celestial Loom · 21 Oct 06:11 UTC",
+                    "value": "0e0188fe0af04607b92153884c8efb60",
+                    "default": false,
+                    "description": "Returned · Victory"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Newer trips",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_prev:3"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "1/1",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_count:4"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": true,
+                "label": "Older trips",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_next:5"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 18,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 143,
+    "component_count": 19
+  },
+  "recap": {
+    "label": "One settled journey receipt",
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 12037511,
+        "spoiler": false,
+        "components": [
+          {
+            "type": 12,
+            "items": [
+              {
+                "media": {
+                  "url": "attachment://journal-loom.png"
+                },
+                "spoiler": false,
+                "description": "Field Journal · 🌌 The Celestial Loom"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page_menu",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "Field Journal · Battle Log",
+                "options": [
+                  {
+                    "label": "Home",
+                    "value": "home",
+                    "default": false
+                  },
+                  {
+                    "label": "Adventure",
+                    "value": "adventure",
+                    "default": true
+                  },
+                  {
+                    "label": "Team",
+                    "value": "team",
+                    "default": false
+                  },
+                  {
+                    "label": "Companions",
+                    "value": "companions",
+                    "default": false
+                  },
+                  {
+                    "label": "Workshop",
+                    "value": "workshop",
+                    "default": false
+                  },
+                  {
+                    "label": "Story",
+                    "value": "story",
+                    "default": false
+                  },
+                  {
+                    "label": "Activities",
+                    "value": "activities",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Pin a goal",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:goals:0"
+              },
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "Refresh",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:refresh:1"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_kind",
+                "min_values": 1,
+                "max_values": 1,
+                "disabled": false,
+                "required": true,
+                "placeholder": "History · Expeditions",
+                "options": [
+                  {
+                    "label": "Expeditions",
+                    "value": "expeditions",
+                    "default": true
+                  },
+                  {
+                    "label": "Battles",
+                    "value": "battles",
+                    "default": false
+                  },
+                  {
+                    "label": "Raids",
+                    "value": "raids",
+                    "default": false
+                  },
+                  {
+                    "label": "Trades",
+                    "value": "trades",
+                    "default": false
+                  },
+                  {
+                    "label": "Altered divines",
+                    "value": "divines",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 1,
+                "disabled": false,
+                "label": "Back to Adventure",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:page:adventure:2"
+              }
+            ]
+          },
+          {
+            "type": 10,
+            "content": "### Battle log · 🌌 The Celestial Loom\n<t:1792563068:f> · Returned · Victory"
+          },
+          {
+            "type": 10,
+            "content": "**Expedition team** · Twine · Gloop · Barkley"
+          },
+          {
+            "type": 10,
+            "content": "7/7 steps · one material or nest egg · one possible catch · bonus 10%"
+          },
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "**Sphinx · Lv.45**\nVictory · Joined your collection"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "spoiler": false,
+              "media": {
+                "url": "attachment://equipped-93344140f4319d486611.png"
+              },
+              "description": "Sphinx"
+            }
+          },
+          {
+            "type": 10,
+            "content": "**Rewards received**\n361 gold · 750 trainer EXP · Prism Sphere"
+          },
+          {
+            "type": 10,
+            "content": "**Team progress**\nTwine: +168 EXP\nGloop: +84 EXP\nBarkley: +59 EXP"
+          },
+          {
+            "type": 10,
+            "content": "**Expedition notes**\nThe wider curve lets your companions keep their footing without fighting the handrails.\nYour team takes a few scrapes reaching the brace and reveals a practical service approach.\nThe platform holds your team comfortably without pretending the whole project is finished.\nThe steward signals the first companion to enter while your team gathers on the broad step.\nThe diagrams give your team a useful rhythm before an opponent adds uncertainty.\nThe team settles into the quiet without treating the visitor’s stillness as something to repair.\nYour page preserves several honest views of the same peaceful passing lights.\nThe team returned home. Journey boons expired; earned supplies were banked."
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 2,
+                "disabled": false,
+                "label": "All trips",
+                "custom_id": "journal:572781d9c6414a10b39d912f50896cac:log_back:3"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 18,
+    "message_id": 8181,
+    "playing": false,
+    "characters": 1081,
+    "component_count": 22
+  }
+}

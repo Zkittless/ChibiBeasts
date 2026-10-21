@@ -198,7 +198,7 @@ class JournalFlow(DatabaseCase):
             store.dispatch_view(2, button.custom_id, click)
             await asyncio.wait_for(edited.wait(), 3)
             click.response.defer.assert_awaited_once()
-        stale = next(o.value for o in view.path_select.options if o.value.endswith(':gather'))
+        stale = next(o.value for o in view.path_select.options if not o.value.endswith(':return_early'))
         for value in (stale, stale):
             edited.clear()
             click = component(edit=edit)
@@ -217,24 +217,28 @@ class JournalFlow(DatabaseCase):
         view = await self.view('adventure')
         await self.click(view, 'begin')
         trip_id = view.trip['id']
-        await self.click(view, 'path', f'{trip_id}:0:shrine')
+        choice = next(c['value'] for c in view.trip['payload']['page']['choices'] if not c['effects'].get('battle'))
+        await self.click(view, 'path', f'{trip_id}:0:{choice}')
+        saved_page = expeditions.presentation(view.trip)
         opened = interaction()
         await open_journal(opened, page='adventure')
         resumed = opened.followup.send.call_args.kwargs['view']
         self.addCleanup(resumed.stop)
         self.assertEqual(resumed.trip['id'], trip_id)
-        await self.click(resumed, 'path', f'{trip_id}:1:repair')
-        self.assertIn('crossing', self.text(resumed).lower())
-        await self.click(resumed, 'path', f'{trip_id}:2:detour')
-        await self.click(resumed, 'path', f'{trip_id}:3:return')
+        self.assertEqual(expeditions.presentation(resumed.trip), saved_page)
+        while resumed.trip['payload']['journey_status'] != 'homeward':
+            choice = next(c['value'] for c in resumed.trip['payload']['page']['choices'] if not c['effects'].get('battle'))
+            await self.click(resumed, 'path', f"{trip_id}:{resumed.trip['version']}:{choice}")
+        await self.click(resumed, 'path', f"{trip_id}:{resumed.trip['version']}:return")
         self.assertEqual(resumed.trip['status'], 'complete')
         self.assertEqual(sum(r['quantity'] for r in await self.rows('SELECT quantity FROM player_materials')), 1)
         self.assert_valid(resumed)
 
     async def test_deleted_page_before_battle_upload_cannot_strand_the_trip(self):
         await self.ready()
+        # Saved version-two encounters retain their old interrupted-runner path.
+        await expeditions.begin(42, 'woods', adventure_version=2)
         view = await self.view('adventure')
-        await self.click(view, 'begin')
         with patch('utils.expeditions.pick_encounter', return_value=storage.get_beast_data('wisp')):
             await self.click(view, 'path', view.path_select.options[0].value)
         missing = discord.NotFound(SimpleNamespace(status=404, reason='Not Found'), {'code': 10008, 'message': 'Unknown Message'})

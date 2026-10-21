@@ -84,7 +84,13 @@ async def assert_available(db, user_id, row_ids=None):
     async with db.execute("SELECT payload FROM trial_runs WHERE user_id=? AND status IN ('between','fighting','paused')", (user_id,)) as cursor:
         active = await cursor.fetchone()
     if active is None:
-        return
+        async with db.execute("SELECT payload FROM expeditions WHERE user_id=? AND status IN ('active','battle') AND json_extract(payload,'$.adventure_version')=3", (user_id,)) as cursor:
+            journey = await cursor.fetchone()
+        if journey is None:
+            return
+        if row_ids is not None and not set(json.loads(journey[0]).get('party_ids', ())).intersection(int(value) for value in row_ids):
+            return
+        raise ValueError('Your adventure team is still exploring. Open /explore to continue or return home before changing its preparations.')
     if row_ids is not None:
         p = json.loads(active[0])
         ids = set(p.get('party_ids', [member['id'] for member in p.get('party', [])]))

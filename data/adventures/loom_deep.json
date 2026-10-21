@@ -1,0 +1,1110 @@
+{
+  "version": 1,
+  "biome": "loom_deep",
+  "encounters": [
+    {
+      "id": "loom_deep.visitor_tree",
+      "title": "The Tree That Kept a Place",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "loom_deep.visitor_tree.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.visitor_tree.entry": {
+          "body": "A silver-leaved tree has grown around an empty garden chair without covering the seat. Gardener Nari keeps trimming the branches into a formal arch, worried that the place looks neglected. A small memory bell on the chair remembers a visitor laughing when a branch first leaned close enough to offer shade.",
+          "choices": [
+            {
+              "id": "shade",
+              "label": "Let the useful low branch keep its natural curve",
+              "description": "Gain 5% temporary defense; enter the garden path.",
+              "outcome": "Nari ties back only the branch that blocks the approach, leaving the pleasant shade intact.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "loom_deep.visitor_tree.bells"
+            },
+            {
+              "id": "listen",
+              "label": "Listen to the chair’s small memory bell",
+              "description": "Use the research allowance; enter the garden path.",
+              "outcome": "The remembered laugh belongs to comfort, not to the formal shape Nari has been trying to restore.",
+              "effects": {
+                "study": 1
+              },
+              "next": "loom_deep.visitor_tree.bells"
+            }
+          ]
+        },
+        "loom_deep.visitor_tree.bells": {
+          "body": "Along the path, memory bells repeat fragments of visits: a spilled cup, a companion squeezing onto a lap, someone promising to return when the garden was finished. Nari has polished that last bell more carefully than the others. The garden is still changing, and she worries this means the invitation must keep waiting too.",
+          "choices": [
+            {
+              "id": "invite",
+              "label": "Write that a changing garden can still welcome visitors",
+              "description": "Remember an invitation for a later discovery.",
+              "outcome": "Nari hangs the new invitation beside the old promise instead of polishing it again.",
+              "effects": {
+                "set_flags": [
+                  "loom_deep.orchard_invitation"
+                ]
+              },
+              "next": "loom_deep.visitor_tree.chair"
+            },
+            {
+              "id": "path",
+              "label": "Make the route to the chair comfortable now",
+              "description": "Gain a 2% reward bonus; return to the chair.",
+              "outcome": "Your companions clear a practical approach through the living curve of the branches.",
+              "effects": {
+                "bonus": 2
+              },
+              "next": "loom_deep.visitor_tree.chair"
+            }
+          ]
+        },
+        "loom_deep.visitor_tree.chair": {
+          "body": "Back at the chair, the lowest leaves turn their pale sides toward the arriving light. Nari sits down to see what a visitor would actually find. It is a comfortable chair beside a growing tree, with room for several small companions. She seems relieved that this is already enough to offer.",
+          "choices": [
+            {
+              "id": "sit",
+              "label": "Share the shade with your companions",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The team settles where the tree has been patiently making room all along.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "practice",
+              "label": "Practise moving together along the curved path",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "Your companions learn to follow the living bends without pushing every branch straight.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.seed_library",
+      "title": "The Library of Unfamiliar Seeds",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "loom_deep.seed_library.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.seed_library.entry": {
+          "body": "A little seed library stands between floating orchard terraces. Its keeper, Pem, has labelled every drawer by the shape he expected to grow. Several healthy plants outside look nothing like their labels. He has been keeping those drawers closed, afraid of disappointing the next gardener who comes asking for something certain.",
+          "choices": [
+            {
+              "id": "observe",
+              "label": "Compare the healthy plants with their old labels",
+              "description": "Use the research allowance; enter the drawer room.",
+              "outcome": "Pem discovers useful growth that his careful predictions had failed to describe.",
+              "effects": {
+                "study": 1
+              },
+              "next": "loom_deep.seed_library.drawers"
+            },
+            {
+              "id": "paths",
+              "label": "Clear the low visiting path around the unfamiliar beds",
+              "description": "Gain 5% temporary defense; enter the drawer room.",
+              "outcome": "Your companions make the plants easier to approach without forcing them into their old outlines.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "loom_deep.seed_library.drawers"
+            }
+          ]
+        },
+        "loom_deep.seed_library.drawers": {
+          "body": "The drawer room contains a tray marked unknown, followed by three apologies in different handwriting. Pem admits he knows exactly where these seeds were gathered and how the parent plants shelter visitors. He simply does not know what every seed will become. The tray has enough space for an honest description instead of another apology.",
+          "choices": [
+            {
+              "id": "label",
+              "label": "Label the tray by its known history and care",
+              "description": "Remember a connection to another gardener.",
+              "outcome": "Pem writes what he can help with and leaves the uncertain part clearly open.",
+              "effects": {
+                "set_flags": [
+                  "loom_deep.seed_history"
+                ]
+              },
+              "next": "loom_deep.seed_library.beds"
+            },
+            {
+              "id": "sort",
+              "label": "Sort the loose maintenance pieces beside the drawers",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You mark detached repair material for the one journey bundle, leaving every seed in its drawer.",
+              "effects": {
+                "material": true
+              },
+              "next": "loom_deep.seed_library.beds"
+            }
+          ]
+        },
+        "loom_deep.seed_library.beds": {
+          "body": "Pem opens a low visiting path and stops comparing the unfamiliar beds to the pictures on their drawers. A branch already shelters a tiny patch of young growth, giving him a useful place to watch. He begins a fresh label with what the plant does today, leaving room beneath it for tomorrow.",
+          "choices": [
+            {
+              "id": "watch",
+              "label": "Rest while Pem writes his first present-tense label",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions find quiet shelter beside a plant that no longer needs to match a prediction.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "help",
+              "label": "Help Pem mark the new useful shelter",
+              "description": "Build team bond.",
+              "outcome": "The team gives a growing thing a practical place in the garden before deciding what to call it.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.night_tea",
+      "title": "Tea Before the Garden Opens",
+      "kind": "camp",
+      "repeatable": false,
+      "entry": "loom_deep.night_tea.entry",
+      "tags": [
+        "camp",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.night_tea.entry": {
+          "body": "A night café has set out its tables beneath a starfruit tree, although the gardener’s opening sign still says not quite ready. Cook Sol has been making a little tea every evening in case someone arrives anyway. Your companions can smell warm fruit and toasted leaves from the safe side of the unfinished path.",
+          "choices": [
+            {
+              "id": "path",
+              "label": "Help Sol clear a simple route to one table",
+              "description": "Gain a 2% reward bonus; reach the café shelter.",
+              "outcome": "One usable path gives the quiet café a beginning without requiring the whole garden to be finished.",
+              "effects": {
+                "bonus": 2
+              },
+              "next": "loom_deep.night_tea.table"
+            },
+            {
+              "id": "wait",
+              "label": "Wait together while Sol tests the uneven paving",
+              "description": "Build bond; reach the café shelter.",
+              "outcome": "Your team follows at the pace of the slowest careful paw.",
+              "effects": {
+                "bond": 1
+              },
+              "next": "loom_deep.night_tea.table"
+            }
+          ]
+        },
+        "loom_deep.night_tea.table": {
+          "body": "The table holds two cups and three small dishes, arranged exactly as they were for Sol’s last visitor. He has not changed the places because he hoped the familiar arrangement would make returning easier. Now he notices your differently sized companions trying politely to fit themselves around somebody else’s empty seats.",
+          "choices": [
+            {
+              "id": "places",
+              "label": "Arrange a useful place for everyone present",
+              "description": "Remember the café’s open table.",
+              "outcome": "Sol moves the old cups gently and makes room without pretending the earlier visit did not matter.",
+              "effects": {
+                "set_flags": [
+                  "loom_deep.tea_place"
+                ]
+              },
+              "next": "loom_deep.night_tea.terrace"
+            },
+            {
+              "id": "shelter",
+              "label": "Adjust the table canopy for several small guests",
+              "description": "Gain 5% temporary defense; reach the terrace.",
+              "outcome": "The low canopy becomes a shared shelter rather than a decoration above the empty chairs.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "loom_deep.night_tea.terrace"
+            }
+          ]
+        },
+        "loom_deep.night_tea.terrace": {
+          "body": "From the café terrace, the unfinished paths look like possibilities rather than delays. Sol turns the opening sign around and writes that one table is ready. Warm tea waits at a height your companions can reach. A small memory bell records the first shared table, which turns out to be a pleasant sound.",
+          "choices": [
+            {
+              "id": "tea",
+              "label": "Share the first properly offered table",
+              "description": "Recover up to 10% surviving-team HP.",
+              "outcome": "Sol lets your companions choose comfortable places and pours only when they have settled.",
+              "effects": {
+                "heal": 10
+              }
+            },
+            {
+              "id": "notice",
+              "label": "Mark the open table on the garden route board",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "The café becomes a useful stopping place for the next visitor, however unfinished the garden remains.",
+              "effects": {
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.atlas_distance",
+      "title": "A Garden in a Passing Shadow",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "loom_deep.atlas_distance.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.atlas_distance.entry": {
+          "body": "Atlas passes beyond the far terraces, so distant that its broad shadow moves slowly across the garden like a gentle change of weather. Gardeners pause beneath their trees without hurrying to follow. Your companions watch the bright fruit emerge from the shadow one branch at a time. The ordinary paths remain comfortably clear.",
+          "choices": [
+            {
+              "id": "observe",
+              "label": "Record how the garden changes under the passing shade",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes keep the small changes in the trees rather than claiming the whole distant visitor.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "share",
+              "label": "Let your companions share the cool passing shade",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The team rests together while the broad shadow moves onward in its own time.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.borrowed_can",
+      "title": "The Watering Can That Waited",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom_deep.borrowed_can.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.borrowed_can.entry": {
+          "body": "A watering can stands beside a dry little bed, labelled borrowed from Anel. Gardener Rue has waited so long for Anel’s next visit that she stopped using the can in case returning it empty seemed rude. A broad refill basin is waiting just beyond the tree, full enough for both the bed and the can.",
+          "choices": [
+            {
+              "id": "water",
+              "label": "Water the bed and refill the borrowed can",
+              "description": "Build team bond.",
+              "outcome": "Rue discovers that keeping a borrowed kindness useful need not prevent returning it carefully.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "route",
+              "label": "Show Rue the nearby refill path",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The practical little route lets the can serve the bed without becoming a permanent worry.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.starfruit_shade",
+      "title": "The Apprentice’s Brightest Fruit",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom_deep.starfruit_shade.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.starfruit_shade.entry": {
+          "body": "An apprentice named Evi has polished one starfruit until it shines brighter than the lantern beside it. She keeps moving it toward the path so visitors will notice her work. Its growing branch has begun to bend. The fruit’s light already falls across a sheltered bench where tired companions would find it useful.",
+          "choices": [
+            {
+              "id": "bench",
+              "label": "Turn the light toward the sheltered bench",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Evi sees her careful work become useful without asking the branch to lean any farther.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "support",
+              "label": "Help support the growing branch where it stands",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Your companions share the gentle load while Evi adds a loose, comfortable support.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.blossom_bowl",
+      "title": "A Bowl Full of Fallen Light",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "loom_deep.blossom_bowl.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.blossom_bowl.entry": {
+          "body": "A shallow bowl beneath a flowering tree has filled with luminous fallen petals. The gardener left it there to keep the path from becoming slippery, not to make a display. Every petal has already separated from its branch. Along the bowl’s rim, a small note asks visitors to leave the living blossoms where they are.",
+          "choices": [
+            {
+              "id": "source",
+              "label": "Mark the detached collection bowl for your bundle",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You inspect the collecting place beside the fallen petals; the journey's material choice does not require plucking a living blossom.",
+              "effects": {
+                "material": true
+              }
+            },
+            {
+              "id": "pattern",
+              "label": "Study how the fallen petals gather around the rim",
+              "description": "Use the research allowance.",
+              "outcome": "Their arrangement records the gentle air moving through the tree more clearly than its still branches.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.fruit_labels",
+      "title": "The Orchard’s Unreliable Names",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "loom_deep.fruit_labels.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.fruit_labels.entry": {
+          "body": "Three fruit labels hang beneath one branch, each describing what a different visitor thought they tasted. The orchard keeper has started replacing them with a single official word, then stopped halfway through. Your companions sniff the fallen fruit from different sides and seem prepared to disagree without making anyone wrong.",
+          "choices": [
+            {
+              "id": "different",
+              "label": "Record your companions’ different impressions",
+              "description": "Use the research allowance.",
+              "outcome": "The new notes join the earlier descriptions instead of replacing them with a final verdict.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "share",
+              "label": "Let each companion choose where to sit beneath the branch",
+              "description": "Build team bond.",
+              "outcome": "The team finds a comfortable arrangement without needing one shared favourite.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.constellation_braid",
+      "title": "A Braid Left Long Enough",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom_deep.constellation_braid.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.constellation_braid.entry": {
+          "body": "A gardener named Sem is tying a hanging guide cord into a tidy braid. One long strand reaches the path where small visitors can actually grasp it. She keeps trying to tuck that strand away because it spoils the symmetry. Your companions’ paws make the reason for its awkward length immediately clear.",
+          "choices": [
+            {
+              "id": "leave",
+              "label": "Keep the low strand within easy reach",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The braid remains a useful guide instead of becoming a decoration beyond everyone’s paws.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "mark",
+              "label": "Mark the accessible cord on the garden route",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The low strand becomes a clear invitation to travellers who need a steady handhold.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.root_bench",
+      "title": "The Bench Around a Growing Root",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "loom_deep.root_bench.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.root_bench.entry": {
+          "body": "A stone bench has split around a growing silver root. Its two halves still make excellent seats, but a repair notice calls for the root to be straightened. Someone has crossed out the instruction and drawn two comfortable visitors instead. The ground between the halves is broad enough for your whole team.",
+          "choices": [
+            {
+              "id": "seats",
+              "label": "Arrange the two halves around the living root",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your companions find that the changed bench offers more kinds of comfortable place.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "growth",
+              "label": "Record the root’s progress through the old repair marks",
+              "description": "Use the research allowance.",
+              "outcome": "The drawing keeps the history of the bench without treating growth as damage.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.leaf_pages",
+      "title": "Tru’s Pages in the Orchard Wind",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom_deep.leaf_pages.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.leaf_pages.entry": {
+          "body": "Tru is writing a garden history on broad shed leaves. A breeze keeps turning the pages before he has decided the proper order. The newest leaf records a tiny repair to a public handrail, which he thinks is too ordinary to include. Your companions are using that very handrail to reach his table.",
+          "choices": [
+            {
+              "id": "repair",
+              "label": "Ask Tru to keep the ordinary handrail repair",
+              "description": "Build team bond.",
+              "outcome": "He places the useful small act among the garden’s larger remembered events.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "order",
+              "label": "Compare the leaf dates without binding them yet",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes leave room for a history that may gain another useful page tomorrow.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.returning_visitor",
+      "title": "A Visitor Before the Garden Is Finished",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom_deep.returning_visitor.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.returning_visitor.entry": {
+          "body": "Nari’s new invitation has brought back the person who promised to visit when the garden was finished. They arrive carrying an apology for coming too soon, then read the sign again. The silver tree’s chair is comfortably shaded. Nari is sitting beside it instead of trimming the same branch into a formal arch.",
+          "choices": [
+            {
+              "id": "today",
+              "label": "Join the visit exactly as the garden is today",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The visitor’s apology gives way to an ordinary conversation beneath the useful shade.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "next",
+              "label": "Help them choose one small thing to tend together",
+              "description": "Build bond; preserve the renewed visits.",
+              "outcome": "Nari and the visitor agree on a shared task that need not finish the whole garden.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "loom_deep.orchard_visit_kept"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "loom_deep.orchard_invitation"
+      ]
+    },
+    {
+      "id": "loom_deep.seed_reply",
+      "title": "The Gardener Who Recognized the Unknown Tray",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom_deep.seed_reply.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.seed_reply.entry": {
+          "body": "Pem’s honest seed label has reached a gardener who recognizes the parent plant from its sheltering branches. She had stopped asking because every drawer promised a shape she did not remember. Now she and Pem can compare what they actually know. Your companions wait beside the little bed both gardeners had overlooked.",
+          "choices": [
+            {
+              "id": "compare",
+              "label": "Record their two incomplete but compatible accounts",
+              "description": "Use the research allowance.",
+              "outcome": "The shared description becomes more useful without either gardener pretending to remember everything.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "bed",
+              "label": "Clear a visiting path around the overlooked bed",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "A useful path gives the renewed exchange somewhere practical to continue.",
+              "effects": {
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "loom_deep.seed_history"
+      ]
+    },
+    {
+      "id": "loom_deep.tea_return",
+      "title": "Someone Else at the Old Table",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "loom_deep.tea_return.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.tea_return.entry": {
+          "body": "Sol’s old visitor reaches the café while another small team is using the rearranged table. For a moment they look as though they might leave rather than interrupt a place they remember differently. Sol brings another chair and asks which side would be comfortable now. The memory bell has room for another ordinary arrival.",
+          "choices": [
+            {
+              "id": "chair",
+              "label": "Help make a comfortable new place at the table",
+              "description": "Build team bond.",
+              "outcome": "The returning visitor joins the present arrangement instead of waiting for the old one to reappear.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "tea",
+              "label": "Share a quiet cup while the introductions settle",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The conversation finds its pace while your companions rest beneath the tree.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "loom_deep.tea_place"
+      ]
+    },
+    {
+      "id": "loom_deep.orchard_practice",
+      "title": "The Orchard Turning Circle",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "loom_deep.orchard_practice.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.orchard_practice.entry": {
+          "body": "A broad clearing between orchard terraces is used for friendly movement practice. Several wild companions have gathered beneath the low guide cords, ready to test careful turns without brushing the fruit. The steward offers your team an outside rehearsal or a paired encounter inside the circle. Every route leaves the growing branches comfortably out of reach.",
+          "choices": [
+            {
+              "id": "outside",
+              "label": "Rehearse along the low guide cords",
+              "description": "Gain 5% temporary attack without combat.",
+              "outcome": "Your team learns to turn together without pushing the living branches aside.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "paired",
+              "label": "Join the gathered companions’ paired exercise",
+              "description": "Begin a two-opponent encounter.",
+              "outcome": "The steward gives the ready signal and the first practice companion approaches the clearing.",
+              "effects": {
+                "battle": "pack2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.terrace_sequence",
+      "title": "Three Terraces of Footwork",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "loom_deep.terrace_sequence.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.terrace_sequence.entry": {
+          "body": "Three connected terraces offer different kinds of footing: broad stone, soft garden path and a firm weave of old roots. Gathered wild companions wait to demonstrate each approach. A route tender can guide your team along the accessible edge first, or arrange a sequence of respectful practice challenges across the open spaces.",
+          "choices": [
+            {
+              "id": "edge",
+              "label": "Learn the accessible edge with the route tender",
+              "description": "Gain 10% temporary defense without combat.",
+              "outcome": "Your companions practise helping one another find stable places on the changing ground.",
+              "effects": {
+                "defense_boon": 10
+              }
+            },
+            {
+              "id": "sequence",
+              "label": "Accept the full three-terrace practice sequence",
+              "description": "Begin a three-opponent encounter.",
+              "outcome": "The waiting companions gather at their markers as your team signals readiness for the first encounter.",
+              "effects": {
+                "battle": "pack3"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.astraea_bloom",
+      "title": "Astraea Beside an Unremarkable Flower",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "loom_deep.astraea_bloom.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.astraea_bloom.entry": {
+          "body": "Astraea pauses beside a very small pale flower at the edge of a distant terrace. Gardeners have left the whole approach quiet, although larger blossoms stand nearby. The flower moves once in the mild air. Your companions can watch from an ordinary resting stone without trying to make the moment larger than it is.",
+          "choices": [
+            {
+              "id": "watch",
+              "label": "Observe the small flower from the resting stone",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes keep the modest detail that held the visitor’s attention.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "quiet",
+              "label": "Share the quiet with your companions",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The team rests without asking the peaceful visitor or the flower to offer anything more.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.terminus_bed",
+      "title": "Terminus at the Last Bloom",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "loom_deep.terminus_bed.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.terminus_bed.entry": {
+          "body": "Terminus stands beyond a garden bed whose last blossom has folded for the season. Its roots are healthy, and new leaves wait beneath the sheltering edge. A gardener has put away the tools rather than urging one more flower to open. Your companions find the resting bed unexpectedly reassuring beside the brighter terraces.",
+          "choices": [
+            {
+              "id": "season",
+              "label": "Record the bed’s quiet change of season",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes describe a useful pause without turning the folded blossom into a loss.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "rest",
+              "label": "Practise leaving a finished task comfortably alone",
+              "description": "Build team bond.",
+              "outcome": "The companions share a calm pause while the distant visitor lets the garden rest.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.garden_invitation",
+      "title": "An Invitation Beyond the Silver Screen",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "loom_deep.garden_invitation.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.garden_invitation.entry": {
+          "body": "A silver-leaf screen surrounds a small open practice court. Something lively waits inside, moving the leaves just enough to make its invitation visible. The garden keeper has placed an observation bench outside and a ready marker on the clear approach. No one needs to push through the growing screen to be noticed.",
+          "choices": [
+            {
+              "id": "bench",
+              "label": "Study the invitation from the observation bench",
+              "description": "Gain 5% temporary defense without combat.",
+              "outcome": "Your companions watch the quiet preparations and leave the living screen undisturbed.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "ready",
+              "label": "Answer from the clear practice marker",
+              "description": "Begin one wild encounter; rarity follows this habitat's normal rules.",
+              "outcome": "You give the keeper a ready signal and wait for the resident to approach the court.",
+              "effects": {
+                "battle": "rare"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.unripe_lantern",
+      "title": "The Lantern That Was Still Growing",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "loom_deep.unripe_lantern.entry",
+      "tags": [
+        "shrine",
+        "authored"
+      ],
+      "nodes": {
+        "loom_deep.unripe_lantern.entry": {
+          "body": "A young starfruit has been fitted with a ceremonial shade that is already too small for it. The shade’s maker wanted to honour the tree and has returned every day to tighten the same fastening. A looser hoop lies nearby. Your companions can see that the growing light needs more room, not a firmer promise to stay small.",
+          "choices": [
+            {
+              "id": "loosen",
+              "label": "Replace the tight fastening with the loose hoop",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The shade becomes a gentle shelter around the growing light instead of a limit on it.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "learn",
+              "label": "Study the newer growth beside the old fastening marks",
+              "description": "Use the research allowance.",
+              "outcome": "Your drawing gives the maker a clear record of what changed between the daily visits.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.dew_route",
+      "title": "Familiar Ground: Dew on the Low Cords",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "loom_deep.dew_route.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom_deep.dew_route.entry": {
+          "body": "Fresh dew gathers on the familiar low guide cords, making their gentle curves visible between the orchard terraces. The widest curve offers an easy approach, while a narrower one follows the newest growing branch. Your companions already know the fixed posts, so they can notice what the dew reveals without leaving the marked route.",
+          "choices": [
+            {
+              "id": "wide",
+              "label": "Follow the broad dew-lit curve together",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The dew points out a smooth approach that the growing leaves had partly hidden.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "record",
+              "label": "Compare the droplets around the newest branch",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes record how the living guide is changing around its steady posts.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.petal_drift",
+      "title": "Familiar Ground: Fallen Petals on Bare Stone",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "loom_deep.petal_drift.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom_deep.petal_drift.entry": {
+          "body": "A familiar corner of bare stone has collected luminous petals shed from the terraces above. The living flower beds lie safely beyond the collecting edge. A small maintenance mark shows where loose material may be gathered without scraping a root. Your companions can examine the drift or use it to revise the journey’s single collection source.",
+          "choices": [
+            {
+              "id": "source",
+              "label": "Inspect the bare-stone collection mark",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You keep to the marked gathering area and leave the live beds untouched; the journey still selects one regional material bundle.",
+              "effects": {
+                "material": true
+              }
+            },
+            {
+              "id": "pattern",
+              "label": "Study the petal pattern around the bare stone",
+              "description": "Use the research allowance.",
+              "outcome": "The drift records the passing orchard breeze in a shape your team can patiently follow.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.vine_support",
+      "title": "Familiar Ground: A Loose Guide Vine",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "loom_deep.vine_support.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom_deep.vine_support.entry": {
+          "body": "A familiar guide vine has slipped from its low support as the branch above it grows. The stable handrail remains clear beside the path. A broad old loop can be retied without pulling on the living growth. Your companions have enough room to help one another or simply follow the secure rail around it.",
+          "choices": [
+            {
+              "id": "rail",
+              "label": "Keep the team on the secure handrail route",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The companions cross steadily without asking the growing vine to hold their weight.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "retie",
+              "label": "Retie the broad support loop with room to grow",
+              "description": "Build team bond.",
+              "outcome": "Your team shares the careful work while leaving the vine comfortably loose.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.fruit_shadow",
+      "title": "Familiar Ground: Shade Beneath Starfruit",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "loom_deep.fruit_shadow.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom_deep.fruit_shadow.entry": {
+          "body": "The familiar starfruit bench has moved from bright light into comfortable shade as the overhead branch grows. Its low seat still fits small companions better than the formal chairs nearby. A loose travelling strap has caught on one chair, reminding visitors to check their own gear before setting off under the hanging fruit.",
+          "choices": [
+            {
+              "id": "shade",
+              "label": "Rest together on the comfortable low bench",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The moving orchard shade gives every companion a pleasant place to settle.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "gear",
+              "label": "Check the team’s travelling straps before continuing",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Your companions leave with their gear sitting securely and the walking lane clear.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.starlit_drill",
+      "title": "Familiar Ground: The Clear Garden Court",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "loom_deep.starlit_drill.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom_deep.starlit_drill.entry": {
+          "body": "The familiar garden court has been swept clear of fallen fruit and drifting leaves. A resident waits by its ready marker, interested in a respectful test. The outside guide cords still offer a useful rehearsal route for companions who prefer practising together. The nearby growing beds remain beyond both exercise spaces.",
+          "choices": [
+            {
+              "id": "rehearse",
+              "label": "Practise together along the outside guide cords",
+              "description": "Gain 5% temporary attack without combat.",
+              "outcome": "Your team follows the useful movement pattern while leaving the resident space to wait.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "accept",
+              "label": "Give the waiting resident a ready signal",
+              "description": "Begin a single-opponent encounter.",
+              "outcome": "The companion approaches the clear court while your team takes its practice place.",
+              "effects": {
+                "battle": "single"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "loom_deep.drifting_blossom",
+      "title": "Familiar Ground: A Blossom Above the Steps",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "loom_deep.drifting_blossom.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "loom_deep.drifting_blossom.entry": {
+          "body": "A detached luminous blossom drifts slowly above the familiar orchard steps. Its light picks out the middle landing where regular travellers pause before the next terrace. The blossom needs no rescue; a gentle guide cord will eventually carry it toward the collecting stones. Your companions can rest beneath its passing light or watch the little route unfold.",
+          "choices": [
+            {
+              "id": "landing",
+              "label": "Rest on the broad middle landing",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The team settles comfortably while the blossom’s soft light moves across the steps.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "watch",
+              "label": "Watch the blossom find the collecting route",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes follow a small useful journey without turning it into something urgent.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

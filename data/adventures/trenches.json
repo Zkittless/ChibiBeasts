@@ -1,0 +1,1112 @@
+{
+  "version": 1,
+  "biome": "trenches",
+  "encounters": [
+    {
+      "id": "trenches.post_house",
+      "title": "The Post House Below the Tide",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "trenches.post_house.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.post_house.entry": {
+          "body": "A drowned post house still has a dry writing shelf beneath its overhanging roof. Postmaster Della is sorting stone address tiles by the scratches on their backs. The painted street names washed away long ago, but she remembers which doorways used to smell of soup and which kept their lamps lit late.",
+          "choices": [
+            {
+              "id": "sort",
+              "label": "Sort the tiles by the remembered doorways",
+              "description": "Build bond; enter the sorting room.",
+              "outcome": "Della supplies the household stories while your companions arrange the small tiles.",
+              "effects": {
+                "bond": 1
+              },
+              "next": "trenches.post_house.sorting"
+            },
+            {
+              "id": "traces",
+              "label": "Examine the faded marks beneath the scratches",
+              "description": "Use the research allowance; enter the sorting room.",
+              "outcome": "The older marks turn out to be tide heights rather than street numbers.",
+              "effects": {
+                "study": 1
+              },
+              "next": "trenches.post_house.sorting"
+            }
+          ]
+        },
+        "trenches.post_house.sorting": {
+          "body": "The sorting room holds a letter addressed only to whoever opens the west window. Della has kept it for years because the window is now a doorway and she dislikes guessing. Its envelope bears a drawing of two joined shells. Your companions find the same mark beneath a rack of undelivered route charts.",
+          "choices": [
+            {
+              "id": "ledger",
+              "label": "Copy the joined-shell mark into the route ledger",
+              "description": "Remember an address for another discovery.",
+              "outcome": "Della adds a careful question mark beside the drawing instead of filing the letter away again.",
+              "effects": {
+                "set_flags": [
+                  "trenches.post_ledger"
+                ]
+              },
+              "next": "trenches.post_house.roof"
+            },
+            {
+              "id": "charts",
+              "label": "Dry and separate the stuck route charts",
+              "description": "Gain a 2% reward bonus; reach the roof shelf.",
+              "outcome": "The charts part without tearing, revealing the old sheltered postal approach.",
+              "effects": {
+                "bonus": 2
+              },
+              "next": "trenches.post_house.roof"
+            }
+          ]
+        },
+        "trenches.post_house.roof": {
+          "body": "Above the counter, a shelf records all the letters Della successfully delivered. She kept the difficult ones below because she thought they mattered more. There are hundreds of little marks on the upper shelf. For a moment she forgets the unsolved address and shows your team how the first courier crossed the current.",
+          "choices": [
+            {
+              "id": "courier",
+              "label": "Practise the first courier’s steady crossing",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Della calls a slow cadence that keeps every companion within reach of the next.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "marks",
+              "label": "Listen to the stories behind the upper marks",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The patient telling turns the dry counter into a comfortable resting place.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.window_school",
+      "title": "Lessons Written on the Outside",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "trenches.window_school.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.window_school.entry": {
+          "body": "A schoolroom window is covered in letters written from the outside. Teacher Miri once thought passing creatures were copying her pupils, until the marks began correcting the lesson. She has left the window open today. The empty classroom smells of salt and chalk, and every stool is weighted differently against the current.",
+          "choices": [
+            {
+              "id": "stools",
+              "label": "Set the stools so small companions can stay put",
+              "description": "Gain 5% temporary defense; continue the lesson.",
+              "outcome": "Miri stops holding down the smallest stool with one foot and welcomes your team inside.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "trenches.window_school.lesson"
+            },
+            {
+              "id": "letters",
+              "label": "Compare the outside letters with the chalkboard",
+              "description": "Use the research allowance; continue the lesson.",
+              "outcome": "The outside marks describe moving water more accurately than the old printed exercise.",
+              "effects": {
+                "study": 1
+              },
+              "next": "trenches.window_school.lesson"
+            }
+          ]
+        },
+        "trenches.window_school.lesson": {
+          "body": "Miri places a shell against the board and asks how to write its name. Several answers appear on the wet window, none alike. She explains that her old lessons allowed only one correct shape. Now she wants a lesson that a fin, a claw and a small unsteady paw can all finish without pretending to be hands.",
+          "choices": [
+            {
+              "id": "many",
+              "label": "Leave space for several kinds of handwriting",
+              "description": "Remember the school’s invitation to later visitors.",
+              "outcome": "Miri writes an invitation whose blank spaces are part of the message.",
+              "effects": {
+                "set_flags": [
+                  "trenches.window_letters"
+                ]
+              },
+              "next": "trenches.window_school.courtyard"
+            },
+            {
+              "id": "trace",
+              "label": "Let your companions teach their own marks",
+              "description": "Build bond; continue into the courtyard.",
+              "outcome": "Each companion leaves a different sign, and Miri copies all of them carefully.",
+              "effects": {
+                "bond": 1
+              },
+              "next": "trenches.window_school.courtyard"
+            }
+          ]
+        },
+        "trenches.window_school.courtyard": {
+          "body": "In the courtyard, the first outside visitor has left a neat spiral of pebbles around a drain. Water now runs beside the play area instead of through it. Miri cannot read the maker’s name, but she understands this lesson immediately. There is a clear patch of sand where the next answer might appear.",
+          "choices": [
+            {
+              "id": "drain",
+              "label": "Extend the useful spiral around the wet steps",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "Your team follows the maker’s idea without covering the original small stones.",
+              "effects": {
+                "bonus": 5
+              }
+            },
+            {
+              "id": "sand",
+              "label": "Record the courtyard lesson in its own shapes",
+              "description": "Use the research allowance.",
+              "outcome": "Your drawing keeps the movement of the water rather than replacing it with a schoolroom rule.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.anchor_house",
+      "title": "The House Held by a Kitchen",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "trenches.anchor_house.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.anchor_house.entry": {
+          "body": "A tiny house tilts around an old anchor embedded in its kitchen floor. Cook Oru has been moving heavy pots from shelf to shelf, trying to level it without wasting a meal. A loose measuring spoon keeps sliding toward the door. The anchor itself is sound; the cupboards have simply grown uneven over many generous winters.",
+          "choices": [
+            {
+              "id": "balance",
+              "label": "Balance the empty pots before moving the full ones",
+              "description": "Gain 5% temporary defense; enter the pantry.",
+              "outcome": "The spoon stops sliding once your companions share the weight around the room.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "trenches.anchor_house.pantry"
+            },
+            {
+              "id": "measure",
+              "label": "Read the old water marks on the cupboards",
+              "description": "Use the research allowance; enter the pantry.",
+              "outcome": "The marks show where the kitchen sat before the heaviest cupboard was added.",
+              "effects": {
+                "study": 1
+              },
+              "next": "trenches.anchor_house.pantry"
+            }
+          ]
+        },
+        "trenches.anchor_house.pantry": {
+          "body": "The pantry shelves are labelled with neighbours’ names rather than ingredients. Oru has been keeping everyone’s favourite dish ready, even for neighbours who moved to higher water. An empty lower shelf is marked for whoever needs a meal today. He has never filled it because he was afraid of choosing the wrong dish.",
+          "choices": [
+            {
+              "id": "share",
+              "label": "Help Oru prepare one simple meal for today",
+              "description": "Build bond; remember the shared kitchen.",
+              "outcome": "Oru clears an old label and writes that nobody must have a favourite to be welcome.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "trenches.ballast_shared"
+                ]
+              },
+              "next": "trenches.anchor_house.doorstep"
+            },
+            {
+              "id": "samples",
+              "label": "Sort the loose pieces on Oru's repair shelf",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You inspect the repair shelf without taking pantry food, marking a source for the journey's one regional material selection.",
+              "effects": {
+                "material": true
+              },
+              "next": "trenches.anchor_house.doorstep"
+            }
+          ]
+        },
+        "trenches.anchor_house.doorstep": {
+          "body": "Oru finishes balancing the cupboards and puts a simple meal on the step. The front door can now close without a rope, and a passing neighbour can choose whether to stop. The anchor remains visible through the kitchen floor. It looks less like something holding the house down and more like something letting it stay.",
+          "choices": [
+            {
+              "id": "eat",
+              "label": "Share the doorstep meal with your team",
+              "description": "Recover up to 10% surviving-team HP.",
+              "outcome": "Oru brings bowls that fit your companions instead of asking them to fit his table.",
+              "effects": {
+                "heal": 10
+              }
+            },
+            {
+              "id": "signals",
+              "label": "Practise clear doorstep signals in the current",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "The team learns to announce movement before a gust of water can separate it.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.kelpie_channel",
+      "title": "A Nursery with Two Entrances",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "trenches.kelpie_channel.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.kelpie_channel.entry": {
+          "body": "A Kelpie circles a shallow nursery pool whose two entrances open into different currents. Young visitors keep choosing the brighter opening and drifting back in. The Kelpie has laid pale stones along the darker, gentler exit. It watches your companions closely, perhaps hoping another patient body will make the safer route easier to notice.",
+          "choices": [
+            {
+              "id": "guide",
+              "label": "Wait beside the pale stones without blocking them",
+              "description": "Build team bond.",
+              "outcome": "Your companions form a quiet guide line, and the pool keeps its wide open entrance.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "flow",
+              "label": "Sketch how the two currents meet",
+              "description": "Use the research allowance.",
+              "outcome": "The brighter opening proves faster only until it curls back toward the nursery.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.ink_notice",
+      "title": "The Notice Nobody Could Read",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches.ink_notice.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.ink_notice.entry": {
+          "body": "A sign painter named Rell has borrowed a Kraken’s discarded ink stain to darken a public notice. The sign now hides both the message and the wall behind it. Rell is embarrassed until your companions notice that the glossy patch reflects the narrow current crossing more clearly than the old painted arrows ever did.",
+          "choices": [
+            {
+              "id": "mirror",
+              "label": "Turn the notice into a crossing mirror",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "Rell adds a small border and lets the useful reflection do the explaining.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "test",
+              "label": "Study where the ink catches moving light",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes give Rell a way to judge the next sign before painting over its words.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.sponge_music",
+      "title": "The Softest Note in the Choir",
+      "kind": "discovery",
+      "repeatable": false,
+      "entry": "trenches.sponge_music.entry",
+      "tags": [
+        "discovery",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.sponge_music.entry": {
+          "body": "A cluster of hollow sea sponges makes different notes as the tide passes. One sponge has been tied shut because its low note was thought to spoil the tune. The current now rattles the whole cluster instead. A small maintenance board invites listeners to adjust the ties, provided they leave each living opening clear.",
+          "choices": [
+            {
+              "id": "release",
+              "label": "Loosen the tie and listen to the low note",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The low note steadies the rhythm, giving your team a calmer crossing cadence.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "notes",
+              "label": "Record the openings without adjusting the cluster",
+              "description": "Use the research allowance.",
+              "outcome": "You document how the living shapes make room for different amounts of water.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.empty_helmet",
+      "title": "An Empty Helmet on a Bench",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches.empty_helmet.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.empty_helmet.entry": {
+          "body": "A diver’s helmet rests on a bench beside a slate asking visitors to sit before trying it on. Diver Iona explains that beginners keep mistaking the heavy helmet for the part that makes them brave. Her own lesson begins with watching the water from the bench and choosing a sensible place to enter it.",
+          "choices": [
+            {
+              "id": "bench",
+              "label": "Learn Iona’s patient entry routine",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Your companions practise checking their footing before making the next move.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "sit",
+              "label": "Stay on the bench and trade travel stories",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Iona is pleased to demonstrate that a useful diving lesson can include a proper rest.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.loose_net",
+      "title": "A Net with No Catch",
+      "kind": "hazard",
+      "repeatable": false,
+      "entry": "trenches.loose_net.entry",
+      "tags": [
+        "hazard",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.loose_net.entry": {
+          "body": "An abandoned net billows above a bed of soft coral, catching nothing except passing light. Its lower weights are rubbing the living branches. A careful cut would free the coral but send the whole net into the path. Several loose stones nearby could hold the empty mesh while you untie it instead.",
+          "choices": [
+            {
+              "id": "untie",
+              "label": "Weight the loose mesh before untying it",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "The net folds safely onto bare sand, leaving the coral’s branches free.",
+              "effects": {
+                "bonus": 5
+              }
+            },
+            {
+              "id": "edge",
+              "label": "Secure the rubbing weights from the narrow edge",
+              "description": "Lose up to 3% HP; choose a material source.",
+              "outcome": "Your team takes a few scrapes securing the weights and marks the detached salvage for its single bundle.",
+              "effects": {
+                "hp_cost": 3,
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.current_drill",
+      "title": "The Couriers’ Turning Circle",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "trenches.current_drill.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.current_drill.entry": {
+          "body": "Stone hoops mark a practice course for current couriers. Several lively wild companions are testing it today, darting around a hoop and returning to invite the next participant. The keeper has left a separate outside lane for travellers who prefer learning the route without entering the friendly contest.",
+          "choices": [
+            {
+              "id": "outside",
+              "label": "Practise along the outside lane",
+              "description": "Gain 5% temporary attack without combat.",
+              "outcome": "Your team learns the turn while leaving the central course to its eager regulars.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "contest",
+              "label": "Answer the gathered companions’ invitation",
+              "description": "Begin a two-opponent encounter.",
+              "outcome": "You give the keeper a ready signal, and the first waiting challenger approaches the hoop.",
+              "effects": {
+                "battle": "pack2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.lantern_check",
+      "title": "The Diver’s Unlit Lantern",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches.lantern_check.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.lantern_check.entry": {
+          "body": "Iona’s apprentice has brought a lantern that works perfectly in his hands and goes dark when he swims. He keeps tightening its lid, although the shutter is tied to his elbow. Each nervous stroke closes it. Your companions can help him notice the little knot without making the demonstration feel like another failed examination.",
+          "choices": [
+            {
+              "id": "loosen",
+              "label": "Show the apprentice the elbow knot gently",
+              "description": "Build team bond.",
+              "outcome": "He laughs with relief and practises opening the shutter before moving his arm.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "signals",
+              "label": "Practise lantern signals from the sheltered ledge",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "The team learns to make its next movement visible before entering the crossing.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.salt_archive",
+      "title": "The Salt Line Under the Picture",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "trenches.salt_archive.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.salt_archive.entry": {
+          "body": "A faded family picture hangs above five distinct salt lines. The lowest line crosses the painted doorstep, while the highest passes over everyone’s heads. Someone has added a small new picture beside it: the same family sitting together on a higher ledge. There is no date, only a familiar pattern of cups.",
+          "choices": [
+            {
+              "id": "compare",
+              "label": "Compare the cups in both pictures",
+              "description": "Use the research allowance.",
+              "outcome": "The smallest cup appears in both scenes, carefully kept rather than replaced.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "shelter",
+              "label": "Rest at the higher ledge shown in the drawing",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "Your team finds the picture’s sheltered resting place without disturbing the old room.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.west_window",
+      "title": "Whoever Opens the West Window",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches.west_window.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.west_window.entry": {
+          "body": "The joined-shell mark from Della’s ledger appears on a doorway facing west. A shell repairer named Em opens the old window from inside and immediately recognizes the undelivered address. The letter was an invitation to reopen their shared workshop, not a demand to explain why it had closed.",
+          "choices": [
+            {
+              "id": "invite",
+              "label": "Help Em write a clear invitation back",
+              "description": "Build bond; preserve the renewed postal connection.",
+              "outcome": "Em writes that the workbench is ready whenever the other maker wishes to visit.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "trenches.post_answer"
+                ]
+              }
+            },
+            {
+              "id": "route",
+              "label": "Mark the workshop’s accessible doorway",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "Your route notes make the old window address useful to present-day travellers.",
+              "effects": {
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "trenches.post_ledger"
+      ]
+    },
+    {
+      "id": "trenches.outside_pupil",
+      "title": "The Pupil Beyond the Glass",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "trenches.outside_pupil.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.outside_pupil.entry": {
+          "body": "Miri’s open invitation has reached a Kelpie that usually watches lessons from the current. It has arranged pebbles into a rough copy of the classroom window, leaving one side open. A waiting chalkboard asks whether the next lesson should stay inside or meet the new pupil where it can comfortably stand.",
+          "choices": [
+            {
+              "id": "outside",
+              "label": "Move the lesson board to the open side",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The new arrangement gives every pupil a stable place without closing the Kelpie’s route.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "marks",
+              "label": "Copy the Kelpie’s pebble handwriting",
+              "description": "Use the research allowance.",
+              "outcome": "You record a legible answer that was never meant to be held by fingers.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "trenches.window_letters"
+      ]
+    },
+    {
+      "id": "trenches.kitchen_visitors",
+      "title": "The First Unlabelled Bowls",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches.kitchen_visitors.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.kitchen_visitors.entry": {
+          "body": "Oru’s newly shared doorstep has attracted two neighbours who each assumed the other had moved away. They spend several minutes explaining why they did not knock. A third bowl waits between them, still without a name. Oru asks your team to make the first ordinary use of it.",
+          "choices": [
+            {
+              "id": "join",
+              "label": "Share the unlabelled bowl with your companions",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The neighbours finally begin talking about the meal instead of the years before it.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "places",
+              "label": "Arrange the seating around everyone’s different sizes",
+              "description": "Build team bond.",
+              "outcome": "Nobody has to ask whether a place at the doorstep was meant for them.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "trenches.ballast_shared"
+      ]
+    },
+    {
+      "id": "trenches.hydra_reflections",
+      "title": "Three Reflections and One Ripple",
+      "kind": "wild",
+      "repeatable": false,
+      "entry": "trenches.hydra_reflections.entry",
+      "tags": [
+        "wild",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.hydra_reflections.entry": {
+          "body": "A Hydra watches three reflections in the polished face of a submerged stone. Whenever one head turns, the ripple unsettles the others’ views. It seems less irritated than puzzled. Your companions can wait on the rough side of the stone, where the water moves slowly and nothing needs to hold perfectly still.",
+          "choices": [
+            {
+              "id": "wait",
+              "label": "Let the reflections settle in their own time",
+              "description": "Build team bond.",
+              "outcome": "Your team shares the patient pause without asking the Hydra to perform a trick.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "ripple",
+              "label": "Sketch how one movement changes the three views",
+              "description": "Use the research allowance.",
+              "outcome": "The drawing keeps the shared ripple as well as the separate faces.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.echo_stair",
+      "title": "The Stair That Answers Late",
+      "kind": "ruin",
+      "repeatable": false,
+      "entry": "trenches.echo_stair.entry",
+      "tags": [
+        "ruin",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.echo_stair.entry": {
+          "body": "A narrow stair curls around a hollow stone chimney. Footsteps return as soft echoes after the next step has already begun. Old walking marks show that earlier visitors kept speeding up to catch their own sound. A newer mark invites travellers to stop once and let the stair finish answering.",
+          "choices": [
+            {
+              "id": "pause",
+              "label": "Wait for the last echo before stepping again",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Your companions find a measured pace that no longer chases its own noise.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "record",
+              "label": "Measure the chimney’s delayed answer",
+              "description": "Use the research allowance.",
+              "outcome": "The measured pause explains the stair more clearly than the crowded old walking marks.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.floating_market",
+      "title": "A Market Stall Selling Directions",
+      "kind": "traveller",
+      "repeatable": false,
+      "entry": "trenches.floating_market.entry",
+      "tags": [
+        "traveller",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.floating_market.entry": {
+          "body": "A little market stall hangs from empty floats above the path. Its owner, Noma, has crossed out every price and written that directions are free if travellers will say when they are wrong. Her newest chart has three corrections in different handwriting. The most useful one simply marks a place to stop and turn around.",
+          "choices": [
+            {
+              "id": "correct",
+              "label": "Walk the chart’s shortest loop and report back",
+              "description": "Gain a 5% reward bonus.",
+              "outcome": "Noma adds your practical correction beside the others rather than redrawing a perfect map.",
+              "effects": {
+                "bonus": 5
+              }
+            },
+            {
+              "id": "stories",
+              "label": "Compare route memories over Noma’s warm broth",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The broth and unhurried conversation give your companions a welcome pause.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.gate_practice",
+      "title": "The Three-Gate Welcome",
+      "kind": "pack",
+      "repeatable": false,
+      "entry": "trenches.gate_practice.entry",
+      "tags": [
+        "pack",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.gate_practice.entry": {
+          "body": "Three old current gates stand open around a public practice square. Gathered wild companions have turned each gate into a different movement challenge. A patient route steward offers to guide your team around the outside first. Joining the full exercise will mean answering several invitations in sequence, without an extra place to rest.",
+          "choices": [
+            {
+              "id": "walkthrough",
+              "label": "Learn the steward’s route around the gates",
+              "description": "Gain 10% temporary defense without combat.",
+              "outcome": "The steward teaches your team where to pause before each crossing.",
+              "effects": {
+                "defense_boon": 10
+              }
+            },
+            {
+              "id": "three",
+              "label": "Enter the full three-gate exercise",
+              "description": "Begin a three-opponent encounter.",
+              "outcome": "Your team gives the ready signal, and the first waiting companion takes its place.",
+              "effects": {
+                "battle": "pack3"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.leviathan_lane",
+      "title": "A Very Wide Right of Way",
+      "kind": "legendary",
+      "repeatable": false,
+      "entry": "trenches.leviathan_lane.entry",
+      "tags": [
+        "legendary",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.leviathan_lane.entry": {
+          "body": "A distant Leviathan moves through a trench broad enough to become a horizon. Small travelling groups have gathered well back from its route, their lanterns turned down. No one is trapped; they are simply allowing a larger neighbour enough room. Your companions watch the slow displacement reach the stones beneath their feet.",
+          "choices": [
+            {
+              "id": "space",
+              "label": "Give the passing neighbour an unhurried berth",
+              "description": "Build team bond.",
+              "outcome": "Your companions remain together as the broad wake passes harmlessly below the ledge.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "wake",
+              "label": "Record the wake from the sheltered observation marks",
+              "description": "Use the research allowance.",
+              "outcome": "Your notes describe the visitor’s passage without turning a peaceful meeting into a pursuit.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.beacon_keeper",
+      "title": "The Beacon with a Small Voice",
+      "kind": "shrine",
+      "repeatable": false,
+      "entry": "trenches.beacon_keeper.entry",
+      "tags": [
+        "shrine",
+        "authored"
+      ],
+      "nodes": {
+        "trenches.beacon_keeper.entry": {
+          "body": "A beacon niche has room for an enormous lamp but holds only a small steady glow. Its keeper has been gathering bigger lenses, worried that quiet light means poor work. The route below is already clearly marked by the glow reflected in pale stones. A practice circle nearby offers a way to test the signals.",
+          "choices": [
+            {
+              "id": "stones",
+              "label": "Check the pale stones from the quiet route",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The keeper sees that a traveller can follow the small light without staring directly into it.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "signal",
+              "label": "Test the beacon signals in a friendly encounter",
+              "description": "Begin a single-opponent encounter.",
+              "outcome": "You raise the agreed signal, inviting a waiting practice companion into the circle.",
+              "effects": {
+                "battle": "single"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.bubble_lane",
+      "title": "Familiar Ground: The Slow Bubble Lane",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "trenches.bubble_lane.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches.bubble_lane.entry": {
+          "body": "The familiar bubble lane rises beside an old stone rail. Some bubbles linger in its shallow grooves before continuing upward, making a useful rhythm for crossing the adjacent current. Today the larger bubbles take longer to leave. Your companions can follow their measured departures or study the patient little delays.",
+          "choices": [
+            {
+              "id": "pace",
+              "label": "Match your crossing to the slower bubbles",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "The team crosses together rather than trying to outrun the moving water.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "observe",
+              "label": "Record the bubbles caught in the grooves",
+              "description": "Use the research allowance.",
+              "outcome": "You note how the shallow stone shapes make the passing current visible.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.sand_cradle",
+      "title": "Familiar Ground: The Sand Cradle",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "trenches.sand_cradle.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches.sand_cradle.entry": {
+          "body": "A familiar bend in the current has made a soft cradle of pale sand. The higher ridge stays dry enough for a travelling team to settle, while loose shell pieces collect below it. Nothing living is rooted in the little drift. Your companions remember that the comfortable place is above the collecting hollow, not inside it.",
+          "choices": [
+            {
+              "id": "rest",
+              "label": "Rest together on the higher sand ridge",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The current passes below the ridge while your companions find comfortable resting hollows.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "sample",
+              "label": "Inspect the gathering sources below the resting ridge",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You choose a source that will not disturb the neighbouring living beds.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.courier_shelter",
+      "title": "Familiar Ground: The Courier’s Overhang",
+      "kind": "camp",
+      "repeatable": true,
+      "entry": "trenches.courier_shelter.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches.courier_shelter.entry": {
+          "body": "The familiar courier overhang has room for one large traveller or several small companions willing to sit close. A wet route card hangs where everyone can reach it. Today its lower edge points toward a fresh shortcut, but the shelter itself is the old reliable reason people stop here.",
+          "choices": [
+            {
+              "id": "share",
+              "label": "Make room for every member of the team",
+              "description": "Build team bond.",
+              "outcome": "The companions settle into an arrangement that leaves no one pressed against the current.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "rest",
+              "label": "Take a short sheltered pause",
+              "description": "Recover up to 5% surviving-team HP.",
+              "outcome": "The old overhang keeps doing its simple useful work while your team rests.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.kelpie_reeds",
+      "title": "Familiar Ground: Kelpie Reed Rings",
+      "kind": "wild",
+      "repeatable": true,
+      "entry": "trenches.kelpie_reeds.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches.kelpie_reeds.entry": {
+          "body": "Fresh reed rings float near the familiar channel where Kelpies practise tight turns. Their makers have moved on, leaving the exercise open to slower visitors. The widest ring has caught against a smooth stone, creating an easy practice target. Narrower rings drift freely and need not be chased to learn the lesson.",
+          "choices": [
+            {
+              "id": "wide",
+              "label": "Practise a clean turn around the fixed ring",
+              "description": "Gain 5% temporary attack.",
+              "outcome": "Your companions learn the turn before adding speed to it.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "reeds",
+              "label": "Observe the different shapes left by the current",
+              "description": "Use the research allowance.",
+              "outcome": "You sketch how the broad ring stays stable while the narrower ones wander.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.ink_fall",
+      "title": "Familiar Ground: A Fading Ink Cloud",
+      "kind": "discovery",
+      "repeatable": true,
+      "entry": "trenches.ink_fall.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches.ink_fall.entry": {
+          "body": "A thin remnant of shed ink drifts above the familiar shelf, already too pale to hide the path. Its edges reveal small countercurrents usually invisible in clear water. Loose dark grains are settling on bare stone nearby. The living coral beyond the shelf remains outside the cloud’s slow descent.",
+          "choices": [
+            {
+              "id": "read",
+              "label": "Read the small countercurrents at its edge",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The fading cloud points out an easier line through the next crossing.",
+              "effects": {
+                "bonus": 2
+              }
+            },
+            {
+              "id": "grains",
+              "label": "Inspect the clear collecting shelf beside the ink",
+              "description": "Replace the journey’s single material selection.",
+              "outcome": "You mark the clear gathering area and leave the living coral alone; the run still selects only one material bundle.",
+              "effects": {
+                "material": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trenches.stone_signal",
+      "title": "Familiar Ground: The Turning Marker",
+      "kind": "hazard",
+      "repeatable": true,
+      "entry": "trenches.stone_signal.entry",
+      "tags": [
+        "wilderness",
+        "familiar"
+      ],
+      "nodes": {
+        "trenches.stone_signal.entry": {
+          "body": "The familiar turning marker has rotated halfway in its socket. Its bright face now points into the stronger current, though the worn handholds still lead around the sheltered side. A small team can set the marker straight without leaving the rail. The crossing remains passable even if you simply follow the old handholds.",
+          "choices": [
+            {
+              "id": "handholds",
+              "label": "Use the worn handholds around the sheltered side",
+              "description": "Gain 5% temporary defense.",
+              "outcome": "Your companions trust the useful marks beneath the misleading bright face.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "repair",
+              "label": "Set the turning marker back toward shelter",
+              "description": "Gain a 2% reward bonus.",
+              "outcome": "The marker points toward the route that already worked beneath it.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

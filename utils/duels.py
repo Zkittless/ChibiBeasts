@@ -22,7 +22,7 @@ def reserve_fighters(users, *, allow_trial=False):
     ids = {uid for uid in users if uid is not None}
     from utils import trial_locks
     if not allow_trial and any(trial_locks.locked(uid) for uid in ids):
-        raise FighterBusyError('Your tower team is still on a trial. Open /challenge to resume or retreat and bank its progress.')
+        raise FighterBusyError('Your team is on a saved adventure or trial. Open /explore or /challenge to continue or return home.')
     if ids.intersection(active_fighters):
         raise FighterBusyError('A trainer is already in a battle or transfer. Finish it first. In a duel, an inactive turn closes after 45 seconds.')
     active_fighters.update(ids)

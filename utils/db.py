@@ -372,6 +372,19 @@ async def _run_migrations():
             CREATE UNIQUE INDEX IF NOT EXISTS ix_expedition_active ON expeditions(user_id)
                 WHERE status IN ('active','battle','quick');
             CREATE INDEX IF NOT EXISTS ix_expedition_history ON expeditions(user_id,updated_at);
+            CREATE TABLE IF NOT EXISTS adventure_progress (
+                user_id INTEGER NOT NULL, encounter_id TEXT NOT NULL, node_id TEXT NOT NULL,
+                completed INTEGER NOT NULL DEFAULT 0, snapshot TEXT, updated_at REAL NOT NULL,
+                PRIMARY KEY(user_id,encounter_id));
+            CREATE TABLE IF NOT EXISTS adventure_nodes (
+                user_id INTEGER NOT NULL, node_id TEXT NOT NULL, resolved INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY(user_id,node_id));
+            CREATE TABLE IF NOT EXISTS adventure_flags (
+                user_id INTEGER NOT NULL, flag TEXT NOT NULL, PRIMARY KEY(user_id,flag));
+            CREATE TABLE IF NOT EXISTS adventure_recent (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL,
+                biome TEXT NOT NULL, encounter_id TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS ix_adventure_recent ON adventure_recent(user_id,biome,id);
             CREATE TABLE IF NOT EXISTS trial_runs (
                 id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, destination TEXT NOT NULL,
                 status TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0, payload TEXT NOT NULL,
