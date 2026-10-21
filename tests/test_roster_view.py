@@ -39,6 +39,19 @@ class RosterBrowser(DatabaseCase):
         click.edit_original_response.return_value = message
         return click
 
+    def assert_compact_menu(self, view):
+        self.assertIn(view.beast_select, view.children)
+        self.assertNotIn('Filter by rarity', [getattr(item, 'placeholder', '') for item in view.children])
+        if view.mode == 'detail':
+            self.assertEqual([item.row for item in view.children if isinstance(item, discord.ui.Select)], [2, 1])
+        self.assertIn('rarities', [option.value for option in view.beast_select.options])
+
+    async def choose_rarity(self, view, message, rarity):
+        await view.beast_select.callback(self.click(message, value='rarities'))
+        click = self.click(message, value='rarity:' + rarity)
+        await view.beast_select.callback(click)
+        return click
+
     async def test_beastinfo_starts_common_with_rarity_on_the_card_and_no_all_view(self):
         common = await self.beast('twine')
         rare_species = next(key for key, row in storage.load_beasts().items() if row['rarity'] == 'rare')
@@ -46,13 +59,15 @@ class RosterBrowser(DatabaseCase):
         await self.execute('UPDATE player_beasts SET is_active=(id=?) WHERE user_id=42', (rare,))
         view, message, _ = await self.open_roster(details=True)
         self.assertEqual((view.picker.rarity, view.mode, view.selected_id), ('common', 'detail', common))
-        self.assertIn(view.rarity_select, view.children)
-        self.assertEqual(view.rarity_select.options[0].value, 'common')
-        self.assertEqual([option.value for option in view.rarity_select.options], list(owned_roster.RARITIES))
-        click = self.click(message, value='rare')
-        await view.rarity_select.callback(click)
+        self.assert_compact_menu(view)
+        await view.beast_select.callback(self.click(message, value='rarities'))
+        self.assertEqual(view.selected_id, common)
+        self.assertEqual([option.value for option in view.beast_select.options],
+                         ['beasts'] + ['rarity:' + rarity for rarity in owned_roster.RARITIES])
+        click = self.click(message, value='rarity:rare')
+        await view.beast_select.callback(click)
         self.assertEqual((view.picker.rarity, view.mode, view.selected_id), ('rare', 'detail', rare))
-        self.assertIn(view.rarity_select, view.children)
+        self.assert_compact_menu(view)
         click.edit_original_response.assert_awaited_once()
         click.followup.send.assert_not_awaited()
         self.assertEqual((await storage.get_active_beast(42))['id'], rare)
@@ -64,8 +79,8 @@ class RosterBrowser(DatabaseCase):
         seen = []
         while True:
             self.assertLessEqual(len(view.beast_select.options), 25)
-            self.assertIn(view.rarity_select, view.children)
-            seen.extend(int(option.value) for option in view.beast_select.options if not option.value.startswith('page:'))
+            self.assert_compact_menu(view)
+            seen.extend(int(option.value) for option in view.beast_select.options if option.value.isdecimal())
             forward = next((option for option in view.beast_select.options if option.label.startswith('Next beasts')), None)
             if not forward:
                 break
@@ -77,7 +92,7 @@ class RosterBrowser(DatabaseCase):
         self.assertEqual(seen, ids)
         previous = next(option for option in view.beast_select.options if 'Previous beasts' in option.label)
         await view.beast_select.callback(self.click(message, value=previous.value))
-        self.assertEqual(view.selected_id, ids[23])
+        self.assertEqual(view.selected_id, ids[22])
         await view.beast_select.callback(self.click(message, value=str(ids[30])))
         self.assertEqual(view.selected_id, ids[30])
         self.assertEqual(await storage.get_player_beasts(42), before)
@@ -89,11 +104,11 @@ class RosterBrowser(DatabaseCase):
         self.assertEqual(view.picker.rarity, 'common')
         self.assertIsNone(view.selected_id)
         self.assertNotIn('no longer', command.followup.send.call_args.kwargs['embed'].description)
-        await view.rarity_select.callback(self.click(message, value='rare'))
+        await self.choose_rarity(view, message, 'rare')
         self.assertEqual((view.mode, view.selected_id), ('detail', rare))
-        await view.rarity_select.callback(self.click(message, value='uncommon'))
+        await self.choose_rarity(view, message, 'uncommon')
         self.assertIsNone(view.selected_id)
-        await view.rarity_select.callback(self.click(message, value='rare'))
+        await self.choose_rarity(view, message, 'rare')
         self.assertEqual((view.mode, view.selected_id), ('detail', rare))
 
     async def test_explicit_beast_number_opens_its_rarity_and_clear_returns_common(self):
@@ -103,16 +118,37 @@ class RosterBrowser(DatabaseCase):
         self.assertEqual((view.picker.rarity, view.selected_id), ('ancient', rare))
         await view.clear_button.callback(self.click(message))
         self.assertEqual(view.picker.rarity, 'common')
-        self.assertNotIn('all', [option.value for option in view.rarity_select.options])
+        await view.beast_select.callback(self.click(message, value='rarities'))
+        self.assertNotIn('rarity:all', [option.value for option in view.beast_select.options])
 
     async def test_obsolete_all_filter_cannot_reopen_the_combined_view(self):
         await self.beast('twine')
         view, message, _ = await self.open_roster(details=True)
-        click = self.click(message, value='all')
-        await view.rarity_select.callback(click)
+        click = self.click(message, value='rarity:all')
+        await view.beast_select.callback(click)
         self.assertEqual(view.picker.rarity, 'common')
         click.edit_original_response.assert_not_awaited()
         click.followup.send.assert_awaited_once()
+
+    async def test_rarity_menu_cancel_and_foreign_click_keep_the_current_beast(self):
+        await self.beast('twine')
+        second = await self.beast('gloop')
+        view, message, _ = await self.open_roster(number=2, details=True)
+        before = await storage.get_player_beasts(42)
+        for value in ('rarities', 'beasts'):
+            click = self.click(message, value=value)
+            await view.beast_select.callback(click)
+            self.assertEqual(view.selected_id, second)
+            self.assertEqual(view.mode, 'detail')
+            click.edit_original_response.assert_awaited_once()
+            click.followup.send.assert_not_awaited()
+        self.assert_compact_menu(view)
+        stranger = self.click(message, value='rarities', uid=43)
+        await view.beast_select.callback(stranger)
+        stranger.edit_original_response.assert_not_awaited()
+        stranger.response.send_message.assert_awaited_once()
+        self.assertEqual(view.picker_mode, 'beasts')
+        self.assertEqual(await storage.get_player_beasts(42), before)
 
     async def test_roster_larger_than_discord_menu_is_fully_reachable_without_mutation(self):
         ids = [await self.beast('twine', starter=index == 0) for index in range(27)]
@@ -120,7 +156,7 @@ class RosterBrowser(DatabaseCase):
         view, message, command = await self.open_roster()
         first = command.followup.send.call_args.kwargs
         self.assertEqual(len(first['embed'].fields), 10)
-        seen = [int(option.value) for option in view.beast_select.options]
+        seen = [int(option.value) for option in view.beast_select.options if option.value.isdecimal()]
         for length in (10, 7):
             click = self.click(message)
             await view.next_page.callback(click)
@@ -129,7 +165,7 @@ class RosterBrowser(DatabaseCase):
             self.assertEqual(len(payload['embed'].fields), length)
             self.assertLess(len(payload['embed']), 6000)
             self.assertLessEqual(len(view.children), 25)
-            seen.extend(int(option.value) for option in view.beast_select.options)
+            seen.extend(int(option.value) for option in view.beast_select.options if option.value.isdecimal())
         self.assertEqual(seen, ids)
         self.assertTrue(view.next_page.disabled)
         await view.beast_select.callback(self.click(message, value=str(ids[-1])))
@@ -147,7 +183,7 @@ class RosterBrowser(DatabaseCase):
         view, message, _ = await self.open_roster()
         await view.show(self.click(message), query=species.replace('_', ' '), rarity='uncommon', sort='level')
         await view.next_page.callback(self.click(message))
-        self.assertEqual([int(option.value) for option in view.beast_select.options], [ids[1], ids[0]])
+        self.assertEqual([int(option.value) for option in view.beast_select.options if option.value.isdecimal()], [ids[1], ids[0]])
         await view.beast_select.callback(self.click(message, value=str(ids[1])))
         await view.next_btn.callback(self.click(message))
         self.assertEqual(view.selected_id, ids[0])
@@ -155,7 +191,7 @@ class RosterBrowser(DatabaseCase):
         await view.back_button.callback(self.click(message))
         self.assertEqual((view.picker.query, view.picker.rarity, view.picker.sort, view.picker.page),
                          (species.replace('_', ' '), 'uncommon', 'level', 1))
-        self.assertEqual([int(option.value) for option in view.beast_select.options], [ids[1], ids[0]])
+        self.assertEqual([int(option.value) for option in view.beast_select.options if option.value.isdecimal()], [ids[1], ids[0]])
 
     async def test_search_modal_finds_nickname_species_or_exact_number_and_clears(self):
         first = await self.beast('twine', starter=True)
@@ -169,15 +205,15 @@ class RosterBrowser(DatabaseCase):
         self.assertIsInstance(modal, SearchModal)
         modal.query._value = ' eMbEr '
         await modal.on_submit(self.click(message))
-        self.assertEqual([int(option.value) for option in view.beast_select.options], [second])
+        self.assertEqual([int(option.value) for option in view.beast_select.options if option.value.isdecimal()], [second])
         await view.show(self.click(message), query='Twine')
-        self.assertEqual([int(option.value) for option in view.beast_select.options], [first, second])
+        self.assertEqual([int(option.value) for option in view.beast_select.options if option.value.isdecimal()], [first, second])
         await view.show(self.click(message), query='#2')
-        self.assertEqual([int(option.value) for option in view.beast_select.options], [second])
+        self.assertEqual([int(option.value) for option in view.beast_select.options if option.value.isdecimal()], [second])
         await view.show(self.click(message), query='No such companion')
-        self.assertNotIn(view.beast_select, view.children)
+        self.assertEqual([option.value for option in view.beast_select.options], ['rarities'])
         await view.clear_button.callback(self.click(message))
-        self.assertEqual([int(option.value) for option in view.beast_select.options], [first, second])
+        self.assertEqual([int(option.value) for option in view.beast_select.options if option.value.isdecimal()], [first, second])
         self.assertEqual((view.picker.query, view.picker.page), ('', 0))
 
     async def test_number_resolution_rejects_numbered_internal_id_but_keeps_legacy(self):
@@ -217,7 +253,7 @@ class RosterBrowser(DatabaseCase):
         self.assertIn('No companions yet', command.followup.send.call_args.kwargs['embed'].description)
         row_id = await self.beast('twine', starter=True)
         await view.refresh_button.callback(self.click(message))
-        self.assertEqual([int(option.value) for option in view.beast_select.options], [row_id])
+        self.assertEqual([int(option.value) for option in view.beast_select.options if option.value.isdecimal()], [row_id])
 
     async def test_search_from_detail_opens_results_without_a_false_ownership_warning(self):
         lead = await self.beast('twine', starter=True)

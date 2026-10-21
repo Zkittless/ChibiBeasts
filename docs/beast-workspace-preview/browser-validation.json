@@ -73,6 +73,20 @@
       "art_loaded": true
     },
     {
+      "width": 1100,
+      "screen": "rarity_menu_common",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 1100,
+      "screen": "rarity_rare",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
       "width": 390,
       "screen": "beast",
       "one_message": true,
@@ -143,6 +157,20 @@
       "art_loaded": true
     },
     {
+      "width": 390,
+      "screen": "rarity_menu_common",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 390,
+      "screen": "rarity_rare",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
       "width": 320,
       "screen": "beast",
       "one_message": true,
@@ -208,9 +236,36 @@
     {
       "width": 320,
       "screen": "roster",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "rarity_menu_common",
+      "one_message": true,
+      "no_overflow": true,
+      "art_loaded": true
+    },
+    {
+      "width": 320,
+      "screen": "rarity_rare",
       "one_message": true,
       "no_overflow": true,
       "art_loaded": true
     }
+  ],
+  "integrated_rarity_navigation": true,
+  "rarity_routes": [
+    "common",
+    "uncommon",
+    "rare",
+    "epic",
+    "legendary",
+    "divine",
+    "altered_divine",
+    "corrupted",
+    "ancient",
+    "dev"
   ]
 }

@@ -14,7 +14,7 @@ from utils.progression import awakening_requirements, evolution_blockers
 from utils.theme import COLORS, RARITY_EMOJI, TYPE_EMOJI, exp_bar, fmt_stats
 
 PAGE_SIZE = 10
-DETAIL_PAGE_SIZE = 23  # Two of Discord's 25 select options are reserved for paging.
+DETAIL_PAGE_SIZE = 22  # Reserve options for changing rarity and Previous/Next pages.
 logger = logging.getLogger('chibibeasts.roster')
 
 
@@ -184,14 +184,13 @@ class OwnedRosterView(discord.ui.View):
         self.notice = ''
         self.expanded = False
         self.pinned_detail = False
+        self.picker_mode = 'beasts'
         self.workspace_route = 'beast'
         if navigator is None:
             from utils.beast_workspace import BeastWorkspace
             navigator = BeastWorkspace(self)
         self.navigator, self.lock = navigator, navigator.lock
 
-        self.rarity_select = discord.ui.Select(placeholder='Filter by rarity', row=0)
-        self.rarity_select.callback = self.choose_rarity
         self.sort_select = discord.ui.Select(placeholder='Sort companions', row=1)
         self.sort_select.callback = self.choose_sort
         self.beast_select = discord.ui.Select(placeholder='Open a companion’s details', row=2)
@@ -241,20 +240,24 @@ class OwnedRosterView(discord.ui.View):
             return await interaction.response.send_message('Open a current companion card before choosing care.', ephemeral=True)
         return await self.navigator.navigate(interaction, self, 'care', self.selected())
 
-    async def choose_rarity(self, interaction):
-        await self.show(interaction, rarity=interaction.data['values'][0],
-                        mode='detail' if self.detail_browsing else 'overview', first_match=self.detail_browsing)
-
     async def choose_sort(self, interaction):
         await self.show(interaction, sort=interaction.data['values'][0], mode='overview')
 
     async def choose_beast(self, interaction):
         try:
-            row_id = int(interaction.data['values'][0].removeprefix('page:'))
+            value = interaction.data['values'][0]
+            if not isinstance(value, str):
+                raise ValueError('Invalid beast choice')
+            row_id = None if value in {'rarities', 'beasts'} or value.startswith('rarity:') else int(value.removeprefix('page:'))
         except (KeyError, IndexError, ValueError, TypeError):
             if await self.permitted(interaction):
                 await interaction.response.send_message('Choose a companion from the current roster.', ephemeral=True)
             return
+        if value in {'rarities', 'beasts'}:
+            return await self.show(interaction, picker_mode=value)
+        if value.startswith('rarity:'):
+            return await self.show(interaction, rarity=value.removeprefix('rarity:'),
+                mode='detail' if self.detail_browsing else 'overview', first_match=self.detail_browsing)
         await self.show(interaction, target_id=row_id, mode='detail')
 
     def matches(self):
@@ -303,15 +306,9 @@ class OwnedRosterView(discord.ui.View):
         visible, pages = owned_roster.visible(self.rows, self.picker, page_size=PAGE_SIZE)
         matches = self.matches()
         self.clear_items()
-        rarity_values = owned_roster.RARITIES
-        self.rarity_select.options = [discord.SelectOption(
-            label=rarity.replace('_', ' ').title(),
-            value=rarity, default=rarity == self.picker.rarity,
-        ) for rarity in rarity_values]
         self.sort_select.options = [discord.SelectOption(label=label, value=value, default=value == self.picker.sort)
                                     for value, label in (('number', 'Collection number'), ('level', 'Highest level'), ('rarity', 'Highest rarity'))]
         row = self.selected() if self.mode == 'detail' else None
-        self.add_item(self.rarity_select)
         if not row:
             self.add_item(self.sort_select)
         self.beast_select.placeholder = 'Open a companion’s details'
@@ -330,8 +327,18 @@ class OwnedRosterView(discord.ui.View):
             if menu_page + 1 < menu_pages:
                 self.beast_select.options.append(discord.SelectOption(label='Next beasts ▶',
                     value=f"page:{matches[start + DETAIL_PAGE_SIZE]['id']}", description=f'Page {menu_page + 2}/{menu_pages}'))
-        if self.beast_select.options:
-            self.add_item(self.beast_select)
+        rarity_name = self.picker.rarity.replace('_', ' ').title()
+        if self.picker_mode == 'rarities':
+            self.beast_select.placeholder = f'Choose rarity · {rarity_name}'
+            self.beast_select.options = [discord.SelectOption(label=f'Back to {rarity_name} beasts', value='beasts')]
+            for rarity in owned_roster.RARITIES:
+                count = sum(item['rarity'] == rarity for item in self.rows)
+                self.beast_select.options.append(discord.SelectOption(label=rarity.replace('_', ' ').title(),
+                    value='rarity:' + rarity, emoji=RARITY_EMOJI.get(rarity), description=f'{count} owned'))
+        else:
+            self.beast_select.options.insert(0, discord.SelectOption(label='Change rarity…', value='rarities',
+                description=f'Currently browsing {rarity_name} beasts'))
+        self.add_item(self.beast_select)
 
         if row:
             index = next((index for index, item in enumerate(matches) if item['id'] == row['id']), None)
@@ -411,7 +418,8 @@ class OwnedRosterView(discord.ui.View):
 
     async def show(self, click, *, delta=0, target_number=None, target_id=None, mode=None,
                    query=None, rarity=None, sort=None, page_delta=0, reset=False, opening=False,
-                   expanded=None, already_deferred=False, _lock_held=False, restore_target=False, notice='', first_match=False):
+                   expanded=None, already_deferred=False, _lock_held=False, restore_target=False, notice='', first_match=False,
+                   picker_mode='beasts'):
         if not await self.permitted(click):
             return
         if not opening and not already_deferred:
@@ -419,6 +427,9 @@ class OwnedRosterView(discord.ui.View):
         async with (nullcontext() if _lock_held else self.lock):
             if self.is_finished():
                 return await click.followup.send('This roster has closed. Open /collection again.', ephemeral=True)
+            if picker_mode not in {'beasts', 'rarities'}:
+                return await click.followup.send('Choose an option from the beast menu.', ephemeral=True)
+            self.picker_mode = picker_mode
             self.notice = notice
             if restore_target:
                 self.pinned_detail = True
