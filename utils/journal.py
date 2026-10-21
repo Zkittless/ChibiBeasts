@@ -574,6 +574,10 @@ class JournalView(discord.ui.LayoutView):
         return await command.callback(interaction, **kwargs)
 
     async def handle(self, interaction, action):
+        if action.startswith('journey_details:'):
+            from utils import journal_adventure
+            _, trip_id, version = action.split(':')
+            return await journal_adventure.toggle_details(self, interaction, trip_id, int(version))
         if interaction.user.id != self.user_id:
             return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
         if self.closed or self.is_finished():
@@ -871,7 +875,7 @@ class JournalView(discord.ui.LayoutView):
                 if self.page == 'adventure' and self.trip and self.trip['payload'].get('adventure_version') == 3:
                     from utils import journal_adventure
                     animate = not self.notice and (action == 'journey_action' or action.startswith('journey_next:')
-                        or action == 'path' and self.trip['status'] == 'battle')
+                        or action in {'path', 'begin'} and self.trip['status'] == 'battle')
                     await journal_adventure.present(self, interaction, animate=animate)
                 else:
                     self.render()

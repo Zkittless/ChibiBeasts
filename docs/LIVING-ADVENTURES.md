@@ -1,9 +1,10 @@
 # Living adventures
 
 `/explore` opens destination selection in the existing Field Journal. Keep the
-saved exploration team and press **Start adventure**. The destination determines
-the people, places, wildlife and recommended companion levels; the next scene is
-an actual discovery, rather than the former four-option route menu.
+saved exploration team and press **Start adventure** to enter battle immediately.
+The first five biomes require two encounters; the upper five require three.
+A single short decision separates encounters. Full lore is available through
+**Read more** in the same journal, and collapses again on the next decision.
 
 The launch catalog contains **200 one-time discoveries**, including **30 connected
 three-scene locations**, and **60 explicitly repeatable wilderness encounters**:
@@ -19,20 +20,34 @@ or failed media upload does not erase the saved combat cursor.
 
 This is finite authored content. When one-time discoveries run out, the journal
 calls repeatable encounters **Familiar territory**. A run never repeats a root;
-the last three familiar roots are excluded on the next visit. If fewer eligible
-scenes remain, the journey ends sooner. It never restarts a completed story or
-pretends a changed name is new content. Every biome retains optional single wild
-encounters and packs in its repeatable pool, so clearing its stories never removes
-future capture opportunities.
+the last three familiar roots are excluded on the next visit. If no eligible scene
+remains, a short regrouping choice preserves the fixed combat route. The journal
+never restarts a completed story or pretends a changed name is new content.
+Required encounters stay available after all stories are complete, including the
+saved recruitable encounter.
 
 ## Combat and rewards
 
-Journeys have five to eight meaningful scene decisions depending on the biome.
-Exploring a building can use several of those steps, and continue on another
-visit. Every scene offers a safe choice; entering a fight is explicit. Packs have
-two or three sequential opponents using the existing entry, attack, swap, assist
-and knockout animations. Combat and authored scenes edit the same journal message.
-The full narrative and reward breakdown remain in **Battle log**.
+A full journey follows battle, short discovery/preparation, then battle, with a
+second interlude and third encounter in the upper five biomes. Its fixed route
+has three or five completed beats. Story choices cannot skip the required fights,
+and running out of eligible discoveries offers a short regrouping choice without
+shrinking the reward denominator. Retreat remains available and banks earned
+partial progress; it is not a full clear.
+
+Each interlude advances one authored scene. Connected locations resume at their
+next unresolved scene in a later interlude or visit, so several story pages never
+block the next required fight. The default body shows one or two short sentences
+(up to 200 characters); full details and the last outcome are available on demand.
+Packs have two or three sequential opponents using the existing entry, attack,
+swap, assist and knockout animations. All combat and discoveries edit the same
+journal message. The complete narrative remains in **Battle log**.
+
+Encounter strength is fixed to the departure team size. Solo enemies use 50%
+of the full-team HP profile and 60% of its attack; pairs use 75% HP and 85% attack.
+Three-member teams retain the existing profile. Losing a teammate never lowers
+later enemy stats. The measured samples are in
+[combat-adventure-balance.json](combat-adventure-balance.json).
 
 The saved team keeps HP, mana, conditions, entry passives and assist charge across
 fights. Overworld costs cannot knock a companion out, and recovery never revives.
@@ -47,13 +62,17 @@ fight count. Base gold is 6–10 times the destination's existing gold reward le
 the trainer XP effort is 0.8 of a normal encounter. Team activity XP uses effort
 0.85 after a won fight, or 0.2 for a peaceful trip, with the existing bounded lead
 and reserve split and overlevel scaling. Returning early earns the completed
-fraction. A journey with no completed scene pays nothing. Battle-win progression
+fraction. A journey with no completed route beat pays nothing. Battle-win progression
 counts at most once per journey. No individual pack member pays extra rewards.
 
-One existing habitat-weighted capture ticket is rolled at the first fight, with
-the existing perks, consumables and chapter-six Loom guarantee. Winning that
-encounter permits one companion to join on return. Later fights cannot reroll
-that ticket. Peaceful legendary sightings do not promise capture eligibility.
+The route saves one designated recruitable encounter. Only that encounter rolls
+the existing habitat-weighted capture ticket, perks, capture consumables and
+chapter-six Loom guarantee. Its first opponent is explicitly marked as able to
+join after victory. Hostile encounters, optional story fights and other pack
+members cannot be recruited. Winning the designated encounter permits one
+companion to join on return; other fights cannot reroll that ticket. Capture
+consumables remain unused if the trainer retreats before that encounter. Peaceful
+legendary sightings do not promise capture eligibility.
 There is at most one material bundle, or one saved abandoned-nest egg replacing
 it, using the prior level gates, discovery odds and value budget. Charges and
 regeneration rates are unchanged. Gathering discoveries offer a saved choice among
@@ -64,7 +83,10 @@ bundle bonus. Neither path adds an extra item or journey step.
 ## Maintenance and verification
 
 Existing saved version-one and version-two expeditions retain their original
-router and settlement. Newly launched journal adventures use version three.
+router and settlement. Newly launched journal adventures use version three with combat pacing enabled.
+Unfinished story-only version-three saves upgrade on resume without spending a
+charge or rerolling rewards. Existing combat cursors and their capture ticket stay
+intact, and already earned supplies and reward fractions remain bankable.
 Migration adds trainer-scoped progress, resolved-node, flag and recent-history
 tables without rewriting existing companions or inventory. Saved version-three
 battles resume exactly on startup; persistent team locks are restored.
@@ -77,11 +99,13 @@ under `data/adventures/`, keep names and materials within existing canon, and ru
 python -m unittest tests.test_adventure_content tests.test_journeys tests.test_journey_combat tests.test_journey_service tests.test_living_catalog
 python scripts/audit_living_adventures.py --output docs/living-adventure-balance.json
 python scripts/audit_adventure_memory.py
-python scripts/preview_living_adventures.py
+python scripts/audit_combat_adventures.py
+python scripts/preview_combat_adventures.py
 ```
 
 The combat audit replays production rules with stated synthetic team builds;
-its measured clear rates do not predict every player's performance. The preview
+its measured clear rates do not predict every player's performance. The
+[combat preview](combat-adventure-preview/index.html)
 serializes production Discord components and uses real battle artwork; it does
 not claim a live Discord deployment test. Full project CI remains required before
 merging.

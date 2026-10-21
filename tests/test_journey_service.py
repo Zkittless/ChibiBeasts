@@ -42,7 +42,8 @@ class JourneyService(DatabaseCase):
 
     async def begin(self):
         with patch('utils.adventure_content.load', return_value=deepcopy(self.definition)):
-            return await expeditions.begin(42, 'woods', rng=random.Random(9), adventure_version=3)
+            return await expeditions.begin(42, 'woods', rng=random.Random(9), adventure_version=3,
+                                           combat_route=False)
 
     async def pick(self, trip, index=0):
         choice = expeditions.options(trip)[index]
@@ -168,16 +169,25 @@ class JourneyService(DatabaseCase):
         from utils.journal import JournalView
         from utils import journal_state
         view = JournalView(42, await journal_state.snapshot(42), page='adventure')
+        self.addCleanup(view.stop)
         click = interaction()
-        with patch('utils.adventure_content.load', return_value=self.definition), patch.object(view, 'publish', new=AsyncMock()):
+        with patch('utils.adventure_content.load', return_value=self.definition), \
+                patch.object(view, 'publish', new=AsyncMock()), \
+                patch('utils.journal_adventure.present', new=AsyncMock()) as present, \
+                patch('utils.expeditions.run_battle', new=AsyncMock()) as old:
             await view.handle(click, 'begin')
             self.assertEqual(view.trip['payload']['adventure_version'], 3)
-            with patch('utils.journal_adventure.present', new=AsyncMock()) as present, patch('utils.expeditions.run_battle', new=AsyncMock()) as old:
-                click.data = {'values': [f"{view.trip['id']}:{view.trip['version']}:{expeditions.options(view.trip)[1]}"]}
-                await view.handle(click, 'path')
-                self.assertEqual(view.trip['status'], 'battle')
-                present.assert_awaited_once()
-                old.assert_not_awaited()
+            self.assertEqual(view.trip['status'], 'battle', 'Start adventure must open combat immediately.')
+            self.assertEqual(view.trip['payload']['battle_target'], 2)
+            present.assert_awaited_once()
+            before = view.trip['version']
+            actions = trial_combat.legal_actions(view.trip['payload']['combat'])
+            index = next(i for i, action in enumerate(actions) if action['enabled'] and action['kind'] == 'move')
+            click.data = {'values': [f"{view.trip['id']}:{before}:{index}"]}
+            await view.handle(click, 'journey_action')
+            self.assertGreater(view.trip['version'], before)
+            self.assertEqual(present.await_count, 2)
+            old.assert_not_awaited()
 
     async def material_ready(self, *, rolled='pixie_silk', battle=False):
         await self.ready(battle=battle)

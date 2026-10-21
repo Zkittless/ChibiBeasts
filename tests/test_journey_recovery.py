@@ -36,7 +36,8 @@ class JourneyRecovery(DatabaseCase):
 
     async def begin(self):
         with patch('utils.adventure_content.load', return_value=deepcopy(self.definition)):
-            return await expeditions.begin(42, 'woods', rng=random.Random(9), adventure_version=3)
+            return await expeditions.begin(42, 'woods', rng=random.Random(9), adventure_version=3,
+                                           combat_route=False)
 
     async def pick(self, trip, index=0):
         return await expeditions.choose(42, trip['id'], trip['version'], expeditions.options(trip)[index])

@@ -9,7 +9,7 @@ from uuid import uuid4
 import aiosqlite
 
 from utils import adventure_party, combat, db as storage, expeditions, journey_combat, trial_locks
-from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key, material_pool
+from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key, material_pool, encounter_level
 from utils.progression import encounter_beast_xp, encounter_trainer_xp
 
 
@@ -49,7 +49,7 @@ def _material_effect(payload, effect):
         root_id=None, node_id=None, kind='material', repeatable=False)
 
 
-async def begin(user_id, realm, *, now=None, rng=random, guild_id=0):
+async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_route=True):
     from utils import journeys, expedition_events
     from utils.duels import prepare_state, reserve_fighters
     from utils.trials import _snapshot, assert_available
@@ -108,15 +108,81 @@ async def begin(user_id, realm, *, now=None, rng=random, guild_id=0):
                 for member in rows:
                     data = storage.get_beast_data(member['beast_id'])
                     member.update(name=data['name'], type=data['type'])
-                journeys.initialize(payload, realm, seed, rows, world)
+                journeys.initialize(payload, realm, seed, rows, world, combat_route=combat_route)
                 await journeys.persist(db, user_id, payload)
                 expedition_events.prepare_nest(payload, biome_key(realm))
                 trip_id = uuid4().hex
-                await db.execute("INSERT INTO expeditions(id,user_id,realm,status,companion_id,payload,created_at,updated_at) VALUES(?,?,?,'active',?,?,?,?)",
-                                 (trip_id, user_id, realm, lead['id'], _dump(payload), now, now))
+                trip = dict(id=trip_id, user_id=user_id, realm=realm, status='active', companion_id=lead['id'], payload=payload)
+                if combat_route:
+                    effects = await journeys.resolve(db, trip, payload['page']['choices'][0]['value'])
+                    await _start_battle(db, trip, effects['battle_kind'])
+                await db.execute("INSERT INTO expeditions(id,user_id,realm,status,companion_id,payload,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)",
+                                 (trip_id, user_id, realm, trip['status'], lead['id'], _dump(payload), now, now))
                 await db.commit()
-                trial_locks.lock(user_id)
-    return await expeditions.read(user_id, trip_id)
+                if trip['status'] != 'complete':
+                    trial_locks.lock(user_id)
+    result = await expeditions.read(user_id, trip_id)
+    if result['status'] == 'complete':
+        await expeditions.report_safely(result)
+    return result
+
+
+async def ensure_paced(trip):
+    """Upgrade deployed story-only v3 saves without replaying a combat cursor."""
+    if (not trip or trip['status'] == 'complete' or trip['payload'].get('adventure_version') != 3
+            or 'pacing_version' in trip['payload']):
+        return trip
+    from utils import journeys
+    from utils.duels import reserve_fighters
+    uid = trip['user_id']
+    async with combat.lock_states([uid]):
+        with reserve_fighters([uid], allow_trial=True):
+            async with storage.connect() as db:
+                db.row_factory = aiosqlite.Row
+                await db.execute('BEGIN IMMEDIATE')
+                async with db.execute('SELECT * FROM expeditions WHERE id=? AND user_id=?', (trip['id'], uid)) as cursor:
+                    current = expeditions.decode(await cursor.fetchone())
+                if current['status'] != 'complete' and 'pacing_version' not in current['payload']:
+                    p = current['payload']
+                    material_page = deepcopy(p['page']) if p.get('material_next_page') else None
+                    journeys.configure_combat_route(p, current['realm'], preserve=True)
+                    if p.get('encounter'):
+                        p['recruitable_beat'] = -1  # The existing ticket remains the only ticket.
+                    if current['status'] != 'battle':
+                        journeys._advance(p)
+                        if material_page:
+                            p['material_next_page'] = deepcopy(p['page'])
+                            p['material_next_status'] = p['journey_status']
+                            p['page'], p['journey_status'] = material_page, 'material'
+                    await journeys.persist(db, uid, p)
+                    current['updated_at'] = time.time()
+                    await db.execute('UPDATE expeditions SET payload=?,version=version+1,updated_at=? WHERE id=?', (_dump(p), current['updated_at'], current['id']))
+                    current['version'] += 1
+                await db.commit()
+                if current['status'] != 'complete':
+                    trial_locks.lock(uid)
+    return current
+
+
+async def _start_battle(db, trip, kind):
+    p, uid = trip['payload'], trip['user_id']
+    pending = p.get('pending_battle') or {}
+    paced = p.get('pacing_version') == 1
+    recruitable = (pending.get('route_battle') and p['battles_completed'] == p['recruitable_beat'] and not p.get('encounter')) if paced else not p.get('encounter')
+    if recruitable:
+        await expeditions._encounter(db, uid, trip['realm'], p, random.Random(f"{p['seed']}:capture"))
+    if not p.get('preparations_spent'):
+        await db.execute('UPDATE players SET next_defense_boost=0,next_speed_boost=0,status_ward_charges=MAX(0,status_ward_charges-1) WHERE user_id=?', (uid,))
+        p['preparations_spent'] = True
+    p['capture_fight'] = bool(recruitable)
+    seed = f"{p['seed']}:{p.get('fights_started', 0)}"
+    level = p['encounter_level'] if recruitable else encounter_level(trip['realm'], p['prepared_party'][0]['level'], random.Random(seed + ':level'))
+    p['current_enemy_level'] = level
+    lineup = journey_combat.plan(trip['realm'], seed, kind, level, ticket=p['encounter'] if recruitable else None,
+                                 party_size=len(p['party_ids']) if paced else 3)
+    journey_combat.start(p, lineup)
+    trip['status'] = 'battle'
+    await _battle_end(db, trip)
 
 
 async def _settle(db, trip, now):
@@ -124,21 +190,24 @@ async def _settle(db, trip, now):
     from utils import trials
     from utils.gameplay import add_stack
     p, uid = trip['payload'], trip['user_id']
-    fraction = min(1., p['completed'] / max(1, p['total']))
+    earned = bool(p['completed'] or p.get('inherited_completed', 0))
+    fraction = min(1., max(p.get('inherited_fraction', 0), p['completed'] / max(1, p['total'])))
+    if p.get('pacing_version') == 1:
+        p['outcome'] = p.get('outcome', 'cleared' if p['battles_completed'] >= p['battle_target'] and p['completed'] >= p['total'] else 'retreated')
     multiplier = 1 + min(25, p.get('bonus', 0)) / 100
     p['gold'] = int(p['base_gold'] * fraction * multiplier)
     p['exp'] = int(p['base_exp'] * fraction * multiplier)
     p['restore'] = 0
-    p['material_granted'] = bool(p['completed']) and not p.get('egg_reward')
+    p['material_granted'] = earned and not p.get('egg_reward')
     if p['material_granted']:
         await add_stack(db, 'player_materials', uid, p['material'])
-    p['egg_granted'] = bool(p['completed'] and p.get('egg_reward') and p.get('egg_offer')
+    p['egg_granted'] = bool(earned and p.get('egg_reward') and p.get('egg_offer')
                             and p['egg_reward'] == p['egg_offer']['id'])
     if p['egg_granted']:
         await add_stack(db, 'player_inventory', uid, p['egg_reward'])
     # Resource persistence is the same proportion-preserving path as Trials.
     await trials._resources(db, dict(user_id=uid, payload={'party': journey_combat.party(p), 'lead_id': trip['companion_id']}), now)
-    if p['completed']:
+    if earned:
         high = BIOMES[trip['realm']]['level_range'][1]
         lead = p['prepared_party'][0]
         effort = .85 if p.get('fights_won') else .2
@@ -147,7 +216,7 @@ async def _settle(db, trip, now):
         p['party_xp'] = await adventure_party.award_xp_in_transaction(db, uid, p['party_ids'], trip['companion_id'],
             base, p.get('encounter_level', high), participated=p.get('combat', {}).get('participated', ()))
     await _settlement_tail(db, trip)
-    if p['completed']:
+    if earned:
         key = 'expedition:' + trip['id']
         # Core activity and story receipts belong to the payout transaction.
         # The old generic event helper claims before its auxiliary callbacks,
@@ -222,6 +291,8 @@ async def choose(uid, trip_id, version, choice):
         if choice not in expeditions.options(trip):
             raise ValueError('Choose an option on the current adventure page.')
         if choice in ('return', 'return_early', 'return_egg'):
+            if choice != 'return_early' and p.get('pacing_version') == 1 and p['battles_completed'] < p['battle_target']:
+                raise ValueError('Finish the required battles, or use Retreat and return to bank partial progress.')
             if choice == 'return_egg':
                 if not p.get('egg_offer') or not p['completed']:
                     raise ValueError('No abandoned egg was found on this adventure.')
@@ -249,18 +320,7 @@ async def choose(uid, trip_id, version, choice):
         _material_effect(p, effect)
         kind = effect.get('battle_kind') or effect.get('battle')
         if kind:
-            first = not p.get('encounter')
-            if first:
-                await expeditions._encounter(db, uid, trip['realm'], p, random.Random(f"{p['seed']}:capture"))
-            if not p.get('preparations_spent'):
-                await db.execute('UPDATE players SET next_defense_boost=0,next_speed_boost=0,status_ward_charges=MAX(0,status_ward_charges-1) WHERE user_id=?', (uid,))
-                p['preparations_spent'] = True
-            p['capture_fight'] = first
-            lineup = journey_combat.plan(trip['realm'], f"{p['seed']}:{p.get('fights_started', 0)}", kind,
-                p.get('encounter_level', BIOMES[trip['realm']]['level_range'][0]), ticket=p['encounter'] if first else None)
-            journey_combat.start(p, lineup)
-            trip['status'] = 'battle'
-            await _battle_end(db, trip)
+            await _start_battle(db, trip, kind)
     return await _mutate(uid, trip_id, version, operation)
 
 
@@ -281,6 +341,8 @@ async def _battle_end(db, trip):
         _material_effect(p, effects)
     trip['status'] = 'active'
     if not won:
+        if p.get('pacing_version') == 1:
+            p['outcome'] = 'knocked_out'
         await _settle(db, trip, time.time())
 
 

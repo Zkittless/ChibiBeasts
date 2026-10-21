@@ -80,7 +80,7 @@ async def persist(db, user_id, payload):
     payload['world_dirty'] = dict(progress={}, nodes={}, set_flags=[], clear_flags=[], recent=[])
 
 
-def initialize(payload, biome, seed, party, saved_world=None, *, content=None):
+def initialize(payload, biome, seed, party, saved_world=None, *, content=None, combat_route=False):
     """Choose the first actual scene, freezing all prose and future root graphs."""
     if biome not in BIOMES:
         raise ValueError('Choose a known exploration destination.')
@@ -105,11 +105,57 @@ def initialize(payload, biome, seed, party, saved_world=None, *, content=None):
                    world_progress=saved_world['progress'], world_flags=saved_world['flags'],
                    world_nodes=saved_world.get('nodes', {}), world_recent=saved_world['recent'],
                    recent_exclusions=list(saved_world['recent']), visited_roots=[], visited_nodes=[],
-                   journey_status='active', pending_battle=None, current_root=None,
+                   journey_status='active', pacing_version=0, pending_battle=None, current_root=None,
                    current_node=None, exhausted=False, familiar=False,
                    world_dirty=dict(progress={}, nodes={}, set_flags=[], clear_flags=[], recent=[]))
     _dirty(payload)
+    if combat_route:
+        configure_combat_route(payload, biome)
     _advance(payload)
+
+
+def configure_combat_route(payload, biome, *, preserve=False):
+    """Freeze mandatory combat beats separately from finite story discoveries."""
+    target = 2 if list(BIOMES).index(biome) < 5 else 3
+    seed = payload['seed']
+    digest = hashlib.sha256(f'{seed}:combat-route-v1'.encode()).digest()
+    schedule = ['single', 'pack2'] if target == 2 else ['single', 'pack2' if digest[0] % 2 else 'pack3', 'single']
+    won = min(target, payload.get('fights_won', 0)) if preserve else 0
+    if preserve:
+        payload['inherited_completed'] = payload['completed']
+        payload['inherited_fraction'] = min(1., payload['completed'] / max(1, payload['total']))
+        if not payload.get('pending_battle') and payload.get('current_root') and payload.get('current_node'):
+            payload['route_continuation'] = [payload['current_root'], payload['current_node']]
+        if payload.get('pending_battle'):
+            payload['pending_battle']['counts_for_route'] = True
+    payload.update(pacing_version=1, battle_target=target, battles_completed=won,
+                   battle_schedule=schedule, recruitable_beat=digest[1] % target,
+                   completed=min(target * 2 - 1, won * 2), total=target * 2 - 1,
+                   target_stops=target * 2 - 1, exhausted=False)
+    payload['stage'] = payload['completed']
+
+
+def _route_battle(payload):
+    index = min(payload['battles_completed'], payload['battle_target'] - 1)
+    kind = payload['battle_schedule'][index]
+    pack = kind.startswith('pack')
+    payload.update(journey_status='active', current_root=None, current_node=None)
+    payload['page'] = dict(title='A wild pack approaches' if pack else 'A wild challenger appears',
+        body='Your team spots movement ahead. Prepare to face the pack.' if pack else 'A wild beast steps onto the trail. Your team moves into position.',
+        kind='battle', root_id=None, node_id=None, repeatable=True,
+        choices=[dict(value=f'fight:{index}', id=f'fight_{index}', label='Face the pack' if pack else 'Enter battle',
+                      description='Fight with your current team resources. Retreat remains available.',
+                      outcome='The encounter is won.', effects={'battle': kind})])
+
+
+def _route_camp(payload):
+    payload.update(journey_status='active', current_root=None, current_node=None)
+    payload['page'] = dict(title='A moment to regroup', body='The trail is quiet for a moment. Prepare your team for the next encounter.',
+        kind='route_camp', root_id=None, node_id=None, repeatable=True,
+        choices=[dict(value='breather:heal', id='heal', label='Catch your breath', description='Recover up to 5% team HP within the journey recovery limit.',
+                      outcome='The surviving team catches its breath.', effects={'heal': 5}),
+                 dict(value='breather:brace', id='brace', label='Prepare a defence', description='+5% team defence until return, within the 20% cap.',
+                      outcome='Your team braces for the next encounter.', effects={'defense_boon': 5})])
 
 
 async def begin(db, user_id, payload, biome, seed, party, *, content=None):
@@ -142,6 +188,9 @@ def _eligible(payload):
 
 
 def _home(payload, *, exhausted=False):
+    if payload.get('pacing_version') == 1 and payload['battles_completed'] < payload['battle_target']:
+        _route_battle(payload)
+        return
     if exhausted:
         payload['total'] = payload['target_stops'] = payload['completed']
         payload['exhausted'] = True
@@ -156,16 +205,27 @@ def _home(payload, *, exhausted=False):
 
 
 def _advance(payload, continuation=None):
+    paced = payload.get('pacing_version') == 1
+    if paced and continuation:
+        payload['route_continuation'] = list(continuation)
     if payload['completed'] >= payload['total']:
         _home(payload)
         return
+    if paced:
+        if payload['completed'] % 2 == 0:
+            _route_battle(payload)
+            return
+        continuation = payload.pop('route_continuation', None)
     if continuation is not None:
         _show(payload, *continuation)
         return
     groups = _eligible(payload)
     selected = next((group[0] for group in groups if group), None)
     if selected is None:
-        _home(payload, exhausted=True)
+        if paced:
+            _route_camp(payload)
+        else:
+            _home(payload, exhausted=True)
         return
     root_id, node_id = selected
     payload['generator_cursor'] += 1
@@ -253,7 +313,7 @@ def presentation(trip):
     page['choices'] = [dict(value=choice['value'], label=choice['label'], description=choice['description'])
                        for choice in page['choices']] if trip['status'] == 'active' else []
     if trip['status'] == 'active' and not any(choice['value'] == 'return' for choice in page['choices']):
-        page['choices'].append(dict(value='return_early', label='Head home now',
+        page['choices'].append(dict(value='return_early', label='Retreat and return' if p.get('pacing_version') == 1 else 'Head home now',
                                     description='Bank the earned fraction; this location resumes at its next unresolved scene.'))
     elif trip['status'] == 'active' and 'return_egg' in options(trip):
         page['choices'].append(dict(value='return_egg', label='Shelter the ' + p['egg_offer']['name'],
@@ -315,13 +375,20 @@ async def resolve(db, trip, choice):
         p['pending_battle'] = dict(root_id=root_id, node_id=node_id, choice=frozen['id'],
                                    next=frozen.get('next'), outcome=frozen['outcome'],
                                    effects={key: deepcopy(value) for key, value in frozen['effects'].items() if key != 'battle'})
+        if p['page']['kind'] == 'battle' and p.get('pacing_version') == 1:
+            p['pending_battle']['route_battle'] = True
         p['journey_status'] = 'battle'
         await persist(db, uid, p)
         return dict(battle=True, battle_kind=frozen['effects']['battle'], status='battle')
     effects = _apply(p, frozen['effects'])
     p['history'].append(dict(root_id=root_id, node_id=node_id, choice=frozen['id'], outcome=frozen['outcome']))
     p['notes'].append(frozen['outcome'])
-    _finish_node(p, root_id, node_id, frozen.get('next'))
+    if p['page']['kind'] == 'route_camp':
+        p['completed'] += 1
+        p['stage'] = p['completed']
+        _advance(p)
+    else:
+        _finish_node(p, root_id, node_id, frozen.get('next'))
     await persist(db, uid, p)
     return dict(effects, status='active')
 
@@ -338,7 +405,15 @@ async def finish_battle(db, trip, won, interrupted=False):
         p['notes'].append(pending['outcome'])
         p['history'].append(dict(root_id=pending['root_id'], node_id=pending['node_id'],
                                  choice=pending['choice'], outcome=pending['outcome'], result='won'))
-        _finish_node(p, pending['root_id'], pending['node_id'], pending['next'])
+        if pending.get('route_battle'):
+            p['battles_completed'] += 1
+            p['completed'] += 1
+            p['stage'] = p['completed']
+            _advance(p)
+        else:
+            if pending.get('counts_for_route'):
+                p['battles_completed'] += 1
+            _finish_node(p, pending['root_id'], pending['node_id'], pending['next'])
     else:
         p['journey_status'] = 'active'
         outcome = ('The encounter paused; this unresolved scene remains saved.' if interrupted else

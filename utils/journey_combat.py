@@ -5,11 +5,16 @@ import random
 from utils import db as storage, trial_combat
 from utils.habitats import BIOMES, encounter_pool
 
+PARTY_PROFILES = {1: (.5, .6), 2: (.75, .85), 3: (1., 1.)}
 
-def plan(realm, seed, kind, level, *, ticket=None):
+
+def plan(realm, seed, kind, level, *, ticket=None, party_size=3):
     """A pack divides one encounter's health budget; it is not three rewards."""
     from cogs.battle import build_pve_beast_state
     rng = random.Random(f'{seed}:adventure-fight')
+    if party_size not in PARTY_PROFILES:
+        raise ValueError('An adventure party must have one to three companions.')
+    hp_scale, attack_scale = PARTY_PROFILES[party_size]
     count = {'single': 1, 'pack2': 2, 'pack3': 3, 'rare': 1}[kind]
     low, high = BIOMES[realm]['level_range']
     level = max(low, min(high, level))
@@ -25,13 +30,13 @@ def plan(realm, seed, kind, level, *, ticket=None):
         state = build_pve_beast_state(species, level)
         health = .8 if count == 1 else .48 if count == 2 else .34
         attack = .8 if count == 1 else .6
-        state['hp'] = state['max_hp'] = max(1, round(state['max_hp'] * health))
+        state['hp'] = state['max_hp'] = max(1, round(state['max_hp'] * health * hp_scale))
         for key in ('attack', 'base_attack'):
             if key in state:
-                state[key] = max(1, round(state[key] * attack))
+                state[key] = max(1, round(state[key] * attack * attack_scale))
         waves.append(dict(index=index + 1, kind='normal', species=species['id'], level=level,
                           enemy_template=trial_combat._json(state), round_limit=16,
-                          profile={}, name=species['name']))
+                          profile={}, name=species['name'], departure_party_size=party_size))
     return dict(seed=seed, waves=waves, total=count)
 
 

@@ -1,17 +1,65 @@
 """Authored scenes and animated combat inside the existing journal message."""
 import hashlib
+import re
 from types import SimpleNamespace
 
 import discord
 
 from utils import battle_art, expeditions, trial_combat
 
+LEAD_LIMIT = 200
+
+
+def scene_lead(body):
+    """One or two short sentences; long opening sentences stop at a word."""
+    body = ' '.join(str(body or '').split())
+    sentences = re.split(r'(?<=[.!?])\s+', body)
+    chosen = []
+    for sentence in sentences[:2]:
+        candidate = ' '.join(chosen + [sentence])
+        if len(candidate) > LEAD_LIMIT:
+            break
+        chosen.append(sentence)
+    if chosen:
+        return ' '.join(chosen)
+    if len(body) <= LEAD_LIMIT:
+        return body
+    clipped = body[:LEAD_LIMIT - 1]
+    if ' ' in clipped:
+        clipped = clipped.rsplit(' ', 1)[0]
+    return clipped.rstrip(' ,;:-') + '…'
+
+
+def details_key(trip):
+    return trip['id'], trip['version']
+
+
+async def toggle_details(view, interaction, trip_id, version):
+    """Read-only disclosure edits the current panel without advancing a scene."""
+    if interaction.user.id != view.user_id:
+        return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
+    if view.closed or view.is_finished() or view.message_repurposed:
+        return await interaction.response.send_message('This journal has closed. Open /journal to continue.', ephemeral=True)
+    await interaction.response.defer()
+    async with view.lock:
+        trip = view.trip
+        if (not trip or details_key(trip) != (trip_id, version) or trip['status'] != 'active'
+                or view.journey_playing or not await fresh(view, trip)):
+            return await interaction.followup.send('Use the current adventure page for these details.', ephemeral=True)
+        key = details_key(trip)
+        view.journey_details = None if getattr(view, 'journey_details', None) == key else key
+        view.render()
+        if await fresh(view, trip):
+            await view.publish(interaction)
+
 
 def render(view, trip):
     p = trip['payload']
     scene = expeditions.presentation(trip)
-    view.text(f"### {battle_art.REALMS[trip['realm']]}\n"
-              f"{p['completed']}/{p['total']} stops · Progress saved")
+    target = p.get('battle_target')
+    finished = p.get('battles_completed', p.get('fights_won', 0))
+    progress = f"Battles won {finished}/{target}" if target else f"{p['completed']}/{p['total']} stops"
+    view.text(f"### {battle_art.REALMS[trip['realm']]}\n{progress} · Progress saved")
     if view.journey_media and view.art_enabled:
         view.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(
             'attachment://' + view.journey_media.name, description='Adventure encounter')))
@@ -20,7 +68,11 @@ def render(view, trip):
     if fighting and state:
         enemy = state.get('enemy') or {}
         count = state['plan']['total']
+        recruitable = p.get('capture_fight', False) and state.get('wave_index', 0) == 0
+        recruitment = ('Wild encounter · Can join your team after victory' if recruitable else
+                       'Hostile encounter · Cannot be recruited')
         view.text(f"**{enemy.get('name', 'Wild encounter')}** · HP {max(0, enemy.get('hp', 0))}/{enemy.get('max_hp', 1)}\n"
+                  + recruitment + '\n'
                   + (f"Pack {min(state['cleared'] + 1, count)}/{count} · " if count > 1 else '') + f"Assist {state['meter']}/3")
         view.text('\n'.join(f"**{member['name']}** · HP {max(0, member['hp'])}/{member['max_hp']} · MP {max(0, member['mana'])}/{member['max_mana']}"
                              for member in state['party']))
@@ -41,16 +93,24 @@ def render(view, trip):
         view.row(view.button('Retreat & return', f"journey_return:{trip['id']}:{trip['version']}"))
         return
     view.render_compact_team(trip)
-    if p.get('history'):
-        view.text(p['history'][-1]['outcome'][:450])
     boons = p.get('boons', {})
     if any(boons.values()):
         view.text('**Until return** · ' + ' · '.join(f"+{value}% {stat}" for stat, value in boons.items() if value))
-    view.text('**' + scene['title'] + '**\n' + scene['body'])
+    body = scene['body']
+    lead = scene_lead(scene.get('lead') or body)
+    expanded = getattr(view, 'journey_details', None) == details_key(trip)
+    view.text('**' + scene['title'] + '**\n' + (body if expanded else lead))
+    outcome = p['history'][-1]['outcome'] if p.get('history') else ''
+    if expanded and outcome:
+        view.text('**Last choice**\n' + outcome)
     view.path_select.options = [discord.SelectOption(label=choice['label'][:100], description=choice['description'][:100],
         value=f"{trip['id']}:{trip['version']}:{choice['value']}") for choice in scene['choices']]
     if view.path_select.options:
         view.row(view.path_select)
+    if body.strip() != lead or outcome:
+        control = view.button('Hide details' if expanded else 'Read more',
+                              f"journey_details:{trip['id']}:{trip['version']}")
+        view.row(control)
 
 
 def artifact(art):

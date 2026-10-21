@@ -1,0 +1,262 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "missing_assets": [],
+  "checks": [
+    {
+      "width": 1100,
+      "stage": "selector",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "battle",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "swap",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "assist",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "knockout",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "interlude",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "details",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "pack_recruitable",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "pack_entry",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "pack_hostile",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "homeward",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "returned",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "selector",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "battle",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "swap",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "assist",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "knockout",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "interlude",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "details",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "pack_recruitable",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "pack_entry",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "pack_hostile",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "homeward",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "returned",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "selector",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "battle",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "swap",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "assist",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "knockout",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "interlude",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "details",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "pack_recruitable",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "pack_entry",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "pack_hostile",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "homeward",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "returned",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    }
+  ],
+  "read_more_same_panel": true,
+  "hide_details_same_panel": true,
+  "choice_description_interaction": true
+}

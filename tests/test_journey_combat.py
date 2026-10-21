@@ -10,6 +10,19 @@ from utils import db as storage
 
 
 class JourneyCombat(unittest.TestCase):
+    def test_departure_party_size_scales_encounters_without_reward_or_ko_rescaling(self):
+        baseline=journey.plan('woods',4,'pack2',2)
+        for size in (1,2,3):
+            current=journey.plan('woods',4,'pack2',2,party_size=size)
+            self.assertEqual([w['species'] for w in current['waves']],[w['species'] for w in baseline['waves']])
+            for before,after in zip(baseline['waves'],current['waves']):
+                self.assertEqual(after['departure_party_size'],size)
+                self.assertLessEqual(after['enemy_template']['max_hp'],before['enemy_template']['max_hp'])
+                self.assertLessEqual(after['enemy_template']['attack'],before['enemy_template']['attack'])
+                self.assertNotIn('reward',after)
+        with self.assertRaises(ValueError):
+            journey.plan('woods',4,'single',2,party_size=0)
+
     def test_plans_are_saved_legal_deterministic_and_have_no_reward_fields(self):
         for realm, biome in BIOMES.items():
             for mode, count in [('single',1),('pack2',2),('pack3',3),('rare',1)]:
