@@ -301,9 +301,9 @@ class BattleTiming(DatabaseCase):
         from cogs.battle import Battle
         from utils.duels import reserve_fighters
         with reserve_fighters([42]):
-            with self.assertRaises(ValueError):
-                await Battle.challenge.callback(Battle(None), interaction(), 'woods')
+            await Battle.challenge.callback(Battle(None), interaction(), 'woods')
         self.assertEqual((await storage.get_player(42))['challenge_last_at'], 0)
+        self.assertEqual(await self.rows('SELECT * FROM trial_runs'), [])
 
     async def test_preparation_refreshes_stats_and_rejects_moved_companions(self):
         from utils.duels import prepare_state

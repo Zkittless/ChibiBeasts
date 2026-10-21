@@ -241,6 +241,12 @@ class HatchView(discord.ui.View):
             return await interaction.response.send_message("This isn't your hatch!", ephemeral=True)
         import aiosqlite
         async with storage.connect() as db:
+            await db.execute('BEGIN IMMEDIATE')
+            from utils.trials import assert_available
+            try:
+                await assert_available(db, self.player_id)
+            except ValueError as error:
+                return await interaction.response.send_message(str(error), ephemeral=True)
             await db.execute("UPDATE player_beasts SET is_active = 0 WHERE user_id = ?", (self.player_id,))
             await db.execute(
                 "UPDATE player_beasts SET is_active = 1 WHERE id = (SELECT id FROM player_beasts WHERE user_id = ? AND beast_id = ? ORDER BY id DESC LIMIT 1)",

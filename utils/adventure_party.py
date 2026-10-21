@@ -55,6 +55,8 @@ async def assignments(user_id):
 
 
 async def _check_edit(db, user_id):
+    from utils.trials import assert_available
+    await assert_available(db, user_id)
     async with db.execute("SELECT 1 FROM expeditions WHERE user_id=? AND status IN ('active','battle','quick')", (user_id,)) as cursor:
         if await cursor.fetchone():
             raise ValueError('Return from your saved expedition before changing your adventure team.')

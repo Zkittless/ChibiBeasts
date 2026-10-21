@@ -1,6 +1,6 @@
 # Tower Trials and native companions — proposal
 
-**Design proposal: tower gameplay and new species are not enabled yet.**
+**Approved tower design record.** Tower gameplay is implemented; see [current rules and validation](TOWER-TRIALS.md). The native species below remain concepts and are not added to the roster. This document preserves the design discussion; the implementation guide is authoritative for current tuning and behavior.
 
 Rework `/challenge` into a randomized biome tower. Take the saved three-companion exploration team through consecutive enemy waves, manage its remaining resources, and face a guardian on the final wave. Exploration keeps discovery, routes and catches; towers test sustained team play; raids remain multiplayer encounters.
 
@@ -115,8 +115,8 @@ Also define and validate its stats/moves, wild habitats and catch eligibility, a
 
 Do not ship partial companions or silently expand egg pools while only the exploration backgrounds are ready. The biome release can stand alone using the current roster. Review the strongest native concepts, then implement approved species with their complete assets and integration as a separate change.
 
-## Next review
+## Native companion review
 
-Review the randomized climb, camp/item limits and scaled reward policy alongside the preview; choose native concepts separately. Tower gameplay and new species remain proposed. Validate the run coordinator and economy before production implementation.
+Choose native concepts separately from the implemented tower system. New species still need complete portraits, sixteen fitted armor appearances and catalog/economy integration before release.
 
 Current mechanics and constraints: [Adventure teams](ADVENTURE-TEAMS.md), [World progression](PROGRESSION-WORLD.md), [Nursery](NURSERY.md), `cogs/battle.py`, `utils/habitats.py` and `data/beasts.json`. The production catalog is authoritative where older lore notes disagree with implemented rarity or awakening requirements.

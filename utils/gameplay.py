@@ -15,6 +15,8 @@ async def equip_perk(user_id,perk_id):
     if perk_id not in definitions:raise ValueError('Unknown perk.')
     async with storage.connect() as db:
         await db.execute('BEGIN IMMEDIATE')
+        from utils.trials import assert_available
+        await assert_available(db, user_id)
         async with db.execute('SELECT level FROM players WHERE user_id=?',(user_id,)) as c:player=await c.fetchone()
         async with db.execute('SELECT equipped FROM player_perks WHERE user_id=? AND perk_id=?',(user_id,perk_id)) as c:owned=await c.fetchone()
         if not player or not owned:raise ValueError('Earn this perk before equipping it. Check /perks for milestones.')
@@ -111,6 +113,8 @@ async def _evolve_beast(user_id, player_number, *, expected_row_id=None, expecte
     async with storage.connect() as db:
         db.row_factory = aiosqlite.Row
         await db.execute('BEGIN IMMEDIATE')
+        from utils.trials import assert_available
+        await assert_available(db, user_id)
         async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND player_number=?', (user_id, player_number)) as c:
             row = await c.fetchone()
         if not row:

@@ -17,9 +17,12 @@ class FighterBusyError(ValueError):
     """An expected refusal to overlap a battle or collection transfer."""
 
 @contextmanager
-def reserve_fighters(users):
+def reserve_fighters(users, *, allow_trial=False):
     """Reserve before the first await, including preparation and settlement."""
     ids = {uid for uid in users if uid is not None}
+    from utils import trial_locks
+    if not allow_trial and any(trial_locks.locked(uid) for uid in ids):
+        raise FighterBusyError('Your tower team is still on a trial. Open /challenge to resume or retreat and bank its progress.')
     if ids.intersection(active_fighters):
         raise FighterBusyError('A trainer is already in a battle or transfer. Finish it first. In a duel, an inactive turn closes after 45 seconds.')
     active_fighters.update(ids)
@@ -28,12 +31,18 @@ def reserve_fighters(users):
     finally:
         active_fighters.difference_update(ids)
 
-def exclusive_player(function):
+def exclusive_player(function=None, *, allow_trial=False):
     """Keep a short collection mutation from overlapping battle preparation."""
+    if function is None:
+        return lambda wrapped: exclusive_player(wrapped, allow_trial=allow_trial)
     @wraps(function)
     async def protected(user_id, *args, **kwargs):
         async with combat.lock_states([user_id]):
-            with reserve_fighters([user_id]):
+            with reserve_fighters([user_id], allow_trial=allow_trial):
+                if not allow_trial:
+                    from utils.trials import assert_available
+                    async with storage.connect() as db:
+                        await assert_available(db, user_id)
                 return await function(user_id, *args, **kwargs)
     return protected
 
@@ -46,6 +55,8 @@ async def prepare_state(user_id, row, data, perks, *, consume=True, party_reserv
         db.row_factory = aiosqlite.Row
         if consume:
             await db.execute('BEGIN IMMEDIATE')
+            from utils.trials import assert_available
+            await assert_available(db, user_id)
         async with db.execute('SELECT * FROM player_beasts WHERE user_id=? AND id=?', (user_id, row['id'])) as c:
             fresh = await c.fetchone()
         if not fresh or fresh['beast_id'] != data['id']:

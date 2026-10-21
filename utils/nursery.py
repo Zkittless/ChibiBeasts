@@ -124,7 +124,7 @@ async def _grant(db, user_id, egg_id, beast, level, grant_key, *, bond=0, resear
     return grant
 
 
-@exclusive_player
+@exclusive_player(allow_trial=True)
 async def hatch(user_id, egg_id, quantity=1, *, request_key, rng=random, research_target=None):
     egg = catalog.definition(egg_id)
     if egg['incubation_hours']:
@@ -175,7 +175,7 @@ def _incubation(row, count, now):
             'care_available': not ready and count < 3 and care_at <= now, 'kind': 'incubation'}
 
 
-@exclusive_player
+@exclusive_player(allow_trial=True)
 async def incubate(user_id, egg_id, *, request_key, now=None):
     egg, now = catalog.definition(egg_id), _time(now)
     if not egg['incubation_hours']:
@@ -218,7 +218,7 @@ async def _owned_incubation(db, user_id, incubation_id):
     return row, count
 
 
-@exclusive_player
+@exclusive_player(allow_trial=True)
 async def care(user_id, incubation_id, *, now=None):
     now = _time(now)
     async with storage.connect() as db:
@@ -282,7 +282,7 @@ def _offer(row):
     return {**row, 'candidates': json.loads(row['candidates']), 'claimed': bool(row['claimed'])}
 
 
-@exclusive_player
+@exclusive_player(allow_trial=True)
 async def prepare_offer(user_id, incubation_id, *, now=None, rng=random):
     now = _time(now)
     async with storage.connect() as db:
@@ -316,7 +316,7 @@ async def prepare_offer(user_id, incubation_id, *, now=None, rng=random):
     return result
 
 
-@exclusive_player
+@exclusive_player(allow_trial=True)
 async def claim_offer(user_id, offer_id, index, *, request_key, research_target=None):
     if isinstance(index, bool) or not isinstance(index, int):
         raise ValueError('Choose one of the saved hatchlings.')

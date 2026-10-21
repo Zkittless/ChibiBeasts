@@ -177,6 +177,8 @@ class Economy(commands.Cog):
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
             await db.execute("BEGIN IMMEDIATE")
+            from utils.trials import assert_available
+            await assert_available(db, interaction.user.id)
             async with db.execute("SELECT gold FROM players WHERE user_id=?",(interaction.user.id,)) as c:player["gold"]=(await c.fetchone())[0]
             async with db.execute(
                 "SELECT * FROM player_beasts WHERE user_id = ? AND player_number = ?",

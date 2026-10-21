@@ -1,9 +1,27 @@
 """Shared combat rules for wild battles, spars, PvP, ranked and raid attacks."""
 import random
 import asyncio
-from contextlib import AsyncExitStack, asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
+from contextvars import ContextVar
 from weakref import WeakValueDictionary
 from utils.type_chart import get_type_multiplier
+_combat_rng = ContextVar('combat_rng', default=None)
+
+
+def rng():
+    return _combat_rng.get() or random
+
+
+@contextmanager
+def using_rng(source):
+    """Scope a persisted run's RNG without changing ordinary battles or threads."""
+    token = _combat_rng.set(source)
+    try:
+        yield
+    finally:
+        _combat_rng.reset(token)
+
+
 active_states = {}
 active_parties = {}
 _state_locks = WeakValueDictionary()
@@ -115,9 +133,9 @@ def apply_status(target, status, source=None, log=None):
     if target.pop('status_ward', False):
         log.append(f"✨ {target['name']}'s Aether ward stops {status}.")
         return False
-    if 'tether_of_fate' in target.get('perks', set()) and random.random() < 0.25:
+    if 'tether_of_fate' in target.get('perks', set()) and rng().random() < 0.25:
         return False
-    if source is not None and pid(target) == 'karmic_echo' and (random.random() < passive(target).get('status_reflect_chance', 0.4)):
+    if source is not None and pid(target) == 'karmic_echo' and (rng().random() < passive(target).get('status_reflect_chance', 0.4)):
         return apply_status(source, status, None, log)
     target['status'] = status
     target['status_turns'] = {'freeze': 1, 'sleep': 2}.get(status, 3)
@@ -147,16 +165,22 @@ def can_receive_status(target, status):
         return False
     return True
 
+def start_battle_member(state, opp, log):
+    """Apply one participant's opening, also used by persistent trial waves."""
+    effect = passive(state)
+    if effect.get('enemy_speed_reduce_percent'):
+        opp['gravity_turns'] = effect.get('turns', 3)
+        opp['gravity_multiplier'] = 1 - effect['enemy_speed_reduce_percent'] / 100
+    if state.get('speed_debuff_on_battle_start_chance') and rng().random() < state['speed_debuff_on_battle_start_chance'] / 100:
+        apply_status(opp, 'slow', state, log)
+    if state.get('shield'):
+        log.append(f"🛡️ {state['name']} begins with {state['shield']} shield.")
+
+
 def start_battle(a, b, log):
     for state, opp in ((a, b), (b, a)):
-        effect = passive(state)
-        if effect.get('enemy_speed_reduce_percent'):
-            opp['gravity_turns'] = effect.get('turns', 3)
-            opp['gravity_multiplier'] = 1 - effect['enemy_speed_reduce_percent'] / 100
-        if state.get('speed_debuff_on_battle_start_chance') and random.random() < state['speed_debuff_on_battle_start_chance'] / 100:
-            apply_status(opp, 'slow', state, log)
-        if state.get('shield'):
-            log.append(f"🛡️ {state['name']} begins with {state['shield']} shield.")
+        start_battle_member(state, opp, log)
+
 
 def effective_speed(state):
     if passive(state).get('always_first'):
@@ -220,11 +244,11 @@ def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
     power = spec.get('power', 1)
     if power <= 0:
         return (0, False, 1.0, 0)
-    if attacker.get('status') == 'blind' and random.random() < attacker.get('blind_miss_chance',.3):
+    if attacker.get('status') == 'blind' and rng().random() < attacker.get('blind_miss_chance',.3):
         return (0, False, 1.0, 0)
     effect = passive(attacker)
     defense = defender['defense']
-    if effect.get('true_damage') or random.random() < effect.get('defense_pierce_chance', 0):
+    if effect.get('true_damage') or rng().random() < effect.get('defense_pierce_chance', 0):
         defense = 0
     else:
         defense *= 1 - fraction(effect.get('defense_pierce_percent', 0))
@@ -234,7 +258,7 @@ def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
     if effect.get('ignore_type_disadvantage') or effect.get('fire_resistance_ignore') or (pid(attacker) == 'boundary_break' and attacker['speed'] >= attacker.get('base_speed', attacker['speed']) * effect.get('resistance_ignore_speed_threshold',200)/100):
         mult = max(1, mult)
     perk_ids = attacker.get('perks', set()) | {p['perk_id'] for p in perks or [] if p.get('equipped')}
-    crit = random.random() < 0.1 + (0.1 if 'spellbound_focus' in perk_ids else 0) + attacker.get('crit_chance', 0) / 100
+    crit = rng().random() < 0.1 + (0.1 if 'spellbound_focus' in perk_ids else 0) + attacker.get('crit_chance', 0) / 100
     if defender.get('crit_immunity'):
         crit = False
     charge = 0
@@ -260,7 +284,7 @@ def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
         damage *= 2
     if effect.get('void_damage_percent'):
         damage += percent_damage(defender, effect['void_damage_percent'], attacker, .20)
-    return (max(1, int(damage * random.uniform(0.85, 1.15))), crit, mult, charge)
+    return (max(1, int(damage * rng().uniform(0.85, 1.15))), crit, mult, charge)
 
 def take_damage(target, damage, log, source=None):
     """The only HP mutation for a resolved hit; survival always sees final damage."""
@@ -296,7 +320,7 @@ def take_damage(target, damage, log, source=None):
 def resolve_hit(attacker, defender, damage, log, *, allow_evasion=True):
     effect = passive(defender)
     dodge = max(defender.get('evasion_percent', 0) / 100, effect.get('dodge_chance', 0))
-    if allow_evasion and dodge and (random.random() < dodge):
+    if allow_evasion and dodge and (rng().random() < dodge):
         log.append(f"💨 {defender['name']} evades — 0 damage.")
         return 0
     if defender.get('guard'):
@@ -317,11 +341,11 @@ def resolve_hit(attacker, defender, damage, log, *, allow_evasion=True):
             defender['attack'] = int(defender['attack'] * (1+effect.get('attack_bonus',30)/100))
             defender['speed'] = int(defender['speed'] * (1+effect.get('speed_bonus',20)/100))
         reflect = defender.get('reflect_damage_percent', 0) / 100
-        if random.random() < effect.get('reflect_chance', 0):
+        if rng().random() < effect.get('reflect_chance', 0):
             reflect += effect.get('reflect_percent', 0) / 100
         if reflect:
             take_damage(attacker, int(actual * reflect), log)
-        if defender.get('thorns_poison_on_hit_chance') and random.random() < defender['thorns_poison_on_hit_chance'] / 100:
+        if defender.get('thorns_poison_on_hit_chance') and rng().random() < defender['thorns_poison_on_hit_chance'] / 100:
             apply_status(attacker, 'poison', defender, log)
     return actual
 
@@ -372,13 +396,13 @@ def resolve_move(attacker, defender, name, ultimate, log, *, grant_charge=True):
     if spec.get('status'):
         apply_status(defender, spec['status'], attacker, log)
     if ultimate and effect.get('ultimate_status_guaranteed'):
-        apply_status(defender, random.choice(['burn', 'poison', 'weaken']), attacker, log)
-    if random.random() < effect.get('blind_chance', 0):
+        apply_status(defender, rng().choice(['burn', 'poison', 'weaken']), attacker, log)
+    if rng().random() < effect.get('blind_chance', 0):
         apply_status(defender, 'blind', attacker, log)
     for key, status in (('burn_on_hit_chance', 'burn'), ('stun_on_hit_chance', 'freeze'), ('blight_on_hit_chance', 'blight')):
-        if attacker.get(key) and random.random() < attacker[key] / 100:
+        if attacker.get(key) and rng().random() < attacker[key] / 100:
             apply_status(defender, status, attacker, log)
-    if crit and attacker.get('petrify_on_crit_chance') and (random.random() < attacker['petrify_on_crit_chance'] / 100):
+    if crit and attacker.get('petrify_on_crit_chance') and (rng().random() < attacker['petrify_on_crit_chance'] / 100):
         apply_status(defender, 'freeze', attacker, log)
     attacker['mana'] = min(attacker['max_mana'], attacker['mana'] + attacker.get('mana_regen_on_hit', 0))
     if effect.get('speed_drain_per_hit') and (not passive(defender).get('debuff_immune')):
@@ -404,4 +428,4 @@ def bonus_action(state):
     if pid(state) == 'fox_sovereign' and state['action_count'] % effect.get('nine_tail_strike_interval', 3) == 0:
         state['bonus_power']=effect.get('nine_tail_multiplier',1.5)
         return True
-    return random.random() < effect.get('double_turn_chance', 0)
+    return rng().random() < effect.get('double_turn_chance', 0)

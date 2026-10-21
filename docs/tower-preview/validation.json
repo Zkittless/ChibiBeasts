@@ -1,0 +1,294 @@
+{
+  "status": "passed",
+  "message_id": 8181,
+  "initial_messages": 1,
+  "additional_messages": 0,
+  "deletions": 0,
+  "stages": [
+    "selector",
+    "ready",
+    "entry",
+    "battle",
+    "swap",
+    "action",
+    "knockout",
+    "between",
+    "paused",
+    "resumed",
+    "result",
+    "returned"
+  ],
+  "uploads": [
+    {
+      "stage": "selector",
+      "version": null,
+      "message_id": 8181,
+      "media": [
+        "exploration-team-b6d2424aa787ee0898d5ad7b.png"
+      ]
+    },
+    {
+      "stage": "ready",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        0
+      ],
+      "message_id": 8181,
+      "media": [
+        "exploration-team-b6d2424aa787ee0898d5ad7b.png"
+      ]
+    },
+    {
+      "stage": "entry",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        1
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-d3b24b464ed166f75b497858.gif"
+      ]
+    },
+    {
+      "stage": "battle",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        1
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-d52d7d105c7076f179a60130.png"
+      ]
+    },
+    {
+      "stage": "swap",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        2
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-ec1e78cc1731e176206750de.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        2
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-180fc00ceea491019ac1ce6c.gif"
+      ]
+    },
+    {
+      "stage": "action",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        2
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-99116d086727c30f8acef419.gif"
+      ]
+    },
+    {
+      "stage": "battle",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        2
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-ba97adca37dfb264907f4abd.png"
+      ]
+    },
+    {
+      "stage": "knockout",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        3
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-2baf0ce1e3f67fe9662ddf9c.gif"
+      ]
+    },
+    {
+      "stage": "between",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        3
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-7521fdb38f2cf2f506f080eb.png"
+      ]
+    },
+    {
+      "stage": "paused",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        4
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-7521fdb38f2cf2f506f080eb.png"
+      ]
+    },
+    {
+      "stage": "resumed",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        5
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-7521fdb38f2cf2f506f080eb.png"
+      ]
+    },
+    {
+      "stage": "result",
+      "version": [
+        "b4e094cea69d4f31ab6ead997208046b",
+        6
+      ],
+      "message_id": 8181,
+      "media": [
+        "trial-7521fdb38f2cf2f506f080eb.png"
+      ]
+    },
+    {
+      "stage": "returned",
+      "version": null,
+      "message_id": 8181,
+      "media": [
+        "journal-woods_deep.png"
+      ]
+    }
+  ],
+  "clips": [
+    {
+      "file": "media/trial-180fc00ceea491019ac1ce6c.gif",
+      "bytes": 658542,
+      "frames": 24,
+      "one_shot": true,
+      "milliseconds": 1650
+    },
+    {
+      "file": "media/trial-2baf0ce1e3f67fe9662ddf9c.gif",
+      "bytes": 929192,
+      "frames": 34,
+      "one_shot": true,
+      "milliseconds": 3050
+    },
+    {
+      "file": "media/trial-99116d086727c30f8acef419.gif",
+      "bytes": 652003,
+      "frames": 24,
+      "one_shot": true,
+      "milliseconds": 1650
+    },
+    {
+      "file": "media/trial-d3b24b464ed166f75b497858.gif",
+      "bytes": 209442,
+      "frames": 14,
+      "one_shot": true,
+      "milliseconds": 1200
+    },
+    {
+      "file": "media/trial-ec1e78cc1731e176206750de.gif",
+      "bytes": 300313,
+      "frames": 17,
+      "one_shot": true,
+      "milliseconds": 1900
+    }
+  ],
+  "settlement": {
+    "gold": 19,
+    "trainer_xp": 36,
+    "party_xp": [
+      {
+        "id": 1,
+        "name": "Twine",
+        "amount": 14,
+        "level": 18,
+        "leveled": false
+      },
+      {
+        "id": 2,
+        "name": "Gloop",
+        "amount": 5,
+        "level": 18,
+        "leveled": false
+      },
+      {
+        "id": 3,
+        "name": "Barkley",
+        "amount": 4,
+        "level": 18,
+        "leveled": false
+      }
+    ],
+    "fraction": 0.09999999999999999,
+    "outcome": "retreated",
+    "stamp": false
+  },
+  "hourglass_equipped": true,
+  "effective_cooldown_seconds": 1440,
+  "bank_quote": {
+    "gold": 19,
+    "trainer_xp": 36,
+    "party_xp": [
+      {
+        "id": 1,
+        "name": "Twine",
+        "amount": 14,
+        "contributed_amount": 14
+      },
+      {
+        "id": 2,
+        "name": "Gloop",
+        "amount": 5,
+        "contributed_amount": 5
+      },
+      {
+        "id": 3,
+        "name": "Barkley",
+        "amount": 4,
+        "contributed_amount": 4
+      }
+    ],
+    "multiplier": 1.5,
+    "fraction": 0.09999999999999999
+  },
+  "full_reward_quote": {
+    "gold": 195,
+    "trainer_xp": 366,
+    "party_xp": [
+      {
+        "id": 1,
+        "name": "Twine",
+        "amount": 141,
+        "contributed_amount": 141
+      },
+      {
+        "id": 2,
+        "name": "Gloop",
+        "amount": 58,
+        "contributed_amount": 58
+      },
+      {
+        "id": 3,
+        "name": "Barkley",
+        "amount": 40,
+        "contributed_amount": 58
+      }
+    ],
+    "multiplier": 1.5,
+    "fraction": 1.0
+  },
+  "exact_bank_quote_matches_receipt": true,
+  "scope": "Actual TrialPanel callbacks, committed service state and equipped battle media from a disposable level18 example team in Moonveil Marsh. Playback sleep skipped offline; no live account or balance claims."
+}
