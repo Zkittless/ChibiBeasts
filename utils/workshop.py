@@ -13,6 +13,7 @@ from utils.catalog import load_catalog
 from utils.economy_balance import material_sources, recipe_level
 from utils.equipment import dormant_label, effect_summary, equip
 from utils.gameplay import evolve_beast
+from utils.message_transport import durable_message
 from utils.sanctuary import apply_craft_discount
 
 logger = logging.getLogger('chibibeasts.workshop')
@@ -438,7 +439,7 @@ class WorkshopView(discord.ui.LayoutView):
             if self.message:
                 try:
                     async with asyncio.timeout(15):
-                        await self.message.edit(view=self)
+                        await durable_message(self.message).edit(view=self)
                 except (discord.HTTPException, TimeoutError):
                     pass
 

@@ -13,6 +13,7 @@ from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
 from utils.equipment import definitions as equipment_definitions, dormant_label
+from utils.message_transport import durable_message
 
 logger = logging.getLogger('chibibeasts.journal')
 PAGES = ('adventure', 'team', 'companions', 'workshop', 'story', 'activities')
@@ -557,7 +558,12 @@ class JournalView(discord.ui.LayoutView):
                         if channel_send:
                             return await interaction.channel.send(view=self, files=files if with_art else [], allowed_mentions=discord.AllowedMentions.none())
                         return await interaction.followup.send(view=self, files=files if with_art else [], allowed_mentions=discord.AllowedMentions.none(), wait=True)
-                    return await interaction.edit_original_response(view=self, attachments=attachments + files if with_art else [], allowed_mentions=discord.AllowedMentions.none())
+                    target = durable_message(self.message, channel=getattr(interaction, 'channel', None))
+                    kwargs = dict(view=self, attachments=attachments + files if with_art else [],
+                                  allowed_mentions=discord.AllowedMentions.none())
+                    if target is not self.message or isinstance(target, (discord.Message, discord.PartialMessage)):
+                        return await target.edit(**kwargs)
+                    return await interaction.edit_original_response(**kwargs)
             try:
                 self.message = await deliver(self.art_enabled)
             except discord.HTTPException as error:
@@ -585,8 +591,11 @@ class JournalView(discord.ui.LayoutView):
     async def launch(self, interaction, name):
         if name == 'challenge':
             from utils.trial_panel import open_trials
+            await interaction.response.defer()
             async with self.lock:
-                return await open_trials(interaction, bot=self.bot, destination=self.realm, source=self)
+                if self.closed or self.is_finished():
+                    return await interaction.followup.send('This journal has moved. Use the newest journal below.', ephemeral=True)
+                return await open_trials(interaction, bot=self.bot, destination=self.realm, source=self, already_deferred=True)
         command = self.bot.tree.get_command(name) if self.bot else None
         if not command:
             return await interaction.response.send_message('This activity is unavailable. Open the journal again after the bot finishes loading.', ephemeral=True)
@@ -637,7 +646,9 @@ class JournalView(discord.ui.LayoutView):
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
         mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination', 'journey_action'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:', 'path:', 'journey_act:', 'journey_next:', 'journey_return:', 'carnival_'))
-        duplicate = mutation and (self.mutating or self.lock.locked())
+        # A refresh can still be finishing its upload when Start first appears.
+        # Queue that first acknowledged action; reject only another mutation.
+        duplicate = mutation and self.mutating
         if mutation and not duplicate:
             self.mutating = True
         battle = None
@@ -940,10 +951,20 @@ class JournalView(discord.ui.LayoutView):
                     self.notice = 'The encounter closed. Your expedition and gathered supplies are saved.'
                 if receipt.get('owned'):
                     await self.resume_after_battle(interaction, battle)
-        except discord.NotFound:
+        except discord.NotFound as error:
+            if error.code == 10062:
+                # The click expired, not the journal message. Stopping this
+                # view would leave visible controls with no live callbacks.
+                logger.info('Expired Field Journal input; keeping current controls for trainer %s', self.user_id)
+                return
+            if error.code != 10008:
+                raise
             self.closed = True
             self.stop()
-            await interaction.followup.send('This journal message was removed. Open /journal to resume your saved trip.', ephemeral=True)
+            try:
+                await interaction.followup.send('This journal message was removed. Open /journal to resume your saved trip.', ephemeral=True)
+            except discord.HTTPException:
+                pass
         finally:
             try:
                 if battle:
@@ -984,7 +1005,7 @@ class JournalView(discord.ui.LayoutView):
             if self.message:
                 try:
                     async with asyncio.timeout(15):
-                        await self.message.edit(view=self)
+                        await durable_message(self.message).edit(view=self)
                 except (discord.HTTPException, TimeoutError):
                     pass
 

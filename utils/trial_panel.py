@@ -11,6 +11,7 @@ import discord
 
 from utils import adventure_party, battle_art, crafting, db as storage, journal_sessions, journal_state, journal_team_art
 from utils.habitats import BIOMES
+from utils.message_transport import durable_message
 from utils.trial_rules import config
 
 logger = logging.getLogger('chibibeasts.trials.panel')
@@ -274,7 +275,8 @@ class TrialPanel(discord.ui.LayoutView):
                 if opening:
                     return await interaction.followup.send(view=self, files=[file] if with_art else [], wait=True,
                                                            allowed_mentions=discord.AllowedMentions.none())
-                return await self.message.edit(view=self, attachments=[file] if with_art else [], allowed_mentions=discord.AllowedMentions.none())
+                return await durable_message(self.message, channel=self.channel).edit(
+                    view=self, attachments=[file] if with_art else [], allowed_mentions=discord.AllowedMentions.none())
         try:
             try:
                 result = await send(bool(file))
@@ -504,7 +506,7 @@ async def open_trials(interaction, *, bot=None, destination=None, source=None, a
                 if previous.message and previous.message.id != view.message.id:
                     try:
                         async with asyncio.timeout(IO_TIMEOUT):
-                            await previous.message.delete()
+                            await durable_message(previous.message, channel=previous.channel).delete()
                     except (discord.HTTPException, TimeoutError):
                         pass
             if source:
