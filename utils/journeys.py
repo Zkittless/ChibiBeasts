@@ -277,14 +277,14 @@ def _show(payload, root_id, node_id):
         if capped:
             readable = {'heal': 'recovery', 'attack_boon': 'attack boon', 'defense_boon': 'defense boon',
                         'bonus': 'bundle bonus', 'bond': 'bond', 'study': 'research'}
-            frozen['description'] = ('Run limit: ' + ', '.join(f'{readable[key]} +{bounded[key]}' for key in capped) + '. Other listed effects still apply.')[:99]
+            frozen['description'] = 'Run limit: ' + ', '.join(f'{readable[key]} +{bounded[key]}' for key in capped) + '. Other listed effects still apply.'
         if choice['effects'].get('material'):
             prefix = 'After battle: ' if choice['effects'].get('battle') else ''
             if choice['effects'].get('hp_cost'):
                 prefix += f"Pay {choice['effects']['hp_cost']}% HP; "
             benefit = ('Choose one same-rarity material; replaces your bundle.' if len(payload.get('offered', ())) >= 2 else
                        f"Bundle bonus +{bounded['material_bonus']}% (25% cap); keep the saved material.")
-            frozen['description'] = (prefix + benefit + (' World remembers.' if choice['effects'].get('set_flags') else ''))[:99]
+            frozen['description'] = prefix + benefit + (' World remembers.' if choice['effects'].get('set_flags') else '')
         choices.append(frozen)
     if not choices:
         raise ValueError('This saved scene has no available choice. Its content needs review.')

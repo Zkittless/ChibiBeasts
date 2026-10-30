@@ -197,7 +197,7 @@ class CareInteractions(DatabaseCase):
     async def test_permanent_item_needs_separate_review_and_confirmation(self):
         await self.beast('twine', starter=True)
         await storage.add_item(42, 'ambrosia_tart', 2)
-        view, _, _ = await self.open()
+        view, _, _ = await self.open(number=1)
         await self.click(view, 'item', 'ambrosia_tart')
         self.assertEqual(view.use_button.label, 'Review')
         await self.click(view, 'confirm')
@@ -245,7 +245,7 @@ class CareInteractions(DatabaseCase):
         rid = await self.beast('twine', starter=True)
         await storage.add_item(42, 'pixie_dust_potion')
         await storage.add_item(42, 'tear_of_leviathan')
-        view, _, _ = await self.open()
+        view, _, _ = await self.open(row_id=rid)
         for item in ('pixie_dust_potion', 'tear_of_leviathan'):
             await self.click(view, 'item', item)
             self.assertTrue(view.use_button.disabled)
@@ -262,7 +262,7 @@ class CareInteractions(DatabaseCase):
     async def test_name_modal_does_not_consume_token_until_named_preview_is_used(self):
         await self.beast('twine', starter=True)
         await storage.add_item(42, 'beast_rename_token')
-        view, _, _ = await self.open()
+        view, _, _ = await self.open(number=1)
         await self.click(view, 'item', 'beast_rename_token')
         self.assertTrue(view.use_button.disabled)
         click = component()
@@ -285,6 +285,7 @@ class CareInteractions(DatabaseCase):
         await self.beast('twine', starter=True)
         for _ in range(25):
             await self.beast('slime')
+        await self.execute('UPDATE player_beasts SET hp=20 WHERE user_id=42')
         await storage.add_item(42, 'pixie_dust_potion')
         view, _, _ = await self.open()
         self.assertEqual(len(view.companion_select.options), 25)
@@ -324,6 +325,8 @@ class CareInteractions(DatabaseCase):
     async def test_unchanged_portrait_attachment_is_reused_and_rejected_new_art_falls_back(self):
         rid = await self.beast('twine', starter=True)
         second = await self.beast('barkley')
+        await self.hurt(rid)
+        await self.hurt(second)
         await self.execute("INSERT INTO player_equipment(user_id,beast_row_id,equipment_id) VALUES(42,?,'gnome_iron_plating')", (rid,))
         view, command, message = await self.open()
         sent = command.followup.send.call_args.kwargs['file']
@@ -370,8 +373,75 @@ class CareInteractions(DatabaseCase):
         await self.beast('twine', starter=True)
         invalid, _, _ = await self.open(number=999)
         self.assertIsNone(invalid.state.beast)
-        self.assertFalse(invalid.companion_select.disabled)
+        self.assertTrue(invalid.companion_select.disabled)
         self.assertTrue(invalid.use_button.disabled)
+
+    async def test_default_care_only_lists_patients_and_prioritizes_knockouts(self):
+        await self.beast('twine', starter=True)
+        for _ in range(5):
+            await self.beast('slime')
+        injured = await self.beast('fairy')
+        knocked_out = await self.beast('barkley')
+        await self.hurt(injured)
+        await storage.knockout_beast(knocked_out, 'common')
+        view, _, _ = await self.open()
+        self.assertEqual({int(option.value) for option in view.companion_select.options}, {injured, knocked_out})
+        self.assertEqual(view.state.selected_id, knocked_out)
+        self.assertNotIn(view.previous_button, view.children)
+        self.assertNotIn(view.next_button, view.children)
+        self.assertNotIn(view.search_button, view.children)
+
+    async def test_healthy_roster_has_clear_empty_state_and_no_spendable_target(self):
+        await self.beast('twine', starter=True)
+        await storage.add_item(42, 'pixie_dust_potion')
+        view, command, _ = await self.open()
+        self.assertIsNone(view.state.beast)
+        self.assertTrue(view.companion_select.disabled)
+        self.assertTrue(view.item_select.disabled)
+        self.assertTrue(view.use_button.disabled)
+        self.assertIn('All your companions are healthy', command.followup.send.call_args.kwargs['embed'].description)
+        self.assertEqual(await self.stock('pixie_dust_potion'), 1)
+
+    async def test_recovered_patient_leaves_list_without_redirecting_the_item(self):
+        healed = await self.beast('twine', starter=True)
+        other = await self.beast('fairy')
+        await self.execute('UPDATE player_beasts SET hp=max_hp-1 WHERE id=?', (healed,))
+        await self.hurt(other)
+        await storage.add_item(42, 'pixie_dust_potion', 2)
+        view, _, _ = await self.open()
+        await self.click(view, 'item', 'pixie_dust_potion')
+        stale = view.use_button.callback
+        await self.click(view, 'use')
+        self.assertEqual([int(option.value) for option in view.companion_select.options], [other])
+        self.assertIsNone(view.state.beast)
+        self.assertTrue(view.use_button.disabled)
+        await stale(component())
+        self.assertEqual(await self.stock('pixie_dust_potion'), 1)
+        self.assertEqual((await self.rows('SELECT hp FROM player_beasts WHERE id=?', (other,)))[0]['hp'], 20)
+
+    async def test_picker_uses_actual_live_injuries_instead_of_healthy_collection_rows(self):
+        await self.beast('twine', starter=True)
+        reserve = await self.beast('fairy')
+        await adventure_party.set_slot(42, reserve, 1)
+        party = [await prepare_state(42, row, storage.get_beast_data(row['beast_id']), [], consume=False)
+                 for row in await adventure_party.rows(42)]
+        party[1]['hp'] = 7
+        combat.active_states[42], combat.active_parties[42] = party[0], party
+        view, _, _ = await self.open()
+        self.assertEqual([int(option.value) for option in view.companion_select.options], [reserve])
+        self.assertEqual(view.state.selected_id, reserve)
+        self.assertIn('HP 7/', view.companion_select.options[0].description)
+
+    async def test_patient_healed_since_the_last_render_cannot_be_selected_from_stale_menu(self):
+        target = await self.beast('twine', starter=True)
+        await self.hurt(target)
+        await storage.add_item(42, 'pixie_dust_potion')
+        view, _, _ = await self.open()
+        await self.execute('UPDATE player_beasts SET hp=max_hp WHERE id=?', (target,))
+        await self.click(view, 'companion', target)
+        self.assertIsNone(view.state.beast)
+        self.assertTrue(view.companion_select.disabled)
+        self.assertEqual(await self.stock('pixie_dust_potion'), 1)
 
     async def test_team_role_care_button_opens_the_exact_reserve_in_a_private_panel(self):
         lead = await self.beast('twine', starter=True)

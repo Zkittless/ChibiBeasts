@@ -4,7 +4,7 @@
 saved exploration team and press **Start adventure** to enter battle immediately.
 The first five biomes require two encounters; the upper five require three.
 A single short decision separates encounters. The prompt and each choice's
-effect appear directly in the same journal, beside the action buttons.
+effect appear directly in the same journal, above the story-choice dropdown.
 
 The launch catalog contains **200 one-time discoveries**, including **30 connected
 three-scene locations**, and **60 explicitly repeatable wilderness encounters**:
@@ -37,14 +37,26 @@ partial progress; it is not a full clear.
 
 Each interlude advances one authored scene. Connected locations resume at their
 next unresolved scene in a later interlude or visit, so several story pages never
-block the next required fight. The default body shows one or two short sentences
-(up to 200 characters), without an expansion button. A resolved story choice's
-short outcome leads into the next required encounter, and past outcomes remain
-in Battle log. Moves show their MP cost; unavailable moves, ultimates and assists
-remain visible as disabled buttons. Reserves have direct swap and assist buttons.
+block the next required fight. The complete authored body and choice descriptions
+wrap in the message without an expansion button or a character-based excerpt.
+The dropdown repeats each choice; effects that exceed its description limit stay
+complete in the message. A resolved story choice's outcome leads into the next
+required encounter, and past outcomes remain in Battle log. Moves show their MP
+cost; unavailable moves and ultimates remain visible as disabled buttons.
+One **Swap / Assist** button opens a native modal containing the currently usable
+reserve actions, with HP, MP and turn costs. Opening or cancelling it is free;
+submitting a choice validates the saved battle revision and consumes its normal
+turn. Attack, swap, assist and knockout animations keep using the same journal.
 Packs have two or three sequential opponents using the existing entry, attack,
 swap, assist and knockout animations. All combat and discoveries edit the same
 journal message. Resolved outcomes remain in **Battle log**.
+
+The private Care picker lists only injured, knocked-out or status-affected
+companions, using current battle resources when a live team exists. It opens on a
+knockout first, omits unnecessary paging/search controls, and removes recovered
+patients after treatment. Recovery never redirects the selected item to another
+companion. A companion opened explicitly from its own beast card remains an
+explicit target for treats and other supported preparations.
 
 Encounter strength is fixed to the departure team size. Solo enemies use 50%
 of the full-team HP profile and 60% of its attack; pairs use 75% HP and 85% attack.

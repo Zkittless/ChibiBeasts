@@ -20,7 +20,7 @@ from cogs.hatch import Hatch
 from scripts.preview_living_adventures import SCRIPT
 from tests.test_gameplay import interaction
 from tests.test_interactions import component
-from utils import adventure_content, adventure_party, battle_art, db as storage
+from utils import adventure_content, adventure_party, battle_art, care_view, db as storage
 from utils import expeditions, habitats, journal_adventure, journeys, trial_combat
 
 
@@ -38,6 +38,7 @@ select{width:100%;background:#1e1f22}button[data-style="1"]{background:#5865f2;c
 button:disabled{opacity:.5}button{cursor:pointer}a{color:#d8cba5}footer,#note{font-size:12px}
 button:focus-visible,select:focus-visible{outline:2px solid #e8cf9f;outline-offset:3px}.section{display:flex;gap:12px;align-items:center}.section>.text{flex:1;min-width:0}.section>img{width:80px;flex:none}.section>button{max-width:55%;flex-shrink:0;white-space:normal}
 @media(max-width:420px){main{padding:20px 8px}.message{padding:9px}.row{gap:5px}button{padding:8px}}
+.modal-recording{max-width:450px}.modal-recording .text:first-child{margin-top:0}.message img.care-portrait{width:160px;max-width:100%;margin:12px auto}
 '''
 
 
@@ -61,7 +62,7 @@ async def export(output):
     source_paths += [ROOT / 'utils' / (name + '.py') for name in
                      ('adventure_content', 'journeys', 'journey_service', 'journey_combat',
                       'expeditions', 'habitats', 'journal', 'journal_adventure', 'journal_team_art',
-                      'trial_combat', 'team_combat', 'battle_art')]
+                      'trial_combat', 'team_combat', 'battle_art', 'care', 'care_view', 'owned_roster')]
     source_paths += [ROOT / 'cogs' / 'hatch.py', ROOT / 'scripts' / 'preview_living_adventures.py', Path(__file__).resolve()]
     source_hashes = {str(path.relative_to(ROOT)).replace('\\', '/'):
                      hashlib.sha256(path.read_bytes()).hexdigest() for path in source_paths}
@@ -186,12 +187,33 @@ async def export(output):
         async def path(value, key, title):
             index = next(index for index, choice in enumerate(expeditions.presentation(view.trip)['choices'])
                          if choice['value'] == value)
-            route = f":path:{view.trip['id']}:{view.trip['version']}:{index}:"
-            control = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button)
-                           and route in item.custom_id)
-            await do(control, key, title)
+            if view.path_select in list(view.walk_children()):
+                await do(view.path_select, key, title, view.path_select.options[index].value)
+            else:
+                route = f":path:{view.trip['id']}:{view.trip['version']}:{index}:"
+                control = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button)
+                               and route in item.custom_id)
+                await do(control, key, title)
 
         async def act(index, key='battle_action', title='Committed battle action and next decision'):
+            action = trial_combat.legal_actions(view.trip['payload']['combat'])[index]
+            if action['kind'] in {'swap', 'assist'}:
+                before = deepcopy(view.trip)
+                click = component()
+                click.message, click.channel = message, command.channel
+                click.response.send_modal = AsyncMock()
+                await button('Swap / Assist').callback(click)
+                modal = click.response.send_modal.call_args.args[0]
+                assert view.trip == before
+                screens['team_menu'] = dict(label='One button opens the team menu', components=view.to_components(),
+                    modal=modal.to_dict(), version=view.trip['version'], message_id=8181,
+                    playing=False, characters=view.content_length(), component_count=view.total_children_count)
+                modal.action._values = [str(index)]
+                try:
+                    await do(SimpleNamespace(callback=modal.on_submit), key, title)
+                finally:
+                    modal.stop()
+                return
             route = f":journey_act:{view.trip['id']}:{view.trip['version']}:{index}:"
             control = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button)
                            and route in item.custom_id)
@@ -234,11 +256,12 @@ async def export(output):
             pending, label = 'interlude', 'One short authored decision between battles'
             capture(dict(view=view))
             models['interlude'] = deepcopy(view.trip)
-            lead = journal_adventure.scene_lead(expeditions.presentation(view.trip)['body'])
-            assert len(lead) <= journal_adventure.LEAD_LIMIT
+            story_body = expeditions.presentation(view.trip)['body']
+            assert story_body in text_of(view)
+            screens['interlude']['story_body'] = story_body
             assert not any(item.label in ('Read more', 'Hide details') for item in view.walk_children()
                            if isinstance(item, discord.ui.Button))
-            assert not any(item is view.path_select for item in view.walk_children())
+            assert view.path_select in list(view.walk_children())
             choices = view.trip['payload']['page']['choices']
             safe = next(choice['value'] for choice in choices if not choice.get('effects', {}).get('battle')
                         and not choice.get('effects', {}).get('hp_cost'))
@@ -269,6 +292,41 @@ async def export(output):
             assert command.followup.send.await_count == 1
             command.channel.send.assert_not_awaited()
             message.delete.assert_not_awaited()
+            # Care is a separate private panel. Keep one healthy companion out
+            # of its picker while showing an injured member and a knockout.
+            async with storage.connect() as db:
+                await db.execute('UPDATE player_beasts SET hp=max_hp WHERE id=?', (ids[0],))
+                await db.execute('UPDATE player_beasts SET hp=200 WHERE id=?', (ids[1],))
+                await db.commit()
+            await storage.knockout_beast(ids[2], 'common')
+            await storage.add_item(42, 'pixie_dust_potion', 2)
+            await storage.add_item(42, 'phoenix_elixir')
+            care_message = SimpleNamespace(id=8282, attachments=[], edit=AsyncMock())
+            def capture_care(kwargs):
+                for file in [kwargs.get('file'), *kwargs.get('attachments', [])]:
+                    if file is not None and hasattr(file, 'fp'):
+                        file.fp.seek(0)
+                        (media / file.filename).write_bytes(file.fp.read())
+                        file.fp.seek(0)
+                        art[file.filename] = 'media/' + file.filename
+                panel = kwargs['view']
+                screens['care'] = dict(label='Care shows only injured and knocked-out companions',
+                    components=panel.to_components(), embed=kwargs['embed'].to_dict(), version=panel.generation,
+                    message_id=8282, playing=False, characters=len(kwargs['embed']),
+                    component_count=len(panel.children))
+                return care_message
+            care_command = interaction()
+            care_command.followup.send.side_effect = lambda **kwargs: capture_care(kwargs)
+            clinic = await care_view.open_care(care_command)
+            opened.append(clinic)
+            patient_ids = {int(option.value) for option in clinic.companion_select.options}
+            assert patient_ids == set(ids[1:]) and clinic.state.selected_id == ids[2]
+            care_click = component()
+            care_click.message = care_message
+            care_click.data = {'values': ['phoenix_elixir']}
+            care_click.edit_original_response.side_effect = lambda **kwargs: capture_care(kwargs)
+            await clinic.item_select.callback(care_click)
+            assert care_command.followup.send.call_args.kwargs['ephemeral']
         finally:
             for view in opened:
                 view.stop()
@@ -324,12 +382,13 @@ async def export(output):
                 assert len(item.get('custom_id', '')) <= 100, key
     assert all(hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == digest
                for path, digest in source_hashes.items()), 'Source changed while recording; regenerate after edits finish.'
-    report = dict(status='passed', initial_messages=1, additional_messages=0, deletions=0,
+    report = dict(status='passed', initial_journal_messages=1, additional_journal_messages=0, private_care_panels=1, deletions=0,
                   scope='Actual default Hatch.explore, rendered component callbacks and saved v3 service state in a disposable prepared QA account; real equipped animation renderer. Playback sleep skipped. Native Discord delivery and live balance were not tested.',
                   example_seed=selected_seed, habitat_seed=73, source_sha256=source_hashes,
                   stages=list(screens), uploads=uploads,
-                  clips=clips, short_interlude_characters=len(lead), direct_action_buttons=True,
-                  inline_choice_effects=True, disclosure_buttons=False,
+                  clips=clips, full_story_characters=len(story_body), full_story_text=True,
+                  story_dropdown=True, combat_move_buttons=True, team_popup=True, care_patients_only=True,
+                  care_patient_ids=sorted(patient_ids), inline_choice_effects=True, disclosure_buttons=False,
                   max_characters=max(screen['characters'] for screen in screens.values()),
                   max_components=max(screen['component_count'] for screen in screens.values()),
                   first_battle_recruitable=False, pack_leader_recruitable=True, pack_filler_recruitable=False,
@@ -344,14 +403,23 @@ async def export(output):
                  clips=clips)
     (output / 'final-validation.json').write_text(json.dumps(final, indent=2) + '\n', encoding='utf-8')
     script = SCRIPT.replace('__DATA__', json.dumps(screens, ensure_ascii=False).replace('</', '<\\/')).replace('__ART__', json.dumps(art))
+    script = script.replace('function draw(item,parent){if(item.type===17)',
+        "function draw(item,parent){if(item.type===18){const label=document.createElement('div');label.className='text';label.innerHTML='<strong>'+escape(item.label)+'</strong><br>'+escape(item.description||'');parent.append(label);draw(item.component,parent)}else if(item.type===17)")
+    original = 'for(const item of records[key].components)draw(item,card);stage.append(card);'
+    replacement = '''card.dataset.message=String(records[key].message_id);
+    if(records[key].modal){card.classList.add('modal-recording');card.setAttribute('role','dialog');card.setAttribute('aria-label',records[key].modal.title);draw({type:10,content:'### '+records[key].modal.title},card);for(const item of records[key].modal.components)draw(item,card);const submit=document.createElement('button');submit.textContent='Submit';submit.onclick=()=>document.getElementById('adventure-preview').preview.show('assist');card.append(submit)}
+    else{if(records[key].embed){const embed=records[key].embed;draw({type:10,content:'### '+embed.title+'\\n'+embed.description},card);for(const field of embed.fields||[])draw({type:10,content:'**'+field.name+'**\\n'+field.value},card);if(embed.image){const img=document.createElement('img');img.src=art[embed.image.url.replace('attachment://','')];img.alt='Selected companion';img.className='care-portrait';card.append(img)}}for(const item of records[key].components)draw(item,card)}stage.append(card);'''
+    assert original in script
+    script = script.replace(original, replacement)
+    script = script.replace("' · one journal message'", "(key==='care'?' · private care panel':' · one journal message')")
     script = script.replace('parent.append(section)}else if(item.type===1)',
                             'if(item.accessory&&item.accessory.type===2)draw(item.accessory,section);parent.append(section)}else if(item.type===1)')
     # These preview controls switch between real captured production states;
     # they do not send commands or mutate a live player's account.
     script += '''document.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')return;const target={
-      'Start adventure · 1 charge':'battle',
+      'Start adventure · 1 charge':'battle','Swap / Assist':'team_menu',
       'Next opponent':'pack_hostile'}[e.target.textContent];if(target)document.getElementById('adventure-preview').preview.show(target)});'''
-    html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Adventure Buttons</title><style>' + CSS + '</style></head><body><main id="adventure-preview"><header><h1>Direct buttons. Prompts in the adventure.</h1><p>Moves, swaps and assists are back on buttons. Short prompts and choice effects appear together; the latest choice result leads into the next encounter.</p></header><div id="toolbar"><label for="screen">Stage</label><select id="screen" aria-label="Preview stage"></select></div><div id="stage"></div><div id="note" role="status"></div><footer>Offline recording of production controls with prepared QA companions. <a href="validation.json">Validation</a> · <a href="animation-contact.png">Animation frames</a></footer><script>' + script + '</script></main></body></html>'
+    html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Adventure and Care</title><style>' + CSS + '</style></head><body><main id="adventure-preview"><header><h1>Full stories. Clear battle controls.</h1><p>Story choices use a dropdown. Combat keeps attack buttons and one team-menu button. Care lists only injured or knocked-out companions.</p></header><div id="toolbar"><label for="screen">Stage</label><select id="screen" aria-label="Preview stage"></select></div><div id="stage"></div><div id="note" role="status"></div><footer>Offline recording of production controls with prepared QA companions. <a href="validation.json">Validation</a> · <a href="animation-contact.png">Animation frames</a></footer><script>' + script + '</script></main></body></html>'
     path = output / 'index.html'
     path.write_text(html, encoding='utf-8')
     print(f'Exported {len(screens)} stages and {len(clips)} real clips: {path}')
@@ -374,7 +442,7 @@ async def capture_browser(path, output, screens):
                 await page.locator('#screen').select_option(screen)
                 await page.wait_for_function('Array.from(document.images).every(image=>image.complete&&image.naturalWidth>0)')
                 assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-                assert await page.locator('[data-message="8181"]').count() == 1
+                assert await page.locator('[data-message]').count() == 1
                 text = await page.locator('.message').inner_text()
                 if screen in ('battle', 'pack_hostile'):
                     assert 'Cannot be recruited' in text
@@ -382,18 +450,28 @@ async def capture_browser(path, output, screens):
                     assert 'Can join your team after victory' in text
                 assert not await page.get_by_role('button', name='Read more', exact=True).count()
                 assert not await page.get_by_role('button', name='Hide details', exact=True).count()
-                assert not await page.locator('select[aria-label="Choose your next step"],select[aria-label="Choose a move, swap or assist"]').count()
-                if screen in ('battle', 'interlude', 'pack_ready', 'pack_recruitable', 'pack_hostile', 'homeward'):
+                assert not await page.locator('select[aria-label="Choose a move, swap or assist"]').count()
+                if screen == 'interlude':
+                    assert await page.locator('select[aria-label="Choose your next step"]').count() == 1
+                    assert ' '.join(screens[screen]['story_body'].split()) in ' '.join(text.split())
+                if screen == 'team_menu':
+                    assert await page.get_by_role('dialog', name='Swap or assist').count() == 1
+                if screen in ('battle', 'interlude', 'team_menu', 'care', 'pack_ready', 'pack_recruitable', 'pack_hostile', 'homeward'):
                     await page.screenshot(path=str(output / f'{width}-{screen}.png'), full_page=True)
                 checks.append(dict(width=width, stage=screen, one_message=True, no_overflow=True, media_loaded=True))
         await page.locator('#screen').select_option('interlude')
-        assert await page.locator('.section>button').count() >= 2
-        assert await page.locator('.section>.text').count() >= 2
+        assert await page.locator('select[aria-label="Choose your next step"]').count() == 1
+        await page.locator('#screen').select_option('battle')
+        await page.get_by_role('button', name='Swap / Assist', exact=True).click()
+        assert await page.get_by_role('dialog', name='Swap or assist').count() == 1
+        await page.locator('select[aria-label="Choose a teammate action"]').select_option(index=1)
+        assert await page.locator('.option-detail').last.inner_text()
         await browser.close()
     assert not errors and not failed, dict(errors=errors, failed=failed)
     (output / 'browser-validation.json').write_text(json.dumps(dict(status='passed', javascript_errors=errors,
         missing_assets=failed, checks=checks, disclosure_buttons=False,
-        direct_action_buttons=True, inline_choice_effects=True), indent=2) + '\n', encoding='utf-8')
+        story_dropdown=True, team_popup=True, full_story_text=True, care_patients_only=True,
+        inline_choice_effects=True), indent=2) + '\n', encoding='utf-8')
     final = json.loads((output / 'final-validation.json').read_text(encoding='utf-8'))
     final['browser_checks'] = len(checks)
     (output / 'final-validation.json').write_text(json.dumps(final, indent=2) + '\n', encoding='utf-8')
