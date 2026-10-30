@@ -1,0 +1,59 @@
+{
+  "scope": "Synthetic ten matching simultaneous ultimates against a high-health target; production combat and renderer.",
+  "records": [
+    {
+      "species": "genesis",
+      "trainers": 10,
+      "bytes": 1448725,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true,
+      "render_ms": 389.73
+    },
+    {
+      "species": "singularity",
+      "trainers": 10,
+      "bytes": 1644176,
+      "frames": 17,
+      "milliseconds": 1200,
+      "one_shot": true,
+      "render_ms": 333.02
+    },
+    {
+      "species": "chronos",
+      "trainers": 10,
+      "bytes": 1230605,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true,
+      "render_ms": 336.56
+    },
+    {
+      "species": "hollow_king",
+      "trainers": 10,
+      "bytes": 1638526,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true,
+      "render_ms": 339.82
+    },
+    {
+      "species": "leviathan",
+      "trainers": 10,
+      "bytes": 1353024,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true,
+      "render_ms": 317.89
+    },
+    {
+      "species": "zodiac",
+      "trainers": 10,
+      "bytes": 1388223,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true,
+      "render_ms": 505.94
+    }
+  ]
+}

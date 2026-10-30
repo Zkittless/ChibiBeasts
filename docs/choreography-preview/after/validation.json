@@ -1,0 +1,388 @@
+{
+  "phase": "after",
+  "seed": 917,
+  "source": "C:\\Users\\kelto\\Documents\\Codex\\Orbit Observatory\\workspace\\ChibiBeasts-animations",
+  "commit": "c817f565bebfc66539b0bd6462f21e4c6d7050de",
+  "fingerprints": {
+    "utils/move_animations.py": "affd8e8b93e2a94e05f6cc28fd9a1fa79c9c8aab64253e7ab7d465b3fd489e68",
+    "utils/battle_scene.py": "15dcc6f1beda40dfe8b74f840fd241fd17387e1383e5be36104405a7cc3edd2d",
+    "utils/raid_scene.py": "b0fe28c5d3775f87ca49394818f9ccf21c00efd34627746b46319c5fcb7e3200",
+    "utils/divine_effects.py": "eb23238f0e7d59812e757f2a838a85eac52f99b201447902b268eb2dca83cf66",
+    "utils/kinetic_effects.py": "c31398242d3b01ade9791348bf60419a1c435e46eeda2b5624bd7f8d039603a9",
+    "data/move-animations.json": "3443148d0c3cf52ad3ea49408dc4d91d2ad53262ba7b24a3eed6b7533b4d5b19"
+  },
+  "records": [
+    {
+      "slug": "00-twine",
+      "species": "twine",
+      "move": "Tick Bite",
+      "profile": {
+        "family": "bite",
+        "palette": "clock",
+        "motion": "bite",
+        "variant": 3,
+        "motif": "spark",
+        "sequence": "jaw_snap",
+        "accent": 52249,
+        "ultimate": false
+      },
+      "render_ms": 323.06,
+      "bytes": 786763,
+      "frames": 24,
+      "milliseconds": 1650,
+      "one_shot": true
+    },
+    {
+      "slug": "01-twine",
+      "species": "twine",
+      "move": "Thread Snap",
+      "profile": {
+        "family": "thread",
+        "palette": "thread",
+        "motion": "cast",
+        "variant": 2,
+        "motif": "spark",
+        "sequence": "loom_snap",
+        "accent": 4487,
+        "ultimate": false
+      },
+      "render_ms": 282.73,
+      "bytes": 744095,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "slug": "02-twine",
+      "species": "twine",
+      "move": "Borrowed Moment",
+      "profile": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 0,
+        "motif": "spark",
+        "sequence": "clock_fracture",
+        "accent": 38954,
+        "ultimate": true
+      },
+      "render_ms": 379.44,
+      "bytes": 1352463,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "03-twine",
+      "species": "twine",
+      "move": "Rewind Nibble",
+      "profile": {
+        "family": "rewind",
+        "palette": "clock",
+        "motion": "rewind",
+        "variant": 1,
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 47031,
+        "ultimate": false
+      },
+      "render_ms": 311.62,
+      "bytes": 667087,
+      "frames": 24,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    {
+      "slug": "04-gloop",
+      "species": "gloop",
+      "move": "Galaxy Splash",
+      "profile": {
+        "family": "splash",
+        "palette": "galaxy",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark",
+        "sequence": "geyser",
+        "accent": 20236,
+        "ultimate": false
+      },
+      "render_ms": 318.49,
+      "bytes": 908744,
+      "frames": 24,
+      "milliseconds": 1650,
+      "one_shot": true
+    },
+    {
+      "slug": "05-gloop",
+      "species": "gloop",
+      "move": "Glitter Bounce",
+      "profile": {
+        "family": "heal",
+        "palette": "galaxy",
+        "motion": "bounce",
+        "variant": 3,
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 22121,
+        "ultimate": false
+      },
+      "render_ms": 546.89,
+      "bytes": 472199,
+      "frames": 24,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    {
+      "slug": "06-wyvern",
+      "species": "wyvern",
+      "move": "Fire Breath",
+      "profile": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 46245,
+        "ultimate": false
+      },
+      "render_ms": 596.38,
+      "bytes": 660037,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "slug": "07-glacius",
+      "species": "glacius",
+      "move": "Ice Shell",
+      "profile": {
+        "family": "ice",
+        "palette": "ice",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark",
+        "sequence": "crystal_prison",
+        "accent": 58407,
+        "ultimate": false
+      },
+      "render_ms": 554.72,
+      "bytes": 862070,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "slug": "08-harpy",
+      "species": "harpy",
+      "move": "Wind Shriek",
+      "profile": {
+        "family": "wind",
+        "palette": "wind",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 52239,
+        "ultimate": false
+      },
+      "render_ms": 508.81,
+      "bytes": 706018,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "slug": "09-prismara",
+      "species": "prismara",
+      "move": "Facet Lance",
+      "profile": {
+        "family": "slash",
+        "palette": "arcane",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "lance",
+        "sequence": "spear_thrust",
+        "accent": 29618,
+        "ultimate": false
+      },
+      "render_ms": 549.09,
+      "bytes": 817840,
+      "frames": 24,
+      "milliseconds": 1650,
+      "one_shot": true
+    },
+    {
+      "slug": "10-genesis",
+      "species": "genesis",
+      "move": "Genesis Explosion",
+      "profile": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "nova",
+        "sequence": "genesis_bloom",
+        "accent": 6033,
+        "ultimate": true
+      },
+      "render_ms": 690.5,
+      "bytes": 1486872,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "11-singularity",
+      "species": "singularity",
+      "move": "Big Bang",
+      "profile": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "nova",
+        "sequence": "supernova_detonation",
+        "accent": 38241,
+        "ultimate": true
+      },
+      "render_ms": 734.0,
+      "bytes": 1462290,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "12-chronos",
+      "species": "chronos",
+      "move": "End of Time",
+      "profile": {
+        "family": "time",
+        "palette": "clock",
+        "motion": "time",
+        "variant": 3,
+        "motif": "spark",
+        "sequence": "terminus_severance",
+        "accent": 4509,
+        "ultimate": true
+      },
+      "render_ms": 751.18,
+      "bytes": 1296279,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "13-zodiac",
+      "species": "zodiac",
+      "move": "Zodiac Alignment",
+      "profile": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark",
+        "sequence": "zodiac_alignment",
+        "accent": 36420,
+        "ultimate": true
+      },
+      "render_ms": 684.28,
+      "bytes": 1330606,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "14-terminus",
+      "species": "terminus",
+      "move": "Last Twilight",
+      "profile": {
+        "family": "orbit",
+        "palette": "cosmic",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "nova",
+        "sequence": "terminus_severance",
+        "accent": 426,
+        "ultimate": true
+      },
+      "render_ms": 766.6,
+      "bytes": 1387732,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "15-phoenix",
+      "species": "phoenix",
+      "move": "Eternal Pyre",
+      "profile": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark",
+        "sequence": "phoenix_sunrise",
+        "accent": 34928,
+        "ultimate": true
+      },
+      "render_ms": 730.7,
+      "bytes": 1157583,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "16-leviathan",
+      "species": "leviathan",
+      "move": "Sea of Chaos",
+      "profile": {
+        "family": "wave",
+        "palette": "water",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "spark",
+        "sequence": "leviathan_deluge",
+        "accent": 24154,
+        "ultimate": true
+      },
+      "render_ms": 885.41,
+      "bytes": 1186389,
+      "frames": 41,
+      "milliseconds": 4050,
+      "one_shot": true
+    },
+    {
+      "slug": "17-hollow_king",
+      "species": "hollow_king",
+      "move": "Last Procession",
+      "profile": {
+        "family": "orbit",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark",
+        "sequence": "phantom_court",
+        "accent": 55352,
+        "ultimate": true
+      },
+      "render_ms": 733.03,
+      "bytes": 1857782,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "slug": "raid-ten",
+      "species": "Ten trainers",
+      "move": "Concurrent raid",
+      "render_ms": 910.64,
+      "bytes": 1357017,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    }
+  ],
+  "scope": "Actual seeded combat resolution, production snapshots and encoders. Offline; excludes Discord upload and client playback.",
+  "working_tree_dirty": true
+}

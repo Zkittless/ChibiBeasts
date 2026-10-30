@@ -7,13 +7,16 @@ realm backgrounds and Field Journal HUD.
 ## Move coverage
 
 `data/move-animations.json` explicitly assigns all 360 species/move entries
-(350 distinct names across 90 creatures) a presentation profile. Profiles use
-29 effect families with different geometry and movement: bites, slashes,
-flame cones, thread snaps, ground roots, frost shells, waves, lightning,
-clockwork, healing and defensive forms, among others. Each entry selects its
-palette, body motion and a small variation in effect spread. Named motifs add
-actual falling arrows, winged swarms, fangs, crystal lances, lotus petals and
-expanding nova rings where they fit the move.
+(350 distinct names across 90 creatures) a presentation profile. The current
+renderer uses 64 authored sequences with staged preparation, contact, release
+and recovery. Each creature's four moves select different sequences. Physical
+paths include lunges, thrusts, leaps and grounded casts; divine moves assemble
+clock fractures, accretion lenses, constellation seals, creation facets and
+spectral courts. Literal motifs preserve arrows, feathers, spirit tails and
+other creature details. The original family fields remain for mechanical
+targeting and safe fallback effects. See [Battle choreography](BATTLE-CHOREOGRAPHY.md)
+for the profile schema and [the replayable comparison](choreography-preview/index.html)
+for production-renderer before-and-after clips.
 
 The assignment follows the actual move effect as well as its name and creature
 theme. Rewind Nibble restores guard/mana and readies the next attack; it does

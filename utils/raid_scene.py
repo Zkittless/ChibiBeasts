@@ -99,6 +99,8 @@ def draw_frame(before, after, events=(), t=1):
     if animated and not retreat_t:
         for member,prior,active,home,pose,source,animation,group in actors:
             if pose and animation:back.effect(animation,pose,boss_home,move_t,back=True,scale=.65)
+            if pose and boss_animation and member.fighter.hp < prior.fighter.hp:
+                back.effect(boss_animation,boss_home,home,move_t,back=True,scale=.55)
     field.alpha_composite(back.image)
     draw=ImageDraw.Draw(field)
     if boss_pose:
@@ -109,11 +111,8 @@ def draw_frame(before, after, events=(), t=1):
         draw=ImageDraw.Draw(field);draw.ellipse((235,242,405,276),outline='#e4c68f',width=3)
     for member,prior,active,home,pose,source,animation,group in actors:
         if pose is None:continue
-        if animated and animation and animation.family in {'time','rewind','illusion'} and .08<move_t<.8 and not retreat_t:
-            for i in range(2):
-                ghost=replace(home,x=fx.mix(home.x,pose.x,fx.clamp((move_t-.3)/.2-i*.15))-(i+1)*10,
-                              feet=fx.mix(home.feet,pose.feet,fx.clamp((move_t-.3)/.2-i*.15)),alpha=.14-i*.04)
-                fx.paint_sprite(field,source,ghost)
+        if animated and animation and not retreat_t:
+            fx.paint_echoes(field, source, animation, home, boss_home, move_t)
         draw=ImageDraw.Draw(field)
         draw.ellipse((pose.x-home.size*.31,home.feet-3,pose.x+home.size*.31,home.feet+9),fill='#172132')
         fx.paint_sprite(field,source,pose)
@@ -133,7 +132,7 @@ def draw_frame(before, after, events=(), t=1):
         if 'tend' in kinds:
             targets=group.get('targets',set())
             for target in actors:
-                if target[0].uid in targets and target[4]:front.effect(fx.Animation('heal','nature'),target[4],target[4],move_t,scale=.7)
+                if target[0].uid in targets and target[4]:front.effect(fx.Animation('heal','nature',sequence='petal_mend'),target[4],target[4],move_t,scale=.7)
         if boss_animation and member.fighter.hp<prior.fighter.hp:
             front.effect(boss_animation,boss_home,home,move_t,scale=.55)
     field.alpha_composite(front.image)

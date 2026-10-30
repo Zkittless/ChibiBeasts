@@ -12,6 +12,7 @@ import math
 from PIL import Image, ImageDraw, ImageOps
 
 from utils.artwork import PROJECT_ROOT
+from utils import divine_effects, kinetic_effects
 
 IMPACT = .48
 RETREAT_MS = 1400
@@ -68,6 +69,9 @@ class Animation:
     motion: str = 'cast'
     variant: int = 0
     motif: str = 'spark'
+    sequence: str = 'legacy'
+    accent: int = 0
+    ultimate: bool = False
 
 
 @lru_cache(maxsize=1)
@@ -102,6 +106,8 @@ class Pose:
 
 def motion(animation, home, target, t):
     """Full-body movement; aspect ratio stays fixed even through a knockout."""
+    if animation.sequence != 'legacy':
+        return choreographed_motion(animation, home, target, t)
     forward = smooth((t - .22) / .26) if t < .48 else 1 - smooth((t - .53) / .3)
     dx, dy = target.x - home.x, target.feet - home.feet
     sign = 1 if dx >= 0 else -1
@@ -129,6 +135,116 @@ def motion(animation, home, target, t):
         return replace(home, feet=home.feet-amount*math.sin(clamp(t/.8)*math.pi),
                        angle=-sign*3*math.sin(clamp((t-.08)/.5)*math.pi))
     return home
+
+
+# These paths deliberately use different windups, silhouettes and recoveries.
+# They sample the already-resolved move clock: contact remains at IMPACT, and
+# both endpoints return the exact home pose, including armor and aspect ratio.
+RUSHES = frozenset({'jaw_snap', 'fang_rend', 'armor_break', 'claw_cross',
+    'crescent_cut', 'comet_dash', 'spear_thrust', 'venom_fang', 'ragnarok_fangs'})
+TRANSLATIONS = frozenset({'clock_fracture', 'paradox_loop', 'horizon_gate',
+    'terminus_severance', 'ouroboros_reset'})
+SLAMS = frozenset({'seismic_fault', 'titan_crush', 'meteor_drop'})
+LEVITATIONS = frozenset({'event_horizon', 'genesis_bloom', 'genesis_implosion',
+    'zodiac_alignment', 'astral_loom', 'judgment_lance', 'abyss_descent',
+    'stellar_nursery', 'supernova_detonation', 'nirvana_lotus', 'world_tree',
+    'phoenix_sunrise', 'dragon_apocalypse', 'hydra_constellation',
+    'sovereign_veil', 'prism_cathedral', 'lunar_procession', 'phantom_court',
+    'terminus_severance'})
+
+
+def choreographed_motion(animation, home, target, t):
+    if t <= 0 or t >= 1:
+        return home
+    seq = animation.sequence
+    dx, dy = target.x-home.x, target.feet-home.feet
+    sign = 1 if dx >= 0 else -1
+    windup = math.sin(clamp(t/.3)*math.pi)
+    # A brief settled contact provides hit weight without extending playback
+    # or delaying the next action window.
+    drive = smooth((t-.26)/.22) if t < IMPACT else 1-smooth((t-.57)/.3)
+    envelope = math.sin(clamp(t/.93)*math.pi)
+    if seq in RUSHES:
+        thrust = seq in {'spear_thrust', 'comet_dash'}
+        travel = (.68 if thrust else .59)*drive
+        leap = math.sin(clamp((t-.26)/.22)*math.pi)*(15 if thrust else 29) if t < IMPACT else 0
+        slash = seq in {'claw_cross', 'crescent_cut', 'fang_rend'}
+        return replace(home, x=home.x+dx*travel-sign*15*windup,
+                       feet=home.feet+dy*travel-leap-(8*drive if slash else 0),
+                       angle=sign*(-10*windup+(9 if slash else 5)*drive))
+    if seq in TRANSLATIONS and (seq != 'terminus_severance' or animation.family == 'time'):
+        travel = smooth((t-.37)/.11) if t < IMPACT else 1-smooth((t-.68)/.16)
+        # Horizon arrives high; time steps freeze near the contact position.
+        lift = (27 if seq == 'horizon_gate' else 8)*math.sin(travel*math.pi)
+        return replace(home, x=home.x+dx*.64*travel-sign*8*windup,
+                       feet=home.feet+dy*.64*travel-lift,
+                       angle=-sign*4*envelope)
+    if seq in SLAMS:
+        height = 56 if seq == 'titan_crush' else 38
+        lift = smooth((t-.1)/.18) if t < .28 else 1-smooth((t-.33)/.15)
+        recoil = math.sin(clamp((t-IMPACT)/.26)*math.pi)*7
+        return replace(home, feet=home.feet-height*lift-recoil,
+                       angle=-sign*7*windup+sign*4*recoil/7)
+    if seq == 'clock_rewind' or animation.motion == 'rewind':
+        loop = smooth((t-.06)/.25) if t < .31 else 1-smooth((t-.5)/.31)
+        return replace(home, x=home.x-sign*37*loop,
+                       feet=home.feet-12*math.sin(loop*math.pi), angle=sign*5*windup)
+    if seq in {'petal_mend', 'seed_bloom', 'nirvana_lotus'} and animation.family in {'heal', 'guard', 'rewind'}:
+        return replace(home, feet=home.feet-23*envelope,
+                       angle=sign*4*math.sin(t*math.pi*2)*envelope)
+    if seq in {'crystal_aegis', 'shell_bastion', 'mirror_decoy', 'feather_ward', 'karmic_mirror'}:
+        return replace(home, x=home.x-sign*8*envelope, feet=home.feet-3*envelope,
+                       angle=-sign*5*windup)
+    if seq in LEVITATIONS:
+        rise = smooth((t-.06)/.23)*(1-smooth((t-.72)/.22))
+        height = 42 if seq == 'phoenix_sunrise' else 25 if seq in {'genesis_bloom', 'stellar_nursery'} else 17
+        return replace(home, feet=home.feet-height*rise,
+                       angle=-sign*3*windup+sign*2*math.sin(t*math.pi*2)*rise)
+    if seq in {'cyclone', 'razor_gale', 'feather_ward', 'bat_swarm'}:
+        return replace(home, feet=home.feet-25*envelope,
+                       x=home.x+sign*8*math.sin(t*math.pi*2)*envelope,
+                       angle=-sign*8*math.sin(t*math.pi*2)*envelope)
+    if seq == 'leviathan_deluge' or seq in {'tidal_crest', 'geyser', 'water_spear'}:
+        return replace(home, feet=home.feet-11*envelope,
+                       angle=-sign*6*windup+sign*4*drive,
+                       x=home.x-sign*9*windup-sign*4*drive)
+    # Recoil is tied to the cast, rather than perpetual idle bobbing. Thread
+    # pulls have a backward snap; breath casters brace before exhaling.
+    pull = seq in {'loom_snap', 'thorn_lash', 'shadow_drain'}
+    recoil = math.sin(clamp((t-.44)/.32)*math.pi)
+    return replace(home, x=home.x-sign*(11 if pull else 6)*recoil-sign*5*windup,
+                   feet=home.feet-5*envelope,
+                   angle=-sign*(6 if seq == 'cinder_breath' else 4)*windup+sign*3*recoil)
+
+
+def reaction(animation, home, attacker, t):
+    """Resolved HP loss only; no recoil for guards, heals, swaps or misses."""
+    if not IMPACT <= t < .85:
+        return home
+    p = (t-IMPACT)/.37
+    sign = 1 if home.x >= attacker.x else -1
+    weight = 1.45 if animation.ultimate else 1
+    distance = 19 if animation.sequence in RUSHES | SLAMS else 11
+    # A sharp displacement followed by damped recovery reads as an impact,
+    # unlike the old symmetric idle sway.
+    impulse = math.sin(clamp(p/.24)*math.pi/2)*(1-p)**2
+    lift = 7 if animation.sequence in SLAMS else 3
+    return replace(home, x=home.x+sign*distance*weight*impulse,
+                   feet=home.feet-lift*weight*impulse,
+                   angle=sign*8*weight*impulse)
+
+
+def paint_echoes(image, source, animation, home, target, t):
+    """Readable body trails on fast moves, sampled from their actual paths."""
+    if source is None or not .28 < t < .77:
+        return
+    if animation.sequence not in RUSHES | TRANSLATIONS and animation.family not in {'time', 'rewind', 'illusion'}:
+        return
+    for delay, opacity in ((.11, .09), (.065, .15), (.028, .22)):
+        pose = motion(animation, home, target, max(0, t-delay))
+        current = motion(animation, home, target, t)
+        if abs(pose.x-current.x)+abs(pose.feet-current.feet) > 4:
+            paint_sprite(image, source, replace(pose, alpha=opacity))
 
 
 FLOATING = frozenset({'wisp', 'will_o_wisp', 'fairy', 'pixie', 'singularity', 'astraea', 'chronos',
@@ -240,6 +356,11 @@ class Effects:
 
     def effect(self, animation, actor, target, t, *, back=False, scale=1):
         """Each family has its own silhouette, travel path and impact sequence."""
+        if animation.sequence != 'legacy':
+            module = divine_effects if animation.sequence in divine_effects.SEQUENCES else kinetic_effects
+            if module.paint(self, animation, actor, target, t,
+                            colors=PALETTES[animation.palette], back=back, scale=scale):
+                return
         family, colors = animation.family, PALETTES[animation.palette]
         dark, mid, light = colors
         ax,ay=actor.x,actor.feet-(actor.height or actor.size)*.52

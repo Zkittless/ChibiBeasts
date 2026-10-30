@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Explicit presentation-only profiles. Support families follow actual move effects; combat remains authoritative.",
+  "version": 2,
+  "description": "Explicit presentation-only choreography for every canonical move. Each species has four distinct sequences; accent is a deterministic authored identity seed. Support staging follows actual move effects; combat remains authoritative.",
   "beasts": {
     "fairy": {
       "Pixie Dust": {
@@ -8,28 +8,40 @@
         "palette": "nature",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 12647,
+        "ultimate": false
       },
       "Leaf Dart": {
         "family": "heal",
         "palette": "wood",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seed_bloom",
+        "accent": 7597,
+        "ultimate": false
       },
       "Glitter Blind": {
         "family": "guard",
         "palette": "galaxy",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 61943,
+        "ultimate": false
       },
       "Fairy Ring": {
         "family": "orbit",
         "palette": "nature",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "genesis_bloom",
+        "accent": 9764,
+        "ultimate": true
       }
     },
     "pixie": {
@@ -38,28 +50,40 @@
         "palette": "arcane",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 20562,
+        "ultimate": false
       },
       "Trickster Flash": {
         "family": "gaze",
         "palette": "arcane",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "karmic_mirror",
+        "accent": 41300,
+        "ultimate": false
       },
       "Mana Sap": {
         "family": "guard",
         "palette": "arcane",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 29554,
+        "ultimate": false
       },
       "Grand Illusion": {
         "family": "orbit",
         "palette": "arcane",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "phantom_court",
+        "accent": 14204,
+        "ultimate": true
       }
     },
     "goblin": {
@@ -68,28 +92,40 @@
         "palette": "earth",
         "motion": "headbutt",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 16146,
+        "ultimate": false
       },
       "Dirt Toss": {
         "family": "splash",
         "palette": "earth",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "toxic_cauldron",
+        "accent": 29971,
+        "ultimate": false
       },
       "Scavenge": {
         "family": "guard",
         "palette": "earth",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 3888,
+        "ultimate": false
       },
       "Goblin Rampage": {
         "family": "dash",
         "palette": "earth",
         "motion": "dash",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 40676,
+        "ultimate": true
       }
     },
     "imp": {
@@ -98,28 +134,40 @@
         "palette": "shadow",
         "motion": "slash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "claw_cross",
+        "accent": 43132,
+        "ultimate": false
       },
       "Smoke Bomb": {
         "family": "swarm",
         "palette": "shadow",
         "motion": "cast",
         "variant": 3,
-        "motif": "bat"
+        "motif": "bat",
+        "sequence": "toxic_cauldron",
+        "accent": 3,
+        "ultimate": false
       },
       "Taunt": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 20777,
+        "ultimate": false
       },
       "Nightmare Swarm": {
         "family": "swarm",
         "palette": "shadow",
         "motion": "cast",
         "variant": 1,
-        "motif": "bat"
+        "motif": "bat",
+        "sequence": "bat_swarm",
+        "accent": 36839,
+        "ultimate": true
       }
     },
     "slime": {
@@ -128,28 +176,40 @@
         "palette": "nature",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "geyser",
+        "accent": 25531,
+        "ultimate": false
       },
       "Absorb": {
         "family": "heal",
         "palette": "nature",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seed_bloom",
+        "accent": 23292,
+        "ultimate": false
       },
       "Sticky Trap": {
         "family": "shelter",
         "palette": "nature",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 53340,
+        "ultimate": false
       },
       "Tidal Blob": {
         "family": "wave",
         "palette": "nature",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "tidal_crest",
+        "accent": 51183,
+        "ultimate": true
       }
     },
     "kitsune_1": {
@@ -158,28 +218,40 @@
         "palette": "arcane",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fire_wheel",
+        "accent": 23424,
+        "ultimate": false
       },
       "Illusion Step": {
         "family": "gaze",
         "palette": "arcane",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "karmic_mirror",
+        "accent": 50036,
+        "ultimate": false
       },
       "Spirit Tail": {
         "family": "guard",
         "palette": "arcane",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 16870,
+        "ultimate": false
       },
       "Foxfire Veil": {
         "family": "flame",
         "palette": "fire",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "dragon_apocalypse",
+        "accent": 51819,
+        "ultimate": true
       }
     },
     "dryad": {
@@ -188,28 +260,40 @@
         "palette": "wood",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "thorn_lash",
+        "accent": 46603,
+        "ultimate": false
       },
       "Nature's Embrace": {
         "family": "heal",
         "palette": "nature",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 37156,
+        "ultimate": false
       },
       "Root Bind": {
         "family": "shelter",
         "palette": "wood",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 47914,
+        "ultimate": false
       },
       "Ancient Grove": {
         "family": "roots",
         "palette": "wood",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "world_tree",
+        "accent": 40783,
+        "ultimate": true
       }
     },
     "hellhound": {
@@ -218,28 +302,40 @@
         "palette": "fire",
         "motion": "bite",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "jaw_snap",
+        "accent": 13270,
+        "ultimate": false
       },
       "Hellfire Dash": {
         "family": "flame",
         "palette": "fire",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 58700,
+        "ultimate": false
       },
       "Intimidate": {
         "family": "guard",
         "palette": "fire",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 38505,
+        "ultimate": false
       },
       "Inferno Howl": {
         "family": "flame",
         "palette": "fire",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "dragon_apocalypse",
+        "accent": 44153,
+        "ultimate": true
       }
     },
     "harpy": {
@@ -248,28 +344,40 @@
         "palette": "wind",
         "motion": "slash",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "claw_cross",
+        "accent": 8463,
+        "ultimate": false
       },
       "Wind Shriek": {
         "family": "wind",
         "palette": "wind",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 52239,
+        "ultimate": false
       },
       "Gale Dive": {
         "family": "wind_guard",
         "palette": "wind",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 46393,
+        "ultimate": false
       },
       "Tempest Screech": {
         "family": "wind",
         "palette": "wind",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cyclone",
+        "accent": 18371,
+        "ultimate": true
       }
     },
     "unicorn": {
@@ -278,28 +386,40 @@
         "palette": "light",
         "motion": "slash",
         "variant": 3,
-        "motif": "lance"
+        "motif": "lance",
+        "sequence": "spear_thrust",
+        "accent": 31243,
+        "ultimate": false
       },
       "Purify": {
         "family": "heal",
         "palette": "light",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 25018,
+        "ultimate": false
       },
       "Sacred Light": {
         "family": "guard",
         "palette": "light",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 22283,
+        "ultimate": false
       },
       "Radiant Charge": {
         "family": "dash",
         "palette": "light",
         "motion": "dash",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "judgment_lance",
+        "accent": 3117,
+        "ultimate": true
       }
     },
     "pegasus": {
@@ -308,28 +428,40 @@
         "palette": "wind",
         "motion": "dash",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 13952,
+        "ultimate": false
       },
       "Thunder Hooves": {
         "family": "lightning",
         "palette": "wind",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fork_lightning",
+        "accent": 38351,
+        "ultimate": false
       },
       "Aerial Slam": {
         "family": "wind_guard",
         "palette": "wind",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 58404,
+        "ultimate": false
       },
       "Storm Gallop": {
         "family": "dash",
         "palette": "wind",
         "motion": "dash",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "storm_barrage",
+        "accent": 27535,
+        "ultimate": true
       }
     },
     "griffin": {
@@ -338,28 +470,40 @@
         "palette": "wind",
         "motion": "dash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 33300,
+        "ultimate": false
       },
       "Lion Pounce": {
         "family": "headbutt",
         "palette": "wind",
         "motion": "headbutt",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 61906,
+        "ultimate": false
       },
       "Feather Blade": {
         "family": "guard",
         "palette": "wind",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 11855,
+        "ultimate": false
       },
       "Royal Tempest": {
         "family": "wind",
         "palette": "wind",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cyclone",
+        "accent": 13302,
+        "ultimate": true
       }
     },
     "basilisk": {
@@ -368,28 +512,40 @@
         "palette": "shadow",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 27852,
+        "ultimate": false
       },
       "Venom Fang": {
         "family": "bite",
         "palette": "venom",
         "motion": "bite",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "venom_fang",
+        "accent": 39243,
+        "ultimate": false
       },
       "Stone Scale": {
         "family": "shelter",
         "palette": "shadow",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 57210,
+        "ultimate": false
       },
       "Full Petrification": {
         "family": "gaze",
         "palette": "shadow",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_prison",
+        "accent": 45597,
+        "ultimate": true
       }
     },
     "cerberus": {
@@ -398,28 +554,40 @@
         "palette": "shadow",
         "motion": "bite",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fang_rend",
+        "accent": 14517,
+        "ultimate": false
       },
       "Hellfire Breath": {
         "family": "flame",
         "palette": "fire",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 26966,
+        "ultimate": false
       },
       "Soul Howl": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 24501,
+        "ultimate": false
       },
       "Gates of Tartarus": {
         "family": "rift",
         "palette": "shadow",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "abyss_descent",
+        "accent": 41623,
+        "ultimate": true
       }
     },
     "wyvern": {
@@ -428,28 +596,40 @@
         "palette": "venom",
         "motion": "slash",
         "variant": 1,
-        "motif": "lance"
+        "motif": "lance",
+        "sequence": "venom_fang",
+        "accent": 41012,
+        "ultimate": false
       },
       "Fire Breath": {
         "family": "flame",
         "palette": "fire",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 46245,
+        "ultimate": false
       },
       "Wing Slash": {
         "family": "wind_guard",
         "palette": "fire",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 60514,
+        "ultimate": false
       },
       "Toxic Inferno": {
         "family": "flame",
         "palette": "venom",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "dragon_apocalypse",
+        "accent": 32359,
+        "ultimate": true
       }
     },
     "phoenix": {
@@ -458,28 +638,40 @@
         "palette": "fire",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 48199,
+        "ultimate": false
       },
       "Ash Rebirth": {
         "family": "orbit",
         "palette": "fire",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fire_wheel",
+        "accent": 22267,
+        "ultimate": false
       },
       "Solar Flare": {
         "family": "guard",
         "palette": "fire",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 50255,
+        "ultimate": false
       },
       "Eternal Pyre": {
         "family": "flame",
         "palette": "fire",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "phoenix_sunrise",
+        "accent": 34928,
+        "ultimate": true
       }
     },
     "thunderbird": {
@@ -488,28 +680,40 @@
         "palette": "wind",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fork_lightning",
+        "accent": 2688,
+        "ultimate": false
       },
       "Thunder Clap": {
         "family": "lightning",
         "palette": "wind",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 61741,
+        "ultimate": false
       },
       "Storm Surge": {
         "family": "guard",
         "palette": "wind",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 33217,
+        "ultimate": false
       },
       "Apocalypse Storm": {
         "family": "lightning",
         "palette": "wind",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "storm_barrage",
+        "accent": 45434,
+        "ultimate": true
       }
     },
     "sphinx": {
@@ -518,28 +722,40 @@
         "palette": "arcane",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 13747,
+        "ultimate": false
       },
       "Arcane Swipe": {
         "family": "slash",
         "palette": "arcane",
         "motion": "slash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crescent_cut",
+        "accent": 20512,
+        "ultimate": false
       },
       "Mind Shatter": {
         "family": "guard",
         "palette": "arcane",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 20383,
+        "ultimate": false
       },
       "Eternal Enigma": {
         "family": "rift",
         "palette": "arcane",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "paradox_loop",
+        "accent": 28239,
+        "ultimate": true
       }
     },
     "yeti": {
@@ -548,28 +764,40 @@
         "palette": "ice",
         "motion": "headbutt",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 937,
+        "ultimate": false
       },
       "Frost Roar": {
         "family": "wind",
         "palette": "ice",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 37374,
+        "ultimate": false
       },
       "Avalanche": {
         "family": "guard",
         "palette": "ice",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 52747,
+        "ultimate": false
       },
       "Permafrost Slam": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seismic_fault",
+        "accent": 3239,
+        "ultimate": true
       }
     },
     "minotaur": {
@@ -578,28 +806,40 @@
         "palette": "earth",
         "motion": "slash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crescent_cut",
+        "accent": 47510,
+        "ultimate": false
       },
       "Bull Rush": {
         "family": "dash",
         "palette": "earth",
         "motion": "dash",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 16501,
+        "ultimate": false
       },
       "Ground Shatter": {
         "family": "shelter",
         "palette": "earth",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 62033,
+        "ultimate": false
       },
       "Maze of Fury": {
         "family": "orbit",
         "palette": "earth",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "titan_crush",
+        "accent": 27356,
+        "ultimate": true
       }
     },
     "kitsune_9": {
@@ -608,28 +848,40 @@
         "palette": "arcane",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "arrow_volley",
+        "accent": 4738,
+        "ultimate": false
       },
       "Grand Illusion": {
         "family": "gaze",
         "palette": "arcane",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "karmic_mirror",
+        "accent": 5173,
+        "ultimate": false
       },
       "Soul Fox Fire": {
         "family": "guard",
         "palette": "fire",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 22191,
+        "ultimate": false
       },
       "Fox God's Wrath": {
         "family": "orbit",
         "palette": "arcane",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "phantom_court",
+        "accent": 25999,
+        "ultimate": true
       }
     },
     "dragon": {
@@ -638,28 +890,40 @@
         "palette": "fire",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 38222,
+        "ultimate": false
       },
       "Tail Sweep": {
         "family": "slash",
         "palette": "fire",
         "motion": "slash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crescent_cut",
+        "accent": 34369,
+        "ultimate": false
       },
       "Scale Barrier": {
         "family": "shelter",
         "palette": "fire",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 64329,
+        "ultimate": false
       },
       "World Ender": {
         "family": "orbit",
         "palette": "fire",
         "motion": "cast",
         "variant": 2,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "dragon_apocalypse",
+        "accent": 28354,
+        "ultimate": true
       }
     },
     "kraken": {
@@ -668,28 +932,40 @@
         "palette": "water",
         "motion": "headbutt",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 1565,
+        "ultimate": false
       },
       "Ink Cloud": {
         "family": "swarm",
         "palette": "shadow",
         "motion": "cast",
         "variant": 1,
-        "motif": "bat"
+        "motif": "bat",
+        "sequence": "toxic_cauldron",
+        "accent": 42938,
+        "ultimate": false
       },
       "Tidal Wave": {
         "family": "guard",
         "palette": "water",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 26117,
+        "ultimate": false
       },
       "The Great Drowning": {
         "family": "wave",
         "palette": "water",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "leviathan_deluge",
+        "accent": 39569,
+        "ultimate": true
       }
     },
     "hydra": {
@@ -698,28 +974,40 @@
         "palette": "water",
         "motion": "headbutt",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "jaw_snap",
+        "accent": 18612,
+        "ultimate": false
       },
       "Regen Scale": {
         "family": "heal",
         "palette": "water",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 25248,
+        "ultimate": false
       },
       "Venom Torrent": {
         "family": "guard",
         "palette": "venom",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 12907,
+        "ultimate": false
       },
       "Infinite Heads": {
         "family": "swarm",
         "palette": "water",
         "motion": "cast",
         "variant": 3,
-        "motif": "fang"
+        "motif": "fang",
+        "sequence": "hydra_constellation",
+        "accent": 24477,
+        "ultimate": true
       }
     },
     "fenrir": {
@@ -728,28 +1016,40 @@
         "palette": "shadow",
         "motion": "bite",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fang_rend",
+        "accent": 22399,
+        "ultimate": false
       },
       "Chain Break": {
         "family": "slash",
         "palette": "shadow",
         "motion": "slash",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crescent_cut",
+        "accent": 17012,
+        "ultimate": false
       },
       "Shadow Howl": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 14815,
+        "ultimate": false
       },
       "Ragnarok Bite": {
         "family": "bite",
         "palette": "shadow",
         "motion": "bite",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "ragnarok_fangs",
+        "accent": 62054,
+        "ultimate": true
       }
     },
     "charybdis": {
@@ -758,28 +1058,40 @@
         "palette": "wind",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cyclone",
+        "accent": 27571,
+        "ultimate": false
       },
       "Depth Pull": {
         "family": "bolt",
         "palette": "wind",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "water_spear",
+        "accent": 14505,
+        "ultimate": false
       },
       "Current Crush": {
         "family": "guard",
         "palette": "wind",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 22685,
+        "ultimate": false
       },
       "The Great Vortex": {
         "family": "wave",
         "palette": "wind",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "abyss_descent",
+        "accent": 19457,
+        "ultimate": true
       }
     },
     "leviathan": {
@@ -788,28 +1100,40 @@
         "palette": "water",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "tidal_crest",
+        "accent": 51978,
+        "ultimate": false
       },
       "Abyssal Roar": {
         "family": "wind",
         "palette": "water",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 29090,
+        "ultimate": false
       },
       "Tidal Crush": {
         "family": "guard",
         "palette": "water",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 7462,
+        "ultimate": false
       },
       "Sea of Chaos": {
         "family": "wave",
         "palette": "water",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "leviathan_deluge",
+        "accent": 24154,
+        "ultimate": true
       }
     },
     "singularity": {
@@ -818,28 +1142,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "event_horizon",
+        "accent": 59380,
+        "ultimate": false
       },
       "Galaxy Absorb": {
         "family": "drain",
         "palette": "galaxy",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shadow_drain",
+        "accent": 12076,
+        "ultimate": false
       },
       "Dark Matter Pulse": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 57710,
+        "ultimate": false
       },
       "Big Bang": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 2,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "supernova_detonation",
+        "accent": 38241,
+        "ultimate": true
       }
     },
     "astraea": {
@@ -848,28 +1184,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "zodiac_alignment",
+        "accent": 62935,
+        "ultimate": false
       },
       "Star Thread": {
         "family": "thread",
         "palette": "thread",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "loom_snap",
+        "accent": 37309,
+        "ultimate": false
       },
       "Cosmic Loom": {
         "family": "guard",
         "palette": "thread",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 60736,
+        "ultimate": false
       },
       "Weave of Eternity": {
         "family": "thread",
         "palette": "thread",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "astral_loom",
+        "accent": 54323,
+        "ultimate": true
       }
     },
     "chronos": {
@@ -878,28 +1226,40 @@
         "palette": "clock",
         "motion": "time",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_fracture",
+        "accent": 40874,
+        "ultimate": false
       },
       "Epoch Shift": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "paradox_loop",
+        "accent": 2261,
+        "ultimate": false
       },
       "Temporal Lock": {
         "family": "rewind",
         "palette": "clock",
         "motion": "rewind",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 30551,
+        "ultimate": false
       },
       "End of Time": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "terminus_severance",
+        "accent": 4509,
+        "ultimate": true
       }
     },
     "aetherius": {
@@ -908,28 +1268,40 @@
         "palette": "cosmic",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 14499,
+        "ultimate": false
       },
       "Aether Crush": {
         "family": "headbutt",
         "palette": "cosmic",
         "motion": "headbutt",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 10985,
+        "ultimate": false
       },
       "Dark Tide": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 63274,
+        "ultimate": false
       },
       "Consuming Void": {
         "family": "rift",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "event_horizon",
+        "accent": 14554,
+        "ultimate": true
       }
     },
     "genesis": {
@@ -938,28 +1310,40 @@
         "palette": "fire",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 44005,
+        "ultimate": false
       },
       "Creation Burst": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "meteor_drop",
+        "accent": 48749,
+        "ultimate": false
       },
       "First Light": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 60943,
+        "ultimate": false
       },
       "Genesis Explosion": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 3,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "genesis_bloom",
+        "accent": 6033,
+        "ultimate": true
       }
     },
     "terminus": {
@@ -968,28 +1352,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "judgment_lance",
+        "accent": 19143,
+        "ultimate": false
       },
       "End Gaze": {
         "family": "gaze",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 25190,
+        "ultimate": false
       },
       "Silence": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 54182,
+        "ultimate": false
       },
       "Last Twilight": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "terminus_severance",
+        "accent": 426,
+        "ultimate": true
       }
     },
     "paradox": {
@@ -998,28 +1394,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "karmic_mirror",
+        "accent": 48211,
+        "ultimate": false
       },
       "Contradiction": {
         "family": "rift",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "horizon_gate",
+        "accent": 63238,
+        "ultimate": false
       },
       "Impossible Truth": {
         "family": "rewind",
         "palette": "clock",
         "motion": "rewind",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 1077,
+        "ultimate": false
       },
       "Infinite Loop": {
         "family": "time",
         "palette": "cosmic",
         "motion": "time",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "paradox_loop",
+        "accent": 29489,
+        "ultimate": true
       }
     },
     "horizon": {
@@ -1028,28 +1436,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "terminus_severance",
+        "accent": 1240,
+        "ultimate": false
       },
       "Dimensional Claw": {
         "family": "slash",
         "palette": "cosmic",
         "motion": "slash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crescent_cut",
+        "accent": 14977,
+        "ultimate": false
       },
       "Edge of Reality": {
         "family": "rewind",
         "palette": "clock",
         "motion": "rewind",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 25862,
+        "ultimate": false
       },
       "Beyond the Horizon": {
         "family": "rift",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "horizon_gate",
+        "accent": 61420,
+        "ultimate": true
       }
     },
     "karma": {
@@ -1058,28 +1478,40 @@
         "palette": "thread",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "loom_snap",
+        "accent": 11468,
+        "ultimate": false
       },
       "Karmic Return": {
         "family": "bolt",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 11709,
+        "ultimate": false
       },
       "Destiny Weave": {
         "family": "guard",
         "palette": "thread",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 28502,
+        "ultimate": false
       },
       "What Goes Around": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "karmic_mirror",
+        "accent": 56975,
+        "ultimate": true
       }
     },
     "zodiac": {
@@ -1088,28 +1520,40 @@
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "stellar_nursery",
+        "accent": 14096,
+        "ultimate": false
       },
       "Constellation Beam": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "judgment_lance",
+        "accent": 8307,
+        "ultimate": false
       },
       "Astral Antler": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 46007,
+        "ultimate": false
       },
       "Zodiac Alignment": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "zodiac_alignment",
+        "accent": 36420,
+        "ultimate": true
       }
     },
     "abyss": {
@@ -1118,28 +1562,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shadow_drain",
+        "accent": 37562,
+        "ultimate": false
       },
       "Void Pounce": {
         "family": "rift",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 53614,
+        "ultimate": false
       },
       "Singularity Roar": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 47090,
+        "ultimate": false
       },
       "Into the Abyss": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "abyss_descent",
+        "accent": 29413,
+        "ultimate": true
       }
     },
     "nebula": {
@@ -1148,28 +1604,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "thorn_lash",
+        "accent": 41905,
+        "ultimate": false
       },
       "Star Birth": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "genesis_bloom",
+        "accent": 36536,
+        "ultimate": false
       },
       "Cosmic Breath": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 19796,
+        "ultimate": false
       },
       "Stellar Nursery": {
         "family": "orbit",
         "palette": "galaxy",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "stellar_nursery",
+        "accent": 58860,
+        "ultimate": true
       }
     },
     "supernova": {
@@ -1178,28 +1646,40 @@
         "palette": "cosmic",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 30260,
+        "ultimate": false
       },
       "Nova Burst": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "meteor_drop",
+        "accent": 23962,
+        "ultimate": false
       },
       "Gamma Ray": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 27098,
+        "ultimate": false
       },
       "Final Explosion": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 3,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "supernova_detonation",
+        "accent": 41627,
+        "ultimate": true
       }
     },
     "nirvana": {
@@ -1208,28 +1688,40 @@
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "flower"
+        "motif": "flower",
+        "sequence": "genesis_bloom",
+        "accent": 41403,
+        "ultimate": false
       },
       "Enlightened Strike": {
         "family": "headbutt",
         "palette": "cosmic",
         "motion": "headbutt",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 31193,
+        "ultimate": false
       },
       "Peaceful Aura": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 61808,
+        "ultimate": false
       },
       "State of Nirvana": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 1,
-        "motif": "flower"
+        "motif": "flower",
+        "sequence": "nirvana_lotus",
+        "accent": 10501,
+        "ultimate": true
       }
     },
     "asgard": {
@@ -1238,28 +1730,40 @@
         "palette": "arcane",
         "motion": "dash",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 62299,
+        "ultimate": false
       },
       "Thunder Fang": {
         "family": "lightning",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fork_lightning",
+        "accent": 176,
+        "ultimate": false
       },
       "Realm Walk": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 34505,
+        "ultimate": false
       },
       "Yggdrasil's Rage": {
         "family": "roots",
         "palette": "wood",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "world_tree",
+        "accent": 47928,
+        "ultimate": true
       }
     },
     "atlas": {
@@ -1268,28 +1772,40 @@
         "palette": "cosmic",
         "motion": "stomp",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 35372,
+        "ultimate": false
       },
       "Seismic Stomp": {
         "family": "stomp",
         "palette": "cosmic",
         "motion": "stomp",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seismic_fault",
+        "accent": 64832,
+        "ultimate": false
       },
       "Continental Crush": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 49192,
+        "ultimate": false
       },
       "Weight of the World": {
         "family": "stomp",
         "palette": "cosmic",
         "motion": "stomp",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "titan_crush",
+        "accent": 54215,
+        "ultimate": true
       }
     },
     "prismite": {
@@ -1298,28 +1814,40 @@
         "palette": "arcane",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spear_thrust",
+        "accent": 28396,
+        "ultimate": false
       },
       "Halo Glint": {
         "family": "orbit",
         "palette": "arcane",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 58123,
+        "ultimate": false
       },
       "Refract": {
         "family": "illusion",
         "palette": "arcane",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 1825,
+        "ultimate": false
       },
       "Perfect Geometry": {
         "family": "orbit",
         "palette": "arcane",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "prism_cathedral",
+        "accent": 57386,
+        "ultimate": true
       }
     },
     "twine": {
@@ -1328,28 +1856,40 @@
         "palette": "clock",
         "motion": "bite",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "jaw_snap",
+        "accent": 52249,
+        "ultimate": false
       },
       "Thread Snap": {
         "family": "thread",
         "palette": "thread",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "loom_snap",
+        "accent": 4487,
+        "ultimate": false
       },
       "Rewind Nibble": {
         "family": "rewind",
         "palette": "clock",
         "motion": "rewind",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 47031,
+        "ultimate": false
       },
       "Borrowed Moment": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_fracture",
+        "accent": 38954,
+        "ultimate": true
       }
     },
     "gloop": {
@@ -1358,28 +1898,40 @@
         "palette": "galaxy",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "geyser",
+        "accent": 20236,
+        "ultimate": false
       },
       "Glitter Bounce": {
         "family": "heal",
         "palette": "galaxy",
         "motion": "bounce",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 22121,
+        "ultimate": false
       },
       "Shapeshift Slap": {
         "family": "illusion",
         "palette": "galaxy",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 62874,
+        "ultimate": false
       },
       "Starlit Tide": {
         "family": "wave",
         "palette": "galaxy",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "tidal_crest",
+        "accent": 53711,
+        "ultimate": true
       }
     },
     "barkley": {
@@ -1388,28 +1940,40 @@
         "palette": "wood",
         "motion": "headbutt",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 44065,
+        "ultimate": false
       },
       "Bark Armor": {
         "family": "heal",
         "palette": "wood",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seed_bloom",
+        "accent": 56786,
+        "ultimate": false
       },
       "Stubborn Stomp": {
         "family": "shelter",
         "palette": "wood",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 12642,
+        "ultimate": false
       },
       "Unmovable Root": {
         "family": "roots",
         "palette": "wood",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "thorn_eruption",
+        "accent": 57750,
+        "ultimate": true
       }
     },
     "centry": {
@@ -1418,28 +1982,40 @@
         "palette": "earth",
         "motion": "stomp",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seismic_fault",
+        "accent": 26641,
+        "ultimate": false
       },
       "Arrow Rain": {
         "family": "swarm",
         "palette": "earth",
         "motion": "cast",
         "variant": 1,
-        "motif": "arrow"
+        "motif": "arrow",
+        "sequence": "arrow_volley",
+        "accent": 11,
+        "ultimate": false
       },
       "Charge": {
         "family": "guard",
         "palette": "earth",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 23530,
+        "ultimate": false
       },
       "Stampede": {
         "family": "dash",
         "palette": "earth",
         "motion": "dash",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 21619,
+        "ultimate": true
       }
     },
     "wisp": {
@@ -1448,28 +2024,40 @@
         "palette": "light",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 27065,
+        "ultimate": false
       },
       "Fade": {
         "family": "heal",
         "palette": "light",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 58114,
+        "ultimate": false
       },
       "Flicker Strike": {
         "family": "guard",
         "palette": "light",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 34376,
+        "ultimate": false
       },
       "Blinding Flash": {
         "family": "orbit",
         "palette": "light",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "supernova_detonation",
+        "accent": 33319,
+        "ultimate": true
       }
     },
     "mudpup": {
@@ -1478,28 +2066,40 @@
         "palette": "earth",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "water_spear",
+        "accent": 51689,
+        "ultimate": false
       },
       "Belly Flop": {
         "family": "headbutt",
         "palette": "earth",
         "motion": "dash",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 3574,
+        "ultimate": false
       },
       "Burrow": {
         "family": "guard",
         "palette": "earth",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 46877,
+        "ultimate": false
       },
       "Landslide": {
         "family": "stomp",
         "palette": "earth",
         "motion": "stomp",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seismic_fault",
+        "accent": 21485,
+        "ultimate": true
       }
     },
     "strix": {
@@ -1508,28 +2108,40 @@
         "palette": "shadow",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "razor_gale",
+        "accent": 285,
+        "ultimate": false
       },
       "Eye Curse": {
         "family": "gaze",
         "palette": "shadow",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 8381,
+        "ultimate": false
       },
       "Screech": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 56185,
+        "ultimate": false
       },
       "Night Omens": {
         "family": "orbit",
         "palette": "shadow",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "lunar_procession",
+        "accent": 24572,
+        "ultimate": true
       }
     },
     "kelpie": {
@@ -1538,28 +2150,40 @@
         "palette": "water",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "water_spear",
+        "accent": 45236,
+        "ultimate": false
       },
       "River Rush": {
         "family": "wave",
         "palette": "water",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "tidal_crest",
+        "accent": 47641,
+        "ultimate": false
       },
       "Drown": {
         "family": "guard",
         "palette": "water",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 50660,
+        "ultimate": false
       },
       "Undertow": {
         "family": "wave",
         "palette": "water",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "geyser",
+        "accent": 36115,
+        "ultimate": true
       }
     },
     "manticore": {
@@ -1568,28 +2192,40 @@
         "palette": "earth",
         "motion": "headbutt",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 53443,
+        "ultimate": false
       },
       "Venom Sting": {
         "family": "slash",
         "palette": "venom",
         "motion": "slash",
         "variant": 2,
-        "motif": "lance"
+        "motif": "lance",
+        "sequence": "venom_fang",
+        "accent": 51574,
+        "ultimate": false
       },
       "Wing Slash": {
         "family": "wind_guard",
         "palette": "earth",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 35348,
+        "ultimate": false
       },
       "Barrage": {
         "family": "swarm",
         "palette": "earth",
         "motion": "cast",
         "variant": 0,
-        "motif": "arrow"
+        "motif": "arrow",
+        "sequence": "arrow_volley",
+        "accent": 16332,
+        "ultimate": true
       }
     },
     "will_o_wisp": {
@@ -1598,28 +2234,40 @@
         "palette": "shadow",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fire_wheel",
+        "accent": 16345,
+        "ultimate": false
       },
       "Confusion Pulse": {
         "family": "gaze",
         "palette": "shadow",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "karmic_mirror",
+        "accent": 47268,
+        "ultimate": false
       },
       "Lure": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 64737,
+        "ultimate": false
       },
       "False Horizon": {
         "family": "rift",
         "palette": "shadow",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "horizon_gate",
+        "accent": 19096,
+        "ultimate": true
       }
     },
     "rukh": {
@@ -1628,28 +2276,40 @@
         "palette": "wind",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "razor_gale",
+        "accent": 6984,
+        "ultimate": false
       },
       "Wind Wall": {
         "family": "wind",
         "palette": "wind",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cyclone",
+        "accent": 31637,
+        "ultimate": false
       },
       "Updraft": {
         "family": "wind_guard",
         "palette": "wind",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 8492,
+        "ultimate": false
       },
       "Shadow of Wings": {
         "family": "swarm",
         "palette": "wind",
         "motion": "hover",
         "variant": 3,
-        "motif": "feather"
+        "motif": "feather",
+        "sequence": "arrow_volley",
+        "accent": 20088,
+        "ultimate": true
       }
     },
     "glacius": {
@@ -1658,28 +2318,40 @@
         "palette": "ice",
         "motion": "bite",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fang_rend",
+        "accent": 23483,
+        "ultimate": false
       },
       "Ice Shell": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_prison",
+        "accent": 58407,
+        "ultimate": false
       },
       "Glacial Slam": {
         "family": "shelter",
         "palette": "ice",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 39683,
+        "ultimate": false
       },
       "Permafrost": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "hail_lance",
+        "accent": 18978,
+        "ultimate": true
       }
     },
     "behemoth": {
@@ -1688,28 +2360,40 @@
         "palette": "earth",
         "motion": "stomp",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seismic_fault",
+        "accent": 8686,
+        "ultimate": false
       },
       "Stone Wall": {
         "family": "stomp",
         "palette": "earth",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 52181,
+        "ultimate": false
       },
       "Stampede": {
         "family": "guard",
         "palette": "earth",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 37414,
+        "ultimate": false
       },
       "Continental Shift": {
         "family": "stomp",
         "palette": "earth",
         "motion": "stomp",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "titan_crush",
+        "accent": 49625,
+        "ultimate": true
       }
     },
     "wendigo": {
@@ -1718,28 +2402,40 @@
         "palette": "ice",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 45409,
+        "ultimate": false
       },
       "Bone Chill": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_prison",
+        "accent": 56415,
+        "ultimate": false
       },
       "Hunger Strike": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 38979,
+        "ultimate": false
       },
       "Eternal Winter": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "hail_lance",
+        "accent": 60382,
+        "ultimate": true
       }
     },
     "jormungandr": {
@@ -1748,28 +2444,40 @@
         "palette": "shadow",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "thorn_lash",
+        "accent": 5922,
+        "ultimate": false
       },
       "Venom Tide": {
         "family": "wave",
         "palette": "venom",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "toxic_cauldron",
+        "accent": 19662,
+        "ultimate": false
       },
       "Abyss Pull": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 59674,
+        "ultimate": false
       },
       "Ouroboros": {
         "family": "orbit",
         "palette": "shadow",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "ouroboros_reset",
+        "accent": 52589,
+        "ultimate": true
       }
     },
     "simurgh": {
@@ -1778,28 +2486,40 @@
         "palette": "fire",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fire_wheel",
+        "accent": 17271,
+        "ultimate": false
       },
       "Wisdom Strike": {
         "family": "headbutt",
         "palette": "wind",
         "motion": "headbutt",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 1914,
+        "ultimate": false
       },
       "Radiance": {
         "family": "guard",
         "palette": "wind",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 35732,
+        "ultimate": false
       },
       "End of an Age": {
         "family": "orbit",
         "palette": "wind",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "phoenix_sunrise",
+        "accent": 8536,
+        "ultimate": true
       }
     },
     "void_chronos": {
@@ -1808,28 +2528,40 @@
         "palette": "clock",
         "motion": "time",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_fracture",
+        "accent": 42675,
+        "ultimate": false
       },
       "Void Epoch": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "paradox_loop",
+        "accent": 28698,
+        "ultimate": false
       },
       "Temporal Lock": {
         "family": "rewind",
         "palette": "clock",
         "motion": "rewind",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 32548,
+        "ultimate": false
       },
       "Temporal Collapse": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "event_horizon",
+        "accent": 37672,
+        "ultimate": true
       }
     },
     "fractured_genesis": {
@@ -1838,28 +2570,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "horizon_gate",
+        "accent": 18856,
+        "ultimate": false
       },
       "Reality Shard": {
         "family": "splash",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "hail_lance",
+        "accent": 276,
+        "ultimate": false
       },
       "First Light": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 10926,
+        "ultimate": false
       },
       "Genesis Implosion": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "genesis_implosion",
+        "accent": 44889,
+        "ultimate": true
       }
     },
     "abyssal_nebula": {
@@ -1868,28 +2612,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "event_horizon",
+        "accent": 40263,
+        "ultimate": false
       },
       "Star Death": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "meteor_drop",
+        "accent": 63093,
+        "ultimate": false
       },
       "Void Pounce": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 27263,
+        "ultimate": false
       },
       "Cosmic Annihilation": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "supernova_detonation",
+        "accent": 26021,
+        "ultimate": true
       }
     },
     "corrupted_leviathan": {
@@ -1898,28 +2654,40 @@
         "palette": "water",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "tidal_crest",
+        "accent": 57608,
+        "ultimate": false
       },
       "Corrupted Surge": {
         "family": "wave",
         "palette": "water",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "geyser",
+        "accent": 9319,
+        "ultimate": false
       },
       "Tainted Coil": {
         "family": "guard",
         "palette": "water",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 15186,
+        "ultimate": false
       },
       "Abyssal Corruption": {
         "family": "wave",
         "palette": "shadow",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "abyss_descent",
+        "accent": 104,
+        "ultimate": true
       }
     },
     "corrupted_fenrir": {
@@ -1928,28 +2696,40 @@
         "palette": "shadow",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 65212,
+        "ultimate": false
       },
       "Rift Fang": {
         "family": "bite",
         "palette": "shadow",
         "motion": "bite",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fang_rend",
+        "accent": 65260,
+        "ultimate": false
       },
       "Dark Chain": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 21879,
+        "ultimate": false
       },
       "Reality Tear": {
         "family": "rift",
         "palette": "shadow",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "terminus_severance",
+        "accent": 23227,
+        "ultimate": true
       }
     },
     "corrupted_dragon": {
@@ -1958,28 +2738,40 @@
         "palette": "fire",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 15903,
+        "ultimate": false
       },
       "Corrupted Roar": {
         "family": "wind",
         "palette": "fire",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sonic_cry",
+        "accent": 12800,
+        "ultimate": false
       },
       "Dark Talon": {
         "family": "guard",
         "palette": "fire",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 56746,
+        "ultimate": false
       },
       "Extinction Breath": {
         "family": "flame",
         "palette": "shadow",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "dragon_apocalypse",
+        "accent": 47150,
+        "ultimate": true
       }
     },
     "ancient_chronos": {
@@ -1988,28 +2780,40 @@
         "palette": "clock",
         "motion": "time",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_fracture",
+        "accent": 56948,
+        "ultimate": false
       },
       "Ancient Epoch": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "paradox_loop",
+        "accent": 11640,
+        "ultimate": false
       },
       "Primordial Lock": {
         "family": "rewind",
         "palette": "clock",
         "motion": "rewind",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 35080,
+        "ultimate": false
       },
       "Beginning of Time": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "ouroboros_reset",
+        "accent": 53330,
+        "ultimate": true
       }
     },
     "ancient_genesis": {
@@ -2018,28 +2822,40 @@
         "palette": "cosmic",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "genesis_bloom",
+        "accent": 44949,
+        "ultimate": false
       },
       "Origin Burst": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "meteor_drop",
+        "accent": 7068,
+        "ultimate": false
       },
       "Primordial Flame": {
         "family": "guard",
         "palette": "fire",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 21161,
+        "ultimate": false
       },
       "Big Bang": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "hover",
         "variant": 2,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "supernova_detonation",
+        "accent": 47902,
+        "ultimate": true
       }
     },
     "ancient_abyss": {
@@ -2048,28 +2864,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "event_horizon",
+        "accent": 31579,
+        "ultimate": false
       },
       "Pre-Existence": {
         "family": "bolt",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shadow_drain",
+        "accent": 39279,
+        "ultimate": false
       },
       "Ancient Dark": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 24858,
+        "ultimate": false
       },
       "Heat Death": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "terminus_severance",
+        "accent": 4766,
+        "ultimate": true
       }
     },
     "ouroboros": {
@@ -2078,28 +2906,40 @@
         "palette": "cosmic",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "horizon_gate",
+        "accent": 18921,
+        "ultimate": false
       },
       "Overflow": {
         "family": "rift",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "genesis_implosion",
+        "accent": 51815,
+        "ultimate": false
       },
       "Cascade Failure": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 2516,
+        "ultimate": false
       },
       "Hard Reset": {
         "family": "rift",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "ouroboros_reset",
+        "accent": 40171,
+        "ultimate": true
       }
     },
     "ascended_slime": {
@@ -2108,28 +2948,40 @@
         "palette": "nature",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shadow_drain",
+        "accent": 13729,
+        "ultimate": false
       },
       "Primordial Surge": {
         "family": "heal",
         "palette": "nature",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seed_bloom",
+        "accent": 26981,
+        "ultimate": false
       },
       "Null Compress": {
         "family": "guard",
         "palette": "nature",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 29996,
+        "ultimate": false
       },
       "Singularity Collapse": {
         "family": "orbit",
         "palette": "nature",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "event_horizon",
+        "accent": 17602,
+        "ultimate": true
       }
     },
     "ascended_unicorn": {
@@ -2138,28 +2990,40 @@
         "palette": "light",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "judgment_lance",
+        "accent": 52461,
+        "ultimate": false
       },
       "Luminal Strike": {
         "family": "heal",
         "palette": "light",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 43564,
+        "ultimate": false
       },
       "Absolution": {
         "family": "guard",
         "palette": "light",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 2343,
+        "ultimate": false
       },
       "Graceful Annihilation": {
         "family": "orbit",
         "palette": "light",
         "motion": "cast",
         "variant": 3,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "prism_cathedral",
+        "accent": 21846,
+        "ultimate": true
       }
     },
     "ascended_pegasus": {
@@ -2168,28 +3032,40 @@
         "palette": "wind",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spear_thrust",
+        "accent": 24877,
+        "ultimate": false
       },
       "Rift Gallop": {
         "family": "rift",
         "palette": "wind",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "horizon_gate",
+        "accent": 42032,
+        "ultimate": false
       },
       "Pressure Wave": {
         "family": "wind_guard",
         "palette": "wind",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 10283,
+        "ultimate": false
       },
       "Dimensional Sprint": {
         "family": "rift",
         "palette": "wind",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 53360,
+        "ultimate": true
       }
     },
     "ascended_phoenix": {
@@ -2198,28 +3074,40 @@
         "palette": "fire",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "cinder_breath",
+        "accent": 59268,
+        "ultimate": false
       },
       "Ash Unending": {
         "family": "bolt",
         "palette": "fire",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fire_wheel",
+        "accent": 32966,
+        "ultimate": false
       },
       "Solar Immolation": {
         "family": "guard",
         "palette": "fire",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "feather_ward",
+        "accent": 22775,
+        "ultimate": false
       },
       "The Last Sunrise": {
         "family": "flame",
         "palette": "fire",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "phoenix_sunrise",
+        "accent": 55945,
+        "ultimate": true
       }
     },
     "radiant_goblin": {
@@ -2228,28 +3116,40 @@
         "palette": "earth",
         "motion": "headbutt",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 3658,
+        "ultimate": false
       },
       "Molten Dirt": {
         "family": "splash",
         "palette": "fire",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "meteor_drop",
+        "accent": 4019,
+        "ultimate": false
       },
       "Scorch Scavenge": {
         "family": "guard",
         "palette": "fire",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 36087,
+        "ultimate": false
       },
       "Forge Rampage": {
         "family": "dash",
         "palette": "earth",
         "motion": "dash",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "comet_dash",
+        "accent": 61854,
+        "ultimate": true
       }
     },
     "radiant_imp": {
@@ -2258,28 +3158,40 @@
         "palette": "shadow",
         "motion": "slash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "claw_cross",
+        "accent": 44151,
+        "ultimate": false
       },
       "Smoke Cloak": {
         "family": "swarm",
         "palette": "shadow",
         "motion": "cast",
         "variant": 1,
-        "motif": "bat"
+        "motif": "bat",
+        "sequence": "toxic_cauldron",
+        "accent": 30554,
+        "ultimate": false
       },
       "Haunting Taunt": {
         "family": "guard",
         "palette": "shadow",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 59112,
+        "ultimate": false
       },
       "Shadow Swarm": {
         "family": "swarm",
         "palette": "shadow",
         "motion": "cast",
         "variant": 0,
-        "motif": "bat"
+        "motif": "bat",
+        "sequence": "bat_swarm",
+        "accent": 33775,
+        "ultimate": true
       }
     },
     "radiant_hydra": {
@@ -2288,28 +3200,40 @@
         "palette": "water",
         "motion": "headbutt",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fang_rend",
+        "accent": 24489,
+        "ultimate": false
       },
       "Void Scale Regen": {
         "family": "heal",
         "palette": "water",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 9466,
+        "ultimate": false
       },
       "Venom of Ages": {
         "family": "guard",
         "palette": "venom",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 48708,
+        "ultimate": false
       },
       "Heads Without End": {
         "family": "swarm",
         "palette": "water",
         "motion": "cast",
         "variant": 0,
-        "motif": "fang"
+        "motif": "fang",
+        "sequence": "hydra_constellation",
+        "accent": 21387,
+        "ultimate": true
       }
     },
     "radiant_kitsune": {
@@ -2318,28 +3242,40 @@
         "palette": "arcane",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "arrow_volley",
+        "accent": 55009,
+        "ultimate": false
       },
       "Radiant Illusion": {
         "family": "gaze",
         "palette": "arcane",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "karmic_mirror",
+        "accent": 5719,
+        "ultimate": false
       },
       "Fox Fire Ascendant": {
         "family": "guard",
         "palette": "fire",
         "motion": "brace",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 34822,
+        "ultimate": false
       },
       "Sovereign Veil": {
         "family": "orbit",
         "palette": "arcane",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "sovereign_veil",
+        "accent": 37364,
+        "ultimate": true
       }
     },
     "frost_sprite": {
@@ -2348,28 +3284,40 @@
         "palette": "ice",
         "motion": "bite",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "jaw_snap",
+        "accent": 61426,
+        "ultimate": false
       },
       "Cold Shoulder": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_prison",
+        "accent": 33474,
+        "ultimate": false
       },
       "Rime Veil": {
         "family": "illusion",
         "palette": "ice",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "mirror_decoy",
+        "accent": 16984,
+        "ultimate": false
       },
       "Winter's Breath": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "hail_lance",
+        "accent": 18544,
+        "ultimate": true
       }
     },
     "permafrost": {
@@ -2378,28 +3326,40 @@
         "palette": "ice",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seismic_fault",
+        "accent": 14253,
+        "ultimate": false
       },
       "Frost Shell": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_prison",
+        "accent": 3405,
+        "ultimate": false
       },
       "Permafrost Wall": {
         "family": "shelter",
         "palette": "ice",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 17125,
+        "ultimate": false
       },
       "Absolute Zero": {
         "family": "ice",
         "palette": "ice",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "hail_lance",
+        "accent": 30331,
+        "ultimate": true
       }
     },
     "abyssal_eel": {
@@ -2408,28 +3368,40 @@
         "palette": "water",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "water_spear",
+        "accent": 45185,
+        "ultimate": false
       },
       "Deep Current": {
         "family": "wave",
         "palette": "water",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "geyser",
+        "accent": 32556,
+        "ultimate": false
       },
       "Voltage Coil": {
         "family": "guard",
         "palette": "water",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 31554,
+        "ultimate": false
       },
       "Trench Discharge": {
         "family": "lightning",
         "palette": "water",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fork_lightning",
+        "accent": 44043,
+        "ultimate": true
       }
     },
     "loom_fragment": {
@@ -2438,28 +3410,40 @@
         "palette": "thread",
         "motion": "cast",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "loom_snap",
+        "accent": 23784,
+        "ultimate": false
       },
       "Loom Pulse": {
         "family": "thread",
         "palette": "thread",
         "motion": "cast",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 61722,
+        "ultimate": false
       },
       "Unraveling": {
         "family": "guard",
         "palette": "cosmic",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 2599,
+        "ultimate": false
       },
       "The Sundering Echo": {
         "family": "orbit",
         "palette": "cosmic",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "astral_loom",
+        "accent": 32073,
+        "ultimate": true
       }
     },
     "prismara": {
@@ -2468,28 +3452,40 @@
         "palette": "arcane",
         "motion": "slash",
         "variant": 2,
-        "motif": "lance"
+        "motif": "lance",
+        "sequence": "spear_thrust",
+        "accent": 29618,
+        "ultimate": false
       },
       "Halo Glint": {
         "family": "orbit",
         "palette": "arcane",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "judgment_lance",
+        "accent": 6559,
+        "ultimate": false
       },
       "Prism Shelter": {
         "family": "shelter",
         "palette": "arcane",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 28606,
+        "ultimate": false
       },
       "The Gentle Geometry": {
         "family": "orbit",
         "palette": "arcane",
         "motion": "hover",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "prism_cathedral",
+        "accent": 32996,
+        "ultimate": true
       }
     },
     "timestitch": {
@@ -2498,28 +3494,40 @@
         "palette": "clock",
         "motion": "time",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_fracture",
+        "accent": 34335,
+        "ultimate": false
       },
       "Thread Snare": {
         "family": "thread",
         "palette": "thread",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "loom_snap",
+        "accent": 7020,
+        "ultimate": false
       },
       "Borrowed Moment": {
         "family": "rewind",
         "palette": "clock",
         "motion": "rewind",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "clock_rewind",
+        "accent": 50006,
+        "ultimate": false
       },
       "A Stitch in Time": {
         "family": "time",
         "palette": "clock",
         "motion": "time",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "paradox_loop",
+        "accent": 13056,
+        "ultimate": true
       }
     },
     "nebuloom": {
@@ -2528,28 +3536,40 @@
         "palette": "galaxy",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "water_spear",
+        "accent": 32794,
+        "ultimate": false
       },
       "Star Nursery": {
         "family": "heal",
         "palette": "galaxy",
         "motion": "bounce",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 24630,
+        "ultimate": false
       },
       "Soft Landing": {
         "family": "shelter",
         "palette": "nature",
         "motion": "brace",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 39953,
+        "ultimate": false
       },
       "A Sky of Our Own": {
         "family": "orbit",
         "palette": "galaxy",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "stellar_nursery",
+        "accent": 12783,
+        "ultimate": true
       }
     },
     "rootwarden": {
@@ -2558,28 +3578,40 @@
         "palette": "wood",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "thorn_eruption",
+        "accent": 29258,
+        "ultimate": false
       },
       "Moss Mend": {
         "family": "heal",
         "palette": "wood",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "seed_bloom",
+        "accent": 30122,
+        "ultimate": false
       },
       "Sheltering Bough": {
         "family": "shelter",
         "palette": "wood",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 40167,
+        "ultimate": false
       },
       "The Forest Holds": {
         "family": "roots",
         "palette": "wood",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "world_tree",
+        "accent": 63249,
+        "ultimate": true
       }
     },
     "patchkin": {
@@ -2588,28 +3620,40 @@
         "palette": "earth",
         "motion": "headbutt",
         "variant": 0,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "armor_break",
+        "accent": 57337,
+        "ultimate": false
       },
       "Straw Snare": {
         "family": "roots",
         "palette": "wood",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "thorn_lash",
+        "accent": 41587,
+        "ultimate": false
       },
       "Harvest Brace": {
         "family": "shelter",
         "palette": "wood",
         "motion": "brace",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 35343,
+        "ultimate": false
       },
       "Lantern Bulwark": {
         "family": "roots",
         "palette": "light",
         "motion": "stomp",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "world_tree",
+        "accent": 63256,
+        "ultimate": true
       }
     },
     "wickwing": {
@@ -2618,28 +3662,40 @@
         "palette": "fire",
         "motion": "hover",
         "variant": 0,
-        "motif": "bat"
+        "motif": "bat",
+        "sequence": "bat_swarm",
+        "accent": 9241,
+        "ultimate": false
       },
       "Waxflare": {
         "family": "flame",
         "palette": "fire",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "fire_wheel",
+        "accent": 20290,
+        "ultimate": false
       },
       "Candle Shelter": {
         "family": "shelter",
         "palette": "fire",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 51255,
+        "ultimate": false
       },
       "Candleburst": {
         "family": "orbit",
         "palette": "fire",
         "motion": "hover",
         "variant": 3,
-        "motif": "nova"
+        "motif": "nova",
+        "sequence": "supernova_detonation",
+        "accent": 26405,
+        "ultimate": true
       }
     },
     "veilmoth": {
@@ -2648,28 +3704,40 @@
         "palette": "shadow",
         "motion": "hover",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "razor_gale",
+        "accent": 55619,
+        "ultimate": false
       },
       "Funeral Glimmer": {
         "family": "gaze",
         "palette": "shadow",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "spirit_bolt",
+        "accent": 54504,
+        "ultimate": false
       },
       "Moonveil Mend": {
         "family": "heal",
         "palette": "light",
         "motion": "hover",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "petal_mend",
+        "accent": 29294,
+        "ultimate": false
       },
       "Midnight Procession": {
         "family": "swarm",
         "palette": "shadow",
         "motion": "hover",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "lunar_procession",
+        "accent": 4288,
+        "ultimate": true
       }
     },
     "hollow_king": {
@@ -2678,28 +3746,40 @@
         "palette": "earth",
         "motion": "slash",
         "variant": 2,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "crescent_cut",
+        "accent": 28581,
+        "ultimate": false
       },
       "Lantern Decree": {
         "family": "gaze",
         "palette": "light",
         "motion": "cast",
         "variant": 1,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "judgment_lance",
+        "accent": 32169,
+        "ultimate": false
       },
       "Burlap Bastion": {
         "family": "shelter",
         "palette": "earth",
         "motion": "brace",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "shell_bastion",
+        "accent": 32875,
+        "ultimate": false
       },
       "Last Procession": {
         "family": "orbit",
         "palette": "light",
         "motion": "cast",
         "variant": 3,
-        "motif": "spark"
+        "motif": "spark",
+        "sequence": "phantom_court",
+        "accent": 55352,
+        "ultimate": true
       }
     }
   }

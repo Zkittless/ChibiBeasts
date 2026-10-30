@@ -51,19 +51,13 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
     animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action and not entering else None
     if animation:
         poses[actor] = fx.motion(animation, homes[actor], homes[1-actor], move_t)
-        if .48<=move_t<.76 and after[1-actor].hp<before[1-actor].hp:
-            sign = 1 if actor==0 else -1
-            p=(move_t-.48)/.28
-            poses[1-actor] = replace(poses[1-actor],x=poses[1-actor].x+sign*13*math.sin(p*math.pi),angle=sign*5*math.sin(p*math.pi))
+        if after[1-actor].hp < before[1-actor].hp:
+            poses[1-actor] = fx.reaction(animation, homes[1-actor], homes[actor], move_t)
         back=fx.Effects(field.size)
         back.effect(animation, poses[actor], poses[1-actor], move_t, back=True)
         field.alpha_composite(back.image)
-        if animation.family in {'time','rewind','illusion'} and .06<move_t<.82:
-            for i in range(3):
-                p=fx.clamp((move_t-.32)/.16-.13*(i+1)) if animation.family=='time' else fx.clamp(1-(move_t-.32)/.3)
-                ghost=replace(homes[actor],x=fx.mix(homes[actor].x,poses[actor].x,p)-(i+1)*12*(1 if actor==0 else -1),
-                              feet=fx.mix(homes[actor].feet,poses[actor].feet,p),alpha=(.18-i*.04)*math.sin(move_t*math.pi))
-                fx.paint_sprite(field,art.sprite(before[actor].species, before[actor].armor_id),ghost)
+        fx.paint_echoes(field, art.sprite(before[actor].species, before[actor].armor_id),
+                       animation, homes[actor], homes[1-actor], move_t)
     visible_poses=[]
     for i,(old,new) in enumerate(zip(before,after)):
         pose=poses[i]
@@ -200,7 +194,11 @@ def assist_profile(support, effect):
         family = {'water': 'splash', 'fire': 'flame', 'ice': 'ice', 'nature': 'roots',
                   'earth': 'stomp', 'wind': 'wind', 'shadow': 'rift',
                   'cosmic': 'orbit', 'light': 'bolt'}.get(palette, 'bolt')
-    return fx.Animation(family, palette, 'cast')
+    sequence = {'heal': 'petal_mend', 'guard': 'crystal_aegis', 'splash': 'water_spear',
+                'flame': 'cinder_breath', 'ice': 'hail_lance', 'roots': 'thorn_eruption',
+                'stomp': 'seismic_fault', 'wind': 'razor_gale', 'rift': 'shadow_drain',
+                'orbit': 'spirit_bolt', 'bolt': 'spirit_bolt'}[family]
+    return fx.Animation(family, palette, 'cast', sequence=sequence)
 
 
 def _paint_fighter(field, fighter, pose, *, shadow=True):
@@ -283,19 +281,13 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
     animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action and not (switching or assisting or entering) else None
     if animation:
         poses[actor] = fx.motion(animation, homes[actor], homes[1-actor], move_t)
-        if .48 <= move_t < .76 and after[1-actor].hp < before[1-actor].hp:
-            sign = 1 if actor == 0 else -1
-            p = (move_t-.48)/.28
-            poses[1-actor] = replace(poses[1-actor], x=poses[1-actor].x+sign*13*math.sin(p*math.pi), angle=sign*5*math.sin(p*math.pi))
+        if after[1-actor].hp < before[1-actor].hp:
+            poses[1-actor] = fx.reaction(animation, homes[1-actor], homes[actor], move_t)
         back = fx.Effects(field.size)
         back.effect(animation, poses[actor], poses[1-actor], move_t, back=True)
         field.alpha_composite(back.image)
-        if animation.family in {'time', 'rewind', 'illusion'} and .06 < move_t < .82:
-            for i in range(3):
-                p = fx.clamp((move_t-.32)/.16-.13*(i+1)) if animation.family == 'time' else fx.clamp(1-(move_t-.32)/.3)
-                ghost = replace(homes[actor], x=fx.mix(homes[actor].x, poses[actor].x, p)-(i+1)*12*(1 if actor == 0 else -1),
-                                feet=fx.mix(homes[actor].feet, poses[actor].feet, p), alpha=(.18-i*.04)*math.sin(move_t*math.pi))
-                fx.paint_sprite(field, art.sprite(before[actor].species, before[actor].armor_id), ghost)
+        fx.paint_echoes(field, art.sprite(before[actor].species, before[actor].armor_id),
+                       animation, homes[actor], homes[1-actor], move_t)
     support = None
     support_pose = None
     assist_t = fx.clamp((move_t-.3)/.42)
