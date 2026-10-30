@@ -14,7 +14,7 @@
         "variant": 1,
         "motif": "spark"
       },
-      "bytes": 1018125,
+      "bytes": 1012346,
       "frames": 24,
       "milliseconds": 1950,
       "one_shot": true
@@ -31,7 +31,7 @@
         "variant": 2,
         "motif": "spark"
       },
-      "bytes": 589807,
+      "bytes": 594212,
       "frames": 23,
       "milliseconds": 2100,
       "one_shot": true
@@ -48,7 +48,7 @@
         "variant": 0,
         "motif": "bat"
       },
-      "bytes": 807084,
+      "bytes": 793102,
       "frames": 24,
       "milliseconds": 1650,
       "one_shot": true
@@ -65,7 +65,7 @@
         "variant": 3,
         "motif": "nova"
       },
-      "bytes": 1051675,
+      "bytes": 1028567,
       "frames": 29,
       "milliseconds": 2650,
       "one_shot": true
@@ -82,7 +82,7 @@
         "variant": 2,
         "motif": "spark"
       },
-      "bytes": 821118,
+      "bytes": 799880,
       "frames": 24,
       "milliseconds": 1950,
       "one_shot": true
@@ -99,7 +99,7 @@
         "variant": 2,
         "motif": "spark"
       },
-      "bytes": 540144,
+      "bytes": 539090,
       "frames": 24,
       "milliseconds": 2100,
       "one_shot": true
@@ -116,7 +116,7 @@
         "variant": 1,
         "motif": "spark"
       },
-      "bytes": 1047987,
+      "bytes": 1027779,
       "frames": 24,
       "milliseconds": 1950,
       "one_shot": true
@@ -133,7 +133,7 @@
         "variant": 3,
         "motif": "spark"
       },
-      "bytes": 1235213,
+      "bytes": 1204178,
       "frames": 29,
       "milliseconds": 2650,
       "one_shot": true

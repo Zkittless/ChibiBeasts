@@ -8,16 +8,18 @@ from functools import lru_cache
 from pathlib import Path
 import threading
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
-INK = '#f2e8cd'
+INK = '#fffefd'
+MANILLA = '#ffe1a6'
+TEXT_OUTLINE = '#091922'
 MUTED = '#bac5b4'
 GOLD = '#b7ad87'
 HEALTH = '#8edbb7'
 MANA = '#96bfe9'
 SURFACE = '#102b2c'
 _fonts = threading.local()
-DISPLAY_FONT = Path(__file__).resolve().parents[1] / 'data' / 'fonts' / 'Cinzel.ttf'
+DISPLAY_FONT = Path(__file__).resolve().parents[1] / 'data' / 'fonts' / 'PixelifySans.ttf'
 # Discord renders these decorations with its emoji fonts; Pillow's bundled
 # body font cannot. Keep their meaning in words in the image, while leaving
 # the engine's original log untouched for Discord's native text fallback.
@@ -35,15 +37,40 @@ class Text:
 
 
 def font(size, display=False):
+    """Bundled pixel face; variable-font instances belong to one render thread."""
     if not hasattr(_fonts, 'faces'):
         _fonts.faces = {}
+    size = max(8, round(size))
     key = (size, display)
     if key not in _fonts.faces:
-        try:
-            _fonts.faces[key] = ImageFont.truetype(str(DISPLAY_FONT), size) if display else ImageFont.load_default(size=size)
-        except OSError:
-            _fonts.faces[key] = ImageFont.load_default(size=size)
+        face = ImageFont.truetype(str(DISPLAY_FONT), size)
+        face.set_variation_by_axes([700 if display else 600])
+        _fonts.faces[key] = face
     return _fonts.faces[key]
+
+
+def text_color(fill=INK, display=False):
+    """Manilla headings/labels and white values; scenery keeps its own palette."""
+    return MANILLA if display or fill in (MUTED, GOLD, '#e2d0a5') else INK
+
+
+def paint_text(draw, origin, value, face, fill):
+    """Paint binary pixel glyphs and a square 1px outline, without blurred edges.
+
+    Pillow antialiases FreeType strokes even with fontmode='1'. Dilating the
+    solid glyph mask keeps both the lettering and its outline on the pixel grid.
+    """
+    bounds = face.getbbox(value)
+    width, height = bounds[2] - bounds[0], bounds[3] - bounds[1]
+    if not width or not height:
+        return
+    glyph = Image.new('L', (width + 2, height + 2))
+    mask_draw = ImageDraw.Draw(glyph)
+    mask_draw.fontmode = '1'
+    mask_draw.text((1 - bounds[0], 1 - bounds[1]), value, font=face, fill=255)
+    position = (round(origin[0]) + bounds[0] - 1, round(origin[1]) + bounds[1] - 1)
+    draw.bitmap(position, glyph.filter(ImageFilter.MaxFilter(3)), fill=TEXT_OUTLINE)
+    draw.bitmap(position, glyph, fill=fill)
 
 
 def clean(value):
@@ -61,10 +88,12 @@ def text(draw, value, box, *, size=18, minimum=10, fill=INK, display=False,
     value = clean(value)
     left, top, right, bottom = box
     width, height = right - left, bottom - top
-    stroke = 1 if outline else 0
+    stroke = 1
     if width <= 0 or height <= 0:
         raise ValueError('Text needs a positive content rectangle')
-    for chosen in range(size, minimum - 1, -1):
+    preferred = round(size * 1.15)
+    minimum = min(minimum, preferred)
+    for chosen in range(preferred, minimum - 1, -1):
         face = font(chosen, display)
         bounds = draw.textbbox((0, 0), value, font=face, stroke_width=stroke)
         if bounds[2] - bounds[0] <= width and bounds[3] - bounds[1] <= height:
@@ -84,7 +113,7 @@ def text(draw, value, box, *, size=18, minimum=10, fill=INK, display=False,
     y = top + (height - ink_height) / 2
     # The origin is not the visible top-left for TrueType fonts.
     origin = (round(x - bounds[0]), round(y - bounds[1]))
-    draw.text(origin, value, font=face, fill=fill, stroke_width=stroke, stroke_fill='#071c24')
+    paint_text(draw, origin, value, face, text_color(fill, display))
     actual = draw.textbbox(origin, value, font=face, stroke_width=stroke)
     return Text(value, chosen, actual)
 

@@ -22,7 +22,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -76,14 +76,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -95,21 +95,21 @@
               "style": 2,
               "disabled": false,
               "label": "Battle log",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:battle_log:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:battle_log:2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Tower Trials",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:challenge:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:challenge:3"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Carnival",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:carnival:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:carnival:4"
             }
           ]
         },
@@ -126,7 +126,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:realm",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:realm",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -219,14 +219,14 @@
               "style": 2,
               "disabled": false,
               "label": "Save destination",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:save_destination:glacial:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:save_destination:glacial:5"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": true,
               "label": "Clear default",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:clear_destination:6"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:clear_destination:6"
             }
           ]
         },
@@ -242,7 +242,7 @@
               "style": 3,
               "disabled": false,
               "label": "Start adventure · 1 charge",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:begin:7"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:begin:7"
             }
           ]
         }
@@ -272,7 +272,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -326,14 +326,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -345,21 +345,21 @@
               "style": 2,
               "disabled": false,
               "label": "Battle log",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:battle_log:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:battle_log:2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Tower Trials",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:challenge:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:challenge:3"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Carnival",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:carnival:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:carnival:4"
             }
           ]
         },
@@ -376,7 +376,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:realm",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:realm",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -469,14 +469,14 @@
               "style": 2,
               "disabled": true,
               "label": "Save destination",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:save_destination:glacial:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:save_destination:glacial:5"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": true,
               "label": "Clear default",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:clear_destination:6"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:clear_destination:6"
             }
           ]
         },
@@ -492,7 +492,7 @@
               "style": 3,
               "disabled": false,
               "label": "Start adventure · 1 charge",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:begin:7"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:begin:7"
             }
           ]
         }
@@ -522,7 +522,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -576,14 +576,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -595,13 +595,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 220** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 220** · Shop until <t:1795152057:f>."
         },
         {
           "type": 10,
@@ -619,7 +619,7 @@
               "style": 3,
               "disabled": false,
               "label": "Claim welcome gift",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_gift:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_gift:3"
             }
           ]
         },
@@ -632,7 +632,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -699,7 +699,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -753,14 +753,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -776,13 +776,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 230** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 230** · Shop until <t:1795152057:f>."
         },
         {
           "type": 10,
@@ -801,7 +801,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -851,7 +851,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -860,7 +860,7 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": true
                 }
               ]
@@ -875,7 +875,7 @@
               "style": 3,
               "disabled": false,
               "label": "Hatch Hollowlight Welcome Egg",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_hatch:aa748582d92a46349fb5fac2766544c6:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_hatch:5d81a69437e54a5ca58ab1279727f242:3"
             }
           ]
         }
@@ -905,7 +905,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -959,14 +959,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -978,13 +978,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 230** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 230** · Shop until <t:1795152057:f>."
         },
         {
           "type": 10,
@@ -1003,7 +1003,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1056,7 +1056,7 @@
               "style": 2,
               "disabled": false,
               "label": "Review purchase",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_review:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_review:3"
             }
           ]
         },
@@ -1069,7 +1069,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1078,7 +1078,7 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": true
                 }
               ]
@@ -1093,7 +1093,7 @@
               "style": 3,
               "disabled": false,
               "label": "Hatch Hollowlight Welcome Egg",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_hatch:aa748582d92a46349fb5fac2766544c6:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_hatch:5d81a69437e54a5ca58ab1279727f242:4"
             }
           ]
         }
@@ -1123,7 +1123,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1177,14 +1177,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -1196,13 +1196,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 230** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 230** · Shop until <t:1795152057:f>."
         },
         {
           "type": 10,
@@ -1221,7 +1221,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1274,14 +1274,14 @@
               "style": 3,
               "disabled": false,
               "label": "Confirm · 30 Embers",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_buy:ghost_costume_2026:30:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_buy:ghost_costume_2026:30:3"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Cancel",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_cancel:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_cancel:4"
             }
           ]
         },
@@ -1294,7 +1294,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1303,7 +1303,7 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": true
                 }
               ]
@@ -1318,7 +1318,7 @@
               "style": 3,
               "disabled": false,
               "label": "Hatch Hollowlight Welcome Egg",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_hatch:aa748582d92a46349fb5fac2766544c6:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_hatch:5d81a69437e54a5ca58ab1279727f242:5"
             }
           ]
         }
@@ -1348,7 +1348,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1402,14 +1402,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -1425,13 +1425,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 200** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 200** · Shop until <t:1795152057:f>."
         },
         {
           "type": 10,
@@ -1450,7 +1450,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1503,7 +1503,7 @@
               "style": 2,
               "disabled": true,
               "label": "Review purchase",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_review:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_review:3"
             }
           ]
         },
@@ -1516,7 +1516,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1525,7 +1525,7 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": true
                 }
               ]
@@ -1540,7 +1540,7 @@
               "style": 3,
               "disabled": false,
               "label": "Hatch Hollowlight Welcome Egg",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_hatch:aa748582d92a46349fb5fac2766544c6:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_hatch:5d81a69437e54a5ca58ab1279727f242:4"
             }
           ]
         },
@@ -1552,7 +1552,7 @@
               "style": 2,
               "disabled": false,
               "label": "Dress companions · Gear",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:gear:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:gear:5"
             }
           ]
         }
@@ -1582,7 +1582,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1636,14 +1636,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -1655,13 +1655,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 150** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 150** · Shop until <t:1795152057:f>."
         },
         {
           "type": 10,
@@ -1680,7 +1680,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1733,7 +1733,7 @@
               "style": 2,
               "disabled": true,
               "label": "Review purchase",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_review:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_review:3"
             }
           ]
         },
@@ -1746,7 +1746,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1755,12 +1755,12 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": false
                 },
                 {
                   "label": "Wickwing Egg · Lv.20",
-                  "value": "b95ae474bc1a489d83bf9399f13b10a9",
+                  "value": "c899913f8575422f8378c4707b0d2115",
                   "default": true
                 }
               ]
@@ -1775,7 +1775,7 @@
               "style": 3,
               "disabled": false,
               "label": "Hatch Wickwing Egg",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_hatch:b95ae474bc1a489d83bf9399f13b10a9:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_hatch:c899913f8575422f8378c4707b0d2115:4"
             }
           ]
         },
@@ -1787,7 +1787,7 @@
               "style": 2,
               "disabled": false,
               "label": "Dress companions · Gear",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:gear:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:gear:5"
             }
           ]
         }
@@ -1817,7 +1817,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1871,14 +1871,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -1894,13 +1894,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 150** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 150** · Shop until <t:1795152057:f>."
         },
         {
           "type": 9,
@@ -1936,7 +1936,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -1989,7 +1989,7 @@
               "style": 2,
               "disabled": true,
               "label": "Review purchase",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_review:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_review:3"
             }
           ]
         },
@@ -2002,7 +2002,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2011,7 +2011,7 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": false
                 }
               ]
@@ -2026,7 +2026,7 @@
               "style": 2,
               "disabled": false,
               "label": "Dress companions · Gear",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:gear:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:gear:4"
             }
           ]
         }
@@ -2056,7 +2056,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2110,14 +2110,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -2129,13 +2129,13 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
         {
           "type": 10,
-          "content": "### The Hollowlight Carnival\nGates close <t:1794542291:f>.\n**Lantern Embers · 130** · Shop until <t:1795147091:f>."
+          "content": "### The Hollowlight Carnival\nGates close <t:1794547257:f>.\n**Lantern Embers · 130** · Shop until <t:1795152057:f>."
         },
         {
           "type": 10,
@@ -2154,7 +2154,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_offer",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_offer",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2207,7 +2207,7 @@
               "style": 2,
               "disabled": true,
               "label": "Review purchase",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_review:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_review:3"
             }
           ]
         },
@@ -2220,7 +2220,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2229,7 +2229,7 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": false
                 }
               ]
@@ -2244,14 +2244,14 @@
               "style": 2,
               "disabled": false,
               "label": "Dress companions · Gear",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:gear:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:gear:4"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Remove title",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_title:0:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_title:0:5"
             }
           ]
         }
@@ -2269,7 +2269,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2323,14 +2323,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -2342,21 +2342,21 @@
               "style": 2,
               "disabled": false,
               "label": "Battle log",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:battle_log:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:battle_log:2"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Tower Trials",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:challenge:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:challenge:3"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Carnival",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:carnival:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:carnival:4"
             }
           ]
         },
@@ -2369,7 +2369,7 @@
           "items": [
             {
               "media": {
-                "url": "attachment://adventure-9e7dbfbfd22a07.png"
+                "url": "attachment://adventure-f4f5c079010c12.png"
               },
               "spoiler": false,
               "description": "Adventure encounter"
@@ -2392,21 +2392,21 @@
               "style": 1,
               "disabled": false,
               "label": "Tick Bite · 0 MP",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:journey_act:bbf563652ce54bf4b960239b1bfe3333:0:0:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:journey_act:2c1b52505b2441dda649926525b260be:0:0:5"
             },
             {
               "type": 2,
               "style": 1,
               "disabled": false,
               "label": "Thread Snap · 15 MP",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:journey_act:bbf563652ce54bf4b960239b1bfe3333:0:1:6"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:journey_act:2c1b52505b2441dda649926525b260be:0:1:6"
             },
             {
               "type": 2,
               "style": 1,
               "disabled": false,
               "label": "Rewind Nibble · 0 MP",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:journey_act:bbf563652ce54bf4b960239b1bfe3333:0:2:7"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:journey_act:2c1b52505b2441dda649926525b260be:0:2:7"
             }
           ]
         },
@@ -2418,7 +2418,7 @@
               "style": 4,
               "disabled": true,
               "label": "⚡ Borrowed Moment · 0/3 · 50 MP",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:journey_act:bbf563652ce54bf4b960239b1bfe3333:0:3:8"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:journey_act:2c1b52505b2441dda649926525b260be:0:3:8"
             }
           ]
         },
@@ -2430,7 +2430,7 @@
               "style": 2,
               "disabled": false,
               "label": "Swap / Assist",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:journey_team:bbf563652ce54bf4b960239b1bfe3333:0:9"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:journey_team:2c1b52505b2441dda649926525b260be:0:9"
             }
           ]
         },
@@ -2442,7 +2442,7 @@
               "style": 2,
               "disabled": false,
               "label": "Retreat & return",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:journey_return:bbf563652ce54bf4b960239b1bfe3333:0:10"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:journey_return:2c1b52505b2441dda649926525b260be:0:10"
             }
           ]
         }
@@ -2472,7 +2472,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2526,14 +2526,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -2542,7 +2542,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:log_kind",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:log_kind",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2586,7 +2586,7 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
@@ -2596,14 +2596,14 @@
         },
         {
           "type": 10,
-          "content": "**🎃 The Hollowlight Carnival** · <t:1793332694:d>\nBattle in progress · No battle recorded"
+          "content": "**🎃 The Hollowlight Carnival** · <t:1793337658:d>\nBattle in progress · No battle recorded"
         },
         {
           "type": 1,
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:log_entry",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:log_entry",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2611,8 +2611,8 @@
               "placeholder": "Open an expedition recap",
               "options": [
                 {
-                  "label": "🎃 The Hollowlight Carnival · 30 Oct 03:58 UTC",
-                  "value": "bbf563652ce54bf4b960239b1bfe3333",
+                  "label": "🎃 The Hollowlight Carnival · 30 Oct 05:20 UTC",
+                  "value": "2c1b52505b2441dda649926525b260be",
                   "default": false,
                   "description": "Battle in progress · No battle recorded"
                 }
@@ -2628,21 +2628,21 @@
               "style": 2,
               "disabled": true,
               "label": "Newer trips",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:log_prev:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:log_prev:3"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": true,
               "label": "1/1",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:log_count:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:log_count:4"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": true,
               "label": "Older trips",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:log_next:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:log_next:5"
             }
           ]
         }
@@ -2672,7 +2672,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page_menu",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page_menu",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2726,14 +2726,14 @@
               "style": 2,
               "disabled": false,
               "label": "Pin a goal",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:goals:0"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:goals:0"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Refresh",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:refresh:1"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:refresh:1"
             }
           ]
         },
@@ -2745,7 +2745,7 @@
               "style": 1,
               "disabled": false,
               "label": "Back to Adventure",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:page:adventure:2"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:page:adventure:2"
             }
           ]
         },
@@ -2766,7 +2766,7 @@
           "components": [
             {
               "type": 3,
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_egg",
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_egg",
               "min_values": 1,
               "max_values": 1,
               "disabled": false,
@@ -2775,7 +2775,7 @@
               "options": [
                 {
                   "label": "Hollowlight Welcome Egg · Lv.20",
-                  "value": "aa748582d92a46349fb5fac2766544c6",
+                  "value": "5d81a69437e54a5ca58ab1279727f242",
                   "default": true
                 }
               ]
@@ -2790,7 +2790,7 @@
               "style": 3,
               "disabled": false,
               "label": "Hatch Hollowlight Welcome Egg",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_hatch:aa748582d92a46349fb5fac2766544c6:3"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_hatch:5d81a69437e54a5ca58ab1279727f242:3"
             }
           ]
         },
@@ -2802,14 +2802,14 @@
               "style": 2,
               "disabled": false,
               "label": "Dress companions · Gear",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:launch:gear:4"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:launch:gear:4"
             },
             {
               "type": 2,
               "style": 2,
               "disabled": false,
               "label": "Remove title",
-              "custom_id": "journal:4e3e9d72a8a74542a0362b6d55889184:carnival_title:0:5"
+              "custom_id": "journal:b5a52319ac364240a503d67b7a063a1e:carnival_title:0:5"
             }
           ]
         }

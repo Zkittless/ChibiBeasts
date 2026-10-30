@@ -6,7 +6,7 @@
     {
       "name": "ghost-strike",
       "frames": 24,
-      "bytes": 788727,
+      "bytes": 766602,
       "milliseconds": 1950,
       "plays_once": true,
       "realm": "hollowlight"
@@ -14,7 +14,7 @@
     {
       "name": "ghost-swap",
       "frames": 17,
-      "bytes": 312707,
+      "bytes": 301682,
       "milliseconds": 1900,
       "plays_once": true,
       "realm": "hollowlight"
@@ -22,7 +22,7 @@
     {
       "name": "ghost-assist",
       "frames": 22,
-      "bytes": 439411,
+      "bytes": 415250,
       "milliseconds": 2400,
       "plays_once": true,
       "realm": "hollowlight"

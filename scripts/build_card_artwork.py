@@ -3,10 +3,14 @@ import hashlib
 import json
 import argparse
 from pathlib import Path
+import sys
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from utils import field_journal as ui
+
 OUTPUT = ROOT / 'data' / 'card_art'
 STARTERS = ('prismite', 'twine', 'gloop', 'barkley')
 SIZE = (768, 448)
@@ -26,6 +30,24 @@ def save(image, name):
     return {'file': f'card_art/{name}', 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
+def starter_lineup(beasts):
+    """Only the starter selection sheet has labels; portraits remain untouched."""
+    lineup = Image.new('RGBA', (768, 640))
+    draw = ImageDraw.Draw(lineup)
+    for i, key in enumerate(STARTERS):
+        x, y = (i % 2) * 384, (i // 2) * 320
+        beast = sprite(ROOT / 'data' / 'sprites' / f'{key}.png', (280, 230))
+        lineup.alpha_composite(beast, (x + (384 - beast.width) // 2,
+                                      y + 8 + (230 - beast.height) // 2))
+        draw.rounded_rectangle((x + 78, y + 242, x + 306, y + 311),
+                               radius=10, fill='#232428')
+        ui.text(draw, beasts[key]['name'], (x + 90, y + 248, x + 294, y + 279),
+                size=25, minimum=14, display=True, align='center', ellipsis=False)
+        ui.text(draw, beasts[key]['type'].title(), (x + 90, y + 282, x + 294, y + 306),
+                size=18, minimum=12, align='center', ellipsis=False)
+    return lineup
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--lineup-only', action='store_true')
@@ -43,19 +65,7 @@ def main():
         entry['source_sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
         manifest['beasts'][key] = entry
 
-    lineup = Image.new('RGBA', (768, 640))
-    draw = ImageDraw.Draw(lineup)
-    # The bundled font makes the labels reproducible on Windows and Railway/Linux.
-    font = ImageFont.load_default(size=25)
-    small = ImageFont.load_default(size=18)
-    for i, key in enumerate(STARTERS):
-        x, y = (i % 2) * 384, (i // 2) * 320
-        beast = sprite(ROOT / 'data' / 'sprites' / f'{key}.png', (280, 230))
-        lineup.alpha_composite(beast, (x + (384 - beast.width) // 2, y + 8 + (230 - beast.height) // 2))
-        draw.rounded_rectangle((x + 78, y + 242, x + 306, y + 311), radius=10, fill='#232428')
-        draw.text((x + 192, y + 251), beasts[key]['name'], font=font, fill='#e8e9ef', anchor='mt')
-        draw.text((x + 192, y + 283), beasts[key]['type'].title(), font=small, fill='#aeb2c1', anchor='mt')
-    manifest['starter_lineup'] = save(lineup, 'starter-lineup.png')
+    manifest['starter_lineup'] = save(starter_lineup(beasts), 'starter-lineup.png')
     (ROOT / 'data' / 'card-artwork.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     print(f'Built {len(beasts)} portraits and the starter lineup ({sum(p.stat().st_size for p in OUTPUT.glob("*.png")) / 1024 / 1024:.2f} MB).')
 

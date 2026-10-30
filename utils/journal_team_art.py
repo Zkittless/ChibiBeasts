@@ -18,7 +18,7 @@ WIDTH, HEIGHT = 640, 300
 RENDER_TIMEOUT = 5
 MAX_BYTES = 1_000_000
 CACHE_SIZE = 48
-LAYOUT_VERSION = 1
+LAYOUT_VERSION = 2
 _workers = ThreadPoolExecutor(max_workers=2, thread_name_prefix='journal-team-art')
 _slots = threading.BoundedSemaphore(2)
 logger = logging.getLogger('chibibeasts.journal.team_art')
