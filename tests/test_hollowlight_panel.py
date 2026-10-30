@@ -91,8 +91,9 @@ class HollowlightJournal(DatabaseCase):
         await adventure_party.set_slot(42, reserve, 1)
         await journal_state.save_explore_default(42, 'ember')
         view = await self.view('adventure', realm='ember')
-        options = {option.value for option in view.realm_select.options}
-        self.assertIn('hollowlight', options)
+        options = [option.value for option in view.realm_select.options]
+        self.assertEqual(options[0], 'hollowlight')
+        self.assertEqual([option.value for option in view.realm_select.options if option.default], ['ember'])
         before = await adventure_party.assignments(42)
         await self.click(view, view.realm_select, value='hollowlight')
         self.assertTrue(view.carnival_selected)

@@ -185,7 +185,7 @@ class JournalView(discord.ui.LayoutView):
                 value=k, default=k == self.realm and not self.carnival_selected,
                 description=f"Trainer Lv.{b['min_level']}+ required; companion Lv.{b['level_range'][0]}–{b['level_range'][1]} recommended") for k, b in REALMS.items()]
             if hollowlight_panel.active(self):
-                self.realm_select.options.append(discord.SelectOption(label='🎃 The Hollowlight Carnival', value='hollowlight',
+                self.realm_select.options.insert(0, discord.SelectOption(label='🎃 The Hollowlight Carnival', value='hollowlight',
                     description='Seasonal adventure · Scales to your team · 1 exploration charge', default=self.carnival_selected))
             elif self.carnival_selected:
                 self.carnival_selected = False
