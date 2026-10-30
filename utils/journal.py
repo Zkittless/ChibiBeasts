@@ -251,8 +251,9 @@ class JournalView(discord.ui.LayoutView):
             else:
                 label, description = labels[choice]
             options.append(discord.SelectOption(label=label[:100], description=description, value=f"{trip['id']}:{trip['version']}:{choice}"))
-        self.path_select.options = options
-        self.row(self.path_select)
+        from utils.journal_adventure import render_choices
+        render_choices(self, trip, [dict(value=option.value.split(':', 2)[2], label=option.label,
+                                        description=option.description) for option in options])
 
     def render_battle_log(self):
         journal_log.render(self)
@@ -302,10 +303,8 @@ class JournalView(discord.ui.LayoutView):
             beast = storage.get_beast_data(p['encounter'])
             self.portrait(f"**{safe(beast['name'])} · Lv.{p.get('encounter_level', 1)}**", beast['id'])
         self.text(page['body'])
-        self.path_select.options = [discord.SelectOption(label=choice['label'][:100], description=choice['description'][:100],
-            value=f"{trip['id']}:{trip['version']}:{choice['value']}") for choice in page['choices']]
-        if self.path_select.options:
-            self.row(self.path_select)
+        from utils.journal_adventure import render_choices
+        render_choices(self, trip, page['choices'])
 
     def render_team(self):
         self.team_select.disabled = journal_team.frozen(self)  # Retain the older dispatch guard.
@@ -574,10 +573,6 @@ class JournalView(discord.ui.LayoutView):
         return await command.callback(interaction, **kwargs)
 
     async def handle(self, interaction, action):
-        if action.startswith('journey_details:'):
-            from utils import journal_adventure
-            _, trip_id, version = action.split(':')
-            return await journal_adventure.toggle_details(self, interaction, trip_id, int(version))
         if interaction.user.id != self.user_id:
             return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
         if self.closed or self.is_finished():
@@ -612,7 +607,7 @@ class JournalView(discord.ui.LayoutView):
                 if interaction.response.is_done():
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
-        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination', 'journey_action'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:', 'journey_next:', 'journey_return:'))
+        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination', 'journey_action'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:', 'path:', 'journey_act:', 'journey_next:', 'journey_return:'))
         duplicate = mutation and (self.mutating or self.lock.locked())
         if mutation and not duplicate:
             self.mutating = True
@@ -704,23 +699,36 @@ class JournalView(discord.ui.LayoutView):
                     elif action == 'clear_destination':
                         await journal_state.clear_explore_default(self.user_id)
                         self.notice = 'Default destination cleared. Future /explore openings select the Woods.'
-                    elif action == 'path':
-                        trip_id, version, choice = interaction.data['values'][0].split(':', 2)
+                    elif action == 'path' or action.startswith('path:'):
+                        if action == 'path':
+                            trip_id, version, choice = interaction.data['values'][0].split(':', 2)
+                        else:
+                            _, trip_id, version, index = action.split(':')
+                            current = self.state.trip
+                            if not current or current['id'] != trip_id or current['version'] != int(version):
+                                raise ValueError('That choice belongs to an older page. Use the current adventure buttons.')
+                            choices = list(expeditions.options(current))
+                            if current['payload'].get('adventure_version', 0) < 2 and 'return' not in choices:
+                                choices.append('return_early')
+                            if not 0 <= int(index) < len(choices):
+                                raise ValueError('Choose a current adventure action.')
+                            choice = choices[int(index)]
                         self.trip = await expeditions.choose(self.user_id, trip_id, int(version), choice)
                         if self.trip['status'] == 'battle' and self.trip['payload'].get('adventure_version') != 3:
                             battle = self.trip
                         elif self.trip['status'] == 'complete' and self.trip['payload']['caught']:
                             from cogs.hatch import check_collection_completion
                             await check_collection_completion(interaction, storage.get_beast_data(self.trip['payload']['encounter']), storage.load_beasts())
-                    elif action == 'journey_action' or action.startswith(('journey_next:', 'journey_return:')):
+                    elif action == 'journey_action' or action.startswith(('journey_act:', 'journey_next:', 'journey_return:')):
                         from utils import journey_service, trial_combat
-                        if action == 'journey_action':
-                            trip_id, version, index = interaction.data['values'][0].split(':')
+                        if action == 'journey_action' or action.startswith('journey_act:'):
+                            trip_id, version, index = (interaction.data['values'][0].split(':') if action == 'journey_action'
+                                                       else action.split(':')[1:])
                             current = self.state.trip
                             if not current or current['id'] != trip_id or current['version'] != int(version):
                                 raise ValueError('Use the refreshed adventure controls.')
                             actions = trial_combat.legal_actions(current['payload']['combat'])
-                            if not 0 <= int(index) < len(actions):
+                            if not 0 <= int(index) < len(actions) or not actions[int(index)]['enabled']:
                                 raise ValueError('Choose a current combat action.')
                             choice = actions[int(index)]['choice']
                         else:
@@ -874,8 +882,8 @@ class JournalView(discord.ui.LayoutView):
                     self.trip = self.state.trip or self.trip
                 if self.page == 'adventure' and self.trip and self.trip['payload'].get('adventure_version') == 3:
                     from utils import journal_adventure
-                    animate = not self.notice and (action == 'journey_action' or action.startswith('journey_next:')
-                        or action in {'path', 'begin'} and self.trip['status'] == 'battle')
+                    animate = not self.notice and (action == 'journey_action' or action.startswith(('journey_act:', 'journey_next:'))
+                        or (action in {'path', 'begin'} or action.startswith('path:')) and self.trip['status'] == 'battle')
                     await journal_adventure.present(self, interaction, animate=animate)
                 else:
                     self.render()

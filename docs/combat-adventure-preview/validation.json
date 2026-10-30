@@ -23,14 +23,15 @@
     "utils/journey_combat.py": "4ea8ff46e2f17cad78e1e3b9e40d515654db9548a8a62400ae054cc2459a908e",
     "utils/expeditions.py": "2a299a77a31ce8c831da7e67feafb2780d96b08294c731529bdc405e68297970",
     "utils/habitats.py": "c3a5dc1663f0c8b048d6bd4ce0b370dccb45eb878fe6828e9b6336d959b9b2fb",
-    "utils/journal.py": "86459c6c69b896a65b2abf5e0191c511185c3fb043f4fe9e9e6146f38751b72d",
-    "utils/journal_adventure.py": "6844e8cbd28792516d19a2280c8378e32c84dad0cbf26c946a38fab6d9213783",
+    "utils/journal.py": "91ba6361cf77ae0017834056bbcb20d63107ca0587c188b527505e12372f9c81",
+    "utils/journal_adventure.py": "925a6de7ac8aa124c5611a3423c240505e22d775881b8da0327dbdfe2886b000",
     "utils/journal_team_art.py": "661b5dd67c288925bf5d857d428518a7dde0b6b1ff776d732cb631cd64d78f0a",
     "utils/trial_combat.py": "3e424d65ee68b14c48cda2ca1032286b885bd55d393e9bf3ef015ff49a6b4e68",
     "utils/team_combat.py": "3c1a2ceb73333b6ec1d89ff357f0756c52485c1316bab30b56d372c6e522d687",
     "utils/battle_art.py": "20192aa5fbda157cbd863fc1e766f1c845bd80e46b74bc8aab8f53a368770a4e",
     "cogs/hatch.py": "24b39f78882ae51df6f6fc6ae444583748dfa43e682a8e7bada251b228f2433e",
-    "scripts/preview_combat_adventures.py": "d0a25dafcf0c1ddd4e1bd466ef3e9f6a34134b8e02b4ccf7d07e0138655494f6"
+    "scripts/preview_living_adventures.py": "aaf3cb053fd1c9903fb0f8724e7c0f1fdde3c683cf67f0a40c872b3f88eb583b",
+    "scripts/preview_combat_adventures.py": "d8780caf381ce21508c973ea75b80cb1dfe94d889ef7b4ca04fa90009c76a37d"
   },
   "stages": [
     "selector",
@@ -39,7 +40,7 @@
     "assist",
     "knockout",
     "interlude",
-    "details",
+    "pack_ready",
     "pack_recruitable",
     "pack_entry",
     "pack_hostile",
@@ -184,25 +185,12 @@
       "media": []
     },
     {
-      "stage": "details",
-      "revision": 7,
-      "message_id": 8181,
-      "media": [
-        "journal-woods.png"
-      ]
-    },
-    {
-      "stage": "interlude",
-      "revision": 7,
-      "message_id": 8181,
-      "media": [
-        "journal-woods.png"
-      ]
-    },
-    {
       "stage": "pack_ready",
       "revision": 8,
-      "message_id": 8181
+      "message_id": 8181,
+      "media": [
+        "journal-woods.png"
+      ]
     },
     {
       "stage": "playback",
@@ -509,9 +497,11 @@
     }
   ],
   "short_interlude_characters": 179,
-  "read_more_preserves_saved_trip": true,
+  "direct_action_buttons": true,
+  "inline_choice_effects": true,
+  "disclosure_buttons": false,
   "max_characters": 471,
-  "max_components": 24,
+  "max_components": 27,
   "first_battle_recruitable": false,
   "pack_leader_recruitable": true,
   "pack_filler_recruitable": false,

@@ -47,7 +47,7 @@
     },
     {
       "width": 1100,
-      "stage": "details",
+      "stage": "pack_ready",
       "one_message": true,
       "no_overflow": true,
       "media_loaded": true
@@ -131,7 +131,7 @@
     },
     {
       "width": 390,
-      "stage": "details",
+      "stage": "pack_ready",
       "one_message": true,
       "no_overflow": true,
       "media_loaded": true
@@ -215,7 +215,7 @@
     },
     {
       "width": 320,
-      "stage": "details",
+      "stage": "pack_ready",
       "one_message": true,
       "no_overflow": true,
       "media_loaded": true
@@ -256,7 +256,7 @@
       "media_loaded": true
     }
   ],
-  "read_more_same_panel": true,
-  "hide_details_same_panel": true,
-  "choice_description_interaction": true
+  "disclosure_buttons": false,
+  "direct_action_buttons": true,
+  "inline_choice_effects": true
 }
