@@ -9,7 +9,7 @@ from cogs.battle import build_pve_beast_state
 from cogs.guilds import RAID_BOSSES
 from scripts.preview_raid_arena import make_raid, capture
 from tests.test_gameplay import DatabaseCase
-from utils import armor_art, battle_art as art, combat, db as storage, raid_art
+from utils import armor_art, battle_art as art, combat, db as storage, move_animations as fx, raid_art
 from utils.catalog import load_catalog
 from utils.duels import prepare_state
 
@@ -60,13 +60,25 @@ class AppearanceSnapshots(unittest.TestCase):
         states[1]['armor_id'] = 'sprite_silk_attire'
         saved = art.snapshot(states)
         action = art.Action(0, 'Borrowed Moment', ultimate=True)
-        with patch.object(art, 'sprite', side_effect=lambda *_: Image.new('RGBA', (80, 100))) as sprite:
-            art.frame(saved, saved, 'woods', action, .3)
-        self.assertGreaterEqual(sprite.call_args_list.count(
-            unittest.mock.call('twine', 'gnome_iron_plating')), 6)
-        self.assertGreaterEqual(sprite.call_args_list.count(
-            unittest.mock.call('barkley', 'sprite_silk_attire')), 3)
+        appearances = {
+            ('twine', 'gnome_iron_plating'): Image.new('RGBA', (80, 100), '#d985ba'),
+            ('barkley', 'sprite_silk_attire'): Image.new('RGBA', (80, 100), '#8bd1a3'),
+        }
+        with patch.object(art, 'sprite', side_effect=lambda *key: appearances[key]) as sprite, \
+             patch.object(fx, 'paint_sprite', wraps=fx.paint_sprite) as paint:
+            # Sample the teleport itself, after its stationary windup. The
+            # trail reuses a fitted source rather than reloading each ghost.
+            art.frame(saved, saved, 'woods', action, .43)
+        self.assertIn(unittest.mock.call('twine', 'gnome_iron_plating'), sprite.call_args_list)
+        self.assertIn(unittest.mock.call('barkley', 'sprite_silk_attire'), sprite.call_args_list)
         self.assertTrue(all(len(call.args) == 2 for call in sprite.call_args_list))
+        ghosts = [call for call in paint.call_args_list if 0 < call.args[2].alpha < 1]
+        self.assertGreaterEqual(len(ghosts), 2)
+        self.assertTrue(all(call.args[1] is appearances[('twine', 'gnome_iron_plating')]
+                            for call in ghosts), 'Every trail must use the equipped actor source')
+        for appearance in appearances.values():
+            self.assertTrue(any(call.args[1] is appearance and call.args[2].alpha == 1
+                                for call in paint.call_args_list), 'Both equipped bodies must be drawn')
 
     def test_raid_swap_captures_each_companions_own_armor(self):
         raid = make_raid(RAID_BOSSES['corrupted'][2], 1)

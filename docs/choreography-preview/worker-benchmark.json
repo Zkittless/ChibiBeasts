@@ -1,0 +1,193 @@
+{
+  "samples": 20,
+  "all_workers_available": true,
+  "snapshots_unchanged": true,
+  "combat_rng_unchanged": true,
+  "render_max_ms": 962.96,
+  "render_median_ms": 690.9300000000001,
+  "event_loop_p95_ms": 7.83,
+  "event_loop_max_ms": 46.01,
+  "records": [
+    {
+      "name": "twine/Tick Bite/ko=False",
+      "render_ms": 304.07,
+      "bytes": 786763,
+      "frames": 24,
+      "milliseconds": 1650,
+      "one_shot": true
+    },
+    {
+      "name": "twine/Thread Snap/ko=False",
+      "render_ms": 276.16,
+      "bytes": 755451,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "name": "twine/Rewind Nibble/ko=False",
+      "render_ms": 304.68,
+      "bytes": 659770,
+      "frames": 24,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    {
+      "name": "twine/Borrowed Moment/ko=False",
+      "render_ms": 364.22,
+      "bytes": 1352463,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "name": "gloop/Glitter Bounce/ko=False",
+      "render_ms": 269.07,
+      "bytes": 448860,
+      "frames": 24,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    {
+      "name": "glacius/Ice Shell/ko=False",
+      "render_ms": 292.66,
+      "bytes": 888041,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "name": "wyvern/Fire Breath/ko=False",
+      "render_ms": 284.54,
+      "bytes": 660037,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "name": "dragon/World Ender/ko=False",
+      "render_ms": 655.33,
+      "bytes": 1052931,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "name": "genesis/Genesis Explosion/ko=False",
+      "render_ms": 699.39,
+      "bytes": 1486872,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "name": "singularity/Big Bang/ko=False",
+      "render_ms": 705.93,
+      "bytes": 1391180,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "name": "astraea/Weave of Eternity/ko=False",
+      "render_ms": 729.77,
+      "bytes": 1479340,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "name": "nirvana/State of Nirvana/ko=False",
+      "render_ms": 750.45,
+      "bytes": 1189274,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "name": "twine/Tick Bite/ko=True",
+      "render_ms": 777.83,
+      "bytes": 890421,
+      "frames": 34,
+      "milliseconds": 3050,
+      "one_shot": true
+    },
+    {
+      "name": "fenrir/Ragnarok Bite/ko=True",
+      "render_ms": 962.96,
+      "bytes": 1404521,
+      "frames": 41,
+      "milliseconds": 4050,
+      "one_shot": true
+    },
+    {
+      "name": "corrupted_leviathan/10trainers",
+      "render_ms": 837.32,
+      "bytes": 1533933,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    {
+      "name": "corrupted_fenrir/10trainers",
+      "render_ms": 763.8,
+      "bytes": 1629431,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    {
+      "name": "corrupted_dragon/10trainers",
+      "render_ms": 711.11,
+      "bytes": 1357017,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    {
+      "name": "ancient_chronos/10trainers",
+      "render_ms": 708.73,
+      "bytes": 1702009,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    {
+      "name": "ancient_genesis/10trainers",
+      "render_ms": 676.96,
+      "bytes": 1689093,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    },
+    {
+      "name": "ancient_abyss/10trainers",
+      "render_ms": 682.47,
+      "bytes": 1603784,
+      "frames": 18,
+      "milliseconds": 1200,
+      "one_shot": true
+    }
+  ],
+  "module_paths": {
+    "utils.battle_art": "C:\\Users\\kelto\\Documents\\Codex\\Orbit Observatory\\workspace\\ChibiBeasts-animations\\utils\\battle_art.py",
+    "utils.raid_art": "C:\\Users\\kelto\\Documents\\Codex\\Orbit Observatory\\workspace\\ChibiBeasts-animations\\utils\\raid_art.py",
+    "preview_case": "C:\\Users\\kelto\\Documents\\Codex\\Orbit Observatory\\workspace\\ChibiBeasts-animations\\scripts\\preview_move_animations.py"
+  },
+  "source_fingerprints": {
+    "utils/battle_art.py": "06c3f4929e8f6888099db81e6fa54978ea275c2ae1318821afb47550b42d43ef",
+    "utils/battle_scene.py": "15dcc6f1beda40dfe8b74f840fd241fd17387e1383e5be36104405a7cc3edd2d",
+    "utils/move_animations.py": "affd8e8b93e2a94e05f6cc28fd9a1fa79c9c8aab64253e7ab7d465b3fd489e68",
+    "utils/divine_effects.py": "eb23238f0e7d59812e757f2a838a85eac52f99b201447902b268eb2dca83cf66",
+    "utils/kinetic_effects.py": "c31398242d3b01ade9791348bf60419a1c435e46eeda2b5624bd7f8d039603a9",
+    "utils/raid_art.py": "a3ff4bc4b70db32703775daf5ae43bc567ee6855fa30096c36538672b828774d",
+    "utils/raid_scene.py": "b0fe28c5d3775f87ca49394818f9ccf21c00efd34627746b46319c5fcb7e3200",
+    "utils/field_journal.py": "9afee52f452c37b8e6d14dd77a8d1d4a43e9c56aae951c320bb3a26bc7a85a88",
+    "data/move-animations.json": "3443148d0c3cf52ad3ea49408dc4d91d2ad53262ba7b24a3eed6b7533b4d5b19",
+    "data/beasts.json": "2259794ba86918583baa7c52a30c2ca1ec287c7604332faa38f4eb9905418dce",
+    "data/fonts/PixelifySans.ttf": "9ba86cd010a4de309d263ceff8e8044092c9db7efda869620cb9ff1c4389e8a5"
+  },
+  "source_changes_during_benchmark": [],
+  "tool_sha256": "394e6538ffc53f1a357cf610a52795e13804c1873b7857355955265d8eea6584",
+  "scope": "Actual bounded production workers,14duels+6ten-trainerraids; local rendering includes CPU time; Discord upload/client playback excluded."
+}

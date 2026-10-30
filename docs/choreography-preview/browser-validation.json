@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "width": 1440,
+      "images": 38,
+      "no_overflow": true,
+      "replay_pair": true
+    },
+    {
+      "width": 736,
+      "images": 38,
+      "no_overflow": true,
+      "replay_pair": true
+    },
+    {
+      "width": 320,
+      "images": 38,
+      "no_overflow": true,
+      "replay_pair": true
+    }
+  ],
+  "javascript_errors": []
+}

@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "roster_entries": 360,
+  "sequences": 64,
+  "actual_boss_turns": 6,
+  "stress_cases": 6,
+  "worker_samples": 20,
+  "max_bytes": 1898803,
+  "worker_max_ms": 962.96,
+  "worker_event_loop_p95_ms": 7.83,
+  "source_hashes_match": true,
+  "scope": "Offline production rendering; excludes Discord upload and client playback."
+}
