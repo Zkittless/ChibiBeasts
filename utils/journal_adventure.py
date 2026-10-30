@@ -5,7 +5,8 @@ from types import SimpleNamespace
 
 import discord
 
-from utils import battle_art, expeditions, trial_combat
+from utils import battle_art, combat, expeditions, trial_combat
+from utils.team_combat import ASSIST_MANA, assist_effect
 
 LEAD_LIMIT = 200
 
@@ -30,27 +31,51 @@ def scene_lead(body):
     return clipped.rstrip(' ,;:-') + '…'
 
 
-def details_key(trip):
-    return trip['id'], trip['version']
+def render_choices(view, trip, choices):
+    """Keep each consequence beside its action; returning stays in the footer."""
+    # Retain the old values for older journal routers, without displaying a menu.
+    view.path_select.options = [discord.SelectOption(label=choice['label'][:100],
+        description=choice['description'][:100], value=f"{trip['id']}:{trip['version']}:{choice['value']}")
+        for choice in choices]
+    footer = []
+    for index, choice in enumerate(choices):
+        returning = choice['value'] in {'return', 'return_early'}
+        style = (discord.ButtonStyle.success if choice['value'] == 'return' else
+                 discord.ButtonStyle.secondary if returning else discord.ButtonStyle.primary)
+        button = view.button(choice['label'], f"path:{trip['id']}:{trip['version']}:{index}", style)
+        if returning:
+            footer.append(button)
+        else:
+            view.container.add_item(discord.ui.Section(discord.ui.TextDisplay(choice['description']), accessory=button))
+    if footer:
+        view.row(*footer)
 
 
-async def toggle_details(view, interaction, trip_id, version):
-    """Read-only disclosure edits the current panel without advancing a scene."""
-    if interaction.user.id != view.user_id:
-        return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
-    if view.closed or view.is_finished() or view.message_repurposed:
-        return await interaction.response.send_message('This journal has closed. Open /journal to continue.', ephemeral=True)
-    await interaction.response.defer()
-    async with view.lock:
-        trip = view.trip
-        if (not trip or details_key(trip) != (trip_id, version) or trip['status'] != 'active'
-                or view.journey_playing or not await fresh(view, trip)):
-            return await interaction.followup.send('Use the current adventure page for these details.', ephemeral=True)
-        key = details_key(trip)
-        view.journey_details = None if getattr(view, 'journey_details', None) == key else key
-        view.render()
-        if await fresh(view, trip):
-            await view.publish(interaction)
+def render_combat_buttons(view, trip, state):
+    """The familiar move row, ultimate, and a swap/assist pair per reserve."""
+    active = state['party'][state['slot']]
+    moves, ultimate, reserves = [], [], []
+    for index, action in enumerate(trial_combat.legal_actions(state)):
+        kind, label = action['kind'], action['label']
+        if kind == 'move':
+            cost = combat.move_spec(active, action['choice'][0]).get('mana_cost', 0)
+            label += f' · {cost} MP'
+        elif kind == 'ultimate':
+            label = f"⚡ {label} · {active.get('ultimate_charges', 0)}/3 · 50 MP"
+        elif kind == 'assist':
+            member = next(member for member in state['party'] if member['id'] == action['choice'][1])
+            label = f"{assist_effect(member).title()}: {member['name']} · {ASSIST_MANA} MP"
+        style = (discord.ButtonStyle.primary if kind == 'move' else
+                 discord.ButtonStyle.danger if kind == 'ultimate' else discord.ButtonStyle.secondary)
+        button = view.button(label, f"journey_act:{trip['id']}:{trip['version']}:{index}", style,
+                             disabled=not action['enabled'])
+        (moves if kind == 'move' else ultimate if kind == 'ultimate' else reserves).append(button)
+    if moves:
+        view.row(*moves)
+    if ultimate:
+        view.row(*ultimate)
+    for index in range(0, len(reserves), 2):
+        view.row(*reserves[index:index + 2])
 
 
 def render(view, trip):
@@ -83,34 +108,20 @@ def render(view, trip):
             view.text('Another pack member approaches. Your team keeps its current resources.')
             view.row(view.button('Next opponent', f"journey_next:{trip['id']}:{trip['version']}", discord.ButtonStyle.primary))
         else:
-            actions = trial_combat.legal_actions(state)
-            control = view.select('journey_action', 'Choose a move, swap or assist')
-            control.options = [discord.SelectOption(label=action['label'][:100],
-                description=('Ultimate' if action['kind'] == 'ultimate' else 'Uses this turn · ' + action['kind'].title()),
-                value=f"{trip['id']}:{trip['version']}:{index}") for index, action in enumerate(actions) if action['enabled']]
-            if control.options:
-                view.row(control)
+            render_combat_buttons(view, trip, state)
         view.row(view.button('Retreat & return', f"journey_return:{trip['id']}:{trip['version']}"))
         return
     view.render_compact_team(trip)
     boons = p.get('boons', {})
     if any(boons.values()):
         view.text('**Until return** · ' + ' · '.join(f"+{value}% {stat}" for stat, value in boons.items() if value))
-    body = scene['body']
-    lead = scene_lead(scene.get('lead') or body)
-    expanded = getattr(view, 'journey_details', None) == details_key(trip)
-    view.text('**' + scene['title'] + '**\n' + (body if expanded else lead))
-    outcome = p['history'][-1]['outcome'] if p.get('history') else ''
-    if expanded and outcome:
-        view.text('**Last choice**\n' + outcome)
-    view.path_select.options = [discord.SelectOption(label=choice['label'][:100], description=choice['description'][:100],
-        value=f"{trip['id']}:{trip['version']}:{choice['value']}") for choice in scene['choices']]
-    if view.path_select.options:
-        view.row(view.path_select)
-    if body.strip() != lead or outcome:
-        control = view.button('Hide details' if expanded else 'Read more',
-                              f"journey_details:{trip['id']}:{trip['version']}")
-        view.row(control)
+    # A resolved choice flows into the next encounter, without another click or
+    # repeating the accumulated log on every page.
+    previous = p['history'][-1] if p.get('history') else {}
+    if scene['kind'] == 'battle' and (previous.get('root_id') or previous.get('phase') == 'material'):
+        view.text(scene_lead(previous['outcome']))
+    view.text('**' + scene['title'] + '**\n' + scene_lead(scene.get('lead') or scene['body']))
+    render_choices(view, trip, scene['choices'])
 
 
 def artifact(art):

@@ -32,7 +32,7 @@ class SceneView(discord.ui.LayoutView):
         self.add_item(self.container)
         self.path_select = discord.ui.Select(placeholder='Choose your next step')
         self.trip = dict(id='saved-trip', user_id=42, realm='woods', version=3, status='active',
-            payload=dict(adventure_version=3, completed=1, total=3, party_ids=[1], bonus=0,
+            payload=dict(adventure_version=3, pacing_version=1, completed=1, total=3, party_ids=[1], bonus=0,
                 battle_target=2, battles_completed=1, boons=dict(attack=5, defense=0),
                 history=[dict(outcome=OUTCOME)], page=dict(title='The lantern crossing', body=STORY,
                     choices=[dict(value='scene:a', label='Brace the crossing', description='A small temporary boon.'),
@@ -45,8 +45,8 @@ class SceneView(discord.ui.LayoutView):
     def row(self, *items):
         self.container.add_item(discord.ui.ActionRow(*items))
 
-    def button(self, label, action, style=discord.ButtonStyle.secondary):
-        return discord.ui.Button(label=label, custom_id='qa:' + action, style=style)
+    def button(self, label, action, style=discord.ButtonStyle.secondary, *, disabled=False):
+        return discord.ui.Button(label=label, custom_id='qa:' + action, style=style, disabled=disabled)
 
     def select(self, action, placeholder):
         return discord.ui.Select(custom_id='qa:' + action, placeholder=placeholder)
@@ -76,7 +76,7 @@ class AdventureScenes(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(long.endswith('…'))
         self.assertEqual(journal_adventure.scene_lead(''), '')
 
-    async def test_default_scene_keeps_lore_and_previous_outcome_out_of_the_way(self):
+    async def test_scene_pairs_visible_effects_with_direct_buttons_without_disclosure(self):
         self.stage.render()
         text = self.stage.text_content()
         self.assertIn('Battles won 1/2', text)
@@ -84,55 +84,40 @@ class AdventureScenes(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('maintenance drawing', text)
         self.assertNotIn(OUTCOME, text)
         controls = [item for item in self.stage.walk_children() if isinstance(item, discord.ui.Button)]
-        self.assertEqual([item.label for item in controls], ['Read more'])
-        self.assertIn('journey_details:saved-trip:3', controls[0].custom_id)
+        self.assertEqual([item.label for item in controls], ['Brace the crossing', "Inspect the keeper's drawing", 'Retreat and return'])
+        self.assertIn('path:saved-trip:3:0', controls[0].custom_id)
+        self.assertIn('A small temporary boon.', text)
+        self.assertIn('Study the crossing.', text)
+        self.assertFalse(any(isinstance(item, discord.ui.Select) for item in self.stage.walk_children()))
         self.assertLessEqual(self.stage.content_length(), 4000)
         self.assertLessEqual(self.stage.total_children_count, 40)
 
-    async def test_details_toggle_edits_same_panel_without_mutating_the_trip(self):
-        self.stage.render()
+    async def test_prompt_rendering_does_not_advance_or_mutate_saved_story(self):
         before = deepcopy(self.stage.trip)
-        click = interaction()
-        with patch('utils.expeditions.read', new=AsyncMock(return_value=self.stage.trip)):
-            await journal_adventure.toggle_details(self.stage, click, 'saved-trip', 3)
-            self.assertIn(STORY, self.stage.text_content())
-            self.assertIn(OUTCOME, self.stage.text_content())
-            self.assertIn('Hide details', [i.label for i in self.stage.walk_children() if isinstance(i, discord.ui.Button)])
-            await journal_adventure.toggle_details(self.stage, interaction(), 'saved-trip', 3)
-        self.assertNotIn('maintenance drawing', self.stage.text_content())
+        for _ in range(2):
+            self.stage.render()
         self.assertEqual(self.stage.trip, before)
-        self.assertEqual(self.stage.publish.await_count, 2)
-        click.followup.send.assert_not_awaited()
-        click.channel.send.assert_not_awaited()
-
-    async def test_new_revision_collapses_expanded_lore_automatically(self):
-        self.stage.journey_details = ('saved-trip', 3)
-        self.stage.trip['version'] = 4
-        self.stage.render()
-        self.assertNotIn('maintenance drawing', self.stage.text_content())
-        self.assertNotIn(OUTCOME, self.stage.text_content())
-
-    async def test_details_require_owner_current_revision_and_noncombat_scene(self):
-        wrong_owner = interaction(43)
-        await journal_adventure.toggle_details(self.stage, wrong_owner, 'saved-trip', 3)
-        wrong_owner.response.send_message.assert_awaited_once()
         self.stage.publish.assert_not_awaited()
-        for kind in ('old_button', 'new_saved_revision', 'combat'):
-            with self.subTest(kind=kind):
-                self.stage.trip['status'] = 'battle' if kind == 'combat' else 'active'
-                saved = deepcopy(self.stage.trip)
-                if kind == 'new_saved_revision':
-                    saved['version'] += 1
-                with patch('utils.expeditions.read', new=AsyncMock(return_value=saved)):
-                    await journal_adventure.toggle_details(self.stage, interaction(), 'saved-trip', 2 if kind == 'old_button' else 3)
-                self.stage.publish.assert_not_awaited()
 
-    async def test_battle_uses_combat_controls_and_has_no_lore_or_read_more(self):
+    async def test_choice_result_flows_into_next_encounter_without_a_details_button(self):
+        self.stage.trip['payload']['history'][-1]['root_id'] = 'woods.crossing'
+        self.stage.trip['payload']['page']['kind'] = 'battle'
+        self.stage.render()
+        self.assertIn(OUTCOME, self.stage.text_content())
+        self.assertFalse(any(item.label in ('Read more', 'Hide details') for item in self.stage.walk_children()
+                             if isinstance(item, discord.ui.Button)))
+
+    async def test_return_stays_separate_from_story_actions(self):
+        self.stage.render()
+        footer = self.stage.container.children[-1]
+        self.assertIsInstance(footer, discord.ui.ActionRow)
+        self.assertEqual([button.label for button in footer.children], ['Retreat and return'])
+
+    async def test_battle_uses_move_buttons_with_costs_and_disabled_ultimate(self):
         payload = dict(prepared_party=[fighter()])
         journey_combat.start(payload, journey_combat.plan('woods', 4, 'single', 2))
         self.stage.trip['payload']['combat'] = payload['combat']
         self.stage.trip['status'] = 'battle'
-        self.stage.journey_details = ('saved-trip', 3)
         self.stage.render()
         text = self.stage.text_content()
         self.assertIn('Battles won 1/2', text)
@@ -141,7 +126,28 @@ class AdventureScenes(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('The lantern crossing', text)
         self.assertNotIn(OUTCOME, text)
         self.assertFalse(any(i.label in ('Read more', 'Hide details') for i in self.stage.walk_children() if isinstance(i, discord.ui.Button)))
-        self.assertTrue(any(i.placeholder == 'Choose a move, swap or assist' for i in self.stage.walk_children() if isinstance(i, discord.ui.Select)))
+        self.assertFalse(any(isinstance(i, discord.ui.Select) for i in self.stage.walk_children()))
+        controls = [i for i in self.stage.walk_children() if isinstance(i, discord.ui.Button)]
+        self.assertTrue(any(' MP' in i.label and i.style == discord.ButtonStyle.primary for i in controls))
+        ultimate = next(i for i in controls if i.style == discord.ButtonStyle.danger)
+        self.assertIn('0/3', ultimate.label)
+        self.assertTrue(ultimate.disabled)
+
+    async def test_team_buttons_preserve_disabled_assists_and_fit_native_limits(self):
+        payload = dict(prepared_party=[fighter(identity=1), fighter('gloop', identity=2), fighter('barkley', identity=3)])
+        journey_combat.start(payload, journey_combat.plan('woods', 4, 'single', 2))
+        self.stage.trip['payload']['combat'] = payload['combat']
+        self.stage.trip['status'] = 'battle'
+        self.stage.render()
+        controls = [i for i in self.stage.walk_children() if isinstance(i, discord.ui.Button)]
+        self.assertEqual(sum(i.label.startswith('Swap:') for i in controls), 2)
+        assists = [i for i in controls if i.label.startswith(('Heal:', 'Guard:', 'Attack:'))]
+        self.assertEqual(len(assists), 2)
+        self.assertTrue(all(i.disabled for i in assists))
+        self.assertTrue(all('12 MP' in i.label for i in assists))
+        self.assertLessEqual(self.stage.total_children_count, 40)
+        self.assertLessEqual(self.stage.content_length(), 4000)
+        self.stage.to_components()
 
     async def test_only_designated_first_opponent_is_labelled_recruitable(self):
         payload = dict(prepared_party=[fighter()])

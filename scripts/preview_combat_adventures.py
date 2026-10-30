@@ -36,7 +36,7 @@ h1{font-size:26px;font-weight:500;line-height:1.2;margin:0 0 12px}header p,#note
 button,select{font:inherit;border:1px solid #50535c;border-radius:4px;color:#dbdee1;background:#41434a;padding:8px 11px;max-width:100%;min-width:0}
 select{width:100%;background:#1e1f22}button[data-style="1"]{background:#5865f2;color:white}button[data-style="3"]{background:#278747;color:white}
 button:disabled{opacity:.5}button{cursor:pointer}a{color:#d8cba5}footer,#note{font-size:12px}
-button:focus-visible,select:focus-visible{outline:2px solid #e8cf9f;outline-offset:3px}.section{display:flex;gap:12px;align-items:start}.section>.text{flex:1}.section>img{width:80px;flex:none}
+button:focus-visible,select:focus-visible{outline:2px solid #e8cf9f;outline-offset:3px}.section{display:flex;gap:12px;align-items:center}.section>.text{flex:1;min-width:0}.section>img{width:80px;flex:none}.section>button{max-width:55%;flex-shrink:0;white-space:normal}
 @media(max-width:420px){main{padding:20px 8px}.message{padding:9px}.row{gap:5px}button{padding:8px}}
 '''
 
@@ -62,7 +62,7 @@ async def export(output):
                      ('adventure_content', 'journeys', 'journey_service', 'journey_combat',
                       'expeditions', 'habitats', 'journal', 'journal_adventure', 'journal_team_art',
                       'trial_combat', 'team_combat', 'battle_art')]
-    source_paths += [ROOT / 'cogs' / 'hatch.py', Path(__file__).resolve()]
+    source_paths += [ROOT / 'cogs' / 'hatch.py', ROOT / 'scripts' / 'preview_living_adventures.py', Path(__file__).resolve()]
     source_hashes = {str(path.relative_to(ROOT)).replace('\\', '/'):
                      hashlib.sha256(path.read_bytes()).hexdigest() for path in source_paths}
     media = output / 'media'
@@ -101,9 +101,8 @@ async def export(output):
                 # meaningful committed states instead of every animation frame.
                 uploads.append(dict(stage='playback', revision=trip['version'], message_id=8181))
                 return message
-        elif key in ('battle_action', 'pack_ready'):
-            # The end of ordinary turns and the brief pre-fight confirmation
-            # are already represented by the selected battle/interlude stages.
+        elif key == 'battle_action':
+            # Ordinary turns are already represented by the selected battles.
             uploads.append(dict(stage=key, revision=trip['version'], message_id=8181))
             return message
         state = trip['payload'].get('combat') if trip else None
@@ -185,12 +184,18 @@ async def export(output):
                         and item.label.startswith(prefix))
 
         async def path(value, key, title):
-            await do(view.path_select, key, title, f"{view.trip['id']}:{view.trip['version']}:{value}")
+            index = next(index for index, choice in enumerate(expeditions.presentation(view.trip)['choices'])
+                         if choice['value'] == value)
+            route = f":path:{view.trip['id']}:{view.trip['version']}:{index}:"
+            control = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button)
+                           and route in item.custom_id)
+            await do(control, key, title)
 
         async def act(index, key='battle_action', title='Committed battle action and next decision'):
-            control = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select)
-                           and item.placeholder == 'Choose a move, swap or assist')
-            await do(control, key, title, f"{view.trip['id']}:{view.trip['version']}:{index}")
+            route = f":journey_act:{view.trip['id']}:{view.trip['version']}:{index}:"
+            control = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button)
+                           and route in item.custom_id)
+            await do(control, key, title)
 
         async def win(*, demonstrate=False):
             assisted, swaps = False, 0
@@ -231,10 +236,9 @@ async def export(output):
             models['interlude'] = deepcopy(view.trip)
             lead = journal_adventure.scene_lead(expeditions.presentation(view.trip)['body'])
             assert len(lead) <= journal_adventure.LEAD_LIMIT
-            before_details = deepcopy(view.trip)
-            await do(button('Read more'), 'details', 'Optional details expand inside the same journal')
-            assert view.trip == before_details, 'Reading details must not advance or reroll the journey.'
-            await do(button('Hide details'), 'interlude', 'One short authored decision between battles')
+            assert not any(item.label in ('Read more', 'Hide details') for item in view.walk_children()
+                           if isinstance(item, discord.ui.Button))
+            assert not any(item is view.path_select for item in view.walk_children())
             choices = view.trip['payload']['page']['choices']
             safe = next(choice['value'] for choice in choices if not choice.get('effects', {}).get('battle')
                         and not choice.get('effects', {}).get('hp_cost'))
@@ -314,14 +318,18 @@ async def export(output):
             while pending_components:
                 item = pending_components.pop()
                 pending_components.extend(item.get('components', ()))
+                if item.get('accessory'):
+                    pending_components.append(item['accessory'])
                 assert all(len(option['value']) <= 100 for option in item.get('options', ())), key
+                assert len(item.get('custom_id', '')) <= 100, key
     assert all(hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == digest
                for path, digest in source_hashes.items()), 'Source changed while recording; regenerate after edits finish.'
     report = dict(status='passed', initial_messages=1, additional_messages=0, deletions=0,
                   scope='Actual default Hatch.explore, rendered component callbacks and saved v3 service state in a disposable prepared QA account; real equipped animation renderer. Playback sleep skipped. Native Discord delivery and live balance were not tested.',
                   example_seed=selected_seed, habitat_seed=73, source_sha256=source_hashes,
                   stages=list(screens), uploads=uploads,
-                  clips=clips, short_interlude_characters=len(lead), read_more_preserves_saved_trip=True,
+                  clips=clips, short_interlude_characters=len(lead), direct_action_buttons=True,
+                  inline_choice_effects=True, disclosure_buttons=False,
                   max_characters=max(screen['characters'] for screen in screens.values()),
                   max_components=max(screen['component_count'] for screen in screens.values()),
                   first_battle_recruitable=False, pack_leader_recruitable=True, pack_filler_recruitable=False,
@@ -336,12 +344,14 @@ async def export(output):
                  clips=clips)
     (output / 'final-validation.json').write_text(json.dumps(final, indent=2) + '\n', encoding='utf-8')
     script = SCRIPT.replace('__DATA__', json.dumps(screens, ensure_ascii=False).replace('</', '<\\/')).replace('__ART__', json.dumps(art))
+    script = script.replace('parent.append(section)}else if(item.type===1)',
+                            'if(item.accessory&&item.accessory.type===2)draw(item.accessory,section);parent.append(section)}else if(item.type===1)')
     # These preview controls switch between real captured production states;
     # they do not send commands or mutate a live player's account.
     script += '''document.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')return;const target={
-      'Read more':'details','Hide details':'interlude','Start adventure · 1 charge':'battle',
+      'Start adventure · 1 charge':'battle',
       'Next opponent':'pack_hostile'}[e.target.textContent];if(target)document.getElementById('adventure-preview').preview.show(target)});'''
-    html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Combat Adventures</title><style>' + CSS + '</style></head><body><main id="adventure-preview"><header><h1>Adventure starts with a battle.</h1><p>Two required encounters in the early biomes, three in the later biomes, with one short choice between each. Only the designated wild encounter can recruit; hostile opponents remain battles.</p></header><div id="toolbar"><label for="screen">Stage</label><select id="screen" aria-label="Preview stage"></select></div><div id="stage"></div><div id="note" role="status"></div><footer>Offline recording of production controls with prepared QA companions. <a href="validation.json">Validation</a> · <a href="animation-contact.png">Animation frames</a></footer><script>' + script + '</script></main></body></html>'
+    html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ChibiBeasts · Adventure Buttons</title><style>' + CSS + '</style></head><body><main id="adventure-preview"><header><h1>Direct buttons. Prompts in the adventure.</h1><p>Moves, swaps and assists are back on buttons. Short prompts and choice effects appear together; the latest choice result leads into the next encounter.</p></header><div id="toolbar"><label for="screen">Stage</label><select id="screen" aria-label="Preview stage"></select></div><div id="stage"></div><div id="note" role="status"></div><footer>Offline recording of production controls with prepared QA companions. <a href="validation.json">Validation</a> · <a href="animation-contact.png">Animation frames</a></footer><script>' + script + '</script></main></body></html>'
     path = output / 'index.html'
     path.write_text(html, encoding='utf-8')
     print(f'Exported {len(screens)} stages and {len(clips)} real clips: {path}')
@@ -370,22 +380,20 @@ async def capture_browser(path, output, screens):
                     assert 'Cannot be recruited' in text
                 if screen == 'pack_recruitable':
                     assert 'Can join your team after victory' in text
-                if screen in ('battle', 'interlude', 'details', 'pack_recruitable', 'pack_hostile', 'homeward'):
+                assert not await page.get_by_role('button', name='Read more', exact=True).count()
+                assert not await page.get_by_role('button', name='Hide details', exact=True).count()
+                assert not await page.locator('select[aria-label="Choose your next step"],select[aria-label="Choose a move, swap or assist"]').count()
+                if screen in ('battle', 'interlude', 'pack_ready', 'pack_recruitable', 'pack_hostile', 'homeward'):
                     await page.screenshot(path=str(output / f'{width}-{screen}.png'), full_page=True)
                 checks.append(dict(width=width, stage=screen, one_message=True, no_overflow=True, media_loaded=True))
         await page.locator('#screen').select_option('interlude')
-        await page.get_by_role('button', name='Read more', exact=True).click()
-        assert await page.locator('#screen').input_value() == 'details'
-        await page.get_by_role('button', name='Hide details', exact=True).click()
-        assert await page.locator('#screen').input_value() == 'interlude'
-        choice = page.locator('select[aria-label="Choose your next step"]')
-        await choice.select_option(index=1)
-        assert await page.locator('.option-detail').last.inner_text()
+        assert await page.locator('.section>button').count() >= 2
+        assert await page.locator('.section>.text').count() >= 2
         await browser.close()
     assert not errors and not failed, dict(errors=errors, failed=failed)
     (output / 'browser-validation.json').write_text(json.dumps(dict(status='passed', javascript_errors=errors,
-        missing_assets=failed, checks=checks, read_more_same_panel=True, hide_details_same_panel=True,
-        choice_description_interaction=True), indent=2) + '\n', encoding='utf-8')
+        missing_assets=failed, checks=checks, disclosure_buttons=False,
+        direct_action_buttons=True, inline_choice_effects=True), indent=2) + '\n', encoding='utf-8')
     final = json.loads((output / 'final-validation.json').read_text(encoding='utf-8'))
     final['browser_checks'] = len(checks)
     (output / 'final-validation.json').write_text(json.dumps(final, indent=2) + '\n', encoding='utf-8')

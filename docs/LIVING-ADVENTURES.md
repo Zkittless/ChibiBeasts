@@ -3,8 +3,8 @@
 `/explore` opens destination selection in the existing Field Journal. Keep the
 saved exploration team and press **Start adventure** to enter battle immediately.
 The first five biomes require two encounters; the upper five require three.
-A single short decision separates encounters. Full lore is available through
-**Read more** in the same journal, and collapses again on the next decision.
+A single short decision separates encounters. The prompt and each choice's
+effect appear directly in the same journal, beside the action buttons.
 
 The launch catalog contains **200 one-time discoveries**, including **30 connected
 three-scene locations**, and **60 explicitly repeatable wilderness encounters**:
@@ -38,10 +38,13 @@ partial progress; it is not a full clear.
 Each interlude advances one authored scene. Connected locations resume at their
 next unresolved scene in a later interlude or visit, so several story pages never
 block the next required fight. The default body shows one or two short sentences
-(up to 200 characters); full details and the last outcome are available on demand.
+(up to 200 characters), without an expansion button. A resolved story choice's
+short outcome leads into the next required encounter, and past outcomes remain
+in Battle log. Moves show their MP cost; unavailable moves, ultimates and assists
+remain visible as disabled buttons. Reserves have direct swap and assist buttons.
 Packs have two or three sequential opponents using the existing entry, attack,
 swap, assist and knockout animations. All combat and discoveries edit the same
-journal message. The complete narrative remains in **Battle log**.
+journal message. Resolved outcomes remain in **Battle log**.
 
 Encounter strength is fixed to the departure team size. Solo enemies use 50%
 of the full-team HP profile and 60% of its attack; pairs use 75% HP and 85% attack.

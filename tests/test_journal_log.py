@@ -137,7 +137,13 @@ class BattleLog(DatabaseCase):
         self.assertEqual(await storage.get_player(42), before_player)
         self.assertEqual((await expeditions.energy(42)).charges, before_energy)
         self.assertEqual(view.state.explore_default, 'woods')
-        self.assertNotIn('one material bundle', self.text(view))
+        self.assertNotIn('**Rewards received**', self.text(view))
+        self.assertNotIn('**Expedition notes**', self.text(view))
+        self.assertIn('Search a mossy grove; choose your one material bundle.', self.text(view))
+        buttons = [item for item in view.walk_children() if isinstance(item, discord.ui.Button)
+                   and ':path:' in item.custom_id]
+        self.assertEqual(len(buttons), len(choices))
+        self.assertNotIn(view.path_select, list(view.walk_children()))
 
     async def test_other_users_and_closed_views_cannot_load_the_log(self):
         view = await self.view()
