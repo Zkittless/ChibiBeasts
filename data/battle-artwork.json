@@ -65,6 +65,12 @@
       "prompt": "Use case: stylized-concept. Asset type: production environment-only battle background for the ChibiBeasts pixel-art RPG. Generate one wide landscape 16:9 image. Authentic restrained early-16-bit pixel art, crisp square pixels, small 320x180 logical grid, limited harmonious palette, layered distant scenery and clear silhouettes, no painterly brushwork, no photorealism or smooth gradients. Side-view battle stage: a broad flat continuous walkable foreground across the lower quarter, large open character positions at 28% and 72% width, scenery behind these positions and a quiet upper area. The foreground must be grounded and readable for animated chibi creatures added later, not a top-down landscape. Environment only: no creatures, people, text, symbols, UI, borders, logos or watermark. Primary request: Starfall Gardens. A serene floating celestial garden at the edge of the stars: layered pale-lilac terraces, distant luminous silver-leaved trees, hanging starfruit and soft motes drifting among indigo nebula clouds. Wisps of golden light trail gently between the terraces like growing vines. A broad continuous flat pearl-grey garden courtyard forms the foreground with sparse low luminous grasses only at the far corners. Distinct living garden full of calm growth, not an empty stone platform or giant central tree. Palette: midnight indigo, muted periwinkle, pearl white, soft rose and tiny warm gold accents. Magical, gentle and quietly wondrous.",
       "source_sha256": "1da68da45d52c3f7671be3c5a49e865c5dacde3811adc045c18a55f26e3718b6",
       "sha256": "36f716af7ddf3af9147692c443346eade0025b44e370337fc8fcd5ea9b16eedd"
+    },
+    "hollowlight": {
+      "file": "battle_realms/hollowlight.png",
+      "prompt": "Use case: stylized-concept. A full-width pixel-art battle background for ChibiBeasts: the Hollowlight Carnival, a cozy haunted fairground in an ancient forest at night. Warm amber lantern strings, ochre and purple stalls, a distant crooked ferris wheel, carousel and shuttered theatre under a pale moon. Clear empty central combat clearing; environmental detail kept around the outer edges and horizon. Cohesive chunky crisp pixel art with limited purple, midnight blue, moss and warm pumpkin-gold palette. No people or beasts, no text, no UI, no watermark. Opaque landscape.",
+      "source_sha256": "19d03d0ee71730730bcbe338f835d4db4eec727862531d0fb416bcd4304ffd5c",
+      "sha256": "027a65fc0d9df3fd1abdb868e9106f9ff69a3e5b8247253e363a2199be9fffa6"
     }
   }
 }

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import aiosqlite
 import discord
 
-from utils import db as storage, expeditions, journal_history
+from utils import db as storage, expeditions, hollowlight, journal_history
 from utils.catalog import load_catalog
 from utils.habitats import BIOMES
 
@@ -17,6 +17,10 @@ OUTCOMES = {
 
 def safe(value):
     return discord.utils.escape_mentions(discord.utils.escape_markdown(str(value)))
+
+
+def destination_name(trip):
+    return '🎃 The Hollowlight Carnival' if trip['payload'].get('event_id') == hollowlight.EVENT_ID else BIOMES[trip['realm']]['name']
 
 
 def summary(trip):
@@ -69,10 +73,10 @@ def render(view):
         view.text('No expeditions recorded yet. Your first trip will appear here.')
         return
     for trip in view.log_entries:
-        view.text(f"**{BIOMES[trip['realm']]['name']}** · <t:{int(trip['updated_at'])}:d>\n{summary(trip)}")
+        view.text(f"**{destination_name(trip)}** · <t:{int(trip['updated_at'])}:d>\n{summary(trip)}")
     picker = view.select('log_entry', 'Open an expedition recap')
     picker.options = [discord.SelectOption(
-        label=f"{BIOMES[trip['realm']]['name']} · {datetime.fromtimestamp(trip['updated_at'], timezone.utc):%d %b %H:%M} UTC"[:100],
+        label=f"{destination_name(trip)} · {datetime.fromtimestamp(trip['updated_at'], timezone.utc):%d %b %H:%M} UTC"[:100],
         description=summary(trip)[:100], value=trip['id']) for trip in view.log_entries]
     view.row(picker)
     render_pagination(view)
@@ -88,7 +92,7 @@ def render_pagination(view):
 def render_detail(view, trip):
     p = trip['payload']
     complete = trip['status'] == 'complete'
-    view.text(f"### Battle log · {BIOMES[trip['realm']]['name']}\n<t:{int(trip['updated_at'])}:f> · {summary(trip)}")
+    view.text(f"### Battle log · {destination_name(trip)}\n<t:{int(trip['updated_at'])}:f> · {summary(trip)}")
     if p.get('party'):
         view.text('**Expedition team** · ' + ' · '.join(safe(row['name']) for row in p['party']))
     if p.get('adventure_version', 0) >= 2:
@@ -100,6 +104,8 @@ def render_detail(view, trip):
                       + OUTCOMES.get(p.get('encounter_result'), 'Encounter in progress' if trip['status'] == 'battle' else 'Encounter recorded') + catch, beast['id'])
     if complete:
         rewards = [f"{p.get('gold', 0):,} gold", f"{p.get('exp_granted', p.get('exp', 0)):,} trainer EXP"]
+        if p.get('event_id') == hollowlight.EVENT_ID:
+            rewards.append(f"{p.get('hollowlight_embers', 0)} Lantern Embers")
         quantity = int(p.get('material_granted', 1))
         if quantity and p.get('material'):
             rewards.append(f"{quantity} {load_catalog('materials.json')['materials'][p['material']]['name']}")

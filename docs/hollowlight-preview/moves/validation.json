@@ -1,0 +1,142 @@
+{
+  "status": "passed",
+  "scope": "Production combat.resolve_move, snapshots, Carnival battlefield renderer and GIF encoder; illustrative level8 actors and level10 Behemoth, not live Discord playback.",
+  "records": [
+    {
+      "species": "patchkin",
+      "move": "Straw Snare",
+      "side": 0,
+      "filename": "patchkin--straw-snare.gif",
+      "profile": {
+        "family": "roots",
+        "palette": "wood",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "bytes": 1012346,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "species": "patchkin",
+      "move": "Harvest Brace",
+      "side": 0,
+      "filename": "patchkin--harvest-brace.gif",
+      "profile": {
+        "family": "shelter",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "bytes": 594212,
+      "frames": 23,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    {
+      "species": "wickwing",
+      "move": "Ember Flutter",
+      "side": 0,
+      "filename": "wickwing--ember-flutter.gif",
+      "profile": {
+        "family": "swarm",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "bat"
+      },
+      "bytes": 793102,
+      "frames": 24,
+      "milliseconds": 1650,
+      "one_shot": true
+    },
+    {
+      "species": "wickwing",
+      "move": "Candleburst",
+      "side": 0,
+      "filename": "wickwing--candleburst.gif",
+      "profile": {
+        "family": "orbit",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "nova"
+      },
+      "bytes": 1028567,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    },
+    {
+      "species": "veilmoth",
+      "move": "Funeral Glimmer",
+      "side": 0,
+      "filename": "veilmoth--funeral-glimmer.gif",
+      "profile": {
+        "family": "gaze",
+        "palette": "shadow",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "bytes": 799880,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "species": "veilmoth",
+      "move": "Moonveil Mend",
+      "side": 0,
+      "filename": "veilmoth--moonveil-mend.gif",
+      "profile": {
+        "family": "heal",
+        "palette": "light",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "bytes": 539090,
+      "frames": 24,
+      "milliseconds": 2100,
+      "one_shot": true
+    },
+    {
+      "species": "hollow_king",
+      "move": "Lantern Decree",
+      "side": 1,
+      "filename": "hollow_king--lantern-decree.gif",
+      "profile": {
+        "family": "gaze",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "bytes": 1027779,
+      "frames": 24,
+      "milliseconds": 1950,
+      "one_shot": true
+    },
+    {
+      "species": "hollow_king",
+      "move": "Last Procession",
+      "side": 1,
+      "filename": "hollow_king--last-procession.gif",
+      "profile": {
+        "family": "orbit",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "bytes": 1204178,
+      "frames": 29,
+      "milliseconds": 2650,
+      "one_shot": true
+    }
+  ]
+}

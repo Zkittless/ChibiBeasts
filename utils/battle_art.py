@@ -15,7 +15,7 @@ from copy import deepcopy
 from uuid import uuid4
 
 import discord
-from PIL import Image, ImageFont
+from PIL import Image
 
 from utils.artwork import PROJECT_ROOT, card_artwork_path
 from utils import field_journal as ui
@@ -30,6 +30,7 @@ def _plain_name(value):
 
 
 REALMS = {key: _plain_name(region['name']) for key, region in BIOMES.items()}
+REALMS['hollowlight'] = 'The Hollowlight Carnival'
 TYPE_REALMS = {'fire': 'ember', 'ice': 'glacial', 'wind': 'glacial',
                'water': 'trenches', 'shadow': 'trenches', 'cosmic': 'loom',
                'arcane': 'loom', 'light': 'loom'}
@@ -43,7 +44,6 @@ RENDER_TIMEOUT = 6
 IO_TIMEOUT = 15
 _workers = ThreadPoolExecutor(max_workers=2, thread_name_prefix='battle-art')
 _slots = threading.BoundedSemaphore(2)
-_fonts = threading.local()
 logger = logging.getLogger('chibibeasts.battle.art')
 
 
@@ -153,8 +153,9 @@ def sprite(species, armor_id=''):
     # Canonical IDs from the packaged manifest; never load a user-supplied path.
     if armor_id:
         from utils import armor_art
+        from utils import cosmetics
         try:
-            if armor_id in armor_art.manifest()['sets']:
+            if armor_id in armor_art.manifest()['sets'] or cosmetics.cosmetic_id(armor_id):
                 image = armor_art.portrait(species, armor_id)
                 if image is not None:
                     image.thumbnail((180, 176), Image.Resampling.NEAREST)
@@ -180,23 +181,16 @@ def sprite(species, armor_id=''):
 
 
 def font(size):
-    # Pillow's bundled font works on Railway/Linux without system fonts.
-    # A FreeType face is confined to its rendering thread.
-    if not hasattr(_fonts, 'sizes'):
-        _fonts.sizes = {}
-    if size not in _fonts.sizes:
-        _fonts.sizes[size] = ImageFont.load_default(size=size)
-    return _fonts.sizes[size]
+    return ui.font(size, display=True)
 
 
 def label(draw, xy, text, size=14, fill='#edf0fc', width=None, *, outline=False):
-    text = ''.join(c for c in str(text) if c.isprintable())
-    face = font(size)
+    text = ui.clean(text)
+    chosen = size
     if width:
-        while text and draw.textlength(text, font=face) > width:
-            text = text[:-2] + '~' if len(text) > 1 else ''
-    draw.text(xy, text, fill=fill, font=face,
-              stroke_width=1 if outline else 0, stroke_fill='#071c24')
+        while chosen > 8 and draw.textlength(text, font=font(chosen)) > width:
+            chosen -= 1
+    ui.paint_text(draw, xy, text, font(chosen), ui.INK)
 
 
 def ease(value):

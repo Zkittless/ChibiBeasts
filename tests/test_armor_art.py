@@ -16,7 +16,7 @@ class ArmorAssets(unittest.TestCase):
 
     def test_release_has_a_dedicated_sprite_for_every_species_and_armor(self):
         actual = armor_art.coverage()
-        self.assertEqual(actual['expected_pairs'], 86 * 16)
+        self.assertEqual(actual['expected_pairs'], 90 * 16)
         self.assertTrue(actual['complete'], f"Missing armor sprites: {actual['missing'][:12]}")
         self.assertEqual(actual['dedicated_pairs'], actual['expected_pairs'])
         self.assertEqual(actual['missing'], [])

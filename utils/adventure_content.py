@@ -9,6 +9,7 @@ from utils.artwork import PROJECT_ROOT
 from utils.habitats import BIOMES
 
 CONTENT_ROOT = PROJECT_ROOT / 'data' / 'adventures'
+STORY_DESTINATIONS = frozenset(BIOMES) | {'hollowlight'}
 KINDS = frozenset(('discovery', 'ruin', 'traveller', 'shrine', 'wild', 'pack', 'hazard', 'camp', 'legendary'))
 EFFECTS = {'attack_boon': {5, 10}, 'defense_boon': {5, 10}, 'heal': {5, 10},
            'hp_cost': {3, 5}, 'bonus': {2, 5}, 'bond': {1}, 'study': {1}}
@@ -21,7 +22,7 @@ def belongs(value, biome):
     """Resolve the longest permanent namespace, keeping woods_deep out of woods."""
     if not isinstance(value, str) or not SLUG.fullmatch(value):
         return False
-    owner = next((key for key in sorted(BIOMES, key=len, reverse=True)
+    owner = next((key for key in sorted(STORY_DESTINATIONS, key=len, reverse=True)
                   if value.startswith((key + '.', key + '_'))), None)
     return owner == biome
 
@@ -43,7 +44,7 @@ def validate(document, *, expected_biome=None, require_counts=True):
     if '\ufffd' in json.dumps(document, ensure_ascii=False):
         errors.append('Adventure text contains a Unicode replacement character; restore the damaged punctuation.')
     biome = document.get('biome')
-    if not isinstance(biome, str) or biome not in BIOMES or expected_biome is not None and biome != expected_biome:
+    if not isinstance(biome, str) or biome not in STORY_DESTINATIONS or expected_biome is not None and biome != expected_biome:
         return [f'Unknown or mismatched biome: {biome!r}.']
     if type(document.get('version')) is not int or document['version'] != 1:
         errors.append(f'{biome}: version must be 1.')
@@ -233,7 +234,7 @@ def _read(path, modified, size):
 
 
 def load(biome):
-    if biome not in BIOMES:
+    if biome not in STORY_DESTINATIONS:
         raise ValueError('Choose a known adventure destination.')
     path = CONTENT_ROOT / (biome + '.json')
     stat = path.stat()

@@ -84,6 +84,11 @@ async def workshop_state(user_id):
                               'FROM player_beasts pb WHERE pb.user_id=? ORDER BY pb.player_number,pb.id', (user_id,)) as cursor:
             companions = [{**dict(row), 'armor_id': armor.get(row['id']),
                 'rune_id': row['rune_id'] or legacy_runes.get(row['id'])} for row in await cursor.fetchall()]
+        from utils import cosmetics
+        dressed = await cosmetics.equipped(db, user_id)
+        for member in companions:
+            member['cosmetic_id'] = dressed.get(member['id'])
+            member['appearance_id'] = cosmetics.appearance_id(member['cosmetic_id']) or member['armor_id'] or ''
         sanctuary = await sanctuary_in_transaction(db, user_id)
     return WorkshopState(trainer['level'], materials, dict(owned), sanctuary, companions)
 

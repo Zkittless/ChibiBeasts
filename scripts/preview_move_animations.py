@@ -131,7 +131,9 @@ def main():
                 record=gif_record(clip)
                 assert record['one_shot'] and record['bytes']<art.MAX_BYTES,(species,move,record)
                 audit.append(dict(species=species,move=move,**record))
-    report=dict(roster=86,move_entries=sum(map(len,fx.manifest().values())),unique_moves=334,
+    roster=storage.load_beasts()
+    report=dict(roster=len(roster),move_entries=sum(map(len,fx.manifest().values())),
+                unique_moves=len({move for beast in roster.values() for move in beast['moves']+[beast['ultimate']]}),
                 clips=records,performance=asyncio.run(benchmark(performance)),roster_gifs=audit,
                 data_source='Packaged art, actual move specs, level-scaled states, seeded combat outcomes.',
                 preview_only='Offline. No Discord messages or player data were changed.')

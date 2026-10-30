@@ -1,0 +1,1441 @@
+{
+  "status": "passed",
+  "source_sha256": {
+    "scripts/audit_hollowlight_combat.py": "772d7cb782dc884e9360e3247e53237a9334df95c4ccd220702d632a67a9ff3a",
+    "scripts/audit_combat_adventures.py": "0b02f36085ae69ffad1d50c764acede751cdf67b0f1f8b0761edbd509feaf510",
+    "scripts/audit_progression.py": "0260c2e6d9bdd065be34c0f4e6cc79a2d57ff80a608747ac4021d3584596e27e",
+    "utils/journeys.py": "37de50a27dd5c148b1a91dc6e03c7da5ef1b107a53fb9f85f43b479e4ed5f695",
+    "utils/journey_combat.py": "62270642c1e9b5d281f616742ad4ff89d4f8938f23e1d5de709ef5caa8516ce9",
+    "utils/journey_service.py": "5c99f26b05d1aa8012ad6990ab915a038a1156f0eedca4a9d5db7d90c4944777",
+    "utils/expeditions.py": "db08df1fade486b4e6360adf5e0c99eb27381e77d1d82675bec634a7157f1405",
+    "utils/habitats.py": "68a9537e2b49b1f84d08f984a180c0a2caab8c1bcac7407ba63c8375e46f9af7",
+    "utils/combat.py": "a55ca6d2b203c227984cdc7643d536fa69bf18044a29cdcfc882b60fbdcc91d7",
+    "utils/trial_combat.py": "3e424d65ee68b14c48cda2ca1032286b885bd55d393e9bf3ef015ff49a6b4e68",
+    "utils/team_combat.py": "3c1a2ceb73333b6ec1d89ff357f0756c52485c1316bab30b56d372c6e522d687",
+    "utils/duels.py": "e3e11dadf92af7a207def3fe66074def58bbf5df285ea98ac2f8c3dc481e98c2",
+    "utils/adventure_content.py": "1327583c7e4486b1f54f4decfc0bfadf4617f8d2fa9e9c35bcdccccb69900211",
+    "utils/type_chart.py": "be189e998d3e267c3342304b19184b67a982e9e1ece903d578384e012e27c0a8",
+    "data/beasts.json": "2259794ba86918583baa7c52a30c2ca1ec287c7604332faa38f4eb9905418dce",
+    "data/equipment.json": "99760ebe36ca43c9bc1769ced7119f35f15598c1cdfb8a4655ebf71eea9cb0e7",
+    "data/adventures/hollowlight.json": "637b2f683a445c4a26816c7dbb237fda590bb63cbdb9d98f4aab5a97acc42b0f"
+  },
+  "fingerprint_method": "SHA256 of raw checkout bytes; LF/CRLF differences change these hashes.",
+  "departure_party_profiles": {
+    "1": [
+      0.5,
+      0.6
+    ],
+    "2": [
+      0.75,
+      0.85
+    ],
+    "3": [
+      1.0,
+      1.0
+    ]
+  },
+  "seasonal_enemy_profiles": {
+    "1": [
+      0.8,
+      0.6
+    ],
+    "11": [
+      0.9,
+      0.7
+    ],
+    "26": [
+      1.0,
+      1.0
+    ]
+  },
+  "novice_wickwing_attack_scale": 0.5,
+  "fixtures": [
+    {
+      "biome": "hollowlight",
+      "mode": "fresh_solo_l1",
+      "team": [
+        "prismite"
+      ],
+      "level": 1,
+      "trainer_level": 1,
+      "prepared": false,
+      "happiness": 100,
+      "trials": 100,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "prismite",
+          "hp": 90,
+          "mana": 70,
+          "max_hp": 90,
+          "max_mana": 70
+        }
+      ],
+      "complete": 87,
+      "opening_wins": 100,
+      "mean_fights_won": 1.87,
+      "mean_actions": 9.05,
+      "p90_actions": 10,
+      "mean_remaining_hp_fraction": 0.28,
+      "mean_knocked_out": 0.13,
+      "planned_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "recruitment_encounters_won": 100,
+      "recruitable_beat_counts": {
+        "0": 100
+      },
+      "failure_beats": {
+        "1": 13
+      },
+      "failure_opponents": [
+        {
+          "species": "hollow_king",
+          "reason": "Your team needs recovery.",
+          "count": 13
+        }
+      ],
+      "interlude_effects": {
+        "defense_boon": 66,
+        "heal": 12
+      },
+      "examples": [
+        {
+          "seed": 25,
+          "complete": false,
+          "opening_won": true,
+          "actions": 9,
+          "action_move": 8,
+          "action_ultimate": 1,
+          "foes_defeated": 1,
+          "fights_won": 1,
+          "recruitment_encounters_won": 1,
+          "ticket": "patchkin",
+          "ticket_rarity": "uncommon",
+          "recruitable_beat": 0,
+          "schedule": [
+            "single",
+            "single"
+          ],
+          "opponents": [
+            {
+              "beat": 0,
+              "guardian": false,
+              "recruitable": true,
+              "species": [
+                "patchkin"
+              ]
+            },
+            {
+              "beat": 1,
+              "guardian": true,
+              "recruitable": false,
+              "species": [
+                "hollow_king"
+              ]
+            }
+          ],
+          "interludes": [
+            {
+              "root": "hollowlight_2026.silent_procession",
+              "node": "hollowlight_2026.silent_procession.scene_0",
+              "choice": "walk",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "hollowlight_2026.procession_seen"
+                ],
+                "status": "active"
+              }
+            }
+          ],
+          "lost_at": {
+            "beat": 1,
+            "guardian": true,
+            "recruitable": false,
+            "reason": "Your team needs recovery.",
+            "species": "hollow_king"
+          },
+          "remaining_hp_fraction": 0.0,
+          "knocked_out": 1
+        },
+        {
+          "seed": 28,
+          "complete": false,
+          "opening_won": true,
+          "actions": 9,
+          "action_move": 8,
+          "action_ultimate": 1,
+          "foes_defeated": 2,
+          "fights_won": 1,
+          "recruitment_encounters_won": 1,
+          "ticket": "wickwing",
+          "ticket_rarity": "rare",
+          "recruitable_beat": 0,
+          "schedule": [
+            "pack2",
+            "single"
+          ],
+          "opponents": [
+            {
+              "beat": 0,
+              "guardian": false,
+              "recruitable": true,
+              "species": [
+                "wickwing",
+                "permafrost"
+              ]
+            },
+            {
+              "beat": 1,
+              "guardian": true,
+              "recruitable": false,
+              "species": [
+                "hollow_king"
+              ]
+            }
+          ],
+          "interludes": [
+            {
+              "root": "hollowlight_2026.borrowed_shadows",
+              "node": "hollowlight_2026.borrowed_shadows.scene_0",
+              "choice": "scenery",
+              "effects": {
+                "defense_boon": 5,
+                "status": "active"
+              }
+            }
+          ],
+          "lost_at": {
+            "beat": 1,
+            "guardian": true,
+            "recruitable": false,
+            "reason": "Your team needs recovery.",
+            "species": "hollow_king"
+          },
+          "remaining_hp_fraction": 0.0,
+          "knocked_out": 1
+        },
+        {
+          "seed": 29,
+          "complete": false,
+          "opening_won": true,
+          "actions": 8,
+          "action_move": 7,
+          "action_ultimate": 1,
+          "foes_defeated": 1,
+          "fights_won": 1,
+          "recruitment_encounters_won": 1,
+          "ticket": "patchkin",
+          "ticket_rarity": "uncommon",
+          "recruitable_beat": 0,
+          "schedule": [
+            "single",
+            "single"
+          ],
+          "opponents": [
+            {
+              "beat": 0,
+              "guardian": false,
+              "recruitable": true,
+              "species": [
+                "patchkin"
+              ]
+            },
+            {
+              "beat": 1,
+              "guardian": true,
+              "recruitable": false,
+              "species": [
+                "hollow_king"
+              ]
+            }
+          ],
+          "interludes": [
+            {
+              "root": "hollowlight_2026.wheel_orchard",
+              "node": "hollowlight_2026.wheel_orchard.scene_0",
+              "choice": "lever",
+              "effects": {
+                "defense_boon": 5,
+                "status": "active"
+              }
+            }
+          ],
+          "lost_at": {
+            "beat": 1,
+            "guardian": true,
+            "recruitable": false,
+            "reason": "Your team needs recovery.",
+            "species": "hollow_king"
+          },
+          "remaining_hp_fraction": 0.0,
+          "knocked_out": 1
+        }
+      ]
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "fresh_solo_l1",
+      "team": [
+        "twine"
+      ],
+      "level": 1,
+      "trainer_level": 1,
+      "prepared": false,
+      "happiness": 100,
+      "trials": 100,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "twine",
+          "hp": 85,
+          "mana": 65,
+          "max_hp": 85,
+          "max_mana": 65
+        }
+      ],
+      "complete": 100,
+      "opening_wins": 100,
+      "mean_fights_won": 2.0,
+      "mean_actions": 5.03,
+      "p90_actions": 6,
+      "mean_remaining_hp_fraction": 0.764,
+      "mean_knocked_out": 0.0,
+      "planned_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "recruitment_encounters_won": 100,
+      "recruitable_beat_counts": {
+        "0": 100
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 67,
+        "heal": 11
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "fresh_solo_l1",
+      "team": [
+        "gloop"
+      ],
+      "level": 1,
+      "trainer_level": 1,
+      "prepared": false,
+      "happiness": 100,
+      "trials": 100,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "gloop",
+          "hp": 95,
+          "mana": 60,
+          "max_hp": 95,
+          "max_mana": 60
+        }
+      ],
+      "complete": 99,
+      "opening_wins": 100,
+      "mean_fights_won": 1.99,
+      "mean_actions": 4.65,
+      "p90_actions": 10,
+      "mean_remaining_hp_fraction": 0.742,
+      "mean_knocked_out": 0.01,
+      "planned_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "recruitment_encounters_won": 100,
+      "recruitable_beat_counts": {
+        "0": 100
+      },
+      "failure_beats": {
+        "1": 1
+      },
+      "failure_opponents": [
+        {
+          "species": "hollow_king",
+          "reason": "Your team needs recovery.",
+          "count": 1
+        }
+      ],
+      "interlude_effects": {
+        "defense_boon": 65,
+        "heal": 13
+      },
+      "examples": [
+        {
+          "seed": 23,
+          "complete": false,
+          "opening_won": true,
+          "actions": 8,
+          "action_move": 8,
+          "foes_defeated": 1,
+          "fights_won": 1,
+          "recruitment_encounters_won": 1,
+          "ticket": "wickwing",
+          "ticket_rarity": "rare",
+          "recruitable_beat": 0,
+          "schedule": [
+            "single",
+            "single"
+          ],
+          "opponents": [
+            {
+              "beat": 0,
+              "guardian": false,
+              "recruitable": true,
+              "species": [
+                "wickwing"
+              ]
+            },
+            {
+              "beat": 1,
+              "guardian": true,
+              "recruitable": false,
+              "species": [
+                "hollow_king"
+              ]
+            }
+          ],
+          "interludes": [
+            {
+              "root": "hollowlight_2026.floorboard_candle",
+              "node": "hollowlight_2026.floorboard_candle.scene_0",
+              "choice": "wait",
+              "effects": {
+                "heal": 5,
+                "status": "active"
+              }
+            }
+          ],
+          "lost_at": {
+            "beat": 1,
+            "guardian": true,
+            "recruitable": false,
+            "reason": "Your team needs recovery.",
+            "species": "hollow_king"
+          },
+          "remaining_hp_fraction": 0.0,
+          "knocked_out": 1
+        }
+      ]
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "fresh_solo_l1",
+      "team": [
+        "barkley"
+      ],
+      "level": 1,
+      "trainer_level": 1,
+      "prepared": false,
+      "happiness": 100,
+      "trials": 100,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "barkley",
+          "hp": 100,
+          "mana": 55,
+          "max_hp": 100,
+          "max_mana": 55
+        }
+      ],
+      "complete": 100,
+      "opening_wins": 100,
+      "mean_fights_won": 2.0,
+      "mean_actions": 4.73,
+      "p90_actions": 7,
+      "mean_remaining_hp_fraction": 0.762,
+      "mean_knocked_out": 0.0,
+      "planned_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 72,
+        "rare": 28
+      },
+      "recruitment_encounters_won": 100,
+      "recruitable_beat_counts": {
+        "0": 100
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 66,
+        "heal": 12
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "fresh_team_l1",
+      "team": [
+        "twine",
+        "gloop"
+      ],
+      "level": 1,
+      "trainer_level": 1,
+      "prepared": false,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "twine",
+          "hp": 85,
+          "mana": 65,
+          "max_hp": 85,
+          "max_mana": 65
+        },
+        {
+          "species": "gloop",
+          "hp": 95,
+          "mana": 60,
+          "max_hp": 95,
+          "max_mana": 60
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 2.0,
+      "mean_actions": 7.35,
+      "p90_actions": 10,
+      "mean_remaining_hp_fraction": 0.671,
+      "mean_knocked_out": 0.0,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "0": 20
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 13,
+        "heal": 2
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "fresh_team_l1",
+      "team": [
+        "twine",
+        "gloop",
+        "barkley"
+      ],
+      "level": 1,
+      "trainer_level": 1,
+      "prepared": false,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "twine",
+          "hp": 85,
+          "mana": 65,
+          "max_hp": 85,
+          "max_mana": 65
+        },
+        {
+          "species": "gloop",
+          "hp": 95,
+          "mana": 60,
+          "max_hp": 95,
+          "max_mana": 60
+        },
+        {
+          "species": "barkley",
+          "hp": 100,
+          "mana": 55,
+          "max_hp": 100,
+          "max_mana": 55
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 2.0,
+      "mean_actions": 9.15,
+      "p90_actions": 10,
+      "mean_remaining_hp_fraction": 0.656,
+      "mean_knocked_out": 0.05,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "0": 20
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 13,
+        "heal": 2
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "mixed_departure_levels",
+      "team": [
+        "twine",
+        "hydra"
+      ],
+      "member_levels": [
+        1,
+        50
+      ],
+      "level": 50,
+      "trainer_level": 38,
+      "prepared": false,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "level": 1,
+          "hp": 85,
+          "mana": 65,
+          "max_hp": 85,
+          "max_mana": 65,
+          "species": "twine"
+        },
+        {
+          "level": 50,
+          "hp": 710,
+          "mana": 340,
+          "max_hp": 710,
+          "max_mana": 340,
+          "species": "hydra"
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 3.0,
+      "mean_actions": 10.4,
+      "p90_actions": 13,
+      "mean_remaining_hp_fraction": 0.736,
+      "mean_knocked_out": 0.55,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "1": 10,
+        "0": 10
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 24,
+        "heal": 10
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "bare_checkpoint",
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "level": 11,
+      "trainer_level": 6,
+      "prepared": false,
+      "happiness": 70,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "twine",
+          "hp": 125,
+          "mana": 85,
+          "max_hp": 125,
+          "max_mana": 85
+        },
+        {
+          "species": "fairy",
+          "hp": 120,
+          "mana": 80,
+          "max_hp": 120,
+          "max_mana": 80
+        },
+        {
+          "species": "goblin",
+          "hp": 140,
+          "mana": 75,
+          "max_hp": 140,
+          "max_mana": 75
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 2.0,
+      "mean_actions": 16.45,
+      "p90_actions": 19,
+      "mean_remaining_hp_fraction": 0.22,
+      "mean_knocked_out": 0.75,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "0": 20
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 13,
+        "heal": 2
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "prepared_checkpoint",
+      "team": [
+        "twine",
+        "fairy",
+        "goblin"
+      ],
+      "level": 11,
+      "trainer_level": 6,
+      "prepared": true,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [
+        "emberstone_vest",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "twine",
+          "hp": 137,
+          "mana": 85,
+          "max_hp": 137,
+          "max_mana": 85
+        },
+        {
+          "species": "fairy",
+          "hp": 132,
+          "mana": 80,
+          "max_hp": 132,
+          "max_mana": 80
+        },
+        {
+          "species": "goblin",
+          "hp": 152,
+          "mana": 75,
+          "max_hp": 152,
+          "max_mana": 75
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 2.0,
+      "mean_actions": 10.7,
+      "p90_actions": 12,
+      "mean_remaining_hp_fraction": 0.454,
+      "mean_knocked_out": 0.55,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "0": 20
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 13,
+        "heal": 2
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "bare_checkpoint",
+      "team": [
+        "timestitch",
+        "unicorn",
+        "wyvern"
+      ],
+      "level": 21,
+      "trainer_level": 12,
+      "prepared": false,
+      "happiness": 70,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "timestitch",
+          "hp": 244,
+          "mana": 148,
+          "max_hp": 244,
+          "max_mana": 148
+        },
+        {
+          "species": "unicorn",
+          "hp": 230,
+          "mana": 150,
+          "max_hp": 230,
+          "max_mana": 150
+        },
+        {
+          "species": "wyvern",
+          "hp": 235,
+          "mana": 125,
+          "max_hp": 235,
+          "max_mana": 125
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 2.0,
+      "mean_actions": 10.55,
+      "p90_actions": 12,
+      "mean_remaining_hp_fraction": 0.622,
+      "mean_knocked_out": 0.1,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "0": 20
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 13,
+        "heal": 2
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "prepared_checkpoint",
+      "team": [
+        "timestitch",
+        "unicorn",
+        "wyvern"
+      ],
+      "level": 21,
+      "trainer_level": 12,
+      "prepared": true,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [
+        "unicorn_healer_vestments",
+        "iron_dust_chip"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "timestitch",
+          "hp": 268,
+          "mana": 148,
+          "max_hp": 268,
+          "max_mana": 148
+        },
+        {
+          "species": "unicorn",
+          "hp": 254,
+          "mana": 150,
+          "max_hp": 254,
+          "max_mana": 150
+        },
+        {
+          "species": "wyvern",
+          "hp": 259,
+          "mana": 125,
+          "max_hp": 259,
+          "max_mana": 125
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 2.0,
+      "mean_actions": 6.3,
+      "p90_actions": 7,
+      "mean_remaining_hp_fraction": 0.945,
+      "mean_knocked_out": 0.0,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "0": 20
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 13,
+        "heal": 2
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "bare_checkpoint",
+      "team": [
+        "timestitch",
+        "hydra",
+        "abyssal_eel"
+      ],
+      "level": 31,
+      "trainer_level": 20,
+      "prepared": false,
+      "happiness": 70,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "timestitch",
+          "hp": 312,
+          "mana": 182,
+          "max_hp": 312,
+          "max_mana": 182
+        },
+        {
+          "species": "hydra",
+          "hp": 520,
+          "mana": 245,
+          "max_hp": 520,
+          "max_mana": 245
+        },
+        {
+          "species": "abyssal_eel",
+          "hp": 395,
+          "mana": 230,
+          "max_hp": 395,
+          "max_mana": 230
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 3.0,
+      "mean_actions": 12.55,
+      "p90_actions": 15,
+      "mean_remaining_hp_fraction": 0.633,
+      "mean_knocked_out": 0.4,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "1": 10,
+        "0": 10
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 24,
+        "heal": 10
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "prepared_checkpoint",
+      "team": [
+        "timestitch",
+        "hydra",
+        "abyssal_eel"
+      ],
+      "level": 31,
+      "trainer_level": 20,
+      "prepared": true,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [
+        "unicorn_healer_vestments",
+        "thunderbird_feathers"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "timestitch",
+          "hp": 336,
+          "mana": 182,
+          "max_hp": 336,
+          "max_mana": 182
+        },
+        {
+          "species": "hydra",
+          "hp": 556,
+          "mana": 245,
+          "max_hp": 556,
+          "max_mana": 245
+        },
+        {
+          "species": "abyssal_eel",
+          "hp": 419,
+          "mana": 230,
+          "max_hp": 419,
+          "max_mana": 230
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 3.0,
+      "mean_actions": 12.25,
+      "p90_actions": 14,
+      "mean_remaining_hp_fraction": 0.67,
+      "mean_knocked_out": 0.15,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 8
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "1": 10,
+        "0": 10
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 22,
+        "heal": 12
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "bare_checkpoint",
+      "team": [
+        "timestitch",
+        "sphinx",
+        "kitsune_9"
+      ],
+      "level": 41,
+      "trainer_level": 30,
+      "prepared": false,
+      "happiness": 70,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "timestitch",
+          "hp": 380,
+          "mana": 216,
+          "max_hp": 380,
+          "max_mana": 216
+        },
+        {
+          "species": "sphinx",
+          "hp": 455,
+          "mana": 270,
+          "max_hp": 455,
+          "max_mana": 270
+        },
+        {
+          "species": "kitsune_9",
+          "hp": 460,
+          "mana": 280,
+          "max_hp": 460,
+          "max_mana": 280
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 3.0,
+      "mean_actions": 16.65,
+      "p90_actions": 19,
+      "mean_remaining_hp_fraction": 0.582,
+      "mean_knocked_out": 0.4,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "1": 10,
+        "0": 10
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 26,
+        "heal": 8
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "prepared_checkpoint",
+      "team": [
+        "timestitch",
+        "sphinx",
+        "kitsune_9"
+      ],
+      "level": 41,
+      "trainer_level": 30,
+      "prepared": true,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "timestitch",
+          "hp": 404,
+          "mana": 216,
+          "max_hp": 404,
+          "max_mana": 216
+        },
+        {
+          "species": "sphinx",
+          "hp": 479,
+          "mana": 270,
+          "max_hp": 479,
+          "max_mana": 270
+        },
+        {
+          "species": "kitsune_9",
+          "hp": 484,
+          "mana": 280,
+          "max_hp": 484,
+          "max_mana": 280
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 3.0,
+      "mean_actions": 12.6,
+      "p90_actions": 15,
+      "mean_remaining_hp_fraction": 0.877,
+      "mean_knocked_out": 0.05,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "1": 10,
+        "0": 10
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 26,
+        "heal": 8
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "bare_checkpoint",
+      "team": [
+        "chronos",
+        "zodiac",
+        "sphinx"
+      ],
+      "level": 50,
+      "trainer_level": 38,
+      "prepared": false,
+      "happiness": 70,
+      "trials": 20,
+      "gear": [],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "chronos",
+          "hp": 833,
+          "mana": 454,
+          "max_hp": 833,
+          "max_mana": 454
+        },
+        {
+          "species": "zodiac",
+          "hp": 848,
+          "mana": 449,
+          "max_hp": 848,
+          "max_mana": 449
+        },
+        {
+          "species": "sphinx",
+          "hp": 527,
+          "mana": 306,
+          "max_hp": 527,
+          "max_mana": 306
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 3.0,
+      "mean_actions": 12.15,
+      "p90_actions": 14,
+      "mean_remaining_hp_fraction": 0.909,
+      "mean_knocked_out": 0.0,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "1": 10,
+        "0": 10
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 26,
+        "heal": 8
+      },
+      "examples": []
+    },
+    {
+      "biome": "hollowlight",
+      "mode": "prepared_checkpoint",
+      "team": [
+        "chronos",
+        "zodiac",
+        "sphinx"
+      ],
+      "level": 50,
+      "trainer_level": 38,
+      "prepared": true,
+      "happiness": 100,
+      "trials": 20,
+      "gear": [
+        "dragon_lord_aegis",
+        "core_of_the_phoenix"
+      ],
+      "gear_reachability": {
+        "valid": true,
+        "errors": [],
+        "scope": "Recipe level and wild ingredient access; separate prepared fixture, not a simulated crafting timeline."
+      },
+      "opening_resources": [
+        {
+          "species": "chronos",
+          "hp": 869,
+          "mana": 454,
+          "max_hp": 869,
+          "max_mana": 454
+        },
+        {
+          "species": "zodiac",
+          "hp": 884,
+          "mana": 449,
+          "max_hp": 884,
+          "max_mana": 449
+        },
+        {
+          "species": "sphinx",
+          "hp": 551,
+          "mana": 306,
+          "max_hp": 551,
+          "max_mana": 306
+        }
+      ],
+      "complete": 20,
+      "opening_wins": 20,
+      "mean_fights_won": 3.0,
+      "mean_actions": 10.75,
+      "p90_actions": 13,
+      "mean_remaining_hp_fraction": 0.983,
+      "mean_knocked_out": 0.0,
+      "planned_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "encountered_ticket_tiers": {
+        "uncommon": 12,
+        "rare": 7,
+        "legendary": 1
+      },
+      "recruitment_encounters_won": 20,
+      "recruitable_beat_counts": {
+        "1": 10,
+        "0": 10
+      },
+      "failure_beats": {},
+      "failure_opponents": [],
+      "interlude_effects": {
+        "defense_boon": 26,
+        "heal": 8
+      },
+      "examples": []
+    }
+  ],
+  "assumptions": [
+    "Production Carnival schedule and enemy planner; two fights below strongest departing level26, three from26 onward, with a hostile final guardian. Low-team opening encounters vary by saved departure seed between a single and two opponents sharing one encounter budget.",
+    "Actual production combat AI and legal-action policy reused from audit_combat_adventures; surviving resources, conditions, assist meter and entry state persist.",
+    "Fresh solo starters have full saved collection HP/MP, level1, happiness100 and no gear, perks, training or preparations. Prepared checkpoint builds are synthetic, with stated accessible gear and bounded training.",
+    "The mixed-departure fixture uses actual level1 Twine plus level50 Hydra: every opponent stays level50 and all three required fights retain the departing two-member profile after a knockout.",
+    "One real safe authored interlude is chosen between required encounters. No opening boon or fabricated recovery is added.",
+    "One unboosted seasonal capture ticket uses the production picker; Veilmoth only enters the pool at trainer30. The final guardian never recruits.",
+    "Every combat decision and route beat JSON-roundtrips. The story database has four in-memory production progress tables.",
+    "This measures fixed-build combat completion, not live Discord timing, account acquisition timelines or currency settlement. Passing means invariants and termination held, not that every route was won."
+  ],
+  "replays": 660
+}

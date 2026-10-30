@@ -8,7 +8,7 @@ from uuid import uuid4
 import aiosqlite
 import discord
 
-from utils import adventure_party, battle_art, crafting, db as storage, expeditions, gear_art, journal_state, story, journal_team, journal_sessions, journal_team_art, journal_log, journal_history
+from utils import adventure_party, battle_art, crafting, db as storage, expeditions, gear_art, hollowlight_panel, journal_state, story, journal_team, journal_sessions, journal_team_art, journal_log, journal_history
 from utils.artwork import PROJECT_ROOT
 from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
@@ -42,11 +42,13 @@ def wait_text(seconds):
 
 
 class JournalView(discord.ui.LayoutView):
-    def __init__(self, user_id, state, *, bot=None, page='home', realm='woods', notice='', guild_id=0):
+    def __init__(self, user_id, state, *, bot=None, page='home', realm='woods', notice='', guild_id=0, carnival_selected=False):
         super().__init__(timeout=300)
         self.user_id, self.state, self.bot = user_id, state, bot
         self.guild_id = guild_id
         self.page, self.realm, self.notice = page, realm, notice
+        self.carnival_selected = carnival_selected
+        hollowlight_panel.reset(self)
         self.trip = state.trip
         self.companion_id = next((r['id'] for r in state.workshop.companions if r['is_active']), None)
         self.picker_kind, self.picker_page, self.companion_page = 'recipe', 0, 0
@@ -147,14 +149,14 @@ class JournalView(discord.ui.LayoutView):
         if active:
             beast = storage.get_beast_data(active['beast_id'])
             status = 'Recovering · ' + storage.ko_time_remaining(active) if storage.is_knocked_out(active) else f"HP {active['hp']}/{active['max_hp']}"
-            self.portrait(f"**{safe(active['nickname'] or beast['name'])}** · Lv.{active['level']}\n{status} · Bond {active['bond']}/100 · Happiness {active['happiness']}/100", beast['id'], active['armor_id'])
+            self.portrait(f"**{safe(active['nickname'] or beast['name'])}** · Lv.{active['level']}\n{status} · Bond {active['bond']}/100 · Happiness {active['happiness']}/100", beast['id'], active.get('appearance_id') or active['armor_id'])
         else:
             self.text('Choose your first companion to begin exploring.')
             self.row(self.button('Meet your starter', 'launch:start', discord.ButtonStyle.success))
         self.text(self.goal_text())
         self.goal_actions()
         if self.state.trip:
-            self.text(f"**Expedition saved** · {REALMS[self.state.trip['realm']]['name']}\nYour path and gathered supplies are waiting.")
+            self.text(f"**Expedition saved** · {journal_log.destination_name(self.state.trip)}\nYour path and gathered supplies are waiting.")
             self.row(self.button('Resume expedition', 'page:adventure', discord.ButtonStyle.success))
         else:
             self.row(self.button('Set out', 'page:adventure', discord.ButtonStyle.success), self.button('Spend time together', 'launch:play', disabled=not active))
@@ -168,27 +170,40 @@ class JournalView(discord.ui.LayoutView):
             from utils import journal_adventure
             journal_adventure.render(self, trip)
             return
-        self.row(self.button('Battle log', 'page:battle_log'), self.button('Tower Trials', 'launch:challenge'))
+        links = [self.button('Battle log', 'page:battle_log'), self.button('Tower Trials', 'launch:challenge')]
+        if hollowlight_panel.visible(self):
+            links.append(self.button('Carnival', 'page:carnival'))
+        self.row(*links)
         if not trip or trip['status'] == 'complete':
             if trip:
-                self.text(f"**Back from {REALMS[trip['realm']]['name']}** · Results in Battle log.")
+                self.text(f"**Back from {journal_log.destination_name(trip)}** · Results in Battle log.")
             e = self.state.energy
             self.text(f"### Choose an expedition\n{e.charges}/{expeditions.CAPACITY} exploration charges · Regenerates every {wait_text(e.interval)}\n"
                       'Confirm your destination to set out with your saved team.')
             self.render_compact_team()
             self.realm_select.options = [discord.SelectOption(label=(b['name'] + (f" · Locked Lv.{b['min_level']}" if self.state.player['level'] < b['min_level'] else ''))[:100],
-                value=k, default=k == self.realm,
+                value=k, default=k == self.realm and not self.carnival_selected,
                 description=f"Trainer Lv.{b['min_level']}+ required; companion Lv.{b['level_range'][0]}–{b['level_range'][1]} recommended") for k, b in REALMS.items()]
+            if hollowlight_panel.active(self):
+                self.realm_select.options.append(discord.SelectOption(label='🎃 The Hollowlight Carnival', value='hollowlight',
+                    description='Seasonal adventure · Scales to your team · 1 exploration charge', default=self.carnival_selected))
+            elif self.carnival_selected:
+                self.carnival_selected = False
+                next(option for option in self.realm_select.options if option.value == self.realm).default = True
             self.row(self.realm_select)
             destination = REALMS[self.realm]
             low, high = destination['level_range']
-            self.text(f"**{destination['name']}** · Trainer Lv.{destination['min_level']} required · Companion Lv.{low}–{high} recommended.")
-            locked = self.state.player['level'] < REALMS[self.realm]['min_level']
+            if self.carnival_selected:
+                self.text('**The Hollowlight Carnival** · A randomized seasonal adventure scaled to your team.\n'
+                          'Earn Lantern Embers through required battles and redeem them in the Carnival shop.')
+            else:
+                self.text(f"**{destination['name']}** · Trainer Lv.{destination['min_level']} required · Companion Lv.{low}–{high} recommended.")
+            locked = not self.carnival_selected and self.state.player['level'] < REALMS[self.realm]['min_level']
             saved = self.state.explore_default
             saved_name = REALMS[saved]['name'] if saved in REALMS else 'Unavailable destination' if saved else 'None'
             self.text(f'**Saved destination · {saved_name}**')
             self.row(self.button('Save destination', 'save_destination:' + self.realm,
-                                 disabled=locked or saved == self.realm),
+                                 disabled=self.carnival_selected or locked or saved == self.realm),
                      self.button('Clear default', 'clear_destination', disabled=saved is None))
             traveller = next((r for r in self.state.workshop.companions if r['is_active']), None)
             if traveller:
@@ -209,6 +224,7 @@ class JournalView(discord.ui.LayoutView):
             from utils import journal_adventure
             journal_adventure.render(self, trip)
             return
+
         if p.get('adventure_version', 0) >= 2:
             self.render_branching_trip(trip)
             return
@@ -254,6 +270,9 @@ class JournalView(discord.ui.LayoutView):
         from utils.journal_adventure import render_choices
         render_choices(self, trip, [dict(value=option.value.split(':', 2)[2], label=option.label,
                                         description=option.description) for option in options])
+
+    def render_carnival(self):
+        hollowlight_panel.render(self)
 
     def render_battle_log(self):
         journal_log.render(self)
@@ -326,7 +345,7 @@ class JournalView(discord.ui.LayoutView):
         self.row(self.companion_select)
         row = self.selected_companion()
         beast = storage.get_beast_data(row['beast_id'])
-        self.portrait(f"### {safe(row['nickname'] or beast['name'])} · Lv.{row['level']}\n{'Active companion · ' if row['is_active'] else ''}HP {row['hp']}/{row['max_hp']} · MP {row['mana']}/{row['max_mana']}\nBond {row['bond']}/100 · Happiness {row['happiness']}/100\n{beast['description']}", beast['id'], row['armor_id'])
+        self.portrait(f"### {safe(row['nickname'] or beast['name'])} · Lv.{row['level']}\n{'Active companion · ' if row['is_active'] else ''}HP {row['hp']}/{row['max_hp']} · MP {row['mana']}/{row['max_mana']}\nBond {row['bond']}/100 · Happiness {row['happiness']}/100\n{beast['description']}", beast['id'], row.get('appearance_id') or row['armor_id'])
         equipment = equipment_definitions()
         dormant = [f"{equipment[key]['name']} · {dormant_label(equipment[key], self.state.player['level'])}"
                    for key in (row['armor_id'], row['rune_id']) if key in equipment and dormant_label(equipment[key], self.state.player['level'])]
@@ -353,7 +372,7 @@ class JournalView(discord.ui.LayoutView):
             self.text(f"**Awakening · {after['name']}**\nCompanion Lv.{row['level']}/{evo['level_required']} · Trainer Lv.{self.state.player['level']}/{trainer_required} · Bond {row['bond']}/{bond_required} · Happiness {row['happiness']}/{happiness_required}\nNo item is required. Review the awakening below when ready.")
             self.row(self.button('Pin awakening', 'pin_awakening'), self.button('Review awakening', 'review_awakening', discord.ButtonStyle.success))
             if self.reviewing:
-                self.portrait(f"**{beast['name']} becomes {after['name']}**\n{after['description']}\nYour earned stats, bond and gear carry forward. No item is required.", after['id'], row['armor_id'])
+                self.portrait(f"**{beast['name']} becomes {after['name']}**\n{after['description']}\nYour earned stats, bond and gear carry forward. No item is required.", after['id'], row.get('appearance_id') or row['armor_id'])
                 self.awakening.options = [discord.SelectOption(label=f"Awaken {beast['name']} into {after['name']}"[:100], value=f"{row['id']}:{beast['id']}")]
                 self.awakening.disabled = (row['level'] < evo['level_required'] or row['bond'] < bond_required
                                            or row['happiness'] < happiness_required or self.state.player['level'] < trainer_required
@@ -455,8 +474,8 @@ class JournalView(discord.ui.LayoutView):
         self.portraits = {}
         self.container.clear_items()
         if self.art_enabled and not (self.page == 'team' and self.team_art) and not (self.page == 'adventure' and self.journey_media):
-            self.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(f'attachment://{self.header.name}', description='Field Journal · ' + REALMS[self.art_realm]['name'])))
-        current = 'adventure' if self.page == 'battle_log' else self.page
+            self.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(f'attachment://{self.header.name}', description='Field Journal · ' + ('The Hollowlight Carnival' if self.art_realm == 'hollowlight' else REALMS[self.art_realm]['name']))))
+        current = 'adventure' if self.page in {'battle_log', 'carnival'} else self.page
         self.page_menu.options = [discord.SelectOption(label=key.title(), value=key, default=key == current)
                                   for key in ('home',) + PAGES]
         self.page_menu.placeholder = 'Field Journal · ' + self.page.replace('_', ' ').title()
@@ -475,7 +494,13 @@ class JournalView(discord.ui.LayoutView):
 
     @property
     def art_realm(self):
-        return battle_art.realm_key(self.trip['realm'] if self.page in {'adventure', 'team'} and self.trip and self.trip['status'] != 'complete' else self.realm)
+        if self.page == 'carnival':
+            return 'hollowlight'
+        if self.page in {'adventure', 'team'} and self.trip and self.trip['status'] != 'complete':
+            return self.trip['payload'].get('visual_realm') or battle_art.realm_key(self.trip['realm'])
+        if self.page == 'adventure' and self.carnival_selected and hollowlight_panel.active(self):
+            return 'hollowlight'
+        return battle_art.realm_key(self.realm)
 
     @property
     def header(self):
@@ -611,7 +636,7 @@ class JournalView(discord.ui.LayoutView):
                 if interaction.response.is_done():
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
-        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination', 'journey_action'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:', 'path:', 'journey_act:', 'journey_next:', 'journey_return:'))
+        mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination', 'journey_action'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:', 'path:', 'journey_act:', 'journey_next:', 'journey_return:', 'carnival_'))
         duplicate = mutation and (self.mutating or self.lock.locked())
         if mutation and not duplicate:
             self.mutating = True
@@ -665,6 +690,8 @@ class JournalView(discord.ui.LayoutView):
                         if self.page == 'battle_log':
                             self.log_page, self.log_selected_id = 0, None
                             self.log_kind = 'expeditions'
+                        if self.page == 'carnival':
+                            hollowlight_panel.reset(self)
                         self.reviewing = False
                         self.awakening_scene = ''
                         if self.page == 'adventure':
@@ -687,16 +714,28 @@ class JournalView(discord.ui.LayoutView):
                         else:
                             self.log_page += -1 if action == 'log_prev' else 1
                             self.log_selected_id = None
+                    elif action.startswith('carnival_'):
+                        await hollowlight_panel.handle(self, interaction, action)
                     elif action == 'realm':
                         key = interaction.data['values'][0]
-                        if key not in REALMS:
+                        if self.page != 'adventure' or self.state.trip:
+                            raise ValueError('Choose a destination on the current expedition selection page.')
+                        if key == 'hollowlight':
+                            if not hollowlight_panel.active(self):
+                                raise ValueError('The Hollowlight Carnival is closed for new adventures.')
+                            self.carnival_selected = True
+                        elif key in REALMS:
+                            self.realm, self.carnival_selected = key, False
+                        else:
                             raise ValueError('Choose a destination from this journal.')
-                        self.realm = key
                     elif action == 'begin':
-                        self.trip = await expeditions.begin(self.user_id, self.realm, guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
+                        if self.page != 'adventure':
+                            raise ValueError('Return to the expedition selection page before setting out.')
+                        self.trip = await expeditions.begin(self.user_id, 'hollowlight' if self.carnival_selected else self.realm,
+                                                           guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
                     elif action.startswith('save_destination:'):
                         realm = action.split(':', 1)[1]
-                        if self.state.trip or realm != self.realm:
+                        if self.state.trip or self.carnival_selected or realm != self.realm:
                             raise ValueError('Choose a destination on the current selection page before saving it.')
                         await journal_state.save_explore_default(self.user_id, realm)
                         self.notice = 'Default destination saved. /explore will select it for you to confirm.'
@@ -848,7 +887,7 @@ class JournalView(discord.ui.LayoutView):
                         else:
                             self.page = 'adventure'
                             if goal.get('realm'):
-                                self.realm = goal['realm']
+                                self.realm, self.carnival_selected = goal['realm'], False
                     elif action in {'goal_prev', 'goal_next'}:
                         self.picker_page += -1 if action.endswith('prev') else 1
                     elif action in {'comp_prev', 'comp_next'}:
@@ -978,17 +1017,22 @@ async def open_journal(interaction, *, bot=None, page='home', realm=None, notice
     if pending:
         state = await journal_state.snapshot(interaction.user.id)
     requested_realm = realm
-    realm, realm_notice = journal_state.explore_destination(state, requested_realm)
+    carnival_requested = requested_realm == 'hollowlight'
+    realm, realm_notice = journal_state.explore_destination(state, None if carnival_requested else requested_realm)
+    carnival_selected = carnival_requested and state.carnival.get('phase') == 'active'
+    if carnival_requested and not carnival_selected:
+        realm_notice = 'The Hollowlight Carnival is closed for new adventures. Your saved trip and owned rewards remain available.'
     notice = realm_notice or notice
-    if begin_expedition and not state.trip:
+    if begin_expedition and not state.trip and (not carnival_requested or carnival_selected):
         try:
-            await expeditions.begin(interaction.user.id, realm, guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
+            await expeditions.begin(interaction.user.id, 'hollowlight' if carnival_selected else realm, guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
         except ValueError as error:
             # Missing charges, recovery, locked realms and a simultaneous
             # opener all remain visible in the journal instead of a dead end.
             notice = str(error)
         state = await journal_state.snapshot(interaction.user.id)
-    view = JournalView(interaction.user.id, state, bot=bot or getattr(interaction, 'client', None), page=page, realm=realm, notice=notice, guild_id=getattr(interaction.guild, 'id', 0))
+    view = JournalView(interaction.user.id, state, bot=bot or getattr(interaction, 'client', None), page=page, realm=realm, notice=notice,
+                       guild_id=getattr(interaction.guild, 'id', 0), carnival_selected=carnival_selected)
     view.team_mode = team_mode if team_mode in {'exploration', 'raid'} else 'exploration'
     view.log_kind = log_kind if log_kind in journal_history.KINDS else 'expeditions'
     if not view.trip:

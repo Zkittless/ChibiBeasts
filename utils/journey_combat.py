@@ -6,9 +6,16 @@ from utils import db as storage, trial_combat
 from utils.habitats import BIOMES, encounter_pool
 
 PARTY_PROFILES = {1: (.5, .6), 2: (.75, .85), 3: (1., 1.)}
+SEASONAL_SPECIES = frozenset({'patchkin', 'wickwing', 'veilmoth', 'hollow_king'})
+# Additional temporary PVE normalization for high-rarity seasonal visitors in
+# low-level parties. Permanent collection stats and ordinary fights are untouched.
+CARNIVAL_PROFILES = {1: (.8, .6), 11: (.9, .7), 26: (1., 1.)}
+# A fast Fire rare otherwise locks either fresh Nature starter into healing
+# until a charged ultimate KOs it. Keep that burst matchup survivable below11.
+CARNIVAL_NOVICE_BURST_ATTACK = .5
 
 
-def plan(realm, seed, kind, level, *, ticket=None, party_size=3):
+def plan(realm, seed, kind, level, *, ticket=None, party_size=3, pool=None, level_bounds=None):
     """A pack divides one encounter's health budget; it is not three rewards."""
     from cogs.battle import build_pve_beast_state
     rng = random.Random(f'{seed}:adventure-fight')
@@ -16,9 +23,12 @@ def plan(realm, seed, kind, level, *, ticket=None, party_size=3):
         raise ValueError('An adventure party must have one to three companions.')
     hp_scale, attack_scale = PARTY_PROFILES[party_size]
     count = {'single': 1, 'pack2': 2, 'pack3': 3, 'rare': 1}[kind]
-    low, high = BIOMES[realm]['level_range']
+    low, high = level_bounds or BIOMES[realm]['level_range']
     level = max(low, min(high, level))
-    pool = [b for rarity in ('common', 'uncommon') for b in encounter_pool(rarity, realm)]
+    if pool is None:
+        pool = [b for rarity in ('common', 'uncommon') for b in encounter_pool(rarity, realm)]
+    elif not pool:
+        raise ValueError('This encounter has no available opponents.')
     if not pool:
         # High-level habitats may start at Rare. Pack fillers use that lowest
         # inhabited tier, rather than drawing extra Legendary/Divine tickets.
@@ -38,6 +48,29 @@ def plan(realm, seed, kind, level, *, ticket=None, party_size=3):
                           enemy_template=trial_combat._json(state), round_limit=16,
                           profile={}, name=species['name'], departure_party_size=party_size))
     return dict(seed=seed, waves=waves, total=count)
+
+
+def carnival_plan(realm, seed, kind, level, *, ticket=None, party_size=3, guardian=False):
+    """A seasonal visual overlay and guardian, using the ordinary fight budgets."""
+    boss = storage.get_beast_data('hollow_king') if guardian else None
+    if guardian and not boss:
+        raise ValueError('The Carnival guardian is unavailable; your adventure has not advanced.')
+    result = plan(realm, seed, 'single' if guardian else kind, level,
+                  ticket=None if guardian else ticket, party_size=party_size,
+                  pool=[boss] if guardian else None, level_bounds=(1, 50))
+    hp_scale, attack_scale = CARNIVAL_PROFILES[max(key for key in CARNIVAL_PROFILES if level >= key)]
+    for wave in result['waves']:
+        state = wave['enemy_template']
+        if wave['species'] in SEASONAL_SPECIES:
+            state['hp'] = state['max_hp'] = max(1, round(state['max_hp'] * hp_scale))
+            for key in ('attack', 'base_attack'):
+                state[key] = max(1, round(state[key] * attack_scale))
+                if wave['species'] == 'wickwing' and level < 11:
+                    state[key] = max(1, round(state[key] * CARNIVAL_NOVICE_BURST_ATTACK))
+        else:
+            state['armor_id'] = 'cosmetic:ghost_costume_2026'
+        wave['event_guardian'] = bool(guardian)
+    return result
 
 
 def start(payload, lineup):

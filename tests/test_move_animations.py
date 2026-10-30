@@ -40,7 +40,7 @@ class MoveCatalog(unittest.TestCase):
                     if spec.get('guard_percent'):self.assertIn(a.family,supports)
                     if spec.get('power',1)>0:self.assertNotIn(a.family,supports|{'heal'})
                     unique.add(name)
-        self.assertEqual(len(unique),334)
+        self.assertEqual(len(unique),350)
 
     def test_approved_moves_keep_their_distinct_themes_and_mechanics(self):
         expected={('twine','Tick Bite'):('bite','clock'),('twine','Thread Snap'):('thread','thread'),
@@ -59,6 +59,10 @@ class MoveCatalog(unittest.TestCase):
         self.assertEqual(fx.profile('imp','Nightmare Swarm').motif,'bat')
         self.assertEqual(fx.profile('prismara','Facet Lance').motif,'lance')
         self.assertEqual(fx.profile('genesis','Genesis Explosion').motif,'nova')
+        self.assertEqual((fx.profile('patchkin','Straw Snare').family,fx.profile('patchkin','Straw Snare').palette),('roots','wood'))
+        self.assertEqual((fx.profile('wickwing','Ember Flutter').palette,fx.profile('wickwing','Ember Flutter').motif),('fire','bat'))
+        self.assertEqual((fx.profile('veilmoth','Moonveil Mend').family,fx.profile('veilmoth','Moonveil Mend').palette),('heal','light'))
+        self.assertEqual((fx.profile('hollow_king','Lantern Decree').family,fx.profile('hollow_king','Lantern Decree').palette),('gaze','light'))
 
     def test_all_profiles_draw_on_both_sides_without_touching_the_catalog(self):
         original=deepcopy(fx.manifest())

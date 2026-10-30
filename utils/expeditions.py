@@ -103,6 +103,10 @@ async def _trainer(db, user_id, realm):
     return (dict(player), dict(companion))
 
 async def begin(user_id, realm, *, quick=False, now=None, rng=random, guild_id=0, legacy=False, adventure_version=2, combat_route=True):
+    if realm == 'hollowlight':
+        if quick or legacy:
+            raise ValueError('Open Hollowlight Carnival in the Field Journal to start a saved event adventure.')
+        adventure_version, combat_route = 3, True
     if adventure_version == 3 and not quick and not legacy:
         from utils import journey_service
         return await journey_service.begin(user_id, realm, now=now, rng=rng, guild_id=guild_id, combat_route=combat_route)
@@ -191,6 +195,22 @@ def presentation(trip):
         return None
     return expedition_events.presentation(trip)
 
+def hollowlight_pool(rarity, trainer_level):
+    """The season's explicitly admitted pool, never a normal wild pool."""
+    ids = {'uncommon': ['patchkin'], 'rare': ['wickwing'],
+           'legendary': ['veilmoth'] if trainer_level >= 30 else []}.get(rarity, [])
+    return [beast for species in ids if (beast := storage.get_beast_data(species))
+            and beast.get('event_id') == 'hollowlight_2026' and beast.get('catch_rate', 0) > 0]
+
+
+def roll_hollowlight_ticket(rates, trainer_level, rng):
+    rarities = [rarity for rarity in rates if rates[rarity] > 0 and hollowlight_pool(rarity, trainer_level)]
+    if not rarities:
+        raise ValueError('The Carnival wild encounters are unavailable; your adventure has not advanced.')
+    rarity = rng.choices(rarities, weights=[rates[rarity] for rarity in rarities])[0]
+    return rng.choice(hollowlight_pool(rarity, trainer_level))
+
+
 async def _encounter(db, user_id, realm, p, rng):
     if p['encounter']:
         return
@@ -202,8 +222,14 @@ async def _encounter(db, user_id, realm, p, rng):
         player = dict(await c.fetchone())
     async with db.execute('SELECT perk_id FROM player_perks WHERE user_id=? AND equipped=1', (user_id,)) as c:
         perks = {r[0] for r in await c.fetchall()}
-    rates = dict(BIOMES[realm]['weights'])
-    allowed = {rarity for rarity in rates if encounter_pool(rarity, realm)}
+    carnival = p.get('event_id') == 'hollowlight_2026'
+    if carnival:
+        trainer_level = p['event_trainer_level']
+        rates = {'uncommon': .68, 'rare': .30, 'legendary': .02} if trainer_level >= 30 else {'uncommon': .70, 'rare': .30}
+        allowed = {rarity for rarity in rates if hollowlight_pool(rarity, trainer_level)}
+    else:
+        rates = dict(BIOMES[realm]['weights'])
+        allowed = {rarity for rarity in rates if encounter_pool(rarity, realm)}
 
     def promote_available(weights, bonuses):
         return promote_rates(weights, {rarity: bonus for rarity, bonus in bonuses.items() if rarity in allowed})
@@ -221,7 +247,7 @@ async def _encounter(db, user_id, realm, p, rng):
         if promoted != rates:
             rates = promoted
             await db.execute('UPDATE players SET incense_charges=incense_charges-1 WHERE user_id=?', (user_id,))
-    if biome_key(realm) == 'loom':
+    if not carnival and biome_key(realm) == 'loom':
         charge = 'prism_keys' if player.get('prism_keys', 0) > 0 else 'divine_compass_charges' if player.get('divine_compass_charges', 0) > 0 else None
         if charge:
             current_chance = rates.get('divine', 0) / max(.001, sum(rates.values()))
@@ -232,12 +258,15 @@ async def _encounter(db, user_id, realm, p, rng):
             and any(rates.get(r, 0) > 0 for r in ('rare', 'epic', 'legendary', 'divine'))):
         rates = {k: v for k, v in rates.items() if k not in {'common', 'uncommon'}}
         await db.execute('UPDATE players SET ancient_compass_charges=ancient_compass_charges-1 WHERE user_id=?', (user_id,))
-    beast = pick_encounter(rates, realm)
+    if carnival:
+        beast = roll_hollowlight_ticket(rates, trainer_level, rng)
+    else:
+        beast = pick_encounter(rates, realm)
     story = await read_state(db, user_id)
     progress = story['step_progress'].get('chapter_6', {})
     # This trip's explore event is emitted on return, so include it in the
     # existing third-visit story guarantee without counting unfinished trips.
-    if biome_key(realm) == 'loom' and story['current_chapter'] == 'chapter_6' and (progress.get('explore_loom_3', 0) >= 2) and (not progress.get('catch_cosmic_beast', 0)):
+    if not carnival and biome_key(realm) == 'loom' and story['current_chapter'] == 'chapter_6' and (progress.get('explore_loom_3', 0) >= 2) and (not progress.get('catch_cosmic_beast', 0)):
         beast = storage.get_beast_data('loom_fragment')
     if not beast:
         raise ValueError('No creature could be found here. Your exploration has not advanced.')
@@ -249,7 +278,7 @@ async def _encounter(db, user_id, realm, p, rng):
     p['friendly'] = rng.random() < p['affinity']
     async with db.execute('SELECT level FROM player_beasts WHERE user_id=? AND is_active=1', (user_id,)) as cursor:
         companion = await cursor.fetchone()
-    p['encounter_level'] = encounter_level(realm, companion[0] if companion else None, rng)
+    p['encounter_level'] = p['event_level'] if carnival else encounter_level(realm, companion[0] if companion else None, rng)
 
 async def choose(user_id, trip_id, version, choice, *, rng=random):
     saved = await read(user_id, trip_id)
@@ -441,7 +470,7 @@ async def report(trip):
             await db.execute('UPDATE expeditions SET reported=1 WHERE id=?', (trip['id'],))
             await db.commit()
         return
-    await record_event(uid, 'explore', biome=BIOMES[biome_key(trip['realm'])]['name'], event_key=key + ':explore')
+    await record_event(uid, 'explore', biome='🎃 Hollowlight Carnival' if p.get('event_id') == 'hollowlight_2026' else BIOMES[biome_key(trip['realm'])]['name'], event_key=key + ':explore')
     material_granted = p.get('adventure_version', 0) < 2 or p.get('material_granted', False)
     if material_granted:
         await record_event(uid, 'material_collect', material_id=p['material'], event_key=key + ':material')
@@ -472,7 +501,7 @@ async def report(trip):
         await progress._track_daily_event(uid, 'explore', event_key=key + ':daily-explore')
         if material_granted:
             await progress._track_daily_event(uid, 'material_collect', event_key=key + ':daily-material')
-        if biome_key(trip['realm']) == 'loom':
+        if not p.get('event_id') and biome_key(trip['realm']) == 'loom':
             await unlock_simple_achievement(uid, 'first_celestial_loom')
         if p.get('fights_won'):
             await progress._track_daily_event(uid, 'battle_win', event_key=key + ':daily-win')

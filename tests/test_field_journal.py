@@ -62,11 +62,26 @@ class FieldJournalImages(unittest.TestCase):
 
     def test_hp_and_mana_ink_fits_every_species_at_early_and_late_levels(self):
         image = Image.new('RGBA', (640, 528))
+        paint = ui.text
+        labels = []
+
+        def record(draw, value, box, **kwargs):
+            result = paint(draw, value, box, **kwargs)
+            labels.append((ui.clean(value), box, result))
+            return result
+
         for species in storage.load_beasts():
             for level in (6, 50):
                 state = build_pve_beast_state(storage.get_beast_data(species), level)
                 fighter = battle_art.snapshot([state])[0]
-                health, mana, ult = ui.fighter_panel(image, fighter, None, 10, fighter.hp, fighter.mana, fighter)
+                labels.clear()
+                with patch.object(ui, 'text', side_effect=record):
+                    health, mana, ult = ui.fighter_panel(image, fighter, None, 10, fighter.hp, fighter.mana, fighter)
+                names = [(value, box, text) for value, box, text in labels if fighter.name.casefold() in value.casefold()]
+                self.assertTrue(names, species)
+                for value, box, text in names:
+                    self.assertEqual(text.value, value, (species, level, value, text))
+                    self.assertTrue(contains(box, text.ink), (species, level, box, text))
                 for meter in (health, mana):
                     self.assertTrue(contains(meter['content'], meter['text'].ink), (species, level, meter))
                     self.assertNotIn('~', meter['text'].value)

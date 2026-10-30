@@ -6,9 +6,9 @@ realm backgrounds and Field Journal HUD.
 
 ## Move coverage
 
-`data/move-animations.json` explicitly assigns all 344 species/move entries
-(334 distinct names across 86 creatures) a presentation profile. Profiles use
-27 effect families with different geometry and movement: bites, slashes,
+`data/move-animations.json` explicitly assigns all 360 species/move entries
+(350 distinct names across 90 creatures) a presentation profile. Profiles use
+29 effect families with different geometry and movement: bites, slashes,
 flame cones, thread snaps, ground roots, frost shells, waves, lightning,
 clockwork, healing and defensive forms, among others. Each entry selects its
 palette, body motion and a small variation in effect spread. Named motifs add

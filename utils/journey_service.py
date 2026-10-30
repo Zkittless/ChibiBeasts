@@ -9,7 +9,7 @@ from uuid import uuid4
 import aiosqlite
 
 from utils import adventure_party, combat, db as storage, expeditions, journey_combat, trial_locks
-from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key, material_pool, encounter_level
+from utils.habitats import BIOMES, REGIONAL_MATERIALS, HOLLOWLIGHT, biome_key, carnival_underlay, material_pool, encounter_level
 from utils.progression import encounter_beast_xp, encounter_trainer_xp
 
 
@@ -55,7 +55,10 @@ async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_rout
     from utils.trials import _snapshot, assert_available
     from utils.economy_balance import gold_reward_level
     now = time.time() if now is None else now
-    if realm not in BIOMES:
+    carnival = realm == HOLLOWLIGHT
+    if carnival:
+        combat_route = True
+    if realm not in BIOMES and not carnival:
         raise ValueError('Choose a destination from the journal.')
     async with combat.lock_states([user_id]):
         with reserve_fighters([user_id]):
@@ -66,6 +69,9 @@ async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_rout
             rows, player = before['rows'], before['player']
             if not rows or not rows[0]['is_active']:
                 raise ValueError('Choose a healthy, unlisted lead before setting out.')
+            event_level = max(1, min(50, max(row['level'] for row in rows))) if carnival else None
+            if carnival:
+                realm = carnival_underlay(player['level'], event_level)
             prepared = []
             for index, row in enumerate(rows):
                 state = await prepare_state(user_id, row, storage.get_beast_data(row['beast_id']), before['perks'],
@@ -81,6 +87,9 @@ async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_rout
                 player, lead = await expeditions._trainer(db, user_id, realm)
                 if _dump(await _snapshot(db, user_id)) != _dump(before):
                     raise ValueError('Your team or preparations changed. Review your team and try again.')
+                if carnival:
+                    from utils import hollowlight
+                    event_window = await hollowlight.departure(db, now)
                 async with db.execute("SELECT 1 FROM expeditions WHERE user_id=? AND status IN ('active','battle','quick')", (user_id,)) as cursor:
                     if await cursor.fetchone():
                         raise ValueError('An adventure is already underway. Open /explore to continue it.')
@@ -104,15 +113,21 @@ async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_rout
                                material=material, offered=_material_offers(material, realm, seed), encounter='', encounter_result='',
                                caught=False, grant_id=None, bond=0, happiness=0, restore=0, notes=[],
                                level=player['level'], guild_id=guild_id, prepared_party=prepared)
-                world = await journeys.world(db, user_id, realm)
+                story_destination = HOLLOWLIGHT if carnival else realm
+                if carnival:
+                    payload.update(event_id=hollowlight.EVENT_ID, hollowlight=event_window,
+                                   visual_realm=HOLLOWLIGHT, event_level=event_level,
+                                   event_trainer_level=player['level'], underlying_destination=realm)
+                world = await journeys.world(db, user_id, story_destination)
                 for member in rows:
                     data = storage.get_beast_data(member['beast_id'])
                     member.update(name=data['name'], type=data['type'])
-                journeys.initialize(payload, realm, seed, rows, world, combat_route=combat_route)
+                journeys.initialize(payload, story_destination, seed, rows, world, combat_route=combat_route)
                 await journeys.persist(db, user_id, payload)
-                expedition_events.prepare_nest(payload, biome_key(realm))
+                if not carnival:
+                    expedition_events.prepare_nest(payload, biome_key(realm))
                 trip_id = uuid4().hex
-                trip = dict(id=trip_id, user_id=user_id, realm=realm, status='active', companion_id=lead['id'], payload=payload)
+                trip = dict(id=trip_id, user_id=user_id, realm=realm, status='active', companion_id=lead['id'], payload=payload, created_at=now)
                 if combat_route:
                     effects = await journeys.resolve(db, trip, payload['page']['choices'][0]['value'])
                     await _start_battle(db, trip, effects['battle_kind'])
@@ -176,10 +191,14 @@ async def _start_battle(db, trip, kind):
         p['preparations_spent'] = True
     p['capture_fight'] = bool(recruitable)
     seed = f"{p['seed']}:{p.get('fights_started', 0)}"
-    level = p['encounter_level'] if recruitable else encounter_level(trip['realm'], p['prepared_party'][0]['level'], random.Random(seed + ':level'))
+    carnival = p.get('event_id') == 'hollowlight_2026'
+    guardian = carnival and pending.get('route_battle') and p['battles_completed'] == p['battle_target'] - 1
+    level = p['event_level'] if carnival else p['encounter_level'] if recruitable else encounter_level(trip['realm'], p['prepared_party'][0]['level'], random.Random(seed + ':level'))
     p['current_enemy_level'] = level
-    lineup = journey_combat.plan(trip['realm'], seed, kind, level, ticket=p['encounter'] if recruitable else None,
-                                 party_size=len(p['party_ids']) if paced else 3)
+    p['event_guardian'] = bool(guardian)
+    plan = journey_combat.carnival_plan if carnival else journey_combat.plan
+    lineup = plan(trip['realm'], seed, kind, level, ticket=p['encounter'] if recruitable else None,
+                  party_size=len(p['party_ids']) if paced else 3, **({'guardian': guardian} if carnival else {}))
     journey_combat.start(p, lineup)
     trip['status'] = 'battle'
     await _battle_end(db, trip)
@@ -216,6 +235,9 @@ async def _settle(db, trip, now):
         p['party_xp'] = await adventure_party.award_xp_in_transaction(db, uid, p['party_ids'], trip['companion_id'],
             base, p.get('encounter_level', high), participated=p.get('combat', {}).get('participated', ()))
     await _settlement_tail(db, trip)
+    if p.get('event_id') == 'hollowlight_2026':
+        from utils import hollowlight
+        await hollowlight.award_trip(db, trip, now)
     if earned:
         key = 'expedition:' + trip['id']
         # Core activity and story receipts belong to the payout transaction.
@@ -226,7 +248,7 @@ async def _settle(db, trip, now):
             if claim.rowcount:
                 await db.execute('INSERT INTO player_progress(user_id,stat_key,value) VALUES(?,?,1) ON CONFLICT(user_id,stat_key) DO UPDATE SET value=value+1', (uid, event))
                 if event == 'explore':
-                    await trials._story_event(db, uid, 'explore', biome=BIOMES[biome_key(trip['realm'])]['name'])
+                    await trials._story_event(db, uid, 'explore', biome='🎃 Hollowlight Carnival' if p.get('event_id') == 'hollowlight_2026' else BIOMES[biome_key(trip['realm'])]['name'])
         if p['material_granted']:
             claim = await db.execute("INSERT OR IGNORE INTO gameplay_events(event_key,user_id,event_type) VALUES(?,?,'material_story')", (key + ':material-story', uid))
             if claim.rowcount:

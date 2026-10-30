@@ -1,0 +1,242 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "checks": [
+    {
+      "width": 1100,
+      "page": "selection",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "destination",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "welcome",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "gift",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "offer",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "confirm",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "owned",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "eggs",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "reveal",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "title",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "battle",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "history",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 1100,
+      "page": "closed",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "selection",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "destination",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "welcome",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "gift",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "offer",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "confirm",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "owned",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "eggs",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "reveal",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "title",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "battle",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "history",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "page": "closed",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "selection",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "destination",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "welcome",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "gift",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "offer",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "confirm",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "owned",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "eggs",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "reveal",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "title",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "battle",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "history",
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "page": "closed",
+      "no_overflow": true,
+      "all_art_loaded": true
+    }
+  ],
+  "gift_navigation": true,
+  "review_confirm_navigation": true
+}

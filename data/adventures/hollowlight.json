@@ -1,0 +1,1136 @@
+{
+  "version": 1,
+  "biome": "hollowlight",
+  "encounters": [
+    {
+      "id": "hollowlight_2026.missing_flame",
+      "title": "The Lanternwright's Missing Flame",
+      "kind": "traveller",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "traveller"
+      ],
+      "entry": "hollowlight_2026.missing_flame.scene_0",
+      "nodes": {
+        "hollowlight_2026.missing_flame.scene_0": {
+          "body": "A lanternwright kneels beside the carnival's unlit welcome arch. Every lamp contains a tiny paper house, but one has an open door and no flame inside. A trail of warm footprints leads away from it. The lanternwright asks your team to steady the arch before the other lights decide to follow.",
+          "choices": [
+            {
+              "id": "brace",
+              "label": "Brace the welcome arch",
+              "description": "Team defence +5% until return.",
+              "outcome": "Your companions hold the arch while the lanternwright tightens its brass feet. The remaining lights settle back into their little houses.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "hollowlight_2026.missing_flame.scene_1"
+            },
+            {
+              "id": "read",
+              "label": "Read the footprints",
+              "description": "Research the trail; bundle bonus +5%, once per journey.",
+              "outcome": "You sketch the warm footprints before they fade. Each print contains the same crescent-shaped nick, pointing toward the lantern workshop.",
+              "effects": {
+                "study": 1
+              },
+              "next": "hollowlight_2026.missing_flame.scene_1"
+            }
+          ]
+        },
+        "hollowlight_2026.missing_flame.scene_1": {
+          "body": "Inside the workshop, a runaway flame hides beneath a glass thimble. It has gathered scraps of red thread into a nest and refuses to leave them. Your companions notice that the welcome lamp has no curtain, while every other paper house does. The lanternwright sets out a needle and waits for your suggestion.",
+          "choices": [
+            {
+              "id": "sew",
+              "label": "Sew a tiny curtain",
+              "description": "Lead bond +1; the lanternwright remembers.",
+              "outcome": "Your team stitches a curtain from spare thread. The flame peeks through it, then steps willingly into the lanternwright's open hand.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "hollowlight_2026.flame_sheltered"
+                ]
+              },
+              "next": "hollowlight_2026.missing_flame.scene_2"
+            },
+            {
+              "id": "shield",
+              "label": "Shade the lamp with folded paper",
+              "description": "Team defence +5% until return.",
+              "outcome": "A folded paper awning gives the flame a sheltered doorway. It circles the new shade once before returning to its lamp.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "hollowlight_2026.missing_flame.scene_2"
+            }
+          ]
+        },
+        "hollowlight_2026.missing_flame.scene_2": {
+          "body": "The repaired welcome lamp now glows a quiet amber. Above the arch, a pale moth pauses with its wings folded like a veil; several smaller lights gather beneath it. The lanternwright offers to raise your team's lantern beside the others or leave it low enough for returning wanderers to see the road.",
+          "choices": [
+            {
+              "id": "raise",
+              "label": "Raise a lantern for the procession",
+              "description": "Team attack +5% until return.",
+              "outcome": "Your lantern joins the lights above the arch. Their reflection catches in your companions' eyes as the carnival path brightens ahead.",
+              "effects": {
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "guide",
+              "label": "Keep a light for late arrivals",
+              "description": "Lead bond +1; the welcome path stays lit.",
+              "outcome": "You leave the lantern beside the road. A pair of lost travellers find the gate by its glow, and the lanternwright promises to keep it burning.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "hollowlight_2026.welcome_lit"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.borrowed_shadows",
+      "title": "The Theatre of Borrowed Shadows",
+      "kind": "ruin",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "ruin"
+      ],
+      "entry": "hollowlight_2026.borrowed_shadows.scene_0",
+      "nodes": {
+        "hollowlight_2026.borrowed_shadows.scene_0": {
+          "body": "An empty theatre applauds as your team enters. Onstage, three shadows bow without anyone standing in front of them. Their painted scenery has fallen sideways, leaving a moon below the floor and a river above the clouds. A wooden stagehand rolls out a toolbox, then points insistently at the crooked horizon.",
+          "choices": [
+            {
+              "id": "scenery",
+              "label": "Set the scenery upright",
+              "description": "Team defence +5% until return.",
+              "outcome": "Your companions brace the scenery while you fasten the painted moon overhead. The shadows stop shivering and begin their rehearsal again.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "hollowlight_2026.borrowed_shadows.scene_1"
+            },
+            {
+              "id": "watch",
+              "label": "Watch the shadows rehearse",
+              "description": "Research the theatre; bundle bonus +5%, once per journey.",
+              "outcome": "You watch carefully: each shadow repeats a gesture toward an empty chair. Your notes preserve the missing cue for a later visit.",
+              "effects": {
+                "study": 1
+              },
+              "next": "hollowlight_2026.borrowed_shadows.scene_1"
+            }
+          ]
+        },
+        "hollowlight_2026.borrowed_shadows.scene_1": {
+          "body": "Behind the curtain, the stagehand's discarded strings move by themselves. They have tied an entire rack of costumes into a shambling chorus, which blocks the stairs to the lantern gallery. The stagehand offers you its blunt scissors. Your team can untangle the chorus patiently or hold it off while the ropes are cut.",
+          "choices": [
+            {
+              "id": "untangle",
+              "label": "Untangle the costume chorus",
+              "description": "Recover 5% surviving-team HP, within the journey limit.",
+              "outcome": "Freed sleeves flutter back onto their hooks. The grateful stagehand brings a little water and gives your surviving companions time to breathe.",
+              "effects": {
+                "heal": 5
+              },
+              "next": "hollowlight_2026.borrowed_shadows.scene_2"
+            },
+            {
+              "id": "defend",
+              "label": "Hold off the costume chorus",
+              "description": "Fight two hostile opponents; team attack +5% after victory.",
+              "outcome": "The last tangled costume collapses into harmless cloth. The stagehand snips the remaining rope and opens the gallery stairs.",
+              "effects": {
+                "battle": "pack2",
+                "attack_boon": 5
+              },
+              "next": "hollowlight_2026.borrowed_shadows.scene_2"
+            }
+          ]
+        },
+        "hollowlight_2026.borrowed_shadows.scene_2": {
+          "body": "The gallery holds the empty chair from the rehearsal, facing a lantern with a crown-shaped handle. The shadows have followed your team upstairs, but none will cross its pool of light. Their missing actor is caught inside the glass, repeating a bow. The stagehand silently asks what ending you would give the play.",
+          "choices": [
+            {
+              "id": "release",
+              "label": "Open the lantern after the final bow",
+              "description": "Lead bond +1; change the theatre's ending.",
+              "outcome": "You wait for the bow, then lift the latch. The missing shadow rejoins its chorus, and the theatre finally applauds an ending of its own.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "hollowlight_2026.theatre_freed"
+                ]
+              }
+            },
+            {
+              "id": "curtain",
+              "label": "Draw a curtain around the lantern",
+              "description": "Team defence +10% until return.",
+              "outcome": "A velvet curtain softens the crowned lantern's glare. The shadows cross the gallery together, and the stagehand leaves the chair facing the stage.",
+              "effects": {
+                "defense_boon": 10
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.wheel_orchard",
+      "title": "The Orchard Beneath the Wheel",
+      "kind": "discovery",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "discovery"
+      ],
+      "entry": "hollowlight_2026.wheel_orchard.scene_0",
+      "nodes": {
+        "hollowlight_2026.wheel_orchard.scene_0": {
+          "body": "Pumpkin vines climb through the spokes of a silent observation wheel. Beneath it, a little orchard grows lantern-shaped fruit, each one humming a different note. A fallen carriage has pinned the irrigation gate shut. Several Patchkin are trying to lift it with their stitched sleeves, but the carriage only rocks when they pull together.",
+          "choices": [
+            {
+              "id": "lift",
+              "label": "Help lift the fallen carriage",
+              "description": "Pay 3% surviving-team HP; team defence +10% until return.",
+              "outcome": "Your team takes the carriage's weight while the Patchkin clear the gate. The returning water hums through the orchard, and your companions brace more confidently.",
+              "effects": {
+                "hp_cost": 3,
+                "defense_boon": 10
+              },
+              "next": "hollowlight_2026.wheel_orchard.scene_1"
+            },
+            {
+              "id": "lever",
+              "label": "Build a lever from fallen branches",
+              "description": "Team defence +5% until return.",
+              "outcome": "A careful lever frees the gate without forcing the carriage. The Patchkin test the water with their sleeve ends before thanking your team.",
+              "effects": {
+                "defense_boon": 5
+              },
+              "next": "hollowlight_2026.wheel_orchard.scene_1"
+            }
+          ]
+        },
+        "hollowlight_2026.wheel_orchard.scene_1": {
+          "body": "With the irrigation gate open, one tree begins producing fruit too heavy for its branches. Each bright pumpkin contains a folded invitation, addressed only to someone who never came home. The orchard keeper has left a basket and a pruning knife nearby. Your companions wait while the branches bend lower around the unopened letters.",
+          "choices": [
+            {
+              "id": "basket",
+              "label": "Support the fruit with woven baskets",
+              "description": "Recover 5% surviving-team HP, within the journey limit.",
+              "outcome": "The baskets take the weight from the branches. The keeper shares a modest meal while your surviving companions rest beneath the tree.",
+              "effects": {
+                "heal": 5
+              },
+              "next": "hollowlight_2026.wheel_orchard.scene_2"
+            },
+            {
+              "id": "read",
+              "label": "Copy the names from the invitations",
+              "description": "Research the orchard; bundle bonus +5%, once per journey.",
+              "outcome": "You copy each invitation without opening it. The names form a route through the fair, giving the keeper a way to deliver the missing welcome.",
+              "effects": {
+                "study": 1
+              },
+              "next": "hollowlight_2026.wheel_orchard.scene_2"
+            }
+          ]
+        },
+        "hollowlight_2026.wheel_orchard.scene_2": {
+          "body": "At the orchard's centre, a small unlit pumpkin waits beside a patch of bare soil. The keeper says it has never chosen whether to become a lantern or a seed. Your team has repaired the wheel's watercourse, and either future is possible now. The humming trees grow quiet enough for you to make the choice.",
+          "choices": [
+            {
+              "id": "plant",
+              "label": "Plant the pumpkin beside the watercourse",
+              "description": "Lead bond +1; the orchard gains a new tree.",
+              "outcome": "You plant the little pumpkin in damp soil. The keeper marks the spot with a ribbon, and the repaired watercourse carries its first soft note underground.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "hollowlight_2026.orchard_planted"
+                ]
+              }
+            },
+            {
+              "id": "light",
+              "label": "Light it for the returning guests",
+              "description": "Team attack +5% until return.",
+              "outcome": "The pumpkin becomes a warm lantern at the orchard entrance. Its steady light helps your companions find their footing among the vines.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.two_masks",
+      "title": "A Merchant with Two Masks",
+      "kind": "traveller",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "traveller"
+      ],
+      "entry": "hollowlight_2026.two_masks.scene_0",
+      "nodes": {
+        "hollowlight_2026.two_masks.scene_0": {
+          "body": "A merchant wears a smiling mask over a worried one. Its stall contains bottled courage, folded thunder and one perfectly ordinary apple. The merchant offers a blessing in exchange for a small effort from your team, then turns both masks toward the apple as if hoping you will ask why it is there.",
+          "choices": [
+            {
+              "id": "courage",
+              "label": "Carry the heavy bell for the merchant",
+              "description": "Pay 3% surviving-team HP; team attack +10% until return.",
+              "outcome": "Your team carries the stall's iron bell to its hook. The merchant releases a bottle of courage, and both masks finally share the same smile.",
+              "effects": {
+                "hp_cost": 3,
+                "attack_boon": 10
+              }
+            },
+            {
+              "id": "apple",
+              "label": "Ask about the ordinary apple",
+              "description": "Research the stall; bundle bonus +5%, once per journey.",
+              "outcome": "The apple is a reminder to keep one honest thing on the stall. Your notes record the merchant's answer, and its worried mask relaxes.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.self_winning_prize",
+      "title": "The Prize That Won Itself",
+      "kind": "discovery",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "discovery"
+      ],
+      "entry": "hollowlight_2026.self_winning_prize.scene_0",
+      "nodes": {
+        "hollowlight_2026.self_winning_prize.scene_0": {
+          "body": "A stuffed prize has climbed down from its shelf and is throwing rings at its own hook. Every successful toss makes the other prizes twitch. The stallkeeper has hidden behind the counter with a sign reading closed for winning. Your companions spot a winding key at the base of the prize's wooden stand.",
+          "choices": [
+            {
+              "id": "unwind",
+              "label": "Unwind the prize's little stand",
+              "description": "Lead bond +1.",
+              "outcome": "You turn the winding key slowly until the prize settles into your companion's waiting paws. The stallkeeper hangs it back on a lower, quieter hook.",
+              "effects": {
+                "bond": 1
+              }
+            },
+            {
+              "id": "defend",
+              "label": "Face the restless prize rack",
+              "description": "Fight two hostile opponents; bundle bonus +5% after victory.",
+              "outcome": "The animated prizes run out of borrowed momentum. The stallkeeper repairs the rack and adds a careful bonus to your journey's existing bundle.",
+              "effects": {
+                "battle": "pack2",
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.silent_procession",
+      "title": "The Silent Procession",
+      "kind": "shrine",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "shrine"
+      ],
+      "entry": "hollowlight_2026.silent_procession.scene_0",
+      "nodes": {
+        "hollowlight_2026.silent_procession.scene_0": {
+          "body": "A procession of lanterns passes through the fair without a hand beneath any handle. At its rear, one small light keeps falling behind whenever the path slopes upward. None of the other lanterns turn around. Your companions can walk beside it or wait at the rise until the whole procession notices the missing glow.",
+          "choices": [
+            {
+              "id": "walk",
+              "label": "Walk beside the smallest lantern",
+              "description": "Team defence +5%; the procession remembers your team.",
+              "outcome": "Your companions shelter the small lantern from the wind. It reaches the crest beside you, and the lights ahead make a place in their circle.",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "hollowlight_2026.procession_seen"
+                ]
+              }
+            },
+            {
+              "id": "wait",
+              "label": "Wait visibly at the rise",
+              "description": "Bundle bonus +2%; the procession notices its last light.",
+              "outcome": "You wait until the leading lanterns turn back. Their returning glow gathers the straggler into the procession, leaving a little luck along your route.",
+              "effects": {
+                "bonus": 2,
+                "set_flags": [
+                  "hollowlight_2026.procession_seen"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.mothprint_tickets",
+      "title": "Mothprint Tickets",
+      "kind": "legendary",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "legendary"
+      ],
+      "entry": "hollowlight_2026.mothprint_tickets.scene_0",
+      "nodes": {
+        "hollowlight_2026.mothprint_tickets.scene_0": {
+          "body": "The ticket booth is covered in pale wingprints. A veiled moth rests above it, too distant and still to challenge, while fresh tickets slide from an empty brass slot. Each ticket shows a different path through the same drawing of the fair. Your companions watch the ink move whenever the moth opens its wings.",
+          "choices": [
+            {
+              "id": "record",
+              "label": "Record the changing paths",
+              "description": "Research the wingprints; bundle bonus +5%, once per journey.",
+              "outcome": "Your sketches preserve three distinct routes before the ink settles. The distant moth folds its veil and leaves the booth in quiet shadow.",
+              "effects": {
+                "study": 1
+              }
+            },
+            {
+              "id": "shelter",
+              "label": "Shelter the smallest waiting lights",
+              "description": "Lead bond +1; this sighting does not recruit a beast.",
+              "outcome": "Your companions make room beneath the booth for the smallest ghost lights. The moth remains beyond reach, but the waiting lights stop flickering.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.pumpkin_tailor",
+      "title": "The Pumpkin Tailor",
+      "kind": "traveller",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "traveller"
+      ],
+      "entry": "hollowlight_2026.pumpkin_tailor.scene_0",
+      "nodes": {
+        "hollowlight_2026.pumpkin_tailor.scene_0": {
+          "body": "A pumpkin-headed tailor measures the wind instead of its customers. Ghost cloth hangs from a line beside the stall, with separate seams marked for wings, horns and tails. The tailor is trying to keep a practice sheet from covering a tiny model's eyes. Your companions offer enough shapes to help test the pattern.",
+          "choices": [
+            {
+              "id": "measure",
+              "label": "Help measure a practice pattern",
+              "description": "Team defence +5%; discover the tailor's careful fitting method.",
+              "outcome": "The tailor marks safe openings around every horn and wing. Your team tests a practice strip, then leaves the finished costumes on the shop rail.",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "hollowlight_2026.tailor_met"
+                ]
+              }
+            },
+            {
+              "id": "pegs",
+              "label": "Hold the cloth while the wind settles",
+              "description": "Lead bond +1.",
+              "outcome": "Your companions hold the cloth at its corners. The tailor secures the last peg and bows with a pin cushion balanced on its pumpkin stem.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.three_cups",
+      "title": "Three Cups, One Ember",
+      "kind": "discovery",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "discovery"
+      ],
+      "entry": "hollowlight_2026.three_cups.scene_0",
+      "nodes": {
+        "hollowlight_2026.three_cups.scene_0": {
+          "body": "Three silver cups move across a velvet table, but their shadows stay in place. Beneath one shadow, an ember beats like a small orange heart. The attendant offers to let your team steady the table or study the trick from the side. Neither cup nor shadow seems eager to explain which of them is cheating.",
+          "choices": [
+            {
+              "id": "steady",
+              "label": "Steady the shaking table",
+              "description": "Pay 3% surviving-team HP; team attack +10% until return.",
+              "outcome": "Your team steadies the table until the cups and their shadows agree. The freed ember warms your companions' resolve before returning beneath the velvet.",
+              "effects": {
+                "hp_cost": 3,
+                "attack_boon": 10
+              }
+            },
+            {
+              "id": "watch",
+              "label": "Watch the shadows instead of the cups",
+              "description": "Bundle bonus +2%.",
+              "outcome": "You follow the stationary shadows and politely decline to guess. The attendant rewards your patience with a little luck in the journey's single bundle.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.empty_carousel",
+      "title": "The Empty Pony Carousel",
+      "kind": "camp",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "camp"
+      ],
+      "entry": "hollowlight_2026.empty_carousel.scene_0",
+      "nodes": {
+        "hollowlight_2026.empty_carousel.scene_0": {
+          "body": "The carousel turns with no riders aboard. Its wooden animals keep looking over their shoulders, as though someone is about to climb on. One saddle holds a folded blanket and a cup that has not spilled a drop. A lever beside the steps will stop the music, but the animals seem afraid of the silence.",
+          "choices": [
+            {
+              "id": "hum",
+              "label": "Hum along while the team rests",
+              "description": "Recover 5% surviving-team HP, within the journey limit.",
+              "outcome": "Your companions rest beside the turning steps while you hum the little tune. The wooden animals stop looking back, and the blanket stays warm.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "mend",
+              "label": "Mend the loose music-box hinge",
+              "description": "Team defence +5% until return.",
+              "outcome": "A tightened hinge removes the music box's fearful rattle. The carousel continues its gentle circuit, and your team leaves with steadier footing.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.last_passenger",
+      "title": "The Wheel's Last Passenger",
+      "kind": "hazard",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "hazard"
+      ],
+      "entry": "hollowlight_2026.last_passenger.scene_0",
+      "nodes": {
+        "hollowlight_2026.last_passenger.scene_0": {
+          "body": "A passenger waves from the highest carriage of the observation wheel. It has been waving long enough for ivy to grow through the spokes below. The brake rope is frayed, while a narrow maintenance stair climbs the outside of the frame. Your companions can secure the mechanism or make the careful climb with you.",
+          "choices": [
+            {
+              "id": "brake",
+              "label": "Repair the brake rope first",
+              "description": "Team defence +5%; the passenger reaches the ground safely.",
+              "outcome": "Your team replaces the brake rope one strand at a time. The carriage descends gently, and its grateful passenger steps out carrying a decades-old ticket.",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "hollowlight_2026.passenger_helped"
+                ]
+              }
+            },
+            {
+              "id": "climb",
+              "label": "Climb the maintenance stair",
+              "description": "Pay 3% surviving-team HP; bundle bonus +5%.",
+              "outcome": "The climb is tiring, but your companions guide the passenger down the sheltered stair. A little carnival luck follows the old ticket into your notes.",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.backwards_bell",
+      "title": "The Bell That Rings Backwards",
+      "kind": "shrine",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "shrine"
+      ],
+      "entry": "hollowlight_2026.backwards_bell.scene_0",
+      "nodes": {
+        "hollowlight_2026.backwards_bell.scene_0": {
+          "body": "A bell beside the clock stall rings before anyone touches its rope. After each note, the brass swings slowly back into place and the waiting visitors forget what they meant to say. Your companions find a soft wooden wedge beneath the stand. The next note is already trembling inside the bell's mouth.",
+          "choices": [
+            {
+              "id": "wedge",
+              "label": "Wedge the bell gently in place",
+              "description": "Team defence +5% until return.",
+              "outcome": "The wooden wedge catches the bell before its next backwards note. The visitors remember their greetings, and your team keeps the quiet rhythm of the moment.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "listen",
+              "label": "Write the notes in their proper order",
+              "description": "Research the bell; bundle bonus +5%, once per journey.",
+              "outcome": "You write the notes from last to first. Read aloud, they form an invitation to tomorrow's fair rather than an echo of yesterday's mistakes.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.candied_moonlight",
+      "title": "Candied Moonlight",
+      "kind": "camp",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "camp"
+      ],
+      "entry": "hollowlight_2026.candied_moonlight.scene_0",
+      "nodes": {
+        "hollowlight_2026.candied_moonlight.scene_0": {
+          "body": "A sweet-maker pours moonlight over a tray of cooling sugar. The smallest pieces keep trying to roll back toward the sky, so the stall has covered them with a sieve. A bowl of ordinary soup waits beside the glowing sweets. The sweet-maker offers a modest meal if your companions will help keep the tray on the counter.",
+          "choices": [
+            {
+              "id": "soup",
+              "label": "Share soup while holding the tray",
+              "description": "Recover 10% surviving-team HP, within the journey limit.",
+              "outcome": "Your surviving companions share the warm soup and take turns watching the tray. By the time they finish, the moonlight has settled into harmless sugar.",
+              "effects": {
+                "heal": 10
+              }
+            },
+            {
+              "id": "wrap",
+              "label": "Fold paper wrappers for the sweets",
+              "description": "Lead bond +1.",
+              "outcome": "Your team folds wrappers with little windows for the moonlight. The sweet-maker stacks them carefully, pleased that the next guests will see what they are buying.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.missing_reflection",
+      "title": "The Mirror Without a Reflection",
+      "kind": "ruin",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "ruin"
+      ],
+      "entry": "hollowlight_2026.missing_reflection.scene_0",
+      "nodes": {
+        "hollowlight_2026.missing_reflection.scene_0": {
+          "body": "A tall mirror shows the fair behind your team but leaves the space where your companions should be completely empty. From the other side of the glass, something taps the shape of a paw against that blank place. The frame has a loose latch at the top and a chalk line drawn around its feet.",
+          "choices": [
+            {
+              "id": "defend",
+              "label": "Defend the chalk boundary",
+              "description": "Fight one hostile opponent; team attack +5% after victory.",
+              "outcome": "The reflection pressing through the frame retreats behind the glass. Your companions redraw the chalk line together before leaving the mirror turned toward a wall.",
+              "effects": {
+                "battle": "single",
+                "attack_boon": 5
+              }
+            },
+            {
+              "id": "turn",
+              "label": "Turn the mirror toward the lanterns",
+              "description": "Research its blank reflection; bundle bonus +5%, once per journey.",
+              "outcome": "Lanternlight fills the empty places in the glass. You record the loose latch and leave the mirror facing a view it cannot borrow from passing companions.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.cloakroom",
+      "title": "The Unclaimed Cloakroom",
+      "kind": "discovery",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "discovery"
+      ],
+      "entry": "hollowlight_2026.cloakroom.scene_0",
+      "nodes": {
+        "hollowlight_2026.cloakroom.scene_0": {
+          "body": "The cloakroom has far more shadows than coats. A numbered peg keeps reaching toward an empty ticket sleeve, while the attendant sorts scarves that knot themselves whenever nobody looks. Your companions find a bundle of faded claim slips beneath the desk. One slip still carries a clear mark, though its owner has long since left the queue.",
+          "choices": [
+            {
+              "id": "sort",
+              "label": "Match the slips to their pegs",
+              "description": "Lead bond +1; the cloakroom keeps an orderly record.",
+              "outcome": "Your team matches each readable slip to a waiting peg. The reaching shadow finally has a number to hold, and the scarves loosen their knots.",
+              "effects": {
+                "bond": 1,
+                "set_flags": [
+                  "hollowlight_2026.cloakroom_sorted"
+                ]
+              }
+            },
+            {
+              "id": "return",
+              "label": "Return the clear slip to the attendant",
+              "description": "Bundle bonus +2%.",
+              "outcome": "The attendant files the clear slip in a dry drawer and thanks your team with a little practical luck for the road home.",
+              "effects": {
+                "bonus": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.closing_gate",
+      "title": "The Keeper of the Closing Gate",
+      "kind": "traveller",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "traveller"
+      ],
+      "entry": "hollowlight_2026.closing_gate.scene_0",
+      "nodes": {
+        "hollowlight_2026.closing_gate.scene_0": {
+          "body": "The lantern procession has led you to a side gate covered in old admission ribbons. Its keeper is trying to close it without pinching a single trailing light. One ribbon has tangled around the hinge, holding the gate a handspan open. Your companions recognise the smallest lantern waiting patiently on the far side.",
+          "choices": [
+            {
+              "id": "ribbon",
+              "label": "Untie the ribbon from the hinge",
+              "description": "Team defence +5%; leave a safe passage for the small light.",
+              "outcome": "You untie the ribbon without tearing it. The keeper waits for the smallest lantern to pass, then closes the gate on the empty wind.",
+              "effects": {
+                "defense_boon": 5,
+                "set_flags": [
+                  "hollowlight_2026.side_gate_safe"
+                ]
+              }
+            },
+            {
+              "id": "guide",
+              "label": "Guide the lantern through the side passage",
+              "description": "Lead bond +1.",
+              "outcome": "Your companions guide their small acquaintance along the sheltered wall. The gatekeeper lifts a ribbon in thanks when its glow reaches the procession again.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      },
+      "requires_flags": [
+        "hollowlight_2026.procession_seen"
+      ]
+    },
+    {
+      "id": "hollowlight_2026.marionette_apology",
+      "title": "The Marionette's Apology",
+      "kind": "traveller",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "traveller"
+      ],
+      "entry": "hollowlight_2026.marionette_apology.scene_0",
+      "nodes": {
+        "hollowlight_2026.marionette_apology.scene_0": {
+          "body": "A marionette has written an apology on the back of its own programme. Its strings keep pulling it into a fierce bow whenever someone approaches, knocking over the little chairs arranged for its audience. Your companions notice a second set of knots above the stage. The puppet holds the programme still long enough for you to read.",
+          "choices": [
+            {
+              "id": "knots",
+              "label": "Loosen the mistaken knots",
+              "description": "Team defence +10% until return.",
+              "outcome": "The mistaken knots come loose. The marionette gives one careful bow of its own choosing, and your companions learn something about yielding without falling.",
+              "effects": {
+                "defense_boon": 10
+              }
+            },
+            {
+              "id": "defend",
+              "label": "Protect the chairs while it breaks free",
+              "description": "Fight one hostile opponent; team attack +5% after victory.",
+              "outcome": "Your team holds back the animated rigging until the puppet breaks free of its spare strings. The little audience chairs survive the final bow.",
+              "effects": {
+                "battle": "single",
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.uninvited_feast",
+      "title": "A Feast for the Uninvited",
+      "kind": "camp",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "camp"
+      ],
+      "entry": "hollowlight_2026.uninvited_feast.scene_0",
+      "nodes": {
+        "hollowlight_2026.uninvited_feast.scene_0": {
+          "body": "A long table stands outside the fairground fence, set for guests whose names never reached the invitation list. Empty bowls steam in the cool air. A cook asks your team to hold a loose canvas wall against the wind while the last visitors arrive. One place at the table is just the right size for your smallest companion.",
+          "choices": [
+            {
+              "id": "share",
+              "label": "Help the cook and share a modest meal",
+              "description": "Recover 5% surviving-team HP, within the journey limit.",
+              "outcome": "Your companions hold the canvas until the late guests settle at the table. The cook shares a modest meal, leaving every surviving teammate a little warmer.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "wall",
+              "label": "Secure the loose canvas wall",
+              "description": "Team defence +5% until return.",
+              "outcome": "The repaired canvas holds against the wind without another pair of hands. The uninvited guests raise their bowls as your team returns to the lantern path.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.ink_forecast",
+      "title": "The Ink-stained Forecast",
+      "kind": "traveller",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "traveller"
+      ],
+      "entry": "hollowlight_2026.ink_forecast.scene_0",
+      "nodes": {
+        "hollowlight_2026.ink_forecast.scene_0": {
+          "body": "A fortune-teller's weather chart has spilled its ink into a tiny storm. Rain taps against the inside of the paper, and a drawing of the carnival's main tent leans hard into the pictured wind. The fortune-teller offers your team a dry place to compare the forecast with the real clouds moving above the fair.",
+          "choices": [
+            {
+              "id": "shelter",
+              "label": "Mark the sheltered paths",
+              "description": "Team defence +5% until return.",
+              "outcome": "You mark the paths protected by the larger tents. Your companions test the first shelter together before carrying the practical route onward.",
+              "effects": {
+                "defense_boon": 5
+              }
+            },
+            {
+              "id": "weather",
+              "label": "Study how the ink follows the wind",
+              "description": "Research the forecast; bundle bonus +5%, once per journey.",
+              "outcome": "Your notes distinguish the real wind from the paper storm. The fortune-teller dries the chart and leaves tomorrow's weather unwritten for now.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.floorboard_candle",
+      "title": "The Candle Under the Floorboards",
+      "kind": "discovery",
+      "repeatable": false,
+      "tags": [
+        "hollowlight",
+        "discovery"
+      ],
+      "entry": "hollowlight_2026.floorboard_candle.scene_0",
+      "nodes": {
+        "hollowlight_2026.floorboard_candle.scene_0": {
+          "body": "Warm light shines through the gaps beneath a closed game stall. A candle has rolled under the floorboards, carrying the stall's painted shadows with it. Your companions can reach the loose plank by squeezing behind the counter, or wait beside a covered water barrel while the attendant finds a proper lifting tool.",
+          "choices": [
+            {
+              "id": "reach",
+              "label": "Help lift the stubborn floorboard",
+              "description": "Pay 3% surviving-team HP; bundle bonus +5%.",
+              "outcome": "The stubborn floorboard lifts at last. Your team returns the candle to a safe dish, and the attendant adds a small bonus to the journey's existing supplies.",
+              "effects": {
+                "hp_cost": 3,
+                "bonus": 5
+              }
+            },
+            {
+              "id": "wait",
+              "label": "Rest while the attendant fetches a tool",
+              "description": "Recover 5% surviving-team HP, within the journey limit.",
+              "outcome": "Your surviving companions rest beside the covered barrel. The attendant returns with the right tool, and the candle reaches its dish without another hurried attempt.",
+              "effects": {
+                "heal": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.drifting_light",
+      "title": "A Drifting Ghost Light",
+      "kind": "wild",
+      "repeatable": true,
+      "tags": [
+        "hollowlight",
+        "wild"
+      ],
+      "entry": "hollowlight_2026.drifting_light.scene_0",
+      "nodes": {
+        "hollowlight_2026.drifting_light.scene_0": {
+          "body": "A familiar ghost light bobs between the guy ropes of a tent. Whenever your team moves closer, it settles briefly behind a different painted face on the canvas. The path around the tent is clear, but your companions can also hold the light's attention long enough to discover what is hiding beneath its glow.",
+          "choices": [
+            {
+              "id": "fight",
+              "label": "Face the hidden challenger",
+              "description": "Fight one hostile opponent; no recruitment from this encounter.",
+              "outcome": "The hidden challenger withdraws into the canvas shadows. Your team leaves the guy ropes standing and returns to the clear path around the tent.",
+              "effects": {
+                "battle": "single"
+              }
+            },
+            {
+              "id": "observe",
+              "label": "Observe from the clear path",
+              "description": "Lead bond +1.",
+              "outcome": "Your companions watch the ghost light circle the tent without disturbing its ropes. Together, you recognise the route back through the familiar clearing.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.sack_race",
+      "title": "The Restless Sack Race",
+      "kind": "pack",
+      "repeatable": true,
+      "tags": [
+        "hollowlight",
+        "pack"
+      ],
+      "entry": "hollowlight_2026.sack_race.scene_0",
+      "nodes": {
+        "hollowlight_2026.sack_race.scene_0": {
+          "body": "A row of empty racing sacks hops across the midway. The painted finish line keeps sliding away whenever the leading sack gets close, and the smaller sacks have begun bumping into passers-by. Your team can stand between the racers and the crowd or help the attendant pin the finish line where it belongs.",
+          "choices": [
+            {
+              "id": "defend",
+              "label": "Hold back the restless racers",
+              "description": "Fight two hostile opponents; no additional reward bundle.",
+              "outcome": "Your team holds the racers in a patient semicircle. Once the finish line is pinned down, the empty sacks hop past it and settle into a heap.",
+              "effects": {
+                "battle": "pack2"
+              }
+            },
+            {
+              "id": "pin",
+              "label": "Pin the moving finish line",
+              "description": "Team defence +5% until return.",
+              "outcome": "A row of firm pegs keeps the finish line still. Your companions brace the last corner while the racers discover that the game can finally end.",
+              "effects": {
+                "defense_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.canvas_wind",
+      "title": "A Wind at the Canvas Seams",
+      "kind": "hazard",
+      "repeatable": true,
+      "tags": [
+        "hollowlight",
+        "hazard"
+      ],
+      "entry": "hollowlight_2026.canvas_wind.scene_0",
+      "nodes": {
+        "hollowlight_2026.canvas_wind.scene_0": {
+          "body": "A familiar cold wind slips through the midway's tent seams. It carries scraps of forgotten songs and makes the lanterns lean toward the ground. Behind a storage cart, your companions find a small sheltered space and a line of fallen stakes. The next gust is still a little way off across the open fairground.",
+          "choices": [
+            {
+              "id": "shelter",
+              "label": "Wait together behind the cart",
+              "description": "Recover 5% surviving-team HP, within the journey limit.",
+              "outcome": "The storage cart shelters your surviving companions until the cold gust passes. The lanterns lift again when your team steps back onto the midway.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "stakes",
+              "label": "Help secure the fallen stakes",
+              "description": "Team attack +5% until return.",
+              "outcome": "Your companions drive the fallen stakes firmly into place. Working against the wind lends them a quiet determination for the next encounter.",
+              "effects": {
+                "attack_boon": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.tea_cart",
+      "title": "The Wandering Tea Cart",
+      "kind": "camp",
+      "repeatable": true,
+      "tags": [
+        "hollowlight",
+        "camp"
+      ],
+      "entry": "hollowlight_2026.tea_cart.scene_0",
+      "nodes": {
+        "hollowlight_2026.tea_cart.scene_0": {
+          "body": "The tea cart has returned to its usual corner, though its wheels are still turning slowly above the ground. Its cups rattle whenever a distant booth wins a prize. The attendant offers a quiet pause if your team will keep the saucers from drifting away, or help tie the cart to its old hitching post.",
+          "choices": [
+            {
+              "id": "tea",
+              "label": "Steady the saucers and take a quiet pause",
+              "description": "Recover 5% surviving-team HP, within the journey limit.",
+              "outcome": "Your surviving companions steady the saucers while the attendant pours. For a little while, the tea cart remains in exactly the place everyone expects.",
+              "effects": {
+                "heal": 5
+              }
+            },
+            {
+              "id": "tie",
+              "label": "Tie the cart to its familiar post",
+              "description": "Lead bond +1.",
+              "outcome": "Your team ties a careful knot around the old hitching post. The attendant thanks each companion by setting out a saucer that will no longer drift away.",
+              "effects": {
+                "bond": 1
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.pumpkin_path",
+      "title": "Pumpkins Across the Path",
+      "kind": "discovery",
+      "repeatable": true,
+      "tags": [
+        "hollowlight",
+        "discovery"
+      ],
+      "entry": "hollowlight_2026.pumpkin_path.scene_0",
+      "nodes": {
+        "hollowlight_2026.pumpkin_path.scene_0": {
+          "body": "A familiar pumpkin cart has shed part of its load across the path. Beneath the rolling pumpkins lie several useful scraps from nearby stalls, all of the same modest quality. Your companions can sort the scraps into the journey's existing supplies or help push the heavy cart back toward the sheltered side of the midway.",
+          "choices": [
+            {
+              "id": "sort",
+              "label": "Sort the useful scraps",
+              "description": "Choose one same-rarity material for the existing bundle.",
+              "outcome": "Your team sorts the useful scraps without adding a second bundle. The cart owner gathers the loose pumpkins while you choose which supplies to carry home.",
+              "effects": {
+                "material": true
+              }
+            },
+            {
+              "id": "push",
+              "label": "Help push the loaded cart",
+              "description": "Pay 3% surviving-team HP; team attack +10% until return.",
+              "outcome": "The loaded cart reaches the sheltered edge of the path. Your companions take a moment to shake out their sleeves, then carry their hard-earned resolve onward.",
+              "effects": {
+                "hp_cost": 3,
+                "attack_boon": 10
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollowlight_2026.last_game",
+      "title": "The Last Game of the Evening",
+      "kind": "pack",
+      "repeatable": true,
+      "tags": [
+        "hollowlight",
+        "pack"
+      ],
+      "entry": "hollowlight_2026.last_game.scene_0",
+      "nodes": {
+        "hollowlight_2026.last_game.scene_0": {
+          "body": "The last open game stall is packing away its painted targets. Several targets have taken the hint badly and are hiding behind one another, refusing to lie flat in their box. The attendant leaves your team room to confront the whole unruly set or study the latches and help close the stall without another game.",
+          "choices": [
+            {
+              "id": "fight",
+              "label": "Face the unruly targets",
+              "description": "Fight three hostile opponents; bundle bonus +5% after victory.",
+              "outcome": "The last painted target folds into its box after the encounter. The attendant closes the lid and adds a small bonus to the supplies your team already earned.",
+              "effects": {
+                "battle": "pack3",
+                "bonus": 5
+              }
+            },
+            {
+              "id": "latches",
+              "label": "Study and secure the box latches",
+              "description": "Research the stall; bundle bonus +5%, once per journey.",
+              "outcome": "You find the order in which the latches must close. Your companions hold each target still while the attendant packs away the final game of the evening.",
+              "effects": {
+                "study": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

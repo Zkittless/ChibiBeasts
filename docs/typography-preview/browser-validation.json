@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "javascript_errors": [],
+  "checks": [
+    {
+      "width": 1328,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 390,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "width": 320,
+      "no_overflow": true,
+      "all_art_loaded": true
+    }
+  ]
+}

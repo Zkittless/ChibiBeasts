@@ -385,6 +385,43 @@ async def _run_migrations():
                 id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL,
                 biome TEXT NOT NULL, encounter_id TEXT NOT NULL);
             CREATE INDEX IF NOT EXISTS ix_adventure_recent ON adventure_recent(user_id,biome,id);
+            CREATE TABLE IF NOT EXISTS hollowlight_events (
+                event_id TEXT PRIMARY KEY, starts_at REAL NOT NULL, ends_at REAL NOT NULL,
+                redeem_until REAL NOT NULL);
+            CREATE TABLE IF NOT EXISTS hollowlight_wallets (
+                user_id INTEGER NOT NULL, event_id TEXT NOT NULL,
+                embers INTEGER NOT NULL DEFAULT 0 CHECK(embers>=0 AND embers<=10000),
+                total_earned INTEGER NOT NULL DEFAULT 0 CHECK(total_earned>=0),
+                PRIMARY KEY(user_id,event_id));
+            CREATE TABLE IF NOT EXISTS hollowlight_requests (
+                user_id INTEGER NOT NULL, request_key TEXT NOT NULL, operation TEXT NOT NULL,
+                arguments TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY(user_id,request_key));
+            CREATE TABLE IF NOT EXISTS hollowlight_gifts (
+                user_id INTEGER NOT NULL, event_id TEXT NOT NULL, claimed_at REAL NOT NULL,
+                result TEXT NOT NULL, PRIMARY KEY(user_id,event_id));
+            CREATE TABLE IF NOT EXISTS hollowlight_purchases (
+                user_id INTEGER NOT NULL, event_id TEXT NOT NULL, offer_id TEXT NOT NULL,
+                quantity INTEGER NOT NULL CHECK(quantity>0), PRIMARY KEY(user_id,event_id,offer_id));
+            CREATE TABLE IF NOT EXISTS hollowlight_unlocks (
+                user_id INTEGER NOT NULL, event_id TEXT NOT NULL, unlock_id TEXT NOT NULL,
+                obtained_at REAL NOT NULL, PRIMARY KEY(user_id,event_id,unlock_id));
+            CREATE TABLE IF NOT EXISTS hollowlight_titles (
+                user_id INTEGER NOT NULL, event_id TEXT NOT NULL, previous_title TEXT,
+                PRIMARY KEY(user_id,event_id));
+            CREATE TABLE IF NOT EXISTS player_cosmetics (
+                user_id INTEGER NOT NULL, beast_row_id INTEGER NOT NULL, cosmetic_id TEXT NOT NULL,
+                equipped_at REAL NOT NULL, PRIMARY KEY(user_id,beast_row_id),
+                FOREIGN KEY(beast_row_id) REFERENCES player_beasts(id) ON DELETE CASCADE);
+            CREATE TABLE IF NOT EXISTS hollowlight_eggs (
+                id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, event_id TEXT NOT NULL, name TEXT NOT NULL,
+                level INTEGER NOT NULL CHECK(level BETWEEN 1 AND 50), pool TEXT NOT NULL,
+                created_at REAL NOT NULL, hatched INTEGER NOT NULL DEFAULT 0,
+                beast_id TEXT, beast_row_id INTEGER, hatch_result TEXT, notified INTEGER NOT NULL DEFAULT 0);
+            CREATE INDEX IF NOT EXISTS ix_hollowlight_eggs ON hollowlight_eggs(user_id,event_id,hatched);
+            CREATE TABLE IF NOT EXISTS hollowlight_trip_awards (
+                event_id TEXT NOT NULL, trip_id TEXT NOT NULL, user_id INTEGER NOT NULL,
+                amount INTEGER NOT NULL CHECK(amount BETWEEN 0 AND 10), paid_at REAL NOT NULL,
+                PRIMARY KEY(event_id,trip_id));
             CREATE TABLE IF NOT EXISTS trial_runs (
                 id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, destination TEXT NOT NULL,
                 status TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0, payload TEXT NOT NULL,
@@ -474,6 +511,8 @@ async def _run_migrations():
                            AND achievement_id = 'first_steps')
             )
         """)
+        from utils import hollowlight
+        await hollowlight.initialize(db)
         await db.commit()
 
         from utils import trial_locks

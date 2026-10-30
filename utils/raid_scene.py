@@ -42,8 +42,8 @@ def draw_frame(before, after, events=(), t=1):
     ui.panel(image,(10,66,630,151))
     ui.portrait(image,raid.boss_portrait(after.boss.species),(18,75,78,135))
     draw=ImageDraw.Draw(image)
-    ui.text(draw,after.boss.name,(88,73,474,96),size=21,display=True)
-    ui.text(draw,f'Lv.{after.boss.level} / {len(after.members)} trainers / {after.remaining//60}:{after.remaining%60:02}',(476,74,620,95),size=12,minimum=10,align='right')
+    ui.text(draw,after.boss.name,(88,73,410,96),size=21,display=True)
+    ui.text(draw,f'Lv.{after.boss.level:g} / {len(after.members)} trainers / {after.remaining//60}:{after.remaining%60:02}',(420,74,620,95),size=12,minimum=10,align='right',ellipsis=False)
     hp=round(fx.mix(before.boss.hp,after.boss.hp,progress))
     ui.resource_bar(image,raid.BOSS_HEALTH,hp,after.boss.max_hp,'HP',ui.HEALTH,markers=(.75,.45,.2))
     warning=after.warning if after.pending else 'The weave settles' if after.outcome=='victory' else 'The party steps back' if after.outcome else 'The weave is steady'

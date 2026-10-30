@@ -220,7 +220,9 @@ class RaidPresentationRuntime(DatabaseCase):
         try:
             with patch.object(raid.presentation, 'prepare', side_effect=slow):
                 await dispatch(42, 0)
-                await asyncio.wait_for(rendering.wait(), 1)
+                # The acknowledgement has its own strict 250 ms assertion above;
+                # this barrier also includes the preceding DB/progress writes.
+                await asyncio.wait_for(rendering.wait(), 5)
                 await dispatch(77, 0)
                 async with asyncio.timeout(.25):
                     async with raid.lock, combat.lock_states(raid.users):
@@ -384,7 +386,9 @@ class RaidPresentationRuntime(DatabaseCase):
         with patch.object(raid.presentation, 'prepare', side_effect=prepare):
             finishing = asyncio.create_task(raid.finish(True))
             try:
-                await asyncio.wait_for(entered.wait(), 1)
+                # Settlement commits before this media barrier. Allow slower
+                # SQLite filesystems without treating DB throughput as an art deadline.
+                await asyncio.wait_for(entered.wait(), 5)
                 self.assertEqual(len(await self.rows('SELECT * FROM raid_rewards')), 1)
                 finishing.cancel()
                 await asyncio.gather(finishing, return_exceptions=True)
@@ -393,5 +397,8 @@ class RaidPresentationRuntime(DatabaseCase):
                     await raid.finish(True)
             finally:
                 release.set()
+                await asyncio.gather(finishing, return_exceptions=True)
+                if raid._finish_task is not None:
+                    await asyncio.gather(raid._finish_task, return_exceptions=True)
         self.assertEqual(len(await self.rows('SELECT * FROM raid_rewards')), 1)
         self.assertEqual((await self.rows('SELECT status FROM raids'))[0]['status'], 'completed')

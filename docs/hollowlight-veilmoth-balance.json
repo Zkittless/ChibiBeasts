@@ -1,0 +1,1316 @@
+{
+  "beasts_sha256": "46890a590fce9463b11e5b9f9096bdc314549447b841d71d7ddb4b6fbc85145c",
+  "scope": "Equal level41/50, full HP/MP, happiness100, bond0, no gear/perks/training, zero opening ultimate charges; both starting sides; 20-round production duel-parity resolver.",
+  "policies": {
+    "production_optimal": "Unchanged production optimal AI both sides.",
+    "legal_care_aware": "Same production AI, with legal third-slot heals also visible to care policy at under55%HP, for both sides."
+  },
+  "rows": [
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "dragon",
+      "trials": 100,
+      "loss": 92,
+      "timeout": 0,
+      "ko_win": 8,
+      "win": 8,
+      "mean_remaining_hp": 0.007,
+      "mean_rounds": 4.73
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "kraken",
+      "trials": 100,
+      "loss": 71,
+      "timeout": 0,
+      "ko_win": 29,
+      "win": 29,
+      "mean_remaining_hp": 0.062,
+      "mean_rounds": 6.49
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 100,
+      "timeout": 7,
+      "ko_win": 0,
+      "mean_remaining_hp": 0.005,
+      "mean_rounds": 12.66
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "fenrir",
+      "trials": 100,
+      "win": 20,
+      "timeout": 0,
+      "ko_win": 20,
+      "loss": 80,
+      "mean_remaining_hp": 0.033,
+      "mean_rounds": 5.16
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "charybdis",
+      "trials": 100,
+      "loss": 71,
+      "timeout": 0,
+      "ko_win": 29,
+      "win": 29,
+      "mean_remaining_hp": 0.053,
+      "mean_rounds": 6.17
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "leviathan",
+      "trials": 100,
+      "win": 30,
+      "timeout": 0,
+      "ko_win": 30,
+      "loss": 70,
+      "mean_remaining_hp": 0.069,
+      "mean_rounds": 6.51
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "jormungandr",
+      "trials": 100,
+      "win": 14,
+      "timeout": 0,
+      "ko_win": 14,
+      "loss": 86,
+      "mean_remaining_hp": 0.02,
+      "mean_rounds": 5.19
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "simurgh",
+      "trials": 100,
+      "loss": 64,
+      "timeout": 0,
+      "ko_win": 36,
+      "win": 36,
+      "mean_remaining_hp": 0.078,
+      "mean_rounds": 6.32
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "dragon",
+      "trials": 100,
+      "win": 12,
+      "timeout": 0,
+      "ko_win": 12,
+      "loss": 88,
+      "mean_remaining_hp": 0.008,
+      "mean_rounds": 5.24
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "kraken",
+      "trials": 100,
+      "loss": 68,
+      "timeout": 0,
+      "ko_win": 32,
+      "win": 32,
+      "mean_remaining_hp": 0.079,
+      "mean_rounds": 7.25
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 99,
+      "timeout": 17,
+      "ko_win": 0,
+      "win": 1,
+      "mean_remaining_hp": 0.046,
+      "mean_rounds": 14.29
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "fenrir",
+      "trials": 100,
+      "loss": 83,
+      "timeout": 0,
+      "ko_win": 17,
+      "win": 17,
+      "mean_remaining_hp": 0.026,
+      "mean_rounds": 5.85
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "charybdis",
+      "trials": 100,
+      "win": 29,
+      "timeout": 0,
+      "ko_win": 29,
+      "loss": 71,
+      "mean_remaining_hp": 0.042,
+      "mean_rounds": 7.0
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "leviathan",
+      "trials": 100,
+      "loss": 68,
+      "timeout": 0,
+      "ko_win": 32,
+      "win": 32,
+      "mean_remaining_hp": 0.07,
+      "mean_rounds": 7.33
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "jormungandr",
+      "trials": 100,
+      "loss": 82,
+      "timeout": 0,
+      "ko_win": 18,
+      "win": 18,
+      "mean_remaining_hp": 0.03,
+      "mean_rounds": 5.75
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "simurgh",
+      "trials": 100,
+      "win": 33,
+      "timeout": 0,
+      "ko_win": 33,
+      "loss": 67,
+      "mean_remaining_hp": 0.059,
+      "mean_rounds": 7.0
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "dragon",
+      "trials": 100,
+      "loss": 100,
+      "timeout": 0,
+      "ko_win": 0,
+      "mean_remaining_hp": 0.0,
+      "mean_rounds": 9.2
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "kraken",
+      "trials": 100,
+      "loss": 82,
+      "timeout": 4,
+      "ko_win": 16,
+      "win": 18,
+      "mean_remaining_hp": 0.085,
+      "mean_rounds": 12.05
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 100,
+      "timeout": 9,
+      "ko_win": 0,
+      "mean_remaining_hp": 0.017,
+      "mean_rounds": 13.31
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "fenrir",
+      "trials": 100,
+      "loss": 97,
+      "timeout": 0,
+      "ko_win": 3,
+      "win": 3,
+      "mean_remaining_hp": 0.011,
+      "mean_rounds": 9.32
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "charybdis",
+      "trials": 100,
+      "loss": 61,
+      "timeout": 37,
+      "ko_win": 30,
+      "win": 39,
+      "mean_remaining_hp": 0.203,
+      "mean_rounds": 16.98
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "leviathan",
+      "trials": 100,
+      "loss": 83,
+      "timeout": 0,
+      "ko_win": 17,
+      "win": 17,
+      "mean_remaining_hp": 0.105,
+      "mean_rounds": 10.53
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "jormungandr",
+      "trials": 100,
+      "loss": 97,
+      "timeout": 3,
+      "ko_win": 2,
+      "win": 3,
+      "mean_remaining_hp": 0.006,
+      "mean_rounds": 9.97
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "simurgh",
+      "trials": 100,
+      "win": 52,
+      "timeout": 28,
+      "ko_win": 38,
+      "loss": 48,
+      "mean_remaining_hp": 0.23,
+      "mean_rounds": 16.34
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "dragon",
+      "trials": 100,
+      "loss": 99,
+      "timeout": 3,
+      "ko_win": 1,
+      "win": 1,
+      "mean_remaining_hp": 0.009,
+      "mean_rounds": 10.51
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "kraken",
+      "trials": 100,
+      "win": 59,
+      "timeout": 37,
+      "ko_win": 41,
+      "loss": 41,
+      "mean_remaining_hp": 0.308,
+      "mean_rounds": 15.31
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 96,
+      "timeout": 54,
+      "ko_win": 0,
+      "win": 4,
+      "mean_remaining_hp": 0.126,
+      "mean_rounds": 18.06
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "fenrir",
+      "trials": 100,
+      "loss": 88,
+      "timeout": 18,
+      "ko_win": 2,
+      "win": 12,
+      "mean_remaining_hp": 0.082,
+      "mean_rounds": 12.91
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "charybdis",
+      "trials": 100,
+      "win": 61,
+      "timeout": 42,
+      "ko_win": 42,
+      "loss": 39,
+      "mean_remaining_hp": 0.358,
+      "mean_rounds": 17.16
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "leviathan",
+      "trials": 100,
+      "win": 43,
+      "timeout": 31,
+      "ko_win": 32,
+      "loss": 57,
+      "mean_remaining_hp": 0.254,
+      "mean_rounds": 14.49
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "jormungandr",
+      "trials": 100,
+      "loss": 88,
+      "timeout": 43,
+      "ko_win": 6,
+      "win": 12,
+      "mean_remaining_hp": 0.148,
+      "mean_rounds": 15.86
+    },
+    {
+      "variant": "current525",
+      "base_stats": {
+        "hp": 135,
+        "attack": 85,
+        "defense": 75,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "simurgh",
+      "trials": 100,
+      "win": 69,
+      "timeout": 48,
+      "ko_win": 41,
+      "loss": 31,
+      "mean_remaining_hp": 0.396,
+      "mean_rounds": 17.27
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "dragon",
+      "trials": 100,
+      "loss": 87,
+      "timeout": 0,
+      "ko_win": 13,
+      "win": 13,
+      "mean_remaining_hp": 0.02,
+      "mean_rounds": 4.8
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "kraken",
+      "trials": 100,
+      "loss": 53,
+      "timeout": 0,
+      "ko_win": 47,
+      "win": 47,
+      "mean_remaining_hp": 0.113,
+      "mean_rounds": 6.62
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 97,
+      "timeout": 20,
+      "ko_win": 0,
+      "win": 3,
+      "mean_remaining_hp": 0.057,
+      "mean_rounds": 14.45
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "fenrir",
+      "trials": 100,
+      "win": 32,
+      "timeout": 0,
+      "ko_win": 32,
+      "loss": 68,
+      "mean_remaining_hp": 0.059,
+      "mean_rounds": 5.29
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "charybdis",
+      "trials": 100,
+      "loss": 63,
+      "timeout": 0,
+      "ko_win": 37,
+      "win": 37,
+      "mean_remaining_hp": 0.076,
+      "mean_rounds": 6.45
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "leviathan",
+      "trials": 100,
+      "win": 41,
+      "timeout": 0,
+      "ko_win": 41,
+      "loss": 59,
+      "mean_remaining_hp": 0.098,
+      "mean_rounds": 6.72
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "jormungandr",
+      "trials": 100,
+      "win": 22,
+      "timeout": 0,
+      "ko_win": 22,
+      "loss": 78,
+      "mean_remaining_hp": 0.039,
+      "mean_rounds": 5.38
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 41,
+      "peer": "simurgh",
+      "trials": 100,
+      "win": 54,
+      "timeout": 0,
+      "ko_win": 54,
+      "loss": 46,
+      "mean_remaining_hp": 0.112,
+      "mean_rounds": 6.7
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "dragon",
+      "trials": 100,
+      "win": 17,
+      "timeout": 0,
+      "ko_win": 17,
+      "loss": 83,
+      "mean_remaining_hp": 0.017,
+      "mean_rounds": 5.51
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "kraken",
+      "trials": 100,
+      "loss": 63,
+      "timeout": 0,
+      "ko_win": 37,
+      "win": 37,
+      "mean_remaining_hp": 0.101,
+      "mean_rounds": 7.39
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 97,
+      "timeout": 23,
+      "ko_win": 0,
+      "win": 3,
+      "mean_remaining_hp": 0.06,
+      "mean_rounds": 14.79
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "fenrir",
+      "trials": 100,
+      "loss": 68,
+      "timeout": 0,
+      "ko_win": 32,
+      "win": 32,
+      "mean_remaining_hp": 0.041,
+      "mean_rounds": 6.05
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "charybdis",
+      "trials": 100,
+      "win": 38,
+      "timeout": 0,
+      "ko_win": 38,
+      "loss": 62,
+      "mean_remaining_hp": 0.068,
+      "mean_rounds": 7.16
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "leviathan",
+      "trials": 100,
+      "loss": 60,
+      "timeout": 0,
+      "ko_win": 40,
+      "win": 40,
+      "mean_remaining_hp": 0.102,
+      "mean_rounds": 7.35
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "jormungandr",
+      "trials": 100,
+      "loss": 75,
+      "timeout": 0,
+      "ko_win": 25,
+      "win": 25,
+      "mean_remaining_hp": 0.039,
+      "mean_rounds": 5.97
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "production_optimal",
+      "level": 50,
+      "peer": "simurgh",
+      "trials": 100,
+      "win": 43,
+      "timeout": 0,
+      "ko_win": 43,
+      "loss": 57,
+      "mean_remaining_hp": 0.085,
+      "mean_rounds": 7.19
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "dragon",
+      "trials": 100,
+      "loss": 99,
+      "timeout": 0,
+      "ko_win": 1,
+      "win": 1,
+      "mean_remaining_hp": 0.006,
+      "mean_rounds": 9.8
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "kraken",
+      "trials": 100,
+      "loss": 62,
+      "timeout": 10,
+      "ko_win": 36,
+      "win": 38,
+      "mean_remaining_hp": 0.199,
+      "mean_rounds": 13.21
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 97,
+      "timeout": 25,
+      "ko_win": 0,
+      "win": 3,
+      "mean_remaining_hp": 0.069,
+      "mean_rounds": 16.13
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "fenrir",
+      "trials": 100,
+      "win": 8,
+      "timeout": 3,
+      "ko_win": 8,
+      "loss": 92,
+      "mean_remaining_hp": 0.031,
+      "mean_rounds": 11.38
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "charybdis",
+      "trials": 100,
+      "win": 72,
+      "timeout": 26,
+      "ko_win": 61,
+      "loss": 28,
+      "mean_remaining_hp": 0.343,
+      "mean_rounds": 16.48
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "leviathan",
+      "trials": 100,
+      "loss": 73,
+      "timeout": 7,
+      "ko_win": 26,
+      "win": 27,
+      "mean_remaining_hp": 0.17,
+      "mean_rounds": 12.31
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "jormungandr",
+      "trials": 100,
+      "win": 13,
+      "timeout": 9,
+      "ko_win": 13,
+      "loss": 87,
+      "mean_remaining_hp": 0.036,
+      "mean_rounds": 13.09
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 41,
+      "peer": "simurgh",
+      "trials": 100,
+      "win": 71,
+      "timeout": 21,
+      "ko_win": 62,
+      "loss": 29,
+      "mean_remaining_hp": 0.348,
+      "mean_rounds": 15.47
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "dragon",
+      "trials": 100,
+      "win": 4,
+      "timeout": 10,
+      "ko_win": 1,
+      "loss": 96,
+      "mean_remaining_hp": 0.031,
+      "mean_rounds": 12.06
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "kraken",
+      "trials": 100,
+      "win": 76,
+      "timeout": 24,
+      "ko_win": 60,
+      "loss": 24,
+      "mean_remaining_hp": 0.426,
+      "mean_rounds": 14.35
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "hydra",
+      "trials": 100,
+      "loss": 94,
+      "timeout": 74,
+      "ko_win": 0,
+      "win": 6,
+      "mean_remaining_hp": 0.231,
+      "mean_rounds": 18.78
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "fenrir",
+      "trials": 100,
+      "win": 23,
+      "timeout": 52,
+      "ko_win": 3,
+      "loss": 77,
+      "mean_remaining_hp": 0.209,
+      "mean_rounds": 16.12
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "charybdis",
+      "trials": 100,
+      "win": 73,
+      "timeout": 29,
+      "ko_win": 57,
+      "loss": 27,
+      "mean_remaining_hp": 0.393,
+      "mean_rounds": 15.92
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "leviathan",
+      "trials": 100,
+      "loss": 24,
+      "timeout": 19,
+      "ko_win": 62,
+      "win": 76,
+      "mean_remaining_hp": 0.388,
+      "mean_rounds": 13.71
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "jormungandr",
+      "trials": 100,
+      "loss": 81,
+      "timeout": 69,
+      "ko_win": 8,
+      "win": 19,
+      "mean_remaining_hp": 0.28,
+      "mean_rounds": 17.32
+    },
+    {
+      "variant": "candidate560",
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "policy": "legal_care_aware",
+      "level": 50,
+      "peer": "simurgh",
+      "trials": 100,
+      "win": 85,
+      "timeout": 30,
+      "ko_win": 64,
+      "loss": 15,
+      "mean_remaining_hp": 0.435,
+      "mean_rounds": 16.02
+    }
+  ],
+  "decision": "Adopt candidate560: 150 HP / 95 ATK / 85 DEF / 105 SPD / 125 MP. The current525 label is the pre-buff baseline measured before the catalog change.",
+  "fingerprint_context": "beasts_sha256 fingerprints the pre-buff source catalog used in the measurement; candidate560 overrides only the three documented Veilmoth base stats in memory.",
+  "sampling": "50 deterministic seeds per level and peer, each repeated with Veilmoth on either starting side; seed string veilmoth-peers:{level}:{peer}:{seed}:{side}. Total 6400 duels.",
+  "summary": [
+    {
+      "variant": "current525",
+      "policy": "production_optimal",
+      "trials": 1600,
+      "wins": 340
+    },
+    {
+      "variant": "current525",
+      "policy": "legal_care_aware",
+      "trials": 1600,
+      "wins": 393
+    },
+    {
+      "variant": "candidate560",
+      "policy": "production_optimal",
+      "trials": 1600,
+      "wins": 484
+    },
+    {
+      "variant": "candidate560",
+      "policy": "legal_care_aware",
+      "trials": 1600,
+      "wins": 595
+    }
+  ]
+}

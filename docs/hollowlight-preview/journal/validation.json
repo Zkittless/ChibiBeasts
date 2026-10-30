@@ -1,0 +1,88 @@
+{
+  "status": "passed",
+  "scope": "Actual production LayoutView payloads and packaged artwork; disposable SQLite example; no live Discord actions.",
+  "pages": [
+    "selection",
+    "destination",
+    "welcome",
+    "gift",
+    "offer",
+    "confirm",
+    "owned",
+    "eggs",
+    "reveal",
+    "title",
+    "battle",
+    "history",
+    "closed"
+  ],
+  "largest_text_count": 631,
+  "largest_component_count": 27,
+  "checks": [
+    {
+      "page": "selection",
+      "characters": 339,
+      "components": 23
+    },
+    {
+      "page": "destination",
+      "characters": 420,
+      "components": 23
+    },
+    {
+      "page": "welcome",
+      "characters": 427,
+      "components": 17
+    },
+    {
+      "page": "gift",
+      "characters": 451,
+      "components": 21
+    },
+    {
+      "page": "offer",
+      "characters": 496,
+      "components": 23
+    },
+    {
+      "page": "confirm",
+      "characters": 496,
+      "components": 24
+    },
+    {
+      "page": "owned",
+      "characters": 578,
+      "components": 26
+    },
+    {
+      "page": "eggs",
+      "characters": 526,
+      "components": 25
+    },
+    {
+      "page": "reveal",
+      "characters": 631,
+      "components": 27
+    },
+    {
+      "page": "title",
+      "characters": 526,
+      "components": 24
+    },
+    {
+      "page": "battle",
+      "characters": 252,
+      "components": 24
+    },
+    {
+      "page": "history",
+      "characters": 170,
+      "components": 19
+    },
+    {
+      "page": "closed",
+      "characters": 218,
+      "components": 19
+    }
+  ]
+}

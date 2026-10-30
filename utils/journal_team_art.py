@@ -18,7 +18,7 @@ WIDTH, HEIGHT = 640, 300
 RENDER_TIMEOUT = 5
 MAX_BYTES = 1_000_000
 CACHE_SIZE = 48
-LAYOUT_VERSION = 1
+LAYOUT_VERSION = 2
 _workers = ThreadPoolExecutor(max_workers=2, thread_name_prefix='journal-team-art')
 _slots = threading.BoundedSemaphore(2)
 logger = logging.getLogger('chibibeasts.journal.team_art')
@@ -46,7 +46,7 @@ def snapshot(rows):
     members = []
     for row in list(rows)[:3]:
         members.append(None if row is None else Member(
-            str(row['beast_id']), str(row.get('armor_id') or ''),
+            str(row['beast_id']), str(row.get('appearance_id') or row.get('armor_id') or ''),
             int(row.get('hp', 1)) <= 0 or storage.is_knocked_out(row)))
     return tuple(members + [None] * (3 - len(members)))
 
@@ -67,9 +67,11 @@ def _revision(members, realm):
             continue
         record = armor.get('sets', {}).get(member.armor_id, {})
         variant = record.get('variants', {}).get(member.species)
+        from utils import cosmetics
+        cosmetic_revision = cosmetics.revision(member.species, member.armor_id)
         sources.append((member.species, member.armor_id, member.recovering,
                         cards.get(member.species, {}).get('sha256'),
-                        armor.get('sha256', {}).get(variant)))
+                        cosmetic_revision or armor.get('sha256', {}).get(variant)))
     return hashlib.sha256(json.dumps([LAYOUT_VERSION, realm, sources], sort_keys=True).encode()).hexdigest()[:24]
 
 

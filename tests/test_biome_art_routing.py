@@ -28,7 +28,7 @@ DISTINCT = {'woods_deep': 'Moonveil Marsh', 'ember_deep': 'Sunforge Dunes',
 
 class BiomeArtworkIdentity(unittest.TestCase):
     def test_exact_destinations_names_and_old_depth_labels_precede_family_aliases(self):
-        self.assertEqual(set(art.REALMS), set(BIOMES))
+        self.assertEqual(set(art.REALMS), set(BIOMES) | {'hollowlight'})
         for key, region in BIOMES.items():
             for value in (key, key.upper(), region['name'], art.REALMS[key],
                           art.REALMS[key].removeprefix('The ')):
@@ -56,7 +56,7 @@ class BiomeArtworkIdentity(unittest.TestCase):
 
     def test_all_destinations_have_distinct_packaged_backgrounds_headers_and_hashes(self):
         manifest = json.loads((art.PROJECT_ROOT / 'data' / 'battle-artwork.json').read_text(encoding='utf-8'))
-        self.assertEqual(set(manifest['realms']), set(BIOMES))
+        self.assertEqual(set(manifest['realms']), set(BIOMES) | {'hollowlight'})
         backgrounds, headers = set(), set()
         for key in BIOMES:
             record = manifest['realms'][key]
@@ -88,6 +88,18 @@ class BiomeArtworkIdentity(unittest.TestCase):
                 with Image.open(io.BytesIO(still.data)) as image:
                     self.assertEqual(image.format, 'PNG')
                     self.assertEqual(image.size, (art.WIDTH, art.TOTAL_HEIGHT))
+
+    def test_seasonal_background_is_distinct_without_extending_permanent_progression(self):
+        self.assertNotIn('hollowlight', BIOMES)
+        for name in ('hollowlight', 'The Hollowlight Carnival', 'Hollowlight Carnival'):
+            self.assertEqual(art.realm_key(name), 'hollowlight')
+        carnival = art.background('hollowlight')
+        self.assertEqual(carnival.size, (640, 360))
+        for key in BIOMES:
+            self.assertNotEqual(carnival.tobytes(), art.background(key).tobytes())
+        with Image.open(art.PROJECT_ROOT / 'data/journal/journal-hollowlight.png') as banner:
+            self.assertEqual(banner.size, (640, 126))
+            banner.verify()
 
 
 class BiomeArtworkFlows(DatabaseCase):

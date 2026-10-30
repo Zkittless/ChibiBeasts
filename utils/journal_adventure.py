@@ -112,7 +112,7 @@ def render(view, trip):
     target = p.get('battle_target')
     finished = p.get('battles_completed', p.get('fights_won', 0))
     progress = f"Battles won {finished}/{target}" if target else f"{p['completed']}/{p['total']} stops"
-    view.text(f"### {battle_art.REALMS[trip['realm']]}\n{progress} · Progress saved")
+    view.text(f"### {battle_art.REALMS[p.get('visual_realm') or trip['realm']]}\n{progress} · Progress saved")
     if view.journey_media and view.art_enabled:
         view.container.add_item(discord.ui.MediaGallery(discord.MediaGalleryItem(
             'attachment://' + view.journey_media.name, description='Adventure encounter')))
@@ -167,8 +167,9 @@ async def present(view, interaction, *, animate=False):
         view.journey_media = None
         view.render()
         return await view.publish(interaction)
-    if view.journey_presentation is None or view.journey_presentation.realm != trip['realm']:
-        view.journey_presentation = battle_art.BattlePresentation(trip['realm'])
+    realm = trip['payload'].get('visual_realm') or trip['realm']
+    if view.journey_presentation is None or view.journey_presentation.realm != realm:
+        view.journey_presentation = battle_art.BattlePresentation(realm)
     presentation = view.journey_presentation
     view.journey_playing = animate
     try:
@@ -211,7 +212,7 @@ async def prepare_still(view):
     trip = view.trip
     if view.page != 'adventure' or not trip or trip['status'] != 'battle' or trip['payload'].get('adventure_version') != 3:
         return
-    view.journey_presentation = battle_art.BattlePresentation(trip['realm'])
+    view.journey_presentation = battle_art.BattlePresentation(trip['payload'].get('visual_realm') or trip['realm'])
     fighters = trial_combat.snapshot(trip['payload']['combat'])
     art = await view.journey_presentation.art(fighters, fighters)
     view.journey_media = artifact(art) if art else None

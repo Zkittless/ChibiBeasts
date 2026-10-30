@@ -2581,6 +2581,126 @@
         "variant": 2,
         "motif": "spark"
       }
+    },
+    "patchkin": {
+      "Gourd Bump": {
+        "family": "headbutt",
+        "palette": "earth",
+        "motion": "headbutt",
+        "variant": 0,
+        "motif": "spark"
+      },
+      "Straw Snare": {
+        "family": "roots",
+        "palette": "wood",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Harvest Brace": {
+        "family": "shelter",
+        "palette": "wood",
+        "motion": "brace",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Lantern Bulwark": {
+        "family": "roots",
+        "palette": "light",
+        "motion": "stomp",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "wickwing": {
+      "Ember Flutter": {
+        "family": "swarm",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 0,
+        "motif": "bat"
+      },
+      "Waxflare": {
+        "family": "flame",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Candle Shelter": {
+        "family": "shelter",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Candleburst": {
+        "family": "orbit",
+        "palette": "fire",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "nova"
+      }
+    },
+    "veilmoth": {
+      "Velvet Wing": {
+        "family": "wind",
+        "palette": "shadow",
+        "motion": "hover",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Funeral Glimmer": {
+        "family": "gaze",
+        "palette": "shadow",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Moonveil Mend": {
+        "family": "heal",
+        "palette": "light",
+        "motion": "hover",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Midnight Procession": {
+        "family": "swarm",
+        "palette": "shadow",
+        "motion": "hover",
+        "variant": 3,
+        "motif": "spark"
+      }
+    },
+    "hollow_king": {
+      "Harvest Sweep": {
+        "family": "slash",
+        "palette": "earth",
+        "motion": "slash",
+        "variant": 2,
+        "motif": "spark"
+      },
+      "Lantern Decree": {
+        "family": "gaze",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 1,
+        "motif": "spark"
+      },
+      "Burlap Bastion": {
+        "family": "shelter",
+        "palette": "earth",
+        "motion": "brace",
+        "variant": 3,
+        "motif": "spark"
+      },
+      "Last Procession": {
+        "family": "orbit",
+        "palette": "light",
+        "motion": "cast",
+        "variant": 3,
+        "motif": "spark"
+      }
     }
   }
 }

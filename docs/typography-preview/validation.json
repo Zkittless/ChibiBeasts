@@ -1,0 +1,152 @@
+{
+  "status": "passed",
+  "font": "Pixelify Sans",
+  "image_surfaces": 6,
+  "scope": "Exact production artwork; starter label crops retain native pixels.",
+  "sources": [
+    {
+      "surface": "Journal banner",
+      "file": "data/journal/journal-hollowlight.png",
+      "size": [
+        640,
+        126
+      ],
+      "bytes": 97905,
+      "sha256": "6b51da598024a1431ffbf3fb3905f186b262f17dca5761f6c239b47b11278a40"
+    },
+    {
+      "surface": "Workshop banner",
+      "file": "data/workshop/header.png",
+      "size": [
+        640,
+        120
+      ],
+      "bytes": 77611,
+      "sha256": "00a028f00524c6a8ed31f69915102b16357beb4764e746e4e36f28c8b9387922"
+    },
+    {
+      "surface": "Battle HUD and combat log",
+      "file": "docs/hollowlight-preview/ghost-strike-final.png",
+      "size": [
+        640,
+        528
+      ],
+      "bytes": 212183,
+      "sha256": "11b56dd03ac73abda72952769c000e1cf17bfef28bb67ed2139fd8f4c1b5afdd"
+    },
+    {
+      "surface": "Exploration team roles",
+      "file": "docs/hollowlight-preview/ghost-team-carnival.png",
+      "size": [
+        640,
+        300
+      ],
+      "bytes": 278224,
+      "sha256": "aabe4a7bd76e3725ae889a6567431142431a1e6b2378fe6bb97663fc81ce7f31"
+    },
+    {
+      "surface": "Starter selection labels",
+      "file": "data/card_art/starter-lineup.png",
+      "size": [
+        768,
+        640
+      ],
+      "bytes": 217560,
+      "sha256": "0d9a288e597e31315e7cd01fb02dfad7eb1c674ec54feffc15ea01f0def18373"
+    },
+    {
+      "surface": "Ten-trainer raid",
+      "file": "docs/typography-preview/raid-10-whole.png",
+      "size": [
+        640,
+        692
+      ],
+      "bytes": 247623,
+      "sha256": "e4c7a6df8981c302052e90052f5b46306bce05cfc32a926098192ff656c493c8"
+    }
+  ],
+  "ten_trainer_raids": [
+    {
+      "file": "raid-10-whole.png",
+      "trainers": 10,
+      "level": 20.0,
+      "timer": "8:24",
+      "boss_name": {
+        "requested": "Corrupted Leviathan",
+        "value": "Corrupted Leviathan",
+        "size": 24,
+        "ink": [
+          88,
+          74,
+          347,
+          96
+        ],
+        "box": [
+          88,
+          73,
+          410,
+          96
+        ]
+      },
+      "metadata": {
+        "requested": "Lv.20 / 10 trainers / 8:24",
+        "value": "Lv.20 / 10 trainers / 8:24",
+        "size": 14,
+        "ink": [
+          433,
+          78,
+          620,
+          90
+        ],
+        "box": [
+          420,
+          74,
+          620,
+          95
+        ]
+      },
+      "sha256": "e4c7a6df8981c302052e90052f5b46306bce05cfc32a926098192ff656c493c8"
+    },
+    {
+      "file": "raid-10-fractional.png",
+      "trainers": 10,
+      "level": 20.5,
+      "timer": "10:00",
+      "boss_name": {
+        "requested": "Corrupted Leviathan",
+        "value": "Corrupted Leviathan",
+        "size": 24,
+        "ink": [
+          88,
+          74,
+          347,
+          96
+        ],
+        "box": [
+          88,
+          73,
+          410,
+          96
+        ]
+      },
+      "metadata": {
+        "requested": "Lv.20.5 / 10 trainers / 10:00",
+        "value": "Lv.20.5 / 10 trainers / 10:00",
+        "size": 13,
+        "ink": [
+          435,
+          79,
+          620,
+          90
+        ],
+        "box": [
+          420,
+          74,
+          620,
+          95
+        ]
+      },
+      "sha256": "8331ed9c966ddc1799b1180cb9f8cd73198d0f7a94c6c0c5b1b4c039d10b14b5"
+    }
+  ]
+}

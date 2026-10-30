@@ -171,7 +171,7 @@ def render(view):
             if getattr(view, 'team_art', None):
                 view.text(text)
             else:
-                view.portrait(text, beast['id'], row.get('armor_id', ''))
+                view.portrait(text, beast['id'], row.get('appearance_id') or row.get('armor_id', ''))
         else:
             view.text(f"**{ROLE_NAMES[role]} · Empty**\n" + ('Choose a healthy lead to set out.' if role == 'lead' else 'Optional · choose a companion to travel with you.'))
 

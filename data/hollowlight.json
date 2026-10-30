@@ -1,0 +1,20 @@
+{
+  "event_id": "hollowlight_2026",
+  "name": "The Hollowlight Carnival",
+  "duration_days": 14,
+  "redemption_grace_days": 7,
+  "wallet_cap": 10000,
+  "clear_embers": 10,
+  "gift": {
+    "embers": 10,
+    "items": {"pixie_dust_potion": 3, "phoenix_elixir": 1},
+    "egg": {"name": "Hollowlight Welcome Egg", "pool": {"patchkin": 0.75, "wickwing": 0.25}}
+  },
+  "offers": [
+    {"id": "patchkin_egg", "name": "Patchkin Egg", "kind": "egg", "cost": 30, "min_level": 1, "limit": 1, "pool": {"patchkin": 1}},
+    {"id": "wickwing_egg", "name": "Wickwing Egg", "kind": "egg", "cost": 50, "min_level": 1, "limit": 1, "pool": {"wickwing": 1}},
+    {"id": "veilmoth_egg", "name": "Veilmoth Egg", "kind": "egg", "cost": 120, "min_level": 30, "limit": 1, "pool": {"veilmoth": 1}},
+    {"id": "ghost_costume_2026", "name": "Ghost Costume · 2026", "kind": "cosmetic", "cost": 30, "min_level": 1, "limit": 1, "unlock_id": "ghost_costume_2026"},
+    {"id": "hollowlight_title_2026", "name": "Lanternkeeper · 2026", "kind": "title", "cost": 20, "min_level": 1, "limit": 1, "unlock_id": "hollowlight_title_2026"}
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "status": "passed",
+  "scope": "Eight committed screenshots refreshed after binary glyph-mask paint change; layout geometry unchanged.",
+  "javascript_errors": [],
+  "checks": [
+    {
+      "surface": "gallery",
+      "width": 1100,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "surface": "gallery",
+      "width": 390,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "surface": "gallery",
+      "width": 320,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "surface": "journal",
+      "state": "battle",
+      "width": 1100,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "surface": "journal",
+      "state": "confirm",
+      "width": 1100,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "surface": "journal",
+      "state": "confirm",
+      "width": 390,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "surface": "journal",
+      "state": "reveal",
+      "width": 390,
+      "no_overflow": true,
+      "all_art_loaded": true
+    },
+    {
+      "surface": "journal",
+      "state": "welcome",
+      "width": 390,
+      "no_overflow": true,
+      "all_art_loaded": true
+    }
+  ]
+}

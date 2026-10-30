@@ -97,7 +97,11 @@
         "prismara": "variants/sprite_silk_attire/prismara.png",
         "timestitch": "variants/sprite_silk_attire/timestitch.png",
         "nebuloom": "variants/sprite_silk_attire/nebuloom.png",
-        "rootwarden": "variants/sprite_silk_attire/rootwarden.png"
+        "rootwarden": "variants/sprite_silk_attire/rootwarden.png",
+        "patchkin": "variants/sprite_silk_attire/patchkin.png",
+        "wickwing": "variants/sprite_silk_attire/wickwing.png",
+        "veilmoth": "variants/sprite_silk_attire/veilmoth.png",
+        "hollow_king": "variants/sprite_silk_attire/hollow_king.png"
       }
     },
     "gnome_iron_plating": {
@@ -196,7 +200,11 @@
         "prismara": "variants/gnome_iron_plating/prismara.png",
         "timestitch": "variants/gnome_iron_plating/timestitch.png",
         "nebuloom": "variants/gnome_iron_plating/nebuloom.png",
-        "rootwarden": "variants/gnome_iron_plating/rootwarden.png"
+        "rootwarden": "variants/gnome_iron_plating/rootwarden.png",
+        "patchkin": "variants/gnome_iron_plating/patchkin.png",
+        "wickwing": "variants/gnome_iron_plating/wickwing.png",
+        "veilmoth": "variants/gnome_iron_plating/veilmoth.png",
+        "hollow_king": "variants/gnome_iron_plating/hollow_king.png"
       }
     },
     "kelpie_scale_mail": {
@@ -295,7 +303,11 @@
         "prismara": "variants/kelpie_scale_mail/prismara.png",
         "timestitch": "variants/kelpie_scale_mail/timestitch.png",
         "nebuloom": "variants/kelpie_scale_mail/nebuloom.png",
-        "rootwarden": "variants/kelpie_scale_mail/rootwarden.png"
+        "rootwarden": "variants/kelpie_scale_mail/rootwarden.png",
+        "patchkin": "variants/kelpie_scale_mail/patchkin.png",
+        "wickwing": "variants/kelpie_scale_mail/wickwing.png",
+        "veilmoth": "variants/kelpie_scale_mail/veilmoth.png",
+        "hollow_king": "variants/kelpie_scale_mail/hollow_king.png"
       }
     },
     "cinder_guard_vest": {
@@ -394,7 +406,11 @@
         "prismara": "variants/cinder_guard_vest/prismara.png",
         "timestitch": "variants/cinder_guard_vest/timestitch.png",
         "nebuloom": "variants/cinder_guard_vest/nebuloom.png",
-        "rootwarden": "variants/cinder_guard_vest/rootwarden.png"
+        "rootwarden": "variants/cinder_guard_vest/rootwarden.png",
+        "patchkin": "variants/cinder_guard_vest/patchkin.png",
+        "wickwing": "variants/cinder_guard_vest/wickwing.png",
+        "veilmoth": "variants/cinder_guard_vest/veilmoth.png",
+        "hollow_king": "variants/cinder_guard_vest/hollow_king.png"
       }
     },
     "dragon_lord_aegis": {
@@ -493,7 +509,11 @@
         "prismara": "variants/dragon_lord_aegis/prismara.png",
         "timestitch": "variants/dragon_lord_aegis/timestitch.png",
         "nebuloom": "variants/dragon_lord_aegis/nebuloom.png",
-        "rootwarden": "variants/dragon_lord_aegis/rootwarden.png"
+        "rootwarden": "variants/dragon_lord_aegis/rootwarden.png",
+        "patchkin": "variants/dragon_lord_aegis/patchkin.png",
+        "wickwing": "variants/dragon_lord_aegis/wickwing.png",
+        "veilmoth": "variants/dragon_lord_aegis/veilmoth.png",
+        "hollow_king": "variants/dragon_lord_aegis/hollow_king.png"
       }
     },
     "abyssal_shroud": {
@@ -592,7 +612,11 @@
         "prismara": "variants/abyssal_shroud/prismara.png",
         "timestitch": "variants/abyssal_shroud/timestitch.png",
         "nebuloom": "variants/abyssal_shroud/nebuloom.png",
-        "rootwarden": "variants/abyssal_shroud/rootwarden.png"
+        "rootwarden": "variants/abyssal_shroud/rootwarden.png",
+        "patchkin": "variants/abyssal_shroud/patchkin.png",
+        "wickwing": "variants/abyssal_shroud/wickwing.png",
+        "veilmoth": "variants/abyssal_shroud/veilmoth.png",
+        "hollow_king": "variants/abyssal_shroud/hollow_king.png"
       }
     },
     "chronos_paradox_plate": {
@@ -691,7 +715,11 @@
         "prismara": "variants/chronos_paradox_plate/prismara.png",
         "timestitch": "variants/chronos_paradox_plate/timestitch.png",
         "nebuloom": "variants/chronos_paradox_plate/nebuloom.png",
-        "rootwarden": "variants/chronos_paradox_plate/rootwarden.png"
+        "rootwarden": "variants/chronos_paradox_plate/rootwarden.png",
+        "patchkin": "variants/chronos_paradox_plate/patchkin.png",
+        "wickwing": "variants/chronos_paradox_plate/wickwing.png",
+        "veilmoth": "variants/chronos_paradox_plate/veilmoth.png",
+        "hollow_king": "variants/chronos_paradox_plate/hollow_king.png"
       }
     },
     "blight_weaver_regalia": {
@@ -790,7 +818,11 @@
         "prismara": "variants/blight_weaver_regalia/prismara.png",
         "timestitch": "variants/blight_weaver_regalia/timestitch.png",
         "nebuloom": "variants/blight_weaver_regalia/nebuloom.png",
-        "rootwarden": "variants/blight_weaver_regalia/rootwarden.png"
+        "rootwarden": "variants/blight_weaver_regalia/rootwarden.png",
+        "patchkin": "variants/blight_weaver_regalia/patchkin.png",
+        "wickwing": "variants/blight_weaver_regalia/wickwing.png",
+        "veilmoth": "variants/blight_weaver_regalia/veilmoth.png",
+        "hollow_king": "variants/blight_weaver_regalia/hollow_king.png"
       }
     },
     "unicorn_healer_vestments": {
@@ -889,7 +921,11 @@
         "prismara": "variants/unicorn_healer_vestments/prismara.png",
         "timestitch": "variants/unicorn_healer_vestments/timestitch.png",
         "nebuloom": "variants/unicorn_healer_vestments/nebuloom.png",
-        "rootwarden": "variants/unicorn_healer_vestments/rootwarden.png"
+        "rootwarden": "variants/unicorn_healer_vestments/rootwarden.png",
+        "patchkin": "variants/unicorn_healer_vestments/patchkin.png",
+        "wickwing": "variants/unicorn_healer_vestments/wickwing.png",
+        "veilmoth": "variants/unicorn_healer_vestments/veilmoth.png",
+        "hollow_king": "variants/unicorn_healer_vestments/hollow_king.png"
       }
     },
     "basilisk_gaze_pauldrons": {
@@ -988,7 +1024,11 @@
         "prismara": "variants/basilisk_gaze_pauldrons/prismara.png",
         "timestitch": "variants/basilisk_gaze_pauldrons/timestitch.png",
         "nebuloom": "variants/basilisk_gaze_pauldrons/nebuloom.png",
-        "rootwarden": "variants/basilisk_gaze_pauldrons/rootwarden.png"
+        "rootwarden": "variants/basilisk_gaze_pauldrons/rootwarden.png",
+        "patchkin": "variants/basilisk_gaze_pauldrons/patchkin.png",
+        "wickwing": "variants/basilisk_gaze_pauldrons/wickwing.png",
+        "veilmoth": "variants/basilisk_gaze_pauldrons/veilmoth.png",
+        "hollow_king": "variants/basilisk_gaze_pauldrons/hollow_king.png"
       }
     },
     "phoenix_born_shroud": {
@@ -1087,7 +1127,11 @@
         "prismara": "variants/phoenix_born_shroud/prismara.png",
         "timestitch": "variants/phoenix_born_shroud/timestitch.png",
         "nebuloom": "variants/phoenix_born_shroud/nebuloom.png",
-        "rootwarden": "variants/phoenix_born_shroud/rootwarden.png"
+        "rootwarden": "variants/phoenix_born_shroud/rootwarden.png",
+        "patchkin": "variants/phoenix_born_shroud/patchkin.png",
+        "wickwing": "variants/phoenix_born_shroud/wickwing.png",
+        "veilmoth": "variants/phoenix_born_shroud/veilmoth.png",
+        "hollow_king": "variants/phoenix_born_shroud/hollow_king.png"
       }
     },
     "thunderbird_storm_mail": {
@@ -1186,7 +1230,11 @@
         "prismara": "variants/thunderbird_storm_mail/prismara.png",
         "timestitch": "variants/thunderbird_storm_mail/timestitch.png",
         "nebuloom": "variants/thunderbird_storm_mail/nebuloom.png",
-        "rootwarden": "variants/thunderbird_storm_mail/rootwarden.png"
+        "rootwarden": "variants/thunderbird_storm_mail/rootwarden.png",
+        "patchkin": "variants/thunderbird_storm_mail/patchkin.png",
+        "wickwing": "variants/thunderbird_storm_mail/wickwing.png",
+        "veilmoth": "variants/thunderbird_storm_mail/veilmoth.png",
+        "hollow_king": "variants/thunderbird_storm_mail/hollow_king.png"
       }
     },
     "mossbark_wrapping": {
@@ -1285,7 +1333,11 @@
         "prismara": "variants/mossbark_wrapping/prismara.png",
         "timestitch": "variants/mossbark_wrapping/timestitch.png",
         "nebuloom": "variants/mossbark_wrapping/nebuloom.png",
-        "rootwarden": "variants/mossbark_wrapping/rootwarden.png"
+        "rootwarden": "variants/mossbark_wrapping/rootwarden.png",
+        "patchkin": "variants/mossbark_wrapping/patchkin.png",
+        "wickwing": "variants/mossbark_wrapping/wickwing.png",
+        "veilmoth": "variants/mossbark_wrapping/veilmoth.png",
+        "hollow_king": "variants/mossbark_wrapping/hollow_king.png"
       }
     },
     "emberstone_vest": {
@@ -1384,7 +1436,11 @@
         "prismara": "variants/emberstone_vest/prismara.png",
         "timestitch": "variants/emberstone_vest/timestitch.png",
         "nebuloom": "variants/emberstone_vest/nebuloom.png",
-        "rootwarden": "variants/emberstone_vest/rootwarden.png"
+        "rootwarden": "variants/emberstone_vest/rootwarden.png",
+        "patchkin": "variants/emberstone_vest/patchkin.png",
+        "wickwing": "variants/emberstone_vest/wickwing.png",
+        "veilmoth": "variants/emberstone_vest/veilmoth.png",
+        "hollow_king": "variants/emberstone_vest/hollow_king.png"
       }
     },
     "thornweave_cloak": {
@@ -1483,7 +1539,11 @@
         "prismara": "variants/thornweave_cloak/prismara.png",
         "timestitch": "variants/thornweave_cloak/timestitch.png",
         "nebuloom": "variants/thornweave_cloak/nebuloom.png",
-        "rootwarden": "variants/thornweave_cloak/rootwarden.png"
+        "rootwarden": "variants/thornweave_cloak/rootwarden.png",
+        "patchkin": "variants/thornweave_cloak/patchkin.png",
+        "wickwing": "variants/thornweave_cloak/wickwing.png",
+        "veilmoth": "variants/thornweave_cloak/veilmoth.png",
+        "hollow_king": "variants/thornweave_cloak/hollow_king.png"
       }
     },
     "deepwater_hide": {
@@ -1582,7 +1642,11 @@
         "prismara": "variants/deepwater_hide/prismara.png",
         "timestitch": "variants/deepwater_hide/timestitch.png",
         "nebuloom": "variants/deepwater_hide/nebuloom.png",
-        "rootwarden": "variants/deepwater_hide/rootwarden.png"
+        "rootwarden": "variants/deepwater_hide/rootwarden.png",
+        "patchkin": "variants/deepwater_hide/patchkin.png",
+        "wickwing": "variants/deepwater_hide/wickwing.png",
+        "veilmoth": "variants/deepwater_hide/veilmoth.png",
+        "hollow_king": "variants/deepwater_hide/hollow_king.png"
       }
     }
   },
@@ -3026,6 +3090,70 @@
     "variants/mossbark_wrapping/rootwarden.png": "44af0ab489665c05018c414594f41ffd743457566e1ce520e065bfd8d6a687a0",
     "variants/emberstone_vest/rootwarden.png": "68bc8993290b4e822dc402a8086538d6e1e7f60b5c22f83541fcf5e72ddd4880",
     "variants/thornweave_cloak/rootwarden.png": "d5bd4e99b3f505db76909b88394778e28dfbb18be73430e0e44418a26132626f",
-    "variants/deepwater_hide/rootwarden.png": "6c9d95c122b036a80eb617bc80aac6cac8e3c0293e1b4d00e13eaab6ccfa3ade"
+    "variants/deepwater_hide/rootwarden.png": "6c9d95c122b036a80eb617bc80aac6cac8e3c0293e1b4d00e13eaab6ccfa3ade",
+    "variants/sprite_silk_attire/patchkin.png": "9b3e2f5a5bcd2ab8ce6a6f9f57ffde9bc98097a8c721252a878efa7c27aa52fe",
+    "variants/gnome_iron_plating/patchkin.png": "8d18e1d9a432a626fc9f1f853125448edc9f7846f64acdd78e2b9b7e0b1f2039",
+    "variants/kelpie_scale_mail/patchkin.png": "fc50aa41c0bc81b899699d48b69c343efe12589729f318e648f830e20b9255ba",
+    "variants/cinder_guard_vest/patchkin.png": "88ca015c2e1c151526108de111e5670b694ef9c2cfd164537c9fa9cbf952c092",
+    "variants/unicorn_healer_vestments/patchkin.png": "50d7225c9fdadd41ae0373782593abf85decafb999e405809f46171ddd89eb26",
+    "variants/basilisk_gaze_pauldrons/patchkin.png": "19e739b185bd9fc1ae066c8926622d0bdf13735d0d0a6da28015e4f60b803a1e",
+    "variants/phoenix_born_shroud/patchkin.png": "982b462e44c8d4937162119a417556e255f540579aba5fd9b49cdd84adc78b66",
+    "variants/thunderbird_storm_mail/patchkin.png": "8f34a5fcdb3295f96f14fbd9d4712405c0df287830faa7141eefc9cc5450ff08",
+    "variants/dragon_lord_aegis/patchkin.png": "50ef11eb28d315f984dd60f365ca4412327ee4e66a61cce3e0f4c2a0343d1998",
+    "variants/abyssal_shroud/patchkin.png": "0a0dcf26c27675c0856419fe8dbc00fa2772a699b11c6ed2b93b836fc3293959",
+    "variants/chronos_paradox_plate/patchkin.png": "1e3677642ce58b14e994215c0eb45317abaaee724f7c921753f2d51d31f3ac88",
+    "variants/blight_weaver_regalia/patchkin.png": "967d343493250d96d67c123ac49e02f69580e4252d108b16488cebd8fa390bc6",
+    "variants/mossbark_wrapping/patchkin.png": "1f99567cac1f9e5580ffe1f86919f033fafa2fd8adbfe664299b19acba5bcd3a",
+    "variants/emberstone_vest/patchkin.png": "c4131be5a763b4a38924e865d49d55b14fcf0a9e14efbc4e86ad4b0b91634390",
+    "variants/thornweave_cloak/patchkin.png": "f0731011a081a60a7267af638a3358118a285ab00a3032666b2c94dc983749f3",
+    "variants/deepwater_hide/patchkin.png": "7be11c88df4382ba47399a6e039ae6dc389cec6c1ca45cb93d00d3f589b94588",
+    "variants/sprite_silk_attire/wickwing.png": "0c38112f61aca8b0779b341a0d98c98266b3b6eee850de20e0a37b8aea6cbac0",
+    "variants/gnome_iron_plating/wickwing.png": "a668dfe772f97222fe83ed0abf2e165b2629cf8f42b651c062686601babbf3e7",
+    "variants/kelpie_scale_mail/wickwing.png": "bff5452fa88af80d8aa161f4d1f8b380642978c23df983f4fc4d2e050afc4ccb",
+    "variants/cinder_guard_vest/wickwing.png": "9fd7079558890d751188864dd328baaa077d21885a8b8a0fd45a2150ee8499df",
+    "variants/unicorn_healer_vestments/wickwing.png": "38b38c7eeaa013ec15bc3ba7d25d5e618bfb8940c240d19e8dc2a6c9cdc586ef",
+    "variants/basilisk_gaze_pauldrons/wickwing.png": "af5837f30cbc92fb71763dd4aae53cf5494cff8e35b12e8fd91f0b1afedda10a",
+    "variants/phoenix_born_shroud/wickwing.png": "cfaeb62f2bd3df744bc30f43d1af92d45e8c2b72c01e6376ac5bb16670fd49ed",
+    "variants/thunderbird_storm_mail/wickwing.png": "60ea500d10eaf64cdeb6dc5b945d1ffad9714905a0d52606d1f0a6d9f0cf0767",
+    "variants/dragon_lord_aegis/wickwing.png": "d948ee6e2eb5992cb89b907a81805e99009d3afc37bc7844b9bcd36b71e71182",
+    "variants/abyssal_shroud/wickwing.png": "7dcdc85fa9fc099246eaa60d78a44b1cceb0bb8fbcbb489b43a2e26f82e93fc5",
+    "variants/chronos_paradox_plate/wickwing.png": "6e0a1c4b0c6ee7c7d71aa706bb0fbb52a472c50b98c78c5f0135370db86348fc",
+    "variants/blight_weaver_regalia/wickwing.png": "b7c597a20ebf9ac43c6d52eb013d7a7231767683bb1e550daff6819092d89cf1",
+    "variants/mossbark_wrapping/wickwing.png": "d3e2ff3c790d0da4aee8a67bc35a57135c0e6856073b09c56dfe910f981069c9",
+    "variants/emberstone_vest/wickwing.png": "f7a953ec3d910cf72d4ab6d7e8a791eea294840c05f3db912932d55910a65913",
+    "variants/thornweave_cloak/wickwing.png": "35772c58f7a69ba3bcede3aaba3a2aa8205ba41b9b2d684b8dcba0032955b3f9",
+    "variants/deepwater_hide/wickwing.png": "b4ee66091338daf706590eee613c3e190d92f0072c9fe8b0e91a36461107549d",
+    "variants/sprite_silk_attire/veilmoth.png": "7c879e8a30b139898c7f86934f57fa8e31f2d4fb71a50355acf4f282b2bd4043",
+    "variants/gnome_iron_plating/veilmoth.png": "c7a48e6aa6639b38737c80bc35c9320eaf56756c89e8e6df6a38f1c0dbd24cfb",
+    "variants/kelpie_scale_mail/veilmoth.png": "183262277f3bceb7b3766921eb6170cf4a3dc361bf3d67522d783aea666bf922",
+    "variants/cinder_guard_vest/veilmoth.png": "30ea277586ae8b6b7695e64a509e42b9d30de95d403cc5a4386df4e59d635a7b",
+    "variants/unicorn_healer_vestments/veilmoth.png": "b47d62834b351e15ffb1a5bfe577c92982220aa93ccbfc774053d9660734d4ba",
+    "variants/basilisk_gaze_pauldrons/veilmoth.png": "cf7f07f49dd4fbaf0960ee259a7def6911366c473b25e0d806cb38c07d787e89",
+    "variants/phoenix_born_shroud/veilmoth.png": "bcdd7135701f0ecd6b15ec542951b1006e5bcb7cd836d3bac6469d108fd1cc3a",
+    "variants/thunderbird_storm_mail/veilmoth.png": "30b6914744b2518100732390fb063cc5b42c4c872ac63ce108d952e406fc05fb",
+    "variants/dragon_lord_aegis/veilmoth.png": "65e002a8db35c5063ec6b1d7f6771b5830ee2c937a2c4a12aaae3597858e73d4",
+    "variants/abyssal_shroud/veilmoth.png": "82e60dc42d92f9ea3e2a2275ca5fc3518e03d74ef8c1d7422363c157d63c8dc1",
+    "variants/chronos_paradox_plate/veilmoth.png": "0cbeee7d75114a29c7d7ebc4e57fb28a29a973e00202d8d2d9400c8452b22ede",
+    "variants/blight_weaver_regalia/veilmoth.png": "3a1625becb8421d4bc581d6befae89c2b391593316aa9884d84774920bfd592d",
+    "variants/mossbark_wrapping/veilmoth.png": "b04820a9ce66a51d0fc4ce37871eccc5e735d18142bbaa901543af05664bef2a",
+    "variants/emberstone_vest/veilmoth.png": "e71fd5361f07e1758e02b950cdb74c005c5717f60c744f20a7af6a295cc84121",
+    "variants/thornweave_cloak/veilmoth.png": "60cbc3d3f4e950a0662be1278bbe3f289d1f95d08fd105e32fe325f5a7153a8e",
+    "variants/deepwater_hide/veilmoth.png": "0aa6d082e30b2ee9d07af1bedb84c83e6392735e495befdd244646c76b582f21",
+    "variants/sprite_silk_attire/hollow_king.png": "5209ad37df5c844117f71a737e96821cecce3127eca03d160c729702324bcbf7",
+    "variants/gnome_iron_plating/hollow_king.png": "fadeb940874cb82a56fc931d002e56346ff212cd91441bb21ac443291a9e4b4b",
+    "variants/kelpie_scale_mail/hollow_king.png": "3e851bc0c33f857fdc26fcb4e56264cba644fef95667682e68e70bf955aba950",
+    "variants/cinder_guard_vest/hollow_king.png": "d9cd9c6733eee35a13e94c6c9820ef0e4ace996af1a9c180ef503998b81b51df",
+    "variants/unicorn_healer_vestments/hollow_king.png": "997ea8dec44c6392b81defa9133c7fa60240a6dea80039bfcd94e6f255f2c076",
+    "variants/basilisk_gaze_pauldrons/hollow_king.png": "975a6f5b3f9caf08714de16af9c53208c5bb4461e2562915dc78abfeeb54b8ad",
+    "variants/phoenix_born_shroud/hollow_king.png": "95f03130c37be4ecad0ad36f35b3ccecc96c2a3e4d34ea4b9ce916b6a9ec2f2e",
+    "variants/thunderbird_storm_mail/hollow_king.png": "09beb839295953c27d754b7b77fca5dde88b43f1964f038f3f392231d31a6352",
+    "variants/dragon_lord_aegis/hollow_king.png": "2de6d67e81e110315ac772ce75ed2aac12658483a2d5c9e8e962bb16949884d6",
+    "variants/abyssal_shroud/hollow_king.png": "920c22c15203d3b028781f87e88c843c5a501524073b3a9b20c64c40c8a92d28",
+    "variants/chronos_paradox_plate/hollow_king.png": "35181fa0171ad6e1ccba6158208fbbff3f699d97a1fd412fee53b31edc9bf090",
+    "variants/blight_weaver_regalia/hollow_king.png": "cd5c218f57383289c03258384aa38b4cfd36c7331622a3227296ee664bbe6332",
+    "variants/mossbark_wrapping/hollow_king.png": "93019a98b87222fad3c182a8296a04c4e000b908592c535e29ea49826530928c",
+    "variants/emberstone_vest/hollow_king.png": "8244ed2e2422f89564e2ec80af5b5b1d9d32a195e1fc0aae732fcc763cad904b",
+    "variants/thornweave_cloak/hollow_king.png": "3eaad15feba23f2b17994a38f90e46ad9f77d19fd130acb7ca6560270690825a",
+    "variants/deepwater_hide/hollow_king.png": "ff6550c1a00d997dcc66248d9832bb852f6a0cf67f65051c5503c0715e1a3670"
   }
 }

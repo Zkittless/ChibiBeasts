@@ -18,7 +18,7 @@ class Artwork(unittest.TestCase):
     def test_every_beast_has_one_versioned_alpha_png(self):
         roster = storage.load_beasts()
         manifest = artwork_manifest()
-        self.assertEqual(len(roster), 86)
+        self.assertEqual(len(roster), 90)
         self.assertEqual(set(roster), set(manifest))
         self.assertEqual(
             {p.name for p in (PROJECT_ROOT / "data/sprites").glob("*.png")},
@@ -62,7 +62,7 @@ class Artwork(unittest.TestCase):
     def test_all_generation_prompts_are_saved(self):
         prompts = json.loads((PROJECT_ROOT / "docs/art-prompts.json").read_text(encoding="utf-8"))
         self.assertEqual({entry["id"] for entry in prompts["characters"]}, set(storage.load_beasts()))
-        self.assertEqual(len(prompts["characters"]), 86)
+        self.assertEqual(len(prompts["characters"]), 90)
 
     def test_raid_art_uses_the_same_resolver(self):
         from cogs.guilds import RAID_BOSSES

@@ -28,7 +28,7 @@ async def attune_hatch(user_id, rolled, roster):
             row = await c.fetchone()
         if not row or not row[0]:
             return rolled
-        pool = [b for b in roster.values() if b['type'] == row[0] and b['rarity'] == rolled['rarity'] and (not b.get('evolution_only')) and (not b.get('starter')) and (b.get('id') not in {'prismite', 'twine', 'gloop', 'barkley'})]
+        pool = [b for b in roster.values() if b['type'] == row[0] and b['rarity'] == rolled['rarity'] and not b.get('event_id') and (not b.get('evolution_only')) and (not b.get('starter')) and (b.get('id') not in {'prismite', 'twine', 'gloop', 'barkley'})]
         if not pool:
             return rolled
         result = random.choice(pool)
