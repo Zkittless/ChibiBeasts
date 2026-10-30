@@ -1,0 +1,710 @@
+{
+  "mode": "built-in image_gen",
+  "purpose": "Individually fitted seasonal beast armor",
+  "variants": [
+    {
+      "species": "patchkin",
+      "armor": "sprite_silk_attire",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Sprite-Silk Attire. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "bcb6c8964a99d122bd0a564d84f5420c891688f0c422d466c90b2a77039e22e4",
+      "sha256": "9b3e2f5a5bcd2ab8ce6a6f9f57ffde9bc98097a8c721252a878efa7c27aa52fe",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/sprite_silk_attire/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "gnome_iron_plating",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Gnome-Iron Plating. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Slightly oversized clunky iron armor with a tiny round shield. Sturdy little knight energy. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "d60af1576c18a4332ca65ec46bba4e347adcf6e75b75018e4646b90587f52c6a",
+      "sha256": "8d18e1d9a432a626fc9f1f853125448edc9f7846f64acdd78e2b9b7e0b1f2039",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/gnome_iron_plating/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "kelpie_scale_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Kelpie-Scale Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Iridescent teal armor that glistens as if wet, trailing faint bubbles. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "5e979c5a7f380198be1e307663aa301fe04cebe801da5086107d4b255d0d3af1",
+      "sha256": "fc50aa41c0bc81b899699d48b69c343efe12589729f318e648f830e20b9255ba",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/kelpie_scale_mail/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "cinder_guard_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Cinder-Guard Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Dark obsidian trim with a core that glows with smoldering orange flame. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "4381cb995814d456580ce8ae92578d8446bf7a44b59efabcd928b134f4bc95b6",
+      "sha256": "88ca015c2e1c151526108de111e5670b694ef9c2cfd164537c9fa9cbf952c092",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/cinder_guard_vest/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "unicorn_healer_vestments",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Unicorn-Healer Vestments. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Elegant pure-white flowing robes emitting a soft comforting silver aura. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "2f0a5932554d6475c5829997a395b0128c307bed07f349ece24921769225f11e",
+      "sha256": "50d7225c9fdadd41ae0373782593abf85decafb999e405809f46171ddd89eb26",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/unicorn_healer_vestments/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "basilisk_gaze_pauldrons",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Basilisk Gaze Pauldrons. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Heavy pauldrons carved from petrified basilisk eyes. Enemies caught in their gaze at battle start have a 30% chance to lose speed. Critical hits have a 15% chance to briefly petrify the target. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "fc215583e2d7fa82db812ffba4d0a03c211eaf6b3b9eef5e61c434d53d2daab1",
+      "sha256": "19e739b185bd9fc1ae066c8926622d0bdf13735d0d0a6da28015e4f60b803a1e",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/basilisk_gaze_pauldrons/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "phoenix_born_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Phoenix-Born Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A magnificent cape of pure crackling fire-feathers. They don't burn you. Mostly. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "e286a6326b3c28a683cb6e013b52f51ca6e4da16ccfc64acf2cd47b125e9e509",
+      "sha256": "982b462e44c8d4937162119a417556e255f540579aba5fd9b49cdd84adc78b66",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/phoenix_born_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "thunderbird_storm_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Thunderbird Storm-Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Sleek blue-and-gold spiked armor crackling with static electricity when your beast moves. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "110215bfe342d8132a84d059194089244edec16d0a2a592a79a84ad72195a040",
+      "sha256": "8f34a5fcdb3295f96f14fbd9d4712405c0df287830faa7141eefc9cc5450ff08",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/thunderbird_storm_mail/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "dragon_lord_aegis",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Dragon-Lord Aegis. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Massive diamond-hard crimson scales wrapping your beast like a protective dragon shell. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "cb7801678e2749a007946e7c8f647220ca26703e2871d47f500622e66450f0e6",
+      "sha256": "50ef11eb28d315f984dd60f365ca4412327ee4e66a61cce3e0f4c2a0343d1998",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/dragon_lord_aegis/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "abyssal_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear The Abyssal Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A cloak of living midnight shadow that blurs your beast's edges, making them look ghostly. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "c6fc7a51bae8907e3802909580bc6be0d971cd943a258eab8e66d3a08cffc457",
+      "sha256": "0a0dcf26c27675c0856419fe8dbc00fa2772a699b11c6ed2b93b836fc3293959",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/abyssal_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "chronos_paradox_plate",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Chronos Paradox Plate. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Golden clockwork plates floating around your beast, accompanied by a faint ticking sound. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "35b946c5163d489c249d121bf8264f8dcd491b5441964f95bbf59b0208691efe",
+      "sha256": "1e3677642ce58b14e994215c0eb45317abaaee724f7c921753f2d51d31f3ac88",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/chronos_paradox_plate/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "blight_weaver_regalia",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Blight-Weaver Regalia. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Corrupted branching black horn armor pulsing with unstable violet nebula patterns. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "026a902414e563ef59fe4ce552673190af9068762519e28d01e4d2f3f00ac4a2",
+      "sha256": "967d343493250d96d67c123ac49e02f69580e4252d108b16488cebd8fa390bc6",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/blight_weaver_regalia/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "mossbark_wrapping",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Mossbark Wrapping. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Strips of enchanted bark bound together with pixie silk. The forest holds things together. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "bf5e0e426ddee5d9fcfc15fffe3a21263aa5f13549aa2be88b26bad03c4bd5da",
+      "sha256": "1f99567cac1f9e5580ffe1f86919f033fafa2fd8adbfe664299b19acba5bcd3a",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/mossbark_wrapping/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "emberstone_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Emberstone Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Gnome-iron plates set in hellhound ember resin. Reflects a fraction of what hits it. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "ca30015332c65d45e4ed36d77dc950e5c73be3be82d767e333733cf2d61bcbc6",
+      "sha256": "c4131be5a763b4a38924e865d49d55b14fcf0a9e14efbc4e86ad4b0b91634390",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/emberstone_vest/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "thornweave_cloak",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Thornweave Cloak. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Woven from bark thorns and harpy feathers. When struck, the thorns answer. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "b859b781a0775e5ee337262230f6e8af534775fb06df19036241b5484d0cdc7f",
+      "sha256": "f0731011a081a60a7267af638a3358118a285ab00a3032666b2c94dc983749f3",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/thornweave_cloak/twine.png"
+      ]
+    },
+    {
+      "species": "patchkin",
+      "armor": "deepwater_hide",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Patchkin, to wear Deepwater Hide. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Cured kelpie hide layered with harpy down. Dense enough to slow water, light enough to move in. Fit the short round scarecrow torso and floppy arms. Keep its pumpkin face, green stem, straw hands and root boots fully recognizable. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "b4516d0ed3a228a8115344f3a84a99b95c02e38df7547b5d9a5b82124e62296b",
+      "sha256": "7be11c88df4382ba47399a6e039ae6dc389cec6c1ca45cb93d00d3f589b94588",
+      "references": [
+        "data/sprites/patchkin.png",
+        "data/armor/variants/deepwater_hide/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "sprite_silk_attire",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Sprite-Silk Attire. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "8d1fb99758a796b860e4aa8f4970a3949f4d24130d4fb84ab688f66da238eb1d",
+      "sha256": "0c38112f61aca8b0779b341a0d98c98266b3b6eee850de20e0a37b8aea6cbac0",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/sprite_silk_attire/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "gnome_iron_plating",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Gnome-Iron Plating. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Slightly oversized clunky iron armor with a tiny round shield. Sturdy little knight energy. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "3dc30920cab13fd3467cafba5203b846f2cf8691cd0665ad9a99b804f2d36eea",
+      "sha256": "a668dfe772f97222fe83ed0abf2e165b2629cf8f42b651c062686601babbf3e7",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/gnome_iron_plating/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "kelpie_scale_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Kelpie-Scale Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Iridescent teal armor that glistens as if wet, trailing faint bubbles. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "d0ad4fbc8906213fd8cc09eeece4ed3ed6ba87de856ae1e95220f21ab75566c2",
+      "sha256": "bff5452fa88af80d8aa161f4d1f8b380642978c23df983f4fc4d2e050afc4ccb",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/kelpie_scale_mail/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "cinder_guard_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Cinder-Guard Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Dark obsidian trim with a core that glows with smoldering orange flame. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "ea343ddd3f0606667f5462b6298a39b8f25d0feca6faeb8f535d34bbf3ca6909",
+      "sha256": "9fd7079558890d751188864dd328baaa077d21885a8b8a0fd45a2150ee8499df",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/cinder_guard_vest/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "unicorn_healer_vestments",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Unicorn-Healer Vestments. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Elegant pure-white flowing robes emitting a soft comforting silver aura. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "9931afaf58f3dcc6a4130173e1cb7dc81cd45a71449214cd9cd48f00ee6c596a",
+      "sha256": "38b38c7eeaa013ec15bc3ba7d25d5e618bfb8940c240d19e8dc2a6c9cdc586ef",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/unicorn_healer_vestments/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "basilisk_gaze_pauldrons",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Basilisk Gaze Pauldrons. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Heavy pauldrons carved from petrified basilisk eyes. Enemies caught in their gaze at battle start have a 30% chance to lose speed. Critical hits have a 15% chance to briefly petrify the target. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "93617c53bd83118c9f556bacc06ac9a6f9d020d737fdbdce8ce133e8e24d1966",
+      "sha256": "af5837f30cbc92fb71763dd4aae53cf5494cff8e35b12e8fd91f0b1afedda10a",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/basilisk_gaze_pauldrons/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "phoenix_born_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Phoenix-Born Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A magnificent cape of pure crackling fire-feathers. They don't burn you. Mostly. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "4a957e5af2dd96b9849515990714512cdeed396136269cfcc98a5b66aa6538d9",
+      "sha256": "cfaeb62f2bd3df744bc30f43d1af92d45e8c2b72c01e6376ac5bb16670fd49ed",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/phoenix_born_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "thunderbird_storm_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Thunderbird Storm-Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Sleek blue-and-gold spiked armor crackling with static electricity when your beast moves. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "07a4dd31a89610b356511bc0b9105afd000749846db470e642ae282102d04127",
+      "sha256": "60ea500d10eaf64cdeb6dc5b945d1ffad9714905a0d52606d1f0a6d9f0cf0767",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/thunderbird_storm_mail/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "dragon_lord_aegis",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Dragon-Lord Aegis. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Massive diamond-hard crimson scales wrapping your beast like a protective dragon shell. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "013efa19c30a3429ef88fce6e4592c798a6f46694b58d7300bbe8586b0ba0b56",
+      "sha256": "d948ee6e2eb5992cb89b907a81805e99009d3afc37bc7844b9bcd36b71e71182",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/dragon_lord_aegis/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "abyssal_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear The Abyssal Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A cloak of living midnight shadow that blurs your beast's edges, making them look ghostly. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "c9730848f6c51676757fdc7b0beea74ddebeaa4e1adbe1d85f632dc32464f81e",
+      "sha256": "7dcdc85fa9fc099246eaa60d78a44b1cceb0bb8fbcbb489b43a2e26f82e93fc5",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/abyssal_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "chronos_paradox_plate",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Chronos Paradox Plate. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Golden clockwork plates floating around your beast, accompanied by a faint ticking sound. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "3cf3132f02e1c57cafe5a0040bcbab349dcfff816766e588d684518ab1b544b4",
+      "sha256": "6e0a1c4b0c6ee7c7d71aa706bb0fbb52a472c50b98c78c5f0135370db86348fc",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/chronos_paradox_plate/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "blight_weaver_regalia",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Blight-Weaver Regalia. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Corrupted branching black horn armor pulsing with unstable violet nebula patterns. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "fcbfffc838ddbb1f8db2d00a9ef6dc0a94158f68b932d7cc21e5ed5ccc10629c",
+      "sha256": "b7c597a20ebf9ac43c6d52eb013d7a7231767683bb1e550daff6819092d89cf1",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/blight_weaver_regalia/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "mossbark_wrapping",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Mossbark Wrapping. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Strips of enchanted bark bound together with pixie silk. The forest holds things together. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "d0a4d87184ebda2414c044f6a6f3449eb6815492468f3350e8d865f6a4fdc6d5",
+      "sha256": "d3e2ff3c790d0da4aee8a67bc35a57135c0e6856073b09c56dfe910f981069c9",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/mossbark_wrapping/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "emberstone_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Emberstone Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Gnome-iron plates set in hellhound ember resin. Reflects a fraction of what hits it. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "1efdc1a06d2bbabc147acb79bb355ca27d1f82e9aafc7515e8f82524f5c612f5",
+      "sha256": "f7a953ec3d910cf72d4ab6d7e8a791eea294840c05f3db912932d55910a65913",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/emberstone_vest/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "thornweave_cloak",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Thornweave Cloak. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Woven from bark thorns and harpy feathers. When struck, the thorns answer. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "41bf601c03df68b03f1d9f7597bee13e5bd06d7637dd349990be338df4ba1d5e",
+      "sha256": "35772c58f7a69ba3bcede3aaba3a2aa8205ba41b9b2d684b8dcba0032955b3f9",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/thornweave_cloak/twine.png"
+      ]
+    },
+    {
+      "species": "wickwing",
+      "armor": "deepwater_hide",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Wickwing, to wear Deepwater Hide. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Cured kelpie hide layered with harpy down. Dense enough to slow water, light enough to move in. Fit a short bat torso garment with wing-root slits. BOTH bat wings, BOTH candle ears with flame tips, cute face and small feet must stay fully visible and unaltered. Do not cover or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "aac2bf944645d73ece1ed040e0e0a4bb05969989ff0f5e7b3ba06ab9e297dbf4",
+      "sha256": "b4ee66091338daf706590eee613c3e190d92f0072c9fe8b0e91a36461107549d",
+      "references": [
+        "data/sprites/wickwing.png",
+        "data/armor/variants/deepwater_hide/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "sprite_silk_attire",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Sprite-Silk Attire. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "a3888e9824c90a203f853b6553ba767bd389ae1cbbf1d46634d12b1206646bfa",
+      "sha256": "7c879e8a30b139898c7f86934f57fa8e31f2d4fb71a50355acf4f282b2bd4043",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/sprite_silk_attire/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "gnome_iron_plating",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Gnome-Iron Plating. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Slightly oversized clunky iron armor with a tiny round shield. Sturdy little knight energy. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "bc4af1bc69051f675b0ff8307dba984c780cc2901d182b293011bd0a834d4c74",
+      "sha256": "c7a48e6aa6639b38737c80bc35c9320eaf56756c89e8e6df6a38f1c0dbd24cfb",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/gnome_iron_plating/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "kelpie_scale_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Kelpie-Scale Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Iridescent teal armor that glistens as if wet, trailing faint bubbles. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "9a909e001d5ac38e98c395fef1b9897c3450b3c08819bfff965c9a1473dafacf",
+      "sha256": "183262277f3bceb7b3766921eb6170cf4a3dc361bf3d67522d783aea666bf922",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/kelpie_scale_mail/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "cinder_guard_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Cinder-Guard Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Dark obsidian trim with a core that glows with smoldering orange flame. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "92506281fa7af308bd47df0a0a89b81fb138bc39e75f2b6dbee272a450a7e8e5",
+      "sha256": "30ea277586ae8b6b7695e64a509e42b9d30de95d403cc5a4386df4e59d635a7b",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/cinder_guard_vest/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "unicorn_healer_vestments",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Unicorn-Healer Vestments. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Elegant pure-white flowing robes emitting a soft comforting silver aura. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "5704321327f6b743519b07fd5f3cbc3ed32440eb80a76e2ae7fe6aa11646e0de",
+      "sha256": "b47d62834b351e15ffb1a5bfe577c92982220aa93ccbfc774053d9660734d4ba",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/unicorn_healer_vestments/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "basilisk_gaze_pauldrons",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Basilisk Gaze Pauldrons. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Heavy pauldrons carved from petrified basilisk eyes. Enemies caught in their gaze at battle start have a 30% chance to lose speed. Critical hits have a 15% chance to briefly petrify the target. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "f38de6a89caf1d11497a5e9e99762624f40b08cdbb190f95e3eb6850f2ae9527",
+      "sha256": "cf7f07f49dd4fbaf0960ee259a7def6911366c473b25e0d806cb38c07d787e89",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/basilisk_gaze_pauldrons/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "phoenix_born_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Phoenix-Born Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A magnificent cape of pure crackling fire-feathers. They don't burn you. Mostly. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "2cc91d276777a0295ef0d07fa98ded9a9d2222930718404c6c070d91cac2fa60",
+      "sha256": "bcdd7135701f0ecd6b15ec542951b1006e5bcb7cd836d3bac6469d108fd1cc3a",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/phoenix_born_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "thunderbird_storm_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Thunderbird Storm-Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Sleek blue-and-gold spiked armor crackling with static electricity when your beast moves. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "c5162c6e886182c395302003b19c7b6c7e47fdd98e345e3cd5281e7267dca04c",
+      "sha256": "30b6914744b2518100732390fb063cc5b42c4c872ac63ce108d952e406fc05fb",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/thunderbird_storm_mail/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "dragon_lord_aegis",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Dragon-Lord Aegis. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Massive diamond-hard crimson scales wrapping your beast like a protective dragon shell. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "9e5e9c493737d3d5205daf0ac83d3d1385ef9aa8ea4d15056c21bca68854129b",
+      "sha256": "65e002a8db35c5063ec6b1d7f6771b5830ee2c937a2c4a12aaae3597858e73d4",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/dragon_lord_aegis/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "abyssal_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear The Abyssal Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A cloak of living midnight shadow that blurs your beast's edges, making them look ghostly. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "0feed36e73487aa0da96de6524b02a893065b5858a2e454cd9a50d36aeb19b65",
+      "sha256": "82e60dc42d92f9ea3e2a2275ca5fc3518e03d74ef8c1d7422363c157d63c8dc1",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/abyssal_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "chronos_paradox_plate",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Chronos Paradox Plate. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Golden clockwork plates floating around your beast, accompanied by a faint ticking sound. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "7507530e620385a867cafc1e3b4dd52f20687c3a05d521812a5b9db89a72b7f0",
+      "sha256": "0cbeee7d75114a29c7d7ebc4e57fb28a29a973e00202d8d2d9400c8452b22ede",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/chronos_paradox_plate/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "blight_weaver_regalia",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Blight-Weaver Regalia. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Corrupted branching black horn armor pulsing with unstable violet nebula patterns. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "ae58df98194f520ef74d8c0dea854297d9e2e8df5f6f751d4eea56deb9e6c4d3",
+      "sha256": "3a1625becb8421d4bc581d6befae89c2b391593316aa9884d84774920bfd592d",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/blight_weaver_regalia/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "mossbark_wrapping",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Mossbark Wrapping. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Strips of enchanted bark bound together with pixie silk. The forest holds things together. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "bc53f4e40a75bb86e2507b795cb6f57d0099bb40ad5be86601f1e2022e8e4bee",
+      "sha256": "b04820a9ce66a51d0fc4ce37871eccc5e735d18142bbaa901543af05664bef2a",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/mossbark_wrapping/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "emberstone_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Emberstone Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Gnome-iron plates set in hellhound ember resin. Reflects a fraction of what hits it. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "2555b3b0217f418e4ab480484477ef73fb8d1741685904104aa73528c4917610",
+      "sha256": "e71fd5361f07e1758e02b950cdb74c005c5717f60c744f20a7af6a295cc84121",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/emberstone_vest/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "thornweave_cloak",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Thornweave Cloak. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Woven from bark thorns and harpy feathers. When struck, the thorns answer. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "054a4bded913f2c7a703de4f6479b27ef867822032bc5080e720f07d8035a408",
+      "sha256": "60cbc3d3f4e950a0662be1278bbe3f289d1f95d08fd105e32fe325f5a7153a8e",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/thornweave_cloak/twine.png"
+      ]
+    },
+    {
+      "species": "veilmoth",
+      "armor": "deepwater_hide",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, Veilmoth, to wear Deepwater Hide. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Cured kelpie hide layered with harpy down. Dense enough to slow water, light enough to move in. Fit a small central torso garment with wing-root slits and an unobstructed chest lantern. Preserve BOTH enormous ivory crescent-marked veil wings, both curled antennae, lilac eyes and all tiny feet. Do not replace or shorten wings. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "e51665932a970ddde75dda068d3c69461273a5fe19be7371c5a2dc8950f20cc9",
+      "sha256": "0aa6d082e30b2ee9d07af1bedb84c83e6392735e495befdd244646c76b582f21",
+      "references": [
+        "data/sprites/veilmoth.png",
+        "data/armor/variants/deepwater_hide/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "sprite_silk_attire",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Sprite-Silk Attire. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A vibrant leafy tunic woven with glowing pink threads that flutter like tiny wings. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "88ed628a1fee700881d87801d94a6fe5be7922c19fc78a6e6ee05c1147270e19",
+      "sha256": "5209ad37df5c844117f71a737e96821cecce3127eca03d160c729702324bcbf7",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/sprite_silk_attire/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "gnome_iron_plating",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Gnome-Iron Plating. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Slightly oversized clunky iron armor with a tiny round shield. Sturdy little knight energy. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "ff23dd06be068b8dcdbba044df5281573290cdc91c97d1de2a58a84bde442f6c",
+      "sha256": "fadeb940874cb82a56fc931d002e56346ff212cd91441bb21ac443291a9e4b4b",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/gnome_iron_plating/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "kelpie_scale_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Kelpie-Scale Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Iridescent teal armor that glistens as if wet, trailing faint bubbles. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "7c2c4853fbd0ae3f7a1bc10a473a5020b83bd905c92304ab0178fed5debd118f",
+      "sha256": "3e851bc0c33f857fdc26fcb4e56264cba644fef95667682e68e70bf955aba950",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/kelpie_scale_mail/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "cinder_guard_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Cinder-Guard Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Dark obsidian trim with a core that glows with smoldering orange flame. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "5e52b8c30f61abcc2d9608e72390c57cf555d9b367692fedc788586a4a7354c9",
+      "sha256": "d9cd9c6733eee35a13e94c6c9820ef0e4ace996af1a9c180ef503998b81b51df",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/cinder_guard_vest/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "unicorn_healer_vestments",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Unicorn-Healer Vestments. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Elegant pure-white flowing robes emitting a soft comforting silver aura. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "70e1268a3fdda220fc86739bf19b4a8c426f37e54d63991f03e71a562912b836",
+      "sha256": "997ea8dec44c6392b81defa9133c7fa60240a6dea80039bfcd94e6f255f2c076",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/unicorn_healer_vestments/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "basilisk_gaze_pauldrons",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Basilisk Gaze Pauldrons. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Heavy pauldrons carved from petrified basilisk eyes. Enemies caught in their gaze at battle start have a 30% chance to lose speed. Critical hits have a 15% chance to briefly petrify the target. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "4c8240e904d3c567b3e462505b1082b64b56b0961ea2ecfcee1da5c3cfbef64e",
+      "sha256": "975a6f5b3f9caf08714de16af9c53208c5bb4461e2562915dc78abfeeb54b8ad",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/basilisk_gaze_pauldrons/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "phoenix_born_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Phoenix-Born Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A magnificent cape of pure crackling fire-feathers. They don't burn you. Mostly. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "76d56fa80bc4ced488fad0a777309756624bd9b8b43a2386901765d2124d751b",
+      "sha256": "95f03130c37be4ecad0ad36f35b3ccecc96c2a3e4d34ea4b9ce916b6a9ec2f2e",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/phoenix_born_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "thunderbird_storm_mail",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Thunderbird Storm-Mail. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Sleek blue-and-gold spiked armor crackling with static electricity when your beast moves. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "db5646ed974f08c8ed441a13dae978250f3299d5222c4f7a7d0136cc6f7063f8",
+      "sha256": "09beb839295953c27d754b7b77fca5dde88b43f1964f038f3f392231d31a6352",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/thunderbird_storm_mail/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "dragon_lord_aegis",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Dragon-Lord Aegis. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Massive diamond-hard crimson scales wrapping your beast like a protective dragon shell. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "3d9a014922a732de926911296a841cc9a2a93f5eb3c0d8b3123ed02954ba77e6",
+      "sha256": "2de6d67e81e110315ac772ce75ed2aac12658483a2d5c9e8e962bb16949884d6",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/dragon_lord_aegis/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "abyssal_shroud",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear The Abyssal Shroud. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: A cloak of living midnight shadow that blurs your beast's edges, making them look ghostly. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "1fd0d81d1b00ea1fbc73acd9e9b1ff7a019d529dd6f004f5f93c4ddf2aeebdd9",
+      "sha256": "920c22c15203d3b028781f87e88c843c5a501524073b3a9b20c64c40c8a92d28",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/abyssal_shroud/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "chronos_paradox_plate",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Chronos Paradox Plate. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Golden clockwork plates floating around your beast, accompanied by a faint ticking sound. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "75ffe9a703498fa1c281f27da65d85c13806c1516aff45c438e1138106b3862a",
+      "sha256": "35181fa0171ad6e1ccba6158208fbbff3f699d97a1fd412fee53b31edc9bf090",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/chronos_paradox_plate/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "blight_weaver_regalia",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Blight-Weaver Regalia. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Corrupted branching black horn armor pulsing with unstable violet nebula patterns. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "d09b3ac2e8714dd0f9ee34abe1c033292f4870e91d4d9867019478dd6c312a8d",
+      "sha256": "cd5c218f57383289c03258384aa38b4cfd36c7331622a3227296ee664bbe6332",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/blight_weaver_regalia/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "mossbark_wrapping",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Mossbark Wrapping. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Strips of enchanted bark bound together with pixie silk. The forest holds things together. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "004550d2c7efcc009779fa392007be3655c62f5e8ac423099e2bdb5f050ddc6d",
+      "sha256": "93019a98b87222fad3c182a8296a04c4e000b908592c535e29ea49826530928c",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/mossbark_wrapping/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "emberstone_vest",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Emberstone Vest. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Gnome-iron plates set in hellhound ember resin. Reflects a fraction of what hits it. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet. IMPORTANT FRAMING CORRECTION: zoom out. The entire character including every crown branch, candle flame, hand, root boot and the complete hanging lantern must fit comfortably within the central 65% of the canvas. Leave at least 15% truly transparent empty padding on EVERY side. Absolutely no opaque pixel may touch any canvas edge. Keep all the existing anatomy; reduce the full character size rather than cutting any extremity.",
+      "source_sha256": "22b4cd9db4faccef09cfc502b2f38c55f5168b39c45d3ee9f464f6bbdc69cb49",
+      "sha256": "8244ed2e2422f89564e2ec80af5b5b1d9d32a195e1fc0aae732fcc763cad904b",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/emberstone_vest/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "thornweave_cloak",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Thornweave Cloak. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Woven from bark thorns and harpy feathers. When struck, the thorns answer. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "c01707b98a04624b22db15d089ca9b68e1ff4016d45dcf9a134bc4529cb0af14",
+      "sha256": "3eaad15feba23f2b17994a38f90e46ad9f77d19fd130acb7ca6560270690825a",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/thornweave_cloak/twine.png"
+      ]
+    },
+    {
+      "species": "hollow_king",
+      "armor": "deepwater_hide",
+      "prompt": "Use case: identity-preserve. Asset type: one complete transparent ChibiBeasts armored creature sprite. Primary request: edit input 1, The Hollow King, to wear Deepwater Hide. Input image 1 is the edit target: preserve exactly its creature identity, face, anatomy, pose, proportions, silhouette extremities and chunky crisp pixel-art style. Input image 2 is supporting armor design reference ONLY: match its garment colors, materials and recognizable armor motif; do not copy its hamster body or merge creatures. Armor design: Cured kelpie hide layered with harpy down. Dense enough to slow water, light enough to move in. Fit the compact pumpkin monarch torso and shoulders. Replace the purple coat fabric with the requested armor while keeping the pumpkin face, complete branch-and-candle crown, straw hands, root boots and carried iron lantern with its three spirits. Do not add another crown or another lantern. Dress this specific anatomy convincingly with curved fitted seams, short straps and appropriate openings; this is a coherent tailored full sprite, not floating pasted rectangles. One character only, full body and all original extremities visible with generous clear padding. Keep hard square pixel clusters, dark stepped outline and sparse flat palette; no smooth rendering, no gradients, no background haze, no cast shadow, no platform, no UI, no labels, no text or watermark. True transparent alpha background. Return ONLY this one new armor outfit, no grid or sheet.",
+      "source_sha256": "ef64e86d044a5d38fd01bb1b7b5a93307ce4a7999a3b7c8d5e5976d4bc5f4860",
+      "sha256": "ff6550c1a00d997dcc66248d9832bb852f6a0cf67f65051c5503c0715e1a3670",
+      "references": [
+        "data/sprites/hollow_king.png",
+        "data/armor/variants/deepwater_hide/twine.png"
+      ]
+    }
+  ]
+}

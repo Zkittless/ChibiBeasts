@@ -6,6 +6,7 @@ from utils.db import get_beast_data
 from utils.db import load_beasts
 BIOMES = {}
 DESTINATION_ALIASES = {}
+HOLLOWLIGHT = 'hollowlight'
 _DISTINCT_DESTINATIONS = {
     'woods': '🌙 The Moonveil Marsh',
     'ember': '🏜️ The Sunforge Dunes',
@@ -53,6 +54,8 @@ def destination_key(value):
     if value in BIOMES:
         return value
     normalized = str(value or '').strip().casefold()
+    if normalized in {'hollowlight', 'carnival', 'hollowlight carnival', 'the hollowlight carnival', '🎃 hollowlight carnival'}:
+        return HOLLOWLIGHT
     if normalized in DESTINATION_ALIASES:
         return DESTINATION_ALIASES[normalized]
     # Resolve exact names before partial names (especially old Depths labels).
@@ -65,7 +68,15 @@ def destination_key(value):
 
 def biome_key(value):
     """The original five region IDs remain the material and story families."""
-    return BIOMES[destination_key(value)]['base']
+    key = destination_key(value)
+    return 'woods' if key == HOLLOWLIGHT else BIOMES[key]['base']
+
+
+def carnival_underlay(trainer_level, strongest_level):
+    """Seasonal rewards cannot exceed an accessible permanent level band."""
+    eligible = [(key, region) for key, region in BIOMES.items()
+                if trainer_level >= region['min_level'] and strongest_level >= region['level_range'][0]]
+    return max(eligible, key=lambda pair: pair[1]['level_range'][0])[0] if eligible else 'woods'
 
 
 def encounter_level(destination, companion_level=None, rng=random):
@@ -73,6 +84,8 @@ def encounter_level(destination, companion_level=None, rng=random):
     # Preserve the former encounter_level(destination, rng) diagnostic API.
     if hasattr(companion_level, 'randint'):
         rng, companion_level = companion_level, None
+    if destination_key(destination) == HOLLOWLIGHT:
+        return max(1, min(50, int(companion_level or 1)))
     low, high = BIOMES[destination_key(destination)]['level_range']
     if companion_level is not None:
         companion_level = int(companion_level)
@@ -84,6 +97,8 @@ def encounter_level(destination, companion_level=None, rng=random):
 
 
 def destination_label(destination):
+    if destination_key(destination) == HOLLOWLIGHT:
+        return '🎃 Hollowlight Carnival · Seasonal · Scales to your strongest teammate'
     region = BIOMES[destination_key(destination)]
     low, high = region['level_range']
     return f"{region['name']} · Trainer {region['min_level']}+ · Companion {low}–{high}"
@@ -106,13 +121,15 @@ def encounter_difficulty(companion, enemy):
     return 'trivial' if ratio < .40 else 'easy' if ratio < .70 else 'normal' if ratio < 1.30 else 'hard' if ratio < 1.80 else 'boss'
 
 def eligible(beast):
-    return not beast.get('starter') and (not beast.get('evolution_only')) and beast.get('wild_encounter', True) and (beast.get('catch_rate', 0) > 0) and (beast['rarity'] not in {'dev', 'ancient', 'corrupted', 'altered_divine'})
+    return not beast.get('event_id') and not beast.get('starter') and (not beast.get('evolution_only')) and beast.get('wild_encounter', True) and (beast.get('catch_rate', 0) > 0) and (beast['rarity'] not in {'dev', 'ancient', 'corrupted', 'altered_divine'})
 
 def encounter_pool(rarity,biome=None,element=None):
     return [get_beast_data(key) for key in _pool_ids(rarity,destination_key(biome) if biome else None,element,catalog_revision())]
 
 @lru_cache(maxsize=128)
 def _pool_ids(rarity,biome,element,revision):
+    if biome == HOLLOWLIGHT:
+        return ()  # Admission-checked seasonal journeys own this separate pool.
     habitat=BIOMES.get(biome)
     return tuple(b['id'] for b in load_beasts().values() if b['rarity']==rarity and eligible(b) and (not habitat or b['type'] in habitat['types'] and habitat['weights'].get(rarity, 0) > 0) and (not element or b['type']==element))
 

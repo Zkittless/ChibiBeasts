@@ -127,6 +127,7 @@ class TeamStage(unittest.IsolatedAsyncioTestCase):
         slots = threading.BoundedSemaphore(1)
         workers = ThreadPoolExecutor(max_workers=1)
         expected = art.TeamArtwork('test.png', b'png')
+        normal_timeout = art.RENDER_TIMEOUT
 
         def slow(*args):
             entered.set()
@@ -143,7 +144,10 @@ class TeamStage(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(render.call_count, 1)
                 release.set()
                 await asyncio.wrap_future(workers.submit(lambda: None))
-                self.assertEqual(await art.render_team([row()]), expected)
+                # The blocked-worker deadline was checked above. Once drained,
+                # verify availability with the normal production render budget.
+                with patch.object(art, 'RENDER_TIMEOUT', normal_timeout):
+                    self.assertEqual(await art.render_team([row()]), expected)
         finally:
             release.set()
             workers.shutdown(wait=True)

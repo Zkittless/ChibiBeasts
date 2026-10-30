@@ -219,9 +219,10 @@ async def check_achievements(user_id: int) -> list[str]:
         if len(owned_species) >= 10:                         candidates.append("collector_10")
         if len(owned_species) >= 25:                         candidates.append("collector_25")
         if len(owned_species) >= 50:                         candidates.append("collector_50")
-        # All catchable beasts (exclude evolution-only + dev)
+        # Limited seasonal species must never gate the permanent completion award.
         catchable_ids = {b["id"] for b in all_beasts.values()
-                         if b.get("wild_encounter", True) and b.get("catch_rate", 0) > 0 and not b.get("starter")}
+                         if not b.get('event_id') and b.get("wild_encounter", True)
+                         and b.get("catch_rate", 0) > 0 and not b.get("starter")}
         if catchable_ids and owned_species >= catchable_ids: candidates.append("collector_all")
         if rarity_counts.get("rare",      0) >= 1:           candidates.append("first_rare")
         if rarity_counts.get("epic",      0) >= 1:           candidates.append("first_epic")

@@ -30,6 +30,7 @@ def _plain_name(value):
 
 
 REALMS = {key: _plain_name(region['name']) for key, region in BIOMES.items()}
+REALMS['hollowlight'] = 'The Hollowlight Carnival'
 TYPE_REALMS = {'fire': 'ember', 'ice': 'glacial', 'wind': 'glacial',
                'water': 'trenches', 'shadow': 'trenches', 'cosmic': 'loom',
                'arcane': 'loom', 'light': 'loom'}
@@ -153,8 +154,9 @@ def sprite(species, armor_id=''):
     # Canonical IDs from the packaged manifest; never load a user-supplied path.
     if armor_id:
         from utils import armor_art
+        from utils import cosmetics
         try:
-            if armor_id in armor_art.manifest()['sets']:
+            if armor_id in armor_art.manifest()['sets'] or cosmetics.cosmetic_id(armor_id):
                 image = armor_art.portrait(species, armor_id)
                 if image is not None:
                     image.thumbnail((180, 176), Image.Resampling.NEAREST)

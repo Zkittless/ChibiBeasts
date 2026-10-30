@@ -4719,6 +4719,212 @@
         "Wooden antlers unfurl, roots find their footing, and broad leaf wings open. The old shell settles over a steady golden heart.",
         "Rootwarden folds one wing around your shoulders. The promise was always going to grow."
       ]
+    },
+    "patchkin": {
+      "name": "Patchkin",
+      "title": "The Little Harvest Guard",
+      "rarity": "uncommon",
+      "type": "earth",
+      "catch_rate": 0.65,
+      "moves": [
+        "Gourd Bump",
+        "Straw Snare",
+        "Harvest Brace"
+      ],
+      "ultimate": "Lantern Bulwark",
+      "description": "A pumpkin-headed scarecrow who patrols the Carnival in oversized burlap sleeves. It plants its little root boots firmly whenever someone smaller needs protecting.",
+      "encounter_situations": [
+        "A Patchkin is carefully straightening the lanterns along an empty stall. It turns one toward you, as if checking whether you belong here.",
+        "You find a Patchkin standing guard over a dropped toffee apple. It has taken this responsibility very seriously.",
+        "A small pair of root boots is visible beneath a curtain of prize ribbons. The Patchkin steps out and politely blocks the path."
+      ],
+      "id": "patchkin",
+      "event_id": "hollowlight_2026",
+      "wild_encounter": true,
+      "evolution": null,
+      "base_stats": {
+        "hp": 130,
+        "attack": 50,
+        "defense": 70,
+        "speed": 25,
+        "mana": 65
+      },
+      "move_effects": {
+        "Gourd Bump": {
+          "power": 1,
+          "mana_cost": 0,
+          "mana_restore": 10,
+          "description": "Reliable attack; restore 10 mana."
+        },
+        "Straw Snare": {
+          "power": 0.65,
+          "mana_cost": 15,
+          "status": "weaken",
+          "description": "A controlled strike that applies weaken."
+        },
+        "Harvest Brace": {
+          "power": 0,
+          "mana_cost": 0,
+          "guard_percent": 55,
+          "focus_multiplier": 1.4,
+          "mana_restore": 20,
+          "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
+        }
+      }
+    },
+    "wickwing": {
+      "name": "Wickwing",
+      "title": "The Candle Acrobat",
+      "rarity": "rare",
+      "type": "fire",
+      "catch_rate": 0.45,
+      "moves": [
+        "Ember Flutter",
+        "Waxflare",
+        "Candle Shelter"
+      ],
+      "ultimate": "Candleburst",
+      "description": "A plum-purple bat whose tiny candle flames never scorch the canvas above it. Wickwings light the Carnival by performing elaborate, slightly boastful loops.",
+      "encounter_situations": [
+        "A Wickwing is flying figure eights through a string of unlit lanterns. Each one wakes with a warm glow as it passes.",
+        "The stage curtains lift to reveal a single Wickwing bowing to an audience of empty chairs. It notices you and immediately starts another act.",
+        "A bead of warm wax lands beside your boot. Above you, a Wickwing has mistaken your team for its next audience."
+      ],
+      "id": "wickwing",
+      "event_id": "hollowlight_2026",
+      "wild_encounter": true,
+      "evolution": null,
+      "base_stats": {
+        "hp": 100,
+        "attack": 80,
+        "defense": 45,
+        "speed": 95,
+        "mana": 75
+      },
+      "move_effects": {
+        "Ember Flutter": {
+          "power": 1,
+          "mana_cost": 0,
+          "mana_restore": 10,
+          "description": "Reliable attack; restore 10 mana."
+        },
+        "Waxflare": {
+          "power": 1.45,
+          "mana_cost": 30,
+          "description": "A concentrated flare that deals 145% attack damage."
+        },
+        "Candle Shelter": {
+          "power": 0,
+          "mana_cost": 0,
+          "guard_percent": 55,
+          "focus_multiplier": 1.4,
+          "mana_restore": 20,
+          "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
+        }
+      }
+    },
+    "veilmoth": {
+      "name": "Veilmoth",
+      "title": "The Midnight Lanternbearer",
+      "rarity": "legendary",
+      "type": "shadow",
+      "catch_rate": 0.08,
+      "moves": [
+        "Velvet Wing",
+        "Funeral Glimmer",
+        "Moonveil Mend"
+      ],
+      "ultimate": "Midnight Procession",
+      "description": "A quiet moth with ivory veil-wings and a lantern no larger than a thimble. It follows the last procession, guiding lost Carnival visitors toward the gate.",
+      "encounter_situations": [
+        "The music goes quiet. A Veilmoth drifts between the lanterns, its pale wings folding moonlight into the empty space above the path.",
+        "You follow a tiny gold light behind the shuttered theatre. A Veilmoth waits there, as though it has been expecting this exact moment.",
+        "A procession of shadows parts around a single ivory-winged moth. Its little lantern turns toward your team."
+      ],
+      "id": "veilmoth",
+      "event_id": "hollowlight_2026",
+      "wild_encounter": true,
+      "evolution": null,
+      "base_stats": {
+        "hp": 150,
+        "attack": 95,
+        "defense": 85,
+        "speed": 105,
+        "mana": 125
+      },
+      "move_effects": {
+        "Velvet Wing": {
+          "power": 1,
+          "mana_cost": 0,
+          "mana_restore": 10,
+          "description": "Reliable attack; restore 10 mana."
+        },
+        "Funeral Glimmer": {
+          "power": 0.65,
+          "mana_cost": 15,
+          "status": "blind",
+          "description": "A controlled strike that applies blind."
+        },
+        "Moonveil Mend": {
+          "power": 0,
+          "mana_cost": 20,
+          "heal_percent": 20,
+          "cleanse": true,
+          "description": "Restore 20% HP and clear status."
+        }
+      }
+    },
+    "hollow_king": {
+      "name": "The Hollow King",
+      "title": "Keeper of the Last Procession",
+      "rarity": "epic",
+      "type": "earth",
+      "catch_rate": 0,
+      "moves": [
+        "Harvest Sweep",
+        "Lantern Decree",
+        "Burlap Bastion"
+      ],
+      "ultimate": "Last Procession",
+      "description": "The Carnival guardian wears a crooked candle crown and carries the lights of visitors who never found the exit. He tests every departing team before opening the final gate.",
+      "encounter_situations": [
+        "The Hollow King steps down from the silent stage. Three little lights turn inside his lantern, and the final gate closes behind him.",
+        "A crooked candle crown glows above the crowd. The Hollow King raises his lantern; the procession stops to watch your team.",
+        "At the edge of the Carnival, the Hollow King waits beside an unlatched gate. He plants his root boots and gives you one solemn nod."
+      ],
+      "id": "hollow_king",
+      "event_id": "hollowlight_2026",
+      "wild_encounter": false,
+      "evolution": null,
+      "base_stats": {
+        "hp": 150,
+        "attack": 75,
+        "defense": 65,
+        "speed": 50,
+        "mana": 85
+      },
+      "move_effects": {
+        "Harvest Sweep": {
+          "power": 1,
+          "mana_cost": 0,
+          "mana_restore": 10,
+          "description": "Reliable attack; restore 10 mana."
+        },
+        "Lantern Decree": {
+          "power": 0.65,
+          "mana_cost": 15,
+          "status": "weaken",
+          "description": "A controlled strike that applies weaken."
+        },
+        "Burlap Bastion": {
+          "power": 0,
+          "mana_cost": 0,
+          "guard_percent": 55,
+          "focus_multiplier": 1.4,
+          "mana_restore": 20,
+          "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
+        }
+      }
     }
   },
   "rarity_rates": {

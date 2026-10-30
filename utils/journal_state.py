@@ -5,7 +5,7 @@ from functools import lru_cache
 
 import aiosqlite
 
-from utils import crafting, db as storage, expeditions, story
+from utils import crafting, db as storage, expeditions, hollowlight, story
 from utils.catalog import load_catalog, catalog_revision
 from utils.economy_balance import material_sources, recipe_level
 from utils.habitats import BIOMES, REGIONAL_MATERIALS, biome_key, eligible
@@ -188,6 +188,7 @@ class JournalState:
     team: list = field(default_factory=list)
     team_slots: dict = field(default_factory=dict)
     explore_default: str | None = None
+    carnival: dict = field(default_factory=dict)
 
 
 async def snapshot(user_id):
@@ -211,4 +212,4 @@ async def snapshot(user_id):
     team = await adventure_party.rows(user_id)
     slots = await adventure_party.assignments(user_id)
     return JournalState(player, workshop, energy, trip, goal_status(goal, workshop), state, team, slots,
-                        preference['realm'] if preference else None)
+                        preference['realm'] if preference else None, await hollowlight.status(user_id))

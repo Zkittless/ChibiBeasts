@@ -22,7 +22,9 @@ class Portrait:
 
 def portrait_filename(species, armor_id=''):
     # Different appearances must never reuse Discord's previous attachment.
-    digest = hashlib.sha256(f'{species}:{armor_id or ""}'.encode()).hexdigest()[:20]
+    from utils import cosmetics
+    version = ':' + cosmetics.revision(species, armor_id) if cosmetics.cosmetic_id(armor_id) else ''
+    digest = hashlib.sha256(f'{species}:{armor_id or ""}{version}'.encode()).hexdigest()[:20]
     return f'equipped-{digest}.png'
 
 
@@ -75,6 +77,9 @@ async def equipped_armor_ids(user_id):
             for row_id, item_id in await cursor.fetchall():
                 if item_id in armor:
                     result.setdefault(row_id, item_id)
+        from utils import cosmetics
+        for row_id, cosmetic in (await cosmetics.equipped(db, user_id)).items():
+            result[row_id] = cosmetics.appearance_id(cosmetic)
     return result
 
 

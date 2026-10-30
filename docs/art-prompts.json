@@ -845,6 +845,30 @@
       "id": "rootwarden",
       "ref": "barkley",
       "prompt": "Use case: stylized-concept. Asset type: ChibiBeasts game character sprite. The attached image is the creature's unevolved form and the style reference, NOT an edit target. Generate a genuinely evolved creature with a visibly different anatomy and silhouette, retaining its key identity cues. Match the approved chunky 8-bit pixel-art aesthetic: large clean square pixel clusters, dark stepped outlines, tiny readable palette, two or three flat shade steps, cute chibi proportions, no gradients or painterly detail, no elaborate particle effects. One entire creature centered at three-quarter view, uncluttered silhouette, ample transparent margins, no text, no ground, no scenery. Genuine transparent background. ROOTWARDEN, evolved from Barkley: a stocky guardian forest DRAKE with a confident quadrupedal stance, broad moss-green leaf wings opened partway, two short branching wooden antlers, large root-shaped front paws, warm brown bark plates and a long thick tail tipped with a three-leaf sprout. Barkley's golden cracked eggshell has transformed into a golden chest breastplate; NO eggshell helmet remains. Its head is exposed with a kind strong dragon snout and big friendly eyes. Moss on shoulders, cream belly, only a few broad bark plates. New broad winged antlered forest-drake silhouette; visibly different from the tiny shell-helmet hatchling, no mere recolor or enlargement."
+    },
+    {
+      "id": "patchkin",
+      "prompt": "Use case: stylized-concept. Asset type: one original transparent pixel-art monster sprite for ChibiBeasts, matching chunky 64-96 pixel logical-grid JRPG chibi sprites enlarged with nearest-neighbor edges. Primary request: PATCHKIN, a cute tiny pumpkin scarecrow defender. A round warm orange pumpkin head with a friendly carved face and two shining cream eyes, small curled green stem, short stitched burlap tunic, oversized floppy sleeves stuffed with a little straw, mossy little root boots, a leaf scarf. Childlike large head and short round body, readable at 140 pixels. One character only, full body from stem to boots fully visible with generous transparent padding, three-quarter view facing viewer's right, standing idle, no base/platform. Tight coherent limited palette, dark brown pixel outlines, two or three blocky shades per material, hard square pixel clusters. Charming cozy-spooky personality. No text, no UI, no watermark, no companion characters, no glow cloud, no smooth vector contours, no gradients, no 3D rendering. True transparent alpha background.",
+      "references": [],
+      "event_id": "hollowlight_2026"
+    },
+    {
+      "id": "wickwing",
+      "prompt": "Use case: stylized-concept. Asset type: one original transparent pixel-art monster sprite for ChibiBeasts, chunky 64-96 pixel logical-grid JRPG chibi, enlarged sharp square pixel clusters. Primary request: WICKWING, a cute little candle bat fire beast. A plump plum-purple bat with a large sweet round face, tiny cream muzzle, amber eyes, small waxy ivory ears with a little amber candle flame at each tip; violet bat wings held open enough to show short scalloped membranes, melted ivory wax collar and wax drips at the shoulders, tiny feet below the round belly. Distinctive silhouette with two ears and two wings, cute rather than threatening. Full body and all wing tips visible with generous transparent padding, three-quarter front view facing viewer's right, hovering idle with no platform or cast shadow. Tight limited palette, dark purple pixel outline, blocky two- or three-tone shading, readable at 140 pixels. One character only. No text, no UI, no watermark, no gradient glow or smoke haze, no smooth illustration or 3D. Actual transparent alpha background.",
+      "references": [],
+      "event_id": "hollowlight_2026"
+    },
+    {
+      "id": "veilmoth",
+      "prompt": "Use case: stylized-concept. Original transparent ChibiBeasts sprite: VEILMOTH, one cute compact charcoal-purple moth with two bright pale lilac eyes, curled silver antennae, two huge tattered ivory veil wings with flat lavender crescent markings and a tiny gold lantern at its chest. Coarse chunky square pixel clusters, thick dark stepped outlines and sparse two-tone shading. Full body, both wings and antenna tips in frame with clear padding. One beast only, no scenery, no fog, no gradients, no ground, no UI, no text, no watermark. Actual transparent alpha background.",
+      "references": [],
+      "event_id": "hollowlight_2026"
+    },
+    {
+      "id": "hollow_king",
+      "prompt": "Use case: stylized-concept. Asset type: one original transparent pixel-art boss sprite for ChibiBeasts, cohesive chunky 80-112 pixel logical-grid JRPG chibi art enlarged sharply. Primary request: THE HOLLOW KING, the memorable haunted-carnival guardian. A stout imposing scarecrow monarch with a large carved dark orange pumpkin head, warm golden eyes and a stern-but-fair carved smile, a crooked crown of black branches and little candle stubs. Ragged deep purple carnival ringmaster coat over patched burlap, broad fabric shoulders, straw hands, sturdy root boots. Carries one old wrought-iron lantern containing three tiny pale spirit lights; other hand rests at his side. Cute chibi proportions despite the guardian presence: giant head, compact solid body. Palette of pumpkin orange, wine purple, desaturated straw gold and dark walnut, hard square pixel outlines, two to three blocky shade bands per material, no continuous gradients. Full body, crown and lantern all visible with generous transparent margins, three-quarter idle facing viewer's right. One creature only. No text, no UI, no watermark, no ground/platform or cast shadow, no fog background, no smooth painting or 3D. True transparent alpha background.",
+      "references": [],
+      "event_id": "hollowlight_2026"
     }
   ],
   "generation": "built-in image_gen",

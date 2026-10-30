@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # These persisted destination IDs are also the packaged asset names. Do not
 # accept arbitrary paths from a source manifest as output filenames.
 REALM_KEYS = frozenset(key + suffix for key in ('woods', 'ember', 'glacial', 'trenches', 'loom')
-                       for suffix in ('', '_deep'))
+                       for suffix in ('', '_deep')) | {'hollowlight'}
 
 
 def prepare(source, *, root=ROOT):

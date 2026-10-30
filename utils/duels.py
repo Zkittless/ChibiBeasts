@@ -70,6 +70,8 @@ async def prepare_state(user_id, row, data, perks, *, consume=True, party_reserv
             ids = [r[0] for r in await c.fetchall()]
         if row.get('rune_id') and row['rune_id'] not in ids:
             ids.append(row['rune_id'])
+        from utils import cosmetics
+        visual_cosmetic = (await cosmetics.equipped(db, user_id)).get(row['id'])
         if consume:
             await db.execute('UPDATE players SET next_defense_boost=0,next_speed_boost=0,status_ward_charges=MAX(0,status_ward_charges-1) WHERE user_id=?', (user_id,))
             await db.commit()
@@ -83,6 +85,9 @@ async def prepare_state(user_id, row, data, perks, *, consume=True, party_reserv
         player = {**player, 'ultimate_charges': 0, 'next_defense_boost': 0,
                   'next_speed_boost': 0, 'status_ward_charges': 0}
     state = combat.build_state(data, row, perks, equipped, player)
+    if visual_cosmetic:
+        state['stat_armor_id'] = state.get('armor_id', '')
+        state['armor_id'] = cosmetics.appearance_id(visual_cosmetic)
     if preserve_resources:
         # Armor raises the maximum, not the injured creature's health ratio.
         # Ceiling here and floor when saving make an untouched armored member

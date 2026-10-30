@@ -6,7 +6,7 @@ import logging
 import aiosqlite
 import discord
 
-from utils import db as storage, equipment, gear_art, owned_roster
+from utils import cosmetics, db as storage, equipment, gear_art, owned_roster
 from utils.equipment import definitions, dormant_label, effect_summary
 from utils.theme import COLORS, RARITY_EMOJI
 
@@ -48,6 +48,9 @@ class GearView(discord.ui.View):
         self.edit_slot, self.gear_choice, self.edit_target = None, None, None
         self.gear_page = 0
         self.editor_controls = []
+        self.cosmetic_button = None
+        self.cosmetic_ids = {}
+        self.ghost_owned = False
         self.select = discord.ui.Select(placeholder='Choose a beast', row=0)
         self.select.callback = lambda interaction: self.handle(interaction, 'select')
         self.add_item(self.select)
@@ -97,6 +100,9 @@ class GearView(discord.ui.View):
             async with db.execute('SELECT item_id,SUM(quantity) AS quantity FROM player_inventory WHERE user_id=? AND quantity>0 GROUP BY item_id',
                                   (self.user_id,)) as cursor:
                 self.available = {row['item_id']: row['quantity'] for row in await cursor.fetchall()}
+            from utils.hollowlight import owns_unlock
+            self.cosmetic_ids = await cosmetics.equipped(db, self.user_id)
+            self.ghost_owned = await owns_unlock(db, self.user_id, cosmetics.GHOST)
 
     def armor_and_rune(self):
         row = self.selected()
@@ -110,6 +116,9 @@ class GearView(discord.ui.View):
 
 
     def render(self):
+        if self.cosmetic_button is not None:
+            self.remove_item(self.cosmetic_button)
+            self.cosmetic_button = None
         for control in self.editor_controls:
             self.remove_item(control)
         self.editor_controls = []
@@ -159,6 +168,15 @@ class GearView(discord.ui.View):
                               description=description, color=COLORS.get(row['rarity'], COLORS['info']))
         catalog = definitions()
         armor, rune = self.armor_and_rune()
+        cosmetic = self.cosmetic_ids.get(row['id'])
+        if cosmetic:
+            embed.add_field(name='👻 Little Ghost Costume', value='Cosmetic appearance. Your equipped armor and rune keep their normal effects.', inline=False)
+        if self.ghost_owned and not self.edit_slot:
+            target = (row['id'], row['beast_id'], cosmetic)
+            self.cosmetic_button = discord.ui.Button(label='Show stat gear' if cosmetic else 'Wear ghost costume', row=3,
+                disabled=self.closed or (not cosmetic and not cosmetics.variant_path(row['beast_id'], cosmetics.GHOST)))
+            self.cosmetic_button.callback = lambda interaction: self.handle(interaction, 'cosmetic', target)
+            self.add_item(self.cosmetic_button)
         for key, slot_label in ((armor, '🔰 Armor'), (rune, '💎 Rune')):
             if key and key in catalog:
                 gear = catalog[key]
@@ -229,7 +247,8 @@ class GearView(discord.ui.View):
         embed = self.render()
         row = self.selected()
         armor, _ = self.armor_and_rune()
-        portrait = await gear_art.render_portrait(row['beast_id'], armor) if row and (not self.navigator or self.navigator.art_enabled) else None
+        appearance = (cosmetics.appearance_id(self.cosmetic_ids.get(row['id'])) or armor) if row else ''
+        portrait = await gear_art.render_portrait(row['beast_id'], appearance) if row and (not self.navigator or self.navigator.art_enabled) else None
         file = None
         buffer = None
         if portrait:
@@ -288,7 +307,15 @@ class GearView(discord.ui.View):
             await self.reload()
             self.notice = ''
             try:
-                if action.startswith('edit:'):
+                if action == 'cosmetic':
+                    row = self.selected()
+                    if not row or (row['id'], row['beast_id']) != value[:2]:
+                        raise ValueError('That costume choice belongs to an older beast selection.')
+                    await cosmetics.set_equipped(self.user_id, row['id'], None if value[2] else cosmetics.GHOST,
+                        expected_species=value[1], expected_current=value[2])
+                    self.notice = 'Stat gear appearance restored.' if value[2] else 'Little Ghost Costume equipped. Gear effects are unchanged.'
+                    await self.reload()
+                elif action.startswith('edit:'):
                     if value != self.selected_id or self.selected() is None:
                         raise ValueError('That beast selection changed. Choose it again before changing gear.')
                     self.edit_slot = action.split(':')[1]

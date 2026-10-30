@@ -434,6 +434,26 @@
       "file": "card_art/zodiac.png",
       "sha256": "e335fce87735144faaf8d23ea042b47e5b9f82fd9d814db219d3057cecea82af",
       "source_sha256": "53d67c3335ef10aa08dffb797b77da46a2328b6ee6e5f7046855ccab8e01713f"
+    },
+    "patchkin": {
+      "file": "card_art/patchkin.png",
+      "sha256": "09a55864cf3ad88c12d88393295046fc697a0436bb71465efcf1c0364128f057",
+      "source_sha256": "fba8d07c38277eaafaf624cea208cfecbb2a3162f5e15bd0f9f6570442958ed5"
+    },
+    "wickwing": {
+      "file": "card_art/wickwing.png",
+      "sha256": "48df8436f0b1d5b7f1952ff1114dff1bab332bd62cb60c067e0ae9aaacedcaca",
+      "source_sha256": "dfb2fd1106f9117a84d4f8b4f0007f485ec91b9571dd645cea8d7053ebb0c863"
+    },
+    "veilmoth": {
+      "file": "card_art/veilmoth.png",
+      "sha256": "11db753af0b35f89191a3580b234ef2f8ab4ab2d7a44e0296eab02713eb8f9bf",
+      "source_sha256": "f3498423dbd26736617a6ec80753f108342e4edbe6fdb224a07fca06bed919e4"
+    },
+    "hollow_king": {
+      "file": "card_art/hollow_king.png",
+      "sha256": "ec23cd33723368e1613948da37317b8bcb1ef5013d96ed5e3352e460d779425d",
+      "source_sha256": "387885e7543728715c7641bb83b2061577704cd0f9a4b83eb9e9376e49229ba7"
     }
   },
   "starter_lineup": {

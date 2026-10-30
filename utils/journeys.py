@@ -82,7 +82,7 @@ async def persist(db, user_id, payload):
 
 def initialize(payload, biome, seed, party, saved_world=None, *, content=None, combat_route=False):
     """Choose the first actual scene, freezing all prose and future root graphs."""
-    if biome not in BIOMES:
+    if biome not in adventure_content.STORY_DESTINATIONS:
         raise ValueError('Choose a known exploration destination.')
     document = adventure_content.load(biome) if content is None else deepcopy(content)
     saved_world = deepcopy(saved_world or dict(progress={}, flags=[], nodes={}, recent=[]))
@@ -92,7 +92,7 @@ def initialize(payload, biome, seed, party, saved_world=None, *, content=None, c
         if not record['completed'] and record.get('snapshot'):
             roots[root_id] = deepcopy(record['snapshot'])
     order = sorted(roots, key=lambda root_id: hashlib.sha256(f'{seed}:authored-roots:{root_id}'.encode()).digest())
-    index = list(BIOMES).index(biome)
+    index = list(BIOMES).index(biome) if biome in BIOMES else 0
     identities = [dict(id=member['id'], beast_id=member['beast_id'],
                        name=member.get('nickname') or member.get('name') or member['beast_id'],
                        type=member.get('type', '')) for member in party]
@@ -116,10 +116,14 @@ def initialize(payload, biome, seed, party, saved_world=None, *, content=None, c
 
 def configure_combat_route(payload, biome, *, preserve=False):
     """Freeze mandatory combat beats separately from finite story discoveries."""
-    target = 2 if list(BIOMES).index(biome) < 5 else 3
+    target = (2 if payload.get('event_level', 1) < 26 else 3) if biome == 'hollowlight' else (2 if list(BIOMES).index(biome) < 5 else 3)
     seed = payload['seed']
     digest = hashlib.sha256(f'{seed}:combat-route-v1'.encode()).digest()
     schedule = ['single', 'pack2'] if target == 2 else ['single', 'pack2' if digest[0] % 2 else 'pack3', 'single']
+    if biome == 'hollowlight':
+        schedule[-1] = 'single'  # The final beat is the guardian, never a pack.
+        if target == 2 and digest[0] % 2:
+            schedule[0] = 'pack2'  # One ticket; the second opponent stays hostile.
     won = min(target, payload.get('fights_won', 0)) if preserve else 0
     if preserve:
         payload['inherited_completed'] = payload['completed']
@@ -129,7 +133,7 @@ def configure_combat_route(payload, biome, *, preserve=False):
         if payload.get('pending_battle'):
             payload['pending_battle']['counts_for_route'] = True
     payload.update(pacing_version=1, battle_target=target, battles_completed=won,
-                   battle_schedule=schedule, recruitable_beat=digest[1] % target,
+                   battle_schedule=schedule, recruitable_beat=digest[1] % (target - 1 if biome == 'hollowlight' else target),
                    completed=min(target * 2 - 1, won * 2), total=target * 2 - 1,
                    target_stops=target * 2 - 1, exhausted=False)
     payload['stage'] = payload['completed']
@@ -146,6 +150,12 @@ def _route_battle(payload):
         choices=[dict(value=f'fight:{index}', id=f'fight_{index}', label='Face the pack' if pack else 'Enter battle',
                       description='Fight with your current team resources. Retreat remains available.',
                       outcome='The encounter is won.', effects={'battle': kind})])
+    if payload.get('event_id') == 'hollowlight_2026' and index == payload['battle_target'] - 1:
+        payload['page'].update(title='The Hollow King takes the stage',
+            body='The last lantern rises above the empty theatre. The Hollow King bows once, then draws the carnival shadows into its ragged cloak. Defeat the guardian to finish this visit.',
+            choices=[dict(value=f'fight:{index}', id=f'fight_{index}', label='Face the Hollow King',
+                          description='A hostile guardian battle. Victory completes this carnival visit.',
+                          outcome='The Hollow King lowers its lantern; the carnival paths open toward home.', effects={'battle': 'single'})])
 
 
 def _route_camp(payload):

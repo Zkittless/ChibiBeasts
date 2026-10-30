@@ -102,7 +102,7 @@ class WorkshopView(discord.ui.LayoutView):
         species = row['beast_id'] if row else self.result_species if not self.using else None
         if species is None:
             return None
-        armor_id = self.selected if self.using and self.section == 'armor' else (row or {}).get('armor_id') or ''
+        armor_id = self.selected if self.using and self.section == 'armor' else (row or {}).get('appearance_id') or (row or {}).get('armor_id') or ''
         return species, armor_id
 
     def portrait_url(self):

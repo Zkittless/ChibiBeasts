@@ -151,7 +151,7 @@ _DEFINITIONS = {
 
 def _eligible(beast):
     return (beast.get('rarity') in RARITIES and beast.get('id') not in STARTER_IDS
-            and not beast.get('starter') and not beast.get('evolution_only')
+            and not beast.get('event_id') and not beast.get('starter') and not beast.get('evolution_only')
             and beast.get('wild_encounter', True) and beast.get('catch_rate', 0) > 0)
 
 

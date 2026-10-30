@@ -145,10 +145,10 @@ COLLECTION_REWARDS = {
 async def check_collection_completion(interaction, beast: dict, all_beasts: dict):
     """Check if catching this beast completed a divine collection. If so, reward and announce."""
     collection = beast.get("collection")
-    if not collection or collection not in COLLECTION_REWARDS:
+    if beast.get('event_id') or not collection or collection not in COLLECTION_REWARDS:
         return
 
-    collection_beast_ids = {bid for bid, b in all_beasts.items() if b.get("collection") == collection}
+    collection_beast_ids = {bid for bid, b in all_beasts.items() if b.get("collection") == collection and not b.get('event_id')}
     if not collection_beast_ids:
         return
 
@@ -206,6 +206,7 @@ def get_beast_by_rarity(rarity: str, beasts: dict, exclude_ids: list = None) -> 
     pool = [
         b for b in beasts.values()
         if b["rarity"] == rarity
+        and not b.get('event_id')
         and b["id"] not in excluded
         and b.get("wild_encounter", True)  # exclude evolution-only beasts
         and b.get("catch_rate", 0) > 0     # exclude uncatchable beasts
@@ -214,6 +215,7 @@ def get_beast_by_rarity(rarity: str, beasts: dict, exclude_ids: list = None) -> 
         pool = [
             b for b in beasts.values()
             if b["rarity"] == rarity
+            and not b.get('event_id')
             and b["id"] not in STARTER_IDS
             and b.get("wild_encounter", True)
             and b.get("catch_rate", 0) > 0
@@ -352,13 +354,26 @@ class Hatch(commands.Cog):
 
 
     @app_commands.command(name="explore", description="Choose an expedition or resume your saved route in the Field Journal")
-    @app_commands.choices(destination=[app_commands.Choice(name=destination_label(key)[:100], value=key) for key in BIOMES])
     @app_commands.describe(destination="Preview a habitat; omit to use your saved destination", expedition="Compatibility option; confirm new trips in your Field Journal")
     async def explore(self, interaction: discord.Interaction, destination: str | None = None, expedition: bool = True):
         await interaction.response.defer()
         from utils.journal import open_journal
         return await open_journal(interaction, bot=self.bot, page='adventure', realm=destination,
                                   already_deferred=True)
+
+    @explore.autocomplete('destination')
+    async def explore_destinations(self, interaction: discord.Interaction, current: str):
+        from utils import db as storage, hollowlight
+        options = [app_commands.Choice(name=destination_label(key)[:100], value=key) for key in BIOMES]
+        async with storage.connect() as db:
+            try:
+                await hollowlight.require_active(db)
+            except ValueError:
+                pass
+            else:
+                options.append(app_commands.Choice(name='🎃 The Hollowlight Carnival', value='hollowlight'))
+        return [option for option in options if current.casefold() in option.name.casefold()
+                or current.casefold() in option.value.casefold()][:25]
 
 
 async def setup(bot: commands.Bot):

@@ -58,6 +58,13 @@ def _portrait(species, armor_id):
     original = _base(species)
     if original is None or not armor_id:
         return original
+    from utils import cosmetics
+    if cosmetics.cosmetic_id(armor_id):
+        try:
+            return cosmetics.portrait(species, armor_id) or original
+        except (OSError, ValueError):
+            logger.warning('Unable to load cosmetic %s on %s', armor_id, species, exc_info=True)
+            return original
     try:
         records = manifest().get('sets', {})
         if not isinstance(records, dict):
@@ -118,3 +125,5 @@ def clear_cache():
     _portrait.cache_clear()
     _base.cache_clear()
     manifest.cache_clear()
+    from utils import cosmetics
+    cosmetics.clear_cache()
