@@ -156,16 +156,22 @@ class JournalFlow(DatabaseCase):
 
         with patch.object(journal_state, 'snapshot', side_effect=delayed):
             task = asyncio.create_task(view.handle(click, 'refresh'))
+            queued = None
             try:
                 await asyncio.wait_for(started.wait(), 1)
                 click.response.defer.assert_awaited_once()
                 second = component()
-                await asyncio.wait_for(view.handle(second, 'begin'), 1)
+                queued = asyncio.create_task(view.handle(second, 'begin'))
+                await asyncio.sleep(0)
                 second.response.defer.assert_awaited_once()
-                self.assertIn('updating', second.followup.send.call_args.args[0])
+                self.assertFalse(queued.done(), 'The first Start waits for the page refresh')
+                third = component()
+                await asyncio.wait_for(view.handle(third, 'begin'), 1)
+                third.response.defer.assert_awaited_once()
+                self.assertIn('updating', third.followup.send.call_args.args[0])
             finally:
                 release.set()
-                await asyncio.wait_for(task, 3)
+                await asyncio.wait_for(asyncio.gather(task, *([queued] if queued else [])), 10)
 
     async def test_other_trainers_and_expired_pages_are_acknowledged_without_mutation(self):
         view = await self.view()

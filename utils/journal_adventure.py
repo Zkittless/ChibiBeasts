@@ -1,4 +1,5 @@
 """Authored scenes and animated combat inside the existing journal message."""
+import asyncio
 import hashlib
 from types import SimpleNamespace
 
@@ -6,6 +7,8 @@ import discord
 
 from utils import battle_art, combat, expeditions, trial_combat
 from utils.team_combat import ASSIST_MANA, assist_effect
+
+TEAM_MENU_READ_TIMEOUT = 1.5
 
 def render_choices(view, trip, choices, *, dropdown=True):
     """Story decisions use a menu, with complete wrapping choice text above it."""
@@ -95,7 +98,13 @@ async def open_team_menu(view, interaction, trip_id, version):
             or view.lock.locked() or view.mutating):
         return await interaction.response.send_message('Use the refreshed adventure controls.', ephemeral=True)
     async with view.lock:
-        trip = await expeditions.read(view.user_id, trip_id)
+        try:
+            # Modals must be the initial response, so they cannot be deferred.
+            # Leave time to acknowledge a slow read with a usable retry notice.
+            async with asyncio.timeout(TEAM_MENU_READ_TIMEOUT):
+                trip = await expeditions.read(view.user_id, trip_id)
+        except TimeoutError:
+            return await interaction.response.send_message('Your adventure is syncing. Try this team menu again in a moment.', ephemeral=True)
         if (not trip or trip['version'] != version or trip['status'] != 'battle'
                 or trip['payload']['combat']['status'] != 'fighting'):
             return await interaction.response.send_message('Use the refreshed adventure controls.', ephemeral=True)
@@ -172,13 +181,28 @@ async def present(view, interaction, *, animate=False):
         view.journey_presentation = battle_art.BattlePresentation(realm)
     presentation = view.journey_presentation
     view.journey_playing = animate
+    preparing, changed = False, False
     try:
+        if animate and view.journey_media is None:
+            # Show the committed encounter and its preparing state before
+            # waiting for any renderer/upload. Controls stay disabled through
+            # playback, and a failed render cannot replay a paid adventure.
+            artwork = view.art_enabled
+            view.art_enabled = False
+            try:
+                view.render()
+                await view.publish(interaction)
+                preparing = True
+            finally:
+                view.art_enabled = artwork
         for event in state.get('events', ()) if animate else ():
             if not await fresh(view, trip):
+                changed = True
                 return
             before, action, after = trial_combat.decode_event(event)
             art = await presentation.art(before, after, action)
             if not await fresh(view, trip):
+                changed = True
                 return
             view.journey_media = artifact(art) if art else None
             view.render()
@@ -187,18 +211,41 @@ async def present(view, interaction, *, animate=False):
                 await presentation.sleep(art.seconds + .2)
     finally:
         view.journey_playing = False
+        if preparing and changed:
+            await restore_saved_controls(view, interaction)
     if not await fresh(view, trip):
+        if preparing:
+            await restore_saved_controls(view, interaction)
         return
     if trip['status'] == 'battle':
         fighters = trial_combat.snapshot(state)
         art = await presentation.art(fighters, fighters)
         if not await fresh(view, trip):
+            if preparing:
+                await restore_saved_controls(view, interaction)
             return
         view.journey_media = artifact(art) if art else None
     else:
         view.journey_media = None
     view.render()
     await view.publish(interaction)
+
+
+async def restore_saved_controls(view, interaction):
+    """Another journal advanced this trip while its first artwork prepared."""
+    if view.closed or view.is_finished() or view.message_repurposed:
+        return
+    from utils import journal_state
+    view.state = await journal_state.snapshot(view.user_id)
+    view.trip = view.state.trip or await expeditions.latest(view.user_id)
+    view.journey_media = None
+    artwork = view.art_enabled
+    view.art_enabled = False
+    try:
+        view.render()
+        await view.publish(interaction)
+    finally:
+        view.art_enabled = artwork
 
 
 async def fresh(view, trip):

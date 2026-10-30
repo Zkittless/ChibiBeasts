@@ -9,6 +9,7 @@ from uuid import uuid4
 import discord
 
 from utils import db as storage, gear_art, nursery
+from utils.message_transport import durable_message
 from utils.nursery_catalog import RESEARCH_COST, RESEARCH_MAX
 
 logger = logging.getLogger('chibibeasts.nursery')
@@ -376,7 +377,7 @@ class NurseryView(discord.ui.LayoutView):
             if self.message:
                 try:
                     async with asyncio.timeout(15):
-                        await self.message.edit(view=self, attachments=[])
+                        await durable_message(self.message).edit(view=self, attachments=[])
                 except (discord.HTTPException, TimeoutError):
                     pass
 

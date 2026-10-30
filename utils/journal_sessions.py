@@ -11,6 +11,7 @@ import weakref
 import discord
 
 from utils import db as storage
+from utils.message_transport import durable_message
 
 logger = logging.getLogger('chibibeasts.journal_sessions')
 _locks = {}
@@ -94,7 +95,7 @@ def _prior_message(interaction, message_id):
     return partial(message_id) if callable(partial) else None
 
 
-async def _retire(panel, *, protected=None, replacement=None):
+async def _retire(panel, *, protected=None, replacement=None, channel=None):
     """Close dispatch first, then remove the old message or its controls."""
     old_view, message = panel.view, panel.message
     if old_view is not replacement:
@@ -104,6 +105,10 @@ async def _retire(panel, *, protected=None, replacement=None):
     token = _token(message)
     if old_view is not None and getattr(old_view, '_journal_retired_token', None) == token:
         return
+    # Interaction message objects keep the opening click's webhook token.
+    # Public messages outlive that token; address them by channel/message ID
+    # using the bot connection for both deletion and the controls fallback.
+    message = durable_message(message, channel=channel)
     delete = getattr(message, 'delete', None)
     if callable(delete):
         try:
@@ -166,7 +171,7 @@ async def publish(view, interaction, sender, *, replace=False, source=None):
                 # failure even when no former journal is currently tracked.
                 _close(view)
             elif _token(message) != old_id and (not previous or _token(message) != _token(previous.message)):
-                await _retire(_panel(view, message))
+                await _retire(_panel(view, message), channel=getattr(interaction, 'channel', None))
             raise
         view.message = message
         _panels[key] = _panel(view, message)
@@ -193,7 +198,8 @@ async def publish(view, interaction, sender, *, replace=False, source=None):
                         panel.view._journal_retired_token = token
                 continue
             retired_tokens.add(token)
-            await _retire(panel, protected=protected, replacement=view)
+            await _retire(panel, protected=protected, replacement=view,
+                          channel=getattr(interaction, 'channel', None))
         return message
 
 
@@ -226,4 +232,5 @@ async def discard(view, interaction):
     lock = _locks.setdefault(key, asyncio.Lock())
     async with lock:
         await _forget(view, key, persistent)
-        await _retire(_panel(view, getattr(view, 'message', None)))
+        await _retire(_panel(view, getattr(view, 'message', None)),
+                      channel=getattr(interaction, 'channel', None))

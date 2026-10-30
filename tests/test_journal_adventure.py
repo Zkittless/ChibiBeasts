@@ -199,7 +199,7 @@ def view():
     art=SimpleNamespace(data=b'clip',extension='gif',seconds=0)
     presentation=SimpleNamespace(realm='woods',art=AsyncMock(return_value=art),sleep=AsyncMock())
     return SimpleNamespace(trip=trip,user_id=42,closed=False,is_finished=lambda:False,
-        message_repurposed=False,journey_playing=False,journey_media=None,
+        message_repurposed=False,journey_playing=False,journey_media=None,art_enabled=True,
         journey_presentation=presentation,render=Mock(),publish=AsyncMock())
 
 
@@ -215,13 +215,15 @@ class AdventurePlayback(unittest.IsolatedAsyncioTestCase):
 
     async def test_retirement_while_rendering_cannot_upload_a_late_clip(self):
         stage=view()
+        published=[]
+        stage.publish=AsyncMock(side_effect=lambda *args: published.append(stage.journey_media))
         async def retire(*args):
             stage.closed=True
             return SimpleNamespace(data=b'late',extension='gif',seconds=0)
         stage.journey_presentation.art=AsyncMock(side_effect=retire)
         with patch('utils.expeditions.read',new=AsyncMock(return_value=stage.trip)):
             await journal_adventure.present(stage,object(),animate=True)
-        stage.publish.assert_not_awaited()
+        self.assertEqual(published,[None], 'Only native preparing feedback may precede retirement')
         self.assertFalse(stage.journey_playing)
 
     async def test_changed_saved_revision_stops_stale_playback(self):
@@ -236,8 +238,14 @@ class AdventurePlayback(unittest.IsolatedAsyncioTestCase):
     async def test_accepted_playback_edits_the_same_view_then_restores_controls(self):
         stage=view()
         events=len(stage.trip['payload']['combat']['events'])
+        published=[]
+        stage.publish=AsyncMock(side_effect=lambda *args: published.append(
+            (stage.journey_playing,stage.journey_media is None,stage.art_enabled)))
         with patch('utils.expeditions.read',new=AsyncMock(return_value=stage.trip)):
             await journal_adventure.present(stage,object(),animate=True)
-        self.assertEqual(stage.publish.await_count,events+1)
+        self.assertEqual(stage.publish.await_count,events+2)
+        self.assertEqual(published[0],(True,True,False))
+        self.assertFalse(published[-1][0])
+        self.assertTrue(published[-1][2])
         self.assertFalse(stage.journey_playing)
         self.assertTrue(stage.journey_media.name.endswith('.gif'))

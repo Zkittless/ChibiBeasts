@@ -10,6 +10,7 @@ from utils import db as storage, gear_art, owned_roster
 from utils.db import (get_beast_data, get_beast_exp_for_level, is_knocked_out,
                       ko_time_remaining)
 from utils.dispositions import disposition_display
+from utils.message_transport import durable_message
 from utils.progression import awakening_requirements, evolution_blockers
 from utils.theme import COLORS, RARITY_EMOJI, TYPE_EMOJI, exp_bar, fmt_stats
 
@@ -410,7 +411,7 @@ class OwnedRosterView(discord.ui.View):
         view = await open_journal(click)
         if view and self.message:
             try:
-                await self.message.delete()
+                await durable_message(self.message, channel=click.channel).delete()
             except discord.HTTPException:
                 pass
             self.stop()
