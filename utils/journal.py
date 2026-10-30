@@ -90,7 +90,7 @@ class JournalView(discord.ui.LayoutView):
         self.render()
 
     def button(self, label, action, style=discord.ButtonStyle.secondary, *, disabled=False):
-        button = discord.ui.Button(label=label[:80], style=style, custom_id=f'{self.prefix}:{action}:{self._button_serial}', disabled=disabled)
+        button = discord.ui.Button(label=label, style=style, custom_id=f'{self.prefix}:{action}:{self._button_serial}', disabled=disabled)
         self._button_serial += 1
         button.callback = lambda interaction: self.handle(interaction, action)
         return button
@@ -577,6 +577,10 @@ class JournalView(discord.ui.LayoutView):
             return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
         if self.closed or self.is_finished():
             return await interaction.response.send_message('This page has closed. Open /journal to resume your saved expedition.', ephemeral=True)
+        if action.startswith('journey_team:'):
+            from utils.journal_adventure import open_team_menu
+            _, trip_id, version = action.split(':')
+            return await open_team_menu(self, interaction, trip_id, int(version))
         if action == 'page_menu':
             value = interaction.data.get('values', [''])[0]
             if value not in ('home',) + PAGES:

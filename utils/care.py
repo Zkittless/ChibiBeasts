@@ -46,6 +46,20 @@ class CarePreview:
     fingerprint: str
 
 
+def recovery_rows(state):
+    """Only patients, using live battle HP when it differs from collection HP."""
+    live = {row['id']: row for row in state.party}
+    if state.live_target and state.target:
+        live[state.selected_id] = state.target
+    patients = []
+    for row in state.rows:
+        health = live.get(row['id'], row)
+        if (storage.is_knocked_out(row) or health['hp'] < health['max_hp']
+                or health['hp'] <= 0 or health.get('status')):
+            patients.append({**row, 'hp': health['hp'], 'max_hp': health['max_hp'], 'status': health.get('status')})
+    return patients
+
+
 async def snapshot(user_id, selected_id=None):
     # Apply the normal expired-KO recovery before collecting the locked view.
     await storage.get_player_beasts(user_id)

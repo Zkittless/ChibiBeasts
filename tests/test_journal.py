@@ -177,7 +177,7 @@ class JournalFlow(DatabaseCase):
         self.assertTrue(all(i.disabled for i in view.walk_children() if isinstance(i, (discord.ui.Button, discord.ui.Select))))
         self.assertEqual(await self.rows('SELECT * FROM expeditions'), [])
 
-    async def test_real_viewstore_routes_story_buttons_and_rejects_stale_choices(self):
+    async def test_real_viewstore_routes_story_dropdown_and_rejects_stale_choices(self):
         await self.ready()
         await expeditions.begin(42, 'woods', adventure_version=3, combat_route=False)
         view = await self.view()
@@ -198,20 +198,18 @@ class JournalFlow(DatabaseCase):
             store.dispatch_view(2, button.custom_id, click)
             await asyncio.wait_for(edited.wait(), 3)
             click.response.defer.assert_awaited_once()
-        button = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button)
-                      and ':path:' in item.custom_id)
-        edited.clear()
-        click = component(edit=edit)
-        click.message = message
-        store.dispatch_view(2, button.custom_id, click)
-        await asyncio.wait_for(edited.wait(), 3)
-        click.response.defer.assert_awaited_once()
-        stale = component(edit=edit)
-        stale.message = message
-        await button.callback(stale)
+        value = next(option.value for option in view.path_select.options if not option.value.endswith(':return_early'))
+        for _ in range(2):
+            edited.clear()
+            click = component(edit=edit)
+            click.message = message
+            click.data = {'values': [value]}
+            store.dispatch_view(3, view.path_select.custom_id, click)
+            await asyncio.wait_for(edited.wait(), 3)
+            click.response.defer.assert_awaited_once()
         self.assertEqual(view.trip['version'], 1)
         self.assertIn('older page', view.notice)
-        self.assertFalse(any(item is view.path_select for item in view.walk_children()))
+        self.assertIn(view.path_select, list(view.walk_children()))
         self.assert_valid(view)
 
     async def test_expedition_survives_deleted_journal_and_new_view_can_finish(self):

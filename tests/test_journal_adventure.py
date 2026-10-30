@@ -9,7 +9,8 @@ import discord
 
 from tests.test_gameplay import interaction
 from tests.test_trial_combat import fighter
-from utils import journal_adventure, journey_combat
+from utils import adventure_content, journal_adventure, journey_combat
+from utils.habitats import BIOMES
 
 
 STORY = ('A damaged lantern hangs above the narrow crossing. '
@@ -67,28 +68,24 @@ class AdventureScenes(unittest.IsolatedAsyncioTestCase):
         self.stage = SceneView()
         self.addCleanup(self.stage.stop)
 
-    async def test_compact_lead_has_at_most_two_sentences_and_200_characters(self):
-        lead = journal_adventure.scene_lead(STORY)
-        self.assertLessEqual(len(lead), 200)
-        self.assertEqual(lead, 'A damaged lantern hangs above the narrow crossing. Your companions find a keeper waiting beside the loose handrail.')
-        long = journal_adventure.scene_lead('A ' + 'long passage ' * 40 + 'ends here.')
-        self.assertLessEqual(len(long), 200)
-        self.assertTrue(long.endswith('…'))
-        self.assertEqual(journal_adventure.scene_lead(''), '')
+    async def test_complete_story_text_is_visible_without_a_disclosure_step(self):
+        self.stage.render()
+        self.assertIn(STORY, self.stage.text_content())
+        self.assertIn('maintenance drawing', self.stage.text_content())
 
-    async def test_scene_pairs_visible_effects_with_direct_buttons_without_disclosure(self):
+    async def test_scene_uses_dropdown_with_complete_wrapping_choices_and_effects(self):
         self.stage.render()
         text = self.stage.text_content()
         self.assertIn('Battles won 1/2', text)
-        self.assertIn(journal_adventure.scene_lead(STORY), text)
-        self.assertNotIn('maintenance drawing', text)
+        self.assertIn(STORY, text)
         self.assertNotIn(OUTCOME, text)
         controls = [item for item in self.stage.walk_children() if isinstance(item, discord.ui.Button)]
-        self.assertEqual([item.label for item in controls], ['Brace the crossing', "Inspect the keeper's drawing", 'Retreat and return'])
-        self.assertIn('path:saved-trip:3:0', controls[0].custom_id)
+        self.assertEqual(controls, [])
+        self.assertEqual([option.label for option in self.stage.path_select.options],
+                         ['Brace the crossing', "Inspect the keeper's drawing", 'Retreat and return'])
         self.assertIn('A small temporary boon.', text)
         self.assertIn('Study the crossing.', text)
-        self.assertFalse(any(isinstance(item, discord.ui.Select) for item in self.stage.walk_children()))
+        self.assertIn(self.stage.path_select, list(self.stage.walk_children()))
         self.assertLessEqual(self.stage.content_length(), 4000)
         self.assertLessEqual(self.stage.total_children_count, 40)
 
@@ -108,6 +105,7 @@ class AdventureScenes(unittest.IsolatedAsyncioTestCase):
                              if isinstance(item, discord.ui.Button)))
 
     async def test_return_stays_separate_from_story_actions(self):
+        self.stage.trip['payload']['page']['kind'] = 'homeward'
         self.stage.render()
         footer = self.stage.container.children[-1]
         self.assertIsInstance(footer, discord.ui.ActionRow)
@@ -133,21 +131,51 @@ class AdventureScenes(unittest.IsolatedAsyncioTestCase):
         self.assertIn('0/3', ultimate.label)
         self.assertTrue(ultimate.disabled)
 
-    async def test_team_buttons_preserve_disabled_assists_and_fit_native_limits(self):
+    async def test_one_team_button_replaces_reserve_rows_and_modal_lists_legal_actions(self):
         payload = dict(prepared_party=[fighter(identity=1), fighter('gloop', identity=2), fighter('barkley', identity=3)])
         journey_combat.start(payload, journey_combat.plan('woods', 4, 'single', 2))
         self.stage.trip['payload']['combat'] = payload['combat']
         self.stage.trip['status'] = 'battle'
         self.stage.render()
         controls = [i for i in self.stage.walk_children() if isinstance(i, discord.ui.Button)]
-        self.assertEqual(sum(i.label.startswith('Swap:') for i in controls), 2)
-        assists = [i for i in controls if i.label.startswith(('Heal:', 'Guard:', 'Attack:'))]
-        self.assertEqual(len(assists), 2)
-        self.assertTrue(all(i.disabled for i in assists))
-        self.assertTrue(all('12 MP' in i.label for i in assists))
+        self.assertEqual([i.label for i in controls if i.label == 'Swap / Assist'], ['Swap / Assist'])
+        self.assertFalse(any(i.label.startswith(('Swap:', 'Heal:', 'Guard:', 'Attack:')) for i in controls))
+        modal = journal_adventure.JourneyTeamMenu(self.stage, self.stage.trip)
+        self.addCleanup(modal.stop)
+        self.assertEqual(len(modal.action.options), 2)
+        self.assertTrue(all(option.label.startswith('Swap in ') for option in modal.action.options))
+        self.assertTrue(all('HP ' in option.description and 'MP ' in option.description for option in modal.action.options))
+        modal.to_dict()
         self.assertLessEqual(self.stage.total_children_count, 40)
         self.assertLessEqual(self.stage.content_length(), 4000)
         self.stage.to_components()
+
+    async def test_full_catalog_fits_native_limits_without_cutting_scene_or_choice_text(self):
+        for biome in BIOMES:
+            for root in adventure_content.load(biome)['encounters']:
+                for node_id, node in root['nodes'].items():
+                    with self.subTest(node=node_id):
+                        self.stage.trip['realm'] = biome
+                        choices = [dict(value=f'scene:{index}', label=choice['label'], description=choice['description'])
+                                   for index, choice in enumerate(node['choices'])]
+                        self.stage.trip['payload']['page'] = dict(title=root['title'], body=node['body'], choices=choices,
+                            root_id=root['id'], node_id=node_id, kind=root['kind'], repeatable=root['repeatable'])
+                        self.stage.render()
+                        text = self.stage.text_content()
+                        self.assertIn(node['body'], text)
+                        for choice in choices:
+                            self.assertIn(choice['label'], text)
+                            self.assertIn(choice['description'], text)
+                        self.assertLessEqual(self.stage.content_length(), 4000)
+                        self.assertLessEqual(self.stage.total_children_count, 40)
+                        self.stage.to_components()
+
+    async def test_long_effect_stays_complete_above_the_platform_limited_menu_description(self):
+        description = 'A complete choice effect with several conditions. ' * 8
+        self.stage.trip['payload']['page']['choices'][0]['description'] = description
+        self.stage.render()
+        self.assertIn(description, self.stage.text_content())
+        self.assertLessEqual(len(self.stage.path_select.options[0].description), 100)
 
     async def test_only_designated_first_opponent_is_labelled_recruitable(self):
         payload = dict(prepared_party=[fighter()])

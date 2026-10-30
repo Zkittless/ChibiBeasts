@@ -19,6 +19,13 @@
     },
     {
       "width": 1100,
+      "stage": "team_menu",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
       "stage": "swap",
       "one_message": true,
       "no_overflow": true,
@@ -83,6 +90,13 @@
     {
       "width": 1100,
       "stage": "returned",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 1100,
+      "stage": "care",
       "one_message": true,
       "no_overflow": true,
       "media_loaded": true
@@ -103,6 +117,13 @@
     },
     {
       "width": 390,
+      "stage": "team_menu",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
       "stage": "swap",
       "one_message": true,
       "no_overflow": true,
@@ -167,6 +188,13 @@
     {
       "width": 390,
       "stage": "returned",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 390,
+      "stage": "care",
       "one_message": true,
       "no_overflow": true,
       "media_loaded": true
@@ -187,6 +215,13 @@
     },
     {
       "width": 320,
+      "stage": "team_menu",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
       "stage": "swap",
       "one_message": true,
       "no_overflow": true,
@@ -251,12 +286,22 @@
     {
       "width": 320,
       "stage": "returned",
+      "one_message": true,
+      "no_overflow": true,
+      "media_loaded": true
+    },
+    {
+      "width": 320,
+      "stage": "care",
       "one_message": true,
       "no_overflow": true,
       "media_loaded": true
     }
   ],
   "disclosure_buttons": false,
-  "direct_action_buttons": true,
+  "story_dropdown": true,
+  "team_popup": true,
+  "full_story_text": true,
+  "care_patients_only": true,
   "inline_choice_effects": true
 }

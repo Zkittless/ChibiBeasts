@@ -48,11 +48,15 @@ class ExploreJournalFlow(DatabaseCase):
 
     async def pick(self, view, choice):
         index = next(index for index, option in enumerate(view.path_select.options) if option.value.endswith(':' + choice))
-        action = f":path:{view.trip['id']}:{view.trip['version']}:{index}:"
-        button = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button) and action in item.custom_id)
         click = component()
         click.edit_original_response.return_value = view.message
-        await button.callback(click)
+        if view.path_select in list(view.walk_children()):
+            click.data = {'values': [view.path_select.options[index].value]}
+            await view.path_select.callback(click)
+        else:
+            action = f":path:{view.trip['id']}:{view.trip['version']}:{index}:"
+            button = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button) and action in item.custom_id)
+            await button.callback(click)
         click.response.defer.assert_awaited_once()
 
     async def test_default_and_both_legacy_modes_open_selection_without_spending(self):

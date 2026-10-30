@@ -1,6 +1,5 @@
 """Authored scenes and animated combat inside the existing journal message."""
 import hashlib
-import re
 from types import SimpleNamespace
 
 import discord
@@ -8,35 +7,17 @@ import discord
 from utils import battle_art, combat, expeditions, trial_combat
 from utils.team_combat import ASSIST_MANA, assist_effect
 
-LEAD_LIMIT = 200
-
-
-def scene_lead(body):
-    """One or two short sentences; long opening sentences stop at a word."""
-    body = ' '.join(str(body or '').split())
-    sentences = re.split(r'(?<=[.!?])\s+', body)
-    chosen = []
-    for sentence in sentences[:2]:
-        candidate = ' '.join(chosen + [sentence])
-        if len(candidate) > LEAD_LIMIT:
-            break
-        chosen.append(sentence)
-    if chosen:
-        return ' '.join(chosen)
-    if len(body) <= LEAD_LIMIT:
-        return body
-    clipped = body[:LEAD_LIMIT - 1]
-    if ' ' in clipped:
-        clipped = clipped.rsplit(' ', 1)[0]
-    return clipped.rstrip(' ,;:-') + '…'
-
-
-def render_choices(view, trip, choices):
-    """Keep each consequence beside its action; returning stays in the footer."""
-    # Retain the old values for older journal routers, without displaying a menu.
-    view.path_select.options = [discord.SelectOption(label=choice['label'][:100],
-        description=choice['description'][:100], value=f"{trip['id']}:{trip['version']}:{choice['value']}")
+def render_choices(view, trip, choices, *, dropdown=True):
+    """Story decisions use a menu, with complete wrapping choice text above it."""
+    view.path_select.options = [discord.SelectOption(label=choice['label'],
+        description=(choice['description'] if len(choice['description']) <= 100 else 'Full effect shown above.'),
+        value=f"{trip['id']}:{trip['version']}:{choice['value']}")
         for choice in choices]
+    if dropdown:
+        if choices:
+            view.text('\n'.join(f"**{choice['label']}** · {choice['description']}" for choice in choices))
+            view.row(view.path_select)
+        return
     footer = []
     for index, choice in enumerate(choices):
         returning = choice['value'] in {'return', 'return_early'}
@@ -52,7 +33,7 @@ def render_choices(view, trip, choices):
 
 
 def render_combat_buttons(view, trip, state):
-    """The familiar move row, ultimate, and a swap/assist pair per reserve."""
+    """Keep attacks visible; reserve actions share one modal launcher."""
     active = state['party'][state['slot']]
     moves, ultimate, reserves = [], [], []
     for index, action in enumerate(trial_combat.legal_actions(state)):
@@ -62,9 +43,9 @@ def render_combat_buttons(view, trip, state):
             label += f' · {cost} MP'
         elif kind == 'ultimate':
             label = f"⚡ {label} · {active.get('ultimate_charges', 0)}/3 · 50 MP"
-        elif kind == 'assist':
-            member = next(member for member in state['party'] if member['id'] == action['choice'][1])
-            label = f"{assist_effect(member).title()}: {member['name']} · {ASSIST_MANA} MP"
+        elif kind in {'swap', 'assist'}:
+            reserves.append(action)
+            continue
         style = (discord.ButtonStyle.primary if kind == 'move' else
                  discord.ButtonStyle.danger if kind == 'ultimate' else discord.ButtonStyle.secondary)
         button = view.button(label, f"journey_act:{trip['id']}:{trip['version']}:{index}", style,
@@ -74,8 +55,55 @@ def render_combat_buttons(view, trip, state):
         view.row(*moves)
     if ultimate:
         view.row(*ultimate)
-    for index in range(0, len(reserves), 2):
-        view.row(*reserves[index:index + 2])
+    if len(state['party']) > 1:
+        view.row(view.button('Swap / Assist', f"journey_team:{trip['id']}:{trip['version']}",
+                             disabled=not any(action['enabled'] for action in reserves)))
+
+
+class JourneyTeamMenu(discord.ui.Modal, title='Swap or assist'):
+    def __init__(self, view, trip):
+        super().__init__(timeout=120)
+        self.journal_view, self.trip_id, self.version = view, trip['id'], trip['version']
+        state = trip['payload']['combat']
+        self.indices, options = set(), []
+        for index, action in enumerate(trial_combat.legal_actions(state)):
+            if action['kind'] not in {'swap', 'assist'} or not action['enabled']:
+                continue
+            member = next(member for member in state['party'] if member['id'] == action['choice'][1])
+            label = (f"Swap in {member['name']}" if action['kind'] == 'swap' else
+                     f"{assist_effect(member).title()} assist: {member['name']}")
+            resources = f"HP {member['hp']}/{member['max_hp']} · MP {member['mana']}/{member['max_mana']}"
+            cost = 'Uses your turn.' if action['kind'] == 'swap' else f'Uses your turn and {ASSIST_MANA} MP.'
+            options.append(discord.SelectOption(label=label, description=resources + ' · ' + cost, value=str(index)))
+            self.indices.add(str(index))
+        self.action = discord.ui.Select(placeholder='Choose a teammate action', options=options)
+        self.add_item(discord.ui.Label(text='Choose a teammate action', component=self.action,
+            description=f"Swapping or assisting uses your turn. Assist meter {state['meter']}/3; assists cost {ASSIST_MANA} MP."))
+
+    async def on_submit(self, interaction):
+        if self.journal_view.page != 'adventure' or self.journal_view.message_repurposed:
+            return await interaction.response.send_message('Return to the current adventure controls before choosing a team action.', ephemeral=True)
+        values = self.action.values
+        if len(values) != 1 or values[0] not in self.indices:
+            return await interaction.response.send_message('Choose an available team action.', ephemeral=True)
+        await self.journal_view.handle(interaction, f'journey_act:{self.trip_id}:{self.version}:{values[0]}')
+
+
+async def open_team_menu(view, interaction, trip_id, version):
+    """Opening or cancelling the modal never consumes a turn or changes RNG."""
+    if (view.page != 'adventure' or view.closed or view.is_finished() or view.message_repurposed or view.journey_playing
+            or view.lock.locked() or view.mutating):
+        return await interaction.response.send_message('Use the refreshed adventure controls.', ephemeral=True)
+    async with view.lock:
+        trip = await expeditions.read(view.user_id, trip_id)
+        if (not trip or trip['version'] != version or trip['status'] != 'battle'
+                or trip['payload']['combat']['status'] != 'fighting'):
+            return await interaction.response.send_message('Use the refreshed adventure controls.', ephemeral=True)
+        available = [action for action in trial_combat.legal_actions(trip['payload']['combat'])
+                     if action['kind'] in {'swap', 'assist'} and action['enabled']]
+        if not available:
+            return await interaction.response.send_message('No reserve can act right now.', ephemeral=True)
+        await interaction.response.send_modal(JourneyTeamMenu(view, trip))
 
 
 def render(view, trip):
@@ -119,9 +147,9 @@ def render(view, trip):
     # repeating the accumulated log on every page.
     previous = p['history'][-1] if p.get('history') else {}
     if scene['kind'] == 'battle' and (previous.get('root_id') or previous.get('phase') == 'material'):
-        view.text(scene_lead(previous['outcome']))
-    view.text('**' + scene['title'] + '**\n' + scene_lead(scene.get('lead') or scene['body']))
-    render_choices(view, trip, scene['choices'])
+        view.text(previous['outcome'])
+    view.text('**' + scene['title'] + '**\n' + scene['body'])
+    render_choices(view, trip, scene['choices'], dropdown=scene['kind'] not in {'battle', 'homeward'})
 
 
 def artifact(art):

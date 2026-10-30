@@ -80,7 +80,7 @@ class CareView(discord.ui.View):
         self.render()
 
     def page_rows(self):
-        return owned_roster.visible(self.state.rows, self.picker, page_size=PAGE_SIZE)
+        return owned_roster.visible(care.recovery_rows(self.state), self.picker, page_size=PAGE_SIZE)
 
     def button(self, label, action, *, row=2, disabled=False, style=discord.ButtonStyle.secondary):
         generation = self.generation
@@ -96,9 +96,9 @@ class CareView(discord.ui.View):
         self.clear_items()
         generation = self.generation
         visible, pages = self.page_rows()
-        self.companion_select = discord.ui.Select(row=0, placeholder=f'Choose a companion · Page {self.picker.page+1}/{pages}',
+        self.companion_select = discord.ui.Select(row=0, placeholder=f'Injured or knocked out · Page {self.picker.page+1}/{pages}',
             custom_id=f'{self.prefix}:{generation}:companion', disabled=self.closed or not visible,
-            options=owned_roster.options(visible, self.state.selected_id) or [discord.SelectOption(label='No matching companions', value='none')])
+            options=owned_roster.options(visible, self.state.selected_id) or [discord.SelectOption(label='No companions need recovery' if not self.picker.query else 'No matching patients', value='none')])
         self.companion_select.callback = lambda interaction: self.handle(interaction, 'companion', generation=generation)
         self.add_item(self.companion_select)
         items = care.supported_items(self.state)
@@ -109,24 +109,32 @@ class CareView(discord.ui.View):
         for key in items[:25]:
             preview = care.preview(self.state, key, self.choice if key == self.item_id else None)
             description = preview.reason or preview.text
-            options.append(discord.SelectOption(label=f"{catalog.get(key, {}).get('name', key)} ×{preview.quantity}"[:100],
+            options.append(discord.SelectOption(label=f"{catalog.get(key, {}).get('name', key)} ×{preview.quantity}",
                 value=key, default=key == self.item_id,
-                description=description.replace('\n', ' ')[:100] or 'Review this item before using it.'))
+                description=(description.replace('\n', ' ') if len(description) <= 100 else 'View the complete effect preview below.')
+                            or 'Review this item before using it.'))
         self.item_select = discord.ui.Select(row=1, placeholder='Choose an owned care item',
             custom_id=f'{self.prefix}:{generation}:item', options=options or [discord.SelectOption(label='No care items owned', value='none')],
-            disabled=self.closed or not items)
+            disabled=self.closed or not items or not self.state.beast)
         self.item_select.callback = lambda interaction: self.handle(interaction, 'item', generation=generation)
         self.add_item(self.item_select)
-        preview = care.preview(self.state, self.item_id, self.choice) if self.item_id else None
+        preview = care.preview(self.state, self.item_id, self.choice) if self.item_id and self.state.beast else None
         self.current_preview = preview
         use_label = 'Review' if preview and preview.requires_confirmation else 'Use 1'
         self.use_button = self.button(use_label, 'use', disabled=not preview or not preview.usable or self.confirming,
                                       style=discord.ButtonStyle.primary)
         self.previous_button = self.button('Previous', 'previous', disabled=self.picker.page <= 0)
         self.next_button = self.button('Next', 'next', disabled=self.picker.page >= pages-1)
-        self.search_button = self.button('Search', 'open_search', disabled=not self.state.rows)
+        self.search_button = self.button('Search', 'open_search', disabled=not care.recovery_rows(self.state))
         self.refresh_button = self.button('Refresh', 'refresh')
         self.clear_button = self.button('Clear search', 'clear', row=3, disabled=not self.picker.query)
+        if pages == 1:
+            self.remove_item(self.previous_button)
+            self.remove_item(self.next_button)
+        if len(care.recovery_rows(self.state)) <= PAGE_SIZE:
+            self.remove_item(self.search_button)
+        if not self.picker.query:
+            self.remove_item(self.clear_button)
         self.name_button = None
         if preview and catalog.get(self.item_id, {}).get('effect', {}).get('rename'):
             self.name_button = self.button('Choose name', 'open_name', row=3,
@@ -146,14 +154,15 @@ class CareView(discord.ui.View):
                 description += ' · ' + safe(target['status']).title()
         else:
             title = '🌿 Companion Care'
-            description = ('This companion is no longer in your collection. Choose another companion.'
-                           if self.state.rows else 'Your collection is empty. Choose a starter or hatch a beast first.')
+            description = ('Your collection is empty. Choose a starter or hatch a beast first.' if not self.state.rows else
+                           'All your companions are healthy. Injured or knocked-out companions will appear here.'
+                           if not care.recovery_rows(self.state) else 'Choose an injured or knocked-out companion to care for.')
         if self.notice:
             description += '\n\n' + safe(self.notice)
         if self.picker.query:
             description += '\nSearch: ' + safe(self.picker.query)
             if not visible:
-                description += '\nNo matching companions. Clear the search to see your roster.'
+                description += '\nNo matching patients. Clear the search to see companions needing care.'
         embed = discord.Embed(title=title, description=description, color=COLORS['info'])
         if preview:
             embed.add_field(name=f'{preview.name} ×{preview.quantity}', value='Consume **1** on the selected companion.'
@@ -161,10 +170,11 @@ class CareView(discord.ui.View):
             for index, part in enumerate(text_parts(safe(preview.text))):
                 embed.add_field(name='Effect preview' if index == 0 else 'Affected companions (continued)', value=part, inline=False)
             if preview.reason:
-                embed.add_field(name='Before use', value=safe(preview.reason)[:1024], inline=False)
+                for index, part in enumerate(text_parts(safe(preview.reason))):
+                    embed.add_field(name='Before use' if index == 0 else 'Before use (continued)', value=part, inline=False)
             if self.confirming:
                 embed.add_field(name='Confirm this item', value='Review the effects and affected companions above, then confirm to use one item.', inline=False)
-        else:
+        elif beast:
             embed.add_field(name='Choose an item', value='Select an owned item to see its exact effect before using it. Your active beast stays the same.', inline=False)
         embed.set_footer(text=('Companion care' if self.navigator else 'Private care panel') + ' · One item per confirmed click · No automatic item selection or spending')
         if self.navigator:
@@ -262,7 +272,7 @@ class CareView(discord.ui.View):
                     target_id = int(interaction.data['values'][0])
                 except (KeyError, IndexError, ValueError, TypeError):
                     target_id = None
-                if target_id in visible_ids and any(row['id'] == target_id for row in self.state.rows):
+                if target_id in visible_ids and any(row['id'] == target_id for row in care.recovery_rows(self.state)):
                     self.state = await care.snapshot(self.user_id, target_id)
                 else:
                     self.state = await care.snapshot(self.user_id, -1)
@@ -311,6 +321,7 @@ class CareView(discord.ui.View):
                     # A network failure can never retry the item operation.
                     self.confirming = False
                     beast = self.state.beast
+                    was_patient = any(row['id'] == beast['id'] for row in care.recovery_rows(self.state))
                     try:
                         self.notice = await use_item(self.user_id, self.item_id, choice=self.choice,
                             beast_number=owned_roster.number(beast), expected_row_id=beast['id'],
@@ -321,6 +332,11 @@ class CareView(discord.ui.View):
                         logger.exception('Care item outcome could not be confirmed')
                         self.notice = 'Item use could not be confirmed. Check the refreshed state before using another item.'
                     self.state = await care.snapshot(self.user_id, selected_id)
+                    if (not self.navigator and was_patient and self.state.beast
+                            and not any(row['id'] == selected_id for row in care.recovery_rows(self.state))):
+                        # A recovered patient leaves the list. Never silently
+                        # point the selected item at a different companion.
+                        self.state = await care.snapshot(self.user_id, -1)
             else:
                 self.confirming = False
             await self.publish(interaction)
@@ -347,10 +363,15 @@ async def open_care(interaction, *, beast_row_id=None, beast_number=None, alread
         rows = await storage.get_player_beasts(interaction.user.id)
         beast_row_id = next((row['id'] for row in rows if owned_roster.number(row) == beast_number), -1)
     state = await care.snapshot(interaction.user.id, beast_row_id)
+    if beast_row_id is None:
+        patients = care.recovery_rows(state)
+        target = next((row for row in patients if storage.is_knocked_out(row) or row['hp'] <= 0),
+                      patients[0] if patients else None)
+        state = await care.snapshot(interaction.user.id, target['id'] if target else -1)
     view = CareView(interaction.user.id, state)
     if state.beast:
-        matches = owned_roster.filtered(state.rows, view.picker)
-        view.picker.page = next(index for index, row in enumerate(matches) if row['id'] == state.selected_id) // PAGE_SIZE
+        matches = owned_roster.filtered(care.recovery_rows(state), view.picker)
+        view.picker.page = next((index for index, row in enumerate(matches) if row['id'] == state.selected_id), 0) // PAGE_SIZE
     try:
         await view.publish(interaction, opening=True)
     except BaseException:
