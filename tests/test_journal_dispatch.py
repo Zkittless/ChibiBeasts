@@ -160,6 +160,21 @@ class JournalDispatch(DatabaseCase):
 
 
 class ReceiptFiltering(unittest.IsolatedAsyncioTestCase):
+    async def test_published_message_reports_start_state_without_any_click(self):
+        view = discord.ui.LayoutView(timeout=None)
+        self.addCleanup(view.stop)
+        view.prefix, view.user_id, view.page = 'journal:abc', 42, 'adventure'
+        view.message = SimpleNamespace(id=456)
+        start = discord.ui.Button(label='Start adventure', custom_id='journal:abc:begin:2')
+        view.add_item(discord.ui.ActionRow(start))
+        for disabled in (False, True):
+            start.disabled = disabled
+            with self.assertLogs('chibibeasts.journal.input', level='INFO') as logs:
+                journal_diagnostics.published(view, component())
+            output = '\n'.join(logs.output)
+            self.assertIn('message=456', output)
+            self.assertIn(f'start_enabled={not disabled}', output)
+
     async def test_other_components_commands_and_modals_are_untouched(self):
         for kind, custom_id in [(discord.InteractionType.application_command, 'journal:abc:begin:1'),
                                 (discord.InteractionType.modal_submit, 'journal:abc:begin:1'),

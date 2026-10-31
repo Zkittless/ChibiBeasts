@@ -46,6 +46,16 @@ def trace(callback):
     return dispatch
 
 
+def published(view, interaction):
+    record(interaction, 'published')
+    prefix = getattr(view, 'prefix', '') + ':begin:'
+    start = next((item for item in view.walk_children()
+                  if str(getattr(item, 'custom_id', '')).startswith(prefix)), None)
+    logger.info('Journal panel trainer=%s message=%s page=%s start_enabled=%s',
+                getattr(view, 'user_id', None), getattr(view.message, 'id', None), view.page,
+                not start.disabled if start is not None else None)
+
+
 async def received(interaction):
     """Observe gateway delivery, including clicks with no registered callback."""
     if interaction.type != discord.InteractionType.component:

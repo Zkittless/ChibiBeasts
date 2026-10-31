@@ -574,7 +574,7 @@ class JournalView(discord.ui.LayoutView):
                 self.art_enabled = False
                 self.render()
                 self.message = await deliver(False)
-        journal_diagnostics.record(interaction, 'published')
+        journal_diagnostics.published(self, interaction)
 
     async def load_page(self):
         if self.page == 'story' and not self.story_scene and self.state.player['level'] >= 3:
