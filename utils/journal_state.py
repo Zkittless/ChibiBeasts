@@ -189,9 +189,14 @@ class JournalState:
     team_slots: dict = field(default_factory=dict)
     explore_default: str | None = None
     carnival: dict = field(default_factory=dict)
+    trial: dict | None = None
 
 
 async def snapshot(user_id):
+    from utils import trials
+    # Expiry can bank rewards and restore stored HP/MP. Read the journal's
+    # player/team snapshot after that settlement, never from the old state.
+    trial = await trials.current(user_id)
     await storage.get_active_beast(user_id)  # Apply expired recovery timers first.
     workshop = await crafting.workshop_state(user_id)
     energy = await expeditions.energy(user_id)
@@ -212,4 +217,4 @@ async def snapshot(user_id):
     team = await adventure_party.rows(user_id)
     slots = await adventure_party.assignments(user_id)
     return JournalState(player, workshop, energy, trip, goal_status(goal, workshop), state, team, slots,
-                        preference['realm'] if preference else None, await hollowlight.status(user_id))
+                        preference['realm'] if preference else None, await hollowlight.status(user_id), trial)

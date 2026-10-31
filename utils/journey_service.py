@@ -52,7 +52,7 @@ def _material_effect(payload, effect):
 async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_route=True):
     from utils import journeys, expedition_events
     from utils.duels import prepare_state, reserve_fighters
-    from utils.trials import _snapshot, assert_available
+    from utils.trials import _snapshot, assert_available, current as current_trial
     from utils.economy_balance import gold_reward_level
     now = time.time() if now is None else now
     carnival = realm == HOLLOWLIGHT
@@ -60,6 +60,9 @@ async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_rout
         combat_route = True
     if realm not in BIOMES and not carnival:
         raise ValueError('Choose a destination from the journal.')
+    # Recover expired trials and reconcile saved reservations even when this
+    # departure was not opened through a fresh Field Journal.
+    await current_trial(user_id, now=now)
     async with combat.lock_states([user_id]):
         with reserve_fighters([user_id]):
             await storage.get_player_beasts(user_id)
