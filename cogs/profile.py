@@ -25,7 +25,7 @@ class Profile(commands.Cog):
 
     @app_commands.command(name="profile", description="View your trainer profile 📖")
     @app_commands.describe(member="View another trainer's profile")
-    async def profile(self, interaction: discord.Interaction, member: discord.Member = None):
+    async def profile(self, interaction: discord.Interaction, member: discord.User = None):
         target = member or interaction.user
         await interaction.response.defer()
         player = await get_or_create_player(target.id, str(target))
