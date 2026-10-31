@@ -170,7 +170,7 @@ async def present(view, interaction, *, animate=False):
     """Choices commit first; a failed upload never replays damage or rewards."""
     trip = view.trip
     if trip and not await fresh(view, trip):
-        return
+        return await restore_saved_controls(view, interaction)
     state = trip['payload'].get('combat') if trip else None
     if not state or not (animate or trip['status'] == 'battle'):
         view.journey_media = None
@@ -181,7 +181,7 @@ async def present(view, interaction, *, animate=False):
         view.journey_presentation = battle_art.BattlePresentation(realm)
     presentation = view.journey_presentation
     view.journey_playing = animate
-    preparing, changed = False, False
+    changed = False
     try:
         if animate and view.journey_media is None:
             # Show the committed encounter and its preparing state before
@@ -192,7 +192,6 @@ async def present(view, interaction, *, animate=False):
             try:
                 view.render()
                 await view.publish(interaction)
-                preparing = True
             finally:
                 view.art_enabled = artwork
         for event in state.get('events', ()) if animate else ():
@@ -211,18 +210,16 @@ async def present(view, interaction, *, animate=False):
                 await presentation.sleep(art.seconds + .2)
     finally:
         view.journey_playing = False
-        if preparing and changed:
+        if changed:
             await restore_saved_controls(view, interaction)
     if not await fresh(view, trip):
-        if preparing:
-            await restore_saved_controls(view, interaction)
+        await restore_saved_controls(view, interaction)
         return
     if trip['status'] == 'battle':
         fighters = trial_combat.snapshot(state)
         art = await presentation.art(fighters, fighters)
         if not await fresh(view, trip):
-            if preparing:
-                await restore_saved_controls(view, interaction)
+            await restore_saved_controls(view, interaction)
             return
         view.journey_media = artifact(art) if art else None
     else:
@@ -232,12 +229,17 @@ async def present(view, interaction, *, animate=False):
 
 
 async def restore_saved_controls(view, interaction):
-    """Another journal advanced this trip while its first artwork prepared."""
+    """A newer saved revision must refresh controls, never swallow the click."""
     if view.closed or view.is_finished() or view.message_repurposed:
         return
     from utils import journal_state
-    view.state = await journal_state.snapshot(view.user_id)
-    view.trip = view.state.trip or await expeditions.latest(view.user_id)
+    from utils.journal_diagnostics import record
+    record(interaction, 'resync', action='refresh')
+    state = await journal_state.snapshot(view.user_id)
+    trip = state.trip or await expeditions.latest(view.user_id)
+    if view.closed or view.is_finished() or view.message_repurposed:
+        return
+    view.state, view.trip = state, trip
     view.journey_media = None
     artwork = view.art_enabled
     view.art_enabled = False

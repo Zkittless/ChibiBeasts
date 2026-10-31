@@ -2,9 +2,11 @@ import discord
 from discord.ext import commands
 import os
 import asyncio
+import logging
 import sys
 from dotenv import load_dotenv
 from utils.db import init_db
+from utils import journal_diagnostics
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 if hasattr(sys.stdout, "reconfigure"):
@@ -22,6 +24,11 @@ intents.guilds = True
 intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
+
+
+@bot.event
+async def on_interaction(interaction: discord.Interaction):
+    await journal_diagnostics.received(interaction)
 
 
 @bot.event
@@ -119,6 +126,11 @@ async def load_cogs():
 
 
 async def main():
+    # login/connect bypass Client.run(), which normally installs logging.
+    # Without this, Discord's NullHandler hides dispatch/gateway diagnostics.
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
+    logging.getLogger('chibibeasts').info('Starting bot revision=%s discord.py=%s',
+        os.getenv('RAILWAY_GIT_COMMIT_SHA', 'local'), discord.__version__)
     token = os.getenv("DISCORD_TOKEN")
     if not token or token == "your_bot_token_here":
         raise RuntimeError("Set DISCORD_TOKEN in .env or your hosting environment before starting the bot.")

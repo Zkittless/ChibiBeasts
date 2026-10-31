@@ -226,13 +226,15 @@ class AdventurePlayback(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(published,[None], 'Only native preparing feedback may precede retirement')
         self.assertFalse(stage.journey_playing)
 
-    async def test_changed_saved_revision_stops_stale_playback(self):
+    async def test_changed_saved_revision_refreshes_controls_without_stale_playback(self):
         stage=view()
         newer=deepcopy(stage.trip)
         newer['version']+=1
-        with patch('utils.expeditions.read',new=AsyncMock(return_value=newer)):
+        with patch('utils.expeditions.read',new=AsyncMock(return_value=newer)), \
+             patch('utils.journal_state.snapshot',new=AsyncMock(return_value=SimpleNamespace(trip=newer))):
             await journal_adventure.present(stage,object(),animate=True)
-        stage.publish.assert_not_awaited()
+        stage.publish.assert_awaited_once()
+        self.assertEqual(stage.trip['version'], newer['version'])
         stage.journey_presentation.art.assert_not_awaited()
 
     async def test_accepted_playback_edits_the_same_view_then_restores_controls(self):
@@ -249,3 +251,29 @@ class AdventurePlayback(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(published[-1][2])
         self.assertFalse(stage.journey_playing)
         self.assertTrue(stage.journey_media.name.endswith('.gif'))
+
+    async def test_existing_battle_media_also_recovers_after_revision_changes(self):
+        stage = view()
+        stage.journey_media = SimpleNamespace(name='previous.gif', data=b'old')
+        newer = deepcopy(stage.trip)
+        newer['version'] += 1
+        read = AsyncMock(side_effect=[stage.trip, stage.trip, newer])
+        with patch('utils.expeditions.read', new=read), \
+             patch('utils.journal_state.snapshot', new=AsyncMock(return_value=SimpleNamespace(trip=newer))):
+            await journal_adventure.present(stage, object(), animate=True)
+        stage.publish.assert_awaited_once()
+        self.assertEqual(stage.trip['version'], newer['version'])
+        self.assertFalse(stage.journey_playing)
+        self.assertIsNone(stage.journey_media)
+
+    async def test_retirement_during_resync_read_cannot_overwrite_replacement(self):
+        stage = view()
+
+        async def replaced(*args):
+            stage.message_repurposed = True
+            return SimpleNamespace(trip=stage.trip)
+
+        with patch('utils.journal_state.snapshot', new=AsyncMock(side_effect=replaced)):
+            await journal_adventure.restore_saved_controls(stage, object())
+        stage.publish.assert_not_awaited()
+        stage.render.assert_not_called()
