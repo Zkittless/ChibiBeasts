@@ -936,9 +936,22 @@ class JournalView(discord.ui.LayoutView):
                     if self.state.trip:
                         self.trip = self.state.trip
                     await self.load_page()
-                except (ValueError, KeyError) as error:
+                except ValueError as error:
                     self.notice = safe(error)
-                    journal_diagnostics.record(interaction, 'rejected', action=action)
+                    journal_diagnostics.record(interaction, 'rejected', action=action, error=error)
+                    if action == 'begin':
+                        # The page's notice can be above the viewport. Explain
+                        # Start immediately, before another DB read or upload.
+                        try:
+                            async with asyncio.timeout(10):
+                                await interaction.followup.send(self.notice, ephemeral=True,
+                                                                allowed_mentions=discord.AllowedMentions.none())
+                        except (discord.HTTPException, TimeoutError) as reply_error:
+                            # A failed private reply must not retire the public
+                            # journal or prevent its existing notice refreshing.
+                            logger.warning('Could not show Start rejection interaction=%s trainer=%s status=%s code=%s',
+                                           getattr(interaction, 'id', None), self.user_id,
+                                           getattr(reply_error, 'status', None), getattr(reply_error, 'code', None))
                     self.state = await journal_state.snapshot(self.user_id)
                     self.trip = self.state.trip or self.trip
                 if self.page == 'adventure' and self.trip and self.trip['payload'].get('adventure_version') == 3:

@@ -1,4 +1,4 @@
-"""Trace journal clicks without recording tokens, names, or message contents."""
+"""Trace journal clicks and validation reasons without interaction payloads."""
 import asyncio
 from functools import wraps
 import logging
@@ -11,15 +11,20 @@ _HANDLED = 'chibibeasts_journal_handled'
 _ACTION = 'chibibeasts_journal_action'
 
 
-def record(interaction, stage, *, action='', elapsed_ms=None, level=logging.INFO):
+def record(interaction, stage, *, action='', elapsed_ms=None, level=logging.INFO, error=None):
     # Only a fixed action family is useful here; choices and text are not logged.
     family = (action or getattr(interaction, 'extras', {}).get(_ACTION, 'open')).split(':', 1)[0]
     if not family.replace('_', '').isalnum():
         family = 'unknown'
-    logger.log(level, 'Journal input stage=%s interaction=%s trainer=%s channel=%s message=%s action=%s elapsed_ms=%s',
-               stage, getattr(interaction, 'id', None), getattr(getattr(interaction, 'user', None), 'id', None),
-               getattr(interaction, 'channel_id', None), getattr(getattr(interaction, 'message', None), 'id', None),
-               family[:32], elapsed_ms)
+    message = 'Journal input stage=%s interaction=%s trainer=%s channel=%s message=%s action=%s elapsed_ms=%s'
+    fields = (stage, getattr(interaction, 'id', None), getattr(getattr(interaction, 'user', None), 'id', None),
+              getattr(interaction, 'channel_id', None), getattr(getattr(interaction, 'message', None), 'id', None),
+              family[:32], elapsed_ms)
+    if error is not None:
+        # Keep a server-side validation reason on the same searchable line.
+        message += ' error_type=%s reason=%r'
+        fields += (type(error).__name__, str(error))
+    logger.log(level, message, *fields)
 
 
 def trace(callback):
