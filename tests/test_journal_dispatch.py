@@ -9,7 +9,8 @@ from discord.ui.view import ViewStore
 
 from tests.test_gameplay import DatabaseCase
 from tests.test_interactions import component
-from utils import battle_art, expeditions, journal_diagnostics, journal_state, trial_locks
+from utils import battle_art, expeditions, journal_diagnostics, journal_state, journey_service, trial_locks
+from utils.duels import active_fighters
 from utils.journal import JournalView
 
 
@@ -145,6 +146,117 @@ class JournalDispatch(DatabaseCase):
         self.assertIn('next exploration charge', visible[0])
         self.assertEqual(view.trip['version'], trip['version'] + 1)
         self.assertEqual(len(await self.rows('SELECT id FROM expeditions')), 1)
+        self.assertFalse(view.mutating)
+
+    async def test_start_rejection_is_private_and_logged_before_slow_refresh(self):
+        view = await self.journal(page='adventure')
+        store = ViewStore(SimpleNamespace())
+        store.add_view(view, 123)
+        click = click_for(view, 'begin')
+        before = (await expeditions.energy(42)).charges
+        active_fighters.add(42)  # A battle started after this page was displayed.
+        refreshing, release = asyncio.Event(), asyncio.Event()
+        snapshot = journal_state.snapshot
+        reads = 0
+
+        async def slow_refresh(uid):
+            nonlocal reads
+            reads += 1
+            if reads == 2:
+                refreshing.set()
+                await release.wait()
+            return await snapshot(uid)
+
+        with patch.object(journal_state, 'snapshot', side_effect=slow_refresh), \
+             patch.object(view, 'publish', new=AsyncMock()) as publish, \
+             self.assertLogs('chibibeasts.journal.input', level='INFO') as logs:
+            task = asyncio.create_task(self.dispatch(store, click))
+            try:
+                await asyncio.wait_for(refreshing.wait(), 5)
+                click.followup.send.assert_awaited_once()
+                reply = click.followup.send.call_args
+                self.assertIn('already in a battle or transfer', reply.args[0])
+                self.assertTrue(reply.kwargs['ephemeral'])
+                self.assertEqual(reply.kwargs['allowed_mentions'].to_dict()['parse'], [])
+                publish.assert_not_awaited()
+                output = '\n'.join(logs.output)
+                self.assertIn('stage=rejected', output)
+                self.assertIn('error_type=FighterBusyError', output)
+                self.assertIn('reason=', output)
+                self.assertIn('already in a battle or transfer', output)
+                self.assertIn('trainer=42', output)
+            finally:
+                release.set()
+                await asyncio.wait_for(task, 10)
+        publish.assert_awaited_once()
+        self.assertEqual(await self.rows('SELECT id FROM expeditions'), [])
+        self.assertEqual((await expeditions.energy(42)).charges, before)
+        self.assertFalse(view.mutating)
+
+    async def test_failed_private_rejection_reply_still_refreshes_live_journal(self):
+        view = await self.journal(page='adventure')
+        click = click_for(view, 'begin')
+        active_fighters.add(42)
+        click.followup.send.side_effect = discord.NotFound(
+            SimpleNamespace(status=404, reason='Not Found'), {'code': 10008, 'message': 'Unknown Message'})
+        with patch.object(view, 'publish', new=AsyncMock()) as publish, \
+             self.assertLogs('chibibeasts.journal', level='INFO') as logs:
+            await view.handle(click, 'begin')
+        publish.assert_awaited_once()
+        click.followup.send.assert_awaited_once()
+        self.assertIn('already in a battle or transfer', view.notice)
+        self.assertIn('code=10008', '\n'.join(logs.output))
+        self.assertFalse(view.closed)
+        self.assertFalse(view.is_finished())
+        self.assertFalse(view.mutating)
+        self.assertEqual(await self.rows('SELECT id FROM expeditions'), [])
+
+    async def test_missing_start_data_logs_traceback_and_rolls_back_charge(self):
+        view = await self.journal(page='adventure')
+        store = ViewStore(SimpleNamespace())
+        store.add_view(view, 123)
+        click = click_for(view, 'begin')
+        before = (await expeditions.energy(42)).charges
+        # Fail inside the real writer transaction after its charge deduction.
+        with patch.object(journey_service, '_material_offers', side_effect=KeyError('missing_internal_material')), \
+             patch.object(view, 'publish', new=AsyncMock()) as publish, \
+             self.assertLogs('chibibeasts.journal', level='INFO') as logs:
+            await self.dispatch(store, click)
+        output = '\n'.join(logs.output)
+        self.assertIn('stage=failed', output)
+        self.assertIn('KeyError', output)
+        self.assertIn('Traceback', output)
+        self.assertNotIn('stage=rejected', output)
+        click.followup.send.assert_awaited_once()
+        self.assertIn('/journal', click.followup.send.call_args.args[0])
+        self.assertNotIn('missing_internal_material', click.followup.send.call_args.args[0])
+        self.assertTrue(click.followup.send.call_args.kwargs['ephemeral'])
+        publish.assert_not_awaited()
+        self.assertEqual(await self.rows('SELECT id FROM expeditions'), [])
+        self.assertEqual((await expeditions.energy(42)).charges, before)
+        self.assertFalse(view.mutating)
+
+    async def test_post_save_data_failure_keeps_one_departure_and_charge(self):
+        view = await self.journal(page='adventure')
+        store = ViewStore(SimpleNamespace())
+        store.add_view(view, 123)
+        click = click_for(view, 'begin')
+        before = (await expeditions.energy(42)).charges
+        with patch.object(view, 'load_page', new=AsyncMock(side_effect=KeyError('missing_page_data'))), \
+             patch.object(view, 'publish', new=AsyncMock()) as publish, \
+             self.assertLogs('chibibeasts.journal', level='INFO') as logs:
+            await self.dispatch(store, click)
+        output = '\n'.join(logs.output)
+        self.assertIn('stage=adventure_saved', output)
+        self.assertIn('stage=failed', output)
+        self.assertIn('KeyError', output)
+        self.assertNotIn('stage=rejected', output)
+        click.followup.send.assert_awaited_once()
+        self.assertIn('saved choices', click.followup.send.call_args.args[0])
+        self.assertNotIn('missing_page_data', click.followup.send.call_args.args[0])
+        publish.assert_not_awaited()
+        self.assertEqual(await self.rows('SELECT id FROM expeditions'), [{'id': view.trip['id']}])
+        self.assertEqual((await expeditions.energy(42)).charges, before - 1)
         self.assertFalse(view.mutating)
 
     async def test_timeout_explains_disabled_controls_in_the_existing_message(self):
