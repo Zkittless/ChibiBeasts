@@ -14,6 +14,7 @@ from utils.catalog import load_catalog
 from utils.habitats import biome_key, starter_training_destination
 from utils.equipment import definitions as equipment_definitions, dormant_label
 from utils.message_transport import durable_message
+from utils import journal_diagnostics
 
 logger = logging.getLogger('chibibeasts.journal')
 PAGES = ('adventure', 'team', 'companions', 'workshop', 'story', 'activities')
@@ -573,6 +574,7 @@ class JournalView(discord.ui.LayoutView):
                 self.art_enabled = False
                 self.render()
                 self.message = await deliver(False)
+        journal_diagnostics.published(self, interaction)
 
     async def load_page(self):
         if self.page == 'story' and not self.story_scene and self.state.player['level'] >= 3:
@@ -606,6 +608,7 @@ class JournalView(discord.ui.LayoutView):
             return await command.callback(command.binding, interaction, **kwargs)
         return await command.callback(interaction, **kwargs)
 
+    @journal_diagnostics.trace
     async def handle(self, interaction, action):
         if interaction.user.id != self.user_id:
             return await interaction.response.send_message('Open /journal for your own adventure.', ephemeral=True)
@@ -654,16 +657,18 @@ class JournalView(discord.ui.LayoutView):
         battle = None
         try:
             await interaction.response.defer()
+            journal_diagnostics.record(interaction, 'acknowledged', action=action)
             if duplicate:
                 return await interaction.followup.send('Your journal is updating. Use the refreshed page.', ephemeral=True)
             async with self.lock:
                 if self.closed:
-                    return
+                    return await interaction.followup.send('This journal has moved. Use the newest journal below.', ephemeral=True)
                 input_id = getattr(interaction, 'id', 0)
                 if input_id and input_id < self.last_input:
                     return await interaction.followup.send('That input came from an older page. Use the current controls.', ephemeral=True)
                 self.last_input = max(self.last_input, input_id)
                 self.state = await journal_state.snapshot(self.user_id)
+                journal_diagnostics.record(interaction, 'state_loaded', action=action)
                 if self.state.trip:
                     self.trip = self.state.trip
                 self.notice = ''
@@ -744,6 +749,7 @@ class JournalView(discord.ui.LayoutView):
                             raise ValueError('Return to the expedition selection page before setting out.')
                         self.trip = await expeditions.begin(self.user_id, 'hollowlight' if self.carnival_selected else self.realm,
                                                            guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
+                        journal_diagnostics.record(interaction, 'adventure_saved', action=action)
                     elif action.startswith('save_destination:'):
                         realm = action.split(':', 1)[1]
                         if self.state.trip or self.carnival_selected or realm != self.realm:
@@ -932,6 +938,7 @@ class JournalView(discord.ui.LayoutView):
                     await self.load_page()
                 except (ValueError, KeyError) as error:
                     self.notice = safe(error)
+                    journal_diagnostics.record(interaction, 'rejected', action=action)
                     self.state = await journal_state.snapshot(self.user_id)
                     self.trip = self.state.trip or self.trip
                 if self.page == 'adventure' and self.trip and self.trip['payload'].get('adventure_version') == 3:
@@ -1001,16 +1008,20 @@ class JournalView(discord.ui.LayoutView):
         async with self.lock:
             if self.message_repurposed:
                 return
+            self.notice = 'This journal has timed out. Open /journal to continue your saved adventure.'
             self.render()
             if self.message:
                 try:
                     async with asyncio.timeout(15):
                         await durable_message(self.message).edit(view=self)
                 except (discord.HTTPException, TimeoutError):
-                    pass
+                    logger.warning('Could not mark expired journal trainer=%s message=%s',
+                                   self.user_id, getattr(self.message, 'id', None), exc_info=True)
 
     async def on_error(self, interaction, error, item):
-        logger.error('Journal input failed', exc_info=error)
+        logger.error('Journal input failed interaction=%s trainer=%s message=%s',
+                     getattr(interaction, 'id', None), self.user_id,
+                     getattr(getattr(interaction, 'message', None), 'id', None), exc_info=error)
         text = 'Your journal could not refresh. Reopen /journal; saved choices and completed rewards are kept.'
         try:
             if interaction.response.is_done():
