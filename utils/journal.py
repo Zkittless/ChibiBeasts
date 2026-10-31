@@ -160,11 +160,21 @@ class JournalView(discord.ui.LayoutView):
         if self.state.trip:
             self.text(f"**Expedition saved** · {journal_log.destination_name(self.state.trip)}\nYour path and gathered supplies are waiting.")
             self.row(self.button('Resume expedition', 'page:adventure', discord.ButtonStyle.success))
+        elif self.state.trial:
+            self.render_saved_trial()
+            self.row(self.button('Resume trial', 'launch:challenge', discord.ButtonStyle.success))
         else:
             self.row(self.button('Set out', 'page:adventure', discord.ButtonStyle.success), self.button('Spend time together', 'launch:play', disabled=not active))
         chapters = story.load_questline()['chapters']
         next_ch = next((c for key, c in chapters.items() if key not in self.state.story['completed_chapters']), None)
         self.text('**Story** · ' + ('Reach trainer Lv.3 to meet Maren.' if player['level'] < 3 else safe(next_ch['name']) if next_ch else 'The hollow is restored.'))
+
+    def render_saved_trial(self):
+        run = self.state.trial
+        progress = run['payload']
+        self.text(f"### Saved Tower Trial · {safe(REALMS[run['destination']]['name'])}\n"
+                  f"{progress['cleared']}/{progress['plan']['total']} waves cleared. Your team is still in this trial.\n"
+                  'Resume your climb or choose **Retreat & bank** before starting an adventure.')
 
     def render_adventure(self):
         trip = self.trip
@@ -172,11 +182,16 @@ class JournalView(discord.ui.LayoutView):
             from utils import journal_adventure
             journal_adventure.render(self, trip)
             return
-        links = [self.button('Battle log', 'page:battle_log'), self.button('Tower Trials', 'launch:challenge')]
+        links = [self.button('Battle log', 'page:battle_log'),
+                 self.button('Resume trial' if self.state.trial else 'Tower Trials', 'launch:challenge',
+                             discord.ButtonStyle.success if self.state.trial else discord.ButtonStyle.secondary)]
         if hollowlight_panel.visible(self):
             links.append(self.button('Carnival', 'page:carnival'))
         self.row(*links)
         if not trip or trip['status'] == 'complete':
+            if self.state.trial:
+                self.render_saved_trial()
+                return
             if trip:
                 self.text(f"**Back from {journal_log.destination_name(trip)}** · Results in Battle log.")
             e = self.state.energy
@@ -747,6 +762,8 @@ class JournalView(discord.ui.LayoutView):
                     elif action == 'begin':
                         if self.page != 'adventure':
                             raise ValueError('Return to the expedition selection page before setting out.')
+                        if self.state.trial:
+                            raise ValueError('Your team is in a saved Tower Trial. Choose Resume trial, then finish it or Retreat & bank before setting out.')
                         self.trip = await expeditions.begin(self.user_id, 'hollowlight' if self.carnival_selected else self.realm,
                                                            guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
                         journal_diagnostics.record(interaction, 'adventure_saved', action=action)
@@ -1068,7 +1085,7 @@ async def open_journal(interaction, *, bot=None, page='home', realm=None, notice
     if carnival_requested and not carnival_selected:
         realm_notice = 'The Hollowlight Carnival is closed for new adventures. Your saved trip and owned rewards remain available.'
     notice = realm_notice or notice
-    if begin_expedition and not state.trip and (not carnival_requested or carnival_selected):
+    if begin_expedition and not state.trip and not state.trial and (not carnival_requested or carnival_selected):
         try:
             await expeditions.begin(interaction.user.id, 'hollowlight' if carnival_selected else realm, guild_id=getattr(interaction.guild, 'id', 0), adventure_version=3)
         except ValueError as error:

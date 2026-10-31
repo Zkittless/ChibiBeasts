@@ -314,11 +314,19 @@ async def current(user_id, *, now=None):
             if run and run['expires_at'] <= now:
                 await _settle(db, run, 'expired', now)
                 await _save(db, run, now)
+            # Reconcile this trainer's cache with both kinds of saved run.
+            # An expired/absent trial must not release a surviving adventure.
+            async with db.execute("SELECT 1 FROM trial_runs WHERE user_id=? AND status IN ('between','fighting','paused') "
+                                  "UNION ALL SELECT 1 FROM expeditions WHERE user_id=? AND status IN ('active','battle') "
+                                  "AND json_extract(payload,'$.adventure_version')=3 LIMIT 1", (user_id, user_id)) as cursor:
+                reserved = bool(await cursor.fetchone())
             await db.commit()
-            if run and run['status'] == 'complete':
-                trial_locks.unlock(user_id)
-            elif run:
+            # Publish the cache only after commit, while still holding the
+            # trainer's state lock. Never reset unrelated combat reservations.
+            if reserved:
                 trial_locks.lock(user_id)
+            else:
+                trial_locks.unlock(user_id)
     if run and run['status'] == 'complete':
         await _after_commit(run)
         return None
