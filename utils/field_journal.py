@@ -235,7 +235,7 @@ def fighter_panel(image, fighter, source, x, hp, mp, visible):
     health = resource_bar(image, (x + 78, 108, x + 290, 138), hp, fighter.max_hp, 'HP', HEALTH if hp / fighter.max_hp > .3 else '#e6ad8b')
     mana = resource_bar(image, (x + 78, 142, x + 290, 172), mp, fighter.max_mana, 'MP', MANA)
     ult = ultimate(image, x + 78, 178, visible.charges)
-    state = 'KO' if visible.hp <= 0 else visible.status or ('GUARD' if visible.guard else 'SHIELD' if visible.shield else fighter.element)
+    state = 'KO' if visible.hp <= 0 else visible.status or ('GUARD' if visible.guard else 'SHIELD' if visible.shield else 'HEXFIRE' if getattr(visible, 'form', '') == 'hexfire' else fighter.element)
     text(ImageDraw.Draw(image), state.upper(), (x + 9, 148, x + 67, 180), size=11, fill=MUTED, align='center')
     return health, mana, ult
 

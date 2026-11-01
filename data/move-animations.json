@@ -3781,6 +3781,48 @@
         "accent": 55352,
         "ultimate": true
       }
+    },
+    "hexpurr": {
+      "Ember Claw": {
+        "family": "slash",
+        "palette": "fire",
+        "motion": "slash",
+        "variant": 0,
+        "motif": "fang",
+        "sequence": "claw_cross",
+        "accent": 8671,
+        "ultimate": false
+      },
+      "Lanterns Out": {
+        "family": "slash",
+        "palette": "fire",
+        "motion": "dash",
+        "variant": 0,
+        "motif": "fang",
+        "sequence": "hexpurr_lanterns_out",
+        "accent": 8672,
+        "ultimate": false
+      },
+      "Spirit Shelter": {
+        "family": "guard",
+        "palette": "shadow",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "fang",
+        "sequence": "mirror_decoy",
+        "accent": 8673,
+        "ultimate": false
+      },
+      "Midnight Pounce": {
+        "family": "dash",
+        "palette": "thread",
+        "motion": "dash",
+        "variant": 0,
+        "motif": "fang",
+        "sequence": "ragnarok_fangs",
+        "accent": 8674,
+        "ultimate": true
+      }
     }
   }
 }

@@ -1170,6 +1170,19 @@
       "reviewer": "costume art agent",
       "reviewed_at": "2026-10-30T03:50:15.459940+00:00",
       "production_sha256": "4922e7fcb5f7b105ae09f5ec604e7a8bc72494b852c093ac71f6329889d2bef5"
+    },
+    "hexpurr": {
+      "method": "built-in image_gen__imagegen matched two-form costume edit",
+      "source_artifact": "exec-462b8ae1-b8de-4e87-be57-8465005fb276.png",
+      "source_sha256": "ad7867a2d5526c762fee40a50f4f6d337cf02d96dee892a74dfc9bf5c992cfdc",
+      "canonical_file": "card_art/hexpurr.png",
+      "canonical_sha256": "6e0f44d49f0adf0bcfe09820b1b0453bedc4a39bae13f0812d52a6dcce7c81d7",
+      "edit_reference_sha256": "f97cae9e7492e9ccccd01bef5f67c2386102861076bf55401c3ba0288f1ca3b4",
+      "production_sha256": "cef54ebf772511cd709439c1a2131f0ef38d368ddf15f9d48c1d91cb494b9a27",
+      "prompt": "Create a matched two-character wardrobe PREVIEW on true transparent background: the approved Hexpurr cat in references one and two, both wearing the SAME fitted Little Ghost Costume, inspired by the third reference's existing game costume. TWO COMPLETE figures only, side by side in a 1-row 2-column atlas. LEFT: the exact orange-primary black-secondary cat, amber eyes, dark smoky ghost-tail edged orange. RIGHT: the exact black-primary crimson-red-secondary cat, red eyes and crimson spirit-tail. Same body size, same seated three-quarter pose with one raised forepaw, same direction, same outfit silhouette and pattern. Preserve Hexpurr's cute face, tiny fang, huge triangular ears, forehead crescent, flame ear tips, paws, friendly ghost-tail face. Costume: a small warm-ivory linen ghost poncho with soft pale-lavender shadow folds, a snug open-face hood (face/crescent fully visible), tailored openings so both ears and flames stay free, same scalloped pointed rag hem, forepaw openings, and ONE tiny stitched orange jack-o-lantern patch at the lower front hem on BOTH forms. Tail emerges through its own back opening and remains fully visible. No additional armor, jewelry, hats, belts, chains, accessories, magic aura or props. The cloth remains IDENTICAL warm ivory/lavender on both forms; it does not turn orange, black or red. Matched cut, matched hem, matched pumpkin patch placement, matched fold direction and hood shape. ChibiBeasts detailed chunky pixel fantasy sprite style of the approved cats. Generous transparent margin around EVERY extremity: each full figure including flame tips and ghost tail fits in central 75% of its own half. No text, captions, labels, dividers or scene background.",
+      "reviewer": "Codex visual review; user approved both matching costumes",
+      "reviewed_at": "2026-11-01T05:58:00.046494+00:00",
+      "review_notes": "Both forms retain matching ivory hood, lavender folds, scalloped hem and pumpkin patch. Faces, crescents, ears, flames, paws and entire ghost tails remain visible. True alpha and transparent source margins verified. User approved before integration."
     }
   }
 }

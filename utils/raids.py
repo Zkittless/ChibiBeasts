@@ -407,6 +407,7 @@ class RaidSession:
 
     async def _flush_refresh(self):
         while not self.closed and self.message:
+            idle_delay = 0
             if self.refresh_interval:
                 with suppress(TimeoutError):
                     async with asyncio.timeout(self.refresh_interval):
@@ -430,7 +431,17 @@ class RaidSession:
                     logging.getLogger(__name__).warning('Raid display update failed', exc_info=True)
                     published = True
                 if published and revision == self._refresh_revision:
-                    return
+                    idle_delay = self.presentation.idle_delay if self.presentation else 0
+                    if not idle_delay:
+                        return
+            if idle_delay:
+                # One ambient attachment after a resolved clip; its GIF loops
+                # on the client. Player callbacks hold neither this wait nor
+                # the render lock, and urgent boss warnings interrupt it.
+                with suppress(TimeoutError):
+                    async with asyncio.timeout(idle_delay + .2):
+                        await self._art_urgent.wait()
+                self._art_urgent.set()
 
     async def _stop_refresh(self):
         if self._refresh_task is not None:
@@ -532,7 +543,7 @@ class RaidSession:
                         state['status_turns'] = 0
                         combat.heal(state, int(state['max_hp'] * 0.1))
                 else:
-                    base = int(self.enemy['attack'] * (0.65 if solved else 1.8) * 100 / (100 + state['defense']))
+                    base = int(self.enemy['attack'] * (0.65 if solved else 1.8) * 100 / (100 + combat.effective_defense(state)))
                     if kind == 'echo':
                         base += min(int(self.damage.get(uid, 0) * 0.01), int(state['max_hp'] * .12))
                     combat.resolve_hit(self.enemy, state, base, log)
@@ -649,6 +660,8 @@ class RaidSession:
             ult = kind == 'ultimate'
             move = state['ultimate'] if ult else state['moves'][index]
             if not combat.can_use(state, move, ult):
+                if move == 'Lanterns Out' and state.get('hexfire_used'):
+                    raise ValueError('Hexpurr has already used Lanterns Out in this battle.')
                 raise ValueError('Not enough mana or ultimate charge. Attack or guard to build resources.')
             if combat.move_spec(state, move, ult).get('heal_percent'):
                 animation_kind = 'heal'
@@ -674,6 +687,8 @@ class RaidSession:
                     self.support[uid] += max(1, int(state['max_hp'] * 0.04))
             else:
                 animation_kind = 'status'
+                if state.get('beast_id') == 'hexpurr':
+                    combat.end_turn(state, self.enemy, log)
             self.last_event = ' · '.join(log[-2:])[-500:]
         self.last[key] = self.clock()
         pct = self.enemy['hp'] / self.enemy['max_hp']

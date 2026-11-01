@@ -237,7 +237,21 @@ def move_spec(state, name, ultimate=False):
     return state.get('move_effects', {}).get(name, {'power': 1, 'mana_cost': 0, 'mana_restore': 10, 'description': 'Reliable attack.'})
 
 def can_use(state, name, ultimate=False):
+    if state.get('beast_id') == 'hexpurr' and name == 'Lanterns Out' and state.get('hexfire_used'):
+        return False
     return state['mana'] >= move_spec(state, name, ultimate).get('mana_cost', 0) and (not ultimate or state.get('ultimate_charges', 0) >= 3)
+
+def hexfire_active(state):
+    return state.get('beast_id') == 'hexpurr' and state.get('hexfire_turns', 0) > 0 and state['hp'] > 0
+
+
+def effective_defense(state):
+    return state['defense'] * (.9 if hexfire_active(state) else 1)
+
+
+def hexfire_damage_multiplier(state):
+    return 1.15 if hexfire_active(state) else 1
+
 
 def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
     spec = move_spec(attacker, move, is_ultimate)
@@ -247,7 +261,7 @@ def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
     if attacker.get('status') == 'blind' and rng().random() < attacker.get('blind_miss_chance',.3):
         return (0, False, 1.0, 0)
     effect = passive(attacker)
-    defense = defender['defense']
+    defense = effective_defense(defender)
     if effect.get('true_damage') or rng().random() < effect.get('defense_pierce_chance', 0):
         defense = 0
     else:
@@ -278,6 +292,7 @@ def calc_damage(attacker, defender, move, is_ultimate=False, perks=None):
             power *= 1.1
     damage = attacker['attack'] * 100 / (100 + max(0, defense)) * mult * power * crit_multiplier
     damage *= attacker.get('damage_multiplier', 1) * attacker.get('focus', 1)
+    damage *= hexfire_damage_multiplier(attacker)
     if attacker.get('status') == 'weaken':
         damage *= 0.75
     if attacker.get('attack_double_below_25hp') and attacker['hp'] <= attacker['max_hp'] * 0.25:
@@ -387,6 +402,13 @@ def resolve_move(attacker, defender, name, ultimate, log, *, grant_charge=True):
     attacker['dp_crit_charges'] = max(0, attacker.get('dp_crit_charges', 0) + charge)
     actual = resolve_hit(attacker, defender, damage, log) if damage > 0 else 0
     log.append(f"{('⭐ ' if crit else '')}{attacker['name']} uses {name} → {actual} damage{(' · effective' if mult > 1 else ' · resisted' if mult < 1 else '')}.")
+    if attacker.get('beast_id') == 'hexpurr' and name == 'Lanterns Out' and not ultimate:
+        # The strike uses Lantern stats. Awakening succeeds even if that hit
+        # misses or is absorbed, and never refills HP, MP or ultimate charges.
+        attacker['hexfire_used'] = True
+        attacker['hexfire_turns'] = 3
+        attacker['hexfire_last_action'] = attacker['action_count']
+        log.append('Hexfire: +15% damage / −10% defense / 3 Hexpurr turns.')
     if not actual:
         return 0
     effect = passive(attacker)
@@ -410,6 +432,11 @@ def resolve_move(attacker, defender, name, ultimate, log, *, grant_charge=True):
     return actual
 
 def end_turn(state, opp, log):
+    if state.get('hexfire_turns', 0) and state['action_count'] > state.get('hexfire_last_action', -1):
+        state['hexfire_last_action'] = state['action_count']
+        state['hexfire_turns'] -= 1
+        if not state['hexfire_turns']:
+            log.append('Hexpurr’s hexfire settles. Its lantern glows orange again.')
     effect = passive(state)
     if effect.get('corruption_drain_percent') and state['hp'] > 0 and opp['hp'] > 1:
         opp['hp'] = max(1, opp['hp'] - percent_damage(opp, effect['corruption_drain_percent'], state, .12))

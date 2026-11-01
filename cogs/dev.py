@@ -146,6 +146,8 @@ class Dev(commands.Cog):
                 return await interaction.followup.send(
                     f"✦ Beast `{beast_id}` not found. Check `/codex` for valid IDs.", ephemeral=True
                 )
+        if beast_id == 'hexpurr':
+            return await interaction.followup.send('Use `/dev give_hexpurr discord_id:…` for this personal exclusive.', ephemeral=True)
         await get_or_create_player(member.id, str(member))
         await add_beast_to_player(member.id, {**beast, "caught_from": "dev"})
         rarity_emoji = RARITY_EMOJI.get(beast["rarity"], "⚪")
@@ -153,6 +155,22 @@ class Dev(commands.Cog):
             f"✅ Added {rarity_emoji} **{beast['name']}** to **{member.display_name}**'s collection.",
             ephemeral=True
         )
+
+    @dev_group.command(name="give_hexpurr", description="[DEV] Bind Hexpurr to one trainer at their lead companion’s level")
+    @app_commands.describe(discord_id="Recipient’s numeric Discord user ID; server membership is not required")
+    @dev_only()
+    async def give_hexpurr(self, interaction: discord.Interaction, discord_id: str):
+        await interaction.response.defer(ephemeral=True)
+        from utils.exclusive_companions import give_hexpurr
+        try:
+            row, created = await give_hexpurr(discord_id, granted_by=interaction.user.id)
+        except ValueError as error:
+            return await interaction.followup.send(str(error), ephemeral=True, allowed_mentions=discord.AllowedMentions.none())
+        verb = 'Granted' if created else 'Already owned:'
+        await interaction.followup.send(
+            f"👑 {verb} **Hexpurr #{row['player_number']} · Lv. {row['level']}** to trainer `{row['user_id']}`.\n"
+            'Developer Exclusive · Legendary stat growth · Bound to this trainer.',
+            ephemeral=True, allowed_mentions=discord.AllowedMentions.none())
 
     # ── /dev give_ouroboros ───────────────────────────────────────────────
     @app_commands.command(name="give_ouroboros", description="[DEV] Grant Desync the Infinite — your personal beast 👑")
@@ -620,7 +638,10 @@ class Dev(commands.Cog):
             else:
                 # Level down — reset to base stats then apply growth from 1
                 base = beast_data.get("base_stats", {})
-                growth = calc_stat_growth({"rarity": beast_row["rarity"], "caught_from": beast_row.get("caught_from", "wild")}, max(0, level - 1))
+                if beast_row['beast_id'] == 'hexpurr':
+                    from utils.dispositions import apply_disposition
+                    base = apply_disposition(base, beast_row.get('disposition'))
+                growth = calc_stat_growth(dict(beast_row), max(0, level - 1))
                 new_hp  = base.get("hp", 80)  + growth.get("hp", 0)
                 new_atk = base.get("attack", 30) + growth.get("attack", 0)
                 new_def = base.get("defense", 25) + growth.get("defense", 0)

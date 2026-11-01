@@ -27,7 +27,7 @@ def duration(before, after, events):
     return round(raid.CLIP_SECONDS*1000)+(fx.BOSS_RETREAT_MS if departing(before,after) else 0) if events else 0
 
 
-def draw_frame(before, after, events=(), t=1):
+def draw_frame(before, after, events=(), t=1, ambient_seconds=0):
     before=before or after
     events=departure_events(before,after,events)
     animated=bool(events) and not (after.outcome and before.outcome==after.outcome)
@@ -68,7 +68,7 @@ def draw_frame(before, after, events=(), t=1):
         prior=old.get(member.uid,member)
         changed=prior.slot!=member.slot or prior.fighter.species!=member.fighter.species
         active=prior.fighter if animated and move_t<.48 else member.fighter
-        source=raid.fitted(active.species,place.size,active.armor_id)
+        source=raid.fitted(active.species,place.size,active.armor_id,active.form)
         home=fx.Pose(place.x,place.feet,size=place.size,flip=place.x>320,height=source.height)
         pose=home
         group=groups.get(member.uid,{})
@@ -98,7 +98,7 @@ def draw_frame(before, after, events=(), t=1):
     back=fx.Effects(field.size)
     if animated and not retreat_t:
         for member,prior,active,home,pose,source,animation,group in actors:
-            if pose and animation:back.effect(animation,pose,boss_home,move_t,back=True,scale=.65)
+            if pose and animation:back.effect(animation,pose,boss_home,move_t,back=True,scale=.65,home=home)
             if pose and boss_animation and member.fighter.hp < prior.fighter.hp:
                 back.effect(boss_animation,boss_home,home,move_t,back=True,scale=.55)
     field.alpha_composite(back.image)
@@ -115,7 +115,14 @@ def draw_frame(before, after, events=(), t=1):
             fx.paint_echoes(field, source, animation, home, boss_home, move_t)
         draw=ImageDraw.Draw(field)
         draw.ellipse((pose.x-home.size*.31,home.feet-3,pose.x+home.size*.31,home.feet+9),fill='#172132')
-        fx.paint_sprite(field,source,pose)
+        changed = prior.slot != member.slot or prior.fighter.species != member.fighter.species
+        transforming = bool(animation and animation.sequence == 'hexpurr_lanterns_out' and not changed)
+        if active.species == 'hexpurr':
+            art.paint_fighter(field, active if changed else member.fighter, pose,
+                              before=active if changed else prior.fighter, transforming=transforming,
+                              t=move_t, seconds=ambient_seconds, aura=not after.outcome)
+        else:
+            fx.paint_sprite(field,source,pose)
     front=fx.Effects(field.size)
     if boss_pose and retreat_t and after.boss.hp<=0:front.departure(boss_pose,retreat_t,after.boss.species,boss=True)
     for member,prior,active,home,pose,source,animation,group in actors:
@@ -125,7 +132,7 @@ def draw_frame(before, after, events=(), t=1):
         if active.hp>0 and (active.guard or active.shield):
             front.ring(pose.x,pose.feet-home.size*.52,home.size*.49,home.size*.57,'#d6baff' if active.guard else '#a5d7ef',.7)
         if not animated or retreat_t:continue
-        if animation:front.effect(animation,pose,boss_home,move_t,scale=.65 if len(actors)>4 else .8)
+        if animation:front.effect(animation,pose,boss_home,move_t,scale=.65 if len(actors)>4 else .8,home=home)
         kinds=group.get('kinds',set())
         if 'weave' in kinds and .12<move_t<.9:
             front.line([(pose.x,pose.feet-50),(320,310),(320,250)],'#e8d393',3,.75)
@@ -155,5 +162,5 @@ def draw_frame(before, after, events=(), t=1):
         art.label(draw,((box[0]+box[2]-width)/2,box[1]+1),text,28)
     image.alpha_composite(field,(0,raid.HUD))
     detail=f'{after.boss.name} retreats.' if retreat_t and after.boss.hp<=0 else 'The party steps back.' if retreat_t and after.outcome and after.outcome!='victory' else 'The party acts together.' if animated and move_t<.48 and before.boss.hp>0 else after.last_event or warning
-    ui.journal(image,raid.HUD+raid.HEIGHT,warning,(detail,))
+    ui.journal(image,raid.HUD+raid.HEIGHT,warning,tuple(detail.split(' · ',1)))
     return image.convert('RGB')

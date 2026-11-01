@@ -4925,6 +4925,54 @@
           "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
         }
       }
+    },
+    "hexpurr": {
+      "id": "hexpurr",
+      "name": "Hexpurr",
+      "title": "Keeper of the Last Lantern",
+      "rarity": "dev",
+      "growth_rarity": "legendary",
+      "type": "shadow",
+      "catch_rate": 0,
+      "wild_encounter": false,
+      "exclusive_grant": true,
+      "evolution": null,
+      "base_stats": {
+        "hp": 175,
+        "attack": 110,
+        "defense": 90,
+        "speed": 100,
+        "mana": 110
+      },
+      "moves": [
+        "Ember Claw",
+        "Lanterns Out",
+        "Spirit Shelter"
+      ],
+      "ultimate": "Midnight Pounce",
+      "description": "Hexpurr guides souls lost in the Hollowlight Carnival. Its orange flame leads them home. When something follows them, it draws the spirit in its tail into its crescent mark and becomes a guardian wreathed in crimson hexfire.",
+      "encounter_situations": [],
+      "move_effects": {
+        "Ember Claw": {
+          "power": 1,
+          "mana_cost": 0,
+          "mana_restore": 10,
+          "description": "Reliable attack; restore 10 mana."
+        },
+        "Lanterns Out": {
+          "power": 0.8,
+          "mana_cost": 20,
+          "description": "Once per battle: a modest strike, then Hexfire for Hexpurr’s next 3 turns. Deal 15% more damage with 10% less defense. HP and mana carry over."
+        },
+        "Spirit Shelter": {
+          "power": 0,
+          "mana_cost": 0,
+          "mana_restore": 20,
+          "guard_percent": 55,
+          "focus_multiplier": 1.4,
+          "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
+        }
+      }
     }
   },
   "rarity_rates": {

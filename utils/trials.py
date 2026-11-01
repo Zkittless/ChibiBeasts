@@ -196,7 +196,7 @@ async def _resources(db, run, now):
                           max(1, state['max_mana']), run['user_id'], state['id']))
         if hp <= 0:
             until = (datetime.fromtimestamp(now, timezone.utc) + timedelta(
-                seconds=storage.KO_RECOVERY_SECONDS.get(state.get('rarity'), 1800))).isoformat()
+                seconds=storage.KO_RECOVERY_SECONDS.get(storage.gameplay_rarity(state), 1800))).isoformat()
             await db.execute('UPDATE player_beasts SET knocked_out_until=COALESCE(knocked_out_until,?) WHERE user_id=? AND id=?',
                              (until, run['user_id'], state['id']))
     lead = next((state for state in run['payload']['party'] if state['id'] == run['payload']['lead_id']), None)

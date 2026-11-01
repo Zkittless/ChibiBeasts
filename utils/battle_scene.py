@@ -5,6 +5,7 @@ import math
 from PIL import ImageDraw
 
 from utils import battle_art as art, field_journal as ui, move_animations as fx
+from utils import hexpurr_art
 
 
 def duration(before, after, action):
@@ -30,9 +31,14 @@ def entering_pose(home, side, t):
                    feet=home.feet - abs(math.sin(progress * math.pi * 3)) * 6)
 
 
-def draw_frame(before, after, realm, action=None, t=1, journal=()):
+def transforming(action, index, old, new):
+    return bool(action and action.actor == index and action.name == 'Lanterns Out'
+                and old.species == new.species == 'hexpurr' and not old.form and new.form == 'hexfire')
+
+
+def draw_frame(before, after, realm, action=None, t=1, journal=(), ambient_seconds=0):
     if any(f.party for f in before + after):
-        return draw_team_frame(before, after, realm, action, t, journal)
+        return draw_team_frame(before, after, realm, action, t, journal, ambient_seconds)
     image = art.field_background(realm, art.TOTAL_HEIGHT).copy()
     move_t, departure_t = timing(before, after, action, t)
     entering = bool(action and action.kind == 'enter')
@@ -41,11 +47,12 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
     ui.heading(image, title, art.REALMS[realm])
     for i, (old, new) in enumerate(zip(before, after)):
         visible = new if move_t >= fx.IMPACT else old
-        ui.fighter_panel(image, new, art.sprite(new.species, new.armor_id), 10+i*320,
+        portrait = hexpurr_art.visible(old, new, move_t, transforming(action, i, old, new))
+        ui.fighter_panel(image, new, art.fighter_sprite(portrait), 10+i*320,
                          art.interpolate(old.hp, new.hp, move_t), art.interpolate(old.mana, new.mana, move_t), visible)
     field = image.crop((0, art.HUD, art.WIDTH, art.HUD+art.HEIGHT))
     homes = [fx.Pose(162 if i==0 else 478,218,flip=bool(i),height=source.height if source else 130)
-             for i,fighter in enumerate(after) for source in (art.sprite(fighter.species, fighter.armor_id),)]
+             for i,fighter in enumerate(after) for source in (art.fighter_sprite(fighter),)]
     poses = list(homes)
     actor = action.actor if action else 0
     animation = fx.profile(before[actor].species, action.name, action.kind, action.ultimate) if action and not entering else None
@@ -54,9 +61,9 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
         if after[1-actor].hp < before[1-actor].hp:
             poses[1-actor] = fx.reaction(animation, homes[1-actor], homes[actor], move_t)
         back=fx.Effects(field.size)
-        back.effect(animation, poses[actor], poses[1-actor], move_t, back=True)
+        back.effect(animation, poses[actor], poses[1-actor], move_t, back=True, home=homes[actor])
         field.alpha_composite(back.image)
-        fx.paint_echoes(field, art.sprite(before[actor].species, before[actor].armor_id),
+        fx.paint_echoes(field, art.fighter_sprite(before[actor]),
                        animation, homes[actor], homes[1-actor], move_t)
     visible_poses=[]
     for i,(old,new) in enumerate(zip(before,after)):
@@ -81,16 +88,18 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
             layer=fx.Effects(field.size)
             layer.draw.ellipse((pose.x-58,homes[i].feet-6,pose.x+58,homes[i].feet+10),fill=(10,20,28,shadow_alpha))
             field.alpha_composite(layer.image)
-        source=art.sprite(new.species, new.armor_id)
+        source=art.fighter_sprite(new)
         if source is None:
             draw=ImageDraw.Draw(field)
             draw.ellipse((pose.x-35,pose.feet-75,pose.x+35,pose.feet),fill='#b7a8dc',outline='#ede6ff',width=3)
             art.label(draw,(pose.x-7,pose.feet-52),'?',25,'#242139')
         else:
-            fx.paint_sprite(field,source,pose)
+            art.paint_fighter(field, new, pose, before=old, t=move_t,
+                              transforming=transforming(action, i, old, new), seconds=ambient_seconds,
+                              aura=not (complete and (not action or t >= 1)))
     front=fx.Effects(field.size)
     if animation and not departure_t:
-        front.effect(animation,poses[actor],poses[1-actor],move_t,scale=1.12 if action.ultimate else 1)
+        front.effect(animation,poses[actor],poses[1-actor],move_t,scale=1.12 if action.ultimate else 1,home=homes[actor])
     for i,(old,new) in enumerate(zip(before,after)):
         pose=visible_poses[i]
         if pose is None:
@@ -109,7 +118,7 @@ def draw_frame(before, after, realm, action=None, t=1, journal=()):
                 continue
             delta=new.hp-old.hp
             if delta:
-                source=art.sprite(new.species, new.armor_id)
+                source=art.fighter_sprite(new)
                 height=source.height if source else 130
                 value=f'{delta:+,}'
                 width=draw.textlength(value,font=art.font(23))
@@ -201,20 +210,20 @@ def assist_profile(support, effect):
     return fx.Animation(family, palette, 'cast', sequence=sequence)
 
 
-def _paint_fighter(field, fighter, pose, *, shadow=True):
+def _paint_fighter(field, fighter, pose, *, shadow=True, **animation):
     if shadow:
         layer = fx.Effects(field.size)
         width = pose.size * .32
         layer.draw.ellipse((pose.x-width, pose.feet-5, pose.x+width, pose.feet+7),
                            fill=(10, 20, 28, round(90 * pose.alpha)))
         field.alpha_composite(layer.image)
-    source = art.sprite(fighter.species, fighter.armor_id)
+    source = art.fighter_sprite(fighter)
     if source is None:
         draw = ImageDraw.Draw(field)
         draw.ellipse((pose.x-25, pose.feet-65, pose.x+25, pose.feet), fill='#b7a8dc', outline='#ede6ff', width=2)
         art.label(draw, (pose.x-7, pose.feet-50), '?', 25, '#242139')
     else:
-        fx.paint_sprite(field, source, pose)
+        art.paint_fighter(field, fighter, pose, **animation)
 
 
 def _reserve_cards(field, before, after, t, *, support_id='', visiting=False):
@@ -232,7 +241,7 @@ def _reserve_cards(field, before, after, t, *, support_id='', visiting=False):
         old = previous.get(fighter.member_id, fighter)
         visible = fighter if t >= fx.IMPACT else old
         ui.panel(field, box, corners=False)
-        source = art.sprite(fighter.species, fighter.armor_id)
+        source = art.fighter_sprite(visible)
         if not (visiting and fighter.member_id == support_id):
             if source is not None:
                 pose = fx.Pose((left+right)/2, top+58, size=50, alpha=.35 if visible.hp <= 0 else 1)
@@ -254,7 +263,7 @@ def _reserve_cards(field, before, after, t, *, support_id='', visiting=False):
             ui.text(draw, 'KO', (left+8, top+28, right-8, top+46), size=15, fill='#ecc4ab', align='center', outline=True)
 
 
-def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
+def draw_team_frame(before, after, realm, action=None, t=1, journal=(), ambient_seconds=0):
     image = art.field_background(realm, art.TOTAL_HEIGHT).copy()
     move_t, departure_t = timing(before, after, action, t)
     switching = bool(action and action.kind == 'swap')
@@ -268,11 +277,12 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
     ui.heading(image, title, art.REALMS[realm])
     for i, (old, new) in enumerate(zip(before, after)):
         shown, hp, mp, visible = panel_state(old, new, move_t)
-        ui.fighter_panel(image, shown, art.sprite(shown.species, shown.armor_id), 10+i*320, hp, mp, visible)
+        portrait = hexpurr_art.visible(old, new, move_t, transforming(action, i, old, new)) if same_member(old, new) else shown
+        ui.fighter_panel(image, shown, art.fighter_sprite(portrait), 10+i*320, hp, mp, visible)
     field = image.crop((0, art.HUD, art.WIDTH, art.HUD+art.HEIGHT))
     homes = []
     for i, fighter in enumerate(after):
-        source = art.sprite(fighter.species, fighter.armor_id)
+        source = art.fighter_sprite(fighter)
         x, feet, size = TEAM_HOMES[i]
         height = (source.height * size/max(source.size)) if source else 130
         homes.append(fx.Pose(x, feet, size=size, flip=bool(i), height=height))
@@ -284,9 +294,9 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
         if after[1-actor].hp < before[1-actor].hp:
             poses[1-actor] = fx.reaction(animation, homes[1-actor], homes[actor], move_t)
         back = fx.Effects(field.size)
-        back.effect(animation, poses[actor], poses[1-actor], move_t, back=True)
+        back.effect(animation, poses[actor], poses[1-actor], move_t, back=True, home=homes[actor])
         field.alpha_composite(back.image)
-        fx.paint_echoes(field, art.sprite(before[actor].species, before[actor].armor_id),
+        fx.paint_echoes(field, art.fighter_sprite(before[actor]),
                        animation, homes[actor], homes[1-actor], move_t)
     support = None
     support_pose = None
@@ -310,7 +320,7 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
             visible_poses.append(cast[0][1] if cast else None)
             for fighter, pose in cast:
                 if fighter.hp > 0:
-                    _paint_fighter(field, fighter, pose)
+                    _paint_fighter(field, fighter, pose, seconds=ambient_seconds)
             continue
         hidden = new.hp <= 0 and (old.hp <= 0 or not action or t >= 1)
         pose = poses[i]
@@ -322,12 +332,14 @@ def draw_team_frame(before, after, realm, action=None, t=1, journal=()):
             pose = replace(homes[i], x=homes[i].x+(-1 if i == 0 else 1)*240*(1-fx.smooth((move_t-.48)/.42)), alpha=1 if move_t >= .48 else 0)
         visible_poses.append(None if hidden else pose)
         if not hidden:
-            _paint_fighter(field, new, pose)
+            _paint_fighter(field, new, pose, before=old, t=move_t,
+                           transforming=transforming(action, i, old, new), seconds=ambient_seconds,
+                           aura=not (complete and (not action or t >= 1)))
     if support_pose:
-        _paint_fighter(field, support, support_pose)
+        _paint_fighter(field, support, support_pose, seconds=ambient_seconds)
     front = fx.Effects(field.size)
     if animation and not departure_t:
-        front.effect(animation, poses[actor], poses[1-actor], move_t, scale=1.12 if action.ultimate else 1)
+        front.effect(animation, poses[actor], poses[1-actor], move_t, scale=1.12 if action.ultimate else 1, home=homes[actor])
     if support_pose and .3 <= move_t <= .72 and not departure_t:
         effect = action.support_effect or 'attack'
         animation = assist_profile(support, effect)

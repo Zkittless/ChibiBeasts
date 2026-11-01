@@ -88,6 +88,7 @@ class Fighter:
     member_id: int | str = ''
     party: tuple['Fighter', ...] = ()
     assist_meter: int = 0
+    form: str = ''
 
 
 def snapshot(states):
@@ -99,6 +100,7 @@ def snapshot(states):
             s.get('status') or '', bool(s.get('guard')), s.get('shield', 0),
             s.get('beast_type', ''), bool(s.get('revive_used')), s.get('armor_id') or '',
             s.get('id', ''), party, max(0, min(100, int(s.get('_assist_meter', 0)))),
+            'hexfire' if s.get('beast_id') == 'hexpurr' and s.get('hexfire_turns', 0) > 0 else '',
         )
 
     # Party metadata is read once, without following references back to live
@@ -135,6 +137,8 @@ class Artwork:
     data: bytes
     extension: str
     seconds: float = 0
+    palette: bytes | None = None
+    ambient_end: float = 0
 
 
 @lru_cache(maxsize=len(REALMS))
@@ -149,8 +153,11 @@ def field_background(realm, height):
 
 
 @lru_cache(maxsize=256)
-def sprite(species, armor_id=''):
+def sprite(species, armor_id='', form=''):
     # Canonical IDs from the packaged manifest; never load a user-supplied path.
+    if species == 'hexpurr':
+        from utils import hexpurr_art
+        return hexpurr_art.sprite(form, armor_id)
     if armor_id:
         from utils import armor_art
         from utils import cosmetics
@@ -180,6 +187,21 @@ def sprite(species, armor_id=''):
         return None
 
 
+def fighter_sprite(fighter):
+    return sprite(fighter.species, fighter.armor_id, fighter.form)
+
+
+def paint_fighter(image, fighter, pose, *, before=None, transforming=False, t=1, seconds=0, aura=True):
+    from utils import move_animations as fx
+    if fighter.species == 'hexpurr':
+        from utils import hexpurr_art
+        return hexpurr_art.paint(image, before or fighter, fighter, pose, t=t,
+                                transforming=transforming, seconds=seconds, aura=aura)
+    source = fighter_sprite(fighter)
+    if source is not None:
+        fx.paint_sprite(image, source, pose)
+
+
 def font(size):
     return ui.font(size, display=True)
 
@@ -205,9 +227,9 @@ def interpolate(before, after, t):
     return round(before + (after - before) * transition(t))
 
 
-def frame(before, after, realm, action=None, t=1, journal=()):
+def frame(before, after, realm, action=None, t=1, journal=(), ambient_seconds=0):
     from utils.battle_scene import draw_frame
-    return draw_frame(before, after, realm, action, t, journal)
+    return draw_frame(before, after, realm, action, t, journal, ambient_seconds)
 
 
 def frame_durations(milliseconds, count):
@@ -215,15 +237,34 @@ def frame_durations(milliseconds, count):
     return [round((i+1)*milliseconds/(count*10))*10-round(i*milliseconds/(count*10))*10 for i in range(count)]
 
 
-def render(before, after, realm, action=None, journal=()):
+def encode_idle(frames, palette=None):
+    """Loop only the ambient scene. No action, damage or resources repeat."""
+    if palette:
+        colors = Image.new('P', (1, 1))
+        colors.putpalette(palette)
+    else:
+        colors = frames[0].quantize(colors=256)
+    frames = [f.quantize(palette=colors, dither=Image.Dither.NONE) for f in frames]
+    output = io.BytesIO()
+    frames[0].save(output, 'GIF', save_all=True, append_images=frames[1:],
+                   duration=frame_durations(2000, len(frames)), disposal=1, optimize=False, loop=0)
+    data = output.getvalue()
+    if len(data) > MAX_BYTES:
+        raise ValueError('Ambient animation exceeded its attachment budget')
+    return Artwork(data, 'gif', palette=bytes(colors.getpalette()))
+
+
+def render(before, after, realm, action=None, journal=(), ambient_start=0, palette=None):
     output = io.BytesIO()
     if action is None:
+        if all(f.hp > 0 for f in after) and any(f.form == 'hexfire' for f in after):
+            return encode_idle([frame(after, after, realm, journal=journal, ambient_seconds=ambient_start+i*2/24) for i in range(24)], palette)
         frame(after, after, realm, journal=journal).save(output, 'PNG', optimize=True)
         return Artwork(output.getvalue(), 'png')
     from utils.battle_scene import duration
     milliseconds = duration(before, after, action)
     count = (30 if action.ultimate else 24) + (14 if milliseconds > action.milliseconds else 0)
-    frames = [frame(before, after, realm, action, i / (count - 1), journal) for i in range(count)]
+    frames = [frame(before, after, realm, action, i / (count - 1), journal, ambient_start+i*milliseconds/1000/(count-1)) for i in range(count)]
     # One shared palette prevents background shimmer between GIF frames.
     sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
     for i, source in enumerate((frames[0], frames[count // 2], frames[-1])):
@@ -238,11 +279,11 @@ def render(before, after, realm, action=None, journal=()):
     data = output.getvalue()
     if len(data) > MAX_BYTES:
         raise ValueError('Battle animation exceeded its attachment budget')
-    return Artwork(data, 'gif', milliseconds / 1000)
+    return Artwork(data, 'gif', milliseconds / 1000, bytes(palette.getpalette()), (ambient_start+milliseconds/1000) % 2)
 
 
-async def render_async(before, after, realm, action=None, *, journal=()):
-    return await render_job(render, before, after, realm, action, journal)
+async def render_async(before, after, realm, action=None, *, journal=(), ambient_start=0, palette=None):
+    return await render_job(render, before, after, realm, action, journal, ambient_start, palette)
 
 
 async def render_job(renderer, *args):
@@ -281,13 +322,20 @@ class BattlePresentation:
         self.sleep = sleep
         self.enabled = True
         self.journal = ()
+        self.ambient_time = 0
+        self.palette = None
 
     async def art(self, before, after, action=None):
         if not self.enabled:
             return None
         if action and action.journal:
             self.journal = action.journal[-2:]
-        result = await render_async(before, after, self.realm, action, journal=self.journal)
+        result = await render_async(before, after, self.realm, action, journal=self.journal,
+                                    ambient_start=self.ambient_time, palette=self.palette)
+        if result:
+            self.palette = result.palette
+            if action:
+                self.ambient_time = result.ambient_end
         if result is None:
             # Do not retry a busy/failed renderer on every move of this match.
             self.enabled = False

@@ -121,7 +121,7 @@ async def persist_pve_states(user_id, party, active):
             await db.execute('UPDATE player_beasts SET hp=CASE WHEN ?>0 THEN MAX(1,CAST(max_hp*?/? AS INTEGER)) ELSE 0 END,mana=MAX(0,MIN(max_mana,CAST(?+max_mana*?/? AS INTEGER))) WHERE user_id=? AND id=?',
                              (hp, hp, max(1, state['max_hp']), mana_base, mana_delta, max(1, state['max_mana']), user_id, state['id']))
             if state['hp'] <= 0:
-                seconds = storage.KO_RECOVERY_SECONDS.get(state.get('rarity'), 1800)
+                seconds = storage.KO_RECOVERY_SECONDS.get(storage.gameplay_rarity(state), 1800)
                 until = (now + timedelta(seconds=seconds)).isoformat()
                 await db.execute('UPDATE player_beasts SET knocked_out_until=? WHERE user_id=? AND id=? AND (knocked_out_until IS NULL OR julianday(knocked_out_until)<=julianday(?))',
                                  (until, user_id, state['id'], now.isoformat()))
@@ -233,6 +233,8 @@ class MoveView(discord.ui.View):
             pass
 
 def ai_move(state, opp, personality):
+    if state.get('beast_id') == 'hexpurr' and combat.can_use(state, 'Lanterns Out'):
+        return 'Lanterns Out', False
     if state['hp'] < state['max_hp'] * 0.55 and combat.can_use(state, state['moves'][1]) and combat.move_spec(state, state['moves'][1]).get('heal_percent'):
         return (state['moves'][1], False)
     if combat.can_use(state, state['ultimate'], True) and (not opp.get('guard') or personality == 'chaotic'):

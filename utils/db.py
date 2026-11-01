@@ -348,6 +348,10 @@ async def _run_migrations():
                 played_at TEXT DEFAULT CURRENT_TIMESTAMP);
             CREATE TABLE IF NOT EXISTS gameplay_grants (
                 grant_key TEXT PRIMARY KEY,user_id INTEGER,beast_row_id INTEGER);
+            CREATE TABLE IF NOT EXISTS exclusive_companions (
+                species TEXT PRIMARY KEY,user_id INTEGER NOT NULL,
+                beast_row_id INTEGER UNIQUE,granted_by INTEGER NOT NULL,
+                granted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
             CREATE TABLE IF NOT EXISTS raid_payments (
                 raid_id INTEGER PRIMARY KEY,user_id INTEGER,guild_id INTEGER,item_id TEXT,
                 refunded INTEGER DEFAULT 0);
@@ -678,12 +682,19 @@ async def knockout_beasts(beasts):
     """Persist a volley's knockouts together without extending existing timers."""
     from datetime import datetime, timezone, timedelta
     now=datetime.now(timezone.utc)
-    updates = [((now + timedelta(seconds=seconds)).isoformat(), row_id, now.isoformat())
-               for row_id, rarity in beasts
-               if (seconds := KO_RECOVERY_SECONDS.get(rarity, 1800))]
-    if not updates:
-        return
+    beasts = list(beasts)
     async with connect(DB_PATH) as db:
+        overrides = {}
+        special = [row_id for row_id, rarity in beasts if rarity == 'dev']
+        if special:
+            placeholders = ','.join('?' for _ in special)
+            async with db.execute(f'SELECT id,beast_id,rarity FROM player_beasts WHERE id IN ({placeholders})', special) as cursor:
+                overrides = {row[0]: gameplay_rarity({'beast_id':row[1], 'rarity':row[2]}) for row in await cursor.fetchall()}
+        updates = [((now + timedelta(seconds=seconds)).isoformat(), row_id, now.isoformat())
+                   for row_id, rarity in beasts
+                   if (seconds := KO_RECOVERY_SECONDS.get(overrides.get(row_id, rarity), 1800))]
+        if not updates:
+            return
         await db.executemany("UPDATE player_beasts SET hp=0,knocked_out_until=? WHERE id=? AND (knocked_out_until IS NULL OR julianday(knocked_out_until)<=julianday(?))", updates)
         await db.commit()
 
@@ -768,6 +779,13 @@ async def add_beast_to_player(user_id: int, beast_data: dict, *, starter: bool =
 async def grant_beast(db, user_id, beast_data, *, starter=False, grant_key=None):
     """Insert within an existing transaction; caller emits acquisition after commit."""
     from utils.dispositions import roll_disposition, apply_disposition
+
+    if beast_data['id'] == 'hexpurr':
+        async with db.execute('SELECT user_id,beast_row_id FROM exclusive_companions WHERE species=?', ('hexpurr',)) as cursor:
+            reservation = await cursor.fetchone()
+        if (grant_key != 'exclusive:hexpurr' or not reservation
+                or reservation[0] != user_id or reservation[1] is not None or starter):
+            raise ValueError('Hexpurr can only be granted once through /dev give_hexpurr discord_id:…')
 
     disposition = beast_data.get("disposition")  # allow override (e.g. starters pass None)
     if disposition is None:
@@ -919,6 +937,12 @@ def get_perk_slots(player_level: int) -> int:
     if player_level >= 10: return 3
     return 2
 
+def gameplay_rarity(beast_row):
+    """Separate a personal companion's display badge from its ordinary costs."""
+    definition = (get_beast_data(beast_row['beast_id']) or {}) if beast_row.get('beast_id') else {}
+    return definition.get('growth_rarity', beast_row.get('rarity', 'common'))
+
+
 def calc_stat_growth(beast_row: dict, levels_gained: int) -> dict:
     """
     Calculate stat increases for a beast gaining `levels_gained` levels.
@@ -927,7 +951,7 @@ def calc_stat_growth(beast_row: dict, levels_gained: int) -> dict:
     Designed to be called once per level-up event, accumulated for multi-level jumps.
     """
     from utils.progression import rarity_growth
-    return rarity_growth(beast_row.get('rarity', 'common'), levels_gained)
+    return rarity_growth(gameplay_rarity(beast_row), levels_gained)
 
 async def apply_beast_levelup(db, beast_row: dict, new_level: int, new_exp: int):
     """

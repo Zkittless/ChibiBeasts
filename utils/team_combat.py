@@ -145,7 +145,7 @@ class PartyBattle:
                 else:
                     multiplier = max(.75, min(1.5, get_type_multiplier(member['beast_type'], self.enemy['beast_type'])))
                     power = min(member['attack'] * .45, self.active['attack'] * .60)
-                    amount = max(1, int(power * 100 / (100 + max(0, self.enemy['defense'])) * multiplier))
+                    amount = max(1, int(power * 100 / (100 + max(0, combat.effective_defense(self.enemy))) * multiplier))
                     damage = combat.resolve_hit(member, self.enemy, amount, self.log)
                     self.log.append(f"{member['name']} assists with a strike → {damage} damage.")
                 self.bind()
