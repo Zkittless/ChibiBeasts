@@ -245,6 +245,7 @@ def frame_count(milliseconds):
     return max(2, math.ceil(milliseconds * ANIMATION_FPS / 1000))
 
 
+@ui.text_cache()
 def render_animation(frame_at, milliseconds, *, loop=False, palette=None, ambient_start=0):
     """One shared GIF encoder for moves and ambient loops, at a fixed cadence.
 

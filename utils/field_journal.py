@@ -3,6 +3,7 @@
 Every label is placed by its actual ink bounds. Resource values own an inset
 inside their track; ULT's label, three orbs and count occupy separate boxes.
 """
+from contextlib import contextmanager
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -54,22 +55,44 @@ def text_color(fill=INK, display=False):
     return MANILLA if display or fill in (MUTED, GOLD, '#e2d0a5') else INK
 
 
+@contextmanager
+def text_cache():
+    """Reuse text within one clip, bounded and isolated to its render thread."""
+    if getattr(_fonts, 'render_cache', None) is not None:
+        yield
+        return
+    _fonts.render_cache = (lru_cache(maxsize=512)(_fit_text), lru_cache(maxsize=512)(_glyph))
+    try:
+        yield
+    finally:
+        # A clip must not retain player labels or bitmap masks after rendering.
+        del _fonts.render_cache
+
+
+def _glyph(face, value):
+    bounds = face.getbbox(value)
+    width, height = bounds[2] - bounds[0], bounds[3] - bounds[1]
+    if not width or not height:
+        return bounds, None, None
+    glyph = Image.new('L', (width + 2, height + 2))
+    mask_draw = ImageDraw.Draw(glyph)
+    mask_draw.fontmode = '1'
+    mask_draw.text((1 - bounds[0], 1 - bounds[1]), value, font=face, fill=255)
+    return bounds, glyph, glyph.filter(ImageFilter.MaxFilter(3))
+
+
 def paint_text(draw, origin, value, face, fill):
     """Paint binary pixel glyphs and a square 1px outline, without blurred edges.
 
     Pillow antialiases FreeType strokes even with fontmode='1'. Dilating the
     solid glyph mask keeps both the lettering and its outline on the pixel grid.
     """
-    bounds = face.getbbox(value)
-    width, height = bounds[2] - bounds[0], bounds[3] - bounds[1]
-    if not width or not height:
+    cache = getattr(_fonts, 'render_cache', None)
+    bounds, glyph, border = (cache[1] if cache else _glyph)(face, value)
+    if glyph is None:
         return
-    glyph = Image.new('L', (width + 2, height + 2))
-    mask_draw = ImageDraw.Draw(glyph)
-    mask_draw.fontmode = '1'
-    mask_draw.text((1 - bounds[0], 1 - bounds[1]), value, font=face, fill=255)
     position = (round(origin[0]) + bounds[0] - 1, round(origin[1]) + bounds[1] - 1)
-    draw.bitmap(position, glyph.filter(ImageFilter.MaxFilter(3)), fill=TEXT_OUTLINE)
+    draw.bitmap(position, border, fill=TEXT_OUTLINE)
     draw.bitmap(position, glyph, fill=fill)
 
 
@@ -82,12 +105,7 @@ def journal_text(value):
     return clean(str(value).translate(_JOURNAL_SYMBOLS))
 
 
-def text(draw, value, box, *, size=18, minimum=10, fill=INK, display=False,
-         align='left', ellipsis=True, outline=False):
-    """Fit both axes and compensate for glyph bearings, including descenders."""
-    value = clean(value)
-    left, top, right, bottom = box
-    width, height = right - left, bottom - top
+def _fit_text(value, width, height, size, minimum, display, ellipsis):
     stroke = 1
     if width <= 0 or height <= 0:
         raise ValueError('Text needs a positive content rectangle')
@@ -95,7 +113,7 @@ def text(draw, value, box, *, size=18, minimum=10, fill=INK, display=False,
     minimum = min(minimum, preferred)
     for chosen in range(preferred, minimum - 1, -1):
         face = font(chosen, display)
-        bounds = draw.textbbox((0, 0), value, font=face, stroke_width=stroke)
+        bounds = face.getbbox(value, stroke_width=stroke)
         if bounds[2] - bounds[0] <= width and bounds[3] - bounds[1] <= height:
             break
     else:
@@ -103,18 +121,30 @@ def text(draw, value, box, *, size=18, minimum=10, fill=INK, display=False,
         if not ellipsis:
             raise ValueError('Numeric label exceeds its content rectangle')
         while value:
-            bounds = draw.textbbox((0, 0), value, font=face, stroke_width=stroke)
+            bounds = face.getbbox(value, stroke_width=stroke)
             if bounds[2] - bounds[0] <= width and bounds[3] - bounds[1] <= height:
                 break
             value = value[:-2] + '~' if len(value) > 1 else ''
-    bounds = draw.textbbox((0, 0), value, font=face, stroke_width=stroke)
+    bounds = face.getbbox(value, stroke_width=stroke)
+    return value, chosen, bounds
+
+
+def text(draw, value, box, *, size=18, minimum=10, fill=INK, display=False,
+         align='left', ellipsis=True, outline=False):
+    """Fit both axes and compensate for glyph bearings, including descenders."""
+    value = clean(value)
+    left, top, right, bottom = box
+    width, height = right - left, bottom - top
+    cache = getattr(_fonts, 'render_cache', None)
+    value, chosen, bounds = (cache[0] if cache else _fit_text)(value, width, height, size, minimum, display, ellipsis)
+    face = font(chosen, display)
     ink_width, ink_height = bounds[2] - bounds[0], bounds[3] - bounds[1]
     x = left + (width - ink_width) / 2 if align == 'center' else right - ink_width if align == 'right' else left
     y = top + (height - ink_height) / 2
     # The origin is not the visible top-left for TrueType fonts.
     origin = (round(x - bounds[0]), round(y - bounds[1]))
     paint_text(draw, origin, value, face, text_color(fill, display))
-    actual = draw.textbbox(origin, value, font=face, stroke_width=stroke)
+    actual = (origin[0] + bounds[0], origin[1] + bounds[1], origin[0] + bounds[2], origin[1] + bounds[3])
     return Text(value, chosen, actual)
 
 

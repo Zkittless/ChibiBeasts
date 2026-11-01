@@ -9,6 +9,7 @@ import discord
 logger = logging.getLogger('chibibeasts.journal.input')
 _HANDLED = 'chibibeasts_journal_handled'
 _ACTION = 'chibibeasts_journal_action'
+_STARTED = 'chibibeasts_journal_started'
 
 
 def record(interaction, stage, *, action='', elapsed_ms=None, level=logging.INFO, error=None):
@@ -16,6 +17,9 @@ def record(interaction, stage, *, action='', elapsed_ms=None, level=logging.INFO
     family = (action or getattr(interaction, 'extras', {}).get(_ACTION, 'open')).split(':', 1)[0]
     if not family.replace('_', '').isalnum():
         family = 'unknown'
+    started = getattr(interaction, 'extras', {}).get(_STARTED)
+    if elapsed_ms is None and isinstance(started, (int, float)):
+        elapsed_ms = round((time.monotonic() - started) * 1000)
     message = 'Journal input stage=%s interaction=%s trainer=%s channel=%s message=%s action=%s elapsed_ms=%s'
     fields = (stage, getattr(interaction, 'id', None), getattr(getattr(interaction, 'user', None), 'id', None),
               getattr(interaction, 'channel_id', None), getattr(getattr(interaction, 'message', None), 'id', None),
@@ -38,6 +42,7 @@ def trace(callback):
         extras[_HANDLED] = True
         extras[_ACTION] = action
         start = time.monotonic()
+        extras[_STARTED] = start
         record(interaction, 'handling', action=action)
         result = 'returned'
         try:
