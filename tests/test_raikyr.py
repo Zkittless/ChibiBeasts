@@ -166,6 +166,7 @@ class StormPresentation(unittest.TestCase):
         self.assertLess(max(len(move.data),len(idle.data)),art.MAX_BYTES)
         with Image.open(io.BytesIO(idle.data)) as image:
             self.assertEqual(image.info['loop'],0)
+            self.assertEqual(image.n_frames,art.frame_count(art.AMBIENT_MS))
             self.assertEqual(sum(frame.info['duration'] for frame in ImageSequence.Iterator(image)),art.AMBIENT_MS)
         a = art.frame(after,after,'loom',ambient_seconds=.25)
         b = art.frame(after,after,'loom',ambient_seconds=2.25)
@@ -213,6 +214,11 @@ class StormPresentation(unittest.TestCase):
             self.assertEqual(image.size,(640,692))
         with Image.open(io.BytesIO(idle.data)) as image:
             self.assertEqual(image.info['loop'],0)
+            self.assertGreater(image.n_frames,30)
+        first = raid_art.frame(after,after,ambient_seconds=.25)
+        later = raid_art.frame(after,after,ambient_seconds=.75)
+        self.assertNotEqual(first.tobytes(),later.tobytes())
+        self.assertEqual(first.crop((0,0,640,raid_art.HUD)).tobytes(),later.crop((0,0,640,raid_art.HUD)).tobytes())
         self.assertEqual(repr((before,after)),immutable)
 
     def test_glow_cropping_preserves_full_canvas_blur(self):

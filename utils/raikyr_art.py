@@ -160,7 +160,9 @@ def _aura_frame(index, front):
 def paint_aura(image, pose, seconds, *, front=False):
     if pose.alpha <= 0:
         return
-    index = round((seconds % LOOP)*30) % 60
+    # Half-frame starts follow 2.65 s ultimates. Round ties consistently so
+    # consecutive 30 FPS samples never repeat/skip alternating cache entries.
+    index = math.floor((seconds % LOOP)*30 + .5 + 1e-8) % 60
     source,box = _aura_frame(index,front)
     scale = pose.size/180
     if scale != 1:
