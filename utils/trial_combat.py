@@ -79,7 +79,7 @@ def decode_event(event):
 
 
 def build_enemy(wave):
-    profile = wave.get('profile', trial_rules.PROFILES[wave['kind']])
+    profile = wave.get('profile', trial_rules.LEGACY_PROFILES[wave['kind']])
     state = deepcopy(wave['enemy_template']) if 'enemy_template' in wave else trial_rules.profiled_state(wave['species'], wave['level'], profile)
     state['perks'] = set(state.get('perks', ()))
     ceiling = wave.get('power_cap')
@@ -133,9 +133,13 @@ def _terminal(payload, battle):
     return False
 
 
-def _enemy_action(battle, events):
+def _enemy_action(battle, events, *, tactics_version=1):
     state, opp = battle.enemy, battle.active
-    name, ultimate = ai_move(state, opp, 'optimal')
+    if tactics_version == 2:
+        from utils.pve_tactics import choose
+        name, ultimate = choose(state, opp)
+    else:
+        name, ultimate = ai_move(state, opp, 'optimal')
     spec = combat.move_spec(state, name, ultimate)
     if spec.get('heal_percent') and state['_trial_heals'] >= 1 or spec.get('status') in {'freeze', 'sleep'} and state['_trial_controls'] >= 1:
         name, ultimate = state['moves'][0], False
@@ -145,6 +149,8 @@ def _enemy_action(battle, events):
         state['_trial_heals'] += 1
     if spec.get('status') in {'freeze', 'sleep'}:
         state['_trial_controls'] += 1
+    if spec.get('guard_percent') and tactics_version == 2:
+        state['_pve_guards'] = state.get('_pve_guards', 0) + 1
     damage = combat.resolve_move(state, opp, name, ultimate, battle.log)
     kind = 'guard' if spec.get('guard_percent') else 'heal' if spec.get('heal_percent') else 'attack' if name == state['moves'][0] else 'skill'
     _event(events, before, battle, Action(1, name, kind, damage, ultimate, tuple(battle.log[-2:])))
@@ -178,7 +184,8 @@ def _advance(payload, battle, events):
                 payload['awaiting'] = True
                 return
             if actor == 1 and battle.enemy['hp'] > 0 and battle.active['hp'] > 0:
-                _enemy_action(battle, events)
+                wave = payload['plan']['waves'][payload['wave_index']]
+                _enemy_action(battle, events, tactics_version=wave.get('tactics_version', 1))
             payload['phase'] = 'end'
         if payload['phase'] == 'end':
             state = next(s for s in [*battle.party, battle.enemy] if s['id'] == payload['turn_member'])

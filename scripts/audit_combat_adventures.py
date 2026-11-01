@@ -79,7 +79,7 @@ def make_party(fixture):
     assert reachability['valid'], reachability
     result = []
     for index, species in enumerate(fixture['team'], 1):
-        gain = TRAIN_GAIN[BEASTS[species]['rarity']]
+        gain = TRAIN_GAIN[BEASTS[species].get('growth_rarity', BEASTS[species]['rarity'])]
         extra = dict(attack=4 * gain, hp=4 * gain * TRAIN_HP_MULTIPLIER) if fixture['prepared'] else {}
         state = companion_state(species, fixture['level'], bond=100 if fixture['prepared'] else 0,
                                 happiness=fixture['happiness'], charges=0, gear=gear, extras=extra)
@@ -130,7 +130,8 @@ def weighted_ticket(realm, seed):
     return rng.choice(encounter_pool(rarity, realm))['id']
 
 
-async def replay(db, fixture, seed, uid):
+async def replay(db, fixture, seed, uid, *, balance_version=journey_combat.BALANCE_VERSION,
+                 policy=player_action):
     realm, totals = fixture['biome'], Counter()
     party, _, _ = make_party(fixture)
     p = dict(prepared_party=party, offered=[], encounter='', caught=False)
@@ -176,9 +177,9 @@ async def replay(db, fixture, seed, uid):
                 level = encounter_level(realm, fixture['level'], random.Random(fight_seed + ':level'))
             departure_size = len(p['party_ids'])
             lineup = journey_combat.plan(realm, fight_seed, kind, level, ticket=ticket if recruitable else None,
-                                        party_size=departure_size)
+                                        party_size=departure_size, balance_version=balance_version)
             assert lineup == journey_combat.plan(realm, fight_seed, kind, level, ticket=ticket if recruitable else None,
-                                                  party_size=departure_size)
+                                                  party_size=departure_size, balance_version=balance_version)
             for wave in lineup['waves']:
                 assert wave['departure_party_size'] == departure_size
                 species = BEASTS[wave['species']]
@@ -194,9 +195,12 @@ async def replay(db, fixture, seed, uid):
                 if state['status'] == 'between':
                     journey_combat.continue_pack(p)
                 elif state['status'] == 'fighting':
-                    action = player_action(state)
+                    action = policy(state)
                     totals['actions'] += 1
                     totals['action_' + action['kind']] += 1
+                    if action['kind'] in {'move', 'ultimate'}:
+                        spec = combat.move_spec(trial_combat.active(state), *action['choice'])
+                        totals['defensive_actions'] += bool(spec.get('guard_percent') or spec.get('heal_percent'))
                     journey_combat.action(p, action['choice'])
                 else:
                     break
@@ -232,6 +236,7 @@ async def replay(db, fixture, seed, uid):
                 ticket=ticket, ticket_rarity=BEASTS[ticket]['rarity'], recruitable_beat=p['recruitable_beat'],
                 schedule=p['battle_schedule'], opponents=opponents, interludes=interludes, lost_at=lost_at,
                 remaining_hp_fraction=sum(s['hp'] for s in members) / sum(s['max_hp'] for s in members),
+                members_used=len(p.get('combat', {}).get('participated', ())),
                 knocked_out=sum(s['hp'] <= 0 for s in members))
 
 
@@ -264,20 +269,20 @@ async def audit(output, trials, starter_trials):
     assert trials > 0 and starter_trials > 0
     sources = [Path(__file__), ROOT / 'scripts' / 'audit_progression.py']
     sources += [ROOT / name for name in ('utils/journeys.py', 'utils/journey_service.py', 'utils/journey_combat.py',
-        'utils/trial_combat.py', 'utils/combat.py', 'utils/team_combat.py', 'utils/duels.py', 'utils/habitats.py',
+        'utils/trial_combat.py', 'utils/trial_rules.py', 'utils/pve_tactics.py', 'utils/combat.py', 'utils/team_combat.py', 'utils/duels.py', 'utils/habitats.py',
         'utils/economy_balance.py', 'utils/progression.py', 'utils/adventure_content.py',
         'utils/type_chart.py', 'utils/expeditions.py',
         'cogs/battle.py', 'cogs/economy.py', 'data/beasts.json', 'data/equipment.json')]
     sources += [ROOT / 'data' / 'adventures' / f'{biome}.json' for biome in BIOMES]
     hashes = {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in sources}
     report = dict(status='running', kind=__doc__, source_sha256=hashes, fixtures=[],
-        departure_party_profiles=journey_combat.PARTY_PROFILES,
+        departure_party_profiles=journey_combat.ENCOUNTER_PROFILES,
         strategy='Production optimal NPC move heuristic, intersected with enabled actions. Emergency swap below25%HP to the largest available reserve with over twice current HP; otherwise healing assist below55%; otherwise NPC choice, with enabled-basic fallback. No future enemy lookup.',
         interlude_policy='Exactly one actual noncombat, no-HP-cost authored choice at each event beat; prefer surviving-team healing below70% aggregate HP, otherwise attack boon, then defence. No fabricated healing or opening boon.',
         assumptions=['Mandatory production schedule is B,E,B for first five biomes and B,E,B,E,B for last five; pack kind and recruitable beat are seeded by journeys.configure_combat_route.',
             'Four fresh solo starters use actual level1 base/growth arithmetic, happiness100, bond0, no gear/training/perks/preparations/ultimate charges. Starters are disposition-exempt.',
             'All fixtures start with full saved collection HP/MP, matching journey_service.begin resource mapping. HP/MP, conditions, charges, party participation and assist meter then carry across every foe and encounter without refill.',
-            'Enemy HP/attack use the saved departure party size for the entire route, including after a KO. The same seeded species/levels are retained; three-member and legacy profiles stay unchanged. Two-member entry-bare rows use the first two members of the inherited band team.',
+            'Version2 enemy HP/attack use the departure party size for the entire route, including after a KO. Solo Woods levels1-5 keep onboarding budgets. Other hostiles use regional rarity weights and curated ordinary Divines. Two-member entry-bare rows use the first two members of the inherited band team.',
             'Prepared checkpoint means four attack and four HP training gains per member, bond100 and happiness100 plus trainer-accessible gear. Training requires at least two daily budgets and grants XP; acquisition, timeline and arrival at this exact level are not simulated.',
             'Nonstarter dispositions are neutral synthetic controls; real nonstarter grants roll a disposition. Gear reachability checks gate and ingredient access, not acquisition time or three copies.',
             'One recruitment ticket is sampled from unboosted habitat rarity/species pools and used only for wave zero of the designated encounter. The locally seeded marginal sample matches production rates/uniform species pools; it does not reproduce the service global-RNG species stream. Other opponents are hostile, even if species IDs happen to match the ticket. Incense/sanctuary/perks/quest overrides are absent.',

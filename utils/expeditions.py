@@ -278,7 +278,8 @@ async def _encounter(db, user_id, realm, p, rng):
     p['friendly'] = rng.random() < p['affinity']
     async with db.execute('SELECT level FROM player_beasts WHERE user_id=? AND is_active=1', (user_id,)) as cursor:
         companion = await cursor.fetchone()
-    p['encounter_level'] = p['event_level'] if carnival else encounter_level(realm, companion[0] if companion else None, rng)
+    reference_level = p.get('encounter_reference_level', companion[0] if companion else None)
+    p['encounter_level'] = p['event_level'] if carnival else encounter_level(realm, reference_level, rng)
 
 async def choose(user_id, trip_id, version, choice, *, rng=random):
     saved = await read(user_id, trip_id)

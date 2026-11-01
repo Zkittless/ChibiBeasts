@@ -12,7 +12,7 @@ Three successful damaging ordinary moves fill the shared assist meter. Guards, h
 - Earth and ice companions without healing moves guard the next incoming hit by 25%.
 - Other companions deliver a modest typed strike capped against the active companion's strength.
 
-Assists grant no ultimate charge and trigger no bonus turn. Opponents retain their existing actions and destination levels. The 20-round limit and 45-second decision deadline still apply. Mentor spars, player duels, ranked matches and cooperative raids retain their existing formats.
+Assists grant no ultimate charge and trigger no bonus turn. New adventures use [version 2 party balance](PARTY-PVE-BALANCE.md): departure-based encounter budgets, regional enemies and visible-state enemy decisions. Destination level bands stay fixed. Adventure rounds are capped at 20, or 16 for unchanged solo Woods onboarding; towers have role-specific limits. The 45-second decision deadline still applies. Mentor spars, player duels, ranked matches and cooperative raids retain their existing formats.
 
 The lead keeps the established companion XP reward. Encounter difficulty considers the prepared team's strongest matchup, so a weak lead cannot manufacture a difficulty bonus while a powerful reserve wins the fight. Reserves receive 35%, or 50% when participating, bounded by their own level's normal XP budget. A teammate at least three levels behind the lead receives a small catch-up bonus, capped at 60%. Overlevelled reserves receive less XP from weak encounters. Existing scholar/library bonuses apply once. Party size does not multiply trainer XP, gold or catches.
 
