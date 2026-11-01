@@ -38,8 +38,7 @@ class JourneyCombat(unittest.TestCase):
                     self.assertEqual(wave['level'],biome['level_range'][1])
                     self.assertNotIn('reward',wave)
                     allowed=[r for r in ('common','uncommon','rare','epic','legendary','divine') if biome['weights'].get(r,0)>0]
-                    if not any(r in allowed for r in ('common','uncommon')):
-                        self.assertEqual(species['rarity'],allowed[0])
+                    self.assertIn(species['rarity'], allowed)
 
     def test_boons_stop_at_twenty_and_modify_passive_baselines(self):
         p={'prepared_party':[fighter()]}

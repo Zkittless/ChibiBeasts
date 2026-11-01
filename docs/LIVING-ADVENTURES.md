@@ -58,11 +58,13 @@ patients after treatment. Recovery never redirects the selected item to another
 companion. A companion opened explicitly from its own beast card remains an
 explicit target for treats and other supported preparations.
 
-Encounter strength is fixed to the departure team size. Solo enemies use 50%
-of the full-team HP profile and 60% of its attack; pairs use 75% HP and 85% attack.
-Three-member teams retain the existing profile. Losing a teammate never lowers
-later enemy stats. The measured samples are in
-[combat-adventure-balance.json](combat-adventure-balance.json).
+New departures use [version 2 party balance](PARTY-PVE-BALANCE.md). Enemy levels
+follow the strongest departing companion within the biome's fixed band, and
+encounter budgets use the departure roster size. Packs have a larger combined
+health budget and regional hostile rarities. Losing a teammate never lowers
+later enemy stats. Solo Woods onboarding retains its earlier rules, and saved
+version 1 adventures keep their original balance. Current paired measurements
+are in [party-rebalance.json](party-rebalance.json).
 
 The saved team keeps HP, mana, conditions, entry passives and assist charge across
 fights. Overworld costs cannot knock a companion out, and recovery never revives.

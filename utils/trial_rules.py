@@ -10,7 +10,7 @@ from utils.catalog import load_catalog, catalog_revision
 from utils.habitats import BIOMES, eligible
 from utils.progression import companion_growth
 
-VERSION = 1
+VERSION = 2
 WAVE_COUNTS = dict(zip(BIOMES, (5, 6, 7, 8, 9, 10, 11, 12, 13, 15)))
 GUARDIANS = dict(zip(BIOMES, (
     ('slime', 'goblin'), ('will_o_wisp', 'kelpie'),
@@ -33,10 +33,15 @@ MINIBOSSES = {
 # ramping critical hits and bonus-action chains. Their actual species/passives
 # remain intact; this is pool curation, not an invisible passive suppression.
 ORDINARY_DIVINES = frozenset({'singularity', 'astraea', 'horizon', 'nirvana', 'nebula', 'karma'})
-PROFILES = {
+LEGACY_PROFILES = {
     'normal': dict(hp=.45, attack=.65, defense=.85, round_limit=6),
     'miniboss': dict(hp=.80, attack=.85, defense=1., round_limit=10),
     'guardian': dict(hp=1., attack=1., defense=1., round_limit=16),
+}
+PROFILES = {
+    'normal': dict(hp=.50, attack=.68, defense=.85, round_limit=10),
+    'miniboss': dict(hp=.95, attack=.90, defense=1., round_limit=14),
+    'guardian': dict(hp=1.20, attack=1.05, defense=1., round_limit=20),
 }
 
 
@@ -132,12 +137,14 @@ def hint(beast):
     return 'Guard prepares a stronger strike. Recover resources, then protect against its follow-up.'
 
 
-def generate_plan(destination, seed):
+def generate_plan(destination, seed, *, balance_version=VERSION):
     """Resolve the complete lineup once; callers persist this, not only its seed.
 
     Weighted species order is sampled without replacement at each backtracking
     step. Search is finite; an invalid catalog fails before an attempt is spent.
     """
+    if balance_version not in (1, 2):
+        raise ValueError('Unknown trial balance version.')
     cfg, rng = config(destination), random.Random(seed)
     region = BIOMES[destination]
     catalog = load_catalog('beasts.json')['beasts']
@@ -206,7 +213,7 @@ def generate_plan(destination, seed):
     ordinary_reference = [b for b in normal if tiers.index(b['rarity']) == ordinary_floor]
     for index, beast in enumerate(selected, 1):
         kind = 'guardian' if index == count else 'miniboss' if count >= 8 and index == midpoint else 'normal'
-        profile = deepcopy(PROFILES[kind])
+        profile = deepcopy((LEGACY_PROFILES if balance_version == 1 else PROFILES)[kind])
         level = low + (high - low) * (index - 1) // (count - 1)
         reference = finals if kind == 'guardian' else minibosses if kind == 'miniboss' else ordinary_reference
         ceiling = min(power(profiled_state(b['id'], level, profile)) for b in reference) * (1.35 if kind == 'normal' else 1.25)
@@ -219,5 +226,6 @@ def generate_plan(destination, seed):
                           profile_scaling=scaling, power_before=before_power, power_after=power(resolved),
                           enemy_template=resolved,
                           kind=kind, profile=profile, round_limit=profile['round_limit'],
+                          tactics_version=balance_version,
                           hint=hint(beast), categories=flags[beast['id']]))
-    return {**cfg, 'seed': seed, 'waves': waves}
+    return {**cfg, 'version': balance_version, 'seed': seed, 'waves': waves}

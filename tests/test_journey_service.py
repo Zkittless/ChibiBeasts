@@ -49,6 +49,38 @@ class JourneyService(DatabaseCase):
         choice = expeditions.options(trip)[index]
         return await expeditions.choose(42, trip['id'], trip['version'], choice)
 
+    async def test_new_departure_freezes_strongest_member_level_for_hostiles_and_capture(self):
+        ids = await self.ready(battle=True)
+        await self.execute('UPDATE player_beasts SET level=18 WHERE id=?', (ids[1],))
+        trip = await self.begin()
+        self.assertEqual(trip['payload']['combat_balance_version'], 2)
+        self.assertEqual(trip['payload']['encounter_reference_level'], 18)
+        trip = await self.pick(trip, 1)
+        self.assertEqual(trip['payload']['encounter_level'], 5)  # Still inside Woods' fixed band.
+        self.assertEqual(trip['payload']['combat']['plan']['balance_version'], 2)
+        self.assertTrue(all(w['departure_party_size'] == 3 for w in trip['payload']['combat']['plan']['waves']))
+        # A subsequent hostile encounter uses the same departure level and
+        # party size, even after a knockout. It does not reroll the catch.
+        p = trip['payload']
+        p['combat']['party'][1]['hp'] = 0
+        p['prepared_party'][1]['level'] = 1
+        with patch('utils.journey_combat.start') as start, patch('utils.journey_service._battle_end', new=AsyncMock()):
+            await journey_service._start_battle(None, trip, 'pack3')
+        lineup = start.call_args.args[1]
+        self.assertTrue(all(w['level'] == 5 and w['departure_party_size'] == 3 for w in lineup['waves']))
+        self.assertFalse(p['capture_fight'])
+
+    async def test_resumed_legacy_adventure_keeps_old_balance_for_future_fights(self):
+        await self.ready(battle=True)
+        trip = await self.begin()
+        trip['payload'].pop('combat_balance_version')
+        trip['payload'].pop('encounter_reference_level')
+        await self.execute('UPDATE expeditions SET payload=? WHERE id=?', (json.dumps(trip['payload']), trip['id']))
+        trip = await self.pick(trip, 1)
+        plan = trip['payload']['combat']['plan']
+        self.assertEqual(plan['balance_version'], 1)
+        self.assertTrue(all(w['tactics_version'] == 1 for w in plan['waves']))
+
     async def test_saved_first_scene_and_permanent_completion_do_not_reroll(self):
         ids = await self.ready()
         trip = await self.begin()

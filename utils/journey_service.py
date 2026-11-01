@@ -115,7 +115,9 @@ async def begin(user_id, realm, *, now=None, rng=random, guild_id=0, combat_rout
                 payload = dict(mode='expedition', gold=gold, base_gold=gold, exp=xp, base_exp=xp,
                                material=material, offered=_material_offers(material, realm, seed), encounter='', encounter_result='',
                                caught=False, grant_id=None, bond=0, happiness=0, restore=0, notes=[],
-                               level=player['level'], guild_id=guild_id, prepared_party=prepared)
+                               level=player['level'], guild_id=guild_id, prepared_party=prepared,
+                               combat_balance_version=journey_combat.BALANCE_VERSION,
+                               encounter_reference_level=max(member['level'] for member in prepared))
                 story_destination = HOLLOWLIGHT if carnival else realm
                 if carnival:
                     payload.update(event_id=hollowlight.EVENT_ID, hollowlight=event_window,
@@ -196,12 +198,15 @@ async def _start_battle(db, trip, kind):
     seed = f"{p['seed']}:{p.get('fights_started', 0)}"
     carnival = p.get('event_id') == 'hollowlight_2026'
     guardian = carnival and pending.get('route_battle') and p['battles_completed'] == p['battle_target'] - 1
-    level = p['event_level'] if carnival else p['encounter_level'] if recruitable else encounter_level(trip['realm'], p['prepared_party'][0]['level'], random.Random(seed + ':level'))
+    reference_level = p.get('encounter_reference_level', p['prepared_party'][0]['level'])
+    level = p['event_level'] if carnival else p['encounter_level'] if recruitable else encounter_level(trip['realm'], reference_level, random.Random(seed + ':level'))
     p['current_enemy_level'] = level
     p['event_guardian'] = bool(guardian)
     plan = journey_combat.carnival_plan if carnival else journey_combat.plan
     lineup = plan(trip['realm'], seed, kind, level, ticket=p['encounter'] if recruitable else None,
-                  party_size=len(p['party_ids']) if paced else 3, **({'guardian': guardian} if carnival else {}))
+                  party_size=len(p['party_ids']) if paced or p.get('combat_balance_version') == 2 else 3,
+                  balance_version=p.get('combat_balance_version', 1),
+                  **({'guardian': guardian} if carnival else {}))
     journey_combat.start(p, lineup)
     trip['status'] = 'battle'
     await _battle_end(db, trip)

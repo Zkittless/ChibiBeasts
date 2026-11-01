@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "baseline": "816f50869f11bb8af5f38d82dd5806acbcf5a5e9",
+  "legacy_adventure_encounters": 1200,
+  "legacy_tower_waves": 960,
+  "scope": "Exact enemy-template, species, profile, level and round-budget parity against merged main for version1 plans."
+}

@@ -1,0 +1,6 @@
+{
+  "decision_calls": 70000,
+  "median_ms_per_decision": 0.010416620003525168,
+  "slowest_batch_ms_per_decision": 0.010691460000816732,
+  "scope": "Local AI decision CPU cost only, while balance simulations run. Excludes rendering, Discord and network."
+}

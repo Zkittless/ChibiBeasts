@@ -434,7 +434,9 @@ class AdventureCombat(DatabaseCase):
         weak_id, strong_id = [row['id'] for row in rows]
         trainer_awards, companion_bases = [], []
         for lead, reserve in ((weak_id, strong_id), (strong_id, weak_id)):
-            await self.execute('UPDATE player_beasts SET is_active=(id=?),level=1,exp=0,mana=max_mana WHERE user_id=42', (lead,))
+            # These are independent reward comparisons. A KO in the first
+            # real combat run must not leave a recovery lock on the next build.
+            await self.execute('UPDATE player_beasts SET is_active=(id=?),level=1,exp=0,mana=max_mana,knocked_out_until=NULL WHERE user_id=42', (lead,))
             await self.execute('UPDATE player_beasts SET hp=20,max_hp=20,attack=1,defense=1,speed=50 WHERE id=?', (weak_id,))
             await self.execute('UPDATE player_beasts SET hp=100,max_hp=100,attack=10000,defense=20,speed=50 WHERE id=?', (strong_id,))
             await self.execute('DELETE FROM adventure_team WHERE user_id=42')

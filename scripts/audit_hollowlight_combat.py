@@ -142,16 +142,18 @@ async def audit(output, trials, starter_trials):
     paths = [Path(__file__), ROOT/'scripts/audit_combat_adventures.py', ROOT/'scripts/audit_progression.py',
              ROOT/'utils/journeys.py', ROOT/'utils/journey_combat.py', ROOT/'utils/journey_service.py',
              ROOT/'utils/expeditions.py', ROOT/'utils/habitats.py', ROOT/'utils/combat.py',
-             ROOT/'utils/trial_combat.py', ROOT/'utils/team_combat.py', ROOT/'utils/duels.py',
+             ROOT/'utils/trial_combat.py', ROOT/'utils/trial_rules.py', ROOT/'utils/pve_tactics.py',
+             ROOT/'utils/team_combat.py', ROOT/'utils/duels.py',
              ROOT/'utils/adventure_content.py', ROOT/'utils/type_chart.py', ROOT/'data/beasts.json',
              ROOT/'data/equipment.json', ROOT/'data/adventures/hollowlight.json']
     hashes = {str(path.relative_to(ROOT)).replace('\\','/'):hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
     report = dict(status='running', source_sha256=hashes,
         fingerprint_method='SHA256 of raw checkout bytes; LF/CRLF differences change these hashes.',
-        departure_party_profiles=journey_combat.PARTY_PROFILES, seasonal_enemy_profiles=journey_combat.CARNIVAL_PROFILES,
+        departure_party_profiles=journey_combat.ENCOUNTER_PROFILES,
+        combat_balance_version=journey_combat.BALANCE_VERSION, seasonal_enemy_profiles=journey_combat.CARNIVAL_PROFILES,
         novice_wickwing_attack_scale=journey_combat.CARNIVAL_NOVICE_BURST_ATTACK,
         fixtures=[], assumptions=[
-            'Production Carnival schedule and enemy planner; two fights below strongest departing level26, three from26 onward, with a hostile final guardian. Low-team opening encounters vary by saved departure seed between a single and two opponents sharing one encounter budget.',
+            'Production Carnival schedule and version2 enemy planner; two fights below strongest departing level26, three from26 onward, with a hostile final guardian. Low-team opening encounters vary by saved departure seed between a single and two opponents. Solo Woods levels1-5 keep legacy onboarding budgets and AI.',
             'Actual production combat AI and legal-action policy reused from audit_combat_adventures; surviving resources, conditions, assist meter and entry state persist.',
             'Fresh solo starters have full saved collection HP/MP, level1, happiness100 and no gear, perks, training or preparations. Prepared checkpoint builds are synthetic, with stated accessible gear and bounded training.',
             'The mixed-departure fixture uses actual level1 Twine plus level50 Hydra: every opponent stays level50 and all three required fights retain the departing two-member profile after a knockout.',
