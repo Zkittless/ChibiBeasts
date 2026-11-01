@@ -40,7 +40,7 @@ class MoveCatalog(unittest.TestCase):
                     if spec.get('guard_percent'):self.assertIn(a.family,supports)
                     if spec.get('power',1)>0:self.assertNotIn(a.family,supports|{'heal'})
                     unique.add(name)
-        self.assertEqual(len(unique),354)
+        self.assertEqual(len(unique),358)
 
     def test_approved_moves_keep_their_distinct_themes_and_mechanics(self):
         expected={('twine','Tick Bite'):('bite','clock'),('twine','Thread Snap'):('thread','thread'),

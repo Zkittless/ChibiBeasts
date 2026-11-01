@@ -6,9 +6,9 @@ realm backgrounds and Field Journal HUD.
 
 ## Move coverage
 
-`data/move-animations.json` explicitly assigns all 364 species/move entries
-(354 distinct names across 91 creatures) a presentation profile. The current
-renderer uses 65 authored sequences with staged preparation, contact, release
+`data/move-animations.json` explicitly assigns all 368 species/move entries
+(358 distinct names across 92 creatures) a presentation profile. The current
+renderer uses 66 authored sequences with staged preparation, contact, release
 and recovery. Each creature's four moves select different sequences. Physical
 paths include lunges, thrusts, leaps and grounded casts; divine moves assemble
 clock fractures, accretion lenses, constellation seals, creation facets and
@@ -88,8 +88,8 @@ render/event-loop measurements. `--audit-roster` additionally renders every
 species/move entry and records its frame count, duration and attachment size.
 Generated clips are review outputs and do not need to be committed or deployed.
 
-The [30 FPS validation summary](battle-fps-validation.json) covers all 364 move
-entries plus 67 additional background and crowded-raid scenes. The largest
+The [30 FPS validation summary](battle-fps-validation.json) covers the 364 move
+entries available before Raikyr, plus 67 additional background and crowded-raid scenes. The largest
 checked attachment was 2,556,525 bytes. Two simultaneous heavy renders completed
 in 1.50 seconds locally, with event-loop p95 delay of 6.76 ms. These measurements
 exclude live Discord transport/client playback and Railway performance.
