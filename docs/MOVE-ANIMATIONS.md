@@ -88,6 +88,12 @@ render/event-loop measurements. `--audit-roster` additionally renders every
 species/move entry and records its frame count, duration and attachment size.
 Generated clips are review outputs and do not need to be committed or deployed.
 
+The [30 FPS validation summary](battle-fps-validation.json) covers all 364 move
+entries plus 67 additional background and crowded-raid scenes. The largest
+checked attachment was 2,556,525 bytes. Two simultaneous heavy renders completed
+in 1.50 seconds locally, with event-loop p95 delay of 6.76 ms. These measurements
+exclude live Discord transport/client playback and Railway performance.
+
 The earlier [recorded export](move-animation-validation.json), before the 30 FPS
 upgrade, rendered all 344 move
 entries; the largest duel clip was 1,240,788 bytes. All six ten-trainer scenes

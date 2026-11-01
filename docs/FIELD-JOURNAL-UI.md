@@ -65,7 +65,8 @@ windows, raid warning windows or settlement rules change.
 
 Duels render at 640 × 528; raids render at 640 × 692. The journal does not cover
 the fighting area or trainer markers. Both renderers retain one-shot playback,
-unique attachments, the shared two-worker limit, and the 2 MB per-clip limit.
+unique attachments and the shared two-worker limit. Animations now sample at
+30 FPS with a 4,000,000-byte per-clip limit and lossless GIF delta compression.
 Timings in the review files are synthetic local measurements and exclude
 Discord upload and client playback. GIF autoplay is controlled by Discord.
 
