@@ -216,7 +216,9 @@ class ExplorationTeamPanel(DatabaseCase):
             await control.callback(interaction)
             interaction.response.defer.assert_awaited_once()
 
-        await click(view.page_menu, 'team')
+        view.page = 'adventure'
+        view.render()
+        await click(next(item for item in view.walk_children() if getattr(item, 'label', '') == 'Edit team'))
         self.assertEqual(view.page, 'team')
         edit = next(item for item in view.walk_children() if isinstance(item, discord.ui.Button) and item.label == 'Edit reserve 2')
         await click(edit)

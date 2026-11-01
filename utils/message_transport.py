@@ -2,6 +2,17 @@
 import discord
 
 
+def restore_view_tracking(message, view):
+    """Restore the new view after an old view for the same message stops.
+
+    discord.py removes the message's synchronization entry on View.stop(),
+    even when a newer view was registered by the preceding message edit.
+    """
+    state = getattr(message, '_state', None)
+    if callable(getattr(state, 'store_view', None)):
+        state.store_view(view, message.id)
+
+
 def _snowflake(value):
     return isinstance(value, int) and not isinstance(value, bool) and value > 0
 

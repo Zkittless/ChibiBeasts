@@ -133,7 +133,7 @@ class ShopInteractions(DatabaseCase):
         view.stop()
         await view.on_timeout()
         self.assertTrue(all(child.disabled for child in view.children))
-        self.assertIn('/shop', message.edit.call_args.kwargs['content'])
+        self.assertIn('/journal → Camp → Shop & inventory', message.edit.call_args.kwargs['content'])
 
 
 class SparInteractions(DatabaseCase):

@@ -160,7 +160,7 @@ SHARD_SHOP = {
     },
     "beast_rename_token": {
         "name": "✏️ Rename Token",
-        "desc": "Give a companion an extended nickname of up to 40 characters (free /nickname allows 20).",
+        "desc": "Give a companion an extended nickname of up to 40 characters (free /journal → Beasts → Rename allows 20).",
         "cost": 10,
         "weekly_limit": 0,
         "type": "cosmetic",
@@ -207,7 +207,7 @@ class Utilities(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # ── /equip ────────────────────────────────────────────────────────────
+    # ── /journal → Beasts → Gear ────────────────────────────────────────────────────────────
     async def equip_autocomplete(self, interaction: discord.Interaction, current: str):
         """Show equipment and runes from the player's inventory."""
         equipment, runes = load_equipment()
@@ -240,7 +240,7 @@ class Utilities(commands.Cog):
     @app_commands.command(name="equip", description="Equip armor or a rune to a beast ⚔️")
     @app_commands.describe(
         item_name="Equipment or rune to equip (from your inventory)",
-        beast_id="Your beast number from /collection"
+        beast_id="Your beast number from /journal → Beasts"
     )
     @app_commands.autocomplete(item_name=equip_autocomplete)
     async def equip(self, interaction: discord.Interaction, item_name: str, beast_id: int):
@@ -257,7 +257,7 @@ class Utilities(commands.Cog):
                 gear_id, gear = matches[0]
             else:
                 return await interaction.followup.send(embed=discord.Embed(
-                    description=f"✦ `{item_name}` not found. Check `/craft` for craftable armor and runes.",
+                    description=f"✦ `{item_name}` not found. Check `/journal → Camp → Workshop` for craftable armor and runes.",
                     color=COLORS["error"]
                 ))
 
@@ -284,7 +284,7 @@ class Utilities(commands.Cog):
             ),
             color=COLORS.get(gear.get("rarity", "common"), COLORS["info"])
         )
-        embed.set_footer(text=f"ChibiBeasts 🐾  •  Use /unequip {beast_id} to remove this gear")
+        embed.set_footer(text="ChibiBeasts 🐾  •  Open this beast’s Gear page in /journal to remove equipment")
         from utils.progress import track_quest_event as _eqtqe, notify_quest_completions as _eqnqc
         _eq_done = await _eqtqe(interaction.user.id, "equip")
         if _eq_done and interaction.channel:
@@ -293,9 +293,9 @@ class Utilities(commands.Cog):
         if gear.get("rarity")=="legendary":await unlock_simple_achievement(interaction.user.id,"first_legendary_gear")
         await interaction.followup.send(embed=embed)
 
-    # ── /unequip ──────────────────────────────────────────────────────────
+    # ── /journal → Beasts → Gear ──────────────────────────────────────────────────────────
     @app_commands.command(name="unequip", description="Remove equipment from a beast 🛡️")
-    @app_commands.describe(beast_id="Your beast number from /collection")
+    @app_commands.describe(beast_id="Your beast number from /journal → Beasts")
     async def unequip(self,interaction:discord.Interaction,beast_id:int):
         await interaction.response.defer()
         from utils.equipment import unequip as remove_gear
@@ -431,7 +431,7 @@ class Utilities(commands.Cog):
 
     # ── /release ──────────────────────────────────────────────────────────
     @app_commands.command(name="release", description="Release a beast back into the wild 🌿")
-    @app_commands.describe(beast_id="Your beast number from /collection")
+    @app_commands.describe(beast_id="Your beast number from /journal → Beasts")
     async def release(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
 
@@ -447,7 +447,7 @@ class Utilities(commands.Cog):
 
         if beast_row.get("is_active"):
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You can't release your active beast. Open `/journal` → Companions and make another active first.",
+                description="✦ You can't release your active beast. Open `/journal` → Beasts and make another active first.",
                 color=COLORS["error"]
             ))
 
@@ -518,9 +518,9 @@ class Utilities(commands.Cog):
             color=COLORS["success"]
         ))
 
-    # ── /evolve ───────────────────────────────────────────────────────────
+    # ── /journal → Beasts → Evolve / awaken ───────────────────────────────────────────────────────────
     @app_commands.command(name="evolve", description="Evolve a beast using the right item 🌟")
-    @app_commands.describe(beast_id="Your beast number from /collection")
+    @app_commands.describe(beast_id="Your beast number from /journal → Beasts")
     async def evolve(self,interaction:discord.Interaction,beast_id:int):
         await interaction.response.defer()
         from utils.gameplay import evolve_beast
@@ -542,7 +542,7 @@ class Utilities(commands.Cog):
 
     # ── /shard_shop ───────────────────────────────────────────────────────
 
-    # ── /daily ────────────────────────────────────────────────────────────
+    # ── /journal → Camp → Claim daily ────────────────────────────────────────────────────────────
     @app_commands.command(name="daily", description="Claim your daily reward and apply sanctuary bonuses 🌅")
     async def daily(self,interaction:discord.Interaction):
         await interaction.response.defer()
@@ -654,7 +654,7 @@ class Utilities(commands.Cog):
             embed.add_field(name="🐾 Most Common Beast", value=f"**{top_beast_name}** ({common_beast['cnt']} owned)", inline=True)
         if rarest_ach:
             embed.add_field(name="✨ Rarest Achievement", value=f"**{rarest_name}** ({rarest_ach['cnt']} earned)", inline=True)
-        embed.set_footer(text="ChibiBeasts 🐾  •  /leaderboard for individual rankings")
+        embed.set_footer(text="ChibiBeasts 🐾  •  /journal → Camp → Guild & community → Leaderboard for individual rankings")
         await interaction.followup.send(embed=embed)
 
     async def _command_guide(self, interaction, *, already_deferred=False):
@@ -662,23 +662,10 @@ class Utilities(commands.Cog):
             await interaction.response.defer()
         from utils.habitats import BIOMES
         player=await get_or_create_player(interaction.user.id,str(interaction.user))
-        from utils.story import get_quest_state,load_questline
-        state=await get_quest_state(interaction.user.id)
-        next_ch=next((c for k,c in load_questline()["chapters"].items() if k not in state["completed_chapters"]),None)
-        embed=discord.Embed(title="🌱 Your next step",description=("Choose your first companion with /start." if not player.get("starter_claimed") else f"Story: {next_ch['name'] if next_ch else 'The hollow is restored'} · /journal → Story.\n/journal → Companions shows bonds, active selection and awakening milestones."),color=COLORS["info"])
-        categories={
-            "Your Field Journal": "/journal — Adventure, Team, Companions, Workshop, Story and Activities\nTeam switches between exploration and raid assignments. Companions opens your searchable roster. Workshop includes your material bag.",
-        "Adventure": "/explore — choose or save a destination; confirm Begin to spend one charge, or resume your saved trip\n/challenge — saved team tower; randomized waves, camp and guardian\n/sparr — one spar per NPC per day\n/npc · /meet · /lore",
-        "Companions": "/collection — search, filter and open your beasts\nUse Companion actions for Care, Gear, lead selection, training, rename and evolution. Details shows moves and lore.\n/play · /codex · /bestiary · /typeinfo",
-            "Eggs and items": "/nursery — egg guarantees, hatch choices, incubators and optional care\n/shop — eggs, consumables and shard purchases\n/care — preview and use healing items or treats\n/inventory · /use [beast_number]",
-            "Builds and trade": "/craft — recipes, materials and crafting\n/gear — preview and change armor or runes\n/perks — equip, remove or activate an owned perk\n/market · /list · /delist · /appraise · /sell · /release · /trade",
-            "Guilds and endgame": "/guild_create · /guild · /guild_invite · /guild_promote · /guild_leave\n/contribute · /guild_shop · /sanctuary · /build\nJournal → Team → Raids — set three companions before a raid\n/raid · /ancient — attack, guard and support with the raid buttons\n/battle · /ranked · /rank · /ranked_leaderboard",
-            "Progress": "/daily · /dailies · /achievements · /profile\n/title · /stats · /leaderboard\n/history — expeditions, battles, raids, trades and altered divines",
-        }
-        categories = {'Start with a panel': '**/journal** · adventure, teams, story and activities\n**/collection** · search your roster and open a beast\n**/gear** · preview, equip or remove armor and runes\n**/care** · healing items and treats\n**/nursery** · eggs, incubation and hatch choices\n**/craft** · recipes and materials\n**/perks** · manage your build and weekly ability', **categories}
-        categories['Shortcuts'] = '/beastinfo opens one beast in the Collection browser.\n/eggs opens Nursery incubators; /incubate, /tend and /hatch take a specific egg action.\n/equip and /unequip are Gear shortcuts.\n/perk_equip, /perk_unequip and /perk_use are Perks shortcuts.\n/party and /raidparty open your raid team.\n/explore opens destination selection or resumes your trip.'
+        from utils.journal_commands import guide_categories
+        categories = guide_categories()
         categories['Combat basics'] = 'Attack restores mana. Attack, skill and guard each earn one ultimate charge; an ultimate spends three charges and 50 mana. Raids start at zero charges. Equip gear, tend allies, swap wounded companions and answer Weave patterns. Speed shortens action recovery; bosses resist repeated stuns.'
-        categories['Building your kit'] = 'Return home to bank your expedition rewards. Workshop shows recipes, costs, sources, materials and craft/equip/evolve actions. Forge discounts are included. Raids and /contribute earn personal Guild Tickets; shared guild tokens fund /build and raid entry.'
+        categories['Building your kit'] = 'Return home to bank your expedition rewards. Workshop shows recipes, costs, sources, materials, crafting, equipment and evolution. Forge discounts are included. Raids and /contribute earn personal Guild Tickets; shared guild tokens fund /build and raid entry.'
         categories['Available destinations'] = ' · '.join(b['name'] for b in BIOMES.values() if player['level'] >= b['min_level'])
         from utils.command_guide import GuideView
         view = GuideView(interaction.user.id, categories)
@@ -740,7 +727,7 @@ class Utilities(commands.Cog):
 
             if not active:
                 return await interaction.followup.send(embed=discord.Embed(
-                    description="✦ You don't have an active beast! Open `/journal` → Companions → Make active first.",
+                    description="✦ You don't have an active beast! Open `/journal` → Beasts → Make active first.",
                     color=COLORS["error"]
                 ))
 
@@ -832,7 +819,7 @@ class Utilities(commands.Cog):
         if found_item:
             desc += f"\n🎁 **Found:** {found_item[1]}! Added to your inventory."
         if new_happiness < 50:
-            desc += "\n\n*Your beast could use more time together. Try `/shop` for happiness items.*"
+            desc += "\n\n*Your beast could use more time together. Try `/journal → Camp → Shop & inventory` for happiness items.*"
 
         embed = discord.Embed(title=f"🐾 Time with {name}", description=desc, color=COLORS["success"])
         embed.set_footer(text="ChibiBeasts 🐾  •  /play again in 2 hours")
@@ -844,7 +831,7 @@ class Utilities(commands.Cog):
         await _tqe(interaction.user.id, "play",beast_row_id=active["id"])
         await _ua(interaction.user.id, "first_play") if not _play_last else None
 
-    # ── /history ──────────────────────────────────────────────────────────
+    # ── /journal → Adventure → Battle log ──────────────────────────────────────────────────────────
     @app_commands.command(name="history", description="View your recent battle, raid, and trade history 📜")
     async def history(self, interaction: discord.Interaction):
         from utils.journal import open_journal

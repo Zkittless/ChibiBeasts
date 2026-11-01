@@ -112,7 +112,7 @@ class PerksView(discord.ui.View):
 
     async def handle(self, click, action, frame, value=None):
         if click.user.id != self.user_id or self.is_finished():
-            return await click.response.send_message('Open /perks for your own current build.', ephemeral=True)
+            return await click.response.send_message('Open /journal → Camp → Trainer → Perks for your own current build.', ephemeral=True)
         await click.response.defer()
         async with self.lock:
             if frame != self.frame:

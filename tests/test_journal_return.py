@@ -9,6 +9,7 @@ from tests.test_gameplay import DatabaseCase, interaction
 from tests.test_interactions import component
 from utils import db as storage, expeditions
 from utils.journal import JournalView, open_journal
+from utils.journal_hub import HubFrame
 
 
 class JournalBattleReturn(DatabaseCase):
@@ -27,10 +28,10 @@ class JournalBattleReturn(DatabaseCase):
         self.sent, self.sequence = [], []
 
         async def send(**kwargs):
-            if isinstance(kwargs.get('view'), JournalView):
+            if isinstance(kwargs.get('view'), HubFrame):
                 self.sequence.append('journal')
-                self.sent.append(kwargs['view'])
-                self.addCleanup(kwargs['view'].stop)
+                self.sent.append(kwargs['view'].hub.root)
+                self.addCleanup(kwargs['view'].hub.root.stop)
                 return SimpleNamespace(id=100 + len(self.sent), attachments=[], edit=AsyncMock(), delete=AsyncMock())
             self.sequence.append('result')
             return SimpleNamespace(id=200, attachments=[], edit=AsyncMock())
@@ -166,7 +167,7 @@ class JournalBattleReturn(DatabaseCase):
                                       {'code': 50013, 'message': 'Missing Permissions'})
 
         async def blocked(**kwargs):
-            if isinstance(kwargs.get('view'), JournalView):
+            if isinstance(kwargs.get('view'), HubFrame):
                 raise forbidden
             return await send(**kwargs)
 

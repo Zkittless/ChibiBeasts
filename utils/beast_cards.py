@@ -65,10 +65,10 @@ def codex_embed(beast, tab='overview'):
         if evolution:
             from utils.db import get_beast_data
             form = get_beast_data(evolution['evolves_to'])
-            embed.add_field(name=f"Next form · {form['name'] if form else evolution['evolves_to'].replace('_', ' ').title()}", value=evolution.get('description', 'See /beastinfo for evolution requirements.'), inline=False)
+            embed.add_field(name=f"Next form · {form['name'] if form else evolution['evolves_to'].replace('_', ' ').title()}", value=evolution.get('description', 'See /journal → Beasts for evolution requirements.'), inline=False)
         if not embed.fields:
             embed.description += f"\n\n{beast['description']}"
-    embed.set_footer(text=f"ChibiBeasts · {'Moves & stats' if tab == 'battle' else tab.title()} · /bestiary for server discoveries")
+    embed.set_footer(text=f"ChibiBeasts · {'Moves & stats' if tab == 'battle' else tab.title()} · /journal → Camp → Trainer → Bestiary for server discoveries")
     return embed
 
 

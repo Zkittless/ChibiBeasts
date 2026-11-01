@@ -8,7 +8,7 @@ from datetime import datetime, timezone, time
 # Happiness decay rates (per day).
 # Decay timeline without any care:  100 → 0 in ~33 days (active) or ~20 days (benched)
 # The /play command gives +15 to the active beast once/day — fully offsets active decay.
-# Fairy Garden gives +5 to benched beasts on /daily — fully offsets benched decay.
+# Fairy Garden gives +5 to benched beasts on /journal → Camp → Claim daily — fully offsets benched decay.
 # Brambleberries (30g, +10) and Sugarsprout Cupcakes (120g, +30) are the shop remedies.
 # The battle penalty kicks in at ≤30 happiness (-10% stats), so neglected beasts
 # feel meaningfully weaker but not immediately — players have ~2 weeks before it bites.

@@ -7,6 +7,7 @@ import sys
 from dotenv import load_dotenv
 from utils.db import init_db
 from utils import journal_diagnostics
+from utils.journal_commands import JournalCommandTree
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 if hasattr(sys.stdout, "reconfigure"):
@@ -23,7 +24,7 @@ intents.message_content = True
 intents.guilds = True
 intents.members = True
 
-bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
+bot = commands.Bot(command_prefix="!", intents=intents, help_command=None, tree_cls=JournalCommandTree)
 
 
 @bot.event
@@ -35,10 +36,14 @@ async def on_interaction(interaction: discord.Interaction):
 async def on_ready():
     print(f"🐾 ChibiBeasts is online as {bot.user}")
     print(f"📡 Connected to {len(bot.guilds)} server(s)")
+    if not getattr(bot, '_journal_commands_cleaned', False):
+        bot._journal_commands_cleaned = True
+        from utils.journal_commands import prune_guild_shortcuts
+        await prune_guild_shortcuts(bot)
     await bot.change_presence(
         activity=discord.Activity(
             type=discord.ActivityType.playing,
-            name="ChibiBeasts 🐾 | /start"
+            name="ChibiBeasts 🐾 | /journal"
         )
     )
 

@@ -317,7 +317,7 @@ class Hatch(commands.Cog):
         if beast.get("image_url"):
             embed.set_image(url=beast["image_url"])
 
-        embed.set_footer(text="ChibiBeasts 🐾  •  Use /collection to view your beasts")
+        embed.set_footer(text="ChibiBeasts 🐾  •  Use /journal → Beasts to view your beasts")
         return embed
 
     @app_commands.command(name="nursery", description="Choose, hatch and care for your next companions")

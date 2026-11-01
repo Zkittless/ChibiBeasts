@@ -1,6 +1,6 @@
 """One searchable, read-only browser for owned companions and detailed cards."""
 import asyncio
-from contextlib import nullcontext
+from contextlib import ExitStack, nullcontext
 import io
 import logging
 
@@ -100,13 +100,13 @@ def detail_embed(row: dict, player, inventory, rows) -> discord.Embed:
             recipe_str = (f"\nTrainer: {player['level']}/{required['trainer_level']} · "
                           f"Bond: {row.get('bond', 0)}/{required['bond']} · "
                           f"Happiness: {row['happiness']}/{required['happiness']} · "
-                          "`/journal` → Companions shows your progress.")
+                          "`/journal` → Beasts shows your progress.")
         else:
             recipe_str += f"\nOwned: {inventory.get(method_id, 0)}"
         lvl_note = blockers[0] if not can_evolve else f"✅ Lv.{lvl_req} — **ready to evolve!**"
         embed.add_field(
             name=f"{form_label} → {tgt_r} {tgt_name}",
-            value=f"**Item:** {method_name} · {lvl_note}{recipe_str}\n*Use `/evolve #{num}` when ready.*",
+            value=f"**Item:** {method_name} · {lvl_note}{recipe_str}\n*Use `/journal → Beasts → Evolve / awaken #{num}` when ready.*",
             inline=False
         )
     if beast_data.get("divine_passive"):
@@ -172,7 +172,7 @@ class SearchModal(discord.ui.Modal, title='Find a companion'):
 
 class OwnedRosterView(discord.ui.View):
     """Search, roster pages and individual cards share one message and lock."""
-    def __init__(self, user_id, display_name, *, details=False, navigator=None):
+    def __init__(self, user_id, display_name, *, details=False, navigator=None, hub=None):
         super().__init__(timeout=300)
         self.user_id, self.display_name = user_id, display_name
         self.mode = 'detail' if details else 'overview'
@@ -187,6 +187,8 @@ class OwnedRosterView(discord.ui.View):
         self.pinned_detail = False
         self.picker_mode = 'beasts'
         self.workspace_route = 'beast'
+        self.hub = hub or getattr(navigator, 'hub', None)
+        self.page_size = 4 if self.hub else PAGE_SIZE
         if navigator is None:
             from utils.beast_workspace import BeastWorkspace
             navigator = BeastWorkspace(self)
@@ -214,6 +216,8 @@ class OwnedRosterView(discord.ui.View):
                                       style=discord.ButtonStyle.success)
         self.details_button = self.button('Details', row=4, callback=lambda click: self.show(click, expanded=not self.expanded))
         self.journal_button = self.button('Field Journal', row=3, callback=self.return_journal)
+        self.rarity_select = discord.ui.Select(placeholder='Rarity', row=0)
+        self.rarity_select.callback = lambda click: self.show(click, rarity=click.data['values'][0])
 
     @staticmethod
     def button(label, *, row, callback, style=discord.ButtonStyle.secondary):
@@ -223,7 +227,7 @@ class OwnedRosterView(discord.ui.View):
 
     async def permitted(self, interaction):
         if interaction.user.id != self.user_id:
-            await interaction.response.send_message('Open /collection to browse your own companions.', ephemeral=True)
+            await interaction.response.send_message('Open /journal → Beasts to browse your own companions.', ephemeral=True)
             return False
         return True
 
@@ -231,7 +235,7 @@ class OwnedRosterView(discord.ui.View):
         if not await self.permitted(interaction):
             return
         if self.is_finished():
-            return await interaction.response.send_message('This roster has closed. Open /collection again.', ephemeral=True)
+            return await interaction.response.send_message('This roster has closed. Open /journal → Beasts again.', ephemeral=True)
         await interaction.response.send_modal(SearchModal(self))
 
     async def care(self, interaction):
@@ -278,7 +282,7 @@ class OwnedRosterView(discord.ui.View):
         if self.notice:
             description += '\n\n' + self.notice
         if not self.rows:
-            description += '\n\nNo companions yet. Visit `/nursery` or `/journal` to meet one.'
+            description += '\n\nNo companions yet. Visit `/journal → Camp → Nursery` or `/journal` to meet one.'
         elif not matches:
             description += '\n\nNo companions match this rarity and search. Choose another rarity or change the search.'
         embed = discord.Embed(title=f"🐾 {safe(self.display_name)}’s collection", description=description,
@@ -300,17 +304,22 @@ class OwnedRosterView(discord.ui.View):
                 value += '\n' + ' · '.join(tags)
             embed.add_field(name=f"{RARITY_EMOJI.get(row['rarity'], '✦')} #{owned_roster.number(row)} · {safe(owned_roster.name(row))}",
                             value=value, inline=False)
-        embed.set_footer(text='Browse without changing your lead · /journal → Team to choose who travels')
+        embed.set_footer(text='Browse without changing your lead · /journal → Adventure → Edit team to choose who travels')
         return embed
 
     def render(self):
-        visible, pages = owned_roster.visible(self.rows, self.picker, page_size=PAGE_SIZE)
+        visible, pages = owned_roster.visible(self.rows, self.picker, page_size=self.page_size)
         matches = self.matches()
         self.clear_items()
         self.sort_select.options = [discord.SelectOption(label=label, value=value, default=value == self.picker.sort)
                                     for value, label in (('number', 'Collection number'), ('level', 'Highest level'), ('rarity', 'Highest rarity'))]
         row = self.selected() if self.mode == 'detail' else None
-        if not row:
+        if self.hub:
+            self.rarity_select.options = [discord.SelectOption(label=rarity.replace('_', ' ').title() +
+                f" · {sum(r['rarity'] == rarity for r in self.rows)}", value=rarity, default=rarity == self.picker.rarity)
+                for rarity in owned_roster.RARITIES if rarity == 'common' or any(r['rarity'] == rarity for r in self.rows)]
+            self.add_item(self.rarity_select)
+        if not row and not self.hub:
             self.add_item(self.sort_select)
         self.beast_select.placeholder = 'Open a companion’s details'
         if row:
@@ -329,16 +338,19 @@ class OwnedRosterView(discord.ui.View):
                 self.beast_select.options.append(discord.SelectOption(label='Next beasts ▶',
                     value=f"page:{matches[start + DETAIL_PAGE_SIZE]['id']}", description=f'Page {menu_page + 2}/{menu_pages}'))
         rarity_name = self.picker.rarity.replace('_', ' ').title()
-        if self.picker_mode == 'rarities':
+        if self.picker_mode == 'rarities' and not self.hub:
             self.beast_select.placeholder = f'Choose rarity · {rarity_name}'
             self.beast_select.options = [discord.SelectOption(label=f'Back to {rarity_name} beasts', value='beasts')]
             for rarity in owned_roster.RARITIES:
                 count = sum(item['rarity'] == rarity for item in self.rows)
                 self.beast_select.options.append(discord.SelectOption(label=rarity.replace('_', ' ').title(),
                     value='rarity:' + rarity, emoji=RARITY_EMOJI.get(rarity), description=f'{count} owned'))
-        else:
+        elif not self.hub:
             self.beast_select.options.insert(0, discord.SelectOption(label='Change rarity…', value='rarities',
                 description=f'Currently browsing {rarity_name} beasts'))
+        self.beast_select.disabled = not self.beast_select.options
+        if self.beast_select.disabled:
+            self.beast_select.options = [discord.SelectOption(label='No beasts in this rarity', value='beasts')]
         self.add_item(self.beast_select)
 
         if row:
@@ -361,13 +373,19 @@ class OwnedRosterView(discord.ui.View):
             self.prev_page.disabled = self.picker.page == 0
             self.next_page.disabled = self.picker.page + 1 >= pages
             self.page_button.label = f'{self.picker.page + 1}/{pages}'
-            for item in (self.prev_page, self.page_button, self.next_page):
-                self.add_item(item)
+            if not self.hub or pages > 1:
+                for item in (self.prev_page, self.page_button, self.next_page):
+                    self.add_item(item)
             embed = self.overview_embed(visible, pages)
         self.clear_button.disabled = not (self.picker.query or self.picker.rarity != 'common' or self.picker.sort != 'number')
-        self.add_item(self.journal_button)
-        for item in (self.search_button, self.refresh_button):
+        if not self.hub:
+            self.add_item(self.journal_button)
+        for item in ((self.search_button,) if self.hub else (self.search_button, self.refresh_button)):
             self.add_item(item)
+        if self.hub and not row:
+            patients = sum(r['hp'] < r['max_hp'] or storage.is_knocked_out(r) for r in self.rows)
+            self.add_item(self.button(f'Care · {patients}', row=4, callback=lambda click: self.hub.navigate(click, 'care')))
+            self.add_item(self.button('Nursery', row=4, callback=lambda click: self.hub.navigate(click, 'nursery')))
         if not self.clear_button.disabled:
             self.add_item(self.clear_button)
         if row:
@@ -382,7 +400,7 @@ class OwnedRosterView(discord.ui.View):
         if not await self.permitted(click):
             return
         if self.is_finished():
-            return await click.response.send_message('This roster has closed. Open /collection again.', ephemeral=True)
+            return await click.response.send_message('This roster has closed. Open /journal → Beasts again.', ephemeral=True)
         from utils.companion_actions import current, RenameModal
         action = click.data['values'][0]
         if action == 'rename':
@@ -427,7 +445,7 @@ class OwnedRosterView(discord.ui.View):
             await click.response.defer()
         async with (nullcontext() if _lock_held else self.lock):
             if self.is_finished():
-                return await click.followup.send('This roster has closed. Open /collection again.', ephemeral=True)
+                return await click.followup.send('This roster has closed. Open /journal → Beasts again.', ephemeral=True)
             if picker_mode not in {'beasts', 'rarities'}:
                 return await click.followup.send('Choose an option from the beast menu.', ephemeral=True)
             self.picker_mode = picker_mode
@@ -497,13 +515,16 @@ class OwnedRosterView(discord.ui.View):
                 if index is not None and (delta or not restore_target):
                     index = max(0, min(len(matches) - 1, index + delta))
                     self.selected_id = matches[index]['id']
-                    self.picker.page = index // PAGE_SIZE
+                    self.picker.page = index // self.page_size
             else:
                 self.picker.page += page_delta
             embed, row = self.render()
             await self.deliver(click, embed, row, opening=opening)
 
     async def deliver(self, interaction, embed, row, *, opening):
+        self.overview_images = []
+        if self.hub and row is None:
+            return await self.deliver_overview(interaction, embed)
         previous = {item.filename: item for item in getattr(self.message, 'attachments', [])}
         expected, retained, portrait = '', None, None
         if row and self.art_enabled:
@@ -547,6 +568,43 @@ class OwnedRosterView(discord.ui.View):
             if buffer:
                 buffer.close()
 
+    async def deliver_overview(self, interaction, embed):
+        """Four fitted portraits accompany the roster's four compact rows."""
+        visible, _ = owned_roster.visible(self.rows, self.picker, page_size=self.page_size)
+        previous = {item.filename: item for item in getattr(self.message, 'attachments', [])}
+        armor = await gear_art.equipped_armor_ids(self.user_id) if self.art_enabled else {}
+        with ExitStack() as stack:
+            attachments, names = [], set()
+            for row in visible:
+                name = gear_art.portrait_filename(row['beast_id'], armor.get(row['id'], ''))
+                available = self.art_enabled and name in names
+                if self.art_enabled and name not in names:
+                    if name in previous:
+                        attachments.append(previous[name])
+                        available = True
+                    else:
+                        portrait = await gear_art.render_portrait(row['beast_id'], armor.get(row['id'], ''))
+                        if portrait:
+                            buffer = stack.enter_context(io.BytesIO(portrait.data))
+                            file = discord.File(buffer, filename=name)
+                            stack.callback(file.close)
+                            attachments.append(file)
+                            available = True
+                    if available:
+                        names.add(name)
+                self.overview_images.append('attachment://' + name if available else None)
+            try:
+                result = await interaction.followup.send(embed=embed, view=self, files=attachments, wait=True)
+            except discord.HTTPException as error:
+                if isinstance(error, discord.NotFound) or not attachments:
+                    raise
+                self.art_enabled = False
+                self.overview_images = []
+                logger.warning('Roster portraits rejected (%s); showing text controls', error.status)
+                result = await interaction.followup.send(embed=embed, view=self, wait=True)
+            self.message = result or self.message
+            self.navigator.message = self.message
+
     async def on_timeout(self):
         async with self.lock:
             if self.navigator.active is not self:
@@ -563,7 +621,7 @@ class OwnedRosterView(discord.ui.View):
     async def on_error(self, interaction, error, item):
         logger.error('Roster input failed: trainer=%s control=%s', self.user_id,
                      getattr(item, 'custom_id', None), exc_info=error)
-        message = 'The roster could not turn that page. Use /collection to open it again.'
+        message = 'The roster could not turn that page. Use /journal → Beasts to open it again.'
         try:
             if interaction.response.is_done():
                 await interaction.followup.send(message, ephemeral=True)
@@ -577,6 +635,6 @@ async def open_roster(interaction, *, beast_number=None, details=False, already_
     if not already_deferred:
         await interaction.response.defer()
     await storage.get_or_create_player(interaction.user.id, str(interaction.user))
-    view = OwnedRosterView(interaction.user.id, interaction.user.display_name, details=details)
+    view = OwnedRosterView(interaction.user.id, interaction.user.display_name, details=details, hub=getattr(interaction, 'hub', None))
     await view.show(interaction, target_number=beast_number, opening=True)
     return view

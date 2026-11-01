@@ -88,7 +88,7 @@ async def equip(user_id, number, gear_id, *, replace=False, expected_row_id=None
                 async with db.execute('SELECT id FROM player_equipment WHERE user_id=? AND equipment_id=? AND beast_row_id IS NULL', (user_id, gear_id)) as c:
                     legacy = await c.fetchone()
                 if not legacy:
-                    raise ValueError('Craft this rune with /craft first.')
+                    raise ValueError('Craft this rune with /journal → Camp → Workshop first.')
                 await db.execute('DELETE FROM player_equipment WHERE id=?', (legacy['id'],))
             # A legacy equipped row and the matching rune_id describe one copy.
             returned = [key for _, key in legacy_runes]

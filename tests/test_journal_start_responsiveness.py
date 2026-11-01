@@ -166,6 +166,6 @@ class JournalStartResponsiveness(DatabaseCase):
         self.assertFalse(view.closed)
         self.assertFalse(view.journey_playing)
         self.assertTrue(view.art_enabled)
-        self.assertTrue(any(isinstance(item, discord.ui.Button) and item.label == 'Refresh' and not item.disabled
+        self.assertTrue(any(isinstance(item, discord.ui.Button) and item.label == 'Journal' and not item.disabled
                             for item in view.walk_children()))
         self.assertEqual(len(await self.rows('SELECT id FROM expeditions')), 1)

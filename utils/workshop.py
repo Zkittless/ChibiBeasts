@@ -318,7 +318,7 @@ class WorkshopView(discord.ui.LayoutView):
 
     async def handle(self, interaction, action):
         if interaction.user.id != self.user_id:
-            return await interaction.response.send_message('Open /craft for your own workshop.', ephemeral=True)
+            return await interaction.response.send_message('Open /journal → Camp → Workshop for your own workshop.', ephemeral=True)
         # Acknowledge before lock waits, database reads, image uploads or events.
         mutation = action in {'craft', 'confirm'}
         duplicate = mutation and (self.mutating or self.lock.locked())
@@ -330,7 +330,7 @@ class WorkshopView(discord.ui.LayoutView):
                 return await interaction.followup.send('The workshop is updating. Check the refreshed panel before crafting again.', ephemeral=True)
             async with self.lock:
                 if self.closed or self.is_finished():
-                    return await interaction.followup.send('This workshop has closed. Open /craft again.', ephemeral=True)
+                    return await interaction.followup.send('This workshop has closed. Open /journal → Camp → Workshop again.', ephemeral=True)
                 # Snowflakes preserve input order even if callbacks arrive late.
                 input_id = getattr(interaction, 'id', 0)
                 if input_id and input_id < self.last_input:
@@ -427,7 +427,7 @@ class WorkshopView(discord.ui.LayoutView):
         except discord.NotFound:
             self.closed = True
             self.stop()
-            await interaction.followup.send('This workshop message was removed. Open /craft again.', ephemeral=True)
+            await interaction.followup.send('This workshop message was removed. Open /journal → Camp → Workshop again.', ephemeral=True)
         finally:
             if mutation and not duplicate:
                 self.mutating = False
@@ -445,7 +445,7 @@ class WorkshopView(discord.ui.LayoutView):
 
     async def on_error(self, interaction, error, item):
         logger.error('Workshop input failed', exc_info=error)
-        text = 'The workshop could not refresh. Check /craft before trying again; completed crafts remain in your bag.'
+        text = 'The workshop could not refresh. Check /journal → Camp → Workshop before trying again; completed crafts remain in your bag.'
         try:
             if interaction.response.is_done():
                 await interaction.followup.send(text, ephemeral=True)
@@ -456,7 +456,7 @@ class WorkshopView(discord.ui.LayoutView):
 
 
 async def open_workshop(interaction, *, item_name=None, drawer='', recipe_id=None, already_deferred=False, replace_message=False):
-    """/craft opens the panel; the existing named quick-craft stays compatible."""
+    """/journal → Camp → Workshop opens the panel; the existing named quick-craft stays compatible."""
     if not already_deferred:
         await interaction.response.defer()
     selected, notice, result = recipe_id if recipe_id in crafting.recipes() else None, '', None

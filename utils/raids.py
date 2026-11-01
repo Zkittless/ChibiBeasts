@@ -25,9 +25,9 @@ MECHANICS = {'corrupted_leviathan': ('Cleanse the current', 'Tainted water is ga
 async def party_rows(uid):
     rows = await storage.get_raid_party(uid)
     if len(rows) != 3 or any(row is None for row in rows):
-        raise ValueError('Set three companions with /raidparty first.')
+        raise ValueError('Set three companions with /journal → Adventure → Edit team → Raids first.')
     if any(row['level'] < MIN_COMPANION_LEVEL for row in rows):
-        raise ValueError(f'Prepare three level {MIN_COMPANION_LEVEL}+ companions with /raidparty first.')
+        raise ValueError(f'Prepare three level {MIN_COMPANION_LEVEL}+ companions with /journal → Adventure → Edit team → Raids first.')
     if any(storage.is_knocked_out(r) or r['hp'] <= 0 for r in rows):
         raise ValueError('A party companion is recovering. Use Phoenix Elixir or choose another party.')
     return rows
@@ -130,7 +130,7 @@ async def open_raid(interaction, boss, *, guild_id=None, summon_item=None):
     try:
         await lobby.eligible(uid)
         async with asyncio.timeout(RAID_IO_TIMEOUT):
-            message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nTrainer {MIN_TRAINER_LEVEL}+. Up to ten trainers. Set three healthy level {MIN_COMPANION_LEVEL}+ companions with /raidparty. Aim for a prepared party and a 5–8 minute fight; bring healing and answer the patterns.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins." + (f" A victory returns {GUILD_VICTORY_TOKENS} of the {GUILD_ENTRY_TOKENS} guild tokens." if guild_id else ''), color=COLORS['legendary']), view=lobby)
+            message = await interaction.followup.send(embed=discord.Embed(title=f"{boss['name']} · Gather the party", description=f"{boss['description']}\n\nTrainer {MIN_TRAINER_LEVEL}+. Up to ten trainers. Set three healthy level {MIN_COMPANION_LEVEL}+ companions with /journal → Adventure → Edit team → Raids. Aim for a prepared party and a 5–8 minute fight; bring healing and answer the patterns.\n{MECHANICS[boss['id']][1]}\n\nThe cost is spent only when the raid begins." + (f" A victory returns {GUILD_VICTORY_TOKENS} of the {GUILD_ENTRY_TOKENS} guild tokens." if guild_id else ''), color=COLORS['legendary']), view=lobby)
         try:
             # View's idle timeout resets on clicks; the advertised lobby deadline does not.
             async with asyncio.timeout(RAID_LOBBY_SECONDS):

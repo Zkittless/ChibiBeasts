@@ -43,14 +43,14 @@ class Questline(commands.Cog):
         companion = get_beast_data(npc['beast_companion'])
         if companion:
             embed.set_thumbnail(url=companion['image_url'])
-        embed.set_footer(text='Relationship: ' + relationship_display(rel) + ' · /journal → Story')
+        embed.set_footer(text='Relationship: ' + relationship_display(rel) + ' · /journal → Camp → Story & goals')
         await interaction.followup.send(embed=embed)
 
     @app_commands.command(name='meet', description='Meet the people of the Loom and find their homes 🗺️')
     async def meet(self, interaction: discord.Interaction):
         await interaction.response.defer()
         state = await get_quest_state(interaction.user.id)
-        embed = discord.Embed(title='🗺️ People of the Loom', description='Five people, five ways of paying attention. Open /journal → Story to hear their stories.', color=COLORS['info'])
+        embed = discord.Embed(title='🗺️ People of the Loom', description='Five people, five ways of paying attention. Open /journal → Camp → Story & goals to hear their stories.', color=COLORS['info'])
         for id, npc in load_npcs().items():
             embed.add_field(name=f"{npc['emoji']} {npc['name']}", value=f"{npc['title']}\n{npc['location']} · {relationship_display(get_relationship_level(state, id))}", inline=False)
         await interaction.followup.send(embed=embed)

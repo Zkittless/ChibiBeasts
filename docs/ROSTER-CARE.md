@@ -2,17 +2,17 @@
 
 ## Browse the full roster
 
-Open `/collection` for ten companions per page. Search by nickname, species or `#number`, filter by rarity, or sort by collection number, highest level or highest rarity. The beast menu opens a detailed card directly. **Back to roster** returns to the same search and filters; detail arrows follow the filtered collection.
+Open `/journal` → **Beasts** for four companions per overview page. Common appears first, with owned rarities in a selector. Search by nickname, species or `#number`. The beast menu opens a detailed card directly. **Back to beasts** returns to the same search, rarity and page; detail arrows follow the filtered collection.
 
-`/beastinfo` opens that same browser on the active companion. Its optional beast number supports name autocomplete. Details retain stats, moves, disposition, recovery status, evolution progress and equipped armor artwork. All browsing is read-only: it never promotes a lead or changes team assignments.
+Details retain stats, moves, disposition, recovery status, evolution progress and equipped armor artwork. All browsing is read-only: it never promotes a lead or changes team assignments. **Companion actions** opens each tool in this same message, with **Back to beast** preserving the selected individual.
 
 ## Choose a beast in Gear
 
-`/gear` no longer requires a number. It starts with the active beast; its optional argument supports name autocomplete. Choose another owned beast from the menu, search by nickname/species/number, or turn collection pages in the same message. Current armor, rune, available copies and trainer-level restrictions refresh from the save. Equipping still uses the existing `/equip` or Workshop flow.
+Choose a companion, then **Companion actions → Gear**. Current armor, rune, available copies and trainer-level restrictions refresh from the save. Gear remains bound to that individual throughout selection and confirmation. The Workshop also offers its existing equip flow after crafting.
 
 ## Apply healing and items
 
-Open `/care`, optionally choose a beast through autocomplete, or press **Care** on a detailed roster card, Gear or a journal companion/team slot. Care is private and keeps that individual selected.
+The roster's **Care** button shows only injured or knocked-out companions. Open a beast's **Care & items** action, or use Care on Gear or a team slot, to keep that individual selected. This action also supports treats for a healthy companion. Controls belong to the journal owner and do not open another message.
 
 1. Choose an owned care item.
 2. Review the actual effect, including HP before/after, daily EXP allowance or upgrade cap.
@@ -26,8 +26,8 @@ Care checks current ownership, market listings, live battle state, target identi
 
 ## Choose and save exploration
 
-`/explore` opens destination selection without spending a charge. Choose an unlocked destination and press **Save destination** to remember it; the current exploration team already persists. An explicit command destination overrides only that opening. **Clear default** restores Woods.
+`/explore` opens destination selection without spending a charge. Choose an unlocked destination and open **More travel options → Saved destination → Save destination** to remember it; the current exploration team already persists. An explicit command destination overrides only that opening. **Clear default** restores Woods.
 
-Only **Begin expedition · 1 charge** starts a new trip. Opening an existing trip resumes its saved destination and exact travelling team. The legacy `expedition` option follows this same selection-first flow for either value.
+Only **Start adventure · 1 charge** starts a new trip. Opening an existing trip resumes its saved destination and exact travelling team. The legacy `expedition` option follows this same selection-first flow for either value.
 
-See the [interactive preview](roster-qol-preview/roster-qol.html). It uses disposable example saves and actual Discord payloads; its local controls do not contact Discord or affect player accounts.
+See the [current three-section navigation guide](FIELD-JOURNAL.md). The older [roster preview](roster-qol-preview/roster-qol.html) records the preceding layout using disposable example saves.

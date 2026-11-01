@@ -46,7 +46,7 @@ def evolution_blockers(row, trainer_level, evolution, *, inventory=None, knocked
         if evolution.get('form') == 'radiant':
             owns_catalyst = owns_catalyst or inventory.get('sunforge_core', 0) > 0
         if not owns_catalyst:
-            blockers.append(f"You need {method.replace('_', ' ').title()}. Check /craft or /ancient.")
+            blockers.append(f"You need {method.replace('_', ' ').title()}. Check /journal → Camp → Workshop or /ancient.")
     return blockers
 
 RARITY_GROWTH = {

@@ -78,7 +78,7 @@ class TeamPagePublication(DatabaseCase):
         self.assertTrue(view.art_enabled)
         self.assertEqual({call.args for call in thumbnails.await_args_list}, set(self.appearances))
         sent = click.edit_original_response.call_args.kwargs['attachments']
-        expected = {view.header.name} | {gear_art.portrait_filename(*row) for row in self.appearances}
+        expected = {gear_art.portrait_filename(*row) for row in self.appearances}
         self.assertEqual(self.attachment_names(sent), expected)
         self.assertEqual(self.referenced_names(view), expected)
 
@@ -114,6 +114,6 @@ class TeamPagePublication(DatabaseCase):
         with patch.object(gear_art, 'render_portrait', side_effect=portrait):
             await view.publish(click)
         names = self.attachment_names(click.edit_original_response.call_args.kwargs['attachments'])
-        self.assertIn('journal-ember.png', names)
+        self.assertNotIn('journal-ember.png', names)
         self.assertNotIn(stage.name, names)
         self.assertEqual(self.referenced_names(view), names)

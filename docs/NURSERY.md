@@ -1,6 +1,6 @@
 # Nursery and egg guarantees
 
-Open `/nursery`, or **Field Journal → Activities → Nursery**. Browse guarantees, effective odds, eligible species, inventory and family research together. Buy, hatch or incubate from this panel. `/hatch`, `/incubate`, `/eggs` and `/tend` remain shortcuts to the same saved system.
+Open `/journal` → **Camp → Nursery**. Browse guarantees, effective odds, eligible species, inventory and family research together. Buy, hatch, incubate and tend from this panel. **Back to Camp** keeps everything in the same journal message; the former egg slash shortcuts are removed.
 
 An egg's **grade** sets its rarity floor and starting level. Its **family** determines which species can hatch. A higher rarity roll does not raise the advertised level band. Starter, evolution-only, Ancient, Corrupted and developer creatures cannot hatch from these eggs.
 

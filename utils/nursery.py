@@ -145,7 +145,7 @@ async def hatch(user_id, egg_id, quantity=1, *, request_key, rng=random, researc
             _gate(player, egg)
             perks, sanctuary = await _bonuses(db, user_id)
             if not await consume_stack(db, 'player_inventory', user_id, egg_id, quantity):
-                raise ValueError('You do not have that many eggs. Buy one in the Nursery or /shop.')
+                raise ValueError('You do not have that many eggs. Buy one in the Nursery or /journal → Camp → Shop & inventory.')
             grants = []
             for index in range(quantity):
                 if research_target:
@@ -200,7 +200,7 @@ async def incubate(user_id, egg_id, *, request_key, now=None):
             'tends_required,tends_done,next_tend_at) VALUES(?,?,?,?,?,?,3,0,?)',
             (user_id, egg_id, egg['name'], egg['grade'], _stamp(now), _stamp(deadline), _stamp(care_at)))
         if not await consume_stack(db, 'player_inventory', user_id, egg_id):
-            raise ValueError('You do not own this egg yet. Buy one in the Nursery or /shop.')
+            raise ValueError('You do not own this egg yet. Buy one in the Nursery or /journal → Camp → Shop & inventory.')
         await db.execute('INSERT INTO nursery_incubations VALUES(?,0)', (cursor.lastrowid,))
         row = await _one(db, 'SELECT * FROM incubating_eggs WHERE id=?', (cursor.lastrowid,))
         result = _incubation(row, 0, now)

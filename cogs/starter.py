@@ -93,9 +93,9 @@ STARTER_CINEMATICS = {
 
 # ── What to do first — shown after choosing ──────────────────────────────────
 FIRST_STEPS = [
-    ("📋", "/dailies", "Check your 4 daily quests — complete them for gold and shards"),
+    ("📋", "/journal → Camp → Story & goals → Daily objectives", "Check your 4 daily quests — complete them for gold and shards"),
     ("🗺️", "/explore", "Explore the Whispering Woods to catch your first wild beast"),
-    ("🥚", "/shop",    "Buy a Common Egg and hatch it for a new companion"),
+    ("🥚", "/journal → Camp → Shop & inventory",    "Buy a Common Egg and hatch it for a new companion"),
     ("⚔️", "/sparr",   "Spar with an NPC to earn EXP and deepen your bond"),
     ("📖", "/journal", "Your hub for story, companions, crafting and daily activities"),
 ]
@@ -273,7 +273,7 @@ class Starter(commands.Cog):
         embed.description = f"*{beast['title']}*\n\n{STARTER_CINEMATICS[beast['id']]['confirmation']}"
         if beast.get("image_url"):
             embed.set_image(url=beast["image_url"])
-        embed.set_footer(text="ChibiBeasts · Your companion is ready · /beastinfo for stats and moves")
+        embed.set_footer(text="ChibiBeasts · Your companion is ready · /journal → Beasts for stats and moves")
         return embed
 
     @app_commands.command(name="start", description="Begin your ChibiBeasts journey! 🐾")

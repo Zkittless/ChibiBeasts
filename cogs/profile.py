@@ -56,7 +56,7 @@ class Profile(commands.Cog):
                 f"⭐ **Level:** {player['level']}\n"
                 f"✨ **EXP:** {exp_bar(player['exp'], exp_needed)}\n"
                 f"💰 **Gold:** `{player['gold']:,}`\n"
-                f"💎 **Celestial Shards:** `{player['celestial_shards']}` — *spend at `/shop`*\n"
+                f"💎 **Celestial Shards:** `{player['celestial_shards']}` — *spend at `/journal → Camp → Shop & inventory`*\n"
                 f"🎫 **Guild Tickets:** `{player['guild_tickets']}`"
             ),
             inline=False
@@ -145,7 +145,7 @@ class Profile(commands.Cog):
             value=explore_status + challenge_status + party_status + sanctuary_status,
             inline=False
         )
-        embed.set_footer(text="ChibiBeasts 🐾  •  /collection to see all beasts")
+        embed.set_footer(text="ChibiBeasts 🐾  •  /journal → Beasts to see all beasts")
 
         # Questline nudge for own profile
         nudge_embed = None
@@ -165,7 +165,7 @@ class Profile(commands.Cog):
                             description=(
                                 f"{_npc.get('emoji','📖')} **{_npc.get('name','your guide')}** is waiting — "
                                 f"*{_ch['name']}* is in progress.\n"
-                                f"Open `/journal` → **Story** to check your objectives."
+                                f"Open `/journal` → **Camp → Story & goals** to check your objectives."
                             ),
                             color=COLORS["legendary"]
                         )
@@ -177,12 +177,12 @@ class Profile(commands.Cog):
             guide_lines = [
                 "*The Loom has noted your arrival. Here is what to do first:*",
                 "",
-                "**`/dailies`** — 4 quests reset every day. Best source of early gold.",
+                "**`/journal → Camp → Story & goals → Daily objectives`** — 4 quests reset every day. Best source of early gold.",
                 "**`/explore`** — Visit the Whispering Woods to catch wild beasts.",
-                "**`/shop`** — Buy and hatch a Common Egg for a new companion.",
+                "**`/journal → Camp → Shop & inventory`** — Buy and hatch a Common Egg for a new companion.",
                 "**`/sparr`** — Spar with an NPC to earn EXP and level up.",
-                "**`/journal` → Story** — Follow the main story and report back for rewards.",
-                "**`/daily`** — Claim free gold and shards once per day.",
+                "**`/journal` → Camp → Story & goals** — Follow the main story and report back for rewards.",
+                "**`/journal → Camp → Claim daily`** — Claim free gold and shards once per day.",
                 "",
                 "*Your `/journal` connects companions, crafting and activities in one place.*",
             ]
@@ -215,7 +215,7 @@ class Profile(commands.Cog):
         await open_roster(interaction, beast_number=beast_number, details=True)
 
     @app_commands.command(name="nickname", description="Give your beast a nickname 💬")
-    @app_commands.describe(beast_number="Your beast number from /collection", name="New nickname (max 20 chars)")
+    @app_commands.describe(beast_number="Your beast number from /journal → Beasts", name="New nickname (max 20 chars)")
     async def nickname(self, interaction: discord.Interaction, beast_number: int, name: str):
         if len(name) > 20:
             return await interaction.response.send_message(embed=discord.Embed(
@@ -265,7 +265,7 @@ class Inventory(commands.Cog):
 
         if not inv:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Your inventory is empty! Visit `/shop` to buy items.",
+                description="✦ Your inventory is empty! Visit `/journal → Camp → Shop & inventory` to buy items.",
                 color=COLORS["info"]
             ))
 
@@ -324,7 +324,7 @@ class Inventory(commands.Cog):
                     value=desc,
                     inline=True
                 )
-            embed.set_footer(text="/use <item> to use · /shop to buy more")
+            embed.set_footer(text="/use <item> to use · /journal → Camp → Shop & inventory to buy more")
             return embed
 
         if total_pages == 1:
@@ -375,7 +375,7 @@ class Inventory(commands.Cog):
         from utils.items import use_item,ELEMENTS
         items=load_items();key=item_name.lower().replace(" ","_").replace("-","_")
         if key not in items:key=next((k for k,v in items.items() if item_name.lower() in v["name"].lower()),None)
-        if not key:return await interaction.followup.send("That item was not found. Check /inventory.",ephemeral=True)
+        if not key:return await interaction.followup.send("That item was not found. Check /journal → Camp → Shop & inventory.",ephemeral=True)
         async def activate(bi,choice=None):
             try:result=await use_item(bi.user.id,key,choice=choice,beast_number=beast_number)
             except ValueError as error:result=str(error)
@@ -427,7 +427,7 @@ class Shop(commands.Cog):
             total = result['total']
             item = result['item']
             if item.get('type') in {'evolution','unlock'}:
-                next_step = 'Use /evolve with an eligible companion.'
+                next_step = 'Use /journal → Beasts → Evolve / awaken with an eligible companion.'
             qs = f"`{qty}x` " if qty > 1 else ""
             await bi.followup.send(f"Purchased {qs}**{item['name']}**!\n`{total:,}g` spent - Balance: `{result['remaining']:,}g`\n{next_step}",ephemeral=True)
             await view.refresh(bi, acknowledged=True)
@@ -487,7 +487,7 @@ class Shop(commands.Cog):
             per  = 3
             total = max(1,(len(items)+per-1)//per)
             page  = max(1,min(page,total))
-            emb = make_embed("⚡ Instant Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nOpen `/nursery` for hatching, exact personal odds and possible companions.\n\u200b")
+            emb = make_embed("⚡ Instant Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nOpen `/journal → Camp → Nursery` for hatching, exact personal odds and possible companions.\n\u200b")
             for eid, name, price, pool_str in items[(page-1)*per:page*per]:
                 egg = HATCH_EGGS[eid]
                 low, high = egg['level_range']
@@ -500,7 +500,7 @@ class Shop(commands.Cog):
             per  = 3
             total = max(1,(len(items)+per-1)//per)
             page  = max(1,min(page,total))
-            emb = make_embed("⏱️ Incubation Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nBegin incubation in `/nursery`. Finishes passively; optional care adds bond.\n\u200b")
+            emb = make_embed("⏱️ Incubation Eggs", f"💰 `{gold:,}g` · Page {page}/{total}\nBegin incubation in `/journal → Camp → Nursery`. Finishes passively; optional care adds bond.\n\u200b")
             for eid, egg, price in items[(page-1)*per:page*per]:
                 r = RARITY_EMOJI.get(egg.get("rarity","common"),"⚪")
                 emoji = egg.get("emoji","🥚")
@@ -574,7 +574,7 @@ class Shop(commands.Cog):
                 # controls when two tab responses complete out of order.
                 async with self_v._render_lock:
                     if self_v.is_finished():
-                        return await bi.followup.send('This shop has closed. Use /shop to reopen it.', ephemeral=True)
+                        return await bi.followup.send('This shop has closed. Use /journal → Camp → Shop & inventory to reopen it.', ephemeral=True)
                     fresh = await get_player(uid)
                     if fresh:
                         player.update(fresh)
@@ -592,7 +592,7 @@ class Shop(commands.Cog):
                     'Shop callback failed: trainer=%s section=%s page=%s control=%s',
                     uid, self_v.section, self_v.page, getattr(item, 'custom_id', None), exc_info=error,
                 )
-                message = 'The shop request failed. Check /inventory for any completed purchase, then use /shop to reopen.'
+                message = 'The shop request failed. Check /journal → Camp → Shop & inventory for any completed purchase, then use /journal → Camp → Shop & inventory to reopen.'
                 try:
                     if bi.response.is_done():
                         await bi.followup.send(message, ephemeral=True)
@@ -607,7 +607,7 @@ class Shop(commands.Cog):
                         child.disabled = True
                     if self_v.message:
                         try:
-                            await self_v.message.edit(content='Shop closed after 3 minutes of inactivity. Use /shop to reopen.', view=self_v)
+                            await self_v.message.edit(content='Shop closed after 3 minutes of inactivity. Use /journal → Camp → Shop & inventory to reopen.', view=self_v)
                         except discord.HTTPException:
                             pass
 
@@ -677,11 +677,11 @@ class Shop(commands.Cog):
                         b1 = discord.ui.Button(label=short, emoji="🥚", style=discord.ButtonStyle.success, row=i+1)
                         async def _b1(bi, _id=eid, _p=price, _n=name):
                             if bi.user.id!=uid: return await bi.response.send_message("✦ Not your shop!",ephemeral=True)
-                            await _buy(bi,_id,_p,_n,"Use `/hatch` to open!")
+                            await _buy(bi,_id,_p,_n,"Use `/journal → Camp → Nursery` to open!")
                         b5 = discord.ui.Button(label="+5", style=discord.ButtonStyle.secondary, row=i+1)
                         async def _b5(bi, _id=eid, _p=price, _n=name):
                             if bi.user.id!=uid: return await bi.response.send_message("✦ Not your shop!",ephemeral=True)
-                            await _buy(bi,_id,_p,_n,"Use `/hatch` to open!",5)
+                            await _buy(bi,_id,_p,_n,"Use `/journal → Camp → Nursery` to open!",5)
                         b1.callback=_b1; b5.callback=_b5
                         self_v.add_item(b1); self_v.add_item(b5)
                     self_v._add_pagination(total, s)
@@ -698,7 +698,7 @@ class Shop(commands.Cog):
                         b1 = discord.ui.Button(label=label, emoji=emoji, style=discord.ButtonStyle.success, row=i+1)
                         async def _b1(bi, _id=eid, _p=price, _n=egg["name"]):
                             if bi.user.id!=uid: return await bi.response.send_message("✦ Not your shop!",ephemeral=True)
-                            await _buy(bi,_id,_p,_n,"Open `/nursery` to begin passive incubation and choose a hatchling when ready.")
+                            await _buy(bi,_id,_p,_n,"Open `/journal → Camp → Nursery` to begin passive incubation and choose a hatchling when ready.")
                         b1.callback=_b1
                         self_v.add_item(b1)
                     self_v._add_pagination(total, s)
@@ -777,7 +777,7 @@ class Shop(commands.Cog):
                     nursery_button = discord.ui.Button(label='Open Nursery', style=discord.ButtonStyle.primary, row=4)
                     async def _nursery(bi):
                         if bi.user.id != uid:
-                            return await bi.response.send_message('Open /nursery for your own eggs.', ephemeral=True)
+                            return await bi.response.send_message('Open /journal → Camp → Nursery for your own eggs.', ephemeral=True)
                         from utils.nursery_view import open_nursery
                         await open_nursery(bi, bot=self.bot)
                     nursery_button.callback = _nursery

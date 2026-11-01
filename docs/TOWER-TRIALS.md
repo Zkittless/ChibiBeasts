@@ -1,6 +1,6 @@
 # Tower Trials
 
-`/challenge` opens a free biome selector, also available from the Field Journal's Adventure actions. Begin commits one randomized climb using the active companion and up to two healthy assigned exploration reserves. One or two members may enter with a difficulty warning. The selector, equipped team, wave fights, result and Back navigation use the same Discord message.
+`/journal → Adventure → More travel options → Tower Trials` opens a free biome selector, also available from the Field Journal's Adventure actions. Begin commits one randomized climb using the active companion and up to two healthy assigned exploration reserves. One or two members may enter with a difficulty warning. The selector, equipped team, wave fights, result and Back navigation use the same Discord message.
 
 ## The climb
 

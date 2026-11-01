@@ -240,7 +240,7 @@ class NurseryView(discord.ui.LayoutView):
         player = self.state['player']
         self.text(f"## The Nursery\nTrainer Lv.{player['level']} · **{player['gold']:,} gold** · {len(self.state.get('incubations', []))}/3 incubators")
         if self.closed:
-            self.text('This page has closed. Open /nursery to continue; eggs, choices and companions are saved.')
+            self.text('This page has closed. Open /journal → Camp → Nursery to continue; eggs, choices and companions are saved.')
             return
         self.row(self.button('Eggs', 'page:eggs'), self.button('Incubators', 'page:incubations'), self.button('Recent hatches', 'page:recent'), self.button('Refresh', 'refresh'))
         if self.notice:
@@ -283,9 +283,9 @@ class NurseryView(discord.ui.LayoutView):
 
     async def handle(self, interaction, action, *, revision=None, quantity=None):
         if interaction.user.id != self.user_id:
-            return await interaction.response.send_message('Open /nursery to care for your own eggs.', ephemeral=True)
+            return await interaction.response.send_message('Open /journal → Camp → Nursery to care for your own eggs.', ephemeral=True)
         if self.closed or self.is_finished():
-            return await interaction.response.send_message('This page has closed. Open /nursery to continue.', ephemeral=True)
+            return await interaction.response.send_message('This page has closed. Open /journal → Camp → Nursery to continue.', ephemeral=True)
         # A modal must be the initial interaction response. It does no database
         # or artwork work; its submission uses the same atomic service checks.
         if action == 'quantity':
@@ -383,7 +383,7 @@ class NurseryView(discord.ui.LayoutView):
 
     async def on_error(self, interaction, error, item):
         logger.error('Nursery interaction failed', exc_info=error)
-        content = 'The Nursery could not refresh. Open /nursery; completed hatches and saved choices are kept.'
+        content = 'The Nursery could not refresh. Open /journal → Camp → Nursery; completed hatches and saved choices are kept.'
         try:
             if interaction.response.is_done():
                 await interaction.followup.send(content, ephemeral=True)

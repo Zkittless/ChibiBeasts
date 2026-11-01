@@ -17,7 +17,7 @@ class Progression(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # ── /dailies ─────────────────────────────────────────────────────────
+    # ── /journal → Camp → Story & goals → Daily objectives ─────────────────────────────────────────────────────────
     @app_commands.command(name="dailies", description="View your daily quests 📋")
     async def dailies(self, interaction: discord.Interaction):
         await interaction.response.defer()
@@ -54,7 +54,7 @@ class Progression(commands.Cog):
         embed.set_footer(text=f"ChibiBeasts 🐾  •  {completed_count}/{len(quests)} completed today")
         await interaction.followup.send(embed=embed)
 
-    # ── /achievements ────────────────────────────────────────────────────
+    # ── /journal → Camp → Trainer → Achievements ────────────────────────────────────────────────────
     @app_commands.command(name="achievements", description="View your trainer achievements 🏆")
     @app_commands.describe(member="View another trainer's achievements")
     async def achievements(self, interaction: discord.Interaction, member: discord.Member = None):
@@ -76,7 +76,7 @@ class Progression(commands.Cog):
         pages=achievement_pages(target,ACHIEVEMENTS,earned)
         await interaction.followup.send(embed=pages[0],view=EmbedPages(interaction.user.id,pages))
 
-    # ── /bestiary ────────────────────────────────────────────────────────
+    # ── /journal → Camp → Trainer → Bestiary ────────────────────────────────────────────────────────
     @app_commands.command(name="bestiary", description="View the server's beast discovery log 📖")
     async def bestiary(self, interaction: discord.Interaction):
         rarity = None

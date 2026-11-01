@@ -238,29 +238,29 @@ class CareView(discord.ui.View):
         logger.warning('Care panel update failed; item operations are never retried',
                        exc_info=(type(error), error, error.__traceback__))
         try:
-            await self.reject(interaction, 'The care panel could not be updated. Open /care to check HP and inventory before using another item.')
+            await self.reject(interaction, 'The care panel could not be updated. Open /journal → Beasts → Care & items to check HP and inventory before using another item.')
         except (discord.HTTPException, TimeoutError):
             pass
 
     async def handle(self, interaction, action, *, generation=None, value=None):
         if interaction.user.id != self.user_id:
-            return await self.reject(interaction, 'Open /care to use items on your own companions.')
+            return await self.reject(interaction, 'Open /journal → Beasts → Care & items to use items on your own companions.')
         if self.closed:
-            return await self.reject(interaction, 'This care panel has closed. Open /care again.')
+            return await self.reject(interaction, 'This care panel has closed. Open /journal → Beasts → Care & items again.')
         if self.navigator and not self.navigator.current(self):
             return await self.reject(interaction, 'Use the current beast workspace controls.')
         if self.navigator and action in {'companion', 'previous', 'next', 'search', 'clear', 'open_search'}:
             return await self.reject(interaction, 'Return to the beast card to choose another companion.')
         generation = self.generation if generation is None else generation
         if generation != self.generation:
-            return await self.reject(interaction, 'This preview has changed. Use the latest care panel or reopen /care.')
+            return await self.reject(interaction, 'This preview has changed. Use the latest care panel or reopen /journal → Beasts → Care & items.')
         if action in {'open_search', 'open_name'}:
             modal = CareSearch(self, generation) if action == 'open_search' else CareName(self, generation)
             return await interaction.response.send_modal(modal)
         await interaction.response.defer(ephemeral=not bool(self.navigator))
         async with self.lock:
             if self.closed or generation != self.generation:
-                return await self.reject(interaction, 'This preview has changed. Use the latest care panel or reopen /care.')
+                return await self.reject(interaction, 'This preview has changed. Use the latest care panel or reopen /journal → Beasts → Care & items.')
             previous = self.current_preview
             visible_ids = {row['id'] for row in self.page_rows()[0]}
             selected_id = self.state.selected_id
