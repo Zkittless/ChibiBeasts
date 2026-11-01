@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from utils.db import init_db
 from utils import journal_diagnostics
 from utils.journal_commands import JournalCommandTree
+from utils.command_sync import clear_guild_commands, developer_ids, sync_startup_commands
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 if hasattr(sys.stdout, "reconfigure"):
@@ -17,7 +18,7 @@ print(f"📂 Files visible: {os.listdir('.')[:8]}")
 
 load_dotenv()
 
-OWNER_ID = int(os.getenv("OWNER_ID", 0))
+OWNER_ID = developer_ids()[0]
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -49,6 +50,7 @@ async def on_ready():
 
 
 @bot.command(name="sync")
+@commands.max_concurrency(1, per=commands.BucketType.user, wait=True)
 async def sync_commands(ctx: commands.Context, scope: str = "global"):
     """
     !sync        — global sync (all servers)
@@ -58,10 +60,11 @@ async def sync_commands(ctx: commands.Context, scope: str = "global"):
     """
     if ctx.author.id != OWNER_ID:
         return await ctx.send("✦ Owner only.")
+    if scope in {'clear', 'guild'} and ctx.guild is None:
+        return await ctx.send('Run this sync command inside the server you want to update.')
 
     if scope == "clear":
-        bot.tree.clear_commands(guild=ctx.guild)
-        await bot.tree.sync(guild=ctx.guild)
+        await clear_guild_commands(bot.tree, ctx.guild)
         await ctx.send(
             f"✅ Guild commands cleared from **{ctx.guild.name}**.\n"
             f"Run `!sync guild` to restore."
@@ -144,12 +147,8 @@ async def main():
         await load_cogs()
         await bot.login(token)
 
-        # Global sync — dev commands are protected by dev_only() check
-        try:
-            synced = await bot.tree.sync()
-            print(f"✅ Global sync: {len(synced)} command(s)")
-        except Exception as e:
-            print(f"❌ Sync failed: {e}")
+        # Guild-only developer tools need their own publication request.
+        await sync_startup_commands(bot)
 
         await bot.connect()
 
