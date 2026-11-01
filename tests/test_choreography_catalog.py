@@ -1,7 +1,7 @@
 """Authored staging stays complete and truthful as the beast roster grows."""
 import unittest
 
-from utils import combat, db, divine_effects, hexpurr_art, kinetic_effects, move_animations as fx
+from utils import combat, db, divine_effects, hexpurr_art, kinetic_effects, raikyr_art, move_animations as fx
 
 
 SUPPORT = frozenset({
@@ -16,7 +16,7 @@ SUPPORT_FAMILIES = frozenset({
 
 class ChoreographyCatalog(unittest.TestCase):
     def test_roster_has_complete_registered_staging_and_four_distinct_moves(self):
-        registered = divine_effects.SEQUENCES | kinetic_effects.SEQUENCES | {hexpurr_art.SEQUENCE}
+        registered = divine_effects.SEQUENCES | kinetic_effects.SEQUENCES | {hexpurr_art.SEQUENCE, raikyr_art.SEQUENCE}
         self.assertFalse(divine_effects.SEQUENCES & kinetic_effects.SEQUENCES)
         self.assertNotIn(hexpurr_art.SEQUENCE, divine_effects.SEQUENCES | kinetic_effects.SEQUENCES)
         roster = db.load_beasts()

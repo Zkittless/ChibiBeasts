@@ -117,7 +117,7 @@ def draw_frame(before, after, events=(), t=1, ambient_seconds=0):
         draw.ellipse((pose.x-home.size*.31,home.feet-3,pose.x+home.size*.31,home.feet+9),fill='#172132')
         changed = prior.slot != member.slot or prior.fighter.species != member.fighter.species
         transforming = bool(animation and animation.sequence == 'hexpurr_lanterns_out' and not changed)
-        if active.species == 'hexpurr':
+        if active.species in {'hexpurr', 'raikyr'}:
             art.paint_fighter(field, active if changed else member.fighter, pose,
                               before=active if changed else prior.fighter, transforming=transforming,
                               t=move_t, seconds=ambient_seconds, aura=not after.outcome)

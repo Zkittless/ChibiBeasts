@@ -3823,6 +3823,48 @@
         "accent": 8674,
         "ultimate": true
       }
+    },
+    "raikyr": {
+      "Volt Rend": {
+        "family": "slash",
+        "palette": "storm",
+        "motion": "slash",
+        "variant": 0,
+        "motif": "fang",
+        "sequence": "claw_cross",
+        "accent": 9201,
+        "ultimate": false
+      },
+      "Thunderbreak": {
+        "family": "lightning",
+        "palette": "storm",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "lance",
+        "sequence": "fork_lightning",
+        "accent": 9202,
+        "ultimate": false
+      },
+      "Eye of the Storm": {
+        "family": "guard",
+        "palette": "storm",
+        "motion": "brace",
+        "variant": 0,
+        "motif": "spark",
+        "sequence": "crystal_aegis",
+        "accent": 9203,
+        "ultimate": false
+      },
+      "Heavenfall": {
+        "family": "lightning",
+        "palette": "storm",
+        "motion": "cast",
+        "variant": 0,
+        "motif": "lance",
+        "sequence": "raikyr_heavenfall",
+        "accent": 9204,
+        "ultimate": true
+      }
     }
   }
 }

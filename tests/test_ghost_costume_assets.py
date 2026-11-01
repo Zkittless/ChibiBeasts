@@ -21,7 +21,7 @@ class CompleteGhostWardrobe(unittest.TestCase):
         cls.roster = set(storage.load_beasts())
 
     def test_every_species_has_a_unique_real_alpha_fit_with_matching_digest(self):
-        self.assertEqual(len(self.roster), 91)
+        self.assertEqual(len(self.roster), 92)
         self.assertEqual(set(self.variants), self.roster)
         self.assertEqual(set(self.manifest['sha256']), set(self.variants.values()))
         self.assertEqual(set(self.manifest['source_sha256']), self.roster)

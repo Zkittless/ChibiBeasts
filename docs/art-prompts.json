@@ -876,6 +876,16 @@
       "references": [
         "data/hexpurr/lantern.webp"
       ]
+    },
+    {
+      "id": "raikyr",
+      "prompt": "Use case: style-transfer / identity-preserve.\nAsset type: Revised base sprite preview for Raikyr, the personal lightning dragon in the ChibiBeasts game.\nImage 1 is the character design to simplify. Image 2 is the game's existing ordinary Dragon, provided ONLY as the visual-style and detail-density reference.\n\nUser correction: Raikyr looks far too detailed beside the ordinary Dragon. Reduce the detail substantially so he belongs in the same chibi pixel-art roster, while preserving the mean and powerful dragon design. The already-approved animated storm aura will be rendered separately by code and must stay unchanged; do NOT redesign that aura or bake a new large aura into this base sprite.\n\nPreserve from image 1: charcoal/blue-black body, secondary silver/light-gray armor-like natural plates, electric-blue accents, fierce narrowed blue eyes, heavy reptilian jaw, sweeping jagged horns, strong batlike wings, four clawed dragon legs, and long curved tail with a lightning-blade tip. Preserve the approximate three-quarter-right orientation and low powerful stance. Keep him scaled and reptilian, with no fur, hair, deer ears, canine features, anthropomorphic expression or human smile.\n\nTransfer from image 2: genuinely chunky readable chibi PIXEL ART, bold dark stepped outlines, a small deliberately limited palette, broad flat color areas, 2–3 discrete shade levels per material, very sparse texture, and clean sprite shapes. Think a carefully drawn roughly 80–96-pixel-tall game sprite enlarged with crisp pixel edges. Big compact head and sturdy body. Simplify wings into 2 or 3 large membrane shapes each, use only a few large silver breast plates, and remove the dozens of tiny individually shaded scales. No intricate engraving, no tiny metallic facets, no painterly gradients, no realistic rendering, no soft airbrush, no glossy 3D shading, no hairlike spikes, no dense decorative noise. Keep a heavy angry brow and a small jagged snarl with just 2–3 visible fang shapes; do not copy the red Dragon's innocent expression.\nLightning accents on the sprite itself: just a few bold blue zigzag marks on horns, dorsal spines and wing edges, and glowing blue eyes. Leave the space around the dragon empty so the approved procedural storm aura can be added later.\nSingle complete character, all horns, wings, paws and tail contained with generous empty margin. Transparent RGBA background. No text, labels, armor clothing, weapons, scenery, shadows, border, glow cloud or extra characters. Output only the simplified Raikyr sprite, not the comparison/reference character.\n",
+      "references": [
+        "data/sprites/dragon.png"
+      ],
+      "source_artifact": "exec-e8eb5214-aaf9-4e0e-9330-4c2a65e2a30f.png",
+      "reference_concept_sha256": "3c8aab0c9bff61826f76b62b72147dd2fe480959effa4651d0101a4395aae91e",
+      "approval": "User approved the simplified design on 2026-11-01; keep the existing storm aura."
     }
   ],
   "generation": "built-in image_gen",

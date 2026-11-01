@@ -4973,6 +4973,56 @@
           "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
         }
       }
+    },
+    "raikyr": {
+      "id": "raikyr",
+      "name": "Raikyr",
+      "title": "The Unfallen Bolt",
+      "rarity": "dev",
+      "growth_rarity": "legendary",
+      "collection": "Developer Exclusive",
+      "type": "wind",
+      "catch_rate": 0,
+      "wild_encounter": false,
+      "exclusive_grant": true,
+      "evolution": null,
+      "base_stats": {
+        "hp": 180,
+        "attack": 120,
+        "defense": 90,
+        "speed": 95,
+        "mana": 110
+      },
+      "moves": [
+        "Volt Rend",
+        "Thunderbreak",
+        "Eye of the Storm"
+      ],
+      "ultimate": "Heavenfall",
+      "description": "Raikyr took shape from a bolt that never touched the ground. It carries a storm beneath its scales, drawing the scattered current into a single strike called Heavenfall.",
+      "encounter_situations": [],
+      "move_effects": {
+        "Volt Rend": {
+          "power": 1,
+          "mana_cost": 0,
+          "mana_restore": 10,
+          "description": "A lightning-laced claw strike; restore 10 mana."
+        },
+        "Thunderbreak": {
+          "power": 0.65,
+          "mana_cost": 15,
+          "status": "weaken",
+          "description": "A controlled thunder strike that weakens the opponent."
+        },
+        "Eye of the Storm": {
+          "power": 0,
+          "mana_cost": 0,
+          "mana_restore": 20,
+          "guard_percent": 55,
+          "focus_multiplier": 1.4,
+          "description": "Reduce the next hit by 55%, restore 20 mana and empower your next attack by 40%."
+        }
+      }
     }
   },
   "rarity_rates": {

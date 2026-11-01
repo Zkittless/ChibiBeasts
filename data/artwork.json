@@ -639,6 +639,13 @@
       "width": 1254,
       "height": 1254,
       "source": "image_gen"
+    },
+    "raikyr": {
+      "file": "raikyr.png",
+      "sha256": "cbd40a2483d4cc0e1fb10c39a5c9879a3167693ddc638156520d34c235fbe1eb",
+      "width": 1312,
+      "height": 1199,
+      "source": "image_gen"
     }
   }
 }

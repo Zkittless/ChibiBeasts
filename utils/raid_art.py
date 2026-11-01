@@ -206,7 +206,7 @@ def render(before, after, events=(), ambient_start=0, palette=None):
     events = departure_events(before, after, events)
     stream = io.BytesIO()
     if not events:
-        if not after.outcome and any(m.fighter.form == 'hexfire' and m.fighter.hp > 0 for m in after.members):
+        if not after.outcome and any(art.has_aura(m.fighter) for m in after.members):
             return art.render_animation(
                 lambda t: frame(after, after, ambient_seconds=ambient_start+t*art.AMBIENT_MS/1000),
                 art.AMBIENT_MS, loop=True, palette=palette, ambient_start=ambient_start)
@@ -234,7 +234,7 @@ class RaidPresentation:
     def idle_delay(self):
         scene = self.previous
         if (self.enabled and self.filename and self.last_clip_seconds and scene and not scene.outcome
-                and any(m.fighter.form == 'hexfire' and m.fighter.hp > 0 for m in scene.members)):
+                and any(art.has_aura(m.fighter) for m in scene.members)):
             return self.last_clip_seconds
         return 0
 

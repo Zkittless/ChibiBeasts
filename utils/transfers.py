@@ -13,8 +13,9 @@ async def _transferable(db, owner, row_id, *, listing_id=None, allow_soulbound=F
     if not row:
         raise ValueError('This companion is no longer in that collection.')
     row = dict(row)
-    if row['beast_id'] == 'hexpurr':
-        raise ValueError('Hexpurr is a personal Developer companion and cannot be traded, sold or released.')
+    definition = storage.get_beast_data(row['beast_id']) or {}
+    if definition.get('exclusive_grant'):
+        raise ValueError(f'{definition["name"]} is a personal Developer companion and cannot be traded, sold or released.')
     if not allow_soulbound and (row['rarity'] == 'altered_divine' or row['is_altered_divine']):
         raise ValueError('Altered Divine companions are soulbound and cannot be transferred.')
     if row['is_active'] or row['raid_slot'] is not None:

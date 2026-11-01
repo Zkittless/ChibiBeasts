@@ -1,0 +1,54 @@
+{
+  "method": "built-in image_gen__imagegen",
+  "approval": "User explicitly approved all 17 outfits on 2026-11-01 before installation.",
+  "base": {
+    "file": "data/sprites/raikyr.png",
+    "sha256": "cbd40a2483d4cc0e1fb10c39a5c9879a3167693ddc638156520d34c235fbe1eb",
+    "source_artifact": "exec-e8eb5214-aaf9-4e0e-9330-4c2a65e2a30f.png",
+    "approval": "User approved the simplified base on 2026-11-01."
+  },
+  "armor": {
+    "source_artifact": "exec-6c502eec-ce13-4b62-80c3-67d2a2879c5c.png",
+    "source_sha256": "7d12eabc5bcae4831696487cdf89e1ff848c781b2a95680d93bcdceb82cb70c8",
+    "prompt": "Use case: identity-preserve.\nAsset type: ONE transparent 4-by-4 wardrobe sprite atlas for the ChibiBeasts game.\nInput 1 is the EDIT TARGET: sixteen identical copies of the newly approved simplified Raikyr dragon in their exact grid cells. Preserve that layout.\nInput 2 is the full-size CHARACTER IDENTITY reference. Keep this exact mean compact black/charcoal storm dragon, blue wing membranes and lightning accents, silver horns and chest, short powerful legs, clawed paws, curled pointed tail, face, pose and right-facing orientation.\nInput 3 is MATERIAL AND OUTFIT DESIGN reference only: the game's sixteen armor sets worn by a different red dragon. Do not copy that red dragon's body, colors, expression or proportions. Read the corresponding material in each cell.\nEdit ONLY by fitting the corresponding clothing to each Raikyr. Preserve the same underlying creature and the clean simplified chunky pixel style. Broad color shapes, stepped black outlines, sparse shading, no fine texture or intricate ornament. Use the torso, shoulders, flanks and back for clothing; keep the face, horns, paws, lightning tail and the original blue wings visible, with natural wing openings. Armor goes over the body, not painted onto the wing membranes. No weapons, extra limbs, extra wings or replacement anatomy. Do not recolor the black/blue dragon to match his gear.\nRetain exactly 16 COMPLETE dragons, 4 equal columns by 4 equal rows, in row-major order. Each COMPLETE armored dragon must stay inside the central 70 percent width and height of its equal square cell, including wings, tail and all garment edges. Plenty of clear transparent padding on every side. No cell touching, cropping, border, text, labels, scenery or floor shadow. True RGBA transparency, no checkerboard painted in. Output a high-resolution square atlas, preferably 2048 by 2048.\nExact cell order:\nROW 1:\n1 Sprite-Silk Attire: layered emerald leaf tunic, broad leaves and pink silk seams around torso.\n2 Gnome-Iron Plating: chunky gray iron body plates, silver edges, a few brass rivets and small round side buckler.\n3 Kelpie-Scale Mail: broad overlapping glossy aqua and teal torso scales.\n4 Cinder-Guard Vest: angular obsidian vest with one integrated orange molten chest core.\nROW 2:\n5 Unicorn-Healer Vestments: white and silver robe, pale lilac folds and silver hem, natural wing openings.\n6 Basilisk Gaze Pauldrons: moss-gray petrified stone shoulder and torso plates, clear amber slit-eye motifs.\n7 Phoenix-Born Shroud: orange and gold flame-feather cape around the back and flanks, distinct from the dragon's unchanged blue anatomical wings.\n8 Thunderbird Storm-Mail: cobalt blue and gold fitted plates with lightning-shaped shoulder accents.\nROW 3:\n9 Dragon-Lord Aegis: substantial crimson dragon-scale torso armor with restrained gold edging.\n10 Abyssal Shroud: ragged midnight-indigo shadow cloak, clearly distinct fabric silhouette over black body.\n11 Chronos Paradox Plate: gold clockwork plates and a few large cogs floating with small clear gaps around torso, substantial armor rather than jewelry.\n12 Blight-Weaver Regalia: branching black shoulder and torso armor with broad violet nebula inlays.\nROW 4:\n13 Mossbark Wrapping: broad bark strips, pale silk ties and moss, readable wood shapes.\n14 Emberstone Vest: square gray iron tiles in dark-red ember resin with orange seams; distinct from cell 4's single molten core.\n15 Thornweave Cloak: brown bark and vine cloak, a few curved thorns and pale feather fringe.\n16 Deepwater Hide: dull navy and teal hide panels with cream down lining and broad stitches; distinct from glossy Kelpie scales.\nKeep clothing substantial and recognizably different in all cells. Do not add a baked aura or outer lightning particles: the approved storm aura is animated separately by the game. Preserve the simplified character instead of increasing detail.",
+    "order": [
+      "sprite_silk_attire",
+      "gnome_iron_plating",
+      "kelpie_scale_mail",
+      "cinder_guard_vest",
+      "unicorn_healer_vestments",
+      "basilisk_gaze_pauldrons",
+      "phoenix_born_shroud",
+      "thunderbird_storm_mail",
+      "dragon_lord_aegis",
+      "abyssal_shroud",
+      "chronos_paradox_plate",
+      "blight_weaver_regalia",
+      "mossbark_wrapping",
+      "emberstone_vest",
+      "thornweave_cloak",
+      "deepwater_hide"
+    ],
+    "production_sha256": {
+      "sprite_silk_attire": "cccb925d281aecf3337b1078b6d83382c1491ee7be50c8adffc9eda91f5f0d9a",
+      "gnome_iron_plating": "1656c0ab30e1891e1b9259b8901c786f77160401806bba8946ab7311532b5bef",
+      "kelpie_scale_mail": "9608b6288e640812b0a4bd690e3acf89077c1b489cfb0c87e9f5cbde0fa6307a",
+      "cinder_guard_vest": "a4ab4964f8f33bae10a65bbf5c692b86ceecdc2c19bda05d962fa1e47624a70e",
+      "unicorn_healer_vestments": "fa976648a3bd5710ef47431e7a63f131966e699eb5710fc7d03902dd0868ad53",
+      "basilisk_gaze_pauldrons": "f0f33986d5ad04f9dbba3eb9b45961963e12f916d63a7ac1466cbd2494137142",
+      "phoenix_born_shroud": "00667be2baba822b1d22f36f076e9a8dbf4b5c975ae8384e79b1792fcded2dbc",
+      "thunderbird_storm_mail": "533f6577094e9f59b1f911e9955b0891a86c6795eefd2c3b1bef5308f6771e88",
+      "dragon_lord_aegis": "c130fe19cab781293b56074b4339f35bd94c2b1fd4ae3035796ad14201a08fb6",
+      "abyssal_shroud": "8a391712923276fce1f1b75812b9cb166eb4102e996a6e0f1e85249d99c8365d",
+      "chronos_paradox_plate": "42599a69f06b4cc8a0a993319dc6efb9aac5d307de983e4d99cc7cd4c26bc3ba",
+      "blight_weaver_regalia": "4d8b03c7c9c8ac769f23197f263c86858ef5476b41acfc947037fa843357de76",
+      "mossbark_wrapping": "77dec8015cdaa4099639518555d43480183b5c97e6a9dff56b1bf8db06ea38b4",
+      "emberstone_vest": "061f5dd642ce8a3bb1850cfbb3a92eeb1e1f70ce8e3147ebed581a3ab70b37bc",
+      "thornweave_cloak": "287ce4baff28253371ba53b353350b99cfc8181771b223346d85dc2490dff114",
+      "deepwater_hide": "873118d8292860748a59e02f737d34591ad594dd0c6c4df9e7a36eab6d6b7f3f"
+    },
+    "reviewed_at": "2026-11-01T21:04:46.519791+00:00",
+    "review_notes": "All sixteen correctly ordered materials reviewed at the 180 px battle sprite size. Each outfit retains the approved dragon face, blue wings, horns, paws and tail. Substantial fitted torso garments, natural wing openings, no clipped cells or overlapping characters. User explicitly approved all 17 outfits on 2026-11-01 before installation."
+  },
+  "ghost_provenance": "data/cosmetics/provenance.json#assets.raikyr"
+}
