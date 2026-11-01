@@ -756,6 +756,8 @@ class JournalView(discord.ui.LayoutView):
                     return await interaction.followup.send(safe(error), ephemeral=True)
                 return await interaction.response.send_message(safe(error), ephemeral=True)
         mutation = action in {'begin', 'path', 'battle_continue', 'make_active', 'team_slot', 'awaken', 'story_claim', 'clear_destination', 'journey_action'} or action.startswith(('team_assign:', 'team_clear:', 'save_destination:', 'path:', 'journey_act:', 'journey_next:', 'journey_return:', 'carnival_'))
+        battle_input = self.page == 'adventure' and (action == 'journey_action' or action.startswith(
+            ('journey_act:', 'journey_next:', 'journey_return:')))
         # A refresh can still be finishing its upload when Start first appears.
         # Queue that first acknowledged action; reject only another mutation.
         duplicate = mutation and self.mutating
@@ -774,7 +776,13 @@ class JournalView(discord.ui.LayoutView):
                 if input_id and input_id < self.last_input:
                     return await interaction.followup.send('That input came from an older page. Use the current controls.', ephemeral=True)
                 self.last_input = max(self.last_input, input_id)
-                self.state = await journal_state.snapshot(self.user_id)
+                if battle_input:
+                    # Combat renders from the saved encounter, not the entire
+                    # inventory/camp. Still read its latest revision before
+                    # interpreting a button; the writer rechecks it atomically.
+                    self.state.trip = await expeditions.current(self.user_id)
+                else:
+                    self.state = await journal_state.snapshot(self.user_id)
                 journal_diagnostics.record(interaction, 'state_loaded', action=action)
                 if self.state.trip:
                     self.trip = self.state.trip
@@ -904,6 +912,7 @@ class JournalView(discord.ui.LayoutView):
                             verb, trip_id, version = action.split(':')
                             choice = 'next' if verb == 'journey_next' else 'return'
                         self.trip = await journey_service.battle_action(self.user_id, trip_id, int(version), choice)
+                        journal_diagnostics.record(interaction, 'battle_committed', action=action)
                     elif action == 'battle_continue':
                         if not self.state.trip or self.state.trip['status'] != 'battle':
                             raise ValueError('This encounter has already ended. Refresh your saved trip.')
@@ -1041,9 +1050,14 @@ class JournalView(discord.ui.LayoutView):
                     elif action == 'commands':
                         from cogs.utilities import command_guide
                         return await command_guide(interaction)
-                    self.state = await journal_state.snapshot(self.user_id)
-                    if self.state.trip:
-                        self.trip = self.state.trip
+                    if battle_input and self.trip and self.trip['status'] == 'battle':
+                        self.state.trip = self.trip
+                    else:
+                        # Settlement, navigation and rejected clicks retain a
+                        # full refresh of rewards, recovery and camp state.
+                        self.state = await journal_state.snapshot(self.user_id)
+                        if self.state.trip:
+                            self.trip = self.state.trip
                     await self.load_page()
                 except ValueError as error:
                     self.notice = safe(error)

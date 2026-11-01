@@ -168,6 +168,7 @@ def artifact(art):
 
 async def present(view, interaction, *, animate=False):
     """Choices commit first; a failed upload never replays damage or rewards."""
+    from utils.journal_diagnostics import record
     trip = view.trip
     if trip and not await fresh(view, trip):
         return await restore_saved_controls(view, interaction)
@@ -200,12 +201,14 @@ async def present(view, interaction, *, animate=False):
                 return
             before, action, after = trial_combat.decode_event(event)
             art = await presentation.art(before, after, action)
+            record(interaction, 'animation_ready')
             if not await fresh(view, trip):
                 changed = True
                 return
             view.journey_media = artifact(art) if art else None
             view.render()
             await view.publish(interaction)
+            record(interaction, 'animation_published')
             if art:
                 await presentation.sleep(art.seconds + .2)
     finally:
