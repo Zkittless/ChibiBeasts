@@ -61,20 +61,20 @@ class AppearanceSnapshots(unittest.TestCase):
         saved = art.snapshot(states)
         action = art.Action(0, 'Borrowed Moment', ultimate=True)
         appearances = {
-            ('twine', 'gnome_iron_plating'): Image.new('RGBA', (80, 100), '#d985ba'),
-            ('barkley', 'sprite_silk_attire'): Image.new('RGBA', (80, 100), '#8bd1a3'),
+            ('twine', 'gnome_iron_plating', ''): Image.new('RGBA', (80, 100), '#d985ba'),
+            ('barkley', 'sprite_silk_attire', ''): Image.new('RGBA', (80, 100), '#8bd1a3'),
         }
         with patch.object(art, 'sprite', side_effect=lambda *key: appearances[key]) as sprite, \
              patch.object(fx, 'paint_sprite', wraps=fx.paint_sprite) as paint:
             # Sample the teleport itself, after its stationary windup. The
             # trail reuses a fitted source rather than reloading each ghost.
             art.frame(saved, saved, 'woods', action, .43)
-        self.assertIn(unittest.mock.call('twine', 'gnome_iron_plating'), sprite.call_args_list)
-        self.assertIn(unittest.mock.call('barkley', 'sprite_silk_attire'), sprite.call_args_list)
-        self.assertTrue(all(len(call.args) == 2 for call in sprite.call_args_list))
+        self.assertIn(unittest.mock.call('twine', 'gnome_iron_plating', ''), sprite.call_args_list)
+        self.assertIn(unittest.mock.call('barkley', 'sprite_silk_attire', ''), sprite.call_args_list)
+        self.assertTrue(all(len(call.args) == 3 for call in sprite.call_args_list))
         ghosts = [call for call in paint.call_args_list if 0 < call.args[2].alpha < 1]
         self.assertGreaterEqual(len(ghosts), 2)
-        self.assertTrue(all(call.args[1] is appearances[('twine', 'gnome_iron_plating')]
+        self.assertTrue(all(call.args[1] is appearances[('twine', 'gnome_iron_plating', '')]
                             for call in ghosts), 'Every trail must use the equipped actor source')
         for appearance in appearances.values():
             self.assertTrue(any(call.args[1] is appearance and call.args[2].alpha == 1
@@ -93,15 +93,15 @@ class AppearanceSnapshots(unittest.TestCase):
         with patch.object(art, 'sprite', side_effect=lambda *_: Image.new('RGBA', (80, 100))) as sprite:
             raid_art.frame(before, after, (event,), .1)
             self.assertIn(unittest.mock.call(before.members[0].fighter.species,
-                                           'gnome_iron_plating'), sprite.call_args_list)
+                                           'gnome_iron_plating', ''), sprite.call_args_list)
             sprite.reset_mock()
             raid_art.frame(before, after, (event,), .8)
             self.assertIn(unittest.mock.call(after.members[0].fighter.species,
-                                           'kelpie_scale_mail'), sprite.call_args_list)
+                                           'kelpie_scale_mail', ''), sprite.call_args_list)
             sprite.reset_mock()
             raid_art.marker_boxes(after)
             self.assertIn(unittest.mock.call(after.members[0].fighter.species,
-                                           'kelpie_scale_mail'), sprite.call_args_list)
+                                           'kelpie_scale_mail', ''), sprite.call_args_list)
 
 
 class EquippedAppearancePreparation(DatabaseCase):
