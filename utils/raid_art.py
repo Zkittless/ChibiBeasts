@@ -207,24 +207,15 @@ def render(before, after, events=(), ambient_start=0, palette=None):
     stream = io.BytesIO()
     if not events:
         if not after.outcome and any(m.fighter.form == 'hexfire' and m.fighter.hp > 0 for m in after.members):
-            return art.encode_idle([frame(after, after, ambient_seconds=ambient_start+i*2/24) for i in range(24)], palette)
+            return art.render_animation(
+                lambda t: frame(after, after, ambient_seconds=ambient_start+t*art.AMBIENT_MS/1000),
+                art.AMBIENT_MS, loop=True, palette=palette, ambient_start=ambient_start)
         frame(after, after).save(stream, 'PNG', optimize=True)
         return art.Artwork(stream.getvalue(), 'png')
     milliseconds = duration(before, after, events)
-    count = 36 if milliseconds > CLIP_SECONDS * 1000 else 18
-    frames = [frame(before, after, events, i / (count-1), ambient_start+i*milliseconds/1000/(count-1)) for i in range(count)]
-    sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
-    for i, source in enumerate((frames[0], frames[count//2], frames[-1])):
-        sample.paste(source, (0, i * TOTAL_HEIGHT))
-    palette = sample.quantize(colors=256)
-    frames = [source.quantize(palette=palette, dither=Image.Dither.NONE) for source in frames]
-    durations = art.frame_durations(milliseconds, count)
-    frames[0].save(stream, 'GIF', save_all=True, append_images=frames[1:],
-                   duration=durations, disposal=1, optimize=False)
-    data = stream.getvalue()
-    if len(data) > art.MAX_BYTES:
-        raise ValueError('Raid clip exceeded its 2 MB attachment budget')
-    return art.Artwork(data, 'gif', milliseconds/1000, bytes(palette.getpalette()), (ambient_start+milliseconds/1000) % 2)
+    return art.render_animation(
+        lambda t: frame(before, after, events, t, ambient_start+t*milliseconds/1000),
+        milliseconds, ambient_start=ambient_start)
 
 
 class RaidPresentation:

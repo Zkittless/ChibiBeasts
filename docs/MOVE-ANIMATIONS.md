@@ -6,9 +6,9 @@ realm backgrounds and Field Journal HUD.
 
 ## Move coverage
 
-`data/move-animations.json` explicitly assigns all 360 species/move entries
-(350 distinct names across 90 creatures) a presentation profile. The current
-renderer uses 64 authored sequences with staged preparation, contact, release
+`data/move-animations.json` explicitly assigns all 364 species/move entries
+(354 distinct names across 91 creatures) a presentation profile. The current
+renderer uses 65 authored sequences with staged preparation, contact, release
 and recovery. Each creature's four moves select different sequences. Physical
 paths include lunges, thrusts, leaps and grounded casts; divine moves assemble
 clock fractures, accretion lenses, constellation seals, creation facets and
@@ -47,7 +47,7 @@ ultimates 2.65 and status ticks 1.1. A new knockout adds a separate 1.4-second
 retreat segment. The next 45-second choice window still starts after accepted
 upload and playback, with the existing 0.2-second allowance.
 
-Ordinary raids keep their concurrent 18-frame, 1.2-second clips and independent
+Ordinary raids use concurrent 36-frame, 1.2-second clips and independent
 trainer cooldowns. New knockouts or a closing party withdrawal add 1.8 seconds
 to that clip. Raid events retain move name, species and slot so a batched action
 does not use another companion's animation after a swap. Frozen/skipped turns
@@ -56,10 +56,16 @@ do not invent an attack, and harmless solved patterns do not show a boss strike.
 ## Limits, validation and deployment
 
 The same two bounded, cancellation-safe rendering workers and six-second
-preparation deadline serve both modes. Duels use at most 44 source frames;
-raids at most 36. GIFs play once, use one shared palette, and remain subject to
-the existing 2,000,000-byte attachment ceiling. GIF timing distributes 10 ms
-ticks evenly instead of holding a large remainder on the final frame.
+preparation deadline serve both modes. Moves, retreats, swaps, assists and raid
+clips now sample at 30 FPS, with their existing playback lengths. Their frame
+counts follow the full clip duration, including departures. GIFs play once and
+hold the resolved final state; identical held poses may share an encoded frame.
+Hexpurr's ambient aura alone loops (60 frames over two seconds), without delaying
+controls. All clips share the same encoder, palette handling and 4,000,000-byte
+attachment ceiling. Quantizing each frame as it is drawn avoids retaining a full
+RGB clip in memory. GIF delta compression preserves decoded pixels while reducing
+upload size. Timing distributes 30/40 ms delays evenly in GIF's 10 ms units,
+preserving each clip's total duration without a large final-frame remainder.
 Failed/busy rendering and rejected attachments retain the existing text controls.
 Native warning publication, early interaction acknowledgement, settlement and
 reservation cleanup retain their existing paths.
@@ -71,7 +77,7 @@ offline rendering and the real component dispatcher with synthetic HTTP.
 Run the regressions and export actual game clips without a bot token:
 
 ```sh
-python -m unittest tests.test_move_animations tests.test_battle_art tests.test_raid_art tests.test_field_journal -v
+python -m unittest tests.test_animation_cadence tests.test_move_animations tests.test_battle_art tests.test_raid_art tests.test_field_journal -v
 python scripts/preview_move_animations.py --output battle-overhaul-output --audit-roster
 python -m unittest discover -s tests -v
 ```
@@ -82,7 +88,8 @@ render/event-loop measurements. `--audit-roster` additionally renders every
 species/move entry and records its frame count, duration and attachment size.
 Generated clips are review outputs and do not need to be committed or deployed.
 
-The [recorded export](move-animation-validation.json) rendered all 344 move
+The earlier [recorded export](move-animation-validation.json), before the 30 FPS
+upgrade, rendered all 344 move
 entries; the largest duel clip was 1,240,788 bytes. All six ten-trainer scenes
 fit the file ceiling, including extra checks with ten simultaneous ultimates
 and ten-companion wipes (largest 1,615,924 bytes). The 19 representative local
