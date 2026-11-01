@@ -783,12 +783,14 @@ async def grant_beast(db, user_id, beast_data, *, starter=False, grant_key=None)
     """Insert within an existing transaction; caller emits acquisition after commit."""
     from utils.dispositions import roll_disposition, apply_disposition
 
-    if beast_data['id'] == 'hexpurr':
-        async with db.execute('SELECT beast_row_id FROM exclusive_companions WHERE species=? AND user_id=?', ('hexpurr', user_id)) as cursor:
+    species = beast_data['id']
+    definition = get_beast_data(species) or {}
+    if definition.get('exclusive_grant'):
+        async with db.execute('SELECT beast_row_id FROM exclusive_companions WHERE species=? AND user_id=?', (species, user_id)) as cursor:
             reservation = await cursor.fetchone()
-        if (grant_key != f'exclusive:hexpurr:{user_id}' or not reservation
+        if (grant_key != f'exclusive:{species}:{user_id}' or not reservation
                 or reservation[0] is not None or starter):
-            raise ValueError('Grant Hexpurr through /dev give_hexpurr discord_id:… (one per trainer).')
+            raise ValueError(f'Grant {definition["name"]} through /dev give_{species} discord_id:… (one per trainer).')
 
     disposition = beast_data.get("disposition")  # allow override (e.g. starters pass None)
     if disposition is None:

@@ -197,6 +197,9 @@ def fighter_sprite(fighter):
 
 def paint_fighter(image, fighter, pose, *, before=None, transforming=False, t=1, seconds=0, aura=True):
     from utils import move_animations as fx
+    if fighter.species == 'raikyr':
+        from utils import raikyr_art
+        return raikyr_art.paint(image, fighter, pose, seconds=seconds, aura=aura)
     if fighter.species == 'hexpurr':
         from utils import hexpurr_art
         return hexpurr_art.paint(image, before or fighter, fighter, pose, t=t,
@@ -288,10 +291,14 @@ def render_animation(frame_at, milliseconds, *, loop=False, palette=None, ambien
                    bytes(colors.getpalette()), (ambient_start + milliseconds / 1000) % 2)
 
 
+def has_aura(fighter):
+    return fighter.hp > 0 and (fighter.form == 'hexfire' or fighter.species == 'raikyr')
+
+
 def render(before, after, realm, action=None, journal=(), ambient_start=0, palette=None):
     output = io.BytesIO()
     if action is None:
-        if all(f.hp > 0 for f in after) and any(f.form == 'hexfire' for f in after):
+        if all(f.hp > 0 for f in after) and any(has_aura(f) for f in after):
             return render_animation(
                 lambda t: frame(after, after, realm, journal=journal,
                                 ambient_seconds=ambient_start+t*AMBIENT_MS/1000),

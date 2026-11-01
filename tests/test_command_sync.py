@@ -142,7 +142,7 @@ class DeveloperCommandSync(IsolatedAsyncioTestCase):
             roots = self.bot.tree.get_commands(guild=discord.Object(id=7))
             leaves = [leaf for root in roots for leaf in
                       (root.walk_commands() if isinstance(root, discord.app_commands.Group) else [root])]
-            self.assertEqual(len(leaves), 20)
+            self.assertEqual(len(leaves), 21)
             for command in leaves:
                 self.assertTrue(command.checks, command.name)
                 for check in command.checks:

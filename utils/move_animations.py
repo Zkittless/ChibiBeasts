@@ -35,6 +35,7 @@ PALETTES = {
     'wind': ('#659d9d', '#afe0ce', '#e1f3e5'),
     'thread': ('#a52c4c', '#ec657a', '#f1cd82'),
     'clock': ('#aa89ca', '#e8bc69', '#fff0c4'),
+    'storm': ('#1251d0', '#39a8ff', '#e4faff'),
     'galaxy': ('#ad8bde', '#93d7f0', '#f6bbdf'),
     'wood': ('#755b42', '#b8955f', '#acd18b'),
     'venom': ('#735087', '#b8c56a', '#e7eeb1'),
@@ -106,6 +107,9 @@ class Pose:
 
 def motion(animation, home, target, t):
     """Full-body movement; aspect ratio stays fixed even through a knockout."""
+    if animation.sequence == 'raikyr_heavenfall':
+        from utils import raikyr_art
+        return raikyr_art.motion(home, target, t)
     if animation.sequence == 'hexpurr_lanterns_out':
         from utils import hexpurr_art
         return hexpurr_art.motion(home, target, t)
@@ -222,6 +226,9 @@ def choreographed_motion(animation, home, target, t):
 
 def reaction(animation, home, attacker, t):
     """Resolved HP loss only; no recoil for guards, heals, swaps or misses."""
+    if animation.sequence == 'raikyr_heavenfall':
+        from utils import raikyr_art
+        return raikyr_art.reaction(home, attacker, t)
     if not IMPACT <= t < .85:
         return home
     p = (t-IMPACT)/.37
@@ -238,6 +245,9 @@ def reaction(animation, home, attacker, t):
 
 
 def paint_echoes(image, source, animation, home, target, t):
+    if animation.sequence == 'raikyr_heavenfall':
+        from utils import raikyr_art
+        return raikyr_art.echoes(image, source, home, target, t)
     if animation.sequence == 'hexpurr_lanterns_out':
         from utils import hexpurr_art
         return hexpurr_art.echoes(image, source, home, target, t)
@@ -257,7 +267,7 @@ FLOATING = frozenset({'wisp', 'will_o_wisp', 'fairy', 'pixie', 'singularity', 'a
     'aetherius', 'genesis', 'terminus', 'paradox', 'horizon', 'karma', 'zodiac', 'abyss', 'nebula',
     'supernova', 'nirvana', 'void_chronos', 'fractured_genesis', 'abyssal_nebula', 'ancient_chronos',
     'ancient_genesis', 'ancient_abyss', 'loom_fragment', 'ouroboros'})
-FLYING = frozenset({'dragon', 'wyvern', 'phoenix', 'ascended_phoenix', 'corrupted_dragon',
+FLYING = frozenset({'dragon', 'raikyr', 'wyvern', 'phoenix', 'ascended_phoenix', 'corrupted_dragon',
     'harpy', 'griffin', 'pegasus', 'ascended_pegasus', 'rukh', 'simurgh', 'thunderbird', 'strix'})
 
 
@@ -362,6 +372,9 @@ class Effects:
 
     def effect(self, animation, actor, target, t, *, back=False, scale=1, home=None):
         """Each family has its own silhouette, travel path and impact sequence."""
+        if animation.sequence == 'raikyr_heavenfall':
+            from utils import raikyr_art
+            return raikyr_art.effect(self, actor, target, t, home=home, back=back)
         if animation.sequence == 'hexpurr_lanterns_out':
             from utils import hexpurr_art
             return hexpurr_art.effect(self, actor, target, t, home=home, back=back)

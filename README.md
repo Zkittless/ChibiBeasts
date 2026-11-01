@@ -125,6 +125,8 @@ Startup publishes both the global player commands and the configured developer s
 
 `/dev give_hexpurr discord_id:…` grants one personal Hexpurr per recipient at their current lead's level. There is no global recipient cap; a developer's test copy does not block another trainer's grant. Repeating the command for the same trainer returns their existing Hexpurr and preserves its progress and gear. Startup migrates the old single-recipient binding automatically. Hexpurr remains owner-granted, non-transferable, and uses legendary stats behind its Developer Exclusive badge.
 
+`/dev give_raikyr discord_id:…` grants Raikyr, the personal storm dragon, using the same per-trainer rules. He starts at the recipient's lead level, uses legendary stats and growth, and has the standard three-charge, 50-mana Heavenfall ultimate. His storm aura is purely visual. See [Raikyr](docs/RAIKYR.md) for the move set and presentation details.
+
 Back up the existing SQLite database before upgrading. Schema migrations preserve accounts and collections; they run during startup. On Railway, keep `db/` on the persistent volume. This update does not require deleting the database. Use owner-only `!sync` to refresh slash commands if needed.
 
 The progression migration recalculates automatic base stats and level growth once from the frozen legacy baseline. It preserves disposition, training, bonds, identity, owned gear and earned stat extras, while capping legacy levels above 50. HP/MP retain their proportions and knocked-out companions remain knocked out. Deploy code and catalogs together and restart the bot to load the new rules.

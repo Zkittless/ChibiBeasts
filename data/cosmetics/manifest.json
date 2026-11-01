@@ -96,7 +96,8 @@
         "wyvern": "ghost_costume_2026/wyvern.png",
         "yeti": "ghost_costume_2026/yeti.png",
         "zodiac": "ghost_costume_2026/zodiac.png",
-        "hexpurr": "ghost_costume_2026/hexpurr.png"
+        "hexpurr": "ghost_costume_2026/hexpurr.png",
+        "raikyr": "ghost_costume_2026/raikyr.png"
       }
     }
   },
@@ -191,7 +192,8 @@
     "ghost_costume_2026/wyvern.png": "f3c91483aeca62a3c2cac631a188efd82b79fe7d8828c918424971f1a5d7983f",
     "ghost_costume_2026/yeti.png": "773c4ec71a08ed9a4a4e43fc5a61140cacc5d5d462fee63c336a43a60bb50e4a",
     "ghost_costume_2026/zodiac.png": "4922e7fcb5f7b105ae09f5ec604e7a8bc72494b852c093ac71f6329889d2bef5",
-    "ghost_costume_2026/hexpurr.png": "cef54ebf772511cd709439c1a2131f0ef38d368ddf15f9d48c1d91cb494b9a27"
+    "ghost_costume_2026/hexpurr.png": "cef54ebf772511cd709439c1a2131f0ef38d368ddf15f9d48c1d91cb494b9a27",
+    "ghost_costume_2026/raikyr.png": "3aed1b5b0c2514038dc38d02ec18486ffecde0c973a2956dfef67310d7c8cf62"
   },
   "source_sha256": {
     "abyss": "e3692a3cd428691e08a31374a22b4c71001c9e58a6bdc0f98de78c15974d68cf",
@@ -284,6 +286,7 @@
     "wyvern": "727821223dadc9faaaa1730db781b11f53aac7b748da655495bc342265c7df99",
     "yeti": "31e731dd10b23715d76f2e72fb309466e1616c41401e018bd66a2d0e4d2a3639",
     "zodiac": "783a355b437e10499b55ec5810ea3baf960bf887a71ec6724a72cddf7259c22f",
-    "hexpurr": "ad7867a2d5526c762fee40a50f4f6d337cf02d96dee892a74dfc9bf5c992cfdc"
+    "hexpurr": "ad7867a2d5526c762fee40a50f4f6d337cf02d96dee892a74dfc9bf5c992cfdc",
+    "raikyr": "df1ce84860f86ceb2a49a4ceccb30e520f45b120900cd7b823492640204a657a"
   }
 }
