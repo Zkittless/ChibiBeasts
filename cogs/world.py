@@ -47,7 +47,7 @@ SANCTUARY_UPGRADES = {
         "name": "🌸 Fairy Garden",
         "tier": 1,
         "cost_tokens": 50,
-        "description": "Claiming /daily gives benched companions +5 happiness, offsetting daily decay.",
+        "description": "Claiming /journal → Camp → Claim daily gives benched companions +5 happiness, offsetting daily decay.",
         "lore": "The Fairies help because they want to. That's more unsettling than if they were paid.",
         "db_column": "fairy_garden",
         "image_url": "https://res.cloudinary.com/dpy3fwmkh/image/upload/fairy_garden.png",
@@ -132,7 +132,7 @@ class World(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # ── /incubate ──────────────────────────────────────────────────────────
+    # ── /journal → Camp → Nursery ──────────────────────────────────────────────────────────
     async def incubate_autocomplete(self, interaction: discord.Interaction, current: str):
         # Autocomplete has no defer response; keep it a small inventory read.
         inventory = await storage.get_inventory(interaction.user.id)
@@ -167,7 +167,7 @@ class World(commands.Cog):
         return await open_nursery(interaction, bot=self.bot, page='incubations')
 
     @app_commands.command(name="tend", description="Offer optional care, or choose a ready hatchling")
-    @app_commands.describe(egg_id="The incubation ID from /eggs (leave blank for oldest available egg)")
+    @app_commands.describe(egg_id="The incubation ID from /journal → Camp → Nursery (leave blank for oldest available egg)")
     async def tend(self, interaction: discord.Interaction, egg_id: int = None):
         return await self._tend(interaction, egg_id)
 
@@ -374,7 +374,7 @@ class World(commands.Cog):
             success_embed.set_image(url=up["image_url"])
         await interaction.followup.send(embed=success_embed)
 
-    # ── /craft ────────────────────────────────────────────────────────────
+    # ── /journal → Camp → Workshop ────────────────────────────────────────────────────────────
     async def craft_autocomplete(self, interaction: discord.Interaction, current: str):
         """Show all craftable items — mark ready ones with ✅."""
         equipment, runes = load_equipment()
@@ -585,7 +585,7 @@ class World(commands.Cog):
                     "Their bonds can grow into **Prismara, Timestitch, Nebuloom and Rootwarden**. "
                     f"Reach companion level {AWAKENING_LEVEL}, trainer level {AWAKENING_TRAINER_LEVEL}, "
                     f"bond {AWAKENING_BOND} and happiness {AWAKENING_HAPPINESS}; "
-                    "open /journal → Companions to follow your progress."
+                    "open /journal → Beasts to follow your progress."
                 ),
                 "color": COLORS["divine"]
             },

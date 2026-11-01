@@ -255,6 +255,7 @@ class BattleDispatch(DatabaseCase):
         from cogs.hatch import Hatch
         from utils import expeditions
         from utils.journal import JournalView
+        from utils.journal_hub import HubFrame
         await self.beast('twine', starter=True)
         await self.execute('UPDATE player_beasts SET attack=1000 WHERE user_id=42')
         store, pending, prompts = ViewStore(None), [], []
@@ -282,9 +283,9 @@ class BattleDispatch(DatabaseCase):
             sent.append(kwargs)
             if isinstance(kwargs.get('view'), MoveView):
                 register(kwargs['view'])
-            elif isinstance(kwargs.get('view'), JournalView):
-                continued.append(kwargs['view'])
-                self.addCleanup(kwargs['view'].stop)
+            elif isinstance(kwargs.get('view'), HubFrame):
+                continued.append(kwargs['view'].hub.root)
+                self.addCleanup(kwargs['view'].hub.root.stop)
                 return continued_message
             return message
 
@@ -321,7 +322,7 @@ class BattleDispatch(DatabaseCase):
                 self.assertTrue(journal.closed)
                 self.assertTrue(journal.is_finished())
                 loading.delete.assert_awaited_once()
-                self.assertIs(sent[-1]['view'], continued[0])
+                self.assertIs(sent[-1]['view'].hub.root, continued[0])
                 self.assertIn('Victory', sent[-2]['embed'].title)
                 journal = continued[0]
                 self.assertIs(journal.message, continued_message)

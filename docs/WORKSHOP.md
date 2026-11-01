@@ -5,16 +5,14 @@ and the three category tabs sit above the selected recipe. Native Discord text
 keeps the effects and material counts readable on phones. Buttons handle the
 rest of the flow in the same message.
 
-- `/craft`: open the workshop without spending anything.
-- `/craft <item>`: preserve the existing quick craft, then open that recipe with
-  its updated materials and stock. A failed quick craft opens the recipe and
-  explains what is missing.
+- `/journal → Camp → Workshop`: open the workshop without spending anything.
+- Select a recipe and press **Craft one** to spend its listed materials. The panel refreshes stock and costs after crafting.
 - **Materials**: expand the material bag inside this panel, including when opened from the Field Journal.
 
 Recipe browsing lives in the workshop; the separate recipes and material-bag commands are removed.
 
-**Pin recipe** saves the selected recipe as your Field Journal goal. **Field Journal**
-returns to the home panel in the same message. Opening that goal's recipe from
+**Pin recipe** saves the selected recipe as your Field Journal goal. **Back to Camp**
+returns to Camp in the same message. Opening that goal's recipe from
 the journal selects it without crafting; progress includes current inventory,
 equipped pieces, level requirements and the Gnome Forge discount.
 The help menu, equipment prompts and evolution errors use the workshop route.

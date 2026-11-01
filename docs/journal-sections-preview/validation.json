@@ -1,0 +1,54 @@
+{
+  "Adventure": {
+    "components": 17,
+    "text": 241
+  },
+  "Team": {
+    "components": 24,
+    "text": 299
+  },
+  "Beasts": {
+    "components": 27,
+    "text": 420
+  },
+  "Companion": {
+    "components": 22,
+    "text": 364
+  },
+  "Gear": {
+    "components": 15,
+    "text": 218
+  },
+  "Training": {
+    "components": 12,
+    "text": 98
+  },
+  "Care": {
+    "components": 16,
+    "text": 247
+  },
+  "Camp": {
+    "components": 14,
+    "text": 132
+  },
+  "Nursery": {
+    "components": 24,
+    "text": 509
+  },
+  "Workshop": {
+    "components": 25,
+    "text": 361
+  },
+  "Story": {
+    "components": 15,
+    "text": 139
+  },
+  "Daily objectives": {
+    "components": 9,
+    "text": 198
+  },
+  "Saved destination": {
+    "components": 10,
+    "text": 103
+  }
+}

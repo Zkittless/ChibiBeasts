@@ -82,7 +82,7 @@ class GearView(discord.ui.View):
         return next((row for row in self.rows if row['id'] == self.selected_id), None)
 
     async def reload(self):
-        # Recovery is the same read preparation used by /collection. All fields
+        # Recovery is the same read preparation used by /journal → Beasts. All fields
         # subsequently shown belong to one fresh, read-only database snapshot.
         await storage.get_player_beasts(self.user_id)
         async with storage.connect() as db:
@@ -228,7 +228,7 @@ class GearView(discord.ui.View):
                             + effect_summary(gear), inline=False)
             embed.set_footer(text='Equipping replaces this slot and returns its current gear to your inventory.')
         else:
-            embed.add_field(name='Owned ' + self.edit_slot, value='No unequipped copies. Open /craft to make one.', inline=False)
+            embed.add_field(name='Owned ' + self.edit_slot, value='No unequipped copies. Open /journal → Camp → Workshop to make one.', inline=False)
         for label, action, disabled in (
                 ('Equip selected', 'gear_equip', not self.gear_choice or current == self.gear_choice or bool(dormant_label(catalog[self.gear_choice], self.trainer_level))),
                 ('Remove ' + self.edit_slot, 'gear_remove', current is None),
@@ -286,9 +286,9 @@ class GearView(discord.ui.View):
 
     async def handle(self, interaction, action, value=None):
         if interaction.user.id != self.user_id:
-            return await interaction.response.send_message('Open /gear to view your own beasts.', ephemeral=True)
+            return await interaction.response.send_message('Open /journal → Beasts → Gear to view your own beasts.', ephemeral=True)
         if self.closed:
-            return await interaction.response.send_message('This gear panel has closed. Open /gear again.', ephemeral=True)
+            return await interaction.response.send_message('This gear panel has closed. Open /journal → Beasts → Gear again.', ephemeral=True)
         if self.navigator and not self.navigator.current(self):
             return await interaction.response.send_message('Use the current beast workspace controls.', ephemeral=True)
         if self.navigator and action in {'select', 'previous', 'next', 'search', 'clear', 'open_search', 'workshop'}:
@@ -385,9 +385,9 @@ class GearView(discord.ui.View):
 
     async def open_care(self, interaction, row_id):
         if interaction.user.id != self.user_id:
-            return await interaction.response.send_message('Open /gear to view your own beasts.', ephemeral=True)
+            return await interaction.response.send_message('Open /journal → Beasts → Gear to view your own beasts.', ephemeral=True)
         if self.closed:
-            return await interaction.response.send_message('This gear panel has closed. Open /gear again.', ephemeral=True)
+            return await interaction.response.send_message('This gear panel has closed. Open /journal → Beasts → Gear again.', ephemeral=True)
         if row_id is None:
             return await interaction.response.send_message('Choose a beast before opening its Care panel.', ephemeral=True)
         if self.navigator:

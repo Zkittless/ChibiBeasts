@@ -53,7 +53,7 @@ LEVEL_MILESTONES = {
             "*Somewhere in the Whispering Woods, an old woman named **Maren** has heard about you. "
             "She keeps the First Bestiary — a record of every beast ever caught, "
             "going back before anyone can remember. She wants to meet you.*\n\n"
-            "**Open `/journal` → Story to begin your story.**\n"
+            "**Open `/journal` → Camp → Story & goals to begin your story.**\n"
             "*The Loom has been waiting for you to be ready.*"
         ),
         "reward_gold": 500, "reward_shards": 5, "color": "legendary",
@@ -380,7 +380,7 @@ class Battle(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # ── /challenge ────────────────────────────────────────────────────────
+    # ── /journal → Adventure → Tower Trials ────────────────────────────────────────────────────────
     @app_commands.command(name="challenge", description="Climb a biome tower with your exploration team")
     @app_commands.describe(biome="Choose a tower, or resume your saved climb")
     @app_commands.choices(biome=[app_commands.Choice(name=destination_label(key)[:100], value=key) for key in BIOMES])
@@ -405,7 +405,7 @@ class Battle(commands.Cog):
         active_row = await get_active_beast(interaction.user.id)
         if not active_row:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need an active beast! Open `/journal` → Companions → Make active.",
+                description="✦ You need an active beast! Open `/journal` → Beasts → Make active.",
                 color=COLORS["error"]
             ))
 
@@ -687,7 +687,7 @@ class Battle(commands.Cog):
 
         if not challenger_beast:
             return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You don't have an active beast! Use `/hatch` or `/explore` first.",
+                description="✦ You don't have an active beast! Use `/journal → Camp → Nursery` or `/explore` first.",
                 color=COLORS["error"]
             ))
         if not opponent_beast:

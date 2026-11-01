@@ -19,7 +19,7 @@ async def equip_perk(user_id,perk_id):
         await assert_available(db, user_id)
         async with db.execute('SELECT level FROM players WHERE user_id=?',(user_id,)) as c:player=await c.fetchone()
         async with db.execute('SELECT equipped FROM player_perks WHERE user_id=? AND perk_id=?',(user_id,perk_id)) as c:owned=await c.fetchone()
-        if not player or not owned:raise ValueError('Earn this perk before equipping it. Check /perks for milestones.')
+        if not player or not owned:raise ValueError('Earn this perk before equipping it. Check /journal → Camp → Trainer → Perks for milestones.')
         if owned[0]:raise ValueError('This perk is already equipped.')
         async with db.execute('SELECT perk_id FROM player_perks WHERE user_id=? AND equipped=1',(user_id,)) as c:active=[r[0] for r in await c.fetchall()]
         used=sum(definitions[key]['slot_cost'] for key in active if key in definitions)
@@ -151,7 +151,7 @@ async def _evolve_beast(user_id, player_number, *, expected_row_id=None, expecte
             if not consumed and evo.get('form') == 'radiant' and required_item is None:
                 consumed = await consume_stack(db, 'player_inventory', user_id, 'sunforge_core')
             if not consumed:
-                raise ValueError(f"You need {method.replace('_', ' ').title()}. Check /craft or /ancient.")
+                raise ValueError(f"You need {method.replace('_', ' ').title()}. Check /journal → Camp → Workshop or /ancient.")
         after = beasts[evo['evolves_to']]
         stats = evolved_stats(row, before, after)
         await db.execute('UPDATE player_beasts SET beast_id=?,rarity=?,hp=?,max_hp=?,attack=?,defense=?,speed=?,mana=?,max_mana=? WHERE id=?', (after['id'], after['rarity'], stats['hp'], stats['hp'], stats['attack'], stats['defense'], stats['speed'], stats['mana'], stats['mana'], row['id']))
@@ -168,7 +168,7 @@ async def shorten_incubation(db, user_id, *, hours=0, percent=0):
     async with db.execute('SELECT * FROM incubating_eggs WHERE user_id=? AND hatched=0 ORDER BY started_at,id LIMIT 1', (user_id,)) as c:
         egg = await c.fetchone()
     if not egg:
-        raise ValueError('Start an egg with /incubate first; nothing has been consumed.')
+        raise ValueError('Start an egg with /journal → Camp → Nursery first; nothing has been consumed.')
     from cogs.world import EGGS
     now = datetime.now(timezone.utc)
     parse = lambda s: datetime.strptime(s, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
@@ -176,7 +176,7 @@ async def shorten_incubation(db, user_id, *, hours=0, percent=0):
     remaining = max(0, (deadline - now).total_seconds())
     seconds = min(remaining, hours * 3600 + remaining * percent / 100)
     if seconds <= 0:
-        raise ValueError('That egg is already ready. Use /tend to hatch it.')
+        raise ValueError('That egg is already ready. Use /journal → Camp → Nursery to hatch it.')
     new_ready = deadline - timedelta(seconds=seconds)
     next_time = parse(egg['next_tend_at']) if egg['next_tend_at'] else now
     next_time = max(now, next_time - timedelta(seconds=seconds))

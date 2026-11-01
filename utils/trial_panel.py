@@ -11,7 +11,7 @@ import discord
 
 from utils import adventure_party, battle_art, crafting, db as storage, journal_sessions, journal_state, journal_team_art
 from utils.habitats import BIOMES
-from utils.message_transport import durable_message
+from utils.message_transport import durable_message, restore_view_tracking
 from utils.trial_rules import config
 
 logger = logging.getLogger('chibibeasts.trials.panel')
@@ -387,7 +387,7 @@ class TrialPanel(discord.ui.LayoutView):
     async def handle(self, click, action, version, generation):
         from utils import trials
         if click.user.id != self.user_id:
-            return await click.response.send_message('Open /challenge for your own Trials team.', ephemeral=True)
+            return await click.response.send_message('Open /journal → Adventure → Tower Trials for your own Trials team.', ephemeral=True)
         await click.response.defer()
         async with self.lock:
             if not self.current() or self.playing or version != self.version or generation != self.generation:
@@ -448,7 +448,7 @@ class TrialPanel(discord.ui.LayoutView):
             self.run = await trials.pause(self.user_id, *self.version)
         from utils.journal import open_journal
         try:
-            await open_journal(click, bot=self.bot, page='adventure', realm=self.destination,
+            journal = await open_journal(click, bot=self.bot, page='adventure', realm=self.destination,
                                already_deferred=True, replace_message=True)
         except (discord.HTTPException, TimeoutError):
             self.notice = 'Your climb is saved. The journal could not open; use Back to journal to try again.'
@@ -457,6 +457,7 @@ class TrialPanel(discord.ui.LayoutView):
             return
         self.closed = True
         self.stop()
+        restore_view_tracking(journal.message, journal.hub.frame)
         self.cancel_timer()
         if _panels.get(self.key) is self:
             _panels.pop(self.key, None)
@@ -470,9 +471,9 @@ class TrialPanel(discord.ui.LayoutView):
     async def on_error(self, interaction, error, item):
         logger.error('Trials control failed: trainer=%s', self.user_id, exc_info=error)
         if interaction.response.is_done():
-            await interaction.followup.send('Your climb is saved. Open /challenge to resume its current state.', ephemeral=True)
+            await interaction.followup.send('Your climb is saved. Open /journal → Adventure → Tower Trials to resume its current state.', ephemeral=True)
         else:
-            await interaction.response.send_message('Your climb is saved. Open /challenge to resume its current state.', ephemeral=True)
+            await interaction.response.send_message('Your climb is saved. Open /journal → Adventure → Tower Trials to resume its current state.', ephemeral=True)
 
 
 async def open_trials(interaction, *, bot=None, destination=None, source=None, already_deferred=False):
@@ -514,6 +515,7 @@ async def open_trials(interaction, *, bot=None, destination=None, source=None, a
                 source.closed = True
                 source.stop()
                 await journal_sessions.forget(source, interaction)
+            restore_view_tracking(view.message, view)
             await view.arm()
         except BaseException:
             if not published:

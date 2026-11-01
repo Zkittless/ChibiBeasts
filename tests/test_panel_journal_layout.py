@@ -7,6 +7,7 @@ from tests.test_gameplay import DatabaseCase
 from tests.test_interactions import component
 from utils import db as storage, expeditions, journal_state
 from utils.journal import JournalView
+from utils.journal_hub import JournalHub, HubFrame
 from utils.roster_view import OwnedRosterView
 
 
@@ -46,25 +47,30 @@ class JournalLayout(DatabaseCase):
         after = await storage.get_player(42)
         self.assertEqual((before['gold'], before['exp']), (after['gold'], after['exp']))
 
-    async def test_daily_objective_details_toggle_without_claiming_rewards(self):
+    async def test_daily_objectives_have_their_own_page_without_claiming_rewards(self):
         view = await self.ready('activities')
         quest = view.dailies[0]
         description = quest['desc'].format(target=quest['target'])
         self.assertNotIn(description, self.text(view))
         before = await storage.get_player(42)
-        await self.click(view, 'daily_details')
+        await self.click(view, 'page:daily_objectives')
         self.assertIn(description, self.text(view))
         after = await storage.get_player(42)
         self.assertEqual(before, after)
 
-    async def test_companions_menu_uses_shared_roster_and_retires_previous_journal(self):
+    async def test_beasts_section_uses_shared_roster_in_the_same_journal(self):
         view = await self.ready('home')
         old = view.message
-        click = await self.click(view, 'page_menu', 'companions')
-        roster = click.followup.send.call_args.kwargs['view']
+        view.hub = JournalHub(view)
+        view.hub.message = old
+        click = await self.click(view, 'section:beasts')
+        frame = click.edit_original_response.call_args.kwargs['view']
+        self.assertIsInstance(frame, HubFrame)
+        roster = frame.source
         self.addCleanup(roster.stop)
         self.assertIsInstance(roster, OwnedRosterView)
-        self.assertTrue(view.closed)
-        old.delete.assert_awaited_once()
+        self.assertFalse(view.closed)
+        old.delete.assert_not_awaited()
+        click.followup.send.assert_not_awaited()
         self.assertIsNone(await expeditions.current(42))
         self.assertEqual((await expeditions.energy(42)).charges, 1)

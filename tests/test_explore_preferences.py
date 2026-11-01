@@ -44,6 +44,7 @@ class ExplorePreferences(DatabaseCase):
         player_before = await storage.get_player(42)
         before = await self.rows('SELECT * FROM adventure_team')
         view = await self.open('ember')
+        await self.click(view, 'travel', value='destination')
         save = next(item for item in view.walk_children()
                     if isinstance(item, discord.ui.Button) and item.label == 'Save destination')
         save_click = component()
@@ -55,6 +56,7 @@ class ExplorePreferences(DatabaseCase):
         await storage.init_db()
         reopened = await self.open()
         self.assertEqual(reopened.realm, 'ember')
+        await self.click(reopened, 'travel', value='destination')
         self.assertIn('Saved destination', self.text(reopened))
         self.assertIsNone(reopened.trip)
         self.assertEqual(await self.rows('SELECT * FROM expeditions'), [])
@@ -95,6 +97,7 @@ class ExplorePreferences(DatabaseCase):
         with self.assertRaises(ValueError):
             await journal_state.save_explore_default(99, 'woods')
         locked = await self.open('loom')
+        await self.click(locked, 'travel', value='destination')
         save = next(item for item in locked.walk_children()
                     if isinstance(item, discord.ui.Button) and item.label == 'Save destination')
         self.assertTrue(save.disabled)

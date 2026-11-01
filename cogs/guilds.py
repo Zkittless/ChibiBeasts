@@ -799,7 +799,7 @@ class Guilds(commands.Cog):
         await interaction.response.defer()
         from utils.shops import GUILD_ITEMS,purchase_guild
         uid=interaction.user.id
-        embed=discord.Embed(title="🏰 Guild Shop",description="Earn tickets with /contribute. Purchases go to /inventory; activate with /use. Blueprints are spent by /build.",color=COLORS["legendary"])
+        embed=discord.Embed(title="🏰 Guild Shop",description="Earn tickets with /contribute. Purchases go to /journal → Camp → Shop & inventory; activate with /use. Blueprints are spent by /build.",color=COLORS["legendary"])
         view=discord.ui.View(timeout=180)
         from utils.db import load_items
         items=load_items()

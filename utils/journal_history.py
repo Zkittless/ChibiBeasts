@@ -1,4 +1,4 @@
-"""Owner-scoped history sources shared by /history and the Field Journal."""
+"""Owner-scoped history sources shared by /journal → Adventure → Battle log and the Field Journal."""
 from datetime import datetime, timezone
 
 import aiosqlite

@@ -55,7 +55,7 @@ def check_chapter_unlock(chapter, state, player):
     active = state.get('current_chapter') == chapter['id'] and introduced
     required = chapter.get('min_trainer_level', 3 if chapter['id'] == 'chapter_1' else 1)
     if not active and player.get('level', 1) < required:
-        return (False, f'Reach trainer level {required} for the next chapter. Try /challenge, /explore and /daily.')
+        return (False, f'Reach trainer level {required} for the next chapter. Try /journal → Adventure → Tower Trials, /explore and /journal → Camp → Claim daily.')
     return (True, '')
 
 
@@ -271,7 +271,7 @@ async def claim_chapter(user_id, chapter_id, guild_id=0, choice=None):
             raise ValueError('That chapter has already been claimed or is not active.')
         player = await reconcile(db, state, chapter, guild_id)
         if not complete(chapter, state):
-            raise ValueError('Finish the objectives first. Open /journal → Story.')
+            raise ValueError('Finish the objectives first. Open /journal → Camp → Story & goals.')
         if not set(chapter.get('required_relics', [])) <= set(state['collected_relics']):
             raise ValueError('Bring all four relics first.')
         if chapter.get('choices'):

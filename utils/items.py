@@ -54,7 +54,7 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None,
         raise ValueError('That item has no usable definition.')
     effect = item['effect']
     if item['type'] in {'evolution', 'unlock', 'summon', 'blueprint'} or effect.get('evolution_item'):
-        command = '/ancient' if item['type'] == 'summon' else '/build' if item['type'] == 'blueprint' else '/evolve'
+        command = '/ancient' if item['type'] == 'summon' else '/build' if item['type'] == 'blueprint' else '/journal → Beasts → Evolve / awaken'
         raise ValueError(f"Use {command} to spend {item['name']} on an eligible target. It has not been consumed.")
     async with combat.lock_states([user_id]):
         live = combat.active_states.get(user_id)
@@ -117,7 +117,7 @@ async def use_item(user_id, item_id, *, choice=None, beast_number=None,
                     raise ValueError('Your companion or team changed. Review the refreshed effect before using an item.')
             no_beast = {'choose_element', 'clear_title', 'reduce_incubation_percent', 'reduce_incubation_hours', 'reset_explore', 'reset_challenge', 'encounter_boost', 'raid_damage_boost', 'catch_boost_charges', 'guaranteed_rare_charges', 'guild_title', 'revive_party'}
             if not beast and (not no_beast.intersection(effect)):
-                raise ValueError('Open /journal → Companions and make a companion active first.')
+                raise ValueError('Open /journal → Beasts and make a companion active first.')
             messages = []
             if effect.get('choose_element'):
                 if choice not in ELEMENTS:

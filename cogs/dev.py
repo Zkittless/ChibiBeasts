@@ -80,7 +80,7 @@ class Dev(commands.Cog):
                 item_id = item["id"]
             else:
                 return await interaction.followup.send(
-                    f"✦ Item `{item_id}` not found. Check `/shop` for valid IDs.", ephemeral=True
+                    f"✦ Item `{item_id}` not found. Check `/journal → Camp → Shop & inventory` for valid IDs.", ephemeral=True
                 )
         await get_or_create_player(member.id, str(member))
         await add_item(member.id, item_id, quantity)
@@ -105,7 +105,7 @@ class Dev(commands.Cog):
                 material_id = mat["id"]
             else:
                 return await interaction.followup.send(
-                    f"✦ Material `{material_id}` not found. Check `/craft` for materials and recipes.", ephemeral=True
+                    f"✦ Material `{material_id}` not found. Check `/journal → Camp → Workshop` for materials and recipes.", ephemeral=True
                 )
         await get_or_create_player(member.id, str(member))
         async with storage.connect() as db:
@@ -342,7 +342,7 @@ class Dev(commands.Cog):
             row = dict(row)
 
         # Admin fast-forward changes only the readiness clock. The same saved
-        # choice, grade levels, research and atomic claim apply as in /nursery.
+        # choice, grade levels, research and atomic claim apply as in /journal → Camp → Nursery.
         try:
             if grant is None:
                 deadline = datetime.fromisoformat(str(row['ready_at']).replace('Z', '+00:00'))
@@ -612,7 +612,7 @@ class Dev(commands.Cog):
         )
 
     @app_commands.command(name="set_beast_level", description="[DEV] Set a beast's level directly")
-    @app_commands.describe(member="Player who owns the beast", beast_number="Beast #number from /collection", level="Target level (1-50)")
+    @app_commands.describe(member="Player who owns the beast", beast_number="Beast #number from /journal → Beasts", level="Target level (1-50)")
     @dev_only()
     async def set_beast_level(self, interaction: discord.Interaction, member: discord.Member, beast_number: int, level: int):
         await interaction.response.defer(ephemeral=True)

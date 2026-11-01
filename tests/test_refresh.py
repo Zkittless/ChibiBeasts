@@ -147,7 +147,8 @@ class StarterClaims(unittest.IsolatedAsyncioTestCase):
 
 class Extensions(unittest.IsolatedAsyncioTestCase):
     async def test_all_extensions_load_and_dev_commands_stay_in_the_home_guild(self):
-        bot = commands.Bot(command_prefix="!", intents=discord.Intents.none(), help_command=None)
+        from utils.journal_commands import JournalCommandTree, PANEL_COMMANDS, ACTION_COGS, guide_categories
+        bot = commands.Bot(command_prefix="!", intents=discord.Intents.none(), help_command=None, tree_cls=JournalCommandTree)
         with patch.dict(os.environ, {"OWNER_ID": "123", "GUILD_ID": "456"}):
             async with bot:
                 for path in sorted((PROJECT_ROOT / "cogs").glob("*.py")):
@@ -159,21 +160,21 @@ class Extensions(unittest.IsolatedAsyncioTestCase):
                 for command in group.walk_commands():
                     self.assertTrue(command.checks, f"/dev {command.name} lacks its owner check")
                 self.assertIsNotNone(bot.tree.get_command("journal"))
-                self.assertIsNotNone(bot.tree.get_command("care"))
-                for retired in ('guide', 'materials', 'setactive', 'questline', 'bond'):
+                for retired in PANEL_COMMANDS | {'guide', 'materials', 'setactive', 'questline', 'bond'}:
                     self.assertIsNone(bot.tree.get_command(retired), f"Retired command /{retired} is still registered")
                 import inspect
                 import re
                 from cogs.utilities import Utilities
-                guide_commands=set(re.findall(r"/([a-z_]+)",inspect.getsource(Utilities._command_guide)))
+                guide_commands=set(re.findall(r"/([a-z_]+)",inspect.getsource(Utilities._command_guide) + '\n'.join(guide_categories().values())))
                 registered={command.name for command in bot.tree.get_commands()}
                 self.assertFalse(guide_commands-registered,f"Guide references missing commands: {guide_commands-registered}")
                 from utils.journal import JournalView
                 launch_targets=set(re.findall(r"launch:([a-z_]+)",inspect.getsource(JournalView)))
-                self.assertFalse(launch_targets-registered,f"Journal buttons reference missing commands: {launch_targets-registered}")
+                internal = set(ACTION_COGS) | {'care', 'challenge'}
+                self.assertFalse(launch_targets-registered-internal,f"Journal buttons reference missing handlers: {launch_targets-registered-internal}")
                 from cogs.starter import FIRST_STEPS, Starter
                 self.assertIn("/journal", [step[1] for step in FIRST_STEPS])
-                self.assertFalse({step[1][1:] for step in FIRST_STEPS}-registered)
+                self.assertFalse({step[1][1:].split()[0] for step in FIRST_STEPS}-registered)
                 embed = Starter(bot).build_starter_embed(storage.get_beast_data("prismite"))
                 self.assertEqual(embed.image.url, beast_image_url("prismite"))
 

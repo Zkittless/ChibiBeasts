@@ -66,7 +66,7 @@ class ExploreJournalFlow(DatabaseCase):
             _, view = await self.open(expedition=legacy)
             self.assertIsNone(view.trip)
             self.assertEqual(view.realm, 'woods')
-            self.assertIn('Choose an expedition', self.text(view))
+            self.assertIn('Ready to explore', self.text(view))
             self.assertIn('1/3 exploration charges', self.text(view))
             self.assertIn(view.realm_select, list(view.walk_children()))
         self.assertEqual(await self.rows('SELECT * FROM expeditions'), [])

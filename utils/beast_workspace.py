@@ -15,6 +15,7 @@ ROUTES = {'beast': 'Beast info', 'care': 'Care & items', 'gear': 'Gear',
 class BeastWorkspace:
     def __init__(self, root):
         self.user_id, self.display_name = root.user_id, root.display_name
+        self.hub = getattr(root, 'hub', None)
         self.lock = asyncio.Lock()
         self.active, self.message, self.context = root, None, None
         self.art_enabled = root.art_enabled

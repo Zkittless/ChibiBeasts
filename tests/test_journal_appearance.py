@@ -5,7 +5,7 @@ import json
 
 from tests.test_gameplay import DatabaseCase, interaction
 from tests.test_interactions import component
-from utils import gear_art, journal_state
+from utils import gear_art, journal_state, journal_team_art
 from utils.journal import JournalView
 
 
@@ -26,9 +26,14 @@ class JournalAppearance(DatabaseCase):
         self.addCleanup(view.stop)
         return view
 
-    async def test_home_companions_and_awakening_use_the_individuals_armor(self):
-        await self.equipped('twine', 'gnome_iron_plating', starter=True)
-        for page in ('home', 'companions'):
+    async def test_adventure_team_companions_and_awakening_use_the_individuals_armor(self):
+        row_id = await self.equipped('twine', 'gnome_iron_plating', starter=True)
+        team = await self.view('adventure')
+        with patch.object(journal_team_art, 'render_team', AsyncMock(return_value=None)) as render_team:
+            await team.publish(interaction())
+        member = render_team.call_args.args[0][0]
+        self.assertEqual((member['id'], member['armor_id']), (row_id, 'gnome_iron_plating'))
+        for page in ('companions',):
             view = await self.view(page)
             click = interaction()
             with patch.object(gear_art, 'render_portrait', side_effect=preview) as render:
@@ -76,7 +81,7 @@ class JournalAppearance(DatabaseCase):
         with patch.object(gear_art, 'render_portrait', side_effect=preview) as render:
             await view.publish(click)
         render.assert_not_awaited()
-        self.assertEqual(click.edit_original_response.call_args.kwargs['attachments'], previous)
+        self.assertEqual(click.edit_original_response.call_args.kwargs['attachments'], [previous[1]])
         view.message.attachments = []
         with patch.object(gear_art, 'render_portrait', return_value=None):
             await view.publish(interaction())

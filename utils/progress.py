@@ -308,7 +308,7 @@ async def notify_unlocks(channel, member: discord.Member, unlocked_ids: list[str
     embed = build_achievement_embed(unlocked_ids)
     if embed:
         embed.set_author(name=f"{member.display_name}", icon_url=member.display_avatar.url)
-        embed.set_footer(text="ChibiBeasts 🐾  •  /achievements to see your full collection")
+        embed.set_footer(text="ChibiBeasts 🐾  •  /journal → Camp → Trainer → Achievements to see your full collection")
         try:
             await channel.send(embed=embed)
         except discord.HTTPException:
@@ -370,7 +370,7 @@ def _today_str() -> str:
 
 
 def _daily_quest_set(user_id: int, date_str: str) -> list[dict]:
-    """Deterministic per-user-per-day quest selection so re-rolling /dailies
+    """Deterministic per-user-per-day quest selection so re-rolling /journal → Camp → Story & goals → Daily objectives
     doesn't change the set, but each day (and each user) differs."""
     rng = random.Random(f"{user_id}:{date_str}")
     return rng.sample(QUEST_POOL, k=min(QUESTS_PER_DAY, len(QUEST_POOL)))

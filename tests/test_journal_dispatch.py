@@ -60,7 +60,7 @@ class JournalDispatch(DatabaseCase):
         with patch.object(view, 'publish', new=AsyncMock(side_effect=publish)), \
              patch.object(battle_art.BattlePresentation, 'art', new=AsyncMock(return_value=None)), \
              self.assertLogs('chibibeasts.journal.input', level='INFO') as logs:
-            for action, value in [('page:adventure', None), ('realm', 'woods'), ('refresh', None), ('begin', None)]:
+            for action, value in [('section:camp', None), ('section:adventure', None), ('realm', 'woods'), ('begin', None)]:
                 click = click_for(view, action, value=value)
                 await self.dispatch(store, click)
                 click.response.defer.assert_awaited_once()

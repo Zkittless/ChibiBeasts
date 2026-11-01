@@ -1,7 +1,7 @@
 from utils import db as storage
 """
 economy.py — Beast Market, Appraisal, and Training
-Commands: /market, /list, /delist, /appraise, /train
+Commands: /market, /list, /delist, /appraise, /journal → Beasts → Train
 """
 import discord
 from discord import app_commands
@@ -97,7 +97,7 @@ class Economy(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="appraise", description="Get an estimated gold value for a beast 💰")
-    @app_commands.describe(beast_id="Your beast number from /collection")
+    @app_commands.describe(beast_id="Your beast number from /journal → Beasts")
     async def appraise(self, interaction: discord.Interaction, beast_id: int):
         await interaction.response.defer()
         async with storage.connect() as db:
@@ -151,10 +151,10 @@ class Economy(commands.Cog):
         embed.set_footer(text="Use /list #beast <price> to put it on the market · /market to browse listings")
         await interaction.followup.send(embed=embed)
 
-    # ── /train ─────────────────────────────────────────────────────────────
+    # ── /journal → Beasts → Train ─────────────────────────────────────────────────────────────
     @app_commands.command(name="train", description="Spend gold to permanently boost a beast's stat 🏋️")
     @app_commands.describe(
-        beast_id="Your beast number from /collection",
+        beast_id="Your beast number from /journal → Beasts",
         stat="Which stat to train (attack, defense, speed, hp)"
     )
     @app_commands.choices(stat=[
@@ -566,7 +566,7 @@ class Economy(commands.Cog):
                                 description=(
                                     f"**`{spent:,}g`** spent · New balance: `{new_bal:,}g`\n\n"
                                     f"{nm} is now `#{new_num}` in your collection!\n"
-                                    f"Use `/beastinfo {new_num}` to inspect it."
+                                    f"Use `/journal → Beasts {new_num}` to inspect it."
                                 ),
                                 color=COLORS["success"]
                             ), ephemeral=True)

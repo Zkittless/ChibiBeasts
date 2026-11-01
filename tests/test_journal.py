@@ -13,6 +13,7 @@ from tests.test_gameplay import DatabaseCase, interaction
 from tests.test_interactions import component
 from utils import crafting, db as storage, expeditions, journal_state, story
 from utils.journal import JournalView, open_journal
+from utils.journal_hub import HubFrame
 from utils.workshop import WorkshopView, open_workshop
 
 
@@ -55,7 +56,8 @@ class JournalFlow(DatabaseCase):
         initial.response.defer.assert_awaited_once()
         view = initial.followup.send.call_args.kwargs['view']
         self.addCleanup(view.stop)
-        self.assertIsInstance(view, JournalView)
+        self.assertIsInstance(view, HubFrame)
+        self.addCleanup(view.hub.root.stop)
         self.assertIn('Meet your starter', [b.label for b in view.walk_children() if isinstance(b, discord.ui.Button)])
         self.assert_valid(view)
         self.assertEqual((await expeditions.energy(42)).charges, 1)
@@ -186,7 +188,7 @@ class JournalFlow(DatabaseCase):
     async def test_real_viewstore_routes_story_dropdown_and_rejects_stale_choices(self):
         await self.ready()
         await expeditions.begin(42, 'woods', adventure_version=3, combat_route=False)
-        view = await self.view()
+        view = await self.view('overview')
         message, store = view.message, ViewStore(None)
         self.addCleanup(lambda: store.remove_view(view))
         store.add_view(view, message.id)
@@ -228,7 +230,7 @@ class JournalFlow(DatabaseCase):
         saved_page = expeditions.presentation(view.trip)
         opened = interaction()
         await open_journal(opened, page='adventure')
-        resumed = opened.followup.send.call_args.kwargs['view']
+        resumed = opened.followup.send.call_args.kwargs['view'].hub.root
         self.addCleanup(resumed.stop)
         self.assertEqual(resumed.trip['id'], trip_id)
         self.assertEqual(expeditions.presentation(resumed.trip), saved_page)
@@ -281,7 +283,7 @@ class JournalFlow(DatabaseCase):
         click = await self.click(workshop, 'pin_recipe')
         self.assertIn('pinned', workshop.notice)
         click = await self.click(workshop, 'journal')
-        journal = click.edit_original_response.call_args.kwargs['view']
+        journal = click.edit_original_response.call_args.kwargs['view'].hub.root
         self.addCleanup(journal.stop)
         self.assertIsInstance(journal, JournalView)
         self.assertEqual(journal.state.goal['target'], 'gnome_iron_plating')
@@ -296,8 +298,8 @@ class JournalFlow(DatabaseCase):
         click.response.defer.assert_awaited_once()
         self.assertGreater((await storage.get_player(42))['gold'], before)
         await self.click(view, 'refresh')
-        daily = next(i for i in view.walk_children() if isinstance(i, discord.ui.Button) and i.label == 'Claim daily')
-        self.assertTrue(daily.disabled)
+        self.assertTrue(view.state.player['_daily_claimed'])
+        self.assertFalse(any(isinstance(i, discord.ui.Button) and i.label == 'Claim daily' for i in view.walk_children()))
         self.assertNotIn('{target}', self.text(view))
 
     async def test_story_all_chapters_final_choices_and_awakening_fit_component_limits(self):

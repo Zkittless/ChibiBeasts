@@ -153,11 +153,11 @@ class TrialPanelFlows(DatabaseCase):
         self.assertTrue(journal.message_repurposed)
         back = await self.press('Back to journal')
         self.assertTrue(self.view.closed)
-        self.assertEqual(back.edit_original_response.call_args.kwargs['view'].page, 'adventure')
+        self.assertEqual(back.edit_original_response.call_args.kwargs['view'].hub.root.page, 'adventure')
         self.assertEqual(self.command.followup.send.await_count, 1)
         self.command.channel.send.assert_not_awaited()
         self.message.delete.assert_not_awaited()
-        back.edit_original_response.call_args.kwargs['view'].stop()
+        back.edit_original_response.call_args.kwargs['view'].hub.root.stop()
 
     async def test_deleted_panel_is_recreated_once_without_repeating_saved_action(self):
         await self.open()

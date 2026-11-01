@@ -1,38 +1,57 @@
-# Field Journal and expeditions
+# Field Journal
 
-Open `/journal`. The home page shows your active companion, exploration charges, story chapter and one pinned goal. Native Discord controls connect Adventure, Team, Companions, Workshop, Story and Activities in two rows of three tabs. Artwork ships with the bot; rejected uploads fall back to working text controls.
+Open `/journal` for **Adventure**, **Beasts** and **Camp**. Section switches, companion tools and Back buttons edit the same message. Opening another journal replaces your previous journal in that channel after the new one is delivered. The approved three-section design keeps frequent actions visible and places secondary tools inside their section.
 
-See the [offline interactive preview](journal-preview/field-journal.html), [home screen](journal-preview/home.png), [wild encounter](journal-preview/encounter.png) and [phone layout](journal-preview/mobile.png). These use real production component payloads with a sample trainer.
+See the [recorded production layouts](journal-sections-preview/README.md) at phone widths.
 
-The [team and encounter flow preview](journal-flow-preview/journal-flow.html) shows the current Team tab and the journal returning below a finished encounter. Its [desktop team](journal-flow-preview/desktop-team.png), [phone team editor](journal-flow-preview/mobile-edit_reserve.png) and [returned journal](journal-flow-preview/mobile-continued.png) use the actual Discord component payloads and packaged artwork from a disposable sample save.
+## Adventure
 
-- **Adventure:** `/explore` opens the destination-selection page. Choose a habitat, check your saved team and press **Begin expedition · 1 charge** when ready. Opening or changing the selection spends nothing. **Save destination** makes that habitat your default for future visits; **Clear default** restores the Woods for future openings. An explicit `/explore destination:…` selects a habitat for that visit without overwriting the default. Your existing team assignments stay saved independently. An existing trip resumes its original destination and travelling roster without spending another charge. Remaining charges and the next recharge stay visible during its choices. Follow tracks to challenge, approach or observe a creature; gather one of the offered resources; or repair, study or rest at a realm landmark. Gathering and landmark routes can investigate one optional creature encounter before returning.
-- **Companions:** browse the whole collection with pages of 25, make a healthy companion active, open private **Care** controls for that individual, play together, pin an awakening or review and confirm a ready bond evolution. Bond growth and the starter family's combat bonus are explained here. The confirmation identifies the individual companion and its current species.
-- **Team:** see the lead standing in front of the two reserves, wearing their equipped armor. Each named slot shows its level, health and availability. Choose **Edit lead**, **Edit reserve 1** or **Edit reserve 2**, pick from collection pages of 25 and confirm that slot. Promoting a reserve swaps it with the previous lead; moving a reserve leaves its former slot empty. A recovering reserve can be cleared. The exact travelling roster stays visible and locked until its saved expedition ends. Raid assignments remain separate.
-- **Workshop:** open the existing crafting panel in the same message. Pin the selected recipe or return to the journal. Opening a pinned recipe selects it without crafting or spending anything.
-- **Story:** read introductions, check objectives and report back with the existing atomic chapter rewards. The final chapter retains all three choices. The completion scene stays visible until you turn the page.
-- **Activities:** daily reward readiness, daily objectives and buttons opening the Nursery, shop, wild challenge, guild and raid flows. The [Nursery](NURSERY.md) connects egg guarantees, family pools, passive incubation, saved hatch choices and duplicate research. The detailed command guide remains available here.
+Choose a destination, review the fitted team illustration and press **Start adventure · 1 charge**. The seasonal Carnival appears first while active. **Edit team** assigns the lead and two reserves; its Raids mode stores separate raid assignments. Care appears when a companion needs recovery.
 
-Goals are saved across restarts. Recipe progress includes the current Gnome Forge discount, material stacks and owned or equipped pieces. Creature hunts list actual eligible habitats and respect trainer level gates; pinning a creature does not change its encounter odds. Awakening goals follow the companion's permanent row ID, recognize its evolved form and handle a companion leaving the collection.
+**More travel options** contains Tower Trials, Battle log, Saved destination and Carnival rewards. Saving a default destination never changes the team or starts a run. An explicit `/explore destination:…` overrides only that opening. `/explore` opens setup or resumes the saved route and never spends a charge automatically.
 
-The separate guide, story-progress, bond-status, active-switch and material-bag commands are retired. Their complete flows live in the journal's Home, Story, Companions and Workshop pages. Distinct actions and detailed views retain their commands; Activities' command guide lists the available entrypoints. Existing command-backed activity buttons keep working.
+During an adventure, story decisions use a dropdown with complete descriptions above it. Battles retain move buttons and a single **Swap / Assist** popup. **Journal** opens the overview without discarding the route; **Resume adventure** returns to it. A saved trial shows **Resume trial**. The travelling roster stays reserved until the run ends. Trial panels keep their existing combat lifetime and return to the same journal message.
 
-## Charges and rewards
+## Beasts
 
-Only confirming **Begin expedition** spends a charge. `/explore` always opens the journal's selection or saved trip, including older invocations with `expedition:False` or `expedition:True`. Saving or clearing a destination does not spend a charge, grant rewards or alter the active companion. One charge regenerates every 1,800 seconds, up to three. Bramble Walker reduces the interval to 90%; Chronos Hourglass reduces it to 80%; both together give 1,296 seconds. A newly initialized account receives one available charge. An existing exploration timestamp seeds the remaining wait, so reopening a journal or upgrading does not clear a running timer. Missing charges, locked habitats and companions needing recovery leave the journal open with an explanation and working navigation. A destination that is removed or becomes locked falls back to the Woods with a notice; the saved default can be cleared or replaced.
+The roster starts at Common, with owned rarities in a separate selector. Four companions appear per overview page; Previous/Next and search reach the entire collection. Search accepts a nickname, species or collection number. Selecting a companion shows its equipped portrait and **Companion actions**: Care & items, Gear, Make active lead, Train, Rename, Evolve / awaken and Team.
 
-Each completed expedition grants one material bundle, capped gold and trainer EXP, plus at most one caught creature. New branching trips may offer one scarce regional egg in exchange for the material bundle; that explicit choice and its discovery roll stay saved. Keeping supplies preserves quest-material gathering. Material choices remain within the rolled rarity and region. Repair gives 2 bond and 5 happiness; observation gives 1 bond; rest restores 5% max HP and 3 happiness without reviving a knocked-out companion; study adds 2 × trainer level EXP. These benefits apply to the original travelling companion if it is still owned. Existing encounter boosts, Observatory odds, compass precedence, Library EXP, catches, bestiary, achievements, daily objectives and campaign progression are preserved.
+Those actions reuse the journal. **Back to beast** preserves the individual, rarity, search and page; **Back to beasts** returns to that roster context. Large detail pages use Previous/Next text pages instead of dropping text. The roster's **Care** button only lists injured or knocked-out companions. A selected beast's **Care & items** page also accepts growth and bond items while healthy. Existing review/confirmation and stale-selection safeguards remain in force.
 
-Base gold is 3–6 × reward level, capped at trainer level 50. Base trainer EXP is 10–14 × trainer level. A battle win adds 25% gold and 30% EXP; Pixie Pocket and Arcane Library use their existing bonuses. Gathering and landmark choices add no second material payout. A failed approach ends that encounter, and a trip never rolls a second creature. Opening another panel cannot reroll a saved find, spend the same charge twice or grant a completed trip twice.
+## Camp
 
-## Recovery and deployment
+Choose Nursery, Workshop, Shop & inventory, Story & goals, Trainer & achievements, or Guild & community. Ready daily rewards and ready eggs appear as short actionable rows.
 
-Every accepted choice is stored with a revision. An old selection gets an acknowledged refresh message. Item, gold, EXP and caught-companion rewards commit together when you return home. A disconnected or interrupted battle keeps gathered supplies and resumes on the return path; battle victory recorded before a later message failure keeps the catch. A deleted or expired journal can be reopened through `/explore` or `/journal`.
+- **Nursery:** purchases, real hatch pools, passive incubators, tending, hatching, saved hatchling choices and research.
+- **Workshop:** recipes, material inventory and sources, crafting, equipping and evolution confirmations.
+- **Story & goals:** chapters, objectives, pinned goals and daily objectives. Saved goals keep their existing progress rules.
+- **Trainer:** personal profile, perks, achievements, bestiary and Journal guide.
+- **Guild & community:** guild information, market and leaderboard. Shared raid lobbies remain separate messages so other trainers can join.
 
-After an exploration encounter settles, its result stays in chat and a fresh Adventure journal appears beneath it with the saved next choices. The previous journal is removed after the replacement is delivered. Opening `/journal` again also replaces that trainer's former journal in the same channel; other trainers' journals and battle messages remain. The current message location is saved across restarts. If an old message cannot be deleted, the bot retires its controls and tries to replace it with a short notice pointing to the newest journal. If the new send fails, the previous journal remains the recovery point.
+## Slash command cleanup
 
-Startup adds the expedition, goal, `journal_panels` message-location and `exploration_preferences` destination-default tables without resetting existing data. Use the existing Railway volume and environment variables. Startup's normal global sync removes the retired commands and refreshes descriptions and defaults. Run owner-only `!sync guild` for servers with guild command copies, or `!sync` to refresh global registration manually. Keep one bot process per database, as required by the existing in-memory battle reservations.
+Thirty duplicate entrypoints are removed from slash registration. Their internal handlers remain available to panel actions:
 
-Run `python -m unittest discover -s tests -v`. `python scripts/preview_journal_hub.py --output <directory>` rebuilds five packaged realm banners and exports actual component payloads plus an interactive offline preview. The preview is a local sample of production pages; it does not call Discord, charge a player or buy anything. Live Discord delivery still depends on the bot's existing channel permissions.
+| Journal location | Removed slash commands |
+|---|---|
+| Beasts | collection, beastinfo, nickname, gear, equip, unequip, care, train, evolve |
+| Camp → Nursery | nursery, hatch, incubate, eggs, tend |
+| Camp → Workshop | craft |
+| Camp → Shop & inventory | inventory, shop |
+| Camp / Story & goals | daily, dailies |
+| Camp → Trainer | achievements, bestiary, perks, perk_equip, perk_unequip, perk_use |
+| Adventure → More travel options | history, challenge |
+| Adventure → Edit team | party, raidparty |
+| Camp → Guild & community | leaderboard |
 
-Run `python scripts/preview_journal_flow.py --capture --output <directory>` to rebuild the Team and encounter flow sample, component-limit report and desktop, 390px and 320px screenshots. The browser capture requires Playwright and Chrome; exporting without `--capture` uses only the game's normal dependencies. The battle outcome and chat placement in this offline sample are illustrative; automated interaction tests verify actual settlement ordering, replacement and old-message retirement.
+`/journal` and `/explore` remain the principal entrypoints. `/profile` still looks up other trainers. `/use` remains for trainer items such as elemental attunement tokens, and `/play` retains its distinct interaction. Multiplayer, market-management, reference and developer commands remain available. The in-game Journal guide lists retained commands.
+
+## Persistence, balance and delivery
+
+Only confirming Start spends an exploration charge. Charge regeneration, egg prices and guarantees, training limits, item consumption, XP, gear effects, battle rules, rewards and existing transaction guards are unchanged. Navigation never grants resources. Saved trips, trial lineups, default destinations, teams and goals survive reopening and restart. No database reset or new schema is required.
+
+Each published screen has fresh component IDs. The adapter forwards original control values, owner checks and modals to the existing game handlers. Old screens cannot apply actions after navigation, concurrent input is acknowledged, and failed publication leaves the prior screen as the recovery point. The message is edited with the durable bot transport, avoiding expired interaction webhook tokens. Artwork rejection retains text controls.
+
+Startup global sync removes the duplicate commands. A one-time startup pass also removes only those names from existing guild slash registrations, preserving guild-only developer tools and context menus. Owner-only `!sync` or `!sync guild` can refresh registration manually. Keep one bot process per database, the existing Railway volume and current bot permissions.
+
+Run `python -m unittest discover -s tests -v` for the regression suite. `tests/test_journal_hub.py` exercises actual controls, care consumption, modals, same-message returns and Discord's real view dispatcher. `tests/test_journal_commands.py` checks the loaded command registry and guild cleanup without contacting Discord. Older galleries in this repository document earlier layouts; they are not the current navigation specification.

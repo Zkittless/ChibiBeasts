@@ -50,6 +50,7 @@ class JournalMessageTransport(unittest.IsolatedAsyncioTestCase):
         discord.ui.LayoutView.__init__(view, timeout=None)
         view.add_item(discord.ui.TextDisplay('Your adventure is ready.'))
         view.page, view.realm = 'home', 'woods'
+        view.hub = None
         view.art_enabled, view.portraits = True, {}
         view.message = message
         view.lock = asyncio.Lock()
@@ -123,7 +124,7 @@ class JournalMessageTransport(unittest.IsolatedAsyncioTestCase):
                 call = state.http.edit_message.call_args
                 self.assertEqual(call.args, (999, 123))
                 self.assertEqual(call.kwargs['params'].payload['attachments'],
-                                 [item.to_dict() for item in existing])
+                                 [existing[1].to_dict()])
                 self.assertIs(message.attachments, existing)
                 self.assertIs(view.message, updated)
                 render.assert_not_awaited()

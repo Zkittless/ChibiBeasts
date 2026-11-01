@@ -479,7 +479,7 @@ class CareInteractions(DatabaseCase):
             await view.on_error(click, error, button)
         self.assertEqual(await self.stock('pixie_dust_potion'), 1)
         self.assertGreater(view.state.beast['hp'], 20)
-        self.assertIn('Open /care', click.followup.send.call_args.args[0])
+        self.assertIn('Open /journal → Beasts', click.followup.send.call_args.args[0])
         self.assertTrue(click.followup.send.call_args.kwargs['ephemeral'])
         await displayed(component())
         self.assertEqual(await self.stock('pixie_dust_potion'), 1)
