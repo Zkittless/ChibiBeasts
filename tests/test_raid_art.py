@@ -67,7 +67,7 @@ class ArenaImages(unittest.TestCase):
         self.assertIsNotNone(ImageChops.difference(first, windup).getbbox())
         self.assertEqual(len(events), 10)
         clip = art.render(before, after, events)
-        self.assertLess(len(clip.data), 2_000_000)
+        self.assertLess(len(clip.data), battle_art.MAX_BYTES)
         with Image.open(io.BytesIO(clip.data)) as gif:
             self.assertGreater(gif.n_frames, 12)
             self.assertEqual(gif.size, (640, art.TOTAL_HEIGHT))

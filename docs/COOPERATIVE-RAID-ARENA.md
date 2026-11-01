@@ -32,13 +32,14 @@ effects, ultimates charge before impact, guards show barriers, healing raises
 particles, Weave sends threads toward the boss, and boss sweeps cross the party.
 Defeated creatures retreat offstage until revived or replaced by a healthy swap.
 
-Multiple trainers share a short 18-frame, 1.2-second one-shot GIF instead of
+Multiple trainers share a short 36-frame, 1.2-second one-shot GIF instead of
 waiting through individual clips. Health changes at impact reflect immutable
 snapshots from the real combat engine. Combined damage has one legible number;
 individual totals remain in the trainer panel. Artwork never rolls damage,
 consumes combat randomness or advances the encounter.
-New knockouts and a closing party withdrawal use a 36-frame, 3-second clip
+New knockouts and a closing party withdrawal use a 90-frame, 3-second clip
 with a separate departure segment; active callbacks still do not await it.
+Both sample at 30 FPS; identical held poses may share an encoded GIF frame.
 
 ## Responsiveness and failure handling
 

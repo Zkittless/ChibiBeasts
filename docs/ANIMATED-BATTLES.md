@@ -52,7 +52,10 @@ Two bounded rendering workers operate outside the asyncio event loop. Slots
 are acquired before submission; cancellation or timeout does not release a
 slot until its actual thread finishes. There is no unbounded render queue.
 Backgrounds and cropped portraits are cached; FreeType fonts are confined to
-their rendering thread. Clips have at most 44 source frames and a 2 MB limit.
+their rendering thread. Clips sample at 30 FPS, including knockout sequences,
+with a 4,000,000-byte limit. Frames are quantized as they are drawn rather than
+retaining the full RGB clip. A shared palette and GIF delta compression keep
+unchanged pixels inexpensive without changing their displayed colors.
 Every upload replaces the previous attachment with a uniquely named file;
 streams close after both successful and failed uploads.
 
@@ -65,8 +68,9 @@ still saves ultimate charges, closes controls and releases battle reservations.
 
 Discord controls GIF autoplay and cannot confirm when each client actually
 starts displaying a clip. Autoplay-disabled clients still receive readable
-HP/MP/status text, the action log, and a final PNG. There is no idle GIF loop,
-background strobe or camera shake. Playback timing is best effort after upload;
+HP/MP/status text, the action log, and a final PNG. Hexpurr's Hexfire aura uses a
+two-second, 60-frame ambient loop with no action playback wait; combat effects
+never repeat. Playback timing is best effort after upload;
 it cannot guarantee simultaneous display on slow clients. Validation here uses
 Discord.py's real component dispatcher and synthetic HTTP responses, without
 logging the bot into a live server.

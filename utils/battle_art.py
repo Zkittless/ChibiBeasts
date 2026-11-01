@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 import io
 import logging
+import math
 import threading
 from copy import deepcopy
 from uuid import uuid4
@@ -39,7 +40,10 @@ TYPE_COLORS = {'fire': '#ffb16b', 'ice': '#a0e6ff', 'water': '#73d9f3',
                'cosmic': '#e8c2ff', 'arcane': '#b9a2ff', 'light': '#ffeba8',
                'wind': '#b7f0df'}
 ASSETS = PROJECT_ROOT / 'data' / 'battle_realms'
-MAX_BYTES = 2_000_000
+ANIMATION_FPS = 30
+AMBIENT_MS = 2000
+# Keep mobile uploads bounded while allowing dense 30 FPS ultimates/raids.
+MAX_BYTES = 4_000_000
 RENDER_TIMEOUT = 6
 IO_TIMEOUT = 15
 _workers = ThreadPoolExecutor(max_workers=2, thread_name_prefix='battle-art')
@@ -237,49 +241,68 @@ def frame_durations(milliseconds, count):
     return [round((i+1)*milliseconds/(count*10))*10-round(i*milliseconds/(count*10))*10 for i in range(count)]
 
 
-def encode_idle(frames, palette=None):
-    """Loop only the ambient scene. No action, damage or resources repeat."""
+def frame_count(milliseconds):
+    return max(2, math.ceil(milliseconds * ANIMATION_FPS / 1000))
+
+
+def render_animation(frame_at, milliseconds, *, loop=False, palette=None, ambient_start=0):
+    """One shared GIF encoder for moves and ambient loops, at a fixed cadence.
+
+    Quantize as frames are produced: Pillow retains palette frames for delta
+    encoding, so there is no second full clip of RGB/RGBA frames in memory.
+    Only ambient scenes loop; moves hold their actual resolved final frame.
+    """
+    count = frame_count(milliseconds)
+
+    def source(index):
+        # A looping clip excludes its duplicate endpoint; a move includes its
+        # final HP/MP/retreat state, even if its duration is not divisible by FPS.
+        return frame_at(index / (count if loop else count - 1))
+
     if palette:
         colors = Image.new('P', (1, 1))
         colors.putpalette(palette)
     else:
-        colors = frames[0].quantize(colors=256)
-    frames = [f.quantize(palette=colors, dither=Image.Dither.NONE) for f in frames]
+        first = source(0)
+        width, height = first.size
+        sample = Image.new('RGB', (width, height * 3))
+        sample.paste(first, (0, 0))
+        sample.paste(source(count // 2), (0, height))
+        sample.paste(source(count - 1), (0, height * 2))
+        colors = sample.quantize(colors=256)
+        del first
+        sample.close()
+    # All frames use one palette, including the next ambient scene. GIF delta
+    # optimization changes storage, not colors, geometry or playback timing.
+    frames = (source(i).quantize(palette=colors, dither=Image.Dither.NONE) for i in range(count))
+    first = next(frames)
     output = io.BytesIO()
-    frames[0].save(output, 'GIF', save_all=True, append_images=frames[1:],
-                   duration=frame_durations(2000, len(frames)), disposal=1, optimize=False, loop=0)
+    first.save(output, 'GIF', save_all=True, append_images=frames,
+               duration=frame_durations(milliseconds, count), disposal=1,
+               optimize=True, **({'loop': 0} if loop else {}))
     data = output.getvalue()
     if len(data) > MAX_BYTES:
-        raise ValueError('Ambient animation exceeded its attachment budget')
-    return Artwork(data, 'gif', palette=bytes(colors.getpalette()))
+        raise ValueError('Battle animation exceeded its attachment budget')
+    return Artwork(data, 'gif', 0 if loop else milliseconds / 1000,
+                   bytes(colors.getpalette()), (ambient_start + milliseconds / 1000) % 2)
 
 
 def render(before, after, realm, action=None, journal=(), ambient_start=0, palette=None):
     output = io.BytesIO()
     if action is None:
         if all(f.hp > 0 for f in after) and any(f.form == 'hexfire' for f in after):
-            return encode_idle([frame(after, after, realm, journal=journal, ambient_seconds=ambient_start+i*2/24) for i in range(24)], palette)
+            return render_animation(
+                lambda t: frame(after, after, realm, journal=journal,
+                                ambient_seconds=ambient_start+t*AMBIENT_MS/1000),
+                AMBIENT_MS, loop=True, palette=palette, ambient_start=ambient_start)
         frame(after, after, realm, journal=journal).save(output, 'PNG', optimize=True)
         return Artwork(output.getvalue(), 'png')
     from utils.battle_scene import duration
     milliseconds = duration(before, after, action)
-    count = (30 if action.ultimate else 24) + (14 if milliseconds > action.milliseconds else 0)
-    frames = [frame(before, after, realm, action, i / (count - 1), journal, ambient_start+i*milliseconds/1000/(count-1)) for i in range(count)]
-    # One shared palette prevents background shimmer between GIF frames.
-    sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
-    for i, source in enumerate((frames[0], frames[count // 2], frames[-1])):
-        sample.paste(source, (0, i * TOTAL_HEIGHT))
-    palette = sample.quantize(colors=256)
-    frames = [f.quantize(palette=palette, dither=Image.Dither.NONE) for f in frames]
-    durations = frame_durations(milliseconds, count)
-    # No loop extension: play once and hold the real final state. Disposal=1
-    # permits delta compression; all frames were composed on an opaque scene.
-    frames[0].save(output, 'GIF', save_all=True, append_images=frames[1:],
-                   duration=durations, disposal=1, optimize=False)
-    data = output.getvalue()
-    if len(data) > MAX_BYTES:
-        raise ValueError('Battle animation exceeded its attachment budget')
-    return Artwork(data, 'gif', milliseconds / 1000, bytes(palette.getpalette()), (ambient_start+milliseconds/1000) % 2)
+    return render_animation(
+        lambda t: frame(before, after, realm, action, t, journal,
+                        ambient_start+t*milliseconds/1000),
+        milliseconds, ambient_start=ambient_start)
 
 
 async def render_async(before, after, realm, action=None, *, journal=(), ambient_start=0, palette=None):

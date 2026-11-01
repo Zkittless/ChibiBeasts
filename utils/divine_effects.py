@@ -116,7 +116,7 @@ def paint(e, animation, actor, target, t, *, colors, back=False, scale=1):
     if back and scale > .8 and not supportive and sequence != 'clock_rewind':
         # Hold the backdrop still while the local choreography moves. A smooth
         # full-field fade changes every pixel on every GIF frame and defeats
-        # delta compression on richly painted biomes (the attachment is 2 MB).
+        # delta compression on richly painted biomes within the upload budget.
         shade = .36 if .15 <= t <= .82 else .18 if .07 <= t <= .91 else 0
         if shade:
             e.rect(0, 0, e.image.width, e.image.height, '#070d1c', shade)

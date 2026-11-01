@@ -1,0 +1,61 @@
+{
+  "scope": "Offline samples on the local machine; excludes Discord upload/client playback and Railway timings.",
+  "fps": 30,
+  "attachment_byte_limit": 4000000,
+  "roster": 91,
+  "move_entries": 364,
+  "unique_move_names": 354,
+  "largest_native_habitat_move": {
+    "species": "hexpurr",
+    "move": "Midnight Pounce",
+    "bytes": 1712201,
+    "frames": 78,
+    "milliseconds": 2650,
+    "one_shot": true
+  },
+  "representative_performance": {
+    "render_max_ms": 1260.92,
+    "render_median_ms": 677.17,
+    "event_loop_p95_ms": 6.74,
+    "event_loop_max_ms": 18.38,
+    "samples": 19,
+    "scope": "Local synthetic rendering; excludes Discord upload/client playback."
+  },
+  "additional_scenes": 67,
+  "largest_additional_scene": {
+    "label": "hexpurr / Midnight Pounce / hollowlight",
+    "render_seconds": 0.92,
+    "bytes": 2556525,
+    "frames": 78,
+    "milliseconds": 2650,
+    "one_shot": true
+  },
+  "slowest_additional_scene": {
+    "label": "ancient_chronos / Beginning of Time / loom_deep",
+    "render_seconds": 2.457,
+    "bytes": 1461364,
+    "frames": 109,
+    "milliseconds": 4050,
+    "one_shot": true
+  },
+  "concurrent_workers": {
+    "accepted": 2,
+    "combined_wall_seconds": 1.501,
+    "third_job_return_ms": 0.003,
+    "event_loop_p95_ms": 6.76,
+    "event_loop_max_ms": 11.74,
+    "attachment_bytes": [
+      2556525,
+      1046441
+    ]
+  },
+  "ghost_costume_move_bytes": 1384279,
+  "ghost_costume_aura_bytes": 401082,
+  "focused_tests_passed": 101,
+  "source_hashes": {
+    "utils/battle_art.py": "88094d086b14c26e64409db8eb89c614ba56ee0c87e501d64a53039f70b88f06",
+    "utils/raid_art.py": "9fa7b5c669dee56b6084962d88a55edb5d931bc5d9f89e4b864547c30ce52205"
+  },
+  "reproduce_roster": "python scripts/preview_move_animations.py --output /path/to/output --audit-roster",
+  "reproduce_hexpurr": "python scripts/preview_hexpurr.py --output /path/to/output --video"
+}
