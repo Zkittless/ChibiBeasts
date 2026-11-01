@@ -174,7 +174,7 @@ class ExplorationTeamPanel(DatabaseCase):
         self.render(view)
         picker = next(item for item in view.walk_children() if isinstance(item, discord.ui.Select) and item is not view.page_menu)
         self.assertEqual(len(picker.options), 4)
-        self.assertIn('Collection page 2/2', self.text(view))
+        self.assertIn('Page 2 of 2 · Showing 26–29 of 29', self.text(view))
         self.assertEqual(view.state.team_slots, {1: ids[1], 2: ids[2]})
         self.assert_valid(view)
         view.art_enabled = False

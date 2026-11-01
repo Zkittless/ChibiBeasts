@@ -349,9 +349,10 @@ async def _run_migrations():
             CREATE TABLE IF NOT EXISTS gameplay_grants (
                 grant_key TEXT PRIMARY KEY,user_id INTEGER,beast_row_id INTEGER);
             CREATE TABLE IF NOT EXISTS exclusive_companions (
-                species TEXT PRIMARY KEY,user_id INTEGER NOT NULL,
+                species TEXT NOT NULL,user_id INTEGER NOT NULL,
                 beast_row_id INTEGER UNIQUE,granted_by INTEGER NOT NULL,
-                granted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+                granted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY(species,user_id));
             CREATE TABLE IF NOT EXISTS raid_payments (
                 raid_id INTEGER PRIMARY KEY,user_id INTEGER,guild_id INTEGER,item_id TEXT,
                 refunded INTEGER DEFAULT 0);
@@ -493,6 +494,8 @@ async def _run_migrations():
             CREATE INDEX IF NOT EXISTS ix_raid_participants_user ON raid_participants(user_id,raid_id);
             CREATE INDEX IF NOT EXISTS ix_ranked_pair_time ON ranked_matches(winner_id,loser_id,played_at);
         """)
+        from utils.exclusive_companions import migrate_owner_bindings
+        await migrate_owner_bindings(db)
         from utils.balance_migrations import apply_base_stat_balance
         await apply_base_stat_balance(db)
         from utils.balance_migrations import apply_progression_balance
@@ -781,11 +784,11 @@ async def grant_beast(db, user_id, beast_data, *, starter=False, grant_key=None)
     from utils.dispositions import roll_disposition, apply_disposition
 
     if beast_data['id'] == 'hexpurr':
-        async with db.execute('SELECT user_id,beast_row_id FROM exclusive_companions WHERE species=?', ('hexpurr',)) as cursor:
+        async with db.execute('SELECT beast_row_id FROM exclusive_companions WHERE species=? AND user_id=?', ('hexpurr', user_id)) as cursor:
             reservation = await cursor.fetchone()
-        if (grant_key != 'exclusive:hexpurr' or not reservation
-                or reservation[0] != user_id or reservation[1] is not None or starter):
-            raise ValueError('Hexpurr can only be granted once through /dev give_hexpurr discord_id:…')
+        if (grant_key != f'exclusive:hexpurr:{user_id}' or not reservation
+                or reservation[0] is not None or starter):
+            raise ValueError('Grant Hexpurr through /dev give_hexpurr discord_id:… (one per trainer).')
 
     disposition = beast_data.get("disposition")  # allow override (e.g. starters pass None)
     if disposition is None:
