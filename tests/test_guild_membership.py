@@ -171,3 +171,27 @@ class GuildMembership(DatabaseCase):
         self.assertEqual(await self.rows('SELECT * FROM guild_sanctuary'), [])
         self.assertEqual(await self.rows('SELECT * FROM guild_members'), [])
         self.assertIsNone((await storage.get_player(43))['guild_id'])
+
+    async def test_rejected_promotion_releases_database_before_discord_reply(self):
+        await self.guild()
+        await self.member(1, 43)
+        async def send(*args, **kwargs):
+            # Discord can be slow; unrelated trainer writes must remain free.
+            async with storage.connect(timeout=.05) as db:
+                await db.execute('UPDATE players SET gold=gold+1 WHERE user_id=45')
+                await db.commit()
+        for caller, target in ((43, 44), (42, 44), (42, 42), (42, 43)):
+            with self.subTest(caller=caller, target=target):
+                request = click(caller)
+                request.followup.send.side_effect = send
+                await Guilds.guild_promote.callback(self.cog, request, click(target).user, 'member')
+        self.assertEqual((await storage.get_player(45))['gold'], 504)
+
+    async def test_only_current_leader_can_promote_and_demote_same_guild_member(self):
+        await self.guild()
+        await self.member(1, 43)
+        for rank in ('officer', 'member'):
+            await Guilds.guild_promote.callback(self.cog, click(42), click(43).user, rank)
+            self.assertEqual((await self.rows('SELECT rank FROM guild_members WHERE user_id=43'))[0]['rank'], rank)
+        await Guilds.guild_promote.callback(self.cog, click(44), click(43).user, 'officer')
+        self.assertEqual((await self.rows('SELECT rank FROM guild_members WHERE user_id=43'))[0]['rank'], 'member')

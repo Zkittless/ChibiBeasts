@@ -466,6 +466,7 @@ class Guilds(commands.Cog):
             ) as c:
                 caller = await c.fetchone()
             if not caller or caller["rank"] != "leader":
+                await db.rollback()
                 return await interaction.followup.send(
                     "✦ Only the guild leader can promote or demote members.", ephemeral=True
                 )
@@ -478,14 +479,17 @@ class Guilds(commands.Cog):
             ) as c:
                 target = await c.fetchone()
             if not target:
+                await db.rollback()
                 return await interaction.followup.send(
                     f"✦ **{member.display_name}** is not in your guild.", ephemeral=True
                 )
             if target["rank"] == "leader":
+                await db.rollback()
                 return await interaction.followup.send(
                     "✦ You cannot change the rank of the guild leader.", ephemeral=True
                 )
             if target["rank"] == rank:
+                await db.rollback()
                 return await interaction.followup.send(
                     f"✦ **{member.display_name}** is already {rank}.", ephemeral=True
                 )
