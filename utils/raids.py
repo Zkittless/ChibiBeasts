@@ -226,6 +226,14 @@ class RaidSession:
                 for uid in self.users:
                     await assert_available(db, uid)
                 if self.guild_id:
+                    # Invitations and eligibility checks can outlive a member's
+                    # role. Recheck everyone under the payment's writer lock.
+                    async with db.execute('SELECT user_id,rank FROM guild_members WHERE guild_id=?', (self.guild_id,)) as c:
+                        members = dict(await c.fetchall())
+                    if any(uid not in members for uid in self.users):
+                        raise ValueError('A trainer has left the summoning guild; nothing was spent.')
+                    if members.get(owner) not in {'leader', 'officer'}:
+                        raise ValueError('A current guild leader or officer must open the raid; nothing was spent.')
                     cur = await db.execute('UPDATE guilds SET guild_tokens=guild_tokens-? WHERE id=? AND level>=5 AND guild_tokens>=?', (GUILD_ENTRY_TOKENS, self.guild_id, GUILD_ENTRY_TOKENS))
                     if not cur.rowcount:
                         raise ValueError('The guild needs level 5 and 50 tokens.')
@@ -247,7 +255,8 @@ class RaidSession:
                 sanctuary = await get_user_sanctuary(uid)
                 self.party[uid] = []
                 for index, row in enumerate(rows[uid]):
-                    state = await prepare_state(uid, row, storage.get_beast_data(row['beast_id']), perks, consume=index == 0)
+                    state = await prepare_state(uid, row, storage.get_beast_data(row['beast_id']), perks,
+                                                consume=index == 0, party_reserve=index > 0)
                     state['ultimate_charges'] = 0
                     if sanctuary.get('raid_altar'):
                         state['damage_multiplier'] *= 1.1

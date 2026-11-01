@@ -247,6 +247,7 @@ class JournalHub:
         self.message = None
         self.frame = None
         self.closed = self.busy = False
+        self._dispatch_owner = None
         self.route, self.section = root.page, section_for(root.page)
 
     def close(self):
@@ -269,11 +270,18 @@ class JournalHub:
         if self.busy:
             return await self.reject(click, 'Your journal is updating. Use the refreshed controls.')
         self.busy = True
+        owner = self._dispatch_owner = object()
         try:
             adapted = HubInteraction(click, self)
             return await callback(adapted)
         finally:
-            self.busy = False
+            if self._dispatch_owner is owner:
+                self.release_dispatch()
+
+    def release_dispatch(self):
+        """A separate multiplayer panel owns its own lifetime and controls."""
+        self.busy = False
+        self._dispatch_owner = None
 
     async def present(self, click, *, view=None, content=None, embed=None, embeds=None, file=None, files=None,
                       attachments=None, opening=False, channel_send=False, page=0, **ignored):

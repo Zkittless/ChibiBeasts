@@ -13,6 +13,22 @@ from utils.progress import (
     track_quest_event, check_achievements, unlock_simple_achievement, notify_unlocks, notify_quest_completions
 )
 from utils.story import advance_quest_step
+from utils import guild_membership
+
+
+async def close_confirmation(view, interaction, owner_id):
+    """Claim a confirmation before the first await, including queued clicks."""
+    if interaction.user.id != owner_id:
+        await interaction.response.send_message("This isn't for you!", ephemeral=True)
+        return False
+    if view.is_finished():
+        await interaction.response.send_message('This confirmation is already closed.', ephemeral=True)
+        return False
+    view.stop()
+    for item in view.children:
+        item.disabled = True
+    await interaction.response.edit_message(view=view)
+    return True
 
 GUILD_LEVEL_PERKS = {
     1:  {"max_members": 10,  "unlocks": "Guild created!"},
@@ -357,38 +373,10 @@ class Guilds(commands.Cog):
     @app_commands.describe(member="Player to invite")
     async def guild_invite(self, interaction: discord.Interaction, member: discord.Member):
         await interaction.response.defer()
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(
-                "SELECT guild_id, rank FROM guild_members WHERE user_id = ?", (interaction.user.id,)
-            ) as c:
-                inviter = await c.fetchone()
-
-        if not inviter or inviter["rank"] not in ["leader", "officer"]:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ You need to be a Guild Leader or Officer to invite members!",
-                color=COLORS["error"]
-            ))
-
-        async with storage.connect() as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute("SELECT * FROM guilds WHERE id = ?", (inviter["guild_id"],)) as c:
-                guild = dict(await c.fetchone())
-            async with db.execute(
-                "SELECT guild_id FROM guild_members WHERE user_id = ?", (member.id,)
-            ) as c:
-                already_in = await c.fetchone()
-
-        if already_in:
-            return await interaction.followup.send(embed=discord.Embed(
-                description=f"✦ **{member.display_name}** is already in a guild!",
-                color=COLORS["error"]
-            ))
-
-        if guild["member_count"] >= guild["max_members"]:
-            return await interaction.followup.send(embed=discord.Embed(
-                description="✦ Your guild is full!", color=COLORS["error"]
-            ))
+        try:
+            guild = await guild_membership.invitation(interaction.user.id, member.id)
+        except ValueError as error:
+            return await interaction.followup.send(str(error), ephemeral=True)
 
         embed = discord.Embed(
             title="🏰 Guild Invitation!",
@@ -434,27 +422,13 @@ class Guilds(commands.Cog):
 
             @discord.ui.button(label="Accept", style=discord.ButtonStyle.success, emoji="✅")
             async def accept(self, inv_interaction: discord.Interaction, button: discord.ui.Button):
-                if inv_interaction.user.id != member.id:
-                    return await inv_interaction.response.send_message("This isn't for you!", ephemeral=True)
+                if not await close_confirmation(self, inv_interaction, member.id):
+                    return
+                try:
+                    await guild_membership.accept_invitation(interaction.user.id, member.id, guild['id'])
+                except ValueError as error:
+                    return await inv_interaction.followup.send(str(error), ephemeral=True)
                 self.accepted = True
-                self.stop()
-                async with storage.connect() as db:
-                    await db.execute(
-                        "INSERT INTO guild_members (guild_id, user_id) VALUES (?, ?)",
-                        (inviter["guild_id"], member.id)
-                    )
-                    await db.execute(
-                        "UPDATE guilds SET member_count = member_count + 1 WHERE id = ?",
-                        (inviter["guild_id"],)
-                    )
-                    await db.execute(
-                        "UPDATE players SET guild_id = ? WHERE user_id = ?",
-                        (inviter["guild_id"], member.id)
-                    )
-                    await db.commit()
-                for item in self.children:
-                    item.disabled = True
-                await inv_interaction.response.edit_message(view=self)
                 await inv_interaction.followup.send(embed=discord.Embed(
                     description=f"✦ **{member.display_name}** joined **{guild['name']}**! 🏰",
                     color=COLORS["success"]
@@ -465,12 +439,7 @@ class Guilds(commands.Cog):
 
             @discord.ui.button(label="Decline", style=discord.ButtonStyle.danger, emoji="❌")
             async def decline(self, inv_interaction: discord.Interaction, button: discord.ui.Button):
-                if inv_interaction.user.id != member.id:
-                    return await inv_interaction.response.send_message("This isn't for you!", ephemeral=True)
-                self.stop()
-                for item in self.children:
-                    item.disabled = True
-                await inv_interaction.response.edit_message(view=self)
+                await close_confirmation(self, inv_interaction, member.id)
 
         view = InviteView()
         view.message = await interaction.followup.send(content=member.mention, embed=embed, view=view)
@@ -485,9 +454,12 @@ class Guilds(commands.Cog):
     async def guild_promote(self, interaction: discord.Interaction, member: discord.Member, rank: str):
         await interaction.response.defer(ephemeral=True)
         uid = interaction.user.id
+        if rank not in {'officer', 'member'}:
+            return await interaction.followup.send('Choose Officer or Member.', ephemeral=True)
 
         async with storage.connect() as db:
             db.row_factory = aiosqlite.Row
+            await db.execute('BEGIN IMMEDIATE')
             # Verify caller is leader
             async with db.execute(
                 "SELECT guild_id, rank FROM guild_members WHERE user_id = ?", (uid,)
@@ -555,7 +527,8 @@ class Guilds(commands.Cog):
                     orphan = await c.fetchone()
                 if orphan:
                     await db.execute(
-                        "UPDATE players SET guild_id = NULL WHERE user_id = ?",
+                        "UPDATE players SET guild_id = NULL WHERE user_id = ? AND NOT EXISTS "
+                        "(SELECT 1 FROM guild_members gm JOIN guilds g ON g.id=gm.guild_id WHERE gm.user_id=players.user_id)",
                         (interaction.user.id,)
                     )
                     await db.commit()
@@ -579,16 +552,12 @@ class Guilds(commands.Cog):
 
                     @discord.ui.button(label="Disband Guild", style=discord.ButtonStyle.danger, emoji="💥")
                     async def confirm(self, inv: discord.Interaction, btn: discord.ui.Button):
-                        if inv.user.id != interaction.user.id:
-                            return await inv.response.send_message("This isn't for you!", ephemeral=True)
-                        self.stop()
-                        for item in self.children: item.disabled = True
-                        await inv.response.edit_message(view=self)
-                        async with storage.connect() as db:
-                            await db.execute("DELETE FROM guild_members WHERE guild_id = ?", (guild_id,))
-                            await db.execute("DELETE FROM guilds WHERE id = ?", (guild_id,))
-                            await db.execute("UPDATE players SET guild_id = NULL, guild_tokens = 0 WHERE user_id = ?", (interaction.user.id,))
-                            await db.commit()
+                        if not await close_confirmation(self, inv, interaction.user.id):
+                            return
+                        try:
+                            await guild_membership.leave(interaction.user.id, guild_id, disband=True)
+                        except ValueError as error:
+                            return await inv.followup.send(str(error), ephemeral=True)
                         await inv.followup.send(embed=discord.Embed(
                             description=f"💥 **{guild_name}** has been disbanded.",
                             color=COLORS["error"]
@@ -615,7 +584,7 @@ class Guilds(commands.Cog):
                 async with storage.connect() as db:
                     db.row_factory = aiosqlite.Row
                     async with db.execute(
-                        "SELECT user_id, rank FROM guild_members WHERE guild_id = ? AND user_id != ? ORDER BY CASE rank WHEN 'officer' THEN 0 ELSE 1 END LIMIT 1",
+                        "SELECT user_id, rank FROM guild_members WHERE guild_id = ? AND user_id != ? ORDER BY CASE rank WHEN 'officer' THEN 0 ELSE 1 END,joined_at,user_id LIMIT 1",
                         (guild_id, interaction.user.id)
                     ) as c:
                         next_member = await c.fetchone()
@@ -636,18 +605,12 @@ class Guilds(commands.Cog):
 
                     @discord.ui.button(label="Transfer & Leave", style=discord.ButtonStyle.danger, emoji="🚪")
                     async def confirm(self, inv: discord.Interaction, btn: discord.ui.Button):
-                        if inv.user.id != interaction.user.id:
-                            return await inv.response.send_message("This isn't for you!", ephemeral=True)
-                        self.stop()
-                        for item in self.children: item.disabled = True
-                        await inv.response.edit_message(view=self)
-                        async with storage.connect() as db:
-                            await db.execute("UPDATE guilds SET leader_id = ? WHERE id = ?", (new_leader_id, guild_id))
-                            await db.execute("UPDATE guild_members SET rank = 'leader' WHERE guild_id = ? AND user_id = ?", (guild_id, new_leader_id))
-                            await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
-                            await db.execute("UPDATE guilds SET member_count = member_count - 1 WHERE id = ?", (guild_id,))
-                            await db.execute("UPDATE players SET guild_id = NULL WHERE user_id = ?", (interaction.user.id,))
-                            await db.commit()
+                        if not await close_confirmation(self, inv, interaction.user.id):
+                            return
+                        try:
+                            await guild_membership.leave(interaction.user.id, guild_id, successor_id=new_leader_id)
+                        except ValueError as error:
+                            return await inv.followup.send(str(error), ephemeral=True)
                         await inv.followup.send(embed=discord.Embed(
                             description=(
                                 f"✦ You've left **{guild_name}**.\n"
@@ -681,16 +644,12 @@ class Guilds(commands.Cog):
 
             @discord.ui.button(label="Leave Guild", style=discord.ButtonStyle.danger, emoji="🚪")
             async def confirm(self, inv: discord.Interaction, btn: discord.ui.Button):
-                if inv.user.id != interaction.user.id:
-                    return await inv.response.send_message("This isn't for you!", ephemeral=True)
-                self.stop()
-                for item in self.children: item.disabled = True
-                await inv.response.edit_message(view=self)
-                async with storage.connect() as db:
-                    await db.execute("DELETE FROM guild_members WHERE guild_id = ? AND user_id = ?", (guild_id, interaction.user.id))
-                    await db.execute("UPDATE guilds SET member_count = member_count - 1 WHERE id = ?", (guild_id,))
-                    await db.execute("UPDATE players SET guild_id = NULL WHERE user_id = ?", (interaction.user.id,))
-                    await db.commit()
+                if not await close_confirmation(self, inv, interaction.user.id):
+                    return
+                try:
+                    await guild_membership.leave(interaction.user.id, guild_id)
+                except ValueError as error:
+                    return await inv.followup.send(str(error), ephemeral=True)
                 await inv.followup.send(embed=discord.Embed(
                     description=f"✦ You've left **{guild_name}**.",
                     color=COLORS["info"]

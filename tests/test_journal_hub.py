@@ -336,6 +336,44 @@ class JournalHubFlows(DatabaseCase):
         await self.root.launch(click, 'raid')
         callback.assert_awaited_once_with(click.original)
 
+    async def test_shared_raid_does_not_lock_journal_navigation_until_raid_finishes(self):
+        started, finish = asyncio.Event(), asyncio.Event()
+        async def raid(click):
+            await click.response.defer()
+            started.set()
+            await finish.wait()
+        command = SimpleNamespace(binding=None, callback=raid)
+        bot = SimpleNamespace(tree=SimpleNamespace(get_command=lambda name: command))
+        await self.open(bot=bot)
+        await self.hub.navigate(self.click(), 'community')
+        task = asyncio.create_task(self.press('Guild raid'))
+        try:
+            await asyncio.wait_for(started.wait(), 2)
+            await self.press('Beasts')
+            self.assertEqual(self.hub.route, 'beasts', 'Raid hosts must still be able to open Care')
+            self.assertFalse(task.done())
+            # The detached raid finishing must not release a newer navigation's lock.
+            publishing, finish_publish = asyncio.Event(), asyncio.Event()
+            original = self.hub.present
+            async def slow_publish(*args, **kwargs):
+                publishing.set()
+                await finish_publish.wait()
+                return await original(*args, **kwargs)
+            with patch.object(self.hub, 'present', side_effect=slow_publish):
+                navigation = asyncio.create_task(self.press('Camp'))
+                try:
+                    await asyncio.wait_for(publishing.wait(), 2)
+                    finish.set()
+                    await task
+                    self.assertTrue(self.hub.busy)
+                finally:
+                    finish_publish.set()
+                    await navigation
+            self.assertFalse(self.hub.busy)
+        finally:
+            finish.set()
+            await task
+
     async def test_pinned_goals_open_current_workshop_and_beast_routes(self):
         await self.open()
         await self.hub.navigate(self.click(), 'goals')
