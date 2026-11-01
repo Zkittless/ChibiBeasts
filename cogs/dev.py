@@ -14,6 +14,8 @@ from discord.ext import commands
 import aiosqlite
 import os
 import json
+import logging
+from utils.command_sync import developer_ids
 from utils.db import (
     get_or_create_player, get_player, update_player,
     get_beast_data, load_beasts, load_items, add_item,
@@ -717,9 +719,9 @@ class Dev(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    owner_id = os.getenv("OWNER_ID", "0")
-    guild_id = os.getenv("GUILD_ID", "0")
-    if not owner_id.isdecimal() or not guild_id.isdecimal():
-        raise ValueError("OWNER_ID and GUILD_ID must be numeric Discord IDs.")
-    if int(owner_id) and int(guild_id):
-        await bot.add_cog(Dev(bot), guild=discord.Object(id=int(guild_id)))
+    owner_id, guild_id = developer_ids()
+    if owner_id and guild_id:
+        await bot.add_cog(Dev(bot), guild=discord.Object(id=guild_id))
+    else:
+        logging.getLogger('chibibeasts.commands').warning(
+            'Developer commands disabled: set both OWNER_ID and GUILD_ID on this bot service.')
