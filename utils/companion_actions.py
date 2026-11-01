@@ -74,8 +74,9 @@ class GrowthView(discord.ui.View):
         if self.operation == 'train':
             from cogs.economy import TRAIN_COST, TRAIN_GAIN, TRAIN_HP_MULTIPLIER, TRAIN_DAILY_LIMIT
             from utils.sanctuary import get_user_sanctuary, apply_training_discount
-            self.cost = apply_training_discount(TRAIN_COST.get(row['rarity'], 50), await get_user_sanctuary(self.user_id))
-            gain = TRAIN_GAIN.get(row['rarity'], 1) * (TRAIN_HP_MULTIPLIER if self.stat == 'hp' else 1)
+            training_rarity = storage.gameplay_rarity(row)
+            self.cost = apply_training_discount(TRAIN_COST.get(training_rarity, 50), await get_user_sanctuary(self.user_id))
+            gain = TRAIN_GAIN.get(training_rarity, 1) * (TRAIN_HP_MULTIPLIER if self.stat == 'hp' else 1)
             self.confirm.label = f'Train {self.stat} · {self.cost:,} gold'
             embed.description = f"**+{gain} {self.stat.upper()} · {self.cost:,} gold**\nExisting stat caps and the {TRAIN_DAILY_LIMIT}-session daily limit apply."
         else:

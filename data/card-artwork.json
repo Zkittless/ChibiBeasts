@@ -454,6 +454,11 @@
       "file": "card_art/hollow_king.png",
       "sha256": "ec23cd33723368e1613948da37317b8bcb1ef5013d96ed5e3352e460d779425d",
       "source_sha256": "387885e7543728715c7641bb83b2061577704cd0f9a4b83eb9e9376e49229ba7"
+    },
+    "hexpurr": {
+      "file": "card_art/hexpurr.png",
+      "sha256": "6e0f44d49f0adf0bcfe09820b1b0453bedc4a39bae13f0812d52a6dcce7c81d7",
+      "source_sha256": "f97cae9e7492e9ccccd01bef5f67c2386102861076bf55401c3ba0288f1ca3b4"
     }
   },
   "starter_lineup": {

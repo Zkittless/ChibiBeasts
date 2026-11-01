@@ -95,7 +95,8 @@
         "wisp": "ghost_costume_2026/wisp.png",
         "wyvern": "ghost_costume_2026/wyvern.png",
         "yeti": "ghost_costume_2026/yeti.png",
-        "zodiac": "ghost_costume_2026/zodiac.png"
+        "zodiac": "ghost_costume_2026/zodiac.png",
+        "hexpurr": "ghost_costume_2026/hexpurr.png"
       }
     }
   },
@@ -189,7 +190,8 @@
     "ghost_costume_2026/wisp.png": "e0ace51f986f435fcedd7d820e04d5e9e72af7c48ee95dc873c16e4a1ce3a2be",
     "ghost_costume_2026/wyvern.png": "f3c91483aeca62a3c2cac631a188efd82b79fe7d8828c918424971f1a5d7983f",
     "ghost_costume_2026/yeti.png": "773c4ec71a08ed9a4a4e43fc5a61140cacc5d5d462fee63c336a43a60bb50e4a",
-    "ghost_costume_2026/zodiac.png": "4922e7fcb5f7b105ae09f5ec604e7a8bc72494b852c093ac71f6329889d2bef5"
+    "ghost_costume_2026/zodiac.png": "4922e7fcb5f7b105ae09f5ec604e7a8bc72494b852c093ac71f6329889d2bef5",
+    "ghost_costume_2026/hexpurr.png": "cef54ebf772511cd709439c1a2131f0ef38d368ddf15f9d48c1d91cb494b9a27"
   },
   "source_sha256": {
     "abyss": "e3692a3cd428691e08a31374a22b4c71001c9e58a6bdc0f98de78c15974d68cf",
@@ -281,6 +283,7 @@
     "wisp": "c905db6a137ad8e6ed3ddc32092f09890a6ea9bb9f26598cc24c6e724793c147",
     "wyvern": "727821223dadc9faaaa1730db781b11f53aac7b748da655495bc342265c7df99",
     "yeti": "31e731dd10b23715d76f2e72fb309466e1616c41401e018bd66a2d0e4d2a3639",
-    "zodiac": "783a355b437e10499b55ec5810ea3baf960bf887a71ec6724a72cddf7259c22f"
+    "zodiac": "783a355b437e10499b55ec5810ea3baf960bf887a71ec6724a72cddf7259c22f",
+    "hexpurr": "ad7867a2d5526c762fee40a50f4f6d337cf02d96dee892a74dfc9bf5c992cfdc"
   }
 }

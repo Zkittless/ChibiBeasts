@@ -137,16 +137,17 @@ def companion_growth(beast_id, level, catalog):
     """
     level = min(MAX_LEVEL, max(1, int(level)))
     beast = catalog[beast_id]
+    growth_rarity = beast.get('growth_rarity', beast['rarity'])
     parent = next((entry for entry in catalog.values()
                    if (entry.get('evolution') or {}).get('evolves_to') == beast_id), None)
     if parent is None:
-        return rarity_growth(beast['rarity'], level - 1)
+        return rarity_growth(growth_rarity, level - 1)
     milestone = parent['evolution']['level_required']
     if milestone >= MAX_LEVEL and level == MAX_LEVEL:
-        return rarity_growth(beast['rarity'], level - 1)
+        return rarity_growth(growth_rarity, level - 1)
     inherited = companion_growth(parent['id'], min(level, milestone), catalog)
-    future = rarity_growth(beast['rarity'], max(0, level - milestone))
-    native_at_unlock = rarity_growth(beast['rarity'], milestone - 1)
+    future = rarity_growth(growth_rarity, max(0, level - milestone))
+    native_at_unlock = rarity_growth(growth_rarity, milestone - 1)
     progress = max(0, level - milestone)
     remaining = max(1, MAX_LEVEL - milestone)
     return {stat: inherited[stat] + future[stat]

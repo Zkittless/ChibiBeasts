@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "forms": {
+    "lantern": {
+      "armor": {}
+    },
+    "hexfire": {
+      "armor": {
+        "sprite_silk_attire": "armor/sprite_silk_attire.png",
+        "gnome_iron_plating": "armor/gnome_iron_plating.png",
+        "kelpie_scale_mail": "armor/kelpie_scale_mail.png",
+        "cinder_guard_vest": "armor/cinder_guard_vest.png",
+        "dragon_lord_aegis": "armor/dragon_lord_aegis.png",
+        "abyssal_shroud": "armor/abyssal_shroud.png",
+        "chronos_paradox_plate": "armor/chronos_paradox_plate.png",
+        "blight_weaver_regalia": "armor/blight_weaver_regalia.png",
+        "unicorn_healer_vestments": "armor/unicorn_healer_vestments.png",
+        "basilisk_gaze_pauldrons": "armor/basilisk_gaze_pauldrons.png",
+        "phoenix_born_shroud": "armor/phoenix_born_shroud.png",
+        "thunderbird_storm_mail": "armor/thunderbird_storm_mail.png",
+        "mossbark_wrapping": "armor/mossbark_wrapping.png",
+        "emberstone_vest": "armor/emberstone_vest.png",
+        "thornweave_cloak": "armor/thornweave_cloak.png",
+        "deepwater_hide": "armor/deepwater_hide.png",
+        "cosmetic:ghost_costume_2026": "ghost-costume.png"
+      }
+    }
+  },
+  "poses": {
+    "lantern": "lantern.webp",
+    "hexfire": "hexfire.webp",
+    "crouch": "crouch.webp",
+    "pounce": "pounce.webp",
+    "landing": "landing.webp",
+    "spirit": "spirit.webp"
+  },
+  "sha256": {
+    "lantern.webp": "f572280fb7781e0bf954634547df73715c718b7b1e49738d0fc8b8a3df27d4e4",
+    "hexfire.webp": "2f3f9690d807e19373f96c3e437094225c641afa0ea4cdb1176cc2eb6fca8674",
+    "crouch.webp": "3c583315f24974312656490a6575836fd552b9aaaa8fc04a080614383689a9a2",
+    "pounce.webp": "408d74b4171996057ba49770cdd4c20f4e072c575aa4bc5ed90b51f1a0bc9e3a",
+    "landing.webp": "3d290335d9c4e5bc1d15380fce930d6de523a25c0a69deb48f9db895928910f0",
+    "spirit.webp": "5b3ea0af2ad90c0be712f81e07b936ef3eb0ad5d9182d6c565c2cb2d02f6b0f8",
+    "armor/sprite_silk_attire.png": "47b478e3260baceadd7781c5eb7aceb3de31605570ac4453777de24ca72f4610",
+    "armor/gnome_iron_plating.png": "d63a123aa18f559417380108eeb7f804342b8f48c04cc5502cccc50ee02ac407",
+    "armor/kelpie_scale_mail.png": "a8af44f33ce6c424ce4d3b4fdc3e66479d6e8412dbf57664e1adc6a52e53da2b",
+    "armor/cinder_guard_vest.png": "9ea2e1901604b0260f6f7186d1a0a3a5bd5d3408c878d3dcc0b557de383a12cf",
+    "armor/dragon_lord_aegis.png": "d30a5b8d06a6cc743e23ba91d2d8696969234267552bee6585d329cea1e49215",
+    "armor/abyssal_shroud.png": "e83b0c8352fe552541cd6d49bcb741b28b770d64b338042d7f112321458a825c",
+    "armor/chronos_paradox_plate.png": "9a7df481c4bffc580fd12d3045165e1812991ee4b4ae8c17f04f12b2de8a1781",
+    "armor/blight_weaver_regalia.png": "3649f8feb749c2594c6074a720ec9186b245039c68c7a2cf032add346058ac9f",
+    "armor/unicorn_healer_vestments.png": "d0ee8d28bac9d2227167162516afa61bad9c92361fb48fc08b2bbacfc7269a0b",
+    "armor/basilisk_gaze_pauldrons.png": "e9807a10e6251c0d94d72316174c1d93cada8acb676ce6e757a3a0bdabb4bcd5",
+    "armor/phoenix_born_shroud.png": "7035ad1f33135c9bf3b365001125c3e921c356a9ebd948216d36d15ce6c5c972",
+    "armor/thunderbird_storm_mail.png": "597c2bf4eb20f1949ad75dfb1f8e5c8131d9e1406821fbb9fa6413506db02bf9",
+    "armor/mossbark_wrapping.png": "823a5f85774195779e0358c404905362ad1b5b08afa6307d5bf9d2d4cce78e4d",
+    "armor/emberstone_vest.png": "875036e7c9148164f13660c6e4c7d66d35beff565c11219842078dd14d977088",
+    "armor/thornweave_cloak.png": "5fceb49f64e1399618139d352d07c2423f4da3d6433bad340c869f60b16d23cc",
+    "armor/deepwater_hide.png": "535f2f087d2d2481468c324e3c118b1f6056fbd912914c43707fdd88548d7f46",
+    "ghost-costume.png": "90818e0836237ef06a32229da6538d73bee081ae500360561127e459a4e43774"
+  }
+}

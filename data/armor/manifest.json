@@ -101,7 +101,8 @@
         "patchkin": "variants/sprite_silk_attire/patchkin.png",
         "wickwing": "variants/sprite_silk_attire/wickwing.png",
         "veilmoth": "variants/sprite_silk_attire/veilmoth.png",
-        "hollow_king": "variants/sprite_silk_attire/hollow_king.png"
+        "hollow_king": "variants/sprite_silk_attire/hollow_king.png",
+        "hexpurr": "variants/sprite_silk_attire/hexpurr.png"
       }
     },
     "gnome_iron_plating": {
@@ -204,7 +205,8 @@
         "patchkin": "variants/gnome_iron_plating/patchkin.png",
         "wickwing": "variants/gnome_iron_plating/wickwing.png",
         "veilmoth": "variants/gnome_iron_plating/veilmoth.png",
-        "hollow_king": "variants/gnome_iron_plating/hollow_king.png"
+        "hollow_king": "variants/gnome_iron_plating/hollow_king.png",
+        "hexpurr": "variants/gnome_iron_plating/hexpurr.png"
       }
     },
     "kelpie_scale_mail": {
@@ -307,7 +309,8 @@
         "patchkin": "variants/kelpie_scale_mail/patchkin.png",
         "wickwing": "variants/kelpie_scale_mail/wickwing.png",
         "veilmoth": "variants/kelpie_scale_mail/veilmoth.png",
-        "hollow_king": "variants/kelpie_scale_mail/hollow_king.png"
+        "hollow_king": "variants/kelpie_scale_mail/hollow_king.png",
+        "hexpurr": "variants/kelpie_scale_mail/hexpurr.png"
       }
     },
     "cinder_guard_vest": {
@@ -410,7 +413,8 @@
         "patchkin": "variants/cinder_guard_vest/patchkin.png",
         "wickwing": "variants/cinder_guard_vest/wickwing.png",
         "veilmoth": "variants/cinder_guard_vest/veilmoth.png",
-        "hollow_king": "variants/cinder_guard_vest/hollow_king.png"
+        "hollow_king": "variants/cinder_guard_vest/hollow_king.png",
+        "hexpurr": "variants/cinder_guard_vest/hexpurr.png"
       }
     },
     "dragon_lord_aegis": {
@@ -513,7 +517,8 @@
         "patchkin": "variants/dragon_lord_aegis/patchkin.png",
         "wickwing": "variants/dragon_lord_aegis/wickwing.png",
         "veilmoth": "variants/dragon_lord_aegis/veilmoth.png",
-        "hollow_king": "variants/dragon_lord_aegis/hollow_king.png"
+        "hollow_king": "variants/dragon_lord_aegis/hollow_king.png",
+        "hexpurr": "variants/dragon_lord_aegis/hexpurr.png"
       }
     },
     "abyssal_shroud": {
@@ -616,7 +621,8 @@
         "patchkin": "variants/abyssal_shroud/patchkin.png",
         "wickwing": "variants/abyssal_shroud/wickwing.png",
         "veilmoth": "variants/abyssal_shroud/veilmoth.png",
-        "hollow_king": "variants/abyssal_shroud/hollow_king.png"
+        "hollow_king": "variants/abyssal_shroud/hollow_king.png",
+        "hexpurr": "variants/abyssal_shroud/hexpurr.png"
       }
     },
     "chronos_paradox_plate": {
@@ -719,7 +725,8 @@
         "patchkin": "variants/chronos_paradox_plate/patchkin.png",
         "wickwing": "variants/chronos_paradox_plate/wickwing.png",
         "veilmoth": "variants/chronos_paradox_plate/veilmoth.png",
-        "hollow_king": "variants/chronos_paradox_plate/hollow_king.png"
+        "hollow_king": "variants/chronos_paradox_plate/hollow_king.png",
+        "hexpurr": "variants/chronos_paradox_plate/hexpurr.png"
       }
     },
     "blight_weaver_regalia": {
@@ -822,7 +829,8 @@
         "patchkin": "variants/blight_weaver_regalia/patchkin.png",
         "wickwing": "variants/blight_weaver_regalia/wickwing.png",
         "veilmoth": "variants/blight_weaver_regalia/veilmoth.png",
-        "hollow_king": "variants/blight_weaver_regalia/hollow_king.png"
+        "hollow_king": "variants/blight_weaver_regalia/hollow_king.png",
+        "hexpurr": "variants/blight_weaver_regalia/hexpurr.png"
       }
     },
     "unicorn_healer_vestments": {
@@ -925,7 +933,8 @@
         "patchkin": "variants/unicorn_healer_vestments/patchkin.png",
         "wickwing": "variants/unicorn_healer_vestments/wickwing.png",
         "veilmoth": "variants/unicorn_healer_vestments/veilmoth.png",
-        "hollow_king": "variants/unicorn_healer_vestments/hollow_king.png"
+        "hollow_king": "variants/unicorn_healer_vestments/hollow_king.png",
+        "hexpurr": "variants/unicorn_healer_vestments/hexpurr.png"
       }
     },
     "basilisk_gaze_pauldrons": {
@@ -1028,7 +1037,8 @@
         "patchkin": "variants/basilisk_gaze_pauldrons/patchkin.png",
         "wickwing": "variants/basilisk_gaze_pauldrons/wickwing.png",
         "veilmoth": "variants/basilisk_gaze_pauldrons/veilmoth.png",
-        "hollow_king": "variants/basilisk_gaze_pauldrons/hollow_king.png"
+        "hollow_king": "variants/basilisk_gaze_pauldrons/hollow_king.png",
+        "hexpurr": "variants/basilisk_gaze_pauldrons/hexpurr.png"
       }
     },
     "phoenix_born_shroud": {
@@ -1131,7 +1141,8 @@
         "patchkin": "variants/phoenix_born_shroud/patchkin.png",
         "wickwing": "variants/phoenix_born_shroud/wickwing.png",
         "veilmoth": "variants/phoenix_born_shroud/veilmoth.png",
-        "hollow_king": "variants/phoenix_born_shroud/hollow_king.png"
+        "hollow_king": "variants/phoenix_born_shroud/hollow_king.png",
+        "hexpurr": "variants/phoenix_born_shroud/hexpurr.png"
       }
     },
     "thunderbird_storm_mail": {
@@ -1234,7 +1245,8 @@
         "patchkin": "variants/thunderbird_storm_mail/patchkin.png",
         "wickwing": "variants/thunderbird_storm_mail/wickwing.png",
         "veilmoth": "variants/thunderbird_storm_mail/veilmoth.png",
-        "hollow_king": "variants/thunderbird_storm_mail/hollow_king.png"
+        "hollow_king": "variants/thunderbird_storm_mail/hollow_king.png",
+        "hexpurr": "variants/thunderbird_storm_mail/hexpurr.png"
       }
     },
     "mossbark_wrapping": {
@@ -1337,7 +1349,8 @@
         "patchkin": "variants/mossbark_wrapping/patchkin.png",
         "wickwing": "variants/mossbark_wrapping/wickwing.png",
         "veilmoth": "variants/mossbark_wrapping/veilmoth.png",
-        "hollow_king": "variants/mossbark_wrapping/hollow_king.png"
+        "hollow_king": "variants/mossbark_wrapping/hollow_king.png",
+        "hexpurr": "variants/mossbark_wrapping/hexpurr.png"
       }
     },
     "emberstone_vest": {
@@ -1440,7 +1453,8 @@
         "patchkin": "variants/emberstone_vest/patchkin.png",
         "wickwing": "variants/emberstone_vest/wickwing.png",
         "veilmoth": "variants/emberstone_vest/veilmoth.png",
-        "hollow_king": "variants/emberstone_vest/hollow_king.png"
+        "hollow_king": "variants/emberstone_vest/hollow_king.png",
+        "hexpurr": "variants/emberstone_vest/hexpurr.png"
       }
     },
     "thornweave_cloak": {
@@ -1543,7 +1557,8 @@
         "patchkin": "variants/thornweave_cloak/patchkin.png",
         "wickwing": "variants/thornweave_cloak/wickwing.png",
         "veilmoth": "variants/thornweave_cloak/veilmoth.png",
-        "hollow_king": "variants/thornweave_cloak/hollow_king.png"
+        "hollow_king": "variants/thornweave_cloak/hollow_king.png",
+        "hexpurr": "variants/thornweave_cloak/hexpurr.png"
       }
     },
     "deepwater_hide": {
@@ -1646,7 +1661,8 @@
         "patchkin": "variants/deepwater_hide/patchkin.png",
         "wickwing": "variants/deepwater_hide/wickwing.png",
         "veilmoth": "variants/deepwater_hide/veilmoth.png",
-        "hollow_king": "variants/deepwater_hide/hollow_king.png"
+        "hollow_king": "variants/deepwater_hide/hollow_king.png",
+        "hexpurr": "variants/deepwater_hide/hexpurr.png"
       }
     }
   },
@@ -3154,6 +3170,22 @@
     "variants/mossbark_wrapping/hollow_king.png": "93019a98b87222fad3c182a8296a04c4e000b908592c535e29ea49826530928c",
     "variants/emberstone_vest/hollow_king.png": "8244ed2e2422f89564e2ec80af5b5b1d9d32a195e1fc0aae732fcc763cad904b",
     "variants/thornweave_cloak/hollow_king.png": "3eaad15feba23f2b17994a38f90e46ad9f77d19fd130acb7ca6560270690825a",
-    "variants/deepwater_hide/hollow_king.png": "ff6550c1a00d997dcc66248d9832bb852f6a0cf67f65051c5503c0715e1a3670"
+    "variants/deepwater_hide/hollow_king.png": "ff6550c1a00d997dcc66248d9832bb852f6a0cf67f65051c5503c0715e1a3670",
+    "variants/sprite_silk_attire/hexpurr.png": "e5736aa74ea7e650223eb4b5d893e9418ce21bfd8e8fb7e4082cb00df958c7f8",
+    "variants/gnome_iron_plating/hexpurr.png": "4670da8aed242b182b08ad4bdd7d85a1cc82f0d1619021362d63bf4196230249",
+    "variants/kelpie_scale_mail/hexpurr.png": "64d03aad8743f47f973fe38d99a5e24ba8fe52eb3a7a4d4e6df443dfcb384ae5",
+    "variants/cinder_guard_vest/hexpurr.png": "17a75e1fef40b76b87412ec1168a1df3e4aab2e20b9fb176a93ff5a5d9084c36",
+    "variants/dragon_lord_aegis/hexpurr.png": "7c11343ee2816921fa8013352bd07889aa9a8a5e20f21b69d466b3fdfc010e3d",
+    "variants/abyssal_shroud/hexpurr.png": "918405ba6fd43aaf0d08f6a8a58ab3dacd27a4594c5ab12da9255fae7eae1bac",
+    "variants/chronos_paradox_plate/hexpurr.png": "b62ae24950e3b0670ffa08188dd839f4bedd54d06faccde0e71d3da769376862",
+    "variants/blight_weaver_regalia/hexpurr.png": "06e503f2bff4e23802cb775295972a33e2c392f59ef58a618d826605d35bad28",
+    "variants/unicorn_healer_vestments/hexpurr.png": "f064b0568aef4b6e1b5bdec093eafc19d900669f5a00e60878d2232059abcfb8",
+    "variants/basilisk_gaze_pauldrons/hexpurr.png": "970e0370dfc2d399bf21e5e00f758b3b38dae41f9e96af3dc49420be743fa189",
+    "variants/phoenix_born_shroud/hexpurr.png": "7ee56498fc3c1ff226b1e6568e3112d0bf7cedf24061b1819a97d662f3416520",
+    "variants/thunderbird_storm_mail/hexpurr.png": "519b5f3b6ad04faf80510da8498e95c428a35b0d6025c33e40a2375bd1d324ad",
+    "variants/mossbark_wrapping/hexpurr.png": "98af80283ea0cf7f682db0e0ebc03a657851fd2d0ce218610ed4df446180e278",
+    "variants/emberstone_vest/hexpurr.png": "33d3630b9cc1651e4608a76ee1ef683d53a58f6b3afa5f871992415efed27246",
+    "variants/thornweave_cloak/hexpurr.png": "8720c519e4154db2dda6848eb00d41e967053fd808e90e8a2c40c2e763521c30",
+    "variants/deepwater_hide/hexpurr.png": "ab4e517a043c5f89b3133020279b87d5cbc960973317571a3ed4f80b4ade88bc"
   }
 }

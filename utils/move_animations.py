@@ -106,6 +106,9 @@ class Pose:
 
 def motion(animation, home, target, t):
     """Full-body movement; aspect ratio stays fixed even through a knockout."""
+    if animation.sequence == 'hexpurr_lanterns_out':
+        from utils import hexpurr_art
+        return hexpurr_art.motion(home, target, t)
     if animation.sequence != 'legacy':
         return choreographed_motion(animation, home, target, t)
     forward = smooth((t - .22) / .26) if t < .48 else 1 - smooth((t - .53) / .3)
@@ -235,6 +238,9 @@ def reaction(animation, home, attacker, t):
 
 
 def paint_echoes(image, source, animation, home, target, t):
+    if animation.sequence == 'hexpurr_lanterns_out':
+        from utils import hexpurr_art
+        return hexpurr_art.echoes(image, source, home, target, t)
     """Readable body trails on fast moves, sampled from their actual paths."""
     if source is None or not .28 < t < .77:
         return
@@ -354,8 +360,11 @@ class Effects:
             else:
                 self.rect(x,y,8-age*4,4,'#b4b595',(1-age)*.5*(1-p))
 
-    def effect(self, animation, actor, target, t, *, back=False, scale=1):
+    def effect(self, animation, actor, target, t, *, back=False, scale=1, home=None):
         """Each family has its own silhouette, travel path and impact sequence."""
+        if animation.sequence == 'hexpurr_lanterns_out':
+            from utils import hexpurr_art
+            return hexpurr_art.effect(self, actor, target, t, home=home, back=back)
         if animation.sequence != 'legacy':
             module = divine_effects if animation.sequence in divine_effects.SEQUENCES else kinetic_effects
             if module.paint(self, animation, actor, target, t,

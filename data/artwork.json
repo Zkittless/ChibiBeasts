@@ -632,6 +632,13 @@
       "width": 1225,
       "height": 1284,
       "source": "image_gen"
+    },
+    "hexpurr": {
+      "file": "hexpurr.png",
+      "sha256": "f97cae9e7492e9ccccd01bef5f67c2386102861076bf55401c3ba0288f1ca3b4",
+      "width": 1254,
+      "height": 1254,
+      "source": "image_gen"
     }
   }
 }

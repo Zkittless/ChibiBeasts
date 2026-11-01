@@ -157,8 +157,8 @@ def boss_portrait(species):
         return None
 
 
-def fitted(species, size, armor_id=''):
-    portrait = art.sprite(species, armor_id)
+def fitted(species, size, armor_id='', form=''):
+    portrait = art.sprite(species, armor_id, form)
     if portrait is None:
         image = Image.new('RGBA', (size, size))
         draw = ImageDraw.Draw(image)
@@ -173,7 +173,7 @@ def marker_boxes(scene):
     """Stable marker positions, also exposed for phone-size geometry checks."""
     result = []
     for member, place in zip(scene.members, placements(len(scene.members))):
-        height = fitted(member.fighter.species, place.size, member.fighter.armor_id).height
+        height = fitted(member.fighter.species, place.size, member.fighter.armor_id, member.fighter.form).height
         center = place.feet - height - 16 if place.rear else place.feet + 16
         result.append((place.x - 19, center - 15, place.x + 19, center + 15))
     return tuple(result)
@@ -195,22 +195,24 @@ def events_by_member(events):
     return result
 
 
-def frame(before, after, events=(), t=1):
+def frame(before, after, events=(), t=1, ambient_seconds=0):
     from utils.raid_scene import draw_frame
-    return draw_frame(before, after, events, t)
+    return draw_frame(before, after, events, t, ambient_seconds)
 
 
-def render(before, after, events=()):
+def render(before, after, events=(), ambient_start=0, palette=None):
     before = before or after
     from utils.raid_scene import departure_events, duration
     events = departure_events(before, after, events)
     stream = io.BytesIO()
     if not events:
+        if not after.outcome and any(m.fighter.form == 'hexfire' and m.fighter.hp > 0 for m in after.members):
+            return art.encode_idle([frame(after, after, ambient_seconds=ambient_start+i*2/24) for i in range(24)], palette)
         frame(after, after).save(stream, 'PNG', optimize=True)
         return art.Artwork(stream.getvalue(), 'png')
     milliseconds = duration(before, after, events)
     count = 36 if milliseconds > CLIP_SECONDS * 1000 else 18
-    frames = [frame(before, after, events, i / (count-1)) for i in range(count)]
+    frames = [frame(before, after, events, i / (count-1), ambient_start+i*milliseconds/1000/(count-1)) for i in range(count)]
     sample = Image.new('RGB', (WIDTH, TOTAL_HEIGHT * 3))
     for i, source in enumerate((frames[0], frames[count//2], frames[-1])):
         sample.paste(source, (0, i * TOTAL_HEIGHT))
@@ -222,7 +224,7 @@ def render(before, after, events=()):
     data = stream.getvalue()
     if len(data) > art.MAX_BYTES:
         raise ValueError('Raid clip exceeded its 2 MB attachment budget')
-    return art.Artwork(data, 'gif', milliseconds/1000)
+    return art.Artwork(data, 'gif', milliseconds/1000, bytes(palette.getpalette()), (ambient_start+milliseconds/1000) % 2)
 
 
 class RaidPresentation:
@@ -233,11 +235,26 @@ class RaidPresentation:
         self.filename = None
         self.failures = 0
         self.enabled = True
+        self.ambient_time = 0
+        self.palette = None
+        self.last_clip_seconds = 0
+
+    @property
+    def idle_delay(self):
+        scene = self.previous
+        if (self.enabled and self.filename and self.last_clip_seconds and scene and not scene.outcome
+                and any(m.fighter.form == 'hexfire' and m.fighter.hp > 0 for m in scene.members)):
+            return self.last_clip_seconds
+        return 0
 
     async def prepare(self, scene, events=()):
         if not self.enabled:
             return None
-        artwork = await art.render_job(render, self.previous, scene, events)
+        artwork = await art.render_job(render, self.previous, scene, events, self.ambient_time, self.palette)
+        if artwork:
+            self.palette = artwork.palette
+            if artwork.seconds:
+                self.ambient_time = artwork.ambient_end
         self.failures = 0 if artwork else self.failures + 1
         if self.failures >= 3:
             self.enabled = False
@@ -289,6 +306,7 @@ class RaidPresentation:
                 result = await deliver(False)
             if not keep or file:
                 self.filename = filename
+                self.last_clip_seconds = artwork.seconds if filename and artwork else 0
             return result
         finally:
             if file:

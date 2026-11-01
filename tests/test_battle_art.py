@@ -26,9 +26,9 @@ def fighters(left='twine', right='gloop'):
 
 
 class BattleImages(unittest.TestCase):
-    def test_all_90_canonical_portraits_and_registered_realms_are_packaged(self):
+    def test_all_canonical_portraits_and_registered_realms_are_packaged(self):
         roster = storage.load_beasts()
-        self.assertEqual(len(roster), 90)
+        self.assertEqual(len(roster), 91)
         for species in roster:
             with self.subTest(species=species):
                 sprite = art.sprite(species)

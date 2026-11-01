@@ -216,8 +216,9 @@ class Economy(commands.Cog):
                 col = "train_spd"
 
             sessions_done = row.get(col, 0) or 0
-            cost          = TRAIN_COST.get(rarity, 50)
-            gain          = TRAIN_GAIN.get(rarity, 1)
+            training_rarity = storage.gameplay_rarity(row)
+            cost          = TRAIN_COST.get(training_rarity, 50)
+            gain          = TRAIN_GAIN.get(training_rarity, 1)
             if stat == 'hp':
                 gain *= TRAIN_HP_MULTIPLIER
 
@@ -227,7 +228,7 @@ class Economy(commands.Cog):
                 "divine": 20, "altered_divine": 20,
                 "corrupted": 20, "ancient": 20, "dev": 0
             }
-            rarity_cap = RARITY_CAPS.get(rarity, 20)
+            rarity_cap = RARITY_CAPS.get(training_rarity, 20)
             if sessions_done >= rarity_cap:
                 return await interaction.followup.send(embed=discord.Embed(
                     description=(
@@ -306,7 +307,7 @@ class Economy(commands.Cog):
             "legendary": 15, "divine": 20, "altered_divine": 20,
             "corrupted": 20, "ancient": 20, "dev": 0,
         }
-        _cap = _rarity_caps.get(rarity, 20)
+        _cap = _rarity_caps.get(training_rarity, 20)
         _new_sessions = sessions_done + 1
         async with storage.connect() as _tdb:
             _tdb.row_factory = aiosqlite.Row
