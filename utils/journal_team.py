@@ -205,7 +205,13 @@ def render(view):
     if selected is None:
         selected = visible[0]
         view.team_candidate_id = selected['id']
-    view.text(f"**Editing {ROLE_NAMES[role].lower()}** · Collection page {view.team_page + 1}/{pages}\nChoose a companion, then confirm the assignment.")
+    first = view.team_page * PAGE_SIZE + 1
+    last = first + len(visible) - 1
+    view.text(f"**Editing {ROLE_NAMES[role].lower()}**\n"
+              f"Page {view.team_page + 1} of {pages} · Showing {first}–{last} of {len(rows)}")
+    if pages > 1:
+        view.row(view.button('← Previous page', 'team_prev', disabled=view.team_page == 0),
+                 view.button('Next page →', 'team_next', disabled=view.team_page + 1 >= pages))
     picker = view.select('team_candidate', 'Choose your ' + ROLE_NAMES[role].lower())
     picker.options = [discord.SelectOption(
         label=f"#{row['player_number']} · {_name(row)} · Lv.{row['level']}"[:100],
@@ -228,6 +234,3 @@ def render(view):
         actions.append(view.button('Clear slot', f"team_clear:{role}:{current['id'] if current else 0}", disabled=current is None))
     actions.append(view.button('Care selected', f"care:{selected['id']}"))
     view.row(*actions)
-    if pages > 1:
-        view.row(view.button('Previous companions', 'team_prev', disabled=view.team_page == 0),
-                 view.button('Next companions', 'team_next', disabled=view.team_page + 1 >= pages))

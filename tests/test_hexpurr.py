@@ -16,7 +16,7 @@ from cogs.dev import Dev
 from tests.test_gameplay import DatabaseCase, interaction
 from utils import battle_art as art, combat, cosmetics, db as storage, hexpurr_art, transfers, trial_combat
 from utils.dispositions import apply_disposition
-from utils.exclusive_companions import give_hexpurr, discord_user_id
+from utils.exclusive_companions import give_hexpurr, discord_user_id, migrate_owner_bindings
 from utils.progression import companion_growth, rarity_growth
 
 
@@ -32,6 +32,21 @@ class ExclusiveGrant(DatabaseCase):
         row_id = await self.beast('prismite', uid, starter=True)
         await self.execute('UPDATE player_beasts SET level=? WHERE id=?', (level, row_id))
         return row_id
+
+    async def use_legacy_binding_schema(self):
+        # Reproduce the deployed single-recipient table and global receipt key.
+        async with storage.connect() as db:
+            await db.executescript('''
+                ALTER TABLE exclusive_companions RENAME TO saved_bindings;
+                CREATE TABLE exclusive_companions (
+                    species TEXT PRIMARY KEY,user_id INTEGER NOT NULL,
+                    beast_row_id INTEGER UNIQUE,granted_by INTEGER NOT NULL,
+                    granted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+                INSERT INTO exclusive_companions SELECT * FROM saved_bindings;
+                DROP TABLE saved_bindings;
+                UPDATE gameplay_grants SET grant_key='exclusive:hexpurr'
+                    WHERE grant_key='exclusive:hexpurr:42';
+            ''')
 
     async def test_requires_existing_trainer_and_current_lead_without_partial_binding(self):
         with self.assertRaisesRegex(ValueError, '/start'):
@@ -58,18 +73,92 @@ class ExclusiveGrant(DatabaseCase):
         self.assertFalse(created)
         self.assertEqual((retry['id'], retry['level'], retry['hp'], retry['mana'], retry['exp']), (row['id'],20,17,9,14))
         self.assertEqual(len(await self.rows("SELECT * FROM player_beasts WHERE beast_id='hexpurr'")), 1)
-        self.assertEqual(len(await self.rows("SELECT * FROM gameplay_grants WHERE grant_key='exclusive:hexpurr'")), 1)
+        self.assertEqual(len(await self.rows("SELECT * FROM gameplay_grants WHERE grant_key='exclusive:hexpurr:42'")), 1)
 
-    async def test_competing_recipients_and_same_recipient_retries_cannot_duplicate(self):
+    async def test_concurrent_recipients_each_receive_one_copy_at_their_own_lead_level(self):
         await self.lead()
         await storage.get_or_create_player(43, 'Other')
-        await self.lead(43)
-        results = await asyncio.gather(give_hexpurr('42',granted_by=7),give_hexpurr('43',granted_by=7),return_exceptions=True)
-        self.assertEqual(sum(isinstance(r,ValueError) for r in results),1)
-        owner = next(r[0]['user_id'] for r in results if not isinstance(r,Exception))
-        retries = await asyncio.gather(*(give_hexpurr(str(owner),granted_by=7) for _ in range(3)))
-        self.assertTrue(all(not created for _,created in retries))
-        self.assertEqual(len(await self.rows("SELECT * FROM player_beasts WHERE beast_id='hexpurr'")),1)
+        await self.lead(43, level=27)
+        recipients = (42, 43, 42, 43, 42, 43)
+        results = await asyncio.gather(*(give_hexpurr(str(owner), granted_by=7) for owner in recipients))
+        for owner, level in ((42, 13), (43, 27)):
+            grants = [(row, created) for row, created in results if row['user_id'] == owner]
+            self.assertEqual(sum(created for _, created in grants), 1)
+            self.assertEqual(len({row['id'] for row, _ in grants}), 1)
+            self.assertTrue(all(row['level'] == level for row, _ in grants))
+        rows = await self.rows("SELECT * FROM player_beasts WHERE beast_id='hexpurr'")
+        self.assertEqual(len(rows), 2)
+        bindings = await self.rows('SELECT * FROM exclusive_companions')
+        self.assertEqual({(row['user_id'], row['beast_row_id']) for row in bindings},
+                         {(row['user_id'], row['id']) for row in rows})
+        receipts = await self.rows("SELECT * FROM gameplay_grants WHERE grant_key LIKE 'exclusive:hexpurr:%'")
+        self.assertEqual({(row['grant_key'], row['user_id'], row['beast_row_id']) for row in receipts},
+                         {(f"exclusive:hexpurr:{row['user_id']}", row['user_id'], row['id']) for row in rows})
+
+    async def test_startup_migrates_legacy_owner_without_changing_progress_or_gear(self):
+        await self.lead()
+        row, _ = await give_hexpurr('42', granted_by=7)
+        await self.execute('UPDATE player_beasts SET level=20,hp=17,mana=9,exp=14,nickname=? WHERE id=?', ('Test Hexpurr', row['id']))
+        await self.execute('INSERT INTO player_equipment(user_id,beast_row_id,equipment_id) VALUES(42,?,?)', (row['id'], 'emberstone_vest'))
+        await self.use_legacy_binding_schema()
+        original = (await self.rows('SELECT * FROM player_beasts WHERE id=?', (row['id'],)))[0]
+        bindings = await self.rows('SELECT * FROM exclusive_companions')
+        equipment = await self.rows('SELECT * FROM player_equipment')
+        await storage.init_db()
+        retry, created = await give_hexpurr('42', granted_by=7)
+        self.assertFalse(created)
+        self.assertEqual(retry, original)
+        self.assertEqual(await self.rows('SELECT * FROM exclusive_companions'), bindings)
+        self.assertEqual(await self.rows('SELECT * FROM player_equipment'), equipment)
+        await storage.get_or_create_player(43, 'Recipient')
+        await self.lead(43, level=27)
+        other, created = await give_hexpurr('43', granted_by=7)
+        self.assertTrue(created)
+        self.assertEqual((other['user_id'], other['level']), (43, 27))
+        self.assertNotEqual(other['id'], original['id'])
+        # A second startup must retain both bindings and both grant receipts.
+        await storage.init_db()
+        for owner, expected in ((42, original), (43, other)):
+            retry, created = await give_hexpurr(str(owner), granted_by=7)
+            self.assertFalse(created)
+            self.assertEqual(retry, expected)
+        receipts = await self.rows("SELECT * FROM gameplay_grants WHERE grant_key LIKE 'exclusive:hexpurr%'")
+        self.assertEqual({row['grant_key'] for row in receipts}, {'exclusive:hexpurr:42', 'exclusive:hexpurr:43'})
+
+    async def test_empty_legacy_database_can_grant_to_multiple_trainers_after_startup(self):
+        await self.use_legacy_binding_schema()
+        await storage.init_db()
+        for owner in (42, 43):
+            await storage.get_or_create_player(owner, 'Recipient')
+            await self.lead(owner)
+            row, created = await give_hexpurr(str(owner), granted_by=7)
+            self.assertTrue(created)
+            self.assertEqual(row['user_id'], owner)
+
+    async def test_failed_receipt_migration_rolls_back_binding_schema_and_data(self):
+        await self.lead()
+        row, _ = await give_hexpurr('42', granted_by=7)
+        await self.use_legacy_binding_schema()
+        bindings = await self.rows('SELECT * FROM exclusive_companions')
+        receipts = await self.rows('SELECT * FROM gameplay_grants')
+        async with storage.connect() as db:
+            execute = db.execute
+
+            def fail_receipt_update(sql, *args, **kwargs):
+                if sql.startswith('UPDATE gameplay_grants'):
+                    raise RuntimeError('Simulated migration failure')
+                return execute(sql, *args, **kwargs)
+
+            with patch.object(db, 'execute', new=fail_receipt_update), self.assertRaisesRegex(RuntimeError, 'Simulated'):
+                await migrate_owner_bindings(db)
+        columns = await self.rows('PRAGMA table_info(exclusive_companions)')
+        self.assertEqual([column['name'] for column in columns if column['pk']], ['species'])
+        self.assertEqual(await self.rows('SELECT * FROM exclusive_companions'), bindings)
+        self.assertEqual(await self.rows('SELECT * FROM gameplay_grants'), receipts)
+        await storage.init_db()
+        retry, created = await give_hexpurr('42', granted_by=7)
+        self.assertFalse(created)
+        self.assertEqual(retry, row)
 
     async def test_normal_grant_and_transfer_paths_cannot_bypass_exclusivity(self):
         await self.lead()
@@ -85,6 +174,9 @@ class ExclusiveGrant(DatabaseCase):
             await transfers.complete_trade(42,43,row['id'],offer_key='hexpurr-test')
         with self.assertRaisesRegex(ValueError, 'give_hexpurr'):
             await storage.add_beast_to_player(42,storage.get_beast_data('hexpurr'),grant_key='exclusive:hexpurr')
+        for owner, key in ((42, 'exclusive:hexpurr:42'), (43, 'exclusive:hexpurr:42'), (43, 'exclusive:hexpurr:43')):
+            with self.subTest(owner=owner, key=key), self.assertRaisesRegex(ValueError, 'give_hexpurr'):
+                await storage.add_beast_to_player(owner, storage.get_beast_data('hexpurr'), grant_key=key)
 
     async def test_growth_to_cap_stays_legendary_and_existing_developer_growth_is_unchanged(self):
         await self.lead(level=1)

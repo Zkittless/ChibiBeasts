@@ -158,7 +158,7 @@ class Dev(commands.Cog):
             ephemeral=True
         )
 
-    @dev_group.command(name="give_hexpurr", description="[DEV] Bind Hexpurr to one trainer at their lead companion’s level")
+    @dev_group.command(name="give_hexpurr", description="[DEV] Grant a personal Hexpurr at the recipient’s lead companion level")
     @app_commands.describe(discord_id="Recipient’s numeric Discord user ID; server membership is not required")
     @dev_only()
     async def give_hexpurr(self, interaction: discord.Interaction, discord_id: str):
