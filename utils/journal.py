@@ -683,6 +683,7 @@ class JournalView(discord.ui.LayoutView):
             # The shared raid lobby must accept other trainers. It has its own
             # message and lifetime instead of the journal's owner-only adapter.
             interaction = getattr(interaction, 'original', interaction)
+            self.hub.release_dispatch()
         kwargs = {'biome': self.realm} if name == 'challenge' else {}
         # Existing command callbacks acknowledge immediately and retain their
         # own atomic cooldown, permission and battle guards.

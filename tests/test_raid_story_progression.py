@@ -196,7 +196,7 @@ class RaidAndStoryPersistence(DatabaseCase):
             rid = await storage.add_beast_to_player(42, {**storage.get_beast_data(key), 'level': 15})
             await storage.set_raid_slot(42, rid, slot)
         await self.execute("INSERT INTO guilds(id,name,leader_id,level,guild_tokens) VALUES(5,'Test guild',42,5,100)")
-        await self.execute('INSERT INTO guild_members(guild_id,user_id) VALUES(5,42)')
+        await self.execute("INSERT INTO guild_members(guild_id,user_id,rank) VALUES(5,42,'leader')")
 
     def cleanup_raid(self, raid):
         active_raids.pop(raid.id, None)

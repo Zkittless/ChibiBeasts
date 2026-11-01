@@ -73,7 +73,8 @@ async def raid_sweep():
                     await storage.set_raid_slot(uid, row_id, slot)
             async with storage.connect() as db:
                 await db.execute("INSERT INTO guilds(id,name,leader_id,level,guild_tokens) VALUES(5,'Synthetic guild',42,5,10000)")
-                await db.executemany('INSERT INTO guild_members(guild_id,user_id) VALUES(5,?)', [(uid,) for uid in (42, 77, 88)])
+                await db.executemany('INSERT INTO guild_members(guild_id,user_id,rank) VALUES(5,?,?)',
+                                     [(uid, 'leader' if uid == 42 else 'member') for uid in (42, 77, 88)])
                 await db.commit()
             for boss in [*RAID_BOSSES['corrupted'], *ANCIENT_BOSSES]:
                 for users in ({42}, {42, 77, 88}):

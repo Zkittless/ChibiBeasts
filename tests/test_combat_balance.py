@@ -244,7 +244,7 @@ class SavedBalance(DatabaseCase):
             row_id = await storage.add_beast_to_player(42, {**storage.get_beast_data(key), 'level': 30})
             await storage.set_raid_slot(42, row_id, slot)
         await self.execute("INSERT INTO guilds(id,name,leader_id,level,guild_tokens) VALUES(5,'Test guild',42,5,1000)")
-        await self.execute('INSERT INTO guild_members(guild_id,user_id) VALUES(5,42)')
+        await self.execute("INSERT INTO guild_members(guild_id,user_id,rank) VALUES(5,42,'leader')")
         for boss in [*RAID_BOSSES['corrupted'], *ANCIENT_BOSSES]:
             session = RaidSession(SimpleNamespace(id=7), boss, {42}, 5)
             try:
